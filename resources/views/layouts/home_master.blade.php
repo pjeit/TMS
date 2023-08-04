@@ -114,17 +114,11 @@
         @endif
 
         @if(session("status"))
-        @if(session('status') == "Isikan data keranjang")
-        <div class="alert alert-warning">
-          {{session('status')}}
-        </div>
-        @else
         <div class="alert alert-success">
           {{session('status')}}
         </div>
         @endif
 
-        @endif
         @yield('content')
 
       </section>
@@ -224,7 +218,7 @@
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "searching": false,
+        "searching": true,
         "ordering": false,
         "paging": false,
         "info": false,
@@ -235,7 +229,7 @@
       $('#example2').DataTable({
         "paging": true,
         "lengthChange": false,
-        "searching": false,
+        "searching": true,
         "ordering": true,
         "info": true,
         "autoWidth": false,

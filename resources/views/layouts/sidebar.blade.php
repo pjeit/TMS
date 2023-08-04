@@ -9,11 +9,11 @@
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-      <div class="image">
+      <!-- <div class="image">
         <img src="{{asset('assets/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
-      </div>
+      </div> -->
       <div class="info">
-        <a class="d-block text-white"> <span class="text-bold">Timothy</span> (Super User)</a>
+        <a class="d-block text-white"> <span class="text-bold">Username</span> (Super User)</a>
 
       </div>
     </div>
@@ -71,7 +71,7 @@
         <!-- =================================================== -->
         <!-- =================================================== -->
 
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a href="../widgets.html" class="nav-link">
             <i class="nav-icon fas fa-th"></i>
             <p>
@@ -79,12 +79,12 @@
               <span class="right badge badge-danger">New</span>
             </p>
           </a>
-        </li>
+        </li> -->
         <!-- =================================================== -->
 
         <!-- =================================================== -->
 
-        <li class="nav-item menu-open">
+        <!-- <li class="nav-item menu-open">
           <a href="#" class="nav-link active">
             <i class="nav-icon fas fa-copy"></i>
             <p>
@@ -101,23 +101,16 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> -->
         <!-- =================================================== -->
 
 
 
-        <li class="nav-header">MASTER</li>
-        <li class="nav-item">
-          <a href="" class="nav-link">
-            <i class="nav-icon fas fa-columns"></i>
-            <p>
-              User
-            </p>
-          </a>
-        </li>
-        <li class="nav-item">
+        <!-- <li class="nav-header">MASTER</li> -->
+       
+        <li class="nav-item {{ request()->url() === route('coa.index') ||request()->url() === route('pengaturan_sistem.index') ? 'menu-is-opening menu-open' : '' }}">
           <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-table"></i>
+            <i class="nav-icon fas fa-key"></i>
             <p>MASTER
               <i class="fas fa-angle-left right"></i>
             </p>
@@ -126,34 +119,69 @@
 
             <li class="nav-item">
               <a href="" class="nav-link">
-                <i class="nav-icon fas fa-columns"></i>
+                <i class="far nav-icon"></i>
                 <p>
-                  Permintaan Pembelian
+                  User
                 </p>
               </a>
             </li>
 
             <li class="nav-item">
-              <a href="" class="nav-link">
-                <i class="nav-icon fas fa-columns"></i>
+              <a href="{{route('coa.index')}}" class="nav-link {{request()->url() === route('coa.index') ? ' active' : '' }} ">
+              <i class="far nav-icon"></i>
                 <p>
-                  Purchase Order
+                  COA
                 </p>
               </a>
             </li>
-
-
-
-
-
-
-
-
-
+            <li class="nav-item">
+              <a href="{{route('pengaturan_sistem.index')}}" class="nav-link {{request()->url() === route('pengaturan_sistem.index') ? ' active' : '' }} ">
+              <i class="far nav-icon"></i>
+                <p>
+                  Pengaturan Sistem
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>
+                    Level 2
+                    <i class="right fas fa-angle-left"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>Level 3</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>Level 3</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-dot-circle nav-icon"></i>
+                      <p>Level 3</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
           </ul>
         </li>
 
-
+        <!-- <li class="nav-item">
+          <a href="" class="nav-link">
+            <i class="nav-icon fas fa-columns"></i>
+            <p>
+              User
+            </p>
+          </a>
+        </li> -->
       </ul>
     </nav>
     <!-- /.sidebar-menu -->
