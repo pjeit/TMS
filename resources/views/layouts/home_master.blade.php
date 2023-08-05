@@ -47,9 +47,13 @@
   <link rel="stylesheet" href="{{asset('assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css')}}">
+  <!-- ion range slider-->
+  <link rel="stylesheet" href="{{asset('assets/plugins/ion-rangeslider/css/ion.rangeSlider.css')}}">
+  <link rel="stylesheet" href="{{asset('assets/plugins/ion-rangeslider/css/ion.rangeSlider.min.css')}}">
+
   <!-- script comboboc-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css%22%3E">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css%22%3E"> -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 
 
@@ -87,23 +91,20 @@
       <!-- Content Header (Page header) -->
       <div class="content-header">
         <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
-              <h1 class="m-0">@yield('judul')</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-
-                @yield('pathjudul')
-                <!--<li class="breadcrumb-item"><a href="#">Home</a></~li>
-              <li class="breadcrumb-item active">Dashboard v1</li>-->
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
+            <div class="row">
+                <!--<div class="col-sm-6">
+                  <h1 class="">@yield('judul')</h1>
+                </div>-->
+                <div class="col">
+                    <ol class="breadcrumb float-sm-left">
+                        @yield('pathjudul')
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
         </div><!-- /.container-fluid -->
-      </div>
+    </div>
       <!-- /.content-header -->
-
+<br>
       <!-- Main content -->
       <section class="content">
 
@@ -114,9 +115,24 @@
         @endif
 
         @if(session("status"))
-        <div class="alert alert-success">
+      
+        {{-- <div class="alert alert-success d-flex align-items-center" role="alert">
+          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+          <div>
+            {{session('status')}}
+
+          </div>
+        </div> --}}
+      
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
           {{session('status')}}
+
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+        {{-- <div class="alert alert-success">
+        </div> --}}
         @endif
 
         @yield('content')
@@ -201,6 +217,10 @@
   <!-- Toastr -->
   <script src="{{asset('assets/plugins/toastr/toastr.min.js')}}"></script>
 
+  <!-- ion slider -->
+  <script src="{{asset('assets/plugins/ion-rangeslider/js/ion.rangeSlider.js')}}"></script>
+  <script src="{{asset('assets/plugins/ion-rangeslider/js/ion.rangeSlider.min.js')}}"></script>
+
   <!-- script comboboc-->
 
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
@@ -218,12 +238,12 @@
         "responsive": true,
         "lengthChange": false,
         "autoWidth": false,
-        "searching": true,
+        "searching": false,
         "ordering": false,
         "paging": false,
         "info": false,
         //"buttons": ["copy", "csv", "excel", "pdf", "print"] 
-        "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
       }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
       $('#example2').DataTable({
@@ -231,7 +251,7 @@
         "lengthChange": false,
         "searching": true,
         "ordering": true,
-        "info": true,
+        "info": false,
         "autoWidth": false,
         "responsive": true,
       });
@@ -387,7 +407,16 @@
       myDropzone.removeAllFiles(true)
     }
     // DropzoneJS Demo Code End
-
+    function formatNumber(input) {
+        // Remove any non-digit characters from the input value
+        let rawValue = input.value.replace(/\D/g, '');
+        
+        // Convert the value to a number and format it with commas
+        let formattedValue = Number(rawValue).toLocaleString('en-US');
+        
+        // Update the input field with the formatted value
+        input.value = formattedValue;
+      }
     //$('#reservation').daterangepicker()
   </script>
 </body>

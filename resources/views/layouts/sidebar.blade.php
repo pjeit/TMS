@@ -1,8 +1,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
-  <a href="/home" class="brand-link">
-    <img src="{{asset('img/pje.jpg')}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text font-weight-light small">Primatrans Jaya Express</span>
+  <a href="/home" class="brand-link d-flex align-items-center">
+    <img src="{{ asset('img/pje.jpg') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <span class="brand-text font-weight-light small mx-2">Primatrans Jaya Express</span>
   </a>
 
   <!-- Sidebar -->
@@ -108,7 +108,8 @@
 
         <!-- <li class="nav-header">MASTER</li> -->
        
-        <li class="nav-item {{ request()->url() === route('coa.index') ||request()->url() === route('pengaturan_sistem.index') ? 'menu-is-opening menu-open' : '' }}">
+
+          <li class="nav-item {{ request()->url() === route('coa.index') ||request()->url() === route('pengaturan_sistem.index') ? 'menu-is-opening menu-open' : '' }}">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-key"></i>
             <p>MASTER
@@ -118,19 +119,46 @@
           <ul class="nav nav-treeview">
 
             <li class="nav-item">
-              <a href="" class="nav-link">
-                <i class="far nav-icon"></i>
+              <a href="{{route('head.index')}}" class="nav-link {{request()->url() === route('head.index') ? ' active' : '' }} ">
+              <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                 <p>
-                  User
+                  Head
                 </p>
               </a>
             </li>
 
             <li class="nav-item">
+              <a href="{{route('chassis.index')}}" class="nav-link {{request()->url() === route('chassis.index') ? ' active' : '' }} ">
+              <i class="far nav-icon fa fa-square" style="font-size: 15px;"></i>
+                <p>
+                  Chassis
+                </p>
+              </a>
+            </li>
+     
+            <li class="nav-item">
+              <a href="{{route('supplier.index')}}" class="nav-link {{request()->url() === route('supplier.index') ? ' active' : '' }} ">
+              <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                <p>
+                  Supplier
+                </p>
+              </a>
+            </li>
+         
+            <li class="nav-item">
               <a href="{{route('coa.index')}}" class="nav-link {{request()->url() === route('coa.index') ? ' active' : '' }} ">
               <i class="far nav-icon"></i>
                 <p>
                   COA
+                </p>
+              </a>
+            </li>
+            
+            <li class="nav-item">
+              <a href="{{route('kas_bank.index')}}" class="nav-link">
+                <i class="far nav-icon"></i>
+                <p>
+                  Kas / Bank
                 </p>
               </a>
             </li>

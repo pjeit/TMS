@@ -20,10 +20,11 @@ class PengaturanSistemController extends Controller
         $dataPengaturanSistem = PengaturanSistem::where('id', 1)->first();
 
         $dataMKas = DB::table('m_kas')->get();
-        
+        $judul = 'Pengaturan Sistem';
         return view('pages.master.pengaturan_sistem.index',[
             'dataPengaturanSistem' => $dataPengaturanSistem,
             'dataMKas' => $dataMKas,
+            'judul' => $judul,
         ]);
     }
 
@@ -45,21 +46,7 @@ class PengaturanSistemController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->collect();
-            $update = PengaturanSistem::where('id', 1)->first();
-            $update->uang_jajan = $data['uang_jalan'];
-            $update->reimburse = $data['reimburse'];
-            $update->penerimaan_customer = $data['penerimaan_customer'];
-            $update->pembayaran_supplier = $data['pembayaran_supplier'];
-            $update->pembayaran_gaji = $data['pembayaran_gaji'];
-            $update->hutang_karyawan = $data['hutang_karyawan'];
-            $update->klaim_supir = $data['klaim_supir'];
-            $update->batas_pemutihan = $data['batas_pemutihan'];
-            $update->hutang_karyawan = $data['hutang_karyawan'];
-            $update->updated_at = date("Y-m-d h:i:s");
-            $update->updated_by = 1;
-    
-            $update->save();
+       
      
       
         // DB::table('pengaturan_sistem')
@@ -76,7 +63,6 @@ class PengaturanSistemController extends Controller
         //         'updated_by'=> 1,// masih hardcode nanti diganti cookies
         //     )
         // ); 
-        return redirect()->route('pengaturan_sistem.index')->with('status','Berhasil update data');
     }
 
     /**
@@ -110,7 +96,24 @@ class PengaturanSistemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+        $data = $request->collect();
+        $update = PengaturanSistem::where('id', $id)->first();
+        $update->uang_jajan = $data['uang_jalan'];
+        $update->reimburse = $data['reimburse'];
+        $update->penerimaan_customer = $data['penerimaan_customer'];
+        $update->pembayaran_supplier = $data['pembayaran_supplier'];
+        $update->pembayaran_gaji = $data['pembayaran_gaji'];
+        $update->hutang_karyawan = $data['hutang_karyawan'];
+        $update->klaim_supir = $data['klaim_supir'];
+        $update->batas_pemutihan = $data['batas_pemutihan'];
+        $update->hutang_karyawan = $data['hutang_karyawan'];
+        $update->updated_at = date("Y-m-d h:i:s");
+        $update->updated_by = 1;
+
+        $update->save();
+
+        return redirect()->route('pengaturan_sistem.index')->with('status','Berhasil update data');
+
     }
 
     /**

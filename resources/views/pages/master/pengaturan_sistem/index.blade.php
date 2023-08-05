@@ -7,24 +7,44 @@
     </div>
 @endif
 
-@section('judul')
-Pengaturan Sistem
+@section('pathjudul')
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item">Pengaturan Sistem</li>
+    <li class="breadcrumb-item"><a href="{{route('pengaturan_sistem.index')}}">COA</a></li>
 @endsection
-
 
 @section('content')
 <br>
+<style>
+    /* custom range slider */
+    .irs--flat .irs-handle>i:first-child{
+        background-color: #fff;
+    }
+    .irs--flat .irs-handle.state_hover>i:first-child, .irs--flat .irs-handle:hover>i:first-child {
+        background-color: #fff;
+    }
+    .irs--flat .irs-bar {
+        background-color: #86eeff;
+    }
+    .irs--flat .irs-handle{
+        background-color: #0011ff;
+    }
+    .irs--flat .irs-from, .irs--flat .irs-to, .irs--flat .irs-single{
+        background-color: #0011ff;
+    }
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title">Pengaturan Default </h5>
+                    <h5 class="card-title">Pengaturan Sistem</h5>
                 </div>
                 
-                <form action="{{ route('pengaturan_sistem.store') }}" method="POST" >
+                <form action="{{ route('pengaturan_sistem.update', [$dataPengaturanSistem->id]) }}" method="POST" >
                     @csrf
+                    @method('PUT')
                     <div class="card-body">
                         <div class="row justify-content-center  g-2">
                             <div class="col">
@@ -95,18 +115,38 @@ Pengaturan Sistem
 
                             <div class="col">
                                 <div class="form-group">
-                                    <label>Batas Pemutihan</label>
-                                    <input type="number" class="form-control" name="batas_pemutihan" id="batas_pemutihan" value="<?= isset($dataPengaturanSistem->batas_pemutihan) ? $dataPengaturanSistem->batas_pemutihan:null; ?>">
+                                    <label>Batas Pemutihan </label>
+                                    <br>
+                                    <!-- <input type="number" class="form-control" name="batas_pemutihan" id="batas_pemutihan" value="<?= isset($dataPengaturanSistem->batas_pemutihan) ? $dataPengaturanSistem->batas_pemutihan:null; ?>"> -->
+                                    <div class="col-sm-12">
+                                        <input id="batas_pemutihan" type="text" name="batas_pemutihan" value="<?= ($dataPengaturanSistem->batas_pemutihan)? $dataPengaturanSistem->batas_pemutihan:0; ?>">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <button type="submit" class="btn btn-success"><strong>Simpan</strong></button>
-                        <a href="{{ route('pengaturan_sistem.index') }}" class="btn btn-info"><strong>Kembali</strong></a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+
+    
+$(function () {
+    $('#batas_pemutihan').ionRangeSlider({
+      min     : 0,
+      max     : 10000,
+      type    : 'single',
+      step    : 1,
+    //   postfix : ' mm',
+      prettify: false,
+      hasGrid : true
+    })
+});
+</script>
 @endsection

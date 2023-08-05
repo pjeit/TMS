@@ -4,9 +4,9 @@
     <li class="nav-item">
       <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
-    {{-- <li class="nav-item d-none d-sm-inline-block">
-      <a href="/home" class="nav-link">Home</a>
-    </li> --}}
+    <li class="nav-item d-none d-sm-inline-block">
+      <a  class="nav-link">{{$judul}}</a>
+    </li>
     <!--<li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
       </li>-->
@@ -22,7 +22,7 @@
       </a>
     </li>
 
-  
+{{--   
     <li class="nav-item">
         <a class="btn btn-block btn-outline-danger btn-sm" href=""
           onClick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -31,6 +31,6 @@
         <form id="logout-form" action="" method="POST" class="d-none">
           @csrf
         </form>
-      </li>
+      </li> --}}
   </ul>
 </nav>

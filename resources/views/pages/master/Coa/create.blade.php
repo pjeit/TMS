@@ -5,15 +5,40 @@
         {{ session()->get('message') }}
     </div>
 @endif
+@section('pathjudul')
+<li class="breadcrumb-item"><a href="/">Home</a></li>
+<li class="breadcrumb-item">Master</li>
+<li class="breadcrumb-item"><a href="{{route('coa.index')}}">COA</a></li>
+<li class="breadcrumb-item">Create</li>
+
+@endsection
 
 @section('content')
-<br>
 <div class="container-fluid">
+  
+    @if ($errors->any())
+    {{-- <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div> --}}
+        @foreach ($errors->all() as $error)
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $error }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endforeach
+
+    @endif
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="card-title">Tambah Coa</h5>
+                    <h5 class="card-title">Jenis Transaksi</h5>
                 </div>
 
                 <form action="{{ route('coa.store') }}" method="POST" >
@@ -23,11 +48,11 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="nama_jenis">Nama Jenis</label>
-                                    <input require type="text" maxlength="20" name="nama_jenis" class="form-control" value="{{old('nama_jenis','')}}" >                         
+                                    <input required type="text" maxlength="20" name="nama_jenis" class="form-control" value="{{old('nama_jenis','')}}" >                         
                                 </div>
                                 <div class="form-group">
                                     <label for="no_akun">No. akun</label>
-                                    <input require type="number" maxlength="10" name="no_akun" class="form-control" value="{{old('no_akun','')}}" >                         
+                                    <input required type="number" maxlength="10" name="no_akun" class="form-control" value="{{old('no_akun','')}}" >                         
                                 </div>  
                                 <div class="form-group">
                                     <label for="tipe">Tipe</label>
@@ -44,7 +69,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="catatan">Catatan</label>
-                                    <input require type="text" maxlength="100" name="catatan" class="form-control" value="{{old('catatan','')}}" >                         
+                                    <input  type="text" maxlength="100" name="catatan" class="form-control" value="{{old('catatan','')}}" >                         
                                 </div>  
                             </div>
                            

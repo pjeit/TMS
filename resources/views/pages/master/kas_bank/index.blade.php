@@ -7,7 +7,7 @@
 @section('pathjudul')
 <li class="breadcrumb-item"><a href="/">Home</a></li>
 <li class="breadcrumb-item">Master</li>
-<li class="breadcrumb-item"><a href="{{route('coa.index')}}">COA</a></li>
+<li class="breadcrumb-item"><a href="{{route('coa.index')}}">Kas Bank</a></li>
 @endsection
 @section('content')
 <!-- <div class="container-fluid">
@@ -33,7 +33,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{route('coa.create')}}" class="btn btn-secondary btn-responsive float-left">Tambah COA
+                    <a href="{{route('kas_bank.create')}}" class="btn btn-secondary btn-responsive float-left">Tambah Kas
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
                             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
                         </svg>
@@ -44,23 +44,23 @@
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                              <th>jenis</th>
+                              <th>Nama Kas / Bank </th>
                               <th>No. Akun</th>
                               <th>Tipe</th>
-                              <th>catatan</th>
+                              <th>Rekening Bank</th>
                               <th>Handle</th>
                             </tr>
                           </thead>
                         <tbody>
-                            @foreach($dataCOA as $d)
+                            @foreach($dataKas as $d)
                              <tr>
-                                <td>{{$d->nama_jenis}}</td>
+                                <td>{{$d->nama}}</td>
                                 <td>{{$d->no_akun}}</td>  
                                 <td>{{$d->tipe}}</td>  
-                                <td>{{$d->catatan}}</td>  
+                                <td>{{$d->bank}} - {{$d->no_akun}} ({{$d->rek_nama}})</td>  
                       
                                 <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('coa.edit',[$d->id])}}">
+                                    <a class="btn btn-default bg-info" href="{{route('kas_bank.edit',[$d->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
@@ -87,10 +87,10 @@
                                        <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
 
-                                            <form action="{{route('coa.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
+                                            <form action="{{route('kas_bank.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button action="{{route('coa.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
+                                                <button action="{{route('kas_bank.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
                                             </form>
                                        </div>
                                     </div>
@@ -101,10 +101,10 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                              <th>jenis</th>
+                              <th>Nama Kas / Bank </th>
                               <th>No. Akun</th>
                               <th>Tipe</th>
-                              <th>catatan</th>
+                              <th>Rekening Bank</th>
                               <th>Handle</th>
                              </tr>
                         </tfoot>
