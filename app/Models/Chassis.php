@@ -8,17 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Chassis extends Model
 {
     use HasFactory;
-    protected $table = 'Chassis';
+    protected $table = 'chassis';
     protected $primaryKey='id';
     protected $fillable=[
        'id',
-       'chassis_id',
-       'jenis_chassis_id',
-       'nomor',
-       'berlaku_hingga',
-       'berlaku_hingga',
-       'is_reminder',
-       'reminder_hari',
+       'kode',
+       'karoseri',
+       'model_id',
 
        'created_at',
        'created_by',

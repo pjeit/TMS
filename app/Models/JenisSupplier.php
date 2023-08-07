@@ -5,25 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Supplier extends Model
+class JenisSupplier extends Model
 {
     use HasFactory;
-    protected $table = 'supplier';
+    protected $table = 'jenis_supplier';
     protected $primaryKey='id';
     protected $fillable=[
         'id',
-        'jenis_supplier_id',
         'nama',
-        'alamat',
-        'kota_id',
-        'telp',
-        'email',
-        'npwp',
-        'no_rek',
-        'rek_nama',
-        'bank',
-        'cabang',
-        'catatan',
         
         'created_at',
         'created_by',

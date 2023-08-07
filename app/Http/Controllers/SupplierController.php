@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JenisSupplier;
+use App\Models\M_Kota;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,8 +36,13 @@ class SupplierController extends Controller
      */
     public function create()
     {
+        $kota = M_Kota::orderBy('id', 'ASC')->get();
+        $jenis_supplier = JenisSupplier::orderBy('id', 'ASC')->get();
+
         return view('pages.master.supplier.create',[
             'judul' => "Supplier",
+            'kota' => $kota,
+            'jenis_supplier' => $jenis_supplier,
         ]);
     }
 
@@ -68,6 +75,7 @@ class SupplierController extends Controller
             $supplier->rek_nama = $request->rek_nama;
             $supplier->bank = $request->bank;
             $supplier->cabang = $request->cabang;
+            $supplier->catatan = $request->catatan;
             $supplier->created_at = date("Y-m-d h:i:s");
             $supplier->created_by = 1; // manual
             $supplier->updated_at = date("Y-m-d h:i:s");
@@ -101,10 +109,14 @@ class SupplierController extends Controller
     public function edit($id)
     {
         $data = Supplier::where('is_hapus', 'N')->findOrFail($id);
+        $kota = M_Kota::orderBy('id', 'ASC')->get();
+        $jenis_supplier = JenisSupplier::orderBy('id', 'ASC')->get();
 
         return view('pages.master.supplier.edit',[
-            'data' => $data,
             'judul' => "Supplier",
+            'data' => $data,
+            'kota' => $kota,
+            'jenis_supplier' => $jenis_supplier,
         ]);
     }
 
@@ -140,6 +152,7 @@ class SupplierController extends Controller
                     'rek_nama' => $data['rek_nama'],
                     'bank' => $data['bank'],
                     'cabang' => $data['cabang'],
+                    'catatan' => $data['catatan'],
                     'updated_at'=> date("Y-m-d h:i:s"),
                     'updated_by'=> 1,// masih hardcode nanti diganti cookies
                     'is_hapus' => "N",
@@ -167,6 +180,6 @@ class SupplierController extends Controller
             'updated_by'=> 1, // masih hardcode nanti diganti cookies
           )
         );
-        return redirect()->route('supplier.index')->with('status','Success!!');
+        return redirect()->route('supplier.index')->with('status','Berhasil menghapus data!');
     }
 }
