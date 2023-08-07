@@ -61,12 +61,12 @@
                             <br>
 
                             <div class="icheck-primary d-inline">
-                                <input id="kas" type="radio" name="tipe" value="1" {{'1' == old('tipe','')? 'checked' :'' }}>
-                                <label class="form-check-label" for="kas">Kas</label>
+                                <input id="kasRadio" type="radio" name="tipe" value="1" {{'1' == old('tipe','')? 'checked' :'' }}>
+                                <label class="form-check-label" for="kasRadio">Kas</label>
                             </div>
                             <div class="icheck-primary d-inline">
-                                <input id="bank" type="radio" name="tipe" value="2" {{'2'== old('tipe','')? 'checked' :'' }}>
-                                <label class="form-check-label" for="bank">Bank</label><br>
+                                <input id="bankRadio" type="radio" name="tipe" value="2" {{'2'== old('tipe','')? 'checked' :'' }}>
+                                <label class="form-check-label" for="bankRadio">Bank</label><br>
                             </div>
                         </div>
                         {{-- <div class="form-group">
@@ -100,19 +100,19 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="no_akun">No. Rekening</label>
-                            <input type="number" maxlength="25" name="no_rek" class="form-control" value="{{old('no_rek','')}}" >                         
+                            <input type="number" maxlength="25" id="no_rek" name="no_rek" class="form-control" value="{{old('no_rek','')}}" >                         
                         </div>  
                         <div class="form-group">
                             <label for="no_akun">Atas Nama</label>
-                            <input type="text" maxlength="45" name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
+                            <input type="text" maxlength="45" id="rek_nama"  name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
                         </div>  
                         <div class="form-group">
                             <label for="no_akun">Nama Bank</label>
-                            <input type="text" maxlength="45" name="bank" class="form-control" value="{{old('bank','')}}" >                         
+                            <input type="text" maxlength="45" id="bank" name="bank" class="form-control" value="{{old('bank','')}}" >                         
                         </div>  
                         <div class="form-group">
                             <label for="no_akun">Kantor Cabang</label>
-                            <input type="text" maxlength="100" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
+                            <input type="text" maxlength="100" id="cabang" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
                         </div>  
                     </div>
                 </div>
@@ -124,5 +124,46 @@
 
 <script type="text/javascript">
 
+
+//   $(document).ready(function() {
+
+//    const no_rek = document.querySelectorAll('#no_rek');
+//    const rek_nama = document.querySelectorAll('#rek_nama');
+//    const bank = document.querySelectorAll('#bank');
+//    const cabang = document.querySelectorAll('#cabang');
+   
+//    no_rek.setAttribute('readonly', true);
+//    rek_nama.setAttribute('readonly', true);
+//    bank.setAttribute('readonly', true);
+//    cabang.setAttribute('readonly', true);
+//   });
+  $(document).ready(function() {
+    $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', true);
+
+     $('#bankRadio').click(function() {
+      if ($(this).prop('checked')) {
+        $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', false);
+        // var value = $(this).val(); // Get the value of the clicked radio button
+        // console.log('Clicked radio button with value: ' + value);       
+      }
+     });
+     $('#kasRadio').click(function() {
+      if ($(this).prop('checked')) {
+        $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', true);
+      }
+     });
+  
+  });
+//  document.addEventListener('DOMContentLoaded', function () {
+//     const noRek = document.getElementById('no_rek');
+//     const rekNama = document.getElementById('rek_nama');
+//     const bank = document.getElementById('bank');
+//     const cabang = document.getElementById('cabang');
+// // 
+//     noRek.setAttribute('readonly', true);
+//     rekNama.setAttribute('readonly', true);
+//     bank.setAttribute('readonly', true);
+//     cabang.setAttribute('readonly', true);
+//   });
 </script>
 @endsection

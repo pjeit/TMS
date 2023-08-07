@@ -82,7 +82,7 @@ class KasBankController extends Controller
                     'nama' => $data['nama'],
                     'no_akun' => $data['no_akun']==null ? null : $data['no_akun'],
                     'tipe' => $data['tipe']==1?'Kas':'Bank',
-                    'saldo_awal' => $data['saldo_awal']==null ? null : $data['saldo_awal'],
+                    'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
                     'tgl_saldo' => $data['tgl_saldo']==null ? null : $data['tgl_saldo'],
                     'no_rek' => $data['no_rek']==null ? null : $data['no_rek'],
                     'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
