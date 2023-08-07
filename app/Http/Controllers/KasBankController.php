@@ -74,16 +74,20 @@ class KasBankController extends Controller
                 // 'catatan' => 'required',
             ], $pesanKustom);
         $data = $request->collect();
-            // dd($data);
-        
-            
+        $tanggal = explode('-', $data['tgl_saldo']);
+            // dd($tanggal);
+
+        $tahun =$tanggal[0];
+        $bulan =$tanggal[1];
+        $tanggal =$tanggal[2];
+        $gabungan = $tahun.'/'. $bulan.'/'. $tanggal ;
             DB::table('kas_bank')
                 ->insert(array(
                     'nama' => $data['nama'],
                     'no_akun' => $data['no_akun']==null ? null : $data['no_akun'],
                     'tipe' => $data['tipe']==1?'Kas':'Bank',
-                    'saldo_awal' => $data['saldo_awal']==null ? null : $data['saldo_awal'],
-                    'tgl_saldo' => $data['tgl_saldo']==null ? null : $data['tgl_saldo'],
+                    'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
+                    'tgl_saldo' => $data['tgl_saldo']==null ? null : $gabungan,
                     'no_rek' => $data['no_rek']==null ? null : $data['no_rek'],
                     'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
                     'bank' => $data['bank']==null ? null : $data['bank'],
@@ -160,29 +164,36 @@ class KasBankController extends Controller
                 // 'catatan' => 'required',
             ], $pesanKustom);
     
-            $data = $request->collect();
+               $data = $request->collect();
+        $tanggal = explode('-', $data['tgl_saldo']);
+            // dd($tanggal);
+
+        $tahun =$tanggal[0];
+        $bulan =$tanggal[1];
+        $tanggal =$tanggal[2];
+        $gabungan = $tahun.'/'. $bulan.'/'. $tanggal ;
             // dd($data);
             DB::table('kas_bank')
             ->where('id', $KasBank['id'])
             ->update(array(
-                'nama' => $data['no_akun'],
-                'no_akun' => $data['nama_jenis'],
-                'tipe' => $data['tipe']==1?'Kas':'Bank',
-                'saldo_awal' => $data['saldo_awal'],
-                'tgl_saldo' => $data['tgl_saldo'],
-                'no_rek' => $data['no_rek'],
-                'rek_nama' => $data['rek_nama'],
-                'bank' => $data['bank'],
-                'cabang' => $data['cabang'],
-                'created_at'=> /*VariableHelper::TanggalFormat()*/date("Y-m-d h:i:s"), 
-                'created_by'=> 1,// masih hardcode nanti diganti cookies
-                'updated_at'=> date("Y-m-d h:i:s"),
-                'updated_by'=> 1,// masih hardcode nanti diganti cookies
-                'is_hapus' => "N",
+                   'nama' => $data['nama'],
+                    'no_akun' => $data['no_akun']==null ? null : $data['no_akun'],
+                    'tipe' => $data['tipe']==1?'Kas':'Bank',
+                    'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
+                    'tgl_saldo' => $data['tgl_saldo']==null ? null : $gabungan,
+                    'no_rek' => $data['no_rek']==null ? null : $data['no_rek'],
+                    'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
+                    'bank' => $data['bank']==null ? null : $data['bank'],
+                    'cabang' => $data['cabang']==null ? null : $data['cabang'],
+                    'created_at'=>VariableHelper::TanggalFormat(), 
+                    'created_by'=> 1,// masih hardcode nanti diganti cookies
+                    'updated_at'=> VariableHelper::TanggalFormat(),
+                    'updated_by'=> 1,// masih hardcode nanti diganti cookies
+                    'is_hapus' => "N",
                 )
             );
         
-            return redirect()->route('kas_bank.index')->with('status','Success!!');
+            return redirect()->route('kas_bank.index')->with('status','Sukses mengupdate data kas!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -202,11 +213,11 @@ class KasBankController extends Controller
             ->where('id', $KasBank['id'])
             ->update(array(
                 'is_hapus' => "Y",
-                'updated_at'=> date("Y-m-d h:i:s"),
+                'updated_at'=> VariableHelper::TanggalFormat(),
                 'updated_by'=> 1, // masih hardcode nanti diganti cookies
               )
             );
-             return redirect()->route('coa.index')->with('status','Success!!');
+             return redirect()->route('kas_bank.index')->with('status','Sukses Menghapus Data Kas!');
 
         }
         catch (ValidationException $e) {
@@ -214,4 +225,5 @@ class KasBankController extends Controller
         }
        
     }
+    //git cobakgit
 }

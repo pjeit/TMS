@@ -23,11 +23,11 @@
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="{{asset('assets/plugins/overlayScrollbars/css/OverlayScrollbars.min.css')}}">
   <!-- Daterange picker -->
-  <link rel="stylesheet" href="{{asset('assets/plugins/daterangepicker/daterangepicker.css')}}">
+  {{-- <link rel="stylesheet" href="{{asset('assets/plugins/daterangepicker/daterangepicker.css')}}"> --}}
   <!-- summernote -->
   <link rel="stylesheet" href="{{asset('assets/plugins/summernote/summernote-bs4.min.css')}}">
   <!-- daterange picker -->
-  <link rel="stylesheet" href="{{asset('assets/plugins/daterangepicker/daterangepicker.css')}}">
+  {{-- <link rel="stylesheet" href="{{asset('assets/plugins/daterangepicker/daterangepicker.css')}}"> --}}
   <!-- iCheck for checkboxes and radio inputs -->
   <link rel="stylesheet" href="{{asset('assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css')}}">
   <!-- Select2 -->
@@ -179,8 +179,8 @@
   <!-- jQuery Knob Chart -->
   <script src="{{asset('assets/plugins/jquery-knob/jquery.knob.min.js')}}"></script>
   <!-- daterangepicker -->
-  <script src="{{asset('assets/plugins/moment/moment.min.js')}}"></script>
-  <script src="{{asset('assets/plugins/daterangepicker/daterangepicker.js')}}"></script>
+  {{-- <script src="{{asset('assets/plugins/moment/moment.min.js')}}"></script>
+  <script src="{{asset('assets/plugins/daterangepicker/daterangepicker.js')}}"></script> --}}
   <!-- Tempusdominus Bootstrap 4 -->
   <script src="{{asset('assets/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
   <!-- Summernote -->
@@ -210,10 +210,10 @@
   <!-- Bootstrap4 Duallistbox -->
   <script src="{{asset('assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js')}}"></script>
   <!-- InputMask -->
-  <script src="{{asset('assets/plugins/moment/moment.min.js')}}"></script>
+  {{-- <script src="{{asset('assets/plugins/moment/moment.min.js')}}"></script>
   <script src="{{asset('assets/plugins/inputmask/jquery.inputmask.min.js')}}"></script>
   <!-- date-range-picker -->
-  <script src="{{asset('assets/plugins/daterangepicker/daterangepicker.js')}}"></script>
+  <script src="{{asset('assets/plugins/daterangepicker/daterangepicker.js')}}"></script> --}}
   <!-- Bootstrap Switch -->
   <script src="{{asset('assets/plugins/bootstrap-switch/js/bootstrap-switch.min.js')}}"></script>
   <!-- BS-Stepper -->
@@ -233,6 +233,13 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+
+{{-- datepicker yang dipakai --}}
+  {{-- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script> --}}
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
   <script>
     $('.selectpicker').selectpicker({
       size: 10,
@@ -240,7 +247,10 @@
     });
   </script>
   <script>
+      
     $(function() {
+     
+    
       $("#example1").DataTable({
         "responsive": true,
         "lengthChange": false,
@@ -283,69 +293,69 @@
         theme: 'bootstrap4'
       })
 
-      //Datemask dd/mm/yyyy
-      $('#datemask').inputmask('dd/mm/yyyy', {
-        'placeholder': 'dd/mm/yyyy'
-      })
-      //Datemask2 mm/dd/yyyy
-      $('#datemask2').inputmask('mm/dd/yyyy', {
-        'placeholder': 'mm/dd/yyyy'
-      })
-      //Money Euro
-      $('[data-mask]').inputmask()
+      // //Datemask dd/mm/yyyy
+      // $('#datemask').inputmask('dd-M-yyyy', {
+      //   'placeholder': 'dd-M-yyyy'
+      // })
+      // //Datemask2 mm/dd/yyyy
+      // $('#datemask2').inputmask('dd-M-yyyy', {
+      //   'placeholder': 'dd-M-yyyy'
+      // })
+      // //Money Euro
+      // $('[data-mask]').inputmask()
 
-      //Date picker
-      $('#reservationdate').datetimepicker({
-        format: 'L',
-        locale: {
-          format: 'DD/MM/YYYY'
-        },
-      });
+      // //Date picker
+      // $('#reservationdate').datetimepicker({
+      //   format: 'L',
+      //   locale: {
+      //     format: 'DD/MM/YYYY'
+      //   },
+      // });
 
-      //Date and time picker
-      $('#reservationdatetime').datetimepicker({
-        icons: {
-          time: 'far fa-clock'
-        }
-      });
+      // //Date and time picker
+      // $('#reservationdatetime').datetimepicker({
+      //   icons: {
+      //     time: 'far fa-clock'
+      //   }
+      // });
 
-      //Date range picker
-      $('#reservation').daterangepicker({
-        locale: {
-          format: 'DD/MMMM/YYYY'
-        },
-      });
-      //Date range picker with time picker
-      $('#reservationtime').daterangepicker({
-        timePicker: true,
-        timePickerIncrement: 30,
-        locale: {
-          format: 'MM/DD/YYYY hh:mm A'
-        }
-      });
-      //Date range as a button
-      $('#daterange-btn').daterangepicker({
-          ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-          },
-          startDate: moment().subtract(29, 'days'),
-          endDate: moment(),
-        },
-        function(start, end) {
-          $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-        }
+      // //Date range picker
+      // $('#reservation').daterangepicker({
+      //   locale: {
+      //     format: 'DD/MMMM/YYYY'
+      //   },
+      // });
+      // //Date range picker with time picker
+      // $('#reservationtime').daterangepicker({
+      //   timePicker: true,
+      //   timePickerIncrement: 30,
+      //   locale: {
+      //     format: 'MM/DD/YYYY hh:mm A'
+      //   }
+      // });
+      // //Date range as a button
+      // $('#daterange-btn').daterangepicker({
+      //     ranges: {
+      //       'Today': [moment(), moment()],
+      //       'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      //       'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      //       'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      //       'This Month': [moment().startOf('month'), moment().endOf('month')],
+      //       'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      //     },
+      //     startDate: moment().subtract(29, 'days'),
+      //     endDate: moment(),
+      //   },
+      //   function(start, end) {
+      //     $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+      //   }
 
-      );
+      // );
 
       //Timepicker
-      $('#timepicker').datetimepicker({
-        format: 'LT'
-      });
+      // $('#timepicker').datetimepicker({
+      //   format: 'LT'
+      // });
 
       //Bootstrap Duallistbox
       $('.duallistbox').bootstrapDualListbox()
@@ -414,16 +424,17 @@
       myDropzone.removeAllFiles(true)
     }
     // DropzoneJS Demo Code End
-    function formatNumber(input) {
-        // Remove any non-digit characters from the input value
-        let rawValue = input.value.replace(/\D/g, '');
-        
-        // Convert the value to a number and format it with commas
-        let formattedValue = Number(rawValue).toLocaleString('en-US');
-        
-        // Update the input field with the formatted value
-        input.value = formattedValue;
-      }
+   function formatNumber(input) {
+    // Remove any non-digit characters except for minus sign
+    let rawValue = input.value.replace(/[^\d-]/g, '');
+
+    // Convert the value to a number and format it with commas
+    let formattedValue = Number(rawValue).toLocaleString('en-US');
+
+    // Update the input field with the formatted value
+    input.value = formattedValue;
+  }
+  
     //$('#reservation').daterangepicker()
   </script>
 </body>
