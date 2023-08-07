@@ -39,8 +39,10 @@
         @endforeach
 
     @endif
-     <form action="{{ route('kas_bank.store') }}" method="POST" >
+     <form action="{{ route('kas_bank.update',[$KasBank->id]) }}" method="POST" >
       @csrf
+      @method('PUT')
+
         <div class="row">
             <div class="col-lg-6 col-md-12">
                 <div class="card">
@@ -50,22 +52,22 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="nama_jenis">Nama Kas / Bank</label>
-                            <input required type="text" placeholder="contoh: KAS KECIL / KAS BESAR [BCA]" maxlength="45" name="nama" class="form-control" value="{{old('nama','')}}" >                         
+                            <input required type="text" placeholder="contoh: KAS KECIL / KAS BESAR [BCA]" maxlength="45" name="nama" class="form-control" value="{{old('nama',$KasBank->nama)}}" >                         
                         </div>
                         <div class="form-group">
                             <label for="no_akun">No. akun</label>
-                            <input type="number" maxlength="20" name="no_akun" class="form-control" value="{{old('no_akun','')}}" >                         
+                            <input type="number" maxlength="20" name="no_akun" class="form-control" value="{{old('no_akun',$KasBank->no_akun)}}" >                         
                         </div>  
                         <div class="form-group">
                             <label for="tipe">Tipe</label>
                             <br>
 
                             <div class="icheck-primary d-inline">
-                                <input id="kasRadio" type="radio" name="tipe" value="1" {{'1' == old('tipe','')? 'checked' :'' }}>
+                                <input id="kasRadio" type="radio" name="tipe" value="1" {{'1' == old('tipe',$KasBank->tipe)? 'checked' :'' }}>
                                 <label class="form-check-label" for="kasRadio">Kas</label>
                             </div>
                             <div class="icheck-primary d-inline">
-                                <input id="bankRadio" type="radio" name="tipe" value="2" {{'2'== old('tipe','')? 'checked' :'' }}>
+                                <input id="bankRadio" type="radio" name="tipe" value="2" {{'2'== old('tipe',$KasBank->tipe)? 'checked' :'' }}>
                                 <label class="form-check-label" for="bankRadio">Bank</label><br>
                             </div>
                         </div>
