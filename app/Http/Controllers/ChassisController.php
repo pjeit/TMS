@@ -26,17 +26,7 @@ class ChassisController extends Controller
             ->where('a.is_hapus', '=', "N")
             ->get();
 
-        // $kompartemens = DB::connection('pgsql2')
-        //     ->table('m_unit_kerja as uk')
-        //     ->join('m_posisi as p', 'p.orgcode', '=', 'uk.unitkerja')
-        //     ->selectRaw('uk.unitkerja, uk.nm_unitkerja')
-        //     ->where('p.validto', '>', $end_of_month)
-        //     ->where('uk.orglevelname', 'ILIKE', '%Kompartemen%')
-        //     ->groupBy('uk.unitkerja')
-        //     ->orderBy('nm_unitkerja', 'ASC')
-        //     ->get();
-
-            return view('pages.master.chassis.index',[
+        return view('pages.master.chassis.index',[
             'judul' => "Chassis",
             'data' => $data,
     ]);
