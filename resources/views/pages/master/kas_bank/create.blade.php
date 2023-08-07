@@ -50,7 +50,7 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="nama_jenis">Nama Kas / Bank</label>
-                            <input required type="text" maxlength="45" name="nama" class="form-control" value="{{old('nama','')}}" >                         
+                            <input required type="text" placeholder="contoh: KAS KECIL / KAS BESAR [BCA]" maxlength="45" name="nama" class="form-control" value="{{old('nama','')}}" >                         
                         </div>
                         <div class="form-group">
                             <label for="no_akun">No. akun</label>

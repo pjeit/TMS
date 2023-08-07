@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\KasBank;
 use Illuminate\Validation\ValidationException;
+use App\Helper\VariableHelper;
 
 class KasBankController extends Controller
 {
@@ -87,9 +88,9 @@ class KasBankController extends Controller
                     'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
                     'bank' => $data['bank']==null ? null : $data['bank'],
                     'cabang' => $data['cabang']==null ? null : $data['cabang'],
-                    'created_at'=> /*VariableHelper::TanggalFormat()*/date("Y-m-d h:i:s"), 
+                    'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> 1,// masih hardcode nanti diganti cookies
-                    'updated_at'=> date("Y-m-d h:i:s"),
+                    'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> 1,// masih hardcode nanti diganti cookies
                     'is_hapus' => "N",
 
