@@ -26,7 +26,7 @@
                     <h5 class="card-title">Chassis</h5>
                 </div>
                 <div class="card-body">
-                    halaman chassis
+                   INI ADALAH HALAMAN CHASSIS
                 </div>
             </div>
         </div>

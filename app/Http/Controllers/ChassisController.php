@@ -21,7 +21,7 @@ class ChassisController extends Controller
             ->select('*')
             ->where('is_hapus', '=', "N")
             ->get();
-            
+            // tes git branch edwin
             return view('pages.master.chassis.index',[
             'judul' => "Chassis",
             'data' => $data,
