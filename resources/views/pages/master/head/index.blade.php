@@ -31,21 +31,23 @@
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                              <th>jenis</th>
-                              <th>No. Akun</th>
-                              <th>Tipe</th>
-                              <th>catatan</th>
-                              <th>Handle</th>
+                              <th>No Polisi</th>
+                              <th>No. Mesin & Rangka</th>
+                              <th>Merk & Model</th>
+                              <th>Tahun & Warna</th>
+                              <th>Driver</th>
+                              <th>Aksi</th>
                             </tr>
                           </thead>
                         <tbody>
                             @foreach($data as $item)
                              <tr>
-                                <td>{{$item->nama_jenis}}</td>
-                                <td>{{$item->no_akun}}</td>  
-                                <td>{{$item->tipe}}</td>  
-                                <td>{{$item->catatan}}</td>  
-                      
+                                <td>{{$item->no_polisi}}</td>
+                                <!-- ganti kolom no_kendaraan menjadi no_mesin di DB tabel kendaraan -->
+                                <td>{{'$item->no_mesin'}} {{$item->no_rangka}} </td>  
+                                <td>{{$item->merk_model}}</td>  
+                                <td>{{$item->tahun_pembuatan}}{{$item->warna}} </td>  
+                                <td>{{ $item->driver_id }}</td>
                                 <td>                                    
                                     <a class="btn btn-default bg-info" href="{{route('head.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
@@ -74,10 +76,10 @@
                                        <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
 
-                                            <form action="{{route('coa.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
+                                            <form action="{{route('head.destroy',[$item->id])}}" method="POST" class="btn btn-responsive">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button action="{{route('coa.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
+                                                <button action="{{route('head.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
                                             </form>
                                        </div>
                                     </div>

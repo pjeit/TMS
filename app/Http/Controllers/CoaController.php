@@ -55,7 +55,6 @@ class CoaController extends Controller
      */
     public function store(Request $request)
     {
-        //
         try {
             $pesanKustom = [
                 'no_akun.required' => 'Nomor akun Harus diisi!',
@@ -185,15 +184,14 @@ class CoaController extends Controller
      */
     public function destroy(Coa $coa)
     {
-        //
-            DB::table('COA')
-            ->where('id', $coa['id'])
-            ->update(array(
-                'is_hapus' => "Y",
-                'updated_at'=> date("Y-m-d h:i:s"),
-                'updated_by'=> 1, // masih hardcode nanti diganti cookies
-              )
-            );
+        DB::table('COA')
+        ->where('id', $coa['id'])
+        ->update(array(
+            'is_hapus' => "Y",
+            'updated_at'=> date("Y-m-d h:i:s"),
+            'updated_by'=> 1, // masih hardcode nanti diganti cookies
+            )
+        );
         return redirect()->route('coa.index')->with('status','Success!!');
     }
 }

@@ -13,7 +13,7 @@ class Head extends Model
     protected $fillable=[
         'id',
         'no_polisi',
-        'no_kendaraan',
+        'no_mesin',
         'no_rangka',
         'merk_model',
         'tahun_pembuatan',

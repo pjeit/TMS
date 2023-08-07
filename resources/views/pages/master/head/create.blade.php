@@ -34,6 +34,8 @@
         @endforeach
 
     @endif
+    <form action="{{ route('head.store') }}" method="POST" >
+    @csrf
     <div class="row">
         <div class="col-6">
             <div class="card">
@@ -41,7 +43,7 @@
                     <h5 class="card-title">Data</h5>
                 </div>
                 <div class="card-body">
-                     <div class="form-group">
+                    <div class="form-group">
                         <label for="">No. Polisi*</label>
                         <input required type="text" maxlength="20" name="no_polisi" class="form-control" value="{{old('no_polisi','')}}" >                         
                     </div>
@@ -84,9 +86,30 @@
                                 <option value="3">Chasis 3</option>
                         </select>
                     </div>   
+                    <div class="form-group">
+                        <label for="">Driver (Optional) (data masih dummy)</label>
+                        <select class="form-control select2" style="width: 100%;" id='driver_id' name="driver_id">
+                                <option value="0"></option>
+                                <option value="1">Driver 1</option>
+                                <option value="2">Driver 2</option>
+                                <option value="3">Driver 3</option>
+                        </select>
+                    </div>   
+                    <div class="form-group">
+                        <label for="">Supplier (data masih dummy)</label>
+                        <select class="form-control select2" style="width: 100%;" id='supplier_id' name="supplier_id">
+                                <option value="1">supplier 1</option>
+                                <option value="2">supplier 2</option>
+                                <option value="3">supplier 3</option>
+                        </select>
+                    </div>   
                 </div>
             </div>
         </div>
+        <div class="col-6">
+            <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
     </div>
+    </form>
 </div>
 @endsection

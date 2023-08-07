@@ -53,6 +53,7 @@ class KasBankController extends Controller
     {
         //
         try {
+
             $pesanKustom = [
              
                 'nama.required' => 'Nama kas Harus diisi!',
@@ -71,21 +72,21 @@ class KasBankController extends Controller
                 'tgl_saldo' => 'required'
                 // 'catatan' => 'required',
             ], $pesanKustom);
-    
-            $data = $request->collect();
+        $data = $request->collect();
             // dd($data);
+        
             
             DB::table('kas_bank')
                 ->insert(array(
-                    'nama' => $data['no_akun'],
-                    'no_akun' => $data['nama_jenis'],
+                    'nama' => $data['nama'],
+                    'no_akun' => $data['no_akun']==null ? null : $data['no_akun'],
                     'tipe' => $data['tipe']==1?'Kas':'Bank',
-                    'saldo_awal' => $data['saldo_awal'],
-                    'tgl_saldo' => $data['tgl_saldo'],
-                    'no_rek' => $data['no_rek'],
-                    'rek_nama' => $data['rek_nama'],
-                    'bank' => $data['bank'],
-                    'cabang' => $data['cabang'],
+                    'saldo_awal' => $data['saldo_awal']==null ? null : $data['saldo_awal'],
+                    'tgl_saldo' => $data['tgl_saldo']==null ? null : $data['tgl_saldo'],
+                    'no_rek' => $data['no_rek']==null ? null : $data['no_rek'],
+                    'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
+                    'bank' => $data['bank']==null ? null : $data['bank'],
+                    'cabang' => $data['cabang']==null ? null : $data['cabang'],
                     'created_at'=> /*VariableHelper::TanggalFormat()*/date("Y-m-d h:i:s"), 
                     'created_by'=> 1,// masih hardcode nanti diganti cookies
                     'updated_at'=> date("Y-m-d h:i:s"),

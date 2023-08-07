@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Head;
+use App\Models\Chassis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use App\Helper\VariableHelper;
 
 class ChassisController extends Controller
 {
@@ -19,9 +21,9 @@ class ChassisController extends Controller
             ->select('*')
             ->where('is_hapus', '=', "N")
             ->get();
-
+            
             return view('pages.master.chassis.index',[
-            'judul'=>"Chassis",
+            'judul' => "Chassis",
             'data' => $data,
         ]);
     }
@@ -33,7 +35,7 @@ class ChassisController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -50,10 +52,10 @@ class ChassisController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Chassis  $chassis
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Chassis $chassis)
     {
         //
     }
@@ -61,10 +63,10 @@ class ChassisController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Chassis  $chassis
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Chassis $chassis)
     {
         //
     }
@@ -73,10 +75,10 @@ class ChassisController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Chassis  $chassis
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Chassis $chassis)
     {
         //
     }
@@ -84,10 +86,10 @@ class ChassisController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\Chassis  $chassis
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Chassis $chassis)
     {
         //
     }

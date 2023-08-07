@@ -12,16 +12,10 @@ class HeadDokumen extends Model
     protected $primaryKey='id';
     protected $fillable=[
         'id',
-        'nama',
-        'alamat',
-        'kota_id',
-        'telp',
-        'email',
-        'npwp',
-        'no_rek',
-        'rek_nama',
-        'bank',
-        'cabang',
+        'kendaraan_id',
+        'nomor',
+        'berlaku_hingga',
+        'is_reminder',
         
         'created_at',
         'created_by',
