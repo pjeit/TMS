@@ -57,7 +57,12 @@
                                 <td>{{$d->nama}}</td>
                                 <td>{{$d->no_akun}}</td>  
                                 <td>{{$d->tipe}}</td>  
-                                <td>{{$d->bank}} - {{$d->no_akun}} ({{$d->rek_nama}})</td>  
+                                @if($d->tipe == "Bank")
+                                 <td>{{$d->bank}} - {{$d->no_akun}} ({{$d->rek_nama}})</td>  
+                                @else
+                                 <td></td>
+                                @endif
+
                       
                                 <td>                                    
                                     <a class="btn btn-default bg-info" href="{{route('kas_bank.edit',[$d->id])}}">

@@ -8,9 +8,8 @@ class VariableHelper
      {
          // some logic to determine if the publisher is main
          date_default_timezone_set('Asia/Jakarta');
-        $now = new DateTime();
-        $now->format('Y-m-d H:i:s');
-         return (date("Y-m-d h:i:s")); 
+         $now = new DateTime();
+         return ( $now->format('Y-m-d H:i:s')); 
      }
 
      public static function ShowTanggal()

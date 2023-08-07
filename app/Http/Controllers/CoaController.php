@@ -80,9 +80,9 @@ class CoaController extends Controller
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
                     // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'] == null?null:$data['jenis_laporan_keuangan'],
                     'catatan' => $data['catatan'],
-                    'created_at'=> /*VariableHelper::TanggalFormat()*/date("Y-m-d h:i:s"), 
+                    'created_at'=> VariableHelper::TanggalFormat(), 
                     'created_by'=> 1,// masih hardcode nanti diganti cookies
-                    'updated_at'=> date("Y-m-d h:i:s"),
+                    'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> 1,// masih hardcode nanti diganti cookies
                     'is_hapus' => "N",
 
@@ -163,7 +163,7 @@ class CoaController extends Controller
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
                     // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'],
                     'catatan' => $data['catatan'],
-                    'updated_at'=> date("Y-m-d h:i:s"),
+                    'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> 1,// masih hardcode nanti diganti cookies
                     'is_hapus' => "N",
 
@@ -188,7 +188,7 @@ class CoaController extends Controller
         ->where('id', $coa['id'])
         ->update(array(
             'is_hapus' => "Y",
-            'updated_at'=> date("Y-m-d h:i:s"),
+            'updated_at'=>VariableHelper::TanggalFormat(),
             'updated_by'=> 1, // masih hardcode nanti diganti cookies
             )
         );
