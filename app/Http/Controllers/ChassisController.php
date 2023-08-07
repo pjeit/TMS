@@ -25,11 +25,11 @@ class ChassisController extends Controller
             ->select('a.*', 'b.nama as nama_model')
             ->where('a.is_hapus', '=', "N")
             ->get();
-
+            
         return view('pages.master.chassis.index',[
-            'judul' => "Chassis",
-            'data' => $data,
-    ]);
+                'judul' => "Chassis",
+                'data' => $data,
+        ]);
     }
 
     /**
