@@ -21,7 +21,7 @@ class CoaController extends Controller
         $dataCOA = DB::table('coa')
             // ->paginate(10);
             ->select('coa.*')
-            ->where('coa.is_hapus', '=', "N")
+            ->where('coa.is_aktif', '=', "N")
             ->get();
             // dd( $dataCOA);
         return view('pages.master.Coa.index',[
@@ -84,7 +84,7 @@ class CoaController extends Controller
                     'created_by'=> 1,// masih hardcode nanti diganti cookies
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> 1,// masih hardcode nanti diganti cookies
-                    'is_hapus' => "N",
+                    'is_aktif' => "Y",
 
                 )
             ); 
@@ -118,7 +118,7 @@ class CoaController extends Controller
         $dataCOA = DB::table('coa')
         // ->paginate(10);
         ->select('coa.*')
-        ->where('coa.is_hapus', '=', "N")
+        ->where('coa.is_aktif', '=', "Y")
         ->get();
         // dd( $dataCOA);
         return view('pages.master.Coa.edit',[
@@ -165,7 +165,7 @@ class CoaController extends Controller
                     'catatan' => $data['catatan'],
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> 1,// masih hardcode nanti diganti cookies
-                    'is_hapus' => "N",
+                    'is_aktif' => "Y",
 
                 )
             );
@@ -187,7 +187,7 @@ class CoaController extends Controller
         DB::table('COA')
         ->where('id', $coa['id'])
         ->update(array(
-            'is_hapus' => "Y",
+            'is_aktif' => "N",
             'updated_at'=>VariableHelper::TanggalFormat(),
             'updated_by'=> 1, // masih hardcode nanti diganti cookies
             )

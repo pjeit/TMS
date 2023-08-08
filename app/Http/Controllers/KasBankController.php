@@ -19,7 +19,7 @@ class KasBankController extends Controller
     {
          $dataKas = DB::table('kas_bank')
             ->select('*')
-            ->where('is_hapus', '=', "N")
+            ->where('is_aktif', '=', "Y")
             ->get();
 
             return view('pages.master.kas_bank.index',[
@@ -96,7 +96,7 @@ class KasBankController extends Controller
                     'created_by'=> 1,// masih hardcode nanti diganti cookies
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> 1,// masih hardcode nanti diganti cookies
-                    'is_hapus' => "N",
+                    'is_aktif' => "Y",
 
                 )
             ); 
@@ -200,7 +200,7 @@ class KasBankController extends Controller
                     'created_by'=> 1,// masih hardcode nanti diganti cookies
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> 1,// masih hardcode nanti diganti cookies
-                    'is_hapus' => "N",
+                    'is_aktif' => "Y",
                 )
             );
         
@@ -223,7 +223,7 @@ class KasBankController extends Controller
             DB::table('kas_bank')
             ->where('id', $KasBank['id'])
             ->update(array(
-                'is_hapus' => "Y",
+                'is_aktif' => "N",
                 'updated_at'=> VariableHelper::TanggalFormat(),
                 'updated_by'=> 1, // masih hardcode nanti diganti cookies
               )

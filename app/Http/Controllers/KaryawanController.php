@@ -20,7 +20,7 @@ class KaryawanController extends Controller
          $dataKaryawan = DB::table('karyawan')
             ->select('karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat','karyawan.telp','role.nama as posisi')
             ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
-            ->where('karyawan.is_hapus', '=', "N")
+            ->where('karyawan.is_aktif', '=', "Y")
             ->where('karyawan.is_keluar', '=', "N")
             ->get();
 

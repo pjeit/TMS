@@ -25,7 +25,7 @@ class ChassisController extends Controller
         $data = DB::table('chassis as a')
             ->leftJoin('m_model_chassis as b', 'a.model_id', '=', 'b.id')
             ->select('a.*', 'b.nama as nama_model')
-            ->where('a.is_hapus', '=', "N")
+            ->where('a.is_aktif', '=', "Y")
             ->get();
             
         return view('pages.master.chassis.index',[
@@ -76,7 +76,7 @@ class ChassisController extends Controller
             $chassis->created_by = 1; // manual
             $chassis->updated_at = date("Y-m-d h:i:s");
             $chassis->updated_by = 1; // manual
-            $chassis->is_hapus = "N";
+            $chassis->is_aktif = "Y";
             $chassis->save();
 
             if($request->post()['dokumen'] != null){
@@ -90,7 +90,7 @@ class ChassisController extends Controller
                     $dokumen->berlaku_hingga = $item['berlaku_hingga'];
                     $dokumen->is_reminder = $item['is_reminder'];
                     $dokumen->reminder_hari = ($item['reminder_hari'] == '')? NULL:$item['reminder_hari'] ;
-                    $dokumen->is_hapus = 'N';
+                    $dokumen->i_aktif = 'Y';
                     $dokumen->created_by = 1; // nanti di edit
                     $dokumen->created_at = date("Y-m-d h:i:s");
                     $dokumen->save();
@@ -122,7 +122,7 @@ class ChassisController extends Controller
      */
     public function edit($id)
     {
-        $data = Chassis::where('is_hapus', 'N')->findOrFail($id);
+        $data = Chassis::where('is_aktif', 'Y')->findOrFail($id);
 
         return view('pages.master.chassis.edit',[
             'judul' => "Chassis",
@@ -156,7 +156,7 @@ class ChassisController extends Controller
             $supplier->created_by = 1; // manual
             $supplier->updated_at = date("Y-m-d h:i:s");
             $supplier->updated_by = 1; // manual
-            $supplier->is_hapus = "N";
+            $supplier->is_aktif = "Y";
             $supplier->save();
 
             return redirect()->route('chassis.index')->with('status','Chassis berhasil dibuat!');
@@ -176,7 +176,7 @@ class ChassisController extends Controller
         DB::table('chassis')
         ->where('id', $chassis['id'])
         ->update(array(
-            'is_hapus' => "Y",
+            'is_aktif' => "N",
             'updated_at'=> date("Y-m-d h:i:s"),
             'updated_by'=> 1, // masih hardcode nanti diganti cookies
           )

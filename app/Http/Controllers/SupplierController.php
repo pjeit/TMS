@@ -20,7 +20,7 @@ class SupplierController extends Controller
     {
         $data = DB::table('supplier')
             ->select('*')
-            ->where('is_hapus', '=', "N")
+            ->where('is_aktif', '=', "Y")
             ->get();
 
             return view('pages.master.supplier.index',[
@@ -80,7 +80,7 @@ class SupplierController extends Controller
             $supplier->created_by = 1; // manual
             $supplier->updated_at = date("Y-m-d h:i:s");
             $supplier->updated_by = 1; // manual
-            $supplier->is_hapus = "N";
+            $supplier->is_aktif = "Y";
             $supplier->save();
 
             return redirect()->route('supplier.index')->with('status','Success!!');
@@ -108,7 +108,7 @@ class SupplierController extends Controller
      */
     public function edit($id)
     {
-        $data = Supplier::where('is_hapus', 'N')->findOrFail($id);
+        $data = Supplier::where('is_aktif', 'Y')->findOrFail($id);
         $kota = M_Kota::orderBy('id', 'ASC')->get();
         $jenis_supplier = JenisSupplier::orderBy('id', 'ASC')->get();
 
@@ -155,7 +155,7 @@ class SupplierController extends Controller
                     'catatan' => $data['catatan'],
                     'updated_at'=> date("Y-m-d h:i:s"),
                     'updated_by'=> 1,// masih hardcode nanti diganti cookies
-                    'is_hapus' => "N",
+                    'is_aktif' => "Y",
                 )
             );
             return redirect()->route('supplier.index')->with('status','Success!!');
@@ -175,7 +175,7 @@ class SupplierController extends Controller
         DB::table('supplier')
         ->where('id', $supplier['id'])
         ->update(array(
-            'is_hapus' => "Y",
+            'is_aktif' => "N",
             'updated_at'=> date("Y-m-d h:i:s"),
             'updated_by'=> 1, // masih hardcode nanti diganti cookies
           )

@@ -21,7 +21,7 @@ class HeadController extends Controller
     {
         $data = DB::table('kendaraan')
             ->select('*')
-            ->where('is_hapus', '=', "N")
+            ->where('is_aktif', '=', "Y")
             ->get();
 
             return view('pages.master.head.index',[
@@ -72,7 +72,7 @@ class HeadController extends Controller
             $head->created_by = 1; // manual
             $head->updated_at = date("Y-m-d h:i:s");
             $head->updated_by = 1; // manual
-            $head->is_hapus = "N";
+            $head->is_aktif = "Y";
             $head->save();
 
             // if(isset($data['kendaraan_dokumen'])){
