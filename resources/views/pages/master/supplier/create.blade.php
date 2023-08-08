@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="">Jenis Supplier (data masih dummy)</label>
+                        <label for="">Jenis Supplier</label>
                         <select class="form-control select2" style="width: 100%;" id='jenis_supplier_id' name="jenis_supplier_id">
                             @foreach ($jenis_supplier as $jenis)
                                 <option value="{{$jenis->id}}">{{ $jenis->nama }}</option>

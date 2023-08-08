@@ -142,25 +142,26 @@
 //   });
 
   $(document).ready(function() {
-       $('input[id="tanggalDibuatDisplay"]').daterangepicker({
-            opens: 'center',
-            drops: "up",
-            singleDatePicker: true,
-            showDropdowns: true,
-            autoApply: false,
-            startDate: moment(), // Set the initial date to today
-            // timePicker: true, 
-            // timePicker24Hour: true, 
-            locale: {
-                format: 'DD-MMM-YYYY',
-            }
-        }, function(start, end, label) {
-            const formattedDate = start.format('DD-MMM-YYYY');
-            $('#tanggalDibuatDisplay').val(formattedDate);
-            // $('#tanggalDibuat').val(start.format('YYYY-MM-DD HH:mm:ss'));
-            $('#tanggalDibuat').val(start.format('YYYY-MM-DD'));
-            console.log("A new date selection was made: " + formattedDate);
-        });
+    $('input[id="tanggalDibuatDisplay"]').daterangepicker({
+        opens: 'center',
+        drops: "up",
+        singleDatePicker: true,
+        showDropdowns: true,
+        autoApply: false,
+        startDate: moment(), // Set the initial date to today
+        // timePicker: true, 
+        // timePicker24Hour: true, 
+        locale: {
+            format: 'DD-MMM-YYYY',
+        }
+    }, function(start, end, label) {
+        const formattedDate = start.format('DD-MMM-YYYY');
+        $('#tanggalDibuatDisplay').val(formattedDate);
+        // $('#tanggalDibuat').val(start.format('YYYY-MM-DD HH:mm:ss'));
+        $('#tanggalDibuat').val(start.format('YYYY-MM-DD'));
+        console.log("A new date selection was made: " + formattedDate);
+    });
+    
     $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', true);
 
      $('#bankRadio').click(function() {

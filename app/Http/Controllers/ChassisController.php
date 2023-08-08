@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
+use App\Models\ChassisDokumen;
 use App\Models\M_Kota;
 use App\Models\M_ModelChassis;
+use Symfony\Component\VarDumper\VarDumper;
 
 class ChassisController extends Controller
 {
@@ -63,19 +65,39 @@ class ChassisController extends Controller
             $request->validate([
                 'kode' => 'required',
             ], $pesanKustom);
-    
-            $supplier = new Chassis();
-            $supplier->kode = $request->kode;
-            $supplier->karoseri = $request->karoseri;
-            $supplier->model_id = $request->model_id;
-            $supplier->created_at = date("Y-m-d h:i:s");
-            $supplier->created_by = 1; // manual
-            $supplier->updated_at = date("Y-m-d h:i:s");
-            $supplier->updated_by = 1; // manual
-            $supplier->is_hapus = "N";
-            $supplier->save();
+            
+            // var_dump($request->post()['dokumen'] ); die;
+            $chassis = new Chassis();
+            $chassis->kode = $request->kode;
+            $chassis->karoseri = $request->karoseri;
+            $chassis->model_id = $request->model_id;
+            $chassis->kepemilikan = $request->kepemilikan;
+            $chassis->created_at = date("Y-m-d h:i:s");
+            $chassis->created_by = 1; // manual
+            $chassis->updated_at = date("Y-m-d h:i:s");
+            $chassis->updated_by = 1; // manual
+            $chassis->is_hapus = "N";
+            $chassis->save();
 
-            return redirect()->route('chassis.index')->with('status','Chassis berhasil dibuat!');
+            if($request->post()['dokumen'] != null){
+                $arrayDokumen = json_decode($request->post()['dokumen'], true);
+
+                foreach ($arrayDokumen as $key => $item) {
+                    $dokumen = new ChassisDokumen();
+                    $dokumen->chassis_id = $chassis->id;
+                    $dokumen->jenis_chassis = $item['jenis'];
+                    $dokumen->nomor = $item['nomor'];
+                    $dokumen->berlaku_hingga = $item['berlaku_hingga'];
+                    $dokumen->is_reminder = $item['is_reminder'];
+                    $dokumen->reminder_hari = ($item['reminder_hari'] == '')? NULL:$item['reminder_hari'] ;
+                    $dokumen->is_hapus = 'N';
+                    $dokumen->created_by = 1; // nanti di edit
+                    $dokumen->created_at = date("Y-m-d h:i:s");
+                    $dokumen->save();
+                }
+            }
+
+            // return redirect()->route('chassis.index')->with('status','Chassis berhasil dibuat!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }

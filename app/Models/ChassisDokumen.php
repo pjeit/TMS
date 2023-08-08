@@ -5,17 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Chassis extends Model
+class ChassisDokumen extends Model
 {
     use HasFactory;
-    protected $table = 'chassis';
+    protected $table = 'chassis_dokumen';
     protected $primaryKey='id';
     protected $fillable=[
        'id',
-       'kode',
-       'karoseri',
-       'model_id',
-       'kepemilikan',
+       'chassis_id',
+       'jenis_chassis',
+       'nomor',
+       'berlaku_hingga',
+       'is_reminder',
+       'reminder_hari',
 
        'created_at',
        'created_by',

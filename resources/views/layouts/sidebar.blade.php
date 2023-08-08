@@ -1,8 +1,8 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
   <!-- Brand Logo -->
   <a href="/home" class="brand-link d-flex align-items-center">
-    <img src="{{ asset('img/pje.jpg') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text font-weight-light small mx-2">Primatrans Jaya Express</span>
+    <img src="{{ asset('img/pje.jpg') }}" alt="PJE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <span class="brand-text font-weight-light small mx-2 text-bold">Primatrans Jaya Express</span>
   </a>
 
   <!-- Sidebar -->
