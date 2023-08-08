@@ -235,11 +235,19 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
 
-{{-- datepicker yang dipakai --}}
+  {{-- datepicker yang dipakai --}}
   {{-- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script> --}}
   <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+  {{-- Script Format Uang sendiri bawaan program lama --}}
+  <script src="{{asset('assets/dist/js/formatUang.js')}}"></script>
+  <script src="{{asset('assets/dist/js/keyPressuang.js')}}"></script>
+
+
+
+
   <script>
     $('.selectpicker').selectpicker({
       size: 10,
@@ -423,17 +431,34 @@
     document.querySelector("#actions .cancel").onclick = function() {
       myDropzone.removeAllFiles(true)
     }
-    // DropzoneJS Demo Code End
-   function formatNumber(input) {
-    // Remove any non-digit characters except for minus sign
-    let rawValue = input.value.replace(/[^\d-]/g, '');
+  //   // DropzoneJS Demo Code End
+  //  function formatNumber(input) {
+  //   // Remove any non-digit characters except for minus sign
+  //   let rawValue = input.value.replace(/[^\d-]/g, '');
+ 
+    
+  //   // Convert the value to a number and format it with commas
+  //   let formattedValue = Number(rawValue).toLocaleString('en-US');
 
-    // Convert the value to a number and format it with commas
-    let formattedValue = Number(rawValue).toLocaleString('en-US');
+  //   // Update the input field with the formatted value
+  //   input.value = formattedValue;
+  // }
+  // function formatRupiah(angka, prefix) {
+  //   var number_string = angka.replace(/[^,\d]/g, '').toString(),
+  //     split = number_string.split(','),
+  //     sisa = split[0].length % 3,
+  //     rupiah = split[0].substr(0, sisa),
+  //     ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-    // Update the input field with the formatted value
-    input.value = formattedValue;
-  }
+  //   if (ribuan) {
+  //     separator = sisa ? '.' : '';
+  //     rupiah += separator + ribuan.join('.');
+  //   }
+
+  //   rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+  //   return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+  // }
+  // console.log("2000000.03")
   
     //$('#reservation').daterangepicker()
   </script>

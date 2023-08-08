@@ -11,7 +11,7 @@
     <li class="breadcrumb-item"><a href="/">Home</a></li>
     <li class="breadcrumb-item">Master</li>
     <li class="breadcrumb-item"><a href="{{route('kas_bank.index')}}">Kas Bank</a></li>
-    <li class="breadcrumb-item">Create</li>
+    <li class="breadcrumb-item">Edit</li>
 @endsection
 
 @section('content')
@@ -63,11 +63,11 @@
                             <br>
 
                             <div class="icheck-primary d-inline">
-                                <input id="kasRadio" type="radio" name="tipe" value="1" {{'1' == old('tipe',$KasBank->tipe)? 'checked' :'' }}>
+                                <input id="kasRadio" type="radio" name="tipe" value="1" {{'Kas' == old('tipe',$KasBank->tipe)? 'checked' :'' }}>
                                 <label class="form-check-label" for="kasRadio">Kas</label>
                             </div>
                             <div class="icheck-primary d-inline">
-                                <input id="bankRadio" type="radio" name="tipe" value="2" {{'2'== old('tipe',$KasBank->tipe)? 'checked' :'' }}>
+                                <input id="bankRadio" type="radio" name="tipe" value="2" {{'Bank'== old('tipe',$KasBank->tipe)? 'checked' :'' }}>
                                 <label class="form-check-label" for="bankRadio">Bank</label><br>
                             </div>
                         </div>
@@ -81,7 +81,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Rp</span>
                                 </div>
-                                <input type="text" oninput="formatNumber(this)" maxlength="100" name="saldo_awal" class="form-control" value="{{old('saldo_awal','')}}" >                         
+                                <input type="text" id="saldo" maxlength="100" name="saldo_awal" class="form-control uang numajaMinDesimal" value="{{old('saldo_awal', number_format($KasBank->saldo_awal,2))}}" >                         
                             </div>
                         </div>
                         <div class="form-group">
@@ -105,19 +105,19 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="no_akun">No. Rekening</label>
-                            <input type="number" maxlength="25" id="no_rek" name="no_rek" class="form-control" value="{{old('no_rek','')}}" >                         
+                            <input type="number" maxlength="25" id="no_rek" name="no_rek" class="form-control" value="{{old('no_rek',$KasBank->no_rek)}}" >                         
                         </div>  
                         <div class="form-group">
                             <label for="no_akun">Atas Nama</label>
-                            <input type="text" maxlength="45" id="rek_nama"  name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
+                            <input type="text" maxlength="45" id="rek_nama"  name="rek_nama" class="form-control" value="{{old('rek_nama',$KasBank->rek_nama)}}" >                         
                         </div>  
                         <div class="form-group">
                             <label for="no_akun">Nama Bank</label>
-                            <input type="text" maxlength="45" id="bank" name="bank" class="form-control" value="{{old('bank','')}}" >                         
+                            <input type="text" maxlength="45" id="bank" name="bank" class="form-control" value="{{old('bank',$KasBank->bank)}}" >                         
                         </div>  
                         <div class="form-group">
                             <label for="no_akun">Kantor Cabang</label>
-                            <input type="text" maxlength="100" id="cabang" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
+                            <input type="text" maxlength="100" id="cabang" name="cabang" class="form-control" value="{{old('cabang',$KasBank->cabang)}}" >                         
                         </div>  
                     </div>
                 </div>
@@ -129,85 +129,71 @@
 
 <script type="text/javascript">
 
-
-//   $(document).ready(function() {
-
-//    const no_rek = document.querySelectorAll('#no_rek');
-//    const rek_nama = document.querySelectorAll('#rek_nama');
-//    const bank = document.querySelectorAll('#bank');
-//    const cabang = document.querySelectorAll('#cabang');
-   
-//    no_rek.setAttribute('readonly', true);
-//    rek_nama.setAttribute('readonly', true);
-//    bank.setAttribute('readonly', true);
-//    cabang.setAttribute('readonly', true);
-//   });
-
   $(document).ready(function() {
-       $('input[id="tanggalDibuatDisplay"]').daterangepicker({
-            opens: 'center',
-            drops: "up",
-            singleDatePicker: true,
-            showDropdowns: true,
-            autoApply: false,
-            startDate: moment(), // Set the initial date to today
-            // timePicker: true, 
-            // timePicker24Hour: true, 
-            locale: {
-                format: 'DD-MMM-YYYY',
-            }
-        }, function(start, end, label) {
-            const formattedDate = start.format('DD-MMM-YYYY');
-            $('#tanggalDibuatDisplay').val(formattedDate);
-            // $('#tanggalDibuat').val(start.format('YYYY-MM-DD HH:mm:ss'));
-            $('#tanggalDibuat').val(start.format('YYYY-MM-DD'));
-            console.log("A new date selection was made: " + formattedDate);
-        });
-    $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', true);
+    const saldoAwal = "{{$KasBank->saldo_awal}}"; 
 
+    console.log(saldoAwal);
+    // ====================================logic tanggal =================================
+    const initialDate = "{{ $KasBank->tgl_saldo }}"; 
+    console.log(initialDate);
+    const dateDisplay = moment(initialDate).format('DD-MMM-YYYY');
+    const dateHiddenDB = moment(initialDate).format('YYYY-MM-DD');
+
+
+    $('input[id="tanggalDibuatDisplay"]').daterangepicker({
+        opens: 'center',
+        drops: 'up',
+        singleDatePicker: true,
+        showDropdowns: true,
+        autoApply: true,
+        startDate: moment(initialDate),
+        locale: {
+            format: 'DD-MMM-YYYY',
+        }
+    }, function(start, end, label) {
+        const formattedDate = start.format('DD-MMM-YYYY');
+        $('#tanggalDibuatDisplay').val(formattedDate);
+        $('#tanggalDibuat').val(start.format('YYYY-MM-DD'));
+        console.log("A new date selection was made: " + formattedDate);
+    });
+    $('#tanggalDibuatDisplay').val(dateDisplay);
+    $('#tanggalDibuat').val(dateHiddenDB);
+
+    // ====================================logic tanggal =================================
+
+
+    if($('#bankRadio').prop('checked'))
+    {
+      $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', false);
+    }
+    else
+    {
+      $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', true);
+
+      
+    }
      $('#bankRadio').click(function() {
       if ($(this).prop('checked')) {
         $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', false);
-        // var value = $(this).val(); // Get the value of the clicked radio button
-        // console.log('Clicked radio button with value: ' + value);       
       }
      });
      $('#kasRadio').click(function() {
       if ($(this).prop('checked')) {
         $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', true);
+        // $('#no_rek, #rek_nama, #bank, #cabang').val(''); // tanya dulu y/n
+
       }
      });
-
-    //   $('#tanggalDibuat').on('input', function () {
-    //         const inputDate = $(this).val();
-    //         console.log(inputDate);
-    //         const dateParts = inputDate.split('-');
-    //         console.log(dateParts);
-
-    //         const year = dateParts[0];
-    //         const month = dateParts[1];
-    //         const day = dateParts[2];
-
-    //         const monthNames = [
-    //             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    //             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-    //         ];
-
-    //         const convertedDate = `${day}/${monthNames[Number(month) - 1]}/${year}`;
-    //         $(this).val(convertedDate);
-    //     });
   
   });
-//  document.addEventListener('DOMContentLoaded', function () {
-//     const noRek = document.getElementById('no_rek');
-//     const rekNama = document.getElementById('rek_nama');
-//     const bank = document.getElementById('bank');
-//     const cabang = document.getElementById('cabang');
-// // 
-//     noRek.setAttribute('readonly', true);
-//     rekNama.setAttribute('readonly', true);
-//     bank.setAttribute('readonly', true);
-//     cabang.setAttribute('readonly', true);
-//   });
+
+</script>
+
+<script>
+    
+</script>
+
+<script>
+   
 </script>
 @endsection
