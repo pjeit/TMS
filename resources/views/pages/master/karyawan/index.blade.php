@@ -62,7 +62,7 @@
                                 <td>{{$d->posisi}}</td>  
                       
                                 <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('kas_bank.edit',[$d->id])}}">
+                                    <a class="btn btn-default bg-info" href="{{route('karyawan.edit',[$d->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
@@ -89,10 +89,10 @@
                                        <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
 
-                                            <form action="{{route('kas_bank.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
+                                            <form action="{{route('karyawan.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button action="{{route('kas_bank.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
+                                                <button action="{{route('karyawan.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
                                             </form>
                                        </div>
                                     </div>
