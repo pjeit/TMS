@@ -21,6 +21,6 @@ class Chassis extends Model
        'created_by',
        'updated_at',
        'updated_by',
-       'is_hapus',
+       'is_aktif',
    ];
 }
