@@ -79,7 +79,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Rp</span>
                                 </div>
-                                <input type="text" oninput="formatNumber(this)" maxlength="100" name="saldo_awal" class="form-control" value="{{old('saldo_awal','')}}" >                         
+                                <input type="text" maxlength="100" id="saldo" name="saldo_awal" class="form-control uang numajaMinDesimal" value="{{old('saldo_awal','')}}" >                         
                             </div>
                         </div>
                         <div class="form-group">
