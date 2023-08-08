@@ -126,6 +126,16 @@ class KasBankController extends Controller
     public function edit(KasBank $KasBank)
     {
         //
+        // Lock the record for update
+        // $updatedRecord = DB::table('kas_bank')
+        //     ->where('id', $KasBank->id)
+        //     ->lockForUpdate()
+        //     ->first();
+        //     // dd($updatedRecord);
+
+        // if (!$updatedRecord) {
+        //     return redirect()->route('kas_bank.index')->with('status', 'Data sedang diupdate oleh user lain');
+        // }
         return view('pages.master.kas_bank.edit',[
             'KasBank'=>$KasBank,
             'judul'=>"Kas Bank",
@@ -172,6 +182,7 @@ class KasBankController extends Controller
         $bulan =$tanggal[1];
         $tanggal =$tanggal[2];
         $gabungan = $tahun.'/'. $bulan.'/'. $tanggal ;
+        
             // dd($data);
             DB::table('kas_bank')
             ->where('id', $KasBank['id'])
