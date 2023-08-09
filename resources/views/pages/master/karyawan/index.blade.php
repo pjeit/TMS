@@ -57,8 +57,8 @@
                              <tr>
                                 <td>{{$d->nama_panggilan}}</td>
                                 <td>{{$d->tempat_lahir}}</td>  
-                                <td>{{$d->alamat}}</td>  
-                                <td>{{$d->telp}}</td>  
+                                <td>{{$d->alamat_domisili}}</td>  
+                                <td>{{$d->telp1}}</td>  
                                 <td>{{$d->posisi}}</td>  
                       
                                 <td>                                    
@@ -103,10 +103,11 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                              <th>Nama Kas / Bank </th>
-                              <th>No. Akun</th>
-                              <th>Tipe</th>
-                              <th>Rekening Bank</th>
+                              <th>Nama Panggilan</th>
+                              <th>Tempat Lahir</th>
+                              <th>Alamat</th>
+                              <th>Telp</th>
+                              <th>Posisi</th>
                               <th>Handle</th>
                              </tr>
                         </tfoot>

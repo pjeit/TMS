@@ -21,7 +21,7 @@ class CoaController extends Controller
         $dataCOA = DB::table('coa')
             // ->paginate(10);
             ->select('coa.*')
-            ->where('coa.is_aktif', '=', "N")
+            ->where('coa.is_aktif', '=', "Y")
             ->get();
             // dd( $dataCOA);
         return view('pages.master.Coa.index',[
