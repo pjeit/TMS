@@ -155,6 +155,14 @@
             </li>
          
             <li class="nav-item">
+              <a href="{{route('karyawan.index')}}" class="nav-link {{request()->url() === route('karyawan.index') ? ' active' : '' }} ">
+              <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                <p>
+                  Karyawan
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="{{route('coa.index')}}" class="nav-link {{request()->url() === route('coa.index') ? ' active' : '' }} ">
               <i class="far nav-icon"></i>
                 <p>
