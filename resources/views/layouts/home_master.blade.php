@@ -113,7 +113,7 @@
         </div><!-- /.container-fluid -->
     </div>
       <!-- /.content-header -->
-<br>
+      <br>
       <!-- Main content -->
       <section class="content">
 
@@ -124,24 +124,23 @@
         @endif
 
         @if(session("status"))
-      
-        {{-- <div class="alert alert-success d-flex align-items-center" role="alert">
-          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
-          <div>
+          {{-- <div class="alert alert-success d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+            <div>
+              {{session('status')}}
+
+            </div>
+          </div> --}}
+        
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{session('status')}}
 
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-        </div> --}}
-      
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-          {{session('status')}}
-
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        {{-- <div class="alert alert-success">
-        </div> --}}
+          {{-- <div class="alert alert-success">
+          </div> --}}
         @endif
 
         @yield('content')
@@ -246,9 +245,6 @@
   {{-- Script Format Uang sendiri bawaan program lama --}}
   <script src="{{asset('assets/dist/js/formatUang.js')}}"></script>
   <script src="{{asset('assets/dist/js/keyPressuang.js')}}"></script>
-
-
-
 
   <script>
     $('.selectpicker').selectpicker({

@@ -10,7 +10,7 @@
 @section('pathjudul')
     <li class="breadcrumb-item"><a href="/">Home</a></li>
     <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item"><a href="{{route('head.index')}}">Head</a></li>
+    <li class="breadcrumb-item"><a href="{{route('grup.index')}}">Grup</a></li>
 @endsection
 
 @section('content')
@@ -23,7 +23,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{route('head.create')}}" class="btn btn-secondary btn-responsive float-left">
+                    <a href="{{route('grup.create')}}" class="btn btn-secondary btn-responsive float-left">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
                     </a> 
                 </div>
@@ -31,25 +31,22 @@
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                              <th>No Polisi</th>
-                              <th>No. Mesin & Rangka</th>
-                              <th>Merk & Model</th>
-                              <th>Tahun & Warna</th>
-                              <th>Driver</th>
+                              <th>Nama Grup</th>
+                              <th>Nama PIC</th>
+                              <th>Total Kredit</th>
+                              <th>Total Max Kredit</th>
                               <th>Aksi</th>
                             </tr>
                           </thead>
                         <tbody>
                             @foreach($data as $item)
                              <tr>
-                                <td>{{$item->no_polisi}}</td>
-                                <!-- ganti kolom no_kendaraan menjadi no_mesin di DB tabel kendaraan -->
-                                <td>{{'$item->no_mesin'}} {{$item->no_rangka}} </td>  
-                                <td>{{$item->merk_model}}</td>  
-                                <td>{{$item->tahun_pembuatan}}{{$item->warna}} </td>  
-                                <td>{{ $item->driver_id }}</td>
+                                <td>{{ $item->nama_grup }}</td>
+                                <td>{{ $item->nama_pic }}</td>
+                                <td>{{ number_format($item->total_kredit,0,",",".") }}</td>
+                                <td>{{ number_format($item->total_max_kredit,0,",",".") }}</td>
                                 <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('head.edit',[$item->id])}}">
+                                    <a class="btn btn-default bg-info" href="{{route('grup.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
@@ -58,7 +55,6 @@
                                     </button>          
                                     
                                 </td>
-                                                   
                                 
                                 <!-- Modal -->
                                 <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -76,10 +72,10 @@
                                        <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
 
-                                            <form action="{{route('head.destroy',[$item->id])}}" method="POST" class="btn btn-responsive">
+                                            <form action="{{route('grup.destroy',[$item->id])}}" method="POST" class="btn btn-responsive">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button action="{{route('head.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
+                                                <button action="{{route('grup.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
                                             </form>
                                        </div>
                                     </div>

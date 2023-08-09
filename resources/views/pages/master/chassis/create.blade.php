@@ -108,7 +108,7 @@
                                                   </button>
                                                   <ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;">
                                                     <li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail(<?=$key?>)"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail(<?=$key?>)"><span class="fas fa-eraser" style="width:24px"></span>Hapus xx</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail(<?=$key?>)"><span class="fas fa-eraser" style="width:24px"></span>Hapus</a></li>
                                                   </ul>
                                                 </div>
                                             </td>
@@ -163,7 +163,7 @@
                     </div> --}}
                     <div class="form-group">
                         <label for="">Berlaku hingga</label>
-                        <input type="text" class="form-control" id="berlaku_hinggaDisplay" placeholder="DD-MMM-YYYY" >
+                        <input type="text" class="form-control" id="berlaku_hinggaDisplay" >
                         <input type="hidden" id="berlaku_hingga" name="berlaku_hingga">
                     </div>
                     <div class='form-group'>
@@ -224,14 +224,17 @@ $(document).ready(function(e){
                 contentType: false,
                 cache: false,
                 processData:false,
-                success: function(response){  
-                    toastr.success('Sukses!');
-                    window.location.href = 'chassis';
+                success: function(response) {
+                    if (response.hasOwnProperty('id')) {
+                        toastr.success('Sukses!');
+                        window.location.href = '{{ route("chassis.index") }}';
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Terjadi kesalahan saat mengirim data.');
                 }
-                // ,error: function(XMLHttpRequest, textStatus, errorThrown) { 
-                //     toastr.error('Terjadi error');
-                //     console.log(errorThrown);
-                // }  
             });
         });
     });
@@ -267,6 +270,8 @@ $(document).ready(function(e){
                 const formattedDate = start.format('DD-MMM-YYYY');
                 $('#berlaku_hinggaDisplay').val(formattedDate);
                 $('#berlaku_hingga').val(start.format('YYYY-MM-DD'));
+                // $('#berlaku_hingga').datepicker('setDate',$('#berlaku_hingga_'+idx).text());
+
             });
         }else{
             var idx=key;

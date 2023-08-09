@@ -157,7 +157,6 @@
     }, function(start, end, label) {
         const formattedDate = start.format('DD-MMM-YYYY');
         $('#tanggalDibuatDisplay').val(formattedDate);
-        // $('#tanggalDibuat').val(start.format('YYYY-MM-DD HH:mm:ss'));
         $('#tanggalDibuat').val(start.format('YYYY-MM-DD'));
         console.log("A new date selection was made: " + formattedDate);
     });

@@ -43,6 +43,8 @@ Route::resource('chassis', 'App\Http\Controllers\ChassisController');
 Route::resource('supplier', 'App\Http\Controllers\SupplierController');
 
 Route::resource('karyawan', 'App\Http\Controllers\KaryawanController');
+
+Route::resource('grup', 'App\Http\Controllers\GrupController');
 // ========================================== master ==================================================
 
 
