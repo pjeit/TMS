@@ -128,6 +128,15 @@
             </li>
 
             <li class="nav-item">
+              <a href="{{route('customer.index')}}" class="nav-link {{request()->url() === route('customer.index') ? ' active' : '' }} ">
+              <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                <p>
+                  Customer
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
               <a href="{{route('head.index')}}" class="nav-link {{request()->url() === route('head.index') ? ' active' : '' }} ">
               <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                 <p>

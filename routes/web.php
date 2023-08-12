@@ -45,6 +45,8 @@ Route::resource('supplier', 'App\Http\Controllers\SupplierController');
 Route::resource('karyawan', 'App\Http\Controllers\KaryawanController');
 
 Route::resource('grup', 'App\Http\Controllers\GrupController');
+
+Route::resource('customer', 'App\Http\Controllers\CustomerController');
 // ========================================== master ==================================================
 
 
