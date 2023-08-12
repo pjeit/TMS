@@ -53,7 +53,7 @@
                         <label for="">Model</label>
                         <select class="form-control select2" style="width: 100%;" id='model_id' name="model_id">
                             @foreach ($model_chassis as $model)
-                                <option value="{{$model->id}}" <?= ($data->karoseri == $model->id)? 'Selected':''; ?> >{{ $model->nama }}</option>
+                                <option value="{{$model->id}}" <?= ($data->model_id == $model->id)? 'Selected':''; ?> >{{ $model->nama }}</option>
                             @endforeach
                         </select>
                     </div>

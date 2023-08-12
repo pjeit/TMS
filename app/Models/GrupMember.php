@@ -5,24 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class HeadDokumen extends Model
+class GrupMember extends Model
 {
     use HasFactory;
-    protected $table = 'kendaraan_dokumen';
+    protected $table = 'grup_member';
     protected $primaryKey='id';
     protected $fillable=[
         'id',
-        'kendaraan_id',
-        'nomor',
-        'jenis',
-        'berlaku_hingga',
-        'is_reminder',
-        'reminder_hari',
+        'grup_id',
+        'role_id',
+        'nama',
+        'no_rek',
+        'telp1',
+        'telp2',
         
         'created_at',
         'created_by',
         'updated_at',
         'updated_by',
         'is_aktif',
-   ];
+    ];
 }

@@ -68,15 +68,17 @@ class ChassisController extends Controller
             ], $pesanKustom);
             
             // var_dump($request->post()['dokumen'] ); die;
+            $user = 1;
+            
             $chassis = new Chassis();
             $chassis->kode = $request->kode;
             $chassis->karoseri = $request->karoseri;
             $chassis->model_id = $request->model_id;
             $chassis->kepemilikan = $request->kepemilikan;
             $chassis->created_at = date("Y-m-d h:i:s");
-            $chassis->created_by = 1; // manual
+            $chassis->created_by = $user;
             $chassis->updated_at = date("Y-m-d h:i:s");
-            $chassis->updated_by = 1; // manual
+            $chassis->updated_by = $user;
             $chassis->is_aktif = "Y";
             $chassis->save();
 
@@ -154,19 +156,20 @@ class ChassisController extends Controller
                 'kode' => 'required',
             ], $pesanKustom);
             
+            $user = 1;
             $chassis = Chassis::where('is_aktif', 'Y')->findOrFail($chassis->id);
             $chassis->kode = $request->kode;
             $chassis->karoseri = $request->karoseri;
             $chassis->model_id = $request->model_id;
             $chassis->kepemilikan = $request->kepemilikan;
             $chassis->updated_at = now(); // Menggunakan now() untuk waktu saat ini
-            $chassis->updated_by = 1; // manual
+            $chassis->updated_by = $user;
             $chassis->save();
+
             if ($request->post()['dokumen'] != null) {
                 $arrayDokumen = json_decode($request->post()['dokumen'], true);
                 $delete_selain_ini = array_column($arrayDokumen, 'dokumen_id');
                 
-                // Perform actions if $arrayDokumen->dokumen_id is set and not undefined
                 ChassisDokumen::where('chassis_id', $chassis->id)
                                 ->whereNotIn('id', $delete_selain_ini)
                                 ->update(['is_aktif' => 'N']);
@@ -187,7 +190,7 @@ class ChassisController extends Controller
                             $dokumen->is_reminder = $item['is_reminder'];
                             $dokumen->reminder_hari = ($item['reminder_hari'] == '') ? null : $item['reminder_hari'];
                             $dokumen->is_aktif = 'Y';
-                            $dokumen->updated_by = 1; // nanti di edit
+                            $dokumen->updated_by = $user; // nanti di edit
                             $dokumen->updated_at = now(); // Menggunakan now() untuk waktu saat ini
                             $dokumen->save();
                         }
@@ -202,7 +205,7 @@ class ChassisController extends Controller
                         $dokumen->is_reminder = $item['is_reminder'];
                         $dokumen->reminder_hari = ($item['reminder_hari'] == '')? NULL:$item['reminder_hari'] ;
                         $dokumen->is_aktif = 'Y';
-                        $dokumen->created_by = 1; // nanti di edit
+                        $dokumen->created_by = $user; // nanti di edit
                         $dokumen->created_at = now(); // date("Y-m-d h:i:s");
                         $dokumen->save();
                     }
