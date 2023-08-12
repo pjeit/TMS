@@ -75,14 +75,14 @@ class KasBankController extends Controller
                 'tgl_saldo' => 'required'
                 // 'catatan' => 'required',
             ], $pesanKustom);
-        $data = $request->collect();
-        $tanggal = explode('-', $data['tgl_saldo']);
-            // dd($tanggal);
+            $data = $request->collect();
+            $tanggal = explode('-', $data['tgl_saldo']);
+                // dd($tanggal);
 
-        $tahun =$tanggal[0];
-        $bulan =$tanggal[1];
-        $tanggal =$tanggal[2];
-        $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
+            $tahun =$tanggal[0];
+            $bulan =$tanggal[1];
+            $tanggal =$tanggal[2];
+            $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
             DB::table('kas_bank')
                 ->insert(array(
                     'nama' => $data['nama'],

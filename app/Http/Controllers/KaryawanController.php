@@ -9,6 +9,9 @@ use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use Intervention\Image\Facades\Image;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
+use Mockery\Undefined;
+
 class KaryawanController extends Controller
 {
     /**
@@ -79,39 +82,48 @@ class KaryawanController extends Controller
 
             $pesanKustom = [
              
-                // 'nama.required' => 'Nama kas Harus diisi!',
-                // 'no_akun.required' => 'Nomor kas akun Harus diisi!',
-                // 'tipe.required' =>'Tipe kas harap dipilih salah satu!',
-                // 'saldo_awal.required' => 'Saldo awal Harus diisi!',
-                // 'tgl_saldo.required' => 'Tanngal saldo awal Harus diisi!',
-
-      
+                'tanggal_gabung.required' => 'Tanggal gabung Karyawan harap diisi!',
+                'posisi.required' => 'Posisi karyawan harap diisi!',
+                'telp1.required' =>'Nomor telpon 1 harap diisi ',
+                'nama_lengkap.required' => 'Nama lengkap karyawan harap diisi!',
+                'nama_panggilan.required' => 'Nama panggilan karyawan harap diisi!',
+                // 'foto.required' => 'Foto karyawan harap diisi!',
             ];
              
             
             $request->validate([
                 // 'telp1' =>'required|in:1,2',  // buat radio button
+                'tanggal_gabung' => 'required',
+                'posisi' => 'required',
+                'telp1' =>'required',
+                'nama_lengkap' => 'required',
+                'nama_panggilan' => 'required',
+                'foto' => 'image|mimes:jpg,png,jpeg|max:2048',
 
-                // 'tanggal_gabung' => 'required',
-                // 'posisi' => 'required',
-                // 'telp1' =>'required',
-                // 'nama_lengkap' => 'required',
-                // 'nama_panggilan' => 'required',
-                // 'foto' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+            ],$pesanKustom);
+           
 
-            ], $pesanKustom);
+            $data = $request->collect();
+            //  dd($rules);
 
-            $data = $request->post();
+              // Validate the incoming request data
+            // $validator = Validator::make($data, $rules, $pesanKustom);
+
+            // Check if validation fails
+            // if ($validator->fails()) {
+            //     // Return validation errors in JSON format
+            //     return response()->json(['errors' => $validator->errors()], 422);
+            // }
             // dd($data);
             // var_dump($data['identitas']); die;
             $path = "";
             
-            if ($request->hasFile('foto') && $data['nama_panggilan']!=null) {
+            if ($request->hasFile('foto') && $data['nama_panggilan']!=null ) {
                 $fotoKaryawan = $request->file('foto');
                 $ekstensiGambar = $fotoKaryawan->getClientOriginalExtension();
                 $nama_gambar='karyawan_'.$data['nama_panggilan'].'_'.time() . '.' . $ekstensiGambar;
                 $fotoKaryawan->move(public_path('/img/fotoKaryawan'), $nama_gambar );
-                $path = '/img/fotoKaryawan' . $nama_gambar;
+                $path = '/img/fotoKaryawan/' . $nama_gambar;
             }
    
             //====== logic otomatis nik ======
@@ -136,7 +148,7 @@ class KaryawanController extends Controller
             $idKaryawan=DB::table('karyawan')
                 ->insertGetId(array(
                     // data pribadi
-                    'foto' => $path ,
+                    'foto' => ($request->hasFile('foto'))?$path:null,
                     'nik' => $newNik,
                     'nama_panggilan' => $data['nama_panggilan'],
                     'nama_lengkap' => $data['nama_lengkap'],
@@ -177,9 +189,9 @@ class KaryawanController extends Controller
                     'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
                     'posisi_id'=>$data['posisi'], // ini itu idrole
                     'm_kota_id'=>$data['cabang_kantor'],
-                    'saldo_cuti'=>12,
+                    'saldo_cuti'=>$data['sisa_cuti'],
 
-                    'gaji'=>$data['gaji'],
+                    'gaji'=>str_replace(',', '',$data['gaji']),
                     'is_keluar'=>($data['is_keluar'] == 'Y')?'Y':'N',
                     'tgl_keluar'=>($data['is_keluar'] == 'Y')?date_format($tanggal_keluar, 'Y-m-d'):null,
                     // end data status Karyawan
@@ -211,16 +223,14 @@ class KaryawanController extends Controller
             
                 }
             }
-
-            if($data['identitas'] != null){
-                $arrayDokumen = json_decode($data['identitas'], true);
+            if($data['komponen'] != null){
+                $arrayDokumen = json_decode($data['komponen'], true);
                 foreach ($arrayDokumen as $key => $item) {
-                   DB::table('karayawan_identitas')
+                   DB::table('karyawan_komponen')
                         ->insert(array(
                         'karyawan_id'=>$idKaryawan,
                         'nama' => $item['nama'] ,
-                        'nominal' => $item['nominal'],
-                        'catatan' => $item['catatan'],
+                        'nominal' => str_replace(',', '',$item['nominal']),
                         'created_at'=>VariableHelper::TanggalFormat(), 
                         'created_by'=> $user,
                         'updated_at'=> VariableHelper::TanggalFormat(),
@@ -231,12 +241,12 @@ class KaryawanController extends Controller
             
                 }
             }
-
-            return response()->json(['message' => 'Berhasil menambahkan karyawan', 'id' => $idKaryawan]);
+            return response()->json(['message' => 'Berhasil menambahkan data karyawan', 'id' => $idKaryawan]);
 
             // return redirect()->route('karyawan.index')->with('status','Success!!');
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            // return redirect()->back()->withErrors($e->errors())->withInput();
+                return response()->json(['errorsCatch' => $e->errors()], 422);
         }
     }
 
@@ -260,6 +270,52 @@ class KaryawanController extends Controller
     public function edit(Karyawan $karyawan)
     {
         //
+        $dataRole = DB::table('role')
+            ->where('role.is_aktif', '=', "Y")
+            ->get();
+        $dataKota = DB::table('m_kota')
+            ->get();
+        $dataPtkp = DB::table('ptkp')
+            ->where('ptkp.is_aktif', '=', "Y")
+            ->get();
+        $dataAgama = DB::table('agama')
+        ->get();
+        $dataJenis = DB::table('m_jenis_identitas')
+        ->where('m_jenis_identitas.is_aktif', '=', "Y")
+        ->get();
+
+         $dataKaryawanIdentitas = DB::table('karayawan_identitas')
+            ->select('karayawan_identitas.*')
+            ->where('karayawan_identitas.is_aktif', '=', "Y")
+            ->where('karayawan_identitas.karyawan_id', '=', $karyawan['id'])
+            ->get();
+        
+         $dataKaryawanKomponen = DB::table('karyawan_komponen')
+            ->select('karyawan_komponen.*')
+            ->where('karyawan_komponen.is_aktif', '=', "Y")
+            ->where('karyawan_komponen.karyawan_id', '=', $karyawan['id'])
+            ->get();
+        //  $dataKaryawanIdentitasHapus = DB::table('karayawan_identitas')
+        //             ->select('karayawan_identitas.*')
+        //             ->where('karayawan_identitas.karyawan_id', '=', $karyawan['id'])
+        //             ->where('karayawan_identitas.id', '!=', 47)
+        //             ->first();
+        // dd($dataKaryawanIdentitasHapus);
+                     
+
+        return view('pages.master.karyawan.edit',[
+            'judul'=>"Karyawan",
+            'karyawan'=>$karyawan,
+             'dataRole' => $dataRole,
+             'dataKota' => $dataKota,
+             'dataPtkp' => $dataPtkp,
+             'dataAgama'=>$dataAgama,
+             'dataJenis'=>$dataJenis,
+             'dataKaryawanKomponen'=>$dataKaryawanKomponen,
+             'dataKaryawanIdentitas'=>$dataKaryawanIdentitas,
+
+        ]);
+        
     }
 
     /**
@@ -272,6 +328,244 @@ class KaryawanController extends Controller
     public function update(Request $request, Karyawan $karyawan)
     {
         //
+          //
+        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        
+        try {
+
+            $pesanKustom = [
+             
+                'tanggal_gabung.required' => 'Tanggal gabung Karyawan harap diisi!',
+                'posisi.required' => 'Posisi karyawan harap diisi!',
+                'telp1.required' =>'Nomor telpon 1 harap diisi ',
+                'nama_lengkap.required' => 'Nama lengkap karyawan harap diisi!',
+                'nama_panggilan.required' => 'Nama panggilan karyawan harap diisi!',
+                // 'foto.required' => 'Foto karyawan harap diisi!',
+            ];
+             
+            
+            $request->validate([
+                // 'telp1' =>'required|in:1,2',  // buat radio button
+                'tanggal_gabung' => 'required',
+                'posisi' => 'required',
+                'telp1' =>'required',
+                'nama_lengkap' => 'required',
+                'nama_panggilan' => 'required',
+                'foto' => 'image|mimes:jpg,png,jpeg|max:2048',
+
+            ],$pesanKustom);
+           
+
+            $data = $request->collect();
+            $fotoPathDariDB = $karyawan->foto;
+
+            $path = "";
+
+            if ($request->hasFile('foto') && $data['nama_panggilan'] != null) {
+                // Unlink (delete) the existing image file
+                if (!empty($fotoPathDariDB)) {
+                    if (file_exists(public_path($fotoPathDariDB))) {
+                        unlink(public_path($fotoPathDariDB));
+                    }
+                }
+
+                $fotoKaryawan = $request->file('foto');
+                $ekstensiGambar = $fotoKaryawan->getClientOriginalExtension();
+                $nama_gambar = 'karyawan_' . $data['nama_panggilan'] . '_' . time() . '.' . $ekstensiGambar;
+
+                // Move the new image file to the desired location
+                $fotoKaryawan->move(public_path('/img/fotoKaryawan'), $nama_gambar);
+                $path = '/img/fotoKaryawan/' . $nama_gambar;
+            }
+
+  
+            //====== logic otomatis nik ======
+            // $year = Carbon::now()->format('y');
+            // $maxNik = DB::table('karyawan')
+            //     ->select(DB::raw('max(substr(nik,-4)) as max_nik'))
+            //     ->where(DB::raw('substr(nik,1,2)'), $year)
+            //     ->value('max_nik');
+
+            // $newNik = $year . str_pad((intval($maxNik) + 1), 4, '0', STR_PAD_LEFT);
+
+            // if (empty($newNik)) {
+            //     $newNik = $year . '0001';
+            // }
+            //====== end logic otomatis nik ======
+            $tanggal_lahir = date_create_from_format('d-M-Y', $data['tanggal_lahir']);
+            $tanggal_kontrak = date_create_from_format('d-M-Y', $data['tanggal_kontrak']);
+            $tanggal_gabung = date_create_from_format('d-M-Y', $data['tanggal_gabung']);
+            $tanggal_selesai_kontrak = date_create_from_format('d-M-Y', $data['tanggal_selesai_kontrak']);
+            $tanggal_keluar = date_create_from_format('d-M-Y', $data['tanggal_keluar']);
+         
+            DB::table('karyawan')
+            ->where('id', $karyawan['id'])
+                ->update(array(
+                    // data pribadi
+                    'foto' => ($request->hasFile('foto'))?$path:null ,
+                    'nik' => $data['nik'],
+                    'nama_panggilan' => $data['nama_panggilan'],
+                    'nama_lengkap' => $data['nama_lengkap'],
+                    'jenis_kelamin' => $data['jenis_kelamin'],
+                    'status_menikah'=>$data['status_menikah'],
+                    'jumlah_anak'=>$data['jumlah_anak'],
+                    'tempat_lahir'=>$data['tempat_lahir'],
+                    'tanggal_lahir'=>date_format($tanggal_lahir, 'Y-m-d'),
+                    'agama'=>$data['agama'],
+                    // end data pribadi
+
+                    // data Alamat & Kontak
+                    'alamat_domisili'=>$data['alamat_sekarang'],
+                    'kota_domisili'=>$data['kota_sekarang'],
+                    'alamat_ktp'=>$data['alamat_ktp'],
+                    'kota_ktp'=>$data['kota_ktp'],
+                    'telp1'=>$data['telp1'],
+                    'telp2'=>$data['telp2'],
+                    'email'=>$data['email'],
+                    'ptkp_id'=>$data['ptkp'],
+                    'norek'=>$data['no_rekening'],
+                    'rek_nama'=>$data['atas_nama'],
+                    'bank'=>$data['nama_bank'],
+                    'cabang_bank'=>$data['cabang_bank'],
+                    // end data Alamat & Kontak
+
+                    // data Kontak Darurat
+                    'nama_kontak_darurat'=>$data['nama_kontak_darurat'],
+                    'hubungan_kontak_darurat'=>$data['hubungan_kontak_darurat'],
+                    'nomor_kontak_darurat'=>$data['nomor_kontak_darurat'],
+                    'alamat_kontak_darurat'=>$data['alamat_kontak_darurat'],
+                    // end data Kontak Darurat
+
+                     // data status Karyawan
+                    'status_pegawai'=>$data['status_pegawai'],
+                    'tgl_gabung'=>date_format($tanggal_gabung, 'Y-m-d'),
+                    'tgl_mulai_kontrak'=>($data['status_pegawai'] == 'Kontrak')?date_format($tanggal_kontrak, 'Y-m-d'):null,
+                    'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
+                    'posisi_id'=>$data['posisi'], // ini itu idrole
+                    'm_kota_id'=>$data['cabang_kantor'],
+                    'saldo_cuti'=>$data['sisa_cuti'],
+
+                    'gaji'=>str_replace(',', '',$data['gaji']),
+                    'is_keluar'=>($data['is_keluar'] == 'Y')?'Y':'N',
+                    'tgl_keluar'=>($data['is_keluar'] == 'Y')?date_format($tanggal_keluar, 'Y-m-d'):null,
+                    // end data status Karyawan
+                    'created_at'=>VariableHelper::TanggalFormat(), 
+                    'created_by'=> $user,
+                    'updated_at'=> VariableHelper::TanggalFormat(),
+                    'updated_by'=> $user,
+                    'is_aktif' => "Y",
+                )
+            ); 
+            
+          
+            // buat ? data diri
+            if (isset($data['identitas'])) {
+                $arrayIdentitasForm = json_decode($data['identitas'], true);
+                    // Set is_aktif = "N" untuk data identitas yang tidak ada di form
+                $identitasIDsFromForm = array_column($arrayIdentitasForm, 'identitas_id');
+                DB::table('karayawan_identitas')
+                    ->where('karyawan_id', $karyawan['id'])
+                    ->whereNotIn('id', $identitasIDsFromForm)
+                    ->update([
+                        'updated_at' => VariableHelper::TanggalFormat(),
+                        'updated_by' => $user,
+                        'is_aktif' => "N",
+                    ]);
+
+                foreach ($arrayIdentitasForm as $itemFormIdentitas) {
+                    // $matchingRecord = null;
+
+                    // foreach ($dataKaryawanIdentitas as $record) {
+                    //     if ($record->id === $item['identitas_id'] && $karyawan['id']==$record->karyawan_id) {
+                    //         $matchingRecord = $record;
+                    //         break;
+                    //     }
+                    // }
+                   
+                    // cek id dr form sama atau nggak
+                    $dataKaryawanIdentitas = DB::table('karayawan_identitas')
+                    ->select('karayawan_identitas.*')
+                    ->where('karayawan_identitas.is_aktif', '=', "Y")
+                    ->where('karayawan_identitas.karyawan_id', '=', $karyawan['id'])
+                    ->where('karayawan_identitas.id', '=', $itemFormIdentitas['identitas_id'])
+                    ->first();
+                    
+                    if ($dataKaryawanIdentitas) {
+                        DB::table('karayawan_identitas')
+                            ->where('karyawan_id', $karyawan['id'])
+                            ->where('id', $itemFormIdentitas['identitas_id'])
+                            ->update([
+                                'm_jenis_identitas_id' => $itemFormIdentitas['m_jenis_identitas_id'],
+                                'nomor' => $itemFormIdentitas['nomor'],
+                                'catatan' => $itemFormIdentitas['catatan'],
+                                'updated_at' => VariableHelper::TanggalFormat(),
+                                'updated_by' => $user,
+                                'is_aktif' => "Y",
+                            ]);
+                    }
+                    else {
+                        DB::table('karayawan_identitas')
+                            ->insert([
+                                'karyawan_id' => $karyawan['id'],
+                                'm_jenis_identitas_id' => $itemFormIdentitas['m_jenis_identitas_id'],
+                                'nomor' => $itemFormIdentitas['nomor'],
+                                'catatan' => $itemFormIdentitas['catatan'],
+                                'created_at' => VariableHelper::TanggalFormat(),
+                                'created_by' => $user,
+                                'updated_at' => VariableHelper::TanggalFormat(),
+                                'updated_by' => $user,
+                                'is_aktif' => "Y",
+                            ]);
+                    }
+                    
+                 
+
+                }
+            }
+
+
+            if ( isset($data['komponen'])) {
+                $arrayKomponenForm = json_decode($data['komponen'], true);
+                // $identitasIDsFromForm = array_column($arrayKomponenForm, 'komponen_id');
+                // var_dump($arrayKomponenForm ); die;
+                foreach ($arrayKomponenForm as $key => $value) {
+                    // edit dan delete, tergantung is_aktif yg diterima
+                    if($value['komponen_id'] != null){
+                           DB::table('karyawan_komponen')
+                                ->where('karyawan_id', $karyawan['id'])
+                                ->where('id', $value['komponen_id'])
+                                    ->update(array(
+                                    'nama' => $value['nama'] ,
+                                    'nominal' => str_replace(',', '',$value['nominal']),
+                                    'updated_at'=> VariableHelper::TanggalFormat(),
+                                    'is_aktif' => $value['is_aktif'],
+                                    'updated_at'=> now(),
+                                    'updated_by'=> $user,
+                                    )
+                                );  
+                    }else{
+                        DB::table('karyawan_komponen')
+                                ->insert(array(
+                                'karyawan_id'=>$karyawan['id'],
+                                'nama' => $value['nama'] ,
+                                'nominal' => str_replace(',', '',$value['nominal']),
+                                'created_by'=> $user,
+                                'created_at'=> now(), 
+                                'is_aktif' => "Y",
+                                )
+                            );  
+                    }
+                }
+         
+            }
+        
+            return response()->json(['message' => 'Berhasil update data karyawan', 'id' => $karyawan['id']]);
+
+            // return redirect()->route('karyawan.index')->with('status','Success!!');
+        } catch (ValidationException $e) {
+            // return redirect()->back()->withErrors($e->errors())->withInput();
+                return response()->json(['errorsCatch' => $e->errors()], 422);
+        }
     }
 
     /**
@@ -283,5 +577,41 @@ class KaryawanController extends Controller
     public function destroy(Karyawan $karyawan)
     {
         //
+         //
+        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+
+        try{
+            DB::table('karyawan')
+            ->where('id', $karyawan['id'])
+            ->update(array(
+                'is_aktif' => "N",
+                'updated_at'=> VariableHelper::TanggalFormat(),
+                'updated_by'=> $user, // masih hardcode nanti diganti cookies
+              )
+            );
+
+             DB::table('karyawan_komponen')
+            ->where('id', $karyawan['id'])
+            ->update(array(
+                'is_aktif' => "N",
+                'updated_at'=> VariableHelper::TanggalFormat(),
+                'updated_by'=> $user, // masih hardcode nanti diganti cookies
+              )
+            );
+
+             DB::table('karayawan_identitas')
+            ->where('id', $karyawan['id'])
+            ->update(array(
+                'is_aktif' => "N",
+                'updated_at'=> VariableHelper::TanggalFormat(),
+                'updated_by'=> $user, // masih hardcode nanti diganti cookies
+              )
+            );
+             return redirect()->route('karyawan.index')->with('status','Sukses Menghapus Data Karyawan!');
+
+        }
+        catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
+        }
     }
 }

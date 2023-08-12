@@ -10,7 +10,7 @@
 @section('pathjudul')
     <li class="breadcrumb-item"><a href="/">Home</a></li>
     <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item"><a href="{{route('kas_bank.index')}}">Karyawan</a></li>
+    <li class="breadcrumb-item"><a href="{{route('karyawan.index')}}">Karyawan</a></li>
     <li class="breadcrumb-item">Create</li>
 @endsection
 
@@ -366,6 +366,10 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="sisa_cuti">Sisa Cuti</label>
+                            <input type="number" name="sisa_cuti" class="form-control" placeholder="" value="" min="0" max="24">
+                        </div>
+                        <div class="form-group">
                             <label for="gaji">Gaji</label>
                             <div class="input-group mb-0">
                             <div class="input-group-prepend">
@@ -400,7 +404,7 @@
                         <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left"><strong>Back</strong></button>
                         <button type="submit" class="btn btn-success float-right" id="btnSimpan"><strong>Simpan</strong></button>
                         
-                        <button type="button" id="btnCobaBuatData" class="btn btn-outline-success float-right"><strong>coba</strong></button>
+                        {{-- <button type="button" id="btnCobaBuatData" class="btn btn-outline-success float-right"><strong>coba</strong></button> --}}
 
 
                     </div>           
@@ -501,7 +505,7 @@
         <div class="modal-body">
             <form id='form_add_detail'>
                 <input type="hidden" name="key" id="key">
-                <input type="hidden" name="identitas_id" id="identitas_id">  
+                {{-- <input type="hidden" name="identitas_id" id="identitas_id">     --}}
                  <div class="form-group">
                     <label>Jenis Dokumen<span style='color:red'>*</span></label>
                     <select class="form-control selectpicker" name="jenis" id="jenis" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
@@ -652,11 +656,12 @@
     // untuk komponen
     function open_komponen(key){
         if(key===''){
+            //ini ambil dari <tr id= yang terakir misal terakir komponen_2 ya id= komponen_2 >
             var last_id=($('#table_komponen tr:last').attr('id'));
             if(typeof last_id === 'undefined') {
                 var last_id=0;
             }else{
-                var last_id=parseInt(last_id)+1
+                var last_id=parseInt(($('#table_komponen tr:last').attr('id').split('_')[1]))+1
             }
             var idx=last_id;
             $('#nama_komponen').val('');
@@ -767,19 +772,28 @@
                 processData:false,
                 success: function(response) {
                     if (response.hasOwnProperty('id')) {
-                        toastr.success('Sukses menambahkan data!');
+                        toastr.success(response.message);
+
                         window.location.href = '{{ route("karyawan.index") }}';
                     } else {
                         toastr.error(response.message);
                     }
                 },
-                error: function(xhr, status, error) {
-                    // toastr.error('Terjadi kesalahan saat mengirim data.',error.message);
-                    toastr.error("Terjadi kesalahan saat mengirim data. " + error); // You can customize the error message
+                 error: function (xhr, status, error) {
+                    if (xhr.responseJSON && xhr.responseJSON.errorsCatch) {
+                        var pesanError = xhr.responseJSON.errorsCatch;
+
+                        for (var i in pesanError) {
+                            toastr.error(pesanError[i]);
+                        }
+
+                    } else {
+                        toastr.error("Terjadi kesalahan saat mengirim data. " + error);
+                    }
 
                     console.log("XHR status:", status);
                     console.log("Error:", error);
-                    console.log("Response:", xhr.responseText);
+                    console.log("Response:", xhr.responseJSON);
                 }
             });
     
@@ -974,6 +988,8 @@
      $('#Tetap').click(function() {
       if ($(this).prop('checked')) {
         $('#tglKontrakMulai, #tglKontrakSelesai').hide();
+        $('#tanggal_kontrak, #tanggal_selesai_kontrak').val('');
+
       }
      });
   
