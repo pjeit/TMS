@@ -23,12 +23,11 @@ class Supplier extends Model
         'rek_nama',
         'bank',
         'cabang',
-        'catatan',
-        
+        'catatan',   
         'created_at',
         'created_by',
         'updated_at',
         'updated_by',
-        'is_hapus',
+        'is_aktif',
    ];
 }

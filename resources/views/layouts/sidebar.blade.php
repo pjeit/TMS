@@ -189,6 +189,22 @@
               </a>
             </li>
             <li class="nav-item">
+              <a href="{{route('role.index')}}" class="nav-link">
+                <i class="far nav-icon"></i>
+                <p>
+                  Role
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{route('users.index')}}" class="nav-link">
+                <i class="far nav-icon"></i>
+                <p>
+                  User
+                </p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="{{route('pengaturan_sistem.index')}}" class="nav-link {{request()->url() === route('pengaturan_sistem.index') ? ' active' : '' }} ">
               <i class="far nav-icon"></i>
                 <p>

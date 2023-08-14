@@ -138,6 +138,7 @@ class KasBankController extends Controller
         // if (!$updatedRecord) {
         //     return redirect()->route('kas_bank.index')->with('status', 'Data sedang diupdate oleh user lain');
         // }
+        dd($KasBank);
         return view('pages.master.kas_bank.edit',[
             'KasBank'=>$KasBank,
             'judul'=>"Kas Bank",
