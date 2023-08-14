@@ -25,6 +25,7 @@ class HeadController extends Controller
             ->where('is_aktif', '=', "Y")
             ->select('*')
             ->get();
+        // dd($data);
 
             return view('pages.master.head.index',[
             'judul'=>"Head",

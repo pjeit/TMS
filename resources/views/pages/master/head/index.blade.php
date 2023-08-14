@@ -40,29 +40,57 @@
                             </tr>
                           </thead>
                         <tbody>
-                            @foreach($data as $item)
-                             <tr>
-                                <td>{{$item->no_polisi}}</td>
-                                <!-- ganti kolom no_kendaraan menjadi no_mesin di DB tabel kendaraan -->
-                                <td>{{$item->no_mesin}} - {{$item->no_rangka}} </td>  
-                                <td>{{$item->merk_model}}</td>  
-                                <td>{{$item->tahun_pembuatan}} - {{$item->warna}} </td>  
-                                <td>{{ $item->driver_id }}</td>
-                                <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('head.edit',[$item->id])}}">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>   
-                                            <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
-                                               <i class="fas fa-trash"></i> Hapus
-                                    </button>          
+                            @if($data != null)
+                                @foreach($data as $item)
+                                <tr>
+                                    <td>{{$item->no_polisi}}</td>
+                                    <!-- ganti kolom no_kendaraan menjadi no_mesin di DB tabel kendaraan -->
+                                    <td>{{$item->no_mesin}} - {{$item->no_rangka}} </td>  
+                                    <td>{{$item->merk_model}}</td>  
+                                    <td>{{$item->tahun_pembuatan}} - {{$item->warna}} </td>  
+                                    <td>{{ $item->driver_id }}</td>
+                                    <td>                                    
+                                        <a class="btn btn-default bg-info" href="{{route('head.edit',[$item->id])}}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>   
+                                                <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
+                                                <i class="fas fa-trash"></i> Hapus
+                                        </button>          
+                                        
+                                    </td>
+                                                    
                                     
-                                </td>
-                                                   
                                 
-                               
-                            </tr>
-                            @endforeach
+                                </tr>
+                                                            <!-- Modal -->
+                            <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
+                                    </div>
+                                <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
+
+                                        <form action="{{route('head.destroy',[$item->id])}}" method="POST" class="btn btn-responsive">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button action="{{route('head.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
+                                        </form>
+                                </div>
+                                </div>
+                                </div>
+                            </div>
+
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -71,31 +99,6 @@
     </div>
 </div>
 
- <!-- Modal -->
- <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-          <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
-        </div>
-       <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
-
-            <form action="{{route('head.destroy',[$item->id])}}" method="POST" class="btn btn-responsive">
-                @csrf
-                @method('DELETE')
-                <button action="{{route('head.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
-            </form>
-       </div>
-    </div>
-    </div>
-</div>
 
 <script>
 

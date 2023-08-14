@@ -108,8 +108,20 @@
 
         <!-- <li class="nav-header">MASTER</li> -->
        
-
-          <li class="nav-item {{ request()->url() === route('coa.index') ||request()->url() === route('pengaturan_sistem.index') ? 'menu-is-opening menu-open' : '' }}">
+          <li class="nav-item 
+          {{ request()->is('grup*')||
+          request()->is('grup_member*')||
+          request()->is('customer*')||
+          request()->is('head*')||
+          request()->is('chassis*')||
+          request()->is('supplier*')||
+          request()->is('karyawan*')||
+          request()->is('coa*')||
+          request()->is('kas_bank*')||
+          request()->is('role*')||
+          request()->is('users*')||
+          request()->is('pengaturan_sistem*')
+          ? 'menu-is-opening menu-open' : '' }}">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-key"></i>
             <p>MASTER
@@ -119,16 +131,16 @@
           <ul class="nav nav-treeview">
 
             <li class="nav-item">
-              <a href="{{route('grup.index')}}" class="nav-link {{request()->url() === route('grup.index') ? ' active' : '' }} ">
+              <a href="{{route('grup.index')}}" class="nav-link {{request()->url() === route('grup.index')? ' active' : '' }} ">
               <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
                 <p>
                   Grup
                 </p>
               </a>
             </li>
-
+{{-- {{request()->url() === route('karyawan.index') ? ' active' : '' }}  --}}
             <li class="nav-item">
-              <a href="{{route('grup_member.index')}}" class="nav-link {{request()->url() === route('grup_member.index') ? ' active' : '' }} ">
+              <a href="{{route('grup_member.index')}}" class="nav-link {{ request()->url() === route('grup_member.index')? ' active' : '' }} ">
               <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
                 <p>
                   Grup Member
@@ -137,7 +149,7 @@
             </li>
 
             <li class="nav-item">
-              <a href="{{route('customer.index')}}" class="nav-link {{request()->url() === route('customer.index') ? ' active' : '' }} ">
+              <a href="{{route('customer.index')}}" class="nav-link {{request()->is('customer*') ? ' active' : '' }} ">
               <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
                 <p>
                   Customer
@@ -146,7 +158,7 @@
             </li>
 
             <li class="nav-item">
-              <a href="{{route('head.index')}}" class="nav-link {{request()->url() === route('head.index') ? ' active' : '' }} ">
+              <a href="{{route('head.index')}}" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
               <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                 <p>
                   Head
@@ -155,7 +167,7 @@
             </li>
 
             <li class="nav-item">
-              <a href="{{route('chassis.index')}}" class="nav-link {{request()->url() === route('chassis.index') ? ' active' : '' }} ">
+              <a href="{{route('chassis.index')}}" class="nav-link {{request()->is('chassis*') ? ' active' : '' }} ">
               <i class="far nav-icon fa fa-square" style="font-size: 15px;"></i>
                 <p>
                   Chassis
@@ -164,7 +176,7 @@
             </li>
      
             <li class="nav-item">
-              <a href="{{route('supplier.index')}}" class="nav-link {{request()->url() === route('supplier.index') ? ' active' : '' }} ">
+              <a href="{{route('supplier.index')}}" class="nav-link {{request()->is('supplier*') ? ' active' : '' }} ">
               <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
                 <p>
                   Supplier
@@ -173,7 +185,7 @@
             </li>
          
             <li class="nav-item">
-              <a href="{{route('karyawan.index')}}" class="nav-link {{request()->url() === route('karyawan.index') ? ' active' : '' }} ">
+              <a href="{{route('karyawan.index')}}" class="nav-link {{request()->is('karyawan*') ? ' active' : '' }} ">
               <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
                 <p>
                   Karyawan
@@ -181,46 +193,46 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{route('coa.index')}}" class="nav-link {{request()->url() === route('coa.index') ? ' active' : '' }} ">
+              <a href="{{route('coa.index')}}" class="nav-link {{request()->is('coa*') ? ' active' : '' }} ">
               <i class="far nav-icon"></i>
                 <p>
                   COA
                 </p>
               </a>
-            </li>
+            </li> 
             
             <li class="nav-item">
-              <a href="{{route('kas_bank.index')}}" class="nav-link">
+              <a href="{{route('kas_bank.index')}}" class="nav-link {{request()->is('kas_bank*') ? ' active' : '' }}">
                 <i class="far nav-icon"></i>
                 <p>
                   Kas / Bank
                 </p>
               </a>
-            </li>
+            </li> 
             <li class="nav-item">
-              <a href="{{route('role.index')}}" class="nav-link">
+              <a href="{{route('role.index')}}" class="nav-link {{request()->is('role*') ? ' active' : '' }}">
                 <i class="far nav-icon"></i>
                 <p>
                   Role
                 </p>
-              </a>
+              </a> 
             </li>
             <li class="nav-item">
-              <a href="{{route('users.index')}}" class="nav-link">
+              <a href="{{route('users.index')}}" class="nav-link {{request()->is('users*') ? ' active' : '' }}">
                 <i class="far nav-icon"></i>
                 <p>
                   User
                 </p>
-              </a>
+              </a> 
             </li>
             <li class="nav-item">
-              <a href="{{route('pengaturan_sistem.index')}}" class="nav-link {{request()->url() === route('pengaturan_sistem.index') ? ' active' : '' }} ">
+              <a href="{{route('pengaturan_sistem.index')}}" class="nav-link {{request()->is('pengaturan_sistem*') ? ' active' : '' }} ">
               <i class="far nav-icon"></i>
                 <p>
                   Pengaturan Sistem
                 </p>
-              </a>
-            </li>
+              </a> 
+            </li> 
             <li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
