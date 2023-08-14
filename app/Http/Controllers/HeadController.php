@@ -260,7 +260,6 @@ class HeadController extends Controller
     public function destroy($id)
     {
         $user = 1;
-
         $del_head = Head::where('id', $id)
             ->update([
                 'is_aktif' => 'N',
