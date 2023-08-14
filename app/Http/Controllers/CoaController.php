@@ -55,6 +55,8 @@ class CoaController extends Controller
      */
     public function store(Request $request)
     {
+        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+
         try {
             $pesanKustom = [
                 'no_akun.required' => 'Nomor akun Harus diisi!',
@@ -81,9 +83,9 @@ class CoaController extends Controller
                     // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'] == null?null:$data['jenis_laporan_keuangan'],
                     'catatan' => $data['catatan'],
                     'created_at'=> VariableHelper::TanggalFormat(), 
-                    'created_by'=> 1,// masih hardcode nanti diganti cookies
+                    'created_by'=>$user,
                     'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> 1,// masih hardcode nanti diganti cookies
+                    'updated_by'=>$user,
                     'is_aktif' => "Y",
 
                 )
@@ -139,6 +141,8 @@ class CoaController extends Controller
     public function update(Request $request, Coa $coa)
     {
         //
+        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+
         try {
             $pesanKustom = [
                 'no_akun.required' => 'Nomor akun Harus diisi!',
@@ -164,7 +168,7 @@ class CoaController extends Controller
                     // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'],
                     'catatan' => $data['catatan'],
                     'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> 1,// masih hardcode nanti diganti cookies
+                    'updated_by'=>  $user,
                     'is_aktif' => "Y",
 
                 )
@@ -184,12 +188,14 @@ class CoaController extends Controller
      */
     public function destroy(Coa $coa)
     {
+        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+
         DB::table('COA')
         ->where('id', $coa['id'])
         ->update(array(
             'is_aktif' => "N",
             'updated_at'=>VariableHelper::TanggalFormat(),
-            'updated_by'=> 1, // masih hardcode nanti diganti cookies
+            'updated_by'=> $user, // masih hardcode nanti diganti cookies
             )
         );
         return redirect()->route('coa.index')->with('status','Success!!');

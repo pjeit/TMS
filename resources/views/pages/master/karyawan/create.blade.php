@@ -10,7 +10,7 @@
 @section('pathjudul')
     <li class="breadcrumb-item"><a href="/">Home</a></li>
     <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item"><a href="{{route('kas_bank.index')}}">Karyawan</a></li>
+    <li class="breadcrumb-item"><a href="{{route('karyawan.index')}}">Karyawan</a></li>
     <li class="breadcrumb-item">Create</li>
 @endsection
 
@@ -83,7 +83,7 @@
     
     <div class="row">
         <div class="col-12">
-            <form action="{{ route('karyawan.store') }}" method="POST" >
+            <form action="{{ route('karyawan.store') }}" method="POST" enctype="multipart/form-data" id="formDataKaryawan">
                 @csrf
                 {{-- ============Data pribadi============ --}}
                 <div class="card" id="satu">
@@ -105,24 +105,24 @@
                                     <input type="text" class="form-control" id="nik" name="nik" placeholder="Otomatis" readonly value="{{old('nik','')}}">    
                                 </div>
                                 <div class='col-7 col-md-7 col-lg-7'>
-                                    <label for="nik">Panggilan<span style='color:red'>*</span></label>
-                                    <input required ="text" name="nama_panggilan" class="form-control" id="panggilan" placeholder="" value="{{old('nama_panggilan','')}}">    
+                                    <label for="nik">Nama Panggilan<span style='color:red'>*</span></label>
+                                    <input  ="text" name="nama_panggilan" class="form-control" id="panggilan" placeholder="" value="{{old('nama_panggilan','')}}">    
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="nama">Nama Lengkap<span style='color:red'>*</span></label>
-                            <input required ="text" name="nama_lengkap" class="form-control" id="nama" placeholder="Nama sesuai KTP" value="{{old('nama_lengkap','')}}"> 
+                            <input  ="text" name="nama_lengkap" class="form-control" id="nama" placeholder="Nama sesuai KTP" value="{{old('nama_lengkap','')}}"> 
                         </div>
                         <div class="form-group">
                             <label for="tipe">Jenis Kelamin</label>
                             <br>
                             <div class="icheck-primary d-inline">
-                                <input id="laki" type="radio" name="jenis_kelamin" value="1" {{'1' == old('jenis_kelamin','')? 'checked' :'' }} checked>
+                                <input id="laki" type="radio" name="jenis_kelamin" value="L" {{'L' == old('jenis_kelamin','')? 'checked' :'' }} checked>
                                 <label class="form-check-label" for="laki">Laki-laki</label>
                             </div>
                             <div class="icheck-primary d-inline">
-                                <input id="perempuan" type="radio" name="jenis_kelamin" value="2" {{'2'== old('jenis_kelamin','')? 'checked' :'' }}>
+                                <input id="perempuan" type="radio" name="jenis_kelamin" value="P" {{'P'== old('jenis_kelamin','')? 'checked' :'' }}>
                                 <label class="form-check-label" for="perempuan">Perempuan</label><br>
                             </div>
                         </div>
@@ -130,15 +130,15 @@
                             <label for="tipe">Status kawin</label>
                             <br>
                             <div class="icheck-primary d-inline">
-                                <input id="belumNikah" type="radio" name="status_menikah" value="1" {{'1' == old('status_menikah','')? 'checked' :'' }} checked>
+                                <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah','')? 'checked' :'' }} checked>
                                 <label class="form-check-label" for="belumNikah">Belum Menikah</label>
                             </div>
                             <div class="icheck-primary d-inline">
-                                <input id="sudahNikah" type="radio" name="status_menikah" value="2" {{'2'== old('status_menikah','')? 'checked' :'' }}>
+                                <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah','')? 'checked' :'' }}>
                                 <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
                             </div>
                             <div class="icheck-primary d-inline">
-                                <input id="cerai" type="radio" name="status_menikah" value="3" {{'3'== old('status_menikah','')? 'checked' :'' }}>
+                                <input id="cerai" type="radio" name="status_menikah" value="2" {{'2'== old('status_menikah','')? 'checked' :'' }}>
                                 <label class="form-check-label" for="cerai">Cerai</label><br>
                             </div>
                         </div>
@@ -162,14 +162,10 @@
                         </div>
                         <div class="form-group">
                             <label>Agama</label>
-                            <select class="form-control selectpicker" id="agama" data-live-search="true" data-show-subtext="true">
-                                <option value="">--Pilih Agama--</option>
-                                {{-- @foreach($dataTag as $key => $data) --}}
-                                {{-- <option id="namaTag" value="{{$data->ItemTagID}}" {{$data->Name == $data->ItemTagID? 'selected' :'' }}>{{$data->Name}}</option> --}}
-                                <option name="agama" id="agama" value="" >Agama dummy</option>
-                                <option name="agama" id="agama" value="" >Agama dummy</option>
-                                <option name="agama" id="agama" value="" >Agama dummy</option>
-                                {{-- @endforeach --}}
+                            <select class="form-control selectpicker" name="agama" id="agama" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
+                               @foreach($dataAgama as $data)
+                                    <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                @endforeach
                             </select>
                         </div>
                         <button type="button" id="nextDariPribadi" class="btn btn-success float-right"><strong>Next</strong></button>
@@ -228,15 +224,12 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>PTKP<span style='color:red'>*</span></label>
-                            <select class="form-control selectpicker" id="role" data-live-search="true" data-show-subtext="true" name="role" id="role">
+                            <label>PTKP</label>
+                            <select class="form-control selectpicker" name="ptkp" id="ptkp" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
                                 <option value="">--Pilih PTKP--</option>
-                                {{-- @foreach($dataTag as $key => $data) --}}
-                                {{-- <option id="namaTag" value="{{$data->ItemTagID}}" {{$data->Name == $data->ItemTagID? 'selected' :'' }}>{{$data->Name}}</option> --}}
-                                <option name="PTKP" id="PTKP" value="" >PTKP</option>
-                                <option name="PTKP" id="PTKP" value="" >PTKP</option>
-                                <option name="PTKP" id="PTKP" value="" >PTKP</option>
-                                {{-- @endforeach --}}
+                                @foreach($dataPtkp as $data)
+                                    <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                @endforeach
                             </select>
                         </div>
                          <div class="form-group">
@@ -257,7 +250,7 @@
                             <div class="col-6">
                                 <div class="form-group">
                                     <label for="cabang">Cabang</label>
-                                    <input type="text" name="cabang" class="form-control" id="cabang" placeholder="" value="">
+                                    <input type="text" name="cabang_bank" class="form-control" id="cabang" placeholder="" value="">
                                 </div>
                             </div>
                         </div>
@@ -316,11 +309,11 @@
                             <label for="tipe">Tipe Karyawan</label>
                             <br>
                             <div class="icheck-primary d-inline">
-                                <input id="Kontrak" type="radio" name="kelamin" value="Kontrak" {{'Kontrak' == old('status_pegawai','')? 'checked' :'' }} checked>
+                                <input id="Kontrak" type="radio" name="status_pegawai" value="Kontrak" {{'Kontrak' == old('status_pegawai','')? 'checked' :'' }} checked>
                                 <label class="form-check-label" for="Kontrak">Kontrak</label>
                             </div>
                             <div class="icheck-primary d-inline">
-                                <input id="Tetap" type="radio" name="kelamin" value="Tetap" {{'Tetap'== old('status_pegawai','')? 'checked' :'' }}>
+                                <input id="Tetap" type="radio" name="status_pegawai" value="Tetap" {{'Tetap'== old('status_pegawai','')? 'checked' :'' }}>
                                 <label class="form-check-label" for="Tetap">Tetap</label><br>
                             </div>
                         </div>
@@ -352,29 +345,29 @@
                                 <input type="text" name="tanggal_selesai_kontrak" autocomplete="off" class="date form-control" id="tanggal_selesai_kontrak" placeholder="dd-M-yyyy" value="{{old('tgl_selesai_kontrak','')}}">     
                             </div>
                         </div>
+                    
                         <div class="form-group">
                             <label>Posisi<span style='color:red'>*</span></label>
-                            <select class="form-control selectpicker" id="role" data-live-search="true" data-show-subtext="true" name="role" id="role">
+                            <select class="form-control selectpicker" name="posisi" id="posisi" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
                                 <option value="">--Pilih Posisi--</option>
-                                {{-- @foreach($dataTag as $key => $data) --}}
-                                {{-- <option id="namaTag" value="{{$data->ItemTagID}}" {{$data->Name == $data->ItemTagID? 'selected' :'' }}>{{$data->Name}}</option> --}}
-                                <option name="idrole" id="idrole" value="" >role dummy</option>
-                                <option name="idrole" id="idrole" value="" >role dummy</option>
-                                <option name="idrole" id="idrole" value="" >role dummy</option>
-                                {{-- @endforeach --}}
+                                @foreach($dataRole as $data)
+                                    <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                @endforeach
                             </select>
                         </div>
-                         <div class="form-group">
+                    
+                        <div class="form-group">
                             <label>Cabang Kantor<span style='color:red'>*</span></label>
-                            <select class="form-control selectpicker" id="role" data-live-search="true" data-show-subtext="true" name="role" id="role">
+                            <select class="form-control selectpicker" name="cabang_kantor" id="cabang_kantor" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
                                 <option value="">--Pilih Cabang Kantor--</option>
-                                {{-- @foreach($dataTag as $key => $data) --}}
-                                {{-- <option id="namaTag" value="{{$data->ItemTagID}}" {{$data->Name == $data->ItemTagID? 'selected' :'' }}>{{$data->Name}}</option> --}}
-                                <option name="cabang" id="cabang" value="" >Cabang Surabaya</option>
-                                <option name="cabang" id="cabang" value="" >Cabang Jakarta</option>
-                                <option name="cabang" id="cabang" value="" >Cabang Sumbawa</option>
-                                {{-- @endforeach --}}
+                                @foreach($dataKota as $data)
+                                    <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                @endforeach
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sisa_cuti">Sisa Cuti</label>
+                            <input type="number" name="sisa_cuti" class="form-control" placeholder="" value="" min="0" max="24">
                         </div>
                         <div class="form-group">
                             <label for="gaji">Gaji</label>
@@ -400,7 +393,7 @@
                             <label for="tanggal_keluar">Tanggal Keluar</label>
                             <div class="input-group mb-0">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text"><input type="checkbox" id="check_is_keluar" ></span>
+                                    <span class="input-group-text"><input type="checkbox" id="check_is_keluar" name="is_keluar"></span>
                                 </div>
                                 <input type="hidden" id="is_keluar" name='is_keluar' value="">
                                 <input type="text" autocomplete="off" name="tanggal_keluar" class="form-control" id="tanggal_keluar" placeholder="dd-M-yyyy"  readonly>
@@ -409,72 +402,70 @@
                         
 
                         <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                        <button type="submit" class="btn btn-success float-right"><strong>Simpan</strong></button>
+                        <button type="submit" class="btn btn-success float-right" id="btnSimpan"><strong>Simpan</strong></button>
+                        
+                        {{-- <button type="button" id="btnCobaBuatData" class="btn btn-outline-success float-right"><strong>coba</strong></button> --}}
+
 
                     </div>           
                 </div>
-            {{-- ============End Status Karyawan============ --}}
+                {{-- ============End Status Karyawan============ --}}
 
 
 
 
-
-
-
-
-
-            {{-- ============komponen============ --}}
+                {{-- ============komponen============ --}}
 
                 <div class='row' >
-              {{-- ============komponen identitas============ --}}
-                        <div class="col-lg-6 col-md-6 col-12">
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="open_detail('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; IDENTITAS</b></button>
-                            <div class="row" style='margin-top:5px;'>
-                                <div class='col-12 table-responsive'>
-                                    <table class="table table-hover table-bordered table-striped text-nowrap" id='table_identitas'>
-                                        <thead>
-                                            <tr>
-                                            <th style="width:30px"></th>
-                                            <th>Jenis</th>
-                                            <th>Nomor</th>
-                                            <th>Catatan</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        
-                                        </tbody>
-                                    </table>
+                            {{-- ============komponen identitas============ --}}
+                            <div class="col-lg-6 col-md-6 col-12">
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="open_detail('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; IDENTITAS</b></button>
+                                <div class="row" style='margin-top:5px;'>
+                                    <div class='col-12 table-responsive'>
+                                        <table class="table table-hover table-bordered table-striped text-nowrap" id='table_identitas'>
+                                            <thead>
+                                                <tr>
+                                                <th style="width:30px"></th>
+                                                <th>Jenis</th>
+                                                <th>Nomor</th>
+                                                <th>Catatan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- ============end komponen identitas============ --}}
+
+                            {{-- ============komponen gaji============ --}}
+                            <div class="col-lg-6 col-md-6 col-12" style="padding-left:6px;">
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="open_komponen('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; KOMPONEN GAJI</b></button>
+                                <div class="row" style='margin-top:5px;'>
+                                    <div class='col-12 table-responsive'>
+                                        <table class="table table-hover table-bordered table-striped text-nowrap" id='table_komponen'>
+                                            <thead>
+                                                <tr>
+                                                <th style="width:30px"></th>
+                                                <th>Komponen</th>
+                                                <th style="text-align:right;">Nominal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-              {{-- ============end komponen identitas============ --}}
+                    {{-- ============end komponen gaji============ --}}
 
-                {{-- ============komponen gaji============ --}}
-                        <div class="col-lg-6 col-md-6 col-12" style="padding-left:6px;">
-                            <button type="button" class="btn btn-sm btn-secondary" onclick="open_komponen('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; KOMPONEN GAJI</b></button>
-                            <div class="row" style='margin-top:5px;'>
-                                <div class='col-12 table-responsive'>
-                                    <table class="table table-hover table-bordered table-striped text-nowrap" id='table_komponen'>
-                                        <thead>
-                                            <tr>
-                                            <th style="width:30px"></th>
-                                            <th>Komponen</th>
-                                            <th style="text-align:right;">Nominal</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {{-- ============end komponen gaji============ --}}
+                {{-- ============end komponen============ --}}
 
-            {{-- ============end komponen============ --}}
-
-           </form>
+            </form>
 
         </div>
     </div>
@@ -514,11 +505,20 @@
         <div class="modal-body">
             <form id='form_add_detail'>
                 <input type="hidden" name="key" id="key">
-                <input type="hidden" name="identitas_id" id="identitas_id">  
-                <div class="form-group">
+                {{-- <input type="hidden" name="identitas_id" id="identitas_id">     --}}
+                 <div class="form-group">
+                    <label>Jenis Dokumen<span style='color:red'>*</span></label>
+                    <select class="form-control selectpicker" name="jenis" id="jenis" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
+                        <option value="">--Pilih Jenis Dokumen--</option>
+                        @foreach($dataJenis as $data)
+                            <option value="{{$data->id}}-{{$data->nama}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                {{-- <div class="form-group">
                     <label for="jenis">Jenis<span style='color:red'>*</span></label>
                     <input type="text" name="jenis" class="form-control" id="jenis" placeholder=""> 
-                </div>
+                </div> --}}
                 <div class="form-group">
                     <label for="nomor">Nomor<span style='color:red'>*</span></label>
                     <input type="text" name="nomor" class="form-control" id="nomor" placeholder=""> 
@@ -593,6 +593,8 @@
         }
     }
        function open_detail(key){
+        // var pisahIDJenisSamaNama = $('#jenis').val();
+        // var tampungahJenis = pisahIDJenisSamaNama.split("-");
         if(key===''){
             var last_id=($('#table_identitas tr:last').attr('id'));
             if(typeof last_id === 'undefined') {
@@ -607,7 +609,7 @@
             $('#identitas_id').val('');
         }else{
             var idx=key;
-            $('#jenis').val($('#jenis_'+idx).text());
+            $('#jenis').val($('#jenis_id_'+idx).text()+"-"+$('#jenis_'+idx).text());
             $('#nomor').val($('#nomor_'+idx).text());
             $('#catatan').val($('#catatan_'+idx).text());
             $('#identitas_id').val($('#identitas_id_'+idx).text());
@@ -619,15 +621,19 @@
     
     function save_detail(){
         var key=$('#key').val();
+        var pisahIDJenisSamaNama = $('#jenis').val();
+        var tampungahJenis = pisahIDJenisSamaNama.split("-");
         if($('#jenis').val()==''){toastr.error('Jenis identitas harus diisi');return;}
         if($('#nomor').val()==''){toastr.error('Nomor identitas harus diisi');return;}
         var exist=$('#table_identitas tbody').find('#'+key).attr('id');
         if(typeof exist === 'undefined') {
-            var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="identitas_id_'+key+'" hidden>'+$('#identitas_id').val()+'</td><td id="jenis_'+key+'">'+$('#jenis').val()+'</td><td id="nomor_'+key+'">'+$('#nomor').val()+'</td><td id="catatan_'+key+'">'+$('#catatan').val()+'</td></tr>';
+          
+            var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="identitas_id_'+key+'" hidden>'+$('#identitas_id').val()+'</td><td id="jenis_id_'+key+'" hidden>'+tampungahJenis[0]+'</td><td id="jenis_'+key+'">'+tampungahJenis[1]+'</td><td id="nomor_'+key+'">'+$('#nomor').val()+'</td><td id="catatan_'+key+'">'+$('#catatan').val()+'</td></tr>';
             
             $('#table_identitas > tbody:last-child').append(new_row);
         }else{
-            $('#jenis_'+key).text($('#jenis').val());
+            $('#jenis_id_'+key).text(tampungahJenis[0]);
+            $('#jenis_'+key).text(tampungahJenis[1]);
             $('#nomor_'+key).text($('#nomor').val());
             $('#catatan_'+key).text($('#catatan').val());
             $('#identitas_id_'+key).text($('#identitas_id').val());
@@ -650,11 +656,12 @@
     // untuk komponen
     function open_komponen(key){
         if(key===''){
+            //ini ambil dari <tr id= yang terakir misal terakir komponen_2 ya id= komponen_2 >
             var last_id=($('#table_komponen tr:last').attr('id'));
             if(typeof last_id === 'undefined') {
                 var last_id=0;
             }else{
-                var last_id=parseInt(last_id)+1
+                var last_id=parseInt(($('#table_komponen tr:last').attr('id').split('_')[1]))+1
             }
             var idx=last_id;
             $('#nama_komponen').val('');
@@ -714,6 +721,84 @@
     }
 
   $(document).ready(function() {
+//             var url = $("#formDataKaryawan").attr('action');
+// alert(url);
+        $('#formDataKaryawan').on('submit',function(e){
+            // var formData = new FormData(document.getElementById('formDataKaryawan'));
+            var formData = new FormData(this);
+            var array_identitas=[];
+            var myjson_identitas;
+            
+            $('#table_identitas > tbody  > tr').each(function(idx) {
+                var id=$(this).attr('id');
+                if(typeof id !== 'undefined') {
+                    myjson_identitas='{"identitas_id":'+JSON.stringify($('#identitas_id_'+id).text())+', "m_jenis_identitas_id":'+JSON.stringify($('#jenis_id_'+id).text())+', "nomor":'+JSON.stringify($('#nomor_'+id).text())+', "catatan":'+JSON.stringify($('#catatan_'+id).text())+'}';
+                    var obj=JSON.parse(myjson_identitas);
+                    array_identitas.push(obj);
+                }
+            });
+            console.log(array_identitas);
+            formData.append('identitas', JSON.stringify(array_identitas));
+            // for (const entry of formData.entries()) {
+            //     console.log(entry[0], entry[1]);
+            // }
+            
+            
+            // untuk komponen
+            var array_komponen=[];
+            var myjson_komponen;
+            
+            $('#table_komponen > tbody  > tr').each(function(idx) {
+                var id=$(this).attr('id').split('_')[1];
+                if(typeof id !== 'undefined') {
+                    myjson_komponen='{"komponen_id":'+JSON.stringify($('#komponen_id_'+id).text())+', "nama":'+JSON.stringify($('#nama_'+id).text())+', "nominal":'+JSON.stringify($('#nominal_'+id).text())+', "is_aktif":'+JSON.stringify($('#is_aktif_'+id).text())+'}';
+                    var obj=JSON.parse(myjson_komponen);
+                    array_komponen.push(obj);
+                }
+            });
+            console.log(array_komponen);
+            formData.append('komponen', JSON.stringify(array_komponen));
+
+            var url = $(this).attr('action');
+
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: url,
+                data: formData,
+                dataType: 'JSON',
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(response) {
+                    if (response.hasOwnProperty('id')) {
+                        toastr.success(response.message);
+
+                        window.location.href = '{{ route("karyawan.index") }}';
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                 error: function (xhr, status, error) {
+                    if (xhr.responseJSON && xhr.responseJSON.errorsCatch) {
+                        var pesanError = xhr.responseJSON.errorsCatch;
+
+                        for (var i in pesanError) {
+                            toastr.error(pesanError[i]);
+                        }
+
+                    } else {
+                        toastr.error("Terjadi kesalahan saat mengirim data. " + error);
+                    }
+
+                    console.log("XHR status:", status);
+                    console.log("Error:", error);
+                    console.log("Response:", xhr.responseJSON);
+                }
+            });
+    
+        });
+           
          $('#tanggal_lahir').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
@@ -726,8 +811,24 @@
             format: "dd-M-yyyy",
             todayHighlight: true,
             language:'en',
-            endDate: "0d"
+            // endDate: "0d"
         });
+        $('#tanggal_kontrak').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language:'en',
+            // endDate: "0d"
+        });
+        $('#tanggal_selesai_kontrak').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language:'en',
+            // endDate: "0d"
+        });
+
+        
         $('#check_is_keluar').click(function(){
             if($(this).is(":checked")){
                 $('#is_keluar').val('Y');
@@ -887,6 +988,8 @@
      $('#Tetap').click(function() {
       if ($(this).prop('checked')) {
         $('#tglKontrakMulai, #tglKontrakSelesai').hide();
+        $('#tanggal_kontrak, #tanggal_selesai_kontrak').val('');
+
       }
      });
   

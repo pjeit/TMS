@@ -53,6 +53,8 @@ class KasBankController extends Controller
     public function store(Request $request)
     {
         //
+        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+
         try {
 
             $pesanKustom = [
@@ -73,14 +75,14 @@ class KasBankController extends Controller
                 'tgl_saldo' => 'required'
                 // 'catatan' => 'required',
             ], $pesanKustom);
-        $data = $request->collect();
-        $tanggal = explode('-', $data['tgl_saldo']);
-            // dd($tanggal);
+            $data = $request->collect();
+            $tanggal = explode('-', $data['tgl_saldo']);
+                // dd($tanggal);
 
-        $tahun =$tanggal[0];
-        $bulan =$tanggal[1];
-        $tanggal =$tanggal[2];
-        $gabungan = $tahun.'/'. $bulan.'/'. $tanggal ;
+            $tahun =$tanggal[0];
+            $bulan =$tanggal[1];
+            $tanggal =$tanggal[2];
+            $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
             DB::table('kas_bank')
                 ->insert(array(
                     'nama' => $data['nama'],
@@ -93,9 +95,9 @@ class KasBankController extends Controller
                     'bank' => $data['bank']==null ? null : $data['bank'],
                     'cabang' => $data['cabang']==null ? null : $data['cabang'],
                     'created_at'=>VariableHelper::TanggalFormat(), 
-                    'created_by'=> 1,// masih hardcode nanti diganti cookies
+                    'created_by'=> $user,
                     'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> 1,// masih hardcode nanti diganti cookies
+                    'updated_by'=> $user,
                     'is_aktif' => "Y",
 
                 )
@@ -154,6 +156,8 @@ class KasBankController extends Controller
     {
         //
            //
+        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+
            try {
             $pesanKustom = [
              
@@ -181,7 +185,7 @@ class KasBankController extends Controller
         $tahun =$tanggal[0];
         $bulan =$tanggal[1];
         $tanggal =$tanggal[2];
-        $gabungan = $tahun.'/'. $bulan.'/'. $tanggal ;
+        $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
         
             // dd($data);
             DB::table('kas_bank')
@@ -196,10 +200,8 @@ class KasBankController extends Controller
                     'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
                     'bank' => $data['bank']==null ? null : $data['bank'],
                     'cabang' => $data['cabang']==null ? null : $data['cabang'],
-                    'created_at'=>VariableHelper::TanggalFormat(), 
-                    'created_by'=> 1,// masih hardcode nanti diganti cookies
                     'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> 1,// masih hardcode nanti diganti cookies
+                    'updated_by'=> $user,
                     'is_aktif' => "Y",
                 )
             );
@@ -219,13 +221,15 @@ class KasBankController extends Controller
     public function destroy(KasBank $KasBank)
     {
         //
+        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+
         try{
             DB::table('kas_bank')
             ->where('id', $KasBank['id'])
             ->update(array(
                 'is_aktif' => "N",
                 'updated_at'=> VariableHelper::TanggalFormat(),
-                'updated_by'=> 1, // masih hardcode nanti diganti cookies
+                'updated_by'=> $user, // masih hardcode nanti diganti cookies
               )
             );
              return redirect()->route('kas_bank.index')->with('status','Sukses Menghapus Data Kas!');

@@ -147,7 +147,7 @@
         drops: "up",
         singleDatePicker: true,
         showDropdowns: true,
-        autoApply: false,
+        autoApply: true,
         startDate: moment(), // Set the initial date to today
         // timePicker: true, 
         // timePicker24Hour: true, 
