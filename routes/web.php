@@ -51,6 +51,8 @@ Route::resource('customer', 'App\Http\Controllers\CustomerController');
 Route::resource('role', 'App\Http\Controllers\RoleController');
 
 Route::resource('users', 'App\Http\Controllers\UsersController');
+Route::resource('grup_member', 'App\Http\Controllers\GrupMemberController');
+
 
 // ========================================== master ==================================================
 

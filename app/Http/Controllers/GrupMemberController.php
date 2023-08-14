@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Grup;
 use App\Models\GrupMember;
+use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\DB;
 
 class GrupMemberController extends Controller
 {
@@ -14,9 +18,15 @@ class GrupMemberController extends Controller
      */
     public function index()
     {
-        $data = GrupMember::where('is_aktif', 'Y')->get();
 
-            return view('pages.master.customer.index',[
+        $data = DB::table('grup_member as gm')
+                        ->leftJoin('grup as g', 'gm.grup_id', '=', 'g.id')
+                        ->leftJoin('role as r', 'gm.role_id', '=', 'r.id')
+                        ->select('gm.*', 'g.nama_grup as nama_grup', 'r.nama as nama_role')
+                        ->where('gm.is_aktif', '=', "Y")
+                        ->get();
+        
+        return view('pages.master.grup_member.index',[
             'judul' => "Grup Member",
             'data' => $data,
         ]);
@@ -29,7 +39,14 @@ class GrupMemberController extends Controller
      */
     public function create()
     {
-        //
+        $grup = Grup::where('is_aktif', 'Y')->get();
+        $role = Role::where('is_aktif', 'Y')->get();
+
+        return view('pages.master.grup_member.create',[
+            'judul' => "Grup Member",
+            'grup' => $grup,
+            'role' => $role,
+        ]);
     }
 
     /**
@@ -40,7 +57,37 @@ class GrupMemberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $pesanKustom = [
+                'nama.required' => 'Nama Harus diisi!',
+                'grup_id.required' => 'Grup Harus diisi!',
+                'role_id.required' => 'Role Harus diisi!',
+            ];
+            
+            $request->validate([
+                'nama' => 'required',
+                'grup_id' => 'required',
+                'role_id' => 'required',
+            ], $pesanKustom);
+
+            $user = 1;
+
+            $new_customer = new GrupMember();
+            $new_customer->grup_id = $request->grup_id;
+            $new_customer->role_id = $request->role_id;
+            $new_customer->nama = $request->nama;
+            $new_customer->no_rek = $request->no_rek;
+            $new_customer->telp1 = $request->telp1;
+            $new_customer->telp2 = $request->telp2;
+            $new_customer->created_by = $user;
+            $new_customer->created_at = now();
+            $new_customer->is_aktif = 'Y';
+            $new_customer->save();
+
+            return redirect()->route('grup_member.index')->with('status','Success!!');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
     }
 
     /**
@@ -62,7 +109,16 @@ class GrupMemberController extends Controller
      */
     public function edit(GrupMember $grupMember)
     {
-        //
+        $grup = Grup::where('is_aktif', 'Y')->get();
+        $role = Role::where('is_aktif', 'Y')->get();
+        $data = $grupMember;
+
+        return view('pages.master.grup_member.edit',[
+            'judul' => "Grup Member",
+            'data' => $data,
+            'grup' => $grup,
+            'role' => $role,
+        ]);
     }
 
     /**
@@ -74,7 +130,36 @@ class GrupMemberController extends Controller
      */
     public function update(Request $request, GrupMember $grupMember)
     {
-        //
+        try {
+            $pesanKustom = [
+                'nama.required' => 'Nama Harus diisi!',
+                'grup_id.required' => 'Grup Harus diisi!',
+                'role_id.required' => 'Role Harus diisi!',
+            ];
+            
+            $request->validate([
+                'nama' => 'required',
+                'grup_id' => 'required',
+                'role_id' => 'required',
+            ], $pesanKustom);
+
+            $user = 1;
+
+            $grupMember->grup_id = $request->grup_id;
+            $grupMember->role_id = $request->role_id;
+            $grupMember->nama = $request->nama;
+            $grupMember->no_rek = $request->no_rek;
+            $grupMember->telp1 = $request->telp1;
+            $grupMember->telp2 = $request->telp2;
+            $grupMember->updated_by = $user;
+            $grupMember->updated_at = now();
+            $grupMember->is_aktif = 'Y';
+            $grupMember->save();
+
+            return redirect()->route('grup_member.index')->with('status','Success!!');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
     }
 
     /**
@@ -85,6 +170,12 @@ class GrupMemberController extends Controller
      */
     public function destroy(GrupMember $grupMember)
     {
-        //
+        $user = 1;
+        $grupMember->updated_by = $user;
+        $grupMember->updated_at = now();
+        $grupMember->is_aktif = "N";
+        $grupMember->save();
+
+        return redirect()->route('grup_member.index')->with('status','Success!!');
     }
 }

@@ -19,7 +19,7 @@ class CustomerController extends Controller
     {
         $data = Customer::where('is_aktif', 'Y')->get();
 
-            return view('pages.master.customer.index',[
+        return view('pages.master.customer.index',[
             'judul' => "Customer",
             'data' => $data,
         ]);
@@ -203,7 +203,6 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        //
         $user = 1;
         $customer->updated_by = $user;
         $customer->updated_at = now();
@@ -211,6 +210,5 @@ class CustomerController extends Controller
         $customer->save();
 
         return redirect()->route('customer.index')->with('status','Success!!');
-
     }
 }
