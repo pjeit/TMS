@@ -231,20 +231,20 @@ class UsersController extends Controller
      * @param  \App\Models\Users  $users
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Users $users)
+    public function destroy(Users $user)
     {
         //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $useras = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
         try{
             DB::table('role')
-            ->where('id', $users['id'])
+            ->where('id', $user['id'])
             ->update(array(
                 'is_aktif' => "N",
                 'updated_at'=> VariableHelper::TanggalFormat(),
-                'updated_by'=> $user, // masih hardcode nanti diganti cookies
+                'updated_by'=> $useras, // masih hardcode nanti diganti cookies
               )
             );
-             return redirect()->route('users.index')->with('status','Sukses Menghapus Data Kas!');
+             return redirect()->route('users.index')->with('status','Sukses Menghapus Data User!');
 
         }
         catch (ValidationException $e) {
