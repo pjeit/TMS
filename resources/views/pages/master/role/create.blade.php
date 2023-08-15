@@ -52,7 +52,7 @@
                             <label for="nama_jenis">Nama Role</label>
                             <input required type="text" placeholder="contoh: Admin Staff"  name="nama" class="form-control" value="{{old('nama','')}}" >                         
                         </div>
-                        <a href="{{ route('kas_bank.index') }}" class="btn btn-info"><strong>Kembali</strong></a>
+                        <a href="{{ route('role.index') }}" class="btn btn-info"><strong>Kembali</strong></a>
                         <button type="submit" class="btn btn-success"><strong>Simpan</strong></button>
                     </div>
                 </div>

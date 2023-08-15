@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UsersController extends Controller
 {
@@ -17,21 +19,25 @@ class UsersController extends Controller
      */
     public function index()
     {
-        //
-         
-          $dataUser = DB::table('user')
-            ->select('user.id','user.username','role.nama as role','karyawan.nama_panggilan','m_kota.nama as kota')
-            ->leftJoin('role', 'user.role_id', '=', 'role.id')
-            ->leftJoin('karyawan', 'user.karyawan_id', '=', 'karyawan.id')
-            ->leftJoin('m_kota','karyawan.m_kota_id','=','m_kota.id')
-            ->where(function ($query) {
-                $query->where('karyawan.is_aktif', '=', 'Y')
-                    ->where('karyawan.is_keluar', '=', 'N')
-                    ->where('role.is_aktif', '=', 'Y')
-                    ->where('user.is_aktif', '=', 'Y');
-            })
-            ->orWhereNull('user.karyawan_id')
-            ->get();
+        $dataUser = DB::select(DB::raw("SELECT user.id,user.username as 'username',role.nama as 'role',karyawan.nama_panggilan,m_kota.nama as 'kota' 
+                                FROM user
+                                left join karyawan on user.karyawan_id = karyawan.id
+                                left JOIN m_kota on karyawan.m_kota_id = m_kota.id
+                                LEFT JOIN role on user.role_id = role.id
+                                where user.is_aktif = 'Y'  or  user.is_aktif = 'Y' and user.karyawan_id is null"));
+        //   $dataUser = DB::table('user')
+        //     ->select('user.id','role.nama as role','karyawan.nama_panggilan')
+        //     // ->select('user.id','user.username','role.nama as role','karyawan.nama_panggilan','m_kota.nama as kota')
+        //     ->leftJoin('role', 'user.role_id', '=', 'role.id')
+        //     ->leftJoin('karyawan', 'user.karyawan_id', '=', 'karyawan.id')
+        //     // ->leftJoin('m_kota','karyawan.m_kota_id','=','m_kota.id')
+        //     ->where('karyawan.is_aktif', 'Y')
+        //     ->where('karyawan.is_keluar', '=', 'N')
+        //     ->where('role.is_aktif', '=', 'Y')
+        //     ->where('user.is_aktif', '=', 'Y')
+        //     // ->orWhereNull('user.karyawan_id')
+        //     ->get();
+            // var_dump($dataUser); die;
 
         //    $dataUser = DB::table('users')
         //     ->select('users.*')
@@ -39,6 +45,7 @@ class UsersController extends Controller
         //     ->get();
 
         // bee pakek kasih ae
+        // dd($dataUser);
           $dataKaryawan = DB::table('karyawan')
             ->select('karyawan.*')
             ->where('karyawan.is_aktif', '=', "Y")
@@ -99,7 +106,7 @@ class UsersController extends Controller
     public function store(Request $request)
     {
         //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
 
@@ -119,7 +126,8 @@ class UsersController extends Controller
             DB::table('user')
                 ->insert(array(
                     'username' => $data['username'],
-                    'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+                    // 'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+                    'password' => Hash::make($data['password']),
                     'role_id' => $data['role'],
                     'karyawan_id' => ($data['karyawan']==null)?null:$data['karyawan'],
                     'created_at'=>VariableHelper::TanggalFormat(), 
@@ -130,7 +138,7 @@ class UsersController extends Controller
 
                 )
             ); 
-            return redirect()->route('users.index')->with('status','Sukses menambahkan role baru!!');
+            return redirect()->route('users.index')->with('status','Sukses menambahkan user baru!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -187,7 +195,7 @@ class UsersController extends Controller
     {
         //
           //
-        $usersCrt = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $usersCrt = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
             $pesanKustom = [
@@ -234,7 +242,7 @@ class UsersController extends Controller
     public function destroy(Users $user)
     {
         //
-        $useras = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $useras = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         try{
             DB::table('role')
             ->where('id', $user['id'])

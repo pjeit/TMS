@@ -65,6 +65,18 @@
                         <label for="">Merk & Model</label>
                         <input required type="text" name="merk_model" class="form-control" value="{{$data->merk_model}}" >
                     </div>           
+                    <div class="form-group">
+                        <label for="tipe">Kepemilikan</label>
+                        <br>
+                        <div class="icheck-primary d-inline">
+                            <input id="PJE" type="radio" name="kepemilikan" value="PJE" {{'PJE' == old('kepemilikan',$data->kepemilikan)? 'checked' :'' }}>
+                            <label class="form-check-label" for="PJE">PJE</label>
+                        </div>
+                        <div class="icheck-primary d-inline ml-5">
+                            <input id="rekanan" type="radio" name="kepemilikan" value="Rekanan" {{'Rekanan' == old('kepemilikan',$data->kepemilikan)? 'checked' :'' }}>
+                            <label class="form-check-label" for="rekanan">Rekanan</label><br>
+                        </div>
+                    </div>    
                 </div>
             </div>
         </div>
@@ -110,6 +122,7 @@
                             @endforeach
                         </select>
                     </div>   
+                    
                 </div>
             </div>
         </div>

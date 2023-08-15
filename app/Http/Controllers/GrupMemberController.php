@@ -8,6 +8,7 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class GrupMemberController extends Controller
 {
@@ -70,7 +71,7 @@ class GrupMemberController extends Controller
                 'role_id' => 'required',
             ], $pesanKustom);
 
-            $user = 1;
+            $user = Auth::user()->id;
 
             $new_customer = new GrupMember();
             $new_customer->grup_id = $request->grup_id;
@@ -143,7 +144,7 @@ class GrupMemberController extends Controller
                 'role_id' => 'required',
             ], $pesanKustom);
 
-            $user = 1;
+            $user = Auth::user()->id;
 
             $grupMember->grup_id = $request->grup_id;
             $grupMember->role_id = $request->role_id;
@@ -170,7 +171,7 @@ class GrupMemberController extends Controller
      */
     public function destroy(GrupMember $grupMember)
     {
-        $user = 1;
+        $user = Auth::user()->id;
         $grupMember->updated_by = $user;
         $grupMember->updated_at = now();
         $grupMember->is_aktif = "N";

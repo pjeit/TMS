@@ -8,6 +8,7 @@ use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
@@ -54,6 +55,7 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user()->id;
         try {
             $pesanKustom = [
                 'nama.required' => 'Nama Harus diisi!',
@@ -77,9 +79,9 @@ class SupplierController extends Controller
             $supplier->cabang = $request->cabang;
             $supplier->catatan = $request->catatan;
             $supplier->created_at = date("Y-m-d h:i:s");
-            $supplier->created_by = 1; // manual
+            $supplier->created_by = $user; // manual
             $supplier->updated_at = date("Y-m-d h:i:s");
-            $supplier->updated_by = 1; // manual
+            $supplier->updated_by = $user; // manual
             $supplier->is_aktif = "Y";
             $supplier->save();
 
@@ -129,6 +131,7 @@ class SupplierController extends Controller
      */
     public function update(Request $request, Supplier $supplier)
     {
+        $user = Auth::user()->id;
         try {
             $pesanKustom = [
                 'nama.required' => 'Nama Harus diisi!',
@@ -154,7 +157,7 @@ class SupplierController extends Controller
                     'cabang' => $data['cabang'],
                     'catatan' => $data['catatan'],
                     'updated_at'=> date("Y-m-d h:i:s"),
-                    'updated_by'=> 1,// masih hardcode nanti diganti cookies
+                    'updated_by'=> $user,// masih hardcode nanti diganti cookies
                     'is_aktif' => "Y",
                 )
             );
@@ -172,12 +175,13 @@ class SupplierController extends Controller
      */
     public function destroy(Supplier $supplier)
     {
+        $user = Auth::user()->id;
         DB::table('supplier')
         ->where('id', $supplier['id'])
         ->update(array(
             'is_aktif' => "N",
             'updated_at'=> date("Y-m-d h:i:s"),
-            'updated_by'=> 1, // masih hardcode nanti diganti cookies
+            'updated_by'=> $user, // masih hardcode nanti diganti cookies
           )
         );
         return redirect()->route('supplier.index')->with('status','Berhasil menghapus data!');

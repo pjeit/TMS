@@ -7,6 +7,7 @@ use App\Models\Grup;
 use App\Models\M_Kota;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -61,7 +62,7 @@ class CustomerController extends Controller
                 'kode' => 'required',
                 'nama' => 'required',
             ], $pesanKustom);
-            $user = 1;
+            $user = Auth::user()->id;
             $max_kredit = ($request['maks_kredit'] != '-')? floatval(str_replace(',', '', $request['maks_kredit'])):0;
 
             $new_customer = new Customer();
@@ -147,7 +148,7 @@ class CustomerController extends Controller
                 'kode' => 'required',
                 'nama' => 'required',
             ], $pesanKustom);
-            $user = 1;
+            $user = Auth::user()->id;
             $max_kredit = ($request['max_kredit'] != '-')? floatval(str_replace(',', '', $request['max_kredit'])):0;
             $temp_max_kredit = $customer->max_kredit;
             
@@ -203,7 +204,7 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        $user = 1;
+        $user = Auth::user()->id;
         $customer->updated_by = $user;
         $customer->updated_at = now();
         $customer->is_aktif = "N";

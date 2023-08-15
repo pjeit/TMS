@@ -1,20 +1,23 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
+{{-- <aside class="main-sidebar elevation-4 sidebar-light-primary"> --}}
+
   <!-- Brand Logo -->
-  <a href="/home" class="brand-link d-flex align-items-center">
+  <a href="/home" class="brand-link d-flex align-items-center bg-primary" >
     <img src="{{ asset('img/pje.jpg') }}" alt="PJE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text font-weight-light small mx-2 text-bold">Primatrans Jaya Express</span>
+    <span class="brand-text small mx-2 text-bold" >Primatrans Jaya Express</span>
   </a>
 
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-      <!-- <div class="image">
-        <img src="{{asset('assets/dist/img/user2-160x160.jpg')}}" class="img-circle elevation-2" alt="User Image">
-      </div> -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex justify-content-center align-items-center">
+      @php
+          $username = Auth::user()->username;
+          $rolex = '';
+          $rolex = Auth::user()->getRole();
+      @endphp
       <div class="info">
-        <a class="d-block text-white"> <span class="text-bold">Username</span> (Super User)</a>
-
+        <a class="d-block text-white " > <span class="text-bold ">{{$username}}</span> ( {{$rolex}} )</a>
       </div>
     </div>
 
@@ -38,7 +41,7 @@
         <!-- =================================================== -->
 
         <li class="nav-item">
-          <a href="#" class="nav-link">
+          <a href="#" class="nav-link" style="font-weight: 700;">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
               Dashboard
@@ -108,162 +111,249 @@
 
         <!-- <li class="nav-header">MASTER</li> -->
        
-          <li class="nav-item 
-          {{ request()->is('grup*')||
-          request()->is('grup_member*')||
-          request()->is('customer*')||
-          request()->is('head*')||
-          request()->is('chassis*')||
-          request()->is('supplier*')||
-          request()->is('karyawan*')||
-          request()->is('coa*')||
-          request()->is('kas_bank*')||
-          request()->is('role*')||
-          request()->is('users*')||
-          request()->is('pengaturan_sistem*')
-          ? 'menu-is-opening menu-open' : '' }}">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fas fa-key"></i>
-            <p>MASTER
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
+        {{-- menu admin --}}
+        @php
+            $user_role = Auth::user()->role_id;
+            $role = array(1,2,3,4);
+        @endphp
 
-            <li class="nav-item">
-              <a href="{{route('grup.index')}}" class="nav-link {{request()->url() === route('grup.index')? ' active' : '' }} ">
-              <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                <p>
-                  Grup
-                </p>
-              </a>
-            </li>
-{{-- {{request()->url() === route('karyawan.index') ? ' active' : '' }}  --}}
-            <li class="nav-item">
-              <a href="{{route('grup_member.index')}}" class="nav-link {{ request()->url() === route('grup_member.index')? ' active' : '' }} ">
-              <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                <p>
-                  Grup Member
-                </p>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a href="{{route('customer.index')}}" class="nav-link {{request()->is('customer*') ? ' active' : '' }} ">
-              <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                <p>
-                  Customer
-                </p>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a href="{{route('head.index')}}" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
-              <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
-                <p>
-                  Head
-                </p>
-              </a>
-            </li>
-
-            <li class="nav-item">
-              <a href="{{route('chassis.index')}}" class="nav-link {{request()->is('chassis*') ? ' active' : '' }} ">
-              <i class="far nav-icon fa fa-square" style="font-size: 15px;"></i>
-                <p>
-                  Chassis
-                </p>
-              </a>
-            </li>
-     
-            <li class="nav-item">
-              <a href="{{route('supplier.index')}}" class="nav-link {{request()->is('supplier*') ? ' active' : '' }} ">
-              <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                <p>
-                  Supplier
-                </p>
-              </a>
-            </li>
-         
-            <li class="nav-item">
-              <a href="{{route('karyawan.index')}}" class="nav-link {{request()->is('karyawan*') ? ' active' : '' }} ">
-              <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                <p>
-                  Karyawan
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{route('coa.index')}}" class="nav-link {{request()->is('coa*') ? ' active' : '' }} ">
-              <i class="far nav-icon"></i>
-                <p>
-                  COA
-                </p>
-              </a>
-            </li> 
-            
-            <li class="nav-item">
-              <a href="{{route('kas_bank.index')}}" class="nav-link {{request()->is('kas_bank*') ? ' active' : '' }}">
-                <i class="far nav-icon"></i>
-                <p>
-                  Kas / Bank
-                </p>
-              </a>
-            </li> 
-            <li class="nav-item">
-              <a href="{{route('role.index')}}" class="nav-link {{request()->is('role*') ? ' active' : '' }}">
-                <i class="far nav-icon"></i>
-                <p>
-                  Role
-                </p>
-              </a> 
-            </li>
-            <li class="nav-item">
-              <a href="{{route('users.index')}}" class="nav-link {{request()->is('users*') ? ' active' : '' }}">
-                <i class="far nav-icon"></i>
-                <p>
-                  User
-                </p>
-              </a> 
-            </li>
-            <li class="nav-item">
-              <a href="{{route('pengaturan_sistem.index')}}" class="nav-link {{request()->is('pengaturan_sistem*') ? ' active' : '' }} ">
-              <i class="far nav-icon"></i>
-                <p>
-                  Pengaturan Sistem
-                </p>
-              </a> 
-            </li> 
-            <li class="nav-item">
-                <a href="#" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>
-                    Level 2
-                    <i class="right fas fa-angle-left"></i>
+        @if (in_array($user_role, $role))
+          @if ($user_role == 1 || $user_role == 2)
+            <li class="nav-item 
+                {{ request()->is('grup*')||
+                request()->is('grup_member*')||
+                request()->is('customer*')||
+                request()->is('head*')||
+                request()->is('chassis*')||
+                request()->is('supplier*')||
+                request()->is('karyawan*')||
+                request()->is('coa*')||
+                request()->is('kas_bank*')||
+                request()->is('role*')||
+                request()->is('users*')||
+                request()->is('pengaturan_sistem*')
+                ? 'menu-is-opening menu-open' : '' }}">
+                <a href="#" class="nav-link" style="font-weight: 700;">
+                  <i class="nav-icon fas fa-key"></i>
+                  <p>MASTER 
+                    <i class="fas fa-angle-left right"></i>
                   </p>
                 </a>
-                <ul class="nav nav-treeview">
-                  <li class="nav-item">
+              <ul class="nav nav-treeview">
+
+                <li class="nav-item">
+                  <a href="{{route('grup.index')}}" class="nav-link {{request()->url() === route('grup.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Grup
+                    </p>
+                  </a>
+                </li>
+                  {{-- {{request()->url() === route('karyawan.index') ? ' active' : '' }}  --}}
+                <li class="nav-item">
+                  <a href="{{route('grup_member.index')}}" style="font-weight: 500;" class="nav-link {{ request()->url() === route('grup_member.index')? ' active' : '' }} ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Grup Member
+                    </p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a href="{{route('customer.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('customer*') ? ' active' : '' }} ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Customer
+                    </p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a href="{{route('head.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
+                  <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                    <p>
+                      Head
+                    </p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a href="{{route('chassis.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('chassis*') ? ' active' : '' }} ">
+                  <i class="far nav-icon fa fa-square" style="font-size: 15px;"></i>
+                    <p>
+                      Chassis
+                    </p>
+                  </a>
+                </li>
+        
+                <li class="nav-item">
+                  <a href="{{route('supplier.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('supplier*') ? ' active' : '' }} ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Supplier
+                    </p>
+                  </a>
+                </li>
+            
+                <li class="nav-item">
+                  <a href="{{route('karyawan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('karyawan*') ? ' active' : '' }} ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Karyawan
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{route('coa.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('coa*') ? ' active' : '' }} ">
+                  <i class="far nav-icon"></i>
+                    <p>
+                      COA
+                    </p>
+                  </a>
+                </li> 
+                
+                <li class="nav-item">
+                  <a href="{{route('kas_bank.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('kas_bank*') ? ' active' : '' }}">
+                    <i class="far nav-icon"></i>
+                    <p>
+                      Kas / Bank
+                    </p>
+                  </a>
+                </li> 
+                <li class="nav-item">
+                  <a href="{{route('role.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('role*') ? ' active' : '' }}">
+                    <i class="far nav-icon"></i>
+                    <p>
+                      Role
+                    </p>
+                  </a> 
+                </li>
+                <li class="nav-item">
+                  <a href="{{route('users.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('users*') ? ' active' : '' }}">
+                    <i class="far nav-icon"></i>
+                    <p>
+                      User
+                    </p>
+                  </a> 
+                </li>
+                <li class="nav-item">
+                  <a href="{{route('pengaturan_sistem.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pengaturan_sistem*') ? ' active' : '' }} ">
+                  <i class="far nav-icon"></i>
+                    <p>
+                      Pengaturan Sistem
+                    </p>
+                  </a> 
+                </li> 
+                <li class="nav-item">
                     <a href="#" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Level 3</p>
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>
+                        Level 2
+                        <i class="right fas fa-angle-left"></i>
+                      </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="#" class="nav-link">
+                          <i class="far fa-dot-circle nav-icon"></i>
+                          <p>Level 3</p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="#" class="nav-link">
+                          <i class="far fa-dot-circle nav-icon"></i>
+                          <p>Level 3</p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="#" class="nav-link">
+                          <i class="far fa-dot-circle nav-icon"></i>
+                          <p>Level 3</p>
+                        </a>
+                      </li>
+                    </ul>
                   </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Level 3</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-dot-circle nav-icon"></i>
-                      <p>Level 3</p>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-          </ul>
-        </li>
+              </ul>
+            </li>
+          @endif
+
+          @if ($user_role == 1 || $user_role == 3)
+            {{-- menu marketing --}}
+            <li class="nav-item">
+              <a href="#" class="nav-link" style="font-weight: 700;">
+                <i class="nav-icon fas fa-key"></i>
+                <p>Menu Marketing
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{url('marketing1')}}" style="font-weight: 500;" class="nav-link ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Menu Marketing 1
+                    </p>
+                  </a>
+                <li class="nav-item">
+                  <a href="{{url('marketing2')}}" style="font-weight: 500;" class="nav-link ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Menu Marketing 2
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{url('marketing3')}}" style="font-weight: 500;" class="nav-link ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Menu Marketing 3
+                    </p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          @endif
+
+          @if ($user_role == 1 || $user_role == 4)
+            {{-- menu finnance --}}
+            <li class="nav-item">
+              <a href="#" class="nav-link" style="font-weight: 700;">
+                <i class="nav-icon fas fa-key"></i>
+                <p>Menu Finnance
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{url('finnance1')}}" style="font-weight: 500;" class="nav-link ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Menu Finnance 1
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{url('finnance2')}}" style="font-weight: 500;" class="nav-link ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Menu Finnance 2
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{url('finnance3')}}" style="font-weight: 500;" class="nav-link ">
+                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                    <p>
+                      Menu Finnance 3
+                    </p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          @endif
+
+        @endif
+
 
         <!-- <li class="nav-item">
           <a href="" class="nav-link">

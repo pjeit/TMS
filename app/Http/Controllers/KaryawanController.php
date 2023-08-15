@@ -11,6 +11,7 @@ use Intervention\Image\Facades\Image;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Mockery\Undefined;
+use Illuminate\Support\Facades\Auth;
 
 class KaryawanController extends Controller
 {
@@ -76,7 +77,7 @@ class KaryawanController extends Controller
     public function store(Request $request)
     {
         //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         
         try {
 
@@ -191,7 +192,7 @@ class KaryawanController extends Controller
                     'm_kota_id'=>$data['cabang_kantor'],
                     'saldo_cuti'=>$data['sisa_cuti'],
 
-                    'gaji'=>str_replace(',', '',$data['gaji']),
+                    'gaji'=>($data['gaji'])?str_replace(',', '',$data['gaji']):null,
                     'is_keluar'=>($data['is_keluar'] == 'Y')?'Y':'N',
                     'tgl_keluar'=>($data['is_keluar'] == 'Y')?date_format($tanggal_keluar, 'Y-m-d'):null,
                     // end data status Karyawan
@@ -241,6 +242,9 @@ class KaryawanController extends Controller
             
                 }
             }
+            // var_dump($data['gaji']);
+            // var_dump( response()->json(['message' => 'Berhasil menambahkan data karyawan', 'id' => $idKaryawan]));
+
             return response()->json(['message' => 'Berhasil menambahkan data karyawan', 'id' => $idKaryawan]);
 
             // return redirect()->route('karyawan.index')->with('status','Success!!');
@@ -329,7 +333,7 @@ class KaryawanController extends Controller
     {
         //
           //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         
         try {
 
@@ -402,7 +406,7 @@ class KaryawanController extends Controller
             ->where('id', $karyawan['id'])
                 ->update(array(
                     // data pribadi
-                    'foto' => ($request->hasFile('foto'))?$path:null ,
+                    'foto' => ($request->hasFile('foto'))?$path:$fotoPathDariDB ,
                     'nik' => $data['nik'],
                     'nama_panggilan' => $data['nama_panggilan'],
                     'nama_lengkap' => $data['nama_lengkap'],
@@ -445,7 +449,7 @@ class KaryawanController extends Controller
                     'm_kota_id'=>$data['cabang_kantor'],
                     'saldo_cuti'=>$data['sisa_cuti'],
 
-                    'gaji'=>str_replace(',', '',$data['gaji']),
+                    'gaji'=>($data['gaji'])?str_replace(',', '',$data['gaji']):null,
                     'is_keluar'=>($data['is_keluar'] == 'Y')?'Y':'N',
                     'tgl_keluar'=>($data['is_keluar'] == 'Y')?date_format($tanggal_keluar, 'Y-m-d'):null,
                     // end data status Karyawan
@@ -578,7 +582,7 @@ class KaryawanController extends Controller
     {
         //
          //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try{
             DB::table('karyawan')

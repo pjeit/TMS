@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helper\VariableHelper;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class CoaController extends Controller
 {
@@ -55,7 +56,7 @@ class CoaController extends Controller
      */
     public function store(Request $request)
     {
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
             $pesanKustom = [
@@ -141,7 +142,7 @@ class CoaController extends Controller
     public function update(Request $request, Coa $coa)
     {
         //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
             $pesanKustom = [
@@ -188,7 +189,7 @@ class CoaController extends Controller
      */
     public function destroy(Coa $coa)
     {
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         DB::table('COA')
         ->where('id', $coa['id'])

@@ -55,4 +55,11 @@ class LoginController extends Controller
     {
         return 'name';
     }
+
+    public function login(){
+        die('xxx');
+        return view('auth.login',[
+            'judul' => "Chassis",
+        ]);
+    }
 }

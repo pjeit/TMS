@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\KasBank;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
+use Illuminate\Support\Facades\Auth;
 
 class KasBankController extends Controller
 {
@@ -53,7 +54,7 @@ class KasBankController extends Controller
     public function store(Request $request)
     {
         //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
 
@@ -138,7 +139,7 @@ class KasBankController extends Controller
         // if (!$updatedRecord) {
         //     return redirect()->route('kas_bank.index')->with('status', 'Data sedang diupdate oleh user lain');
         // }
-        dd($KasBank);
+        // dd($KasBank);
         return view('pages.master.kas_bank.edit',[
             'KasBank'=>$KasBank,
             'judul'=>"Kas Bank",
@@ -157,7 +158,7 @@ class KasBankController extends Controller
     {
         //
            //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
            try {
             $pesanKustom = [
@@ -222,7 +223,7 @@ class KasBankController extends Controller
     public function destroy(KasBank $KasBank)
     {
         //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try{
             DB::table('kas_bank')

@@ -7,6 +7,7 @@ use App\Models\M_Kas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\VarDumper\VarDumper;
+use Illuminate\Support\Facades\Auth;
 
 class PengaturanSistemController extends Controller
 {
@@ -96,6 +97,8 @@ class PengaturanSistemController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user=Auth::user()->id;
+
         $data = $request->collect();
         $update = PengaturanSistem::where('id', $id)->first();
         $update->uang_jajan = $data['uang_jalan'];
@@ -108,7 +111,7 @@ class PengaturanSistemController extends Controller
         $update->batas_pemutihan = $data['batas_pemutihan'];
         $update->hutang_karyawan = $data['hutang_karyawan'];
         $update->updated_at = date("Y-m-d h:i:s");
-        $update->updated_by = 1;
+        $update->updated_by = $user;
 
         $update->save();
 

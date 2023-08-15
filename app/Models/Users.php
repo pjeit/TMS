@@ -21,4 +21,10 @@ class Users extends Model
         'updated_by',
         'is_aktif',
     ];
+
+    public function getRole(){
+        // $role = Role::findOrFail($id);
+        $role = 'xx';
+        return $role;
+    }
 }

@@ -10,6 +10,7 @@ use App\Helper\VariableHelper;
 use App\Models\GrupTujuan;
 use App\Models\GrupTujuanBiaya;
 use Symfony\Component\VarDumper\VarDumper;
+use Illuminate\Support\Facades\Auth;
 
 class GrupController extends Controller
 {
@@ -71,7 +72,7 @@ class GrupController extends Controller
             $total_kredit = floatval(str_replace(',', '', $request['total_kredit']));
             $total_max_kredit = floatval(str_replace(',', '', $request['total_max_kredit']));
 
-            $user = 1;
+            $user = Auth::user()->id;
             $grup = new Grup();
             $grup->nama_grup = $request->nama_grup;
             $grup->nama_pic = $request->nama_pic;
@@ -185,6 +186,7 @@ class GrupController extends Controller
                 'detail_uang_jalan'=>json_encode($biaya),
                 );
         }
+        // dd($data_tujuan);
         return view('pages.master.grup.edit',[
             'judul' => "Grup",
             'data' => $data,
@@ -219,7 +221,7 @@ class GrupController extends Controller
                 ], $pesanKustom);
         
                 $data = $request->collect();
-                $user = 1;
+                $user = Auth::user()->id;
                     
                 $total_kredit = ($data['total_kredit'] != '-')? floatval(str_replace(',', '', $data['total_kredit'])):NULL;
                 $total_max_kredit = ($data['total_max_kredit'] != '-')? floatval(str_replace(',', '', $data['total_max_kredit'])):NULL;
@@ -412,8 +414,7 @@ class GrupController extends Controller
      */
     public function destroy(Grup $grup)
     {
-        $user = 1; // masih hardcode nanti diganti cookies
-
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies
         $del_grup = DB::table('grup')
                     ->where('id', $grup['id'])
                     ->update(array(

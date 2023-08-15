@@ -79,7 +79,7 @@
                             @endforeach
                         </select>
                     </div>
-                        <a href="{{ route('kas_bank.index') }}" class="btn btn-info"><strong>Kembali</strong></a>
+                        <a href="{{ route('users.index') }}" class="btn btn-info"><strong>Kembali</strong></a>
                         <button type="submit" class="btn btn-success"><strong>Simpan</strong></button>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
 
 <script type="text/javascript">
 function showpassowrd() {
-      var x = document.getElementById("user_password");
+      var x = document.getElementById("password");
       if (x.type === "password") {
         x.type = "text";
       } else {

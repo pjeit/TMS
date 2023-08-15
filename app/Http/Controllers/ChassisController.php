@@ -12,6 +12,7 @@ use App\Models\M_Kota;
 use App\Models\M_ModelChassis;
 use Mockery\Undefined;
 use Symfony\Component\VarDumper\VarDumper;
+use Illuminate\Support\Facades\Auth;
 
 class ChassisController extends Controller
 {
@@ -68,7 +69,7 @@ class ChassisController extends Controller
             ], $pesanKustom);
             
             // var_dump($request->post()['dokumen'] ); die;
-            $user = 1;
+            $user = Auth::user()->id;
             
             $chassis = new Chassis();
             $chassis->kode = $request->kode;
@@ -94,7 +95,7 @@ class ChassisController extends Controller
                     $dokumen->is_reminder = $item['is_reminder'];
                     $dokumen->reminder_hari = ($item['reminder_hari'] == '')? NULL:$item['reminder_hari'] ;
                     $dokumen->is_aktif = 'Y';
-                    $dokumen->created_by = 1; // nanti di edit
+                    $dokumen->created_by = $user; // nanti di edit
                     $dokumen->created_at = date("Y-m-d h:i:s");
                     $dokumen->save();
                 }
@@ -156,7 +157,7 @@ class ChassisController extends Controller
                 'kode' => 'required',
             ], $pesanKustom);
             
-            $user = 1;
+            $user = Auth::user()->id;
             $chassis = Chassis::where('is_aktif', 'Y')->findOrFail($chassis->id);
             $chassis->kode = $request->kode;
             $chassis->karoseri = $request->karoseri;
@@ -227,7 +228,7 @@ class ChassisController extends Controller
      */
     public function destroy(Chassis $chassis)
     {
-        $user = 1; // masih hardcode nanti diganti cookies
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies
 
         $off_chassis = DB::table('chassis')
             ->where('id', $chassis['id'])

@@ -35,7 +35,7 @@
                               <th>No. Mesin & Rangka</th>
                               <th>Merk & Model</th>
                               <th>Tahun & Warna</th>
-                              <th>Driver (tunggu menu karyawan)</th>
+                              <th>Driver</th>
                               <th>Aksi</th>
                             </tr>
                           </thead>
@@ -48,7 +48,7 @@
                                     <td>{{$item->no_mesin}} - {{$item->no_rangka}} </td>  
                                     <td>{{$item->merk_model}}</td>  
                                     <td>{{$item->tahun_pembuatan}} - {{$item->warna}} </td>  
-                                    <td>{{ $item->driver_id }}</td>
+                                    <td>{{ $item->nama_lengkap }}</td>
                                     <td>                                    
                                         <a class="btn btn-default bg-info" href="{{route('head.edit',[$item->id])}}">
                                             <i class="fas fa-edit"></i> Edit

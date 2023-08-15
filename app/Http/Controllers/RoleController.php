@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
+use Illuminate\Support\Facades\Auth;
+
 class RoleController extends Controller
 {
     /**
@@ -52,7 +54,7 @@ class RoleController extends Controller
     {
         //
          //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
 
@@ -122,7 +124,7 @@ class RoleController extends Controller
         //
          //
          //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
 
@@ -164,7 +166,7 @@ class RoleController extends Controller
     {
         //
          //
-        $user = 1; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try{
             DB::table('role')

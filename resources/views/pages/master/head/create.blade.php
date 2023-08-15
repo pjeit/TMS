@@ -62,7 +62,20 @@
                     <div class="form-group">
                         <label for="">Merk & Model</label>
                         <input required type="text" name="merk_model" class="form-control" value="{{old('merk_model','')}}" >
-                    </div>           
+                    </div>     
+                    <div class="form-group">
+                        <label for="tipe">Kepemilikan</label>
+                        <br>
+                        <div class="icheck-primary d-inline">
+                            <input id="PJE" type="radio" name="kepemilikan" value="PJE" {{'PJE' == old('kepemilikan','')? 'checked' :'' }} checked>
+                            <label class="form-check-label" for="PJE">PJE</label>
+                        </div>
+                        <div class="icheck-primary d-inline ml-5">
+                            <input id="rekanan" type="radio" name="kepemilikan" value="Rekanan" {{'Rekanan'== old('kepemilikan','')? 'checked' :'' }}>
+                            <label class="form-check-label" for="rekanan">Rekanan</label><br>
+                        </div>
+                    </div>         
+                    
                 </div>
             </div>
         </div>
@@ -92,12 +105,12 @@
                         </select>
                     </div>   
                     <div class="form-group">
-                        <label for="">Driver (Optional) (data masih dummy)</label>
+                        <label for="">Driver (Optional)</label>
                         <select class="form-control select2" style="width: 100%;" id='driver_id' name="driver_id">
-                                <option value="0">&nbsp;</option>
-                                <option value="1">Driver 1</option>
-                                <option value="2">Driver 2</option>
-                                <option value="3">Driver 3</option>
+                            <option value="0">&nbsp;</option>
+                            @foreach ($drivers as $driver)
+                                <option value="{{$driver->id}}">{{$driver->nama_lengkap}}</option>
+                            @endforeach
                         </select>
                     </div>   
                     <div class="form-group">

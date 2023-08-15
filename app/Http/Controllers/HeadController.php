@@ -6,10 +6,12 @@ use App\Models\Chassis;
 use App\Models\Head;
 use App\Models\KasBank;
 use App\Models\HeadDokumen;
+use App\Models\Karyawan;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 
 class HeadController extends Controller
@@ -21,11 +23,11 @@ class HeadController extends Controller
      */
     public function index()
     {
-        $data = DB::table('kendaraan')
-            ->where('is_aktif', '=', "Y")
-            ->select('*')
+        $data = DB::table('kendaraan as a')
+            ->leftJoin('karyawan as b', 'a.driver_id', '=', 'b.id')
+            ->where('a.is_aktif', '=', "Y")
+            ->select('a.*', 'b.nama_lengkap')
             ->get();
-        // dd($data);
 
             return view('pages.master.head.index',[
             'judul'=>"Head",
@@ -46,11 +48,14 @@ class HeadController extends Controller
                             ->get();
 
         $d_supplier = Supplier::where('is_aktif', 'Y')->get();
+        $drivers = Karyawan::where('is_aktif', 'Y')->where('posisi_id', 5)->get();
+
 
         return view('pages.master.head.create',[
             'judul' => "Head",
             'd_chassis' => $d_chassis,
             'd_supplier' => $d_supplier,
+            'drivers' => $drivers,
         ]);
     }
 
@@ -70,7 +75,7 @@ class HeadController extends Controller
             $request->validate([
                 'no_polisi' => 'required',
             ], $pesanKustom);
-            $user = 1;
+            $user = Auth::user()->id;
 
             $head = new Head();
             $head->no_polisi = $request->no_polisi;
@@ -82,6 +87,7 @@ class HeadController extends Controller
             $head->driver_id = $request->driver_id;
             $head->chassis_id = $request->chassis_id;
             $head->supplier_id = $request->supplier_id;
+            $head->kepemilikan = $request->kepemilikan;
             $head->created_by = $user; // manual
             $head->created_at = date("Y-m-d h:i:s");
             $head->is_aktif = "Y";
@@ -172,7 +178,7 @@ class HeadController extends Controller
             $request->validate([
                 'no_polisi' => 'required',
             ], $pesanKustom);
-            $user = 1;
+            $user = Auth::user()->id;
 
             $edit_head = Head::where('is_aktif', 'Y')->findOrFail($head->id);
             $edit_head->no_polisi = $request->no_polisi;
@@ -184,6 +190,7 @@ class HeadController extends Controller
             $edit_head->chassis_id = $request->chassis_id;
             $edit_head->driver_id = $request->driver_id;
             $edit_head->supplier_id = $request->supplier_id;
+            $edit_head->kepemilikan = $request->kepemilikan;
             $edit_head->updated_at = now();
             $edit_head->updated_by = $user;
 
@@ -260,7 +267,7 @@ class HeadController extends Controller
      */
     public function destroy($id)
     {
-        $user = 1;
+        $user = Auth::user()->id;
         $del_head = Head::where('id', $id)
             ->update([
                 'is_aktif' => 'N',

@@ -94,9 +94,9 @@
                     </div>
                     <div class="card-body">
                         <div class="form-group text-center">
-                            <img src="{{asset($karyawan->foto)}}" class='img-fluid' style='width:225px;height:225px' id='preview_img'> 
+                            <img src="{{ $karyawan->foto ? asset($karyawan->foto) : asset('img/photo.png') }}" class='img-fluid' style='width:225px;height:225px' id='preview_img'> 
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="foto" name='foto' accept="image/png, image/jpeg">
+                                <input type="file" class="custom-file-input" id="foto" name='foto' accept="image/png, image/jpeg" >
                                 <label class="custom-file-label" for="foto" style="text-align: left">Pilih Foto</label>
                             </div>
                         </div>

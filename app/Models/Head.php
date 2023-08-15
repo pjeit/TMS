@@ -20,6 +20,7 @@ class Head extends Model
         'warna',
         'driver_id',
         'supplier_id',
+        'kepemilikan',
         
         'created_at',
         'created_by',
