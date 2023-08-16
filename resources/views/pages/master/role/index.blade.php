@@ -93,6 +93,8 @@
                         </tbody>
                        
                     </table>
+{{ $dataRole->links('pagination::bootstrap-4') }}
+
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -100,6 +102,7 @@
         </div>
         <!-- /.col -->
     </div>
+
     <!-- /.row -->
 </div>
 
