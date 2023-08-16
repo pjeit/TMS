@@ -169,22 +169,51 @@
                 </li>
 
                 <li class="nav-item">
-                  <a href="{{route('head.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
-                  <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
                     <p>
-                      Head
+                      Master Truck
+                      <i class="right fas fa-angle-left"></i>
                     </p>
                   </a>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="{{route('head.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
+                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                        <p>
+                          Master Truck All
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{route('head.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
+                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                        <p>
+                          Master Truck PJE
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="#" style="font-weight: 500;" class="nav-link ">
+                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                        <p>
+                          Master Truck Rekanan
+                        </p>
+                      </a>
+                    </li>
+                  </ul>
                 </li>
+                
+                
 
                 <li class="nav-item">
                   <a href="{{route('chassis.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('chassis*') ? ' active' : '' }} ">
                   <i class="far nav-icon fa fa-square" style="font-size: 15px;"></i>
                     <p>
-                      Chassis
+                      Ekor Truck
                     </p>
                   </a>
-                </li>
+                </li> 
         
                 <li class="nav-item">
                   <a href="{{route('supplier.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('supplier*') ? ' active' : '' }} ">
