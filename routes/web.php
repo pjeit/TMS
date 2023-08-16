@@ -8,7 +8,9 @@ use App\Http\Controllers\KasBankController;
 use App\Http\Controllers\HeadController;
 use App\Http\Controllers\ChassisController;
 use App\Http\Controllers\CustomAuthController;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\SupplierController;
+use App\Models\Karyawan;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,12 +62,14 @@ Route::middleware(['auth'])->group(function () {
     
         Route::resource('supplier', 'App\Http\Controllers\SupplierController');
     
+        Route::get('karyawan/getData/', [App\Http\Controllers\KaryawanController::class, 'index']);
+        
         Route::resource('karyawan', 'App\Http\Controllers\KaryawanController');
     
         Route::resource('grup', 'App\Http\Controllers\GrupController');
     
         Route::resource('customer', 'App\Http\Controllers\CustomerController');
-    
+        
         Route::resource('role', 'App\Http\Controllers\RoleController');
     
         Route::resource('users', 'App\Http\Controllers\UsersController');

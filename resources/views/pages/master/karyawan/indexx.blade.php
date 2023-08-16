@@ -7,7 +7,7 @@
 @section('pathjudul')
 <li class="breadcrumb-item"><a href="/">Home</a></li>
 <li class="breadcrumb-item">Master</li>
-<li class="breadcrumb-item"><a href="{{route('users.index')}}">Users</a></li>
+<li class="breadcrumb-item"><a href="{{route('karyawan.index')}}">Karyawan</a></li>
 @endsection
 @section('content')
 <!-- <div class="container-fluid">
@@ -33,32 +33,34 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{route('users.create')}}" class="btn btn-secondary btn-responsive float-left">
+                    <a href="{{route('karyawan.create')}}" class="btn btn-secondary btn-responsive float-left">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
                     </a> 
-
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="karyawanTable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                              <th>Username</th>
+                              <th>Nama Panggilan</th>
+                              <th>Tempat Lahir</th>
+                              <th>Alamat</th>
+                              <th>Telp</th>
                               <th>Posisi</th>
-                              <th>Karyawan</th>
-                              <th>Cabang Kantor</th>
                               <th>Handle</th>
                             </tr>
                           </thead>
                         <tbody>
-                            @foreach($dataUser as $d)
+                            @foreach($dataKaryawan as $d)
                              <tr>
-                                <td>{{$d->username}}</td>
-                                <td>{{$d->role}}</td>
                                 <td>{{$d->nama_panggilan}}</td>
-                                <td>{{$d->kota}}</td>
+                                <td>{{$d->tempat_lahir}}</td>  
+                                <td>{{$d->alamat_domisili}}</td>  
+                                <td>{{$d->telp1}}</td>  
+                                <td>{{$d->posisi}}</td>  
+                      
                                 <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('users.edit',[$d->id])}}">
+                                    <a class="btn btn-default bg-info" href="{{route('karyawan.edit',[$d->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
@@ -72,32 +74,31 @@
                                 <!-- Modal -->
                                 <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                        <div class="modal-body">
-                                          <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
-                                        </div>
-                                       <div class="modal-footer">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                 <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
+                                            </div>
+                                        <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
 
-                                            <form action="{{route('users.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
+                                            <form action="{{route('karyawan.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button action="{{route('users.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
+                                                <button action="{{route('karyawan.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
                                             </form>
-                                       </div>
-                                    </div>
+                                        </div>
                                     </div>
                                 </div>
                             </tr>
                             @endforeach
                         </tbody>
-                       
+                        
                     </table>
                 </div>
                 <!-- /.card-body -->

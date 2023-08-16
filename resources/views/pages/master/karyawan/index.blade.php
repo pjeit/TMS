@@ -39,64 +39,19 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
-                        <thead>
+                    <table id="karyawanTable" class="table table-bordered table-striped">
+                        <thead >
                             <tr>
                               <th>Nama Panggilan</th>
                               <th>Tempat Lahir</th>
                               <th>Alamat</th>
-                              <th>Telp</th>
+                              <th>Telp1</th>
                               <th>Posisi</th>
                               <th>Handle</th>
                             </tr>
-                          </thead>
-                        <tbody>
-                            @foreach($dataKaryawan as $d)
-                             <tr>
-                                <td>{{$d->nama_panggilan}}</td>
-                                <td>{{$d->tempat_lahir}}</td>  
-                                <td>{{$d->alamat_domisili}}</td>  
-                                <td>{{$d->telp1}}</td>  
-                                <td>{{$d->posisi}}</td>  
-                      
-                                <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('karyawan.edit',[$d->id])}}">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>   
-                                            <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
-                                               <i class="fas fa-trash"></i> Hapus
-                                    </button>          
-                                    
-                                </td>
-                                                   
-                                
-                                <!-- Modal -->
-                                <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                 <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
-                                            </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
-
-                                            <form action="{{route('karyawan.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button action="{{route('karyawan.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </tr>
-                            @endforeach
+                        </thead>
+                        <tbody style="width:100%">
+                           
                         </tbody>
                         
                     </table>
@@ -109,6 +64,74 @@
     </div>
     <!-- /.row -->
 </div>
+
+{{-- <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+        <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
+        </div>
+    <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
+
+            <form action="{{route('head.destroy',[$item->id])}}" method="POST" class="btn btn-responsive">
+                @csrf
+                @method('DELETE')
+                <button action="{{route('head.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
+            </form>
+    </div>
+    </div>
+    </div>
+</div> --}}
+
+
+<script type="text/javascript">
+    $(function () {
+      var table = $('#karyawanTable').DataTable({
+          processing: true,
+          serverSide: true,
+          ajax: "{{ route('karyawan.index') }}",
+          columns: [
+                { data: 'nama_panggilan', name: 'nama_panggilan' },
+                { data: 'tempat_lahir', name: 'tempat_lahir' },
+                { data: 'alamat_domisili', name: 'alamat_domisili' },
+                { data: 'telp1', name: 'telp1' },
+                { data: 'posisi', name: 'posisi' },
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ]
+      });
+    });
+  </script>
+<script>
+   $(document).ready(function() {
+      
+
+        $('#karyawanTable').on('click', '.delete-button', function() {
+            var karyawanId = $(this).data('id');
+            if (confirm("Apakah anda yakin ingin menghapus data? "+ karyawanId)) {
+                // $.ajax({
+                //     url: '/karyawan/' + karyawanId,
+                //     type: 'DELETE',
+                //     data: {
+                //         "_token": "{{ csrf_token() }}"
+                //     },
+                //     success: function(response) {
+                //         // Refresh DataTable after successful deletion
+                //         $('#karyawanTable').DataTable().ajax.reload();
+                //     }
+                // });
+            }
+        });
+   });
+ 
+
+</script>
 
 @endsection
 

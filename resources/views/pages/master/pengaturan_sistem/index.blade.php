@@ -84,6 +84,11 @@
                                     </select>
                                 </div>
 
+                              
+
+                            </div>
+
+                            <div class="col">
                                 <div class="form-group">
                                     <label>Pembayaran Gaji</label>
                                     <select class="form-control select2" style="width: 100%;" id='pembayaran_gaji' name="pembayaran_gaji">
@@ -111,9 +116,6 @@
                                     </select>
                                 </div>
 
-                            </div>
-
-                            <div class="col">
                                 <div class="form-group">
                                     <label>Batas Pemutihan </label>
                                     <br>

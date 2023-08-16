@@ -8,6 +8,7 @@ use App\Models\KasBank;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use Illuminate\Support\Facades\Auth;
+use DataTables;
 
 class KasBankController extends Controller
 {
@@ -21,7 +22,7 @@ class KasBankController extends Controller
          $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
-            ->get();
+            ->paginate(5);
 
             return view('pages.master.kas_bank.index',[
             'judul'=>"Kas Bank",
@@ -29,6 +30,48 @@ class KasBankController extends Controller
         ]);
 
     }
+
+    //  public function index(Request $request)
+    // {
+    //     if ($request->ajax()) {
+    //         $data = DB::table('kas_bank')
+    //         ->select('*')
+    //         ->where('is_aktif', '=', "Y")
+    //         ->get();
+
+    //         return Datatables::of($data)->addIndexColumn() //bukan error ga bisa
+    //             ->addColumn('action', function($row){
+    //                 // <a class="btn btn-default bg-info" href="{{route('kas_bank.edit',[$d->id])}}">
+    //                 //                     <i class="fas fa-edit"></i> Edit
+    //                 //                 </a>   
+    //                 //                         <!-- Button trigger modal -->
+    //                 //                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
+    //                 //                            <i class="fas fa-trash"></i> Hapus
+    //                 //                 </button>  
+    //                 $btn = '<a class="btn btn-default bg-info" href="{{route('kas_bank.edit',[$d->id])}}';
+                    
+    //                 $btn+='<i class="fas fa-edit"></i> Edit </a>';
+    //                 return $btn;
+    //             })
+    //             ->addColumn('rekeningDB', function($row) {
+    //                 if ($row->tipe == "Bank") {
+    //                     $rekening = $row->bank .' - '. $row->no_akun .' - '.$row->rek_nama;
+    //                 } else {
+    //                     $rekening = ''; 
+    //                 }
+    //                 return $rekening;
+    //             })
+    //             ->rawColumns(['action','rekeningDB'])
+    //             ->make(true);
+    //     }
+    
+
+    //         return view('pages.master.kas_bank.index',[
+    //         'judul'=>"Kas Bank",
+    //         // 'dataKas' => $data,
+    //     ]);
+
+    // }
 
     /**
      * Show the form for creating a new resource.

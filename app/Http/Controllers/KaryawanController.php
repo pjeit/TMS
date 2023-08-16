@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Mockery\Undefined;
 use Illuminate\Support\Facades\Auth;
+use DataTables;
 
 class KaryawanController extends Controller
 {
@@ -20,20 +21,70 @@ class KaryawanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    // public function index()
+    // {
+    //      $dataKaryawan = DB::table('karyawan')
+    //         ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','role.nama as posisi')
+    //         ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
+    //         ->where('karyawan.is_aktif', '=', "Y")
+    //         ->where('karyawan.is_keluar', '=', "N")
+    //         ->get();
+
+    //         return view('pages.master.karyawan.index',[
+    //         'judul'=>"Karyawan",
+    //         'dataKaryawan' => $dataKaryawan,
+    //     ]);
+    // }
+
+    public function index(Request $request)
     {
-        //
-         $dataKaryawan = DB::table('karyawan')
+        if ($request->ajax()) {
+            $data = DB::table('karyawan')
+                    ->select('karyawan.id','karyawan.nama_panggilan as nama_panggilan',
+                        'karyawan.tempat_lahir as tempat_lahir','karyawan.alamat_domisili as alamat_domisili',
+                        'karyawan.telp1 as telp1','role.nama as posisi')
+                    ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
+                    ->where('karyawan.is_aktif', '=', "Y")
+                    ->where('karyawan.is_keluar', '=', "N")
+                    ->get();
+
+            return Datatables::of($data)->addIndexColumn() //bukan error ga bisa
+                ->addColumn('action', function($row){
+                    $btn = '
+                        <a class="btn btn-default bg-info" href="karyawan/'.$row->id.'/edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>   
+                        <button type="button" class="btn btn-danger delete-button" data-toggle="modal" data-target="#modalHapus">
+                                <i class="fas fa-trash"></i> Hapus
+                        </button>   
+                        ';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        $dataKaryawan = DB::table('karyawan')
+                ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','role.nama as posisi')
+                ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
+                ->where('karyawan.is_aktif', '=', "Y")
+                ->where('karyawan.is_keluar', '=', "N")
+                ->get();
+        return view('pages.master.karyawan.index',[
+            'judul'=>"Karyawan",
+            'dataKaryawan'=> $dataKaryawan,
+        ]);
+    }
+
+    public function getData()
+    {
+        $data = DB::table('karyawan')
             ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','role.nama as posisi')
             ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
             ->where('karyawan.is_aktif', '=', "Y")
             ->where('karyawan.is_keluar', '=', "N")
             ->get();
 
-            return view('pages.master.karyawan.index',[
-            'judul'=>"Karyawan",
-            'dataKaryawan' => $dataKaryawan,
-        ]);
+        return response()->json(['data' => $data]);
     }
 
     /**
@@ -43,7 +94,6 @@ class KaryawanController extends Controller
      */
     public function create()
     {
-        //
         $dataRole = DB::table('role')
             ->where('role.is_aktif', '=', "Y")
             ->get();
@@ -53,10 +103,10 @@ class KaryawanController extends Controller
             ->where('ptkp.is_aktif', '=', "Y")
             ->get();
         $dataAgama = DB::table('agama')
-        ->get();
+            ->get();
         $dataJenis = DB::table('m_jenis_identitas')
-        ->where('m_jenis_identitas.is_aktif', '=', "Y")
-        ->get();
+            ->where('m_jenis_identitas.is_aktif', '=', "Y")
+            ->get();
         return view('pages.master.karyawan.create',[
             'judul'=>"Karyawan",
              'dataRole' => $dataRole,
@@ -64,7 +114,6 @@ class KaryawanController extends Controller
              'dataPtkp' => $dataPtkp,
              'dataAgama'=>$dataAgama,
              'dataJenis'=>$dataJenis,
-
         ]);
     }
 
