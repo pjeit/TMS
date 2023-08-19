@@ -14,7 +14,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{route('grup.create')}}" class="btn btn-success btn-responsive float-left">
+                    <a href="{{route('grup_tujuan.create')}}" class="btn btn-success btn-responsive float-left">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
                     </a> 
                 </div>
@@ -22,27 +22,20 @@
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                              <th>Nama Grup</th>
-                              <th>Nama PIC</th>
-                              <th>Total Kredit</th>
-                              <th>Total Max Kredit</th>
+                              <th>Grup</th>
                               <th>Aksi</th>
                             </tr>
                           </thead>
                         <tbody>
                             @foreach($data as $item)
-                             <tr>
+                            <tr>
                                 <td>{{ $item->nama_grup }}</td>
-                                <td>{{ $item->nama_pic }}</td>
-                                <td>{{ number_format($item->total_kredit,0,",",".") }}</td>
-                                <td>{{ number_format($item->total_max_kredit,0,",",".") }}</td>
                                 <td>                                    
-                                    <a class="btn btn-default bg-primary" href="{{route('grup.edit',[$item->id])}}">
+                                    <a class="btn btn-default bg-primary" href="{{route('grup_tujuan.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
-                                            <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modalHapus_{{$item->id}}">
-                                               <i class="fas fa-trash"></i> Hapus
+                                        <i class="fas fa-trash"></i> Hapus
                                     </button>          
                                     
                                 </td>

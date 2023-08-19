@@ -10,16 +10,12 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex justify-content-center align-items-center">
-      @php
-          $username = Auth::user()->username;
-          $rolex = '';
-          $rolex = Auth::user()->getRole();
-      @endphp
+    {{-- <div class="user-panel mt-3 pb-3 mb-3 d-flex justify-content-center align-items-center">
+     
       <div class="info">
         <a class="d-block text-white " > <span class="text-bold ">{{$username}}</span> ( {{$rolex}} )</a>
       </div>
-    </div>
+    </div> --}}
 
     <!-- SidebarSearch Form -->
     <!-- <div class="form-inline">
@@ -140,33 +136,55 @@
                   </p>
                 </a>
               <ul class="nav nav-treeview">
-
                 <li class="nav-item">
-                  <a href="{{route('grup.index')}}" class="nav-link {{request()->url() === route('grup.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
                     <p>
-                      Grup
+                      Master Grup
+                      <i class="right fas fa-angle-left"></i>
                     </p>
                   </a>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="{{route('grup.index')}}" class="nav-link {{request()->url() === route('grup.index')? ' active' : '' }} " style="font-weight: 500;">
+                      <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                        <p>
+                          Grup
+                        </p>
+                      </a>
+                    </li>
+
+                    <li class="nav-item">
+                      <a href="{{route('grup_member.index')}}" style="font-weight: 500;" class="nav-link {{ request()->url() === route('grup_member.index')? ' active' : '' }} ">
+                      <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                        <p>
+                          Marketing Grup
+                        </p>
+                      </a>
+                    </li>
+                   
+                    <li class="nav-item">
+                      <a href="{{route('grup_tujuan.index')}}" style="font-weight: 500;" class="nav-link {{ request()->url() === route('grup_tujuan.index')? ' active' : '' }} ">
+                      <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                        <p>
+                          Grup Tujuan
+                        </p>
+                      </a>
+                    </li>
+    
+                    <li class="nav-item">
+                      <a href="{{route('customer.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('customer*') ? ' active' : '' }} ">
+                      <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                        <p>
+                          Customer
+                        </p>
+                      </a>
+                    </li>
+                  </ul>
                 </li>
+                
                   {{-- {{request()->url() === route('karyawan.index') ? ' active' : '' }}  --}}
-                <li class="nav-item">
-                  <a href="{{route('grup_member.index')}}" style="font-weight: 500;" class="nav-link {{ request()->url() === route('grup_member.index')? ' active' : '' }} ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                    <p>
-                      Grup Member
-                    </p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a href="{{route('customer.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('customer*') ? ' active' : '' }} ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                    <p>
-                      Customer
-                    </p>
-                  </a>
-                </li>
+                
 
                 <li class="nav-item">
                   <a href="#" class="nav-link">
@@ -190,14 +208,6 @@
                       <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                         <p>
                           Master Truck PJE
-                        </p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#" style="font-weight: 500;" class="nav-link ">
-                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
-                        <p>
-                          Master Truck Rekanan
                         </p>
                       </a>
                     </li>

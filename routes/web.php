@@ -67,6 +67,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('karyawan', 'App\Http\Controllers\KaryawanController');
     
         Route::resource('grup', 'App\Http\Controllers\GrupController');
+
+        Route::get('grup_tujuan/getMarketing/{groupId}', [App\Http\Controllers\GrupTujuanController::class, 'getMarketing']);
+
+        Route::resource('grup_tujuan', 'App\Http\Controllers\GrupTujuanController');
     
         Route::resource('customer', 'App\Http\Controllers\CustomerController');
         
