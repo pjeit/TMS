@@ -211,6 +211,14 @@
                         </p>
                       </a>
                     </li>
+                    <li class="nav-item">
+                      <a href="#" style="font-weight: 500;" class="nav-link ">
+                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                        <p>
+                          Master Truck Rekanan
+                        </p>
+                      </a>
+                    </li>
                   </ul>
                 </li>
                 

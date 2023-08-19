@@ -15,8 +15,7 @@ class Chassis extends Model
        'kode',
        'karoseri',
        'model_id',
-       'kepemilikan',
-
+       'taun_buat',
        'created_at',
        'created_by',
        'updated_at',

@@ -81,7 +81,7 @@
                         </select>
                     </div>   
 
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <div class='row'>
                             <div class='col-12 col-md-6 col-lg-6'>
                                 <label for="telp_1">Telp 1</label>
@@ -102,9 +102,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label for="email">Email</label>
                       <div class="input-group">
                           <div class="input-group-prepend">
@@ -112,7 +112,7 @@
                           </div>
                           <input type="text" name="email" id="email" class="form-control" placeholder="" value="{{$data->email}}">
                       </div>
-                    </div>
+                    </div> --}}
 
                     <div class="form-group">
                         <label for="">Catatan</label>
@@ -136,7 +136,7 @@
                 <div class="card-body">
                     <div class="form-group">
                     <div class='row'>
-                        <div class='col-12 col-md-6 col-lg-6'>
+                        <div class='col-6 col-md-6 col-lg-6'>
                             <label for="kredit_sekarang">Kredit Sekarang</label>
                             <div class="input-group ">
                                 <div class="input-group-prepend">
@@ -145,20 +145,7 @@
                                 <input type="text" name="kredit_sekarang" class="form-control numaja uang" id="kredit_sekarang" placeholder="" value="{{$data->kredit_sekarang}}" readonly>    
                             </div>
                         </div>
-                        <div class='col-12 col-md-6 col-lg-6'>
-                            <label for="max_kredit">Maks Kredit</label>
-                            <div class="input-group ">
-                                <div class="input-group-prepend">
-                                <span class="input-group-text">Rp.</span>
-                                </div>
-                                <input type="text" name="max_kredit" class="form-control numaja uang" id="max_kredit" placeholder="" value="{{number_format($data->max_kredit)}}">    
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="form-group">
-                    <div class="row">
-                        <div class="col-12 col-md-6 col-lg-6">
+                          <div class="col-6 col-md-6 col-lg-6">
                             <label for="ketentuan_bayar">Ketentuan Pembayaran</label>
                             <div class="input-group ">
                                 <input type="text" name="ketentuan_bayar" class="form-control numaja" id="ketentuan_bayar" placeholder="" value="{{number_format($data->ketentuan_bayar)}}">
@@ -167,7 +154,19 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- <div class='col-12 col-md-6 col-lg-6'>
+                            <label for="max_kredit">Maks Kredit</label>
+                            <div class="input-group ">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text">Rp.</span>
+                                </div>
+                                <input type="text" name="max_kredit" class="form-control numaja uang" id="max_kredit" placeholder="" value="{{number_format($data->max_kredit)}}">    
+                            </div>
+                        </div> --}}
                     </div>
+                    </div>
+                    <div class="form-group">
+               
                     </div>
                 </div>
             </div>

@@ -29,7 +29,9 @@
 
     @endif
 
-    <form data-action="{{ route('head.store') }}" id="grup_forms" enctype="multipart/form-data" method="POST">
+    <form data-action="{{ route('head.update', ['head' => $data->id]) }}" id="grup_forms" enctype="multipart/form-data" method="POST">
+
+    @method('PUT')
     @csrf
     <div class="row">
         <div class="col-12">
@@ -48,31 +50,33 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="">Kategori Kendaraan</label>
-                        <select class="form-control select2" style="width: 100%;" id='kategori' name="kategori">
-                            @foreach ($kategoriTruck as $k)
-                                <option value="{{$k->id}}">{{$k->nama}}</option>
-                            @endforeach
-                        </select>
-                    </div> 
-                    <div class="form-group">
                         <label for="">No. Polisi<span class="text-red">*</span></label>
-                        <input required type="text" maxlength="20" name="no_polisi" class="form-control" value="{{old('no_polisi','')}}" >                         
+                        <input required type="text"  name="no_polisi" class="form-control" value="{{ $data->no_polisi }}" >                         
                     </div>
                     <div class="form-group">
                         <label for="">No. Mesin</label>
-                        <input required type="text" maxlength="20" name="no_mesin" class="form-control" value="{{old('no_mesin','')}}" >
+                        <input required type="text" name="no_mesin" class="form-control" value="{{$data->no_mesin}}" >
                     </div>           
                     <div class="form-group">
                         <label for="">No. Rangka</label>
-                        <input required type="text" maxlength="20" name="no_rangka" class="form-control" value="{{old('no_rangka','')}}" >
+                        <input required type="text"name="no_rangka" class="form-control" value="{{$data->no_rangka}}" >
                     </div>           
                     <div class="form-group">
                         <label for="">Merk & Model</label>
-                        <input required type="text" name="merk_model" class="form-control" value="{{old('merk_model','')}}" >
-                    </div>     
-                        
-                    
+                        <input required type="text" name="merk_model" class="form-control" value="{{$data->merk_model}}" >
+                    </div>           
+                    <div class="form-group">
+                        <label for="tipe">Kepemilikan</label>
+                        <br>
+                        <div class="icheck-primary d-inline">
+                            <input id="PJE" type="radio" name="kepemilikan" value="PJE" {{'PJE' == old('kepemilikan',$data->kepemilikan)? 'checked' :'' }}>
+                            <label class="form-check-label" for="PJE">PJE</label>
+                        </div>
+                        <div class="icheck-primary d-inline ml-5">
+                            <input id="rekanan" type="radio" name="kepemilikan" value="Rekanan" {{'Rekanan' == old('kepemilikan',$data->kepemilikan)? 'checked' :'' }}>
+                            <label class="form-check-label" for="rekanan">Rekanan</label><br>
+                        </div>
+                    </div>    
                 </div>
             </div>
         </div>
@@ -85,24 +89,40 @@
                     <div class="row">
                         <div class="form-group col-6">
                             <label for="">Tahun Pembuatan</label>
-                            <input required type="text" name="tahun_pembuatan" maxlength="4" class="form-control" value="{{old('tahun_pembuatan','')}}" >
+                            <input required type="text" name="tahun_pembuatan" maxlength="4" class="form-control" value="{{$data->tahun_pembuatan}}" >
                         </div>          
                         <div class="form-group col-6">
                             <label for="">Warna</label>
-                            <input required type="text" name="warna" class="form-control" value="{{old('warna','')}}" >
+                            <input required type="text" name="warna" class="form-control" value="{{$data->warna}}" >
                         </div>          
                     </div>
-              
                     <div class="form-group">
-                        <label for="">Driver (Optional)</label>
-                        <select class="form-control select2" style="width: 100%;" id='driver_id' name="driver_id">
+                        <label for="">Chasis </label>
+                        <select class="form-control select2" style="width: 100%;" id='chassis_id' name="chassis_id">
                             <option value="0">&nbsp;</option>
-                            @foreach ($drivers as $driver)
-                                <option value="{{$driver->id}}">{{$driver->nama_lengkap}}</option>
+                            @foreach ($d_chassis as $chassis)
+                                <option value="{{$chassis->id}}" <?= ($chassis->id == $data->chassis_id)? 'Selected':''; ?> >{{ $chassis->karoseri }} - {{ $chassis->nama }}</option>
                             @endforeach
                         </select>
                     </div>   
-                  
+                    <div class="form-group">
+                        <label for="">Driver (Optional) (data masih dummy)</label>
+                        <select class="form-control select2" style="width: 100%;" id='driver_id' name="driver_id">
+                                <option value="0" <?= ($data->driver_id == '0')? 'selected':''; ?> >&nbsp;</option>
+                                <option value="1" <?= ($data->driver_id == '1')? 'selected':''; ?> >Driver 1</option>
+                                <option value="2" <?= ($data->driver_id == '2')? 'selected':''; ?> >Driver 2</option>
+                                <option value="3" <?= ($data->driver_id == '3')? 'selected':''; ?> >Driver 3</option>
+                        </select>
+                    </div>   
+                    <div class="form-group">
+                        <label for="">Supplier </label>
+                        <select class="form-control select2" style="width: 100%;" id='supplier_id' name="supplier_id">
+                            @foreach ($d_supplier as $supplier)
+                                <option value="{{$supplier->id}}" <?= ($supplier->id == $data->supplier_id)? 'selected':''; ?> >{{ $supplier->nama }} - {{ $supplier->cabang }}</option>
+                            @endforeach
+                        </select>
+                    </div>   
+                    
                 </div>
             </div>
         </div>
@@ -125,8 +145,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if(!empty($load_main_detail['data'])){
-                                foreach($load_main_detail['data'] as $key=>$value){ ?>
+                            <?php $data_berkas = json_decode($data['berkas']); ?>
+                            <?php if(!empty($data_berkas)){
+                                foreach( $data_berkas as $key => $value){ ?>
                                 <tr id='<?=$key?>'>
                                     <td>
                                         <div class="btn-group">
@@ -138,13 +159,13 @@
                                           </ul>
                                         </div>
                                     </td>
-                                    <td id='dokumen_id_<?=$key?>' hidden><?=$value->dokumen_id?></td>
+                                    <td id='dokumen_id_<?=$key?>' hidden><?=$value->id?></td>
                                     <td id='is_reminder_<?=$key?>' hidden><?=$value->is_reminder?></td>
                                     <td id='reminder_hari_<?=$key?>' hidden><?=$value->reminder_hari?></td>
                                     <td id='jenis_<?=$key?>'><?=$value->jenis?></td>
                                     <td id='nomor_<?=$key?>'><?=$value->nomor?></td>
-                                    <td id='berlaku_hingga_<?=$key?>'><?=$value->berlaku_hingga?></td>
-                                    <td id='reminder_hari_<?=$key?>'><?=$value->reminder_deskripsi?></td>
+                                    <td id='berlaku_hingga_<?=$key?>'><?= date("d-M-Y", strtotime($value->berlaku_hingga)) ?></td>
+                                    <td id='reminder_hari_text_<?=$key?>'><?=$value->reminder_hari?></td>
                                 </tr>
                             <?php }
                             }?>
@@ -375,7 +396,7 @@
         var exist=$('#table_dokumen tbody').find('#'+key).attr('id');
         if(typeof exist === 'undefined') {
             
-            var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="dokumen_id_'+key+'" hidden>'+$('#dokumen_id').val()+'</td><td id="jenis_'+key+'">'+$('#jenis').val()+'</td><td id="nomor_'+key+'">'+$('#nomor').val()+'</td><td id="berlaku_hingga_'+key+'">'+$('#berlaku_hingga').val()+'</td><td id="reminder_hari_'+key+'">'+reminder_desc+'</td><td id="is_reminder_'+key+'" hidden>'+$('#is_reminder').val()+'</td><td id="reminder_hari_'+key+'" hidden>'+$('#reminder_hari').val()+'</td></tr>';
+            var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="dokumen_id_'+key+'" hidden>'+$('#dokumen_id').val()+'</td><td id="jenis_'+key+'">'+$('#jenis').val()+'</td><td id="nomor_'+key+'">'+$('#nomor').val()+'</td><td id="berlaku_hingga_'+key+'">'+$('#berlaku_hingga').val()+'</td><td id="reminder_hari_text_'+key+'">'+reminder_desc+'</td><td id="is_reminder_'+key+'" hidden>'+$('#is_reminder').val()+'</td><td id="reminder_hari_'+key+'" hidden>'+$('#reminder_hari').val()+'</td></tr>';
             
             $('#table_dokumen > tbody:last-child').append(new_row);
         }else{
@@ -385,7 +406,8 @@
             $('#is_reminder_'+key).text($('#is_reminder').val());
             $('#reminder_hari_'+key).text($('#reminder_hari').val());
             $('#dokumen_id_'+key).text($('#dokumen_id').val());
-            $('#reminder_hari_'+key).text(reminder_desc);
+            $('#reminder_hari_text_'+key).text(reminder_desc);
+            console.log($('#reminder_hari_'+key).text()+'asdas');    
         }
         $('#dokumen_dialog').modal('hide');
     }
@@ -402,40 +424,8 @@
     }
     function delete_datadetail(){
         var id_delete=$("#form_delete_detail").find('#id_tombol').val();
-        $.ajax({
-            type:"POST",
-            url:"",
-            data:$("#form_delete_detail").serialize(),
-            dataType:"json",
-            success:function (data) {
-                if( !$.isArray(data) ||  !data.length ) {
-                    // toastr.error('TERHAPUS');
-                    $.ajax({
-                        type:"POST",
-                        url:"",
-                        data:$("#form_delete_detail").serialize(),
-                        dataType:"json",
-                        success:function (data) {
-                            if( !$.isArray(data) ||  !data.length ) {
-                                // toastr.error('TERHAPUS');
-                                $('#confirm_dialog_detail').modal('hide');
-                                $('#'+id_delete).remove();
-                            }else{
-                                for(var i in data){
-                                    toastr.error(data[i]);
-                                }
-                            }
-                        }
-                    });
-                }else{
-                    for(var i in data){
-                        toastr.error(data[i]);
-                    }
-                    $('#'+id_delete).remove();
-                    $('#confirm_dialog_detail').modal('hide');
-                }
-            }
-        });
+        $('#confirm_dialog_detail').modal('hide');
+        $('#'+id_delete).remove();
     }
 </script>
 

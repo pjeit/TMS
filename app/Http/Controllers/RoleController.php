@@ -22,7 +22,7 @@ class RoleController extends Controller
          $dataRole = DB::table('role')
             ->select('*')
             ->where('is_aktif', '=', "Y")
-            ->get();
+            ->paginate(2);
 
             return view('pages.master.role.index',[
             'judul'=>"Role",

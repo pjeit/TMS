@@ -72,26 +72,26 @@ class CustomerController extends Controller
             $new_customer->npwp = $request->npwp;
             $new_customer->alamat = $request->alamat;
             $new_customer->kota_id = $request->kota_id;
-            $new_customer->telp1 = $request->telp1;
-            $new_customer->telp2 = $request->telp2;
-            $new_customer->email = $request->email;
+            // $new_customer->telp1 = $request->telp1;
+            // $new_customer->telp2 = $request->telp2;
+            // $new_customer->email = $request->email;
             $new_customer->alamat = $request->alamat;
             $new_customer->catatan = $request->catatan;
             $new_customer->kredit_sekarang = ($request->kredit_sekarang == 0)? NULL:$request->kredit_sekarang;
-            $new_customer->max_kredit = $max_kredit;
+            // $new_customer->max_kredit = $max_kredit;
             $new_customer->ketentuan_bayar = $request->ketentuan_bayar;
             $new_customer->created_by = $user;
             $new_customer->created_at = now();
-            
-            if($new_customer->save()){
-                if($max_kredit != null || $max_kredit != 0){
-                    $grup = Grup::where('id', $request->grup_id)->where('is_aktif', 'Y')->findOrFail($request->grup_id);
-                    $grup->total_max_kredit += $max_kredit;
-                    $grup->updated_by = $user;
-                    $grup->updated_at = now();
-                    $grup->save();
-                }
-            }
+            $new_customer->save();
+            // if($new_customer->save()){
+            //     if($max_kredit != null || $max_kredit != 0){
+            //         $grup = Grup::where('id', $request->grup_id)->where('is_aktif', 'Y')->findOrFail($request->grup_id);
+            //         $grup->total_max_kredit += $max_kredit;
+            //         $grup->updated_by = $user;
+            //         $grup->updated_at = now();
+            //         $grup->save();
+            //     }
+            // }
 
             return redirect()->route('customer.index')->with('status','Success!!');
         } catch (ValidationException $e) {
@@ -149,8 +149,8 @@ class CustomerController extends Controller
                 'nama' => 'required',
             ], $pesanKustom);
             $user = Auth::user()->id;
-            $max_kredit = ($request['max_kredit'] != '-')? floatval(str_replace(',', '', $request['max_kredit'])):0;
-            $temp_max_kredit = $customer->max_kredit;
+            // $max_kredit = ($request['max_kredit'] != '-')? floatval(str_replace(',', '', $request['max_kredit'])):0;
+            // $temp_max_kredit = $customer->max_kredit;
             
             $customer->grup_id = $request->grup_id;
             $customer->kode = $request->kode;
@@ -158,37 +158,37 @@ class CustomerController extends Controller
             $customer->npwp = $request->npwp;
             $customer->alamat = $request->alamat;
             $customer->kota_id = $request->kota_id;
-            $customer->telp1 = $request->telp1;
-            $customer->telp2 = $request->telp2;
-            $customer->email = $request->email;
+            // $customer->telp1 = $request->telp1;
+            // $customer->telp2 = $request->telp2;
+            // $customer->email = $request->email;
             $customer->catatan = $request->catatan;
             $customer->kredit_sekarang = ($request->kredit_sekarang == 0)? NULL:$request->kredit_sekarang;
-            $customer->max_kredit = $max_kredit;
+            // $customer->max_kredit = $max_kredit;
             $customer->ketentuan_bayar = $request->ketentuan_bayar;
             $customer->updated_by = $user;
             $customer->updated_at = now();
-            
-            if($customer->save()){
-                if($max_kredit != null || $max_kredit != 0){
-                    $grup = Grup::where('id', $request->grup_id)->where('is_aktif', 'Y')->findOrFail($request->grup_id);
-                    if($grup){
-                        if($max_kredit > $temp_max_kredit){
-                            // kalo berubahnya lebih gede, max di grup ditambah
+            $customer->save();
+            // if($customer->save()){
+            //     if($max_kredit != null || $max_kredit != 0){
+            //         $grup = Grup::where('id', $request->grup_id)->where('is_aktif', 'Y')->findOrFail($request->grup_id);
+            //         if($grup){
+            //             if($max_kredit > $temp_max_kredit){
+            //                 // kalo berubahnya lebih gede, max di grup ditambah
     
-                            $max_kredit = $max_kredit-$temp_max_kredit;
-                            $grup->total_max_kredit += $max_kredit;
-                        }elseif($max_kredit < $temp_max_kredit){
-                            // kalo berubahnya lebih kecil, max di grup dikurangi
+            //                 $max_kredit = $max_kredit-$temp_max_kredit;
+            //                 $grup->total_max_kredit += $max_kredit;
+            //             }elseif($max_kredit < $temp_max_kredit){
+            //                 // kalo berubahnya lebih kecil, max di grup dikurangi
     
-                            $max_kredit = $temp_max_kredit-$max_kredit;
-                            $grup->total_max_kredit -= $max_kredit;
-                        }
-                        $grup->updated_by = $user;
-                        $grup->updated_at = now();
-                        $grup->save();
-                    }
-                }
-            }
+            //                 $max_kredit = $temp_max_kredit-$max_kredit;
+            //                 $grup->total_max_kredit -= $max_kredit;
+            //             }
+            //             $grup->updated_by = $user;
+            //             $grup->updated_at = now();
+            //             $grup->save();
+            //         }
+            //     }
+            // }
 
             return redirect()->route('customer.index')->with('status','Success!!');
         } catch (ValidationException $e) {

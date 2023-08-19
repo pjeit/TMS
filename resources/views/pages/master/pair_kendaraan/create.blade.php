@@ -8,7 +8,7 @@
 @section('pathjudul')
 <li class="breadcrumb-item"><a href="/">Home</a></li>
 <li class="breadcrumb-item">Master</li>
-<li class="breadcrumb-item"><a href="{{route('supplier.index')}}">Supplier</a></li>
+<li class="breadcrumb-item"><a href="{{route('supplier.index')}}">Kendaraan</a></li>
 <li class="breadcrumb-item">Create</li>
 
 @endsection

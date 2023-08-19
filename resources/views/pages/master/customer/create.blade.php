@@ -78,7 +78,7 @@
                             @endforeach
                         </select>
                     </div>   
-
+{{-- 
                     <div class="form-group">
                         <div class='row'>
                             <div class='col-6 col-md-6 col-lg-6'>
@@ -110,7 +110,7 @@
                           </div>
                           <input type="text" name="email" id="email" class="form-control" placeholder="" value="">
                       </div>
-                    </div>
+                    </div> --}}
 
                     <div class="form-group">
                         <label for="">Catatan</label>
@@ -143,20 +143,7 @@
                                 <input type="text" name="kredit_sekarang" class="form-control numaja uang" id="kredit_sekarang" placeholder="" value="0" readonly>    
                             </div>
                         </div>
-                        <div class='col-6 col-md-6 col-lg-6'>
-                            <label for="maks_kredit">Maks Kredit</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                <span class="input-group-text">Rp.</span>
-                                </div>
-                                <input type="text" name="maks_kredit" class="form-control numaja uang" id="maks_kredit" placeholder="" value="">    
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="form-group">
-                    <div class="row">
-                        <div class="col-6 col-md-6 col-lg-6">
+                           <div class="col-6 col-md-6 col-lg-6">
                             <label for="ketentuan_pembayaran">Ketentuan Pembayaran</label>
                             <div class="input-group mb-0">
                                 <input type="text" name="ketentuan_bayar" class="form-control numaja" id="ketentuan_bayar" placeholder="" value="30">
@@ -165,7 +152,19 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- <div class='col-6 col-md-6 col-lg-6'>
+                            <label for="maks_kredit">Maks Kredit</label>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text">Rp.</span>
+                                </div>
+                                <input type="text" name="maks_kredit" class="form-control numaja uang" id="maks_kredit" placeholder="" value="">    
+                            </div>
+                        </div> --}}
                     </div>
+                    </div>
+                    <div class="form-group">
+                
                     </div>
                 </div>
             </div>

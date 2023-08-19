@@ -5,23 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Head extends Model
+class PairKendaraan extends Model
 {
     use HasFactory;
-    protected $table = 'kendaraan';
+    protected $table = 'pair_kendaraan_chassis';
     protected $primaryKey='id';
     protected $fillable=[
         'id',
-        'id_kategori',
-        'no_polisi',
-        'no_mesin',
-        'no_rangka',
-        'merk_model',
-        'tahun_pembuatan',
-        'warna',
-        'driver_id',
-        'supplier_id',
-        'kepemilikan',
+        'kendaraan_id',
+        'chassis_id',
         'created_at',
         'created_by',
         'updated_at',

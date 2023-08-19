@@ -42,20 +42,25 @@ class HeadController extends Controller
      */
     public function create()
     {
-        $d_chassis = Chassis::leftJoin('m_model_chassis as x', 'chassis.model_id', '=', 'x.id')
-                            ->where('chassis.is_aktif', 'Y')
-                            ->select('chassis.*', 'x.nama')
-                            ->get();
+        // $d_chassis = Chassis::leftJoin('m_model_chassis as x', 'chassis.model_id', '=', 'x.id')
+        //                     ->where('chassis.is_aktif', 'Y')
+        //                     ->select('chassis.*', 'x.nama')
+        //                     ->get();
 
-        $d_supplier = Supplier::where('is_aktif', 'Y')->get();
+        // $d_supplier = Supplier::where('is_aktif', 'Y')->get();
         $drivers = Karyawan::where('is_aktif', 'Y')->where('posisi_id', 5)->get();
+        $kategoriTruck = DB::table('kendaraan_kategori')
+        ->where('kendaraan_kategori.is_aktif', '=', "Y")
+        ->get();
 
 
         return view('pages.master.head.create',[
             'judul' => "Head",
-            'd_chassis' => $d_chassis,
-            'd_supplier' => $d_supplier,
+            // 'd_chassis' => $d_chassis,
+            // 'd_supplier' => $d_supplier,
             'drivers' => $drivers,
+            'kategoriTruck' => $kategoriTruck,
+
         ]);
     }
 
@@ -78,6 +83,7 @@ class HeadController extends Controller
             $user = Auth::user()->id;
 
             $head = new Head();
+            $head->id_kategori=$request->kategori;
             $head->no_polisi = $request->no_polisi;
             $head->no_mesin = $request->no_mesin;
             $head->no_rangka = $request->no_rangka;
@@ -85,9 +91,9 @@ class HeadController extends Controller
             $head->tahun_pembuatan = $request->tahun_pembuatan;
             $head->warna = $request->warna;
             $head->driver_id = $request->driver_id;
-            $head->chassis_id = $request->chassis_id;
-            $head->supplier_id = $request->supplier_id;
-            $head->kepemilikan = $request->kepemilikan;
+            // $head->chassis_id = $request->chassis_id;
+            // $head->supplier_id = $request->supplier_id;
+            // $head->kepemilikan = $request->kepemilikan;
             $head->created_by = $user; // manual
             $head->created_at = date("Y-m-d h:i:s");
             $head->is_aktif = "Y";
@@ -139,10 +145,10 @@ class HeadController extends Controller
     {
         $data = Head::where('is_aktif', 'Y')->findOrFail($head->id);
 
-        $d_chassis = Chassis::leftJoin('m_model_chassis as x', 'chassis.model_id', '=', 'x.id')
-                ->where('chassis.is_aktif', 'Y')
-                ->select('chassis.*', 'x.nama')
-                ->get();
+        // $d_chassis = Chassis::leftJoin('m_model_chassis as x', 'chassis.model_id', '=', 'x.id')
+        //         ->where('chassis.is_aktif', 'Y')
+        //         ->select('chassis.*', 'x.nama')
+        //         ->get();
 
         $d_supplier = Supplier::where('is_aktif', 'Y')->get();
         
@@ -152,12 +158,19 @@ class HeadController extends Controller
 
         $data['berkas'] = json_encode($data_berkas);
         // var_dump( $data['berkas']); die;
-
+        $drivers = Karyawan::where('is_aktif', 'Y')->where('posisi_id', 5)->get();
+       $kategoriTruck = DB::table('kendaraan_kategori')
+        ->where('kendaraan_kategori.is_aktif', '=', "Y")
+        ->get();
         return view('pages.master.head.edit',[
             'judul' => "Head",
             'data' => $data,
-            'd_chassis' => $d_chassis,
-            'd_supplier' => $d_supplier,
+            // 'd_chassis' => $d_chassis,
+            // 'd_supplier' => $d_supplier,
+            'kategoriTruck' => $kategoriTruck,
+            'drivers' => $drivers,
+
+
         ]);
     }
 
@@ -181,16 +194,17 @@ class HeadController extends Controller
             $user = Auth::user()->id;
 
             $edit_head = Head::where('is_aktif', 'Y')->findOrFail($head->id);
+            $edit_head->id_kategori=$request->kategori;
             $edit_head->no_polisi = $request->no_polisi;
             $edit_head->no_mesin = $request->no_mesin;
             $edit_head->no_rangka = $request->no_rangka;
             $edit_head->merk_model = $request->merk_model;
             $edit_head->tahun_pembuatan = $request->tahun_pembuatan;
             $edit_head->warna = $request->warna;
-            $edit_head->chassis_id = $request->chassis_id;
+            // $edit_head->chassis_id = $request->chassis_id;
             $edit_head->driver_id = $request->driver_id;
-            $edit_head->supplier_id = $request->supplier_id;
-            $edit_head->kepemilikan = $request->kepemilikan;
+            // $edit_head->supplier_id = $request->supplier_id;
+            // $edit_head->kepemilikan = $request->kepemilikan;
             $edit_head->updated_at = now();
             $edit_head->updated_by = $user;
 
@@ -252,7 +266,7 @@ class HeadController extends Controller
                 }
             }
 
-            return response()->json(['message' => 'Head berhasil dibuat', 'id' => $head->id]);
+            return response()->json(['message' => 'Head berhasil diupdate', 'id' => $head->id]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Terjadi kesalahan']);
             // return redirect()->back()->withErrors($e->errors())->withInput();

@@ -102,8 +102,20 @@
                         <label for="">Catatan</label>
                         <input required type="text" name="catatan" class="form-control" value="{{ $data->catatan }}" >                         
                     </div>
+                         
+                    <div class="form-group">
+                        <label for="tanggal_keluar">PPH</label>
+                        <div class="input-group mb-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><input type="checkbox" id="cekPPH" name="cekPPH" {{($data->pph)? 'checked':'';}}></span>
+                            </div>
+                            <input step=".01" type="number" name="pph" class="form-control" id="pph" value="{{ $data->pph }}"  min="0" readonly>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div> 
 
-                          
                 </div>
                 <div class="card-footer">
                     <div class="col">
@@ -148,4 +160,30 @@
     </form>
 
 </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+     if($('#cekPPH').is(":checked")){
+                $('#pph').attr('readonly',false);
+             
+                // console.log("Checkbox is checked.");
+            }else if($('#cekPPH').is(":not(:checked)")){
+                // $('#pph').val(2.0);
+                $('#pph').attr('readonly',true);
+                // console.log("Checkbox is unchecked.");
+            }
+   $('#cekPPH').click(function(){
+            if($(this).is(":checked")){
+                $('#pph').attr('readonly',false);
+             
+                // console.log("Checkbox is checked.");
+            }else if($(this).is(":not(:checked)")){
+                // $('#pph').val(2.0);
+                $('#pph').attr('readonly',true);
+                // console.log("Checkbox is unchecked.");
+            }
+        });
+});
+
+</script>
 @endsection

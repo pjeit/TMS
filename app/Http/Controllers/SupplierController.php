@@ -70,7 +70,16 @@ class SupplierController extends Controller
             $supplier->nama = $request->nama;
             $supplier->alamat = $request->alamat;
             $supplier->kota_id = $request->kota_id;
-            $supplier->telp = $request->telp;
+             $telp= $request->telp;
+
+            // misal 085102935062, jadi yang diambil cuman index 0
+            if (substr($telp, 0, 1) == "0"&& $telp!=null) {
+                //terus di ubah jadi +62 . 85102935062 = +6285102935062 
+                $telp = (string) "+62" . substr($telp, 1);
+            } else if (substr($telp, 0, 2) == "62"&& $telp!=null) {
+                $telp = (string) "+" . $telp;
+            }
+            $supplier->telp = $telp;
             $supplier->email = $request->email;
             $supplier->npwp = $request->npwp;
             $supplier->no_rek = $request->no_rek;
@@ -78,6 +87,7 @@ class SupplierController extends Controller
             $supplier->bank = $request->bank;
             $supplier->cabang = $request->cabang;
             $supplier->catatan = $request->catatan;
+            $supplier->pph = $request->pph; 
             $supplier->created_at = date("Y-m-d h:i:s");
             $supplier->created_by = $user; // manual
             $supplier->updated_at = date("Y-m-d h:i:s");
@@ -141,6 +151,16 @@ class SupplierController extends Controller
             ], $pesanKustom);
     
             $data = $request->collect();
+                $telp= $data['telp'];
+
+            // misal 085102935062, jadi yang diambil cuman index 0
+            if (substr($telp, 0, 1) == "0"&& $telp!=null) {
+                //terus di ubah jadi +62 . 85102935062 = +6285102935062 
+                $telp = (string) "+62" . substr($telp, 1);
+            } else if (substr($telp, 0, 2) == "62"&& $telp!=null) {
+                $telp = (string) "+" . $telp;
+            }
+            $supplier->telp = $telp;
             DB::table('supplier')
                 ->where('id', $supplier['id'])
                 ->update(array(
@@ -148,7 +168,7 @@ class SupplierController extends Controller
                     'nama' => $data['nama'],
                     'alamat' => $data['alamat'],
                     'kota_id' => $data['kota_id'],
-                    'telp' => $data['telp'],
+                    'telp' => $telp,
                     'email' => $data['email'],
                     'npwp' => $data['npwp'],
                     'no_rek' => $data['no_rek'],
@@ -156,6 +176,7 @@ class SupplierController extends Controller
                     'bank' => $data['bank'],
                     'cabang' => $data['cabang'],
                     'catatan' => $data['catatan'],
+                      'pph' => $data['pph'],
                     'updated_at'=> date("Y-m-d h:i:s"),
                     'updated_by'=> $user,// masih hardcode nanti diganti cookies
                     'is_aktif' => "Y",
