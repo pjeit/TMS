@@ -25,8 +25,8 @@ class ChassisController extends Controller
     {
 
         $data = DB::table('chassis as a')
-            ->leftJoin('m_model_chassis as b', 'a.model_id', '=', 'b.id')
             ->select('a.*', 'b.nama as nama_model')
+            ->leftJoin('m_model_chassis as b', 'a.model_id', '=', 'b.id')
             ->where('a.is_aktif', '=', "Y")
             ->get();
             
@@ -75,7 +75,8 @@ class ChassisController extends Controller
             $chassis->kode = $request->kode;
             $chassis->karoseri = $request->karoseri;
             $chassis->model_id = $request->model_id;
-            $chassis->kepemilikan = $request->kepemilikan;
+            $chassis->taun_buat=$request->taun_buat;
+            // $chassis->kepemilikan = $request->kepemilikan;
             $chassis->created_at = date("Y-m-d h:i:s");
             $chassis->created_by = $user;
             $chassis->updated_at = date("Y-m-d h:i:s");
@@ -162,7 +163,8 @@ class ChassisController extends Controller
             $chassis->kode = $request->kode;
             $chassis->karoseri = $request->karoseri;
             $chassis->model_id = $request->model_id;
-            $chassis->kepemilikan = $request->kepemilikan;
+            $chassis->taun_buat=$request->taun_buat;
+            // $chassis->kepemilikan = $request->kepemilikan;
             $chassis->updated_at = now(); // Menggunakan now() untuk waktu saat ini
             $chassis->updated_by = $user;
             $chassis->save();

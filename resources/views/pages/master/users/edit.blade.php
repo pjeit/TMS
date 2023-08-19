@@ -72,6 +72,15 @@
                         </select>
                     </div>
                       <div class="form-group">
+                        <label for="karyawan_id">Customer</label>
+                        <select class="form-control selectpicker" name="karyawan" id="karyawan" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan">
+                            <option value="">--Pilih customer--</option>
+                            @foreach($dataCustomer as $data)
+                                <option value="{{$data->id}}"{{$data->id == $user->customer_id? 'selected' :'' }}>{{$data->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                      <div class="form-group">
                         <label for="akses_id">Hak Akses<span style='color:red'>*</span></label>
                         <select class="form-control selectpicker" name="role" id="role" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan" required>
                             <option value="">--Pilih role--</option>

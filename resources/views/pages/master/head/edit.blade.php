@@ -50,6 +50,14 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group">
+                        <label for="">Kategori Kendaraan</label>
+                        <select class="form-control select2" style="width: 100%;" id='kategori' name="kategori">
+                            @foreach ($kategoriTruck as $k)
+                                <option value="{{$k->id}}" {{($k->id == $data->id_kategori)? 'selected':'';}}>{{$k->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div> 
+                    <div class="form-group">
                         <label for="">No. Polisi<span class="text-red">*</span></label>
                         <input required type="text"  name="no_polisi" class="form-control" value="{{ $data->no_polisi }}" >                         
                     </div>
@@ -65,18 +73,7 @@
                         <label for="">Merk & Model</label>
                         <input required type="text" name="merk_model" class="form-control" value="{{$data->merk_model}}" >
                     </div>           
-                    <div class="form-group">
-                        <label for="tipe">Kepemilikan</label>
-                        <br>
-                        <div class="icheck-primary d-inline">
-                            <input id="PJE" type="radio" name="kepemilikan" value="PJE" {{'PJE' == old('kepemilikan',$data->kepemilikan)? 'checked' :'' }}>
-                            <label class="form-check-label" for="PJE">PJE</label>
-                        </div>
-                        <div class="icheck-primary d-inline ml-5">
-                            <input id="rekanan" type="radio" name="kepemilikan" value="Rekanan" {{'Rekanan' == old('kepemilikan',$data->kepemilikan)? 'checked' :'' }}>
-                            <label class="form-check-label" for="rekanan">Rekanan</label><br>
-                        </div>
-                    </div>    
+                     
                 </div>
             </div>
         </div>
@@ -96,32 +93,16 @@
                             <input required type="text" name="warna" class="form-control" value="{{$data->warna}}" >
                         </div>          
                     </div>
+                 
                     <div class="form-group">
-                        <label for="">Chasis </label>
-                        <select class="form-control select2" style="width: 100%;" id='chassis_id' name="chassis_id">
-                            <option value="0">&nbsp;</option>
-                            @foreach ($d_chassis as $chassis)
-                                <option value="{{$chassis->id}}" <?= ($chassis->id == $data->chassis_id)? 'Selected':''; ?> >{{ $chassis->karoseri }} - {{ $chassis->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>   
-                    <div class="form-group">
-                        <label for="">Driver (Optional) (data masih dummy)</label>
+                        <label for="">Driver (Optional)</label>
                         <select class="form-control select2" style="width: 100%;" id='driver_id' name="driver_id">
-                                <option value="0" <?= ($data->driver_id == '0')? 'selected':''; ?> >&nbsp;</option>
-                                <option value="1" <?= ($data->driver_id == '1')? 'selected':''; ?> >Driver 1</option>
-                                <option value="2" <?= ($data->driver_id == '2')? 'selected':''; ?> >Driver 2</option>
-                                <option value="3" <?= ($data->driver_id == '3')? 'selected':''; ?> >Driver 3</option>
+                          @foreach ($drivers as $driver)
+                                <option value="{{$driver->id}}" {{($driver->id == $data->driver_id)? 'selected':'';}}>{{$driver->nama_lengkap}}</option>
+                          @endforeach
                         </select>
                     </div>   
-                    <div class="form-group">
-                        <label for="">Supplier </label>
-                        <select class="form-control select2" style="width: 100%;" id='supplier_id' name="supplier_id">
-                            @foreach ($d_supplier as $supplier)
-                                <option value="{{$supplier->id}}" <?= ($supplier->id == $data->supplier_id)? 'selected':''; ?> >{{ $supplier->nama }} - {{ $supplier->cabang }}</option>
-                            @endforeach
-                        </select>
-                    </div>   
+                    
                     
                 </div>
             </div>

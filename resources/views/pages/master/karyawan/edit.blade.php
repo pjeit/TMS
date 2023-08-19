@@ -87,7 +87,7 @@
                 @csrf
                  @method('PUT')
 
-                {{-- ============Data pribadi============ --}}
+                  {{-- ============Data pribadi============ --}}
                 <div class="card" id="satu">
                     <div class="card-header">
                         <h5 class="card-title">Data Pribadi</h5>
@@ -96,17 +96,17 @@
                         <div class="form-group text-center">
                             <img src="{{ $karyawan->foto ? asset($karyawan->foto) : asset('img/photo.png') }}" class='img-fluid' style='width:225px;height:225px' id='preview_img'> 
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="foto" name='foto' accept="image/png, image/jpeg" >
+                                <input type="file" class="custom-file-input" id="foto" name='foto' accept="image/png, image/jpeg">
                                 <label class="custom-file-label" for="foto" style="text-align: left">Pilih Foto</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class='row'>
-                                <div class='col-5 col-md-5 col-lg-5'>
-                                    <label for="nik">NIK <span style="opacity: 40%">(Nomor induk Karyawan)</span></label>
+                                <div class='col-lg-3 col-md-12'>
+                                    <label for="nik">NPK <span style="opacity: 40%">(Nomor Pokok Karyawan)</span></label>
                                     <input type="text" class="form-control" id="nik" name="nik" placeholder="Otomatis" readonly value="{{old('nik',$karyawan->nik)}}">    
                                 </div>
-                                <div class='col-7 col-md-7 col-lg-7'>
+                                <div class='col-lg-9 col-md-12'>
                                     <label for="nik">Nama Panggilan<span style='color:red'>*</span></label>
                                     <input  ="text" name="nama_panggilan" class="form-control" id="panggilan" placeholder="" value="{{old('nama_panggilan',$karyawan->nama_panggilan)}}">    
                                 </div>
@@ -116,52 +116,77 @@
                             <label for="nama">Nama Lengkap<span style='color:red'>*</span></label>
                             <input  ="text" name="nama_lengkap" class="form-control" id="nama" placeholder="Nama sesuai KTP" value="{{old('nama_lengkap',$karyawan->nama_lengkap)}}"> 
                         </div>
-                        <div class="form-group">
-                            <label for="tipe">Jenis Kelamin</label>
-                            <br>
-                            <div class="icheck-primary d-inline">
-                                <input id="laki" type="radio" name="jenis_kelamin" value="L" {{'L' == old('jenis_kelamin',$karyawan->jenis_kelamin)? 'checked' :'' }} >
-                                <label class="form-check-label" for="laki">Laki-laki</label>
-                            </div>
-                            <div class="icheck-primary d-inline">
-                                <input id="perempuan" type="radio" name="jenis_kelamin" value="P" {{'P'== old('jenis_kelamin',$karyawan->jenis_kelamin)? 'checked' :'' }}>
-                                <label class="form-check-label" for="perempuan">Perempuan</label><br>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="tipe">Status kawin</label>
-                            <br>
-                            <div class="icheck-primary d-inline">
-                                <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
-                                <label class="form-check-label" for="belumNikah">Belum Menikah</label>
-                            </div>
-                            <div class="icheck-primary d-inline">
-                                <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
-                                <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
-                            </div>
-                            <div class="icheck-primary d-inline">
-                                <input id="cerai" type="radio" name="status_menikah" value="2" {{'2'== old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
-                                <label class="form-check-label" for="cerai">Cerai</label><br>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="jumlah_anak">Jumlah Anak</label>
-                            <input type="number" class="form-control col-2" name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',$karyawan->jumlah_anak)}}" min="0" max="3">
-                        </div>
-                        <div class="form-group">
-                            <label for="tempat_lahir">Tempat Lahir</label>
-                            <input type="text" name="tempat_lahir" class="form-control" id="tempat_lahir" placeholder="" value="{{old('tempat_lahir',$karyawan->tempat_lahir)}}">
-                        </div>
-                      
-                        <div class="form-group">
-                            <label for="tanggal_lahir">Tanggal Lahir</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-12">
+                                <div class="form-group">
+                                    <label for="jumlah_anak">Jumlah Anak</label>
+                                    <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',$karyawan->jumlah_anak)}}" min="0" >
                                 </div>
-                                <input type="text" name="tanggal_lahir" autocomplete="off" class="date form-control" id="tanggal_lahir" placeholder="dd-M-yyyy" value="{{ old('tanggal_lahir', \Carbon\Carbon::parse($karyawan->tanggal_lahir)->format('d-M-Y')) }}">     
+                            </div>
+                            <div class="col-lg-5 col-md-12">
+                                  <div class="form-group">
+                                    <label for="tipe">Status kawin</label>
+                                    <br>
+                                    <div class="icheck-primary d-inline">
+                                        <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }} checked>
+                                        <label class="form-check-label" for="belumNikah">Belum Menikah</label>
+                                    </div>
+                                    <div class="icheck-primary d-inline">
+                                        <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
+                                        <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
+                                    </div>
+                                    <div class="icheck-primary d-inline">
+                                        <input id="cerai" type="radio" name="status_menikah" value="2" {{'2'== old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
+                                        <label class="form-check-label" for="cerai">Cerai</label><br>
+                                    </div>
+                                 </div>
+                            </div>
+                            <div class="col-lg-4 col-md-12">
+                                <div class="form-group">
+                                    <label for="tipe">Jenis Kelamin</label>
+                                    <br>
+                                    <div class="icheck-primary d-inline">
+                                        <input id="laki" type="radio" name="jenis_kelamin" value="L" {{'L' == old('jenis_kelamin',$karyawan->jenis_kelamin)? 'checked' :'' }} checked>
+                                        <label class="form-check-label" for="laki">Laki-laki</label>
+                                    </div>
+                                    <div class="icheck-primary d-inline">
+                                        <input id="perempuan" type="radio" name="jenis_kelamin" value="P" {{'P'== old('jenis_kelamin',$karyawan->jenis_kelamin)? 'checked' :'' }}>
+                                        <label class="form-check-label" for="perempuan">Perempuan</label><br>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label>PTKP</label>
+                            <select class="form-control selectpicker" name="ptkp" id="ptkp" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
+                                <option value="">--Pilih PTKP--</option>
+                                 @foreach($dataPtkp as $data)
+                                    <option value="{{$data->id}}"{{$karyawan->ptkp_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-12">
+                                <div class="form-group">
+                                        <label for="tempat_lahir">Tempat Lahir</label>
+                                        <input type="text" name="tempat_lahir" class="form-control" id="tempat_lahir" placeholder="" value="{{old('tempat_lahir',$karyawan->tempat_lahir)}}">
+                                </div>
+                            </div>
+                            <div class="col-lg-9 col-md-12">
+                                <div class="form-group">
+                                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        <input type="text" name="tanggal_lahir" autocomplete="off" class="date form-control" id="tanggal_lahir" placeholder="dd-M-yyyy" value="{{old('tanggal_lahir',\Carbon\Carbon::parse($karyawan->tanggal_lahir)->format('d-M-Y')) }}">     
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                      
+                      
                         <div class="form-group">
                             <label>Agama</label>
                             <select class="form-control selectpicker" name="agama" id="agama" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
@@ -182,40 +207,65 @@
                         <h5 class="card-title">Alamat & Kontak</h5>
                     </div>  
                     <div class="card-body">
-                        <div class="form-group">
-                            <label for="alamat">Alamat Tinggal Sekarang</label>
-                            <input type="text" name="alamat_sekarang" class="form-control" id="alamat" placeholder="" value="{{old('alamat_sekarang',$karyawan->alamat_domisili)}}">
-                        </div>
-                        <div class="form-group">
-                            <label for="kota">Kota Tinggal Sekarang</label>
-                            <input type="text" name="kota_sekarang" class="form-control" id="kota" placeholder="" value="{{old('kota_sekarang',$karyawan->kota_domisili)}}">
-                        </div>
-                        <div class="form-group">
-                            <label for="alamat">Alamat Sesuai KTP</label>
-                            <input type="text" name="alamat_ktp" class="form-control" id="alamat" placeholder="" value="{{old('alamat_ktp',$karyawan->alamat_ktp)}}">
-                        </div>
-                        <div class="form-group">
-                            <label for="kota">Kota Sesuai KTP</label>
-                            <input type="text" name="kota_ktp" class="form-control" id="kota" placeholder="" value="{{old('kota_ktp',$karyawan->kota_ktp)}}">
-                        </div>
-                        <div class="form-group">
-                            <label for="telp">Telp 1<span style='color:red'>*</span></label>
-                            <div class="input-group mb-0">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                         <div class="row">
+                            <div class="col-lg col-md-12">
+                                 <div class="form-group">
+                                    <label for="alamat">Alamat Tinggal Sekarang</label>
+                                    <input type="text" name="alamat_sekarang" class="form-control" id="alamat" placeholder="" value="{{old('alamat_sekarang',$karyawan->alamat_domisili)}}">
+                                </div>
                             </div>
-                            <input type="text" class="form-control numaja" id="telp1" name="telp1"  placeholder="" value="{{old('telp1',$karyawan->telp1)}}">
+
+                            <div class="col-lg col-md-12">
+                                <div class="form-group">
+                                    <label for="kota">Kota Tinggal Sekarang</label>
+                                    <input type="text" name="kota_sekarang" class="form-control" id="kota" placeholder="" value="{{old('kota_sekarang',$karyawan->kota_domisili)}}">
+                                </div>
                             </div>
                         </div>
-                         <div class="form-group">
-                            <label for="telp">Telp 2<span style='color:red'>*</span></label>
-                            <div class="input-group mb-0">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                         <div class="row">
+                            <div class="col-lg col-md-12">
+                                <div class="form-group">
+                                    <label for="alamat">Alamat Sesuai KTP</label>
+                                    <input type="text" name="alamat_ktp" class="form-control" id="alamat" placeholder="" value="{{old('alamat_ktp',$karyawan->alamat_ktp)}}">
+                                </div>
                             </div>
-                            <input type="text" class="form-control numaja" id="telp2" name="telp2"  placeholder="" value="{{old('telp2',$karyawan->telp2)}}">
+
+                            <div class="col-lg col-md-12">
+                                <div class="form-group">
+                                    <label for="kota">Kota Sesuai KTP</label>
+                                    <input type="text" name="kota_ktp" class="form-control" id="kota" placeholder="" value="{{old('kota_ktp',$karyawan->kota_ktp)}}">
+                                </div>
                             </div>
                         </div>
+                       
+                     
+                     
+                        <div class="row">
+                            <div class="col-lg col-md-12">
+                                 <div class="form-group">
+                                    <label for="telp">Telp 1<span style='color:red'>*</span></label>
+                                    <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control numaja" id="telp1" name="telp1"  placeholder="" value="{{old('telp1',$karyawan->telp1)}}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg col-md-12">
+                                <div class="form-group">
+                                    <label for="telp">Telp 2</label>
+                                    <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control numaja" id="telp2" name="telp2"  placeholder="" value="{{old('telp2',$karyawan->telp2)}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
                         <div class="form-group">
                             <label for="alamat">Email</label>
                             <div class="input-group mb-0">
@@ -224,15 +274,6 @@
                                 </div>
                                 <input type="email" class="form-control" id="email" name="email" placeholder="" value="{{old('email',$karyawan->email)}}">
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>PTKP</label>
-                            <select class="form-control selectpicker" name="ptkp" id="ptkp" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
-                                <option value="">--Pilih PTKP--</option>
-                                @foreach($dataPtkp as $data)
-                                    <option value="{{$data->id}}"{{$karyawan->ptkp_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                                @endforeach
-                            </select>
                         </div>
                          <div class="form-group">
                             <label for="no_rekening">No. Rekening</label>
@@ -243,13 +284,13 @@
                             <input type="text" name="atas_nama" class="form-control" id="atas_nama" placeholder="" value="{{old('rek_nama',$karyawan->rek_nama)}}">
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-lg col-md-12">
                                 <div class="form-group">
                                     <label for="nama_bank">Nama Bank</label>
                                     <input type="text" name="nama_bank" class="form-control" id="nama_bank" placeholder="" value="{{old('bank',$karyawan->bank)}}">
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-lg col-md-12">
                                 <div class="form-group">
                                     <label for="cabang">Cabang</label>
                                     <input type="text" name="cabang_bank" class="form-control" id="cabang" placeholder="" value="{{old('cabang_bank',$karyawan->cabang_bank)}}">
@@ -787,6 +828,45 @@
   $(document).ready(function() {
 //             var url = $("#formDataKaryawan").attr('action');
 // alert(url);
+       function hitungPtkp(){
+            var dataPtkp = <?php echo json_encode($dataPtkp); ?>;
+            // Ambil value jumlah anak
+            var jumlahAnak = parseInt($("#jumlah_anak").val());
+            // ambil value radio button
+            var statusMenikah = $("input[name='status_menikah']:checked").val();
+            $('#ptkp').prop('disabled', true);
+            var ptkpValue = "";
+            if (jumlahAnak === 0 && statusMenikah === "0" ||jumlahAnak === 0 && statusMenikah === "2") {
+                ptkpValue = dataPtkp[0].id;
+            } else if (jumlahAnak === 1 && statusMenikah === "0"||jumlahAnak === 1 && statusMenikah === "2") {
+                ptkpValue = dataPtkp[1].id;
+            }
+            else if (jumlahAnak === 2 && statusMenikah === "0"||jumlahAnak === 2 && statusMenikah === "2") {
+                ptkpValue = dataPtkp[2].id;
+            } 
+            else if (jumlahAnak === 3 && statusMenikah === "0"||jumlahAnak === 3 && statusMenikah === "2") {
+                ptkpValue = dataPtkp[3].id;
+            } 
+            else if (jumlahAnak === 0 && statusMenikah === "1") {
+                ptkpValue = dataPtkp[4].id;
+            } 
+            else if (jumlahAnak === 1 && statusMenikah === "1") {
+                ptkpValue = dataPtkp[5].id;
+            } 
+            else if (jumlahAnak === 2 && statusMenikah === "1") {
+                ptkpValue = dataPtkp[6].id;
+            } 
+            else if (jumlahAnak === 3 && statusMenikah === "1") {
+                ptkpValue = dataPtkp[7].id;
+            } 
+            // Set nilai pada select ptkp
+            $("#ptkp").val(ptkpValue).selectpicker("refresh");
+        }
+        hitungPtkp();
+
+        $("#jumlah_anak, input[name='status_menikah']").change(function() {
+              hitungPtkp();
+        });
         $('#formDataKaryawan').on('submit',function(e){
             // var formData = new FormData(document.getElementById('formDataKaryawan'));
             var formData = new FormData(this);
@@ -826,6 +906,7 @@
             var url = $(this).attr('action');
 
             e.preventDefault();
+
             $.ajax({
                 method: 'POST',
                 url: url,
@@ -839,7 +920,7 @@
                         toastr.success(response.message);
                         console.log(response);
 
-                        // window.location.href = '{{ route("karyawan.index") }}';
+                        window.location.href = '{{ route("karyawan.index") }}';
                     } else {
                         toastr.error(response.message);
                     }
@@ -852,7 +933,14 @@
                             toastr.error(pesanError[i]);
                         }
 
-                    } else {
+                    } 
+                    else if (xhr.responseJSON && xhr.responseJSON.errorServer) {
+                        var pesanError = xhr.responseJSON.errorServer;
+                        console.table(pesanError);
+
+                    }
+                    
+                    else {
                         toastr.error("Terjadi kesalahan saat mengirim data. " + error);
                     }
 
@@ -922,6 +1010,7 @@
         $('.step2 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
         $('.step3 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
         $('.step4 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
+            $('#ptkp').prop('disabled', true);
 
         $("#satu").show(); 
         $("#dua").hide(); 
@@ -935,6 +1024,7 @@
         $('.step1 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
         $('.step3 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
         $('.step4 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
+            $('#ptkp').prop('disabled', false);
 
         $("#satu").hide(); 
         $("#dua").show(); 
@@ -948,6 +1038,7 @@
         $('.step2 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
         $('.step4 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
 
+            $('#ptkp').prop('disabled', false);
 
         $("#satu").hide(); 
         $("#dua").hide(); 
@@ -964,6 +1055,8 @@
         $("#dua").hide(); 
         $("#tiga").hide();  
         $("#empat").show(); 
+            $('#ptkp').prop('disabled', false);
+
 
      });
     // <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-right"><strong>Back</strong></button>
@@ -980,6 +1073,8 @@
         $("#dua").show(); 
         $("#tiga").hide(); 
         $("#empat").hide(); 
+            $('#ptkp').prop('disabled', false);
+
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
      });
@@ -992,6 +1087,8 @@
         $("#dua").hide(); 
         $("#tiga").hide(); 
         $("#empat").hide(); 
+            $('#ptkp').prop('disabled', false);
+
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
      });
@@ -1006,6 +1103,8 @@
         $("#empat").hide(); 
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
+            $('#ptkp').prop('disabled', false);
+
      });
          $('#BackDariDarurat').click(function() {
         $('.step1 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
@@ -1016,6 +1115,8 @@
         $("#dua").show(); 
         $("#tiga").hide(); 
         $("#empat").hide(); 
+            $('#ptkp').prop('disabled', false);
+
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
      });
@@ -1029,6 +1130,8 @@
         $("#dua").hide(); 
         $("#tiga").hide(); 
         $("#empat").show(); 
+            $('#ptkp').prop('disabled', false);
+
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
      });
@@ -1041,10 +1144,18 @@
         $("#dua").hide(); 
         $("#tiga").show(); 
         $("#empat").hide(); 
+            $('#ptkp').prop('disabled', false);
+
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
      });
-
+     if ($("#Kontrak").prop('checked')) {
+        $('#tglKontrakMulai, #tglKontrakSelesai').show();
+      }
+     if ($("#Tetap").prop('checked')) {
+        $('#tglKontrakMulai, #tglKontrakSelesai').hide();
+        $('#tanggal_kontrak, #tanggal_selesai_kontrak').val('');
+      }
      $('#Kontrak').click(function() {
       if ($(this).prop('checked')) {
         $('#tglKontrakMulai, #tglKontrakSelesai').show();

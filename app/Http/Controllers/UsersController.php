@@ -89,11 +89,16 @@ class UsersController extends Controller
             ->select('role.*')
             ->where('role.is_aktif', '=', "Y")
             ->get();
+          $dataCustomer = DB::table('customer')
+            ->select('customer.*')
+            ->where('customer.is_aktif', '=', "Y")
+            ->get();
            return view('pages.master.users.create',[
             'judul' => "User",
             'dataUser' => $dataUser,
             'dataKaryawan' => $dataKaryawan,
             'dataRole' => $dataRole,
+            'dataCustomer'=>$dataCustomer
         ]);
     }
 
@@ -130,6 +135,7 @@ class UsersController extends Controller
                     'password' => Hash::make($data['password']),
                     'role_id' => $data['role'],
                     'karyawan_id' => ($data['karyawan']==null)?null:$data['karyawan'],
+                    'customer_id' => ($data['customer']==null)?null:$data['customer'],
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $user,
                     'updated_at'=> VariableHelper::TanggalFormat(),
@@ -175,12 +181,17 @@ class UsersController extends Controller
             ->select('role.*')
             ->where('role.is_aktif', '=', "Y")
             ->get();
+             $dataCustomer = DB::table('customer')
+            ->select('customer.*')
+            ->where('customer.is_aktif', '=', "Y")
+            ->get();
             // dd($user);
            return view('pages.master.users.edit',[
             'judul' => "User",
             'user' => $user,
             'dataKaryawan' => $dataKaryawan,
             'dataRole' => $dataRole,
+            'dataCustomer'=>$dataCustomer
         ]);
     }
 
@@ -219,6 +230,7 @@ class UsersController extends Controller
                     'password' => password_hash($data['password'], PASSWORD_DEFAULT),
                     'role_id' => $data['role'],
                     'karyawan_id' => ($data['karyawan']==null)?null:$data['karyawan'],
+                    'customer_id' => ($data['customer']==null)?null:$data['customer'],
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $usersCrt,
                     'updated_at'=> VariableHelper::TanggalFormat(),

@@ -51,6 +51,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="">Tahun Buat</label>
+                        <input required type="text"  name="taun_buat" class="form-control" value="{{old('taun_buat','')}}" >                         
+                    </div>
+
+                    <div class="form-group">
                         <label for="">Model</label>
                         <select class="form-control select2" style="width: 100%;" id='model_id' name="model_id">
                             @foreach ($model_chassis as $model)
@@ -59,13 +64,6 @@
                         </select>
                     </div>
               
-                    <div class="form-group">
-                        <label for="">Kepemilikan</label>
-                        <select class="form-control select2" style="width: 100%;" id='kepemilikan' name="kepemilikan">
-                            <option value="PJE" >PJE</option>
-                            <option value="Rekanan" >Rekanan</option>
-                        </select>
-                    </div>
 
                 </div>
                 <div class="card-footer">

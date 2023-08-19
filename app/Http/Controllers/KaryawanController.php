@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Validator;
 use Mockery\Undefined;
 use Illuminate\Support\Facades\Auth;
 use DataTables;
-
+use Buglinjo\LaravelWebp\Webp;
+use Illuminate\Support\Facades\Storage;
+use Exception;
 class KaryawanController extends Controller
 {
     /**
@@ -166,13 +168,29 @@ class KaryawanController extends Controller
             // }
             // dd($data);
             // var_dump($data['identitas']); die;
-            $path = "";
+            // $path = "";
             
-            if ($request->hasFile('foto') && $data['nama_panggilan']!=null ) {
+            // if ($request->hasFile('foto') && $data['nama_panggilan']!=null ) {
+            //     $fotoKaryawan = Webp::make($request->file('foto'));
+            //     $ekstensiGambar = $fotoKaryawan->getClientOriginalExtension();
+            //     $nama_gambar='karyawan_'.$data['nama_panggilan'].'_'.time() . '.' . $ekstensiGambar;
+            //     $fotoKaryawan->move(public_path('/img/fotoKaryawan'), $nama_gambar );
+            //     $path = '/img/fotoKaryawan/' . $nama_gambar;
+            // }
+
+            $path = "";
+
+            if ($request->hasFile('foto') && $data['nama_panggilan'] != null) {
                 $fotoKaryawan = $request->file('foto');
                 $ekstensiGambar = $fotoKaryawan->getClientOriginalExtension();
-                $nama_gambar='karyawan_'.$data['nama_panggilan'].'_'.time() . '.' . $ekstensiGambar;
-                $fotoKaryawan->move(public_path('/img/fotoKaryawan'), $nama_gambar );
+                $nama_gambar = 'karyawan_' . $data['nama_panggilan'] . '_' . time() . '.' . $ekstensiGambar. '.webp';
+
+                // Convert and save the image to WebP format
+                $webp = Webp::make($fotoKaryawan);
+                $webp->save(public_path('/img/fotoKaryawan/' . $nama_gambar ),20);
+
+                // Save the original image
+                // $fotoKaryawan->move(public_path('/img/fotoKaryawan'), $nama_gambar);
                 $path = '/img/fotoKaryawan/' . $nama_gambar;
             }
    
@@ -194,7 +212,23 @@ class KaryawanController extends Controller
             $tanggal_gabung = date_create_from_format('d-M-Y', $data['tanggal_gabung']);
             $tanggal_selesai_kontrak = date_create_from_format('d-M-Y', $data['tanggal_selesai_kontrak']);
             $tanggal_keluar = date_create_from_format('d-M-Y', $data['tanggal_keluar']);
-         
+            $telp1= $data['telp1'];
+            $telp2 = $data['telp2'];
+             // misal 085102935062, jadi yang diambil cuman index 0
+            if (substr($telp1, 0, 1) == "0" && $telp1!=null) {
+                //terus di ubah jadi +62 . 85102935062 = +6285102935062 
+                $telp1 = (string) "+62" . substr($telp1, 1);
+            } else if (substr($telp1, 0, 2) == "62"&& $telp1!=null) {
+                $telp1 = (string) "+" . $telp1;
+            }
+
+            // misal 085102935062, jadi yang diambil cuman index 0
+            if (substr($telp2, 0, 1) == "0"&& $telp2!=null) {
+                //terus di ubah jadi +62 . 85102935062 = +6285102935062 
+                $telp2 = (string) "+62" . substr($telp2, 1);
+            } else if (substr($telp2, 0, 2) == "62"&& $telp2!=null) {
+                $telp2 = (string) "+" . $telp2;
+            }
             $idKaryawan=DB::table('karyawan')
                 ->insertGetId(array(
                     // data pribadi
@@ -215,8 +249,8 @@ class KaryawanController extends Controller
                     'kota_domisili'=>$data['kota_sekarang'],
                     'alamat_ktp'=>$data['alamat_ktp'],
                     'kota_ktp'=>$data['kota_ktp'],
-                    'telp1'=>$data['telp1'],
-                    'telp2'=>$data['telp2'],
+                    'telp1'=>$telp1,
+                    'telp2'=>$telp2?$telp2:null,
                     'email'=>$data['email'],
                     'ptkp_id'=>$data['ptkp'],
                     'norek'=>$data['no_rekening'],
@@ -299,7 +333,25 @@ class KaryawanController extends Controller
             // return redirect()->route('karyawan.index')->with('status','Success!!');
         } catch (ValidationException $e) {
             // return redirect()->back()->withErrors($e->errors())->withInput();
+             // If there's an error, unlink the image if it was uploaded
+            DB::rollBack();
+            if (!empty($path)) {
+                    if (file_exists(public_path($path))) {
+                        unlink(public_path($path));
+                    }
+            }
                 return response()->json(['errorsCatch' => $e->errors()], 422);
+        }
+       catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+
+            if (!empty($path)) {
+                if (file_exists(public_path($path))) {
+                    unlink(public_path($path));
+                }
+            }
+            return response()->json(['errorServer' => $ex->getMessage()],500);
         }
     }
 
@@ -404,7 +456,7 @@ class KaryawanController extends Controller
                 'telp1' =>'required',
                 'nama_lengkap' => 'required',
                 'nama_panggilan' => 'required',
-                'foto' => 'image|mimes:jpg,png,jpeg|max:2048',
+                'foto' => 'image|mimes:jpg,png,jpeg',
 
             ],$pesanKustom);
            
@@ -422,15 +474,20 @@ class KaryawanController extends Controller
                     }
                 }
 
-                $fotoKaryawan = $request->file('foto');
+                 $fotoKaryawan = $request->file('foto');
                 $ekstensiGambar = $fotoKaryawan->getClientOriginalExtension();
-                $nama_gambar = 'karyawan_' . $data['nama_panggilan'] . '_' . time() . '.' . $ekstensiGambar;
+                $nama_gambar = 'karyawan_' . $data['nama_panggilan'] . '_' . time() . '.' . $ekstensiGambar. '.webp';
 
-                // Move the new image file to the desired location
-                $fotoKaryawan->move(public_path('/img/fotoKaryawan'), $nama_gambar);
+                // Convert and save the image to WebP format
+                $webp = Webp::make($fotoKaryawan);
+                $webp->save(public_path('/img/fotoKaryawan/' . $nama_gambar ),20);
+
+                // Save the original image
+                // $fotoKaryawan->move(public_path('/img/fotoKaryawan'), $nama_gambar);
                 $path = '/img/fotoKaryawan/' . $nama_gambar;
             }
 
+              
   
             //====== logic otomatis nik ======
             // $year = Carbon::now()->format('y');
@@ -450,7 +507,24 @@ class KaryawanController extends Controller
             $tanggal_gabung = date_create_from_format('d-M-Y', $data['tanggal_gabung']);
             $tanggal_selesai_kontrak = date_create_from_format('d-M-Y', $data['tanggal_selesai_kontrak']);
             $tanggal_keluar = date_create_from_format('d-M-Y', $data['tanggal_keluar']);
-         
+
+            $telp1= $data['telp1'];
+            $telp2 = $data['telp2'];
+             // misal 085102935062, jadi yang diambil cuman index 0
+            if (substr($telp1, 0, 1) == "0") {
+                //terus di ubah jadi +62 . 85102935062 = +6285102935062 
+                $telp1 = (string) "+62" . substr($telp1, 1);
+            } else if (substr($telp1, 0, 2) == "62") {
+                $telp1 = (string) "+" . $telp1;
+            }
+
+            // misal 085102935062, jadi yang diambil cuman index 0
+            if (substr($telp2, 0, 1) == "0") {
+                //terus di ubah jadi +62 . 85102935062 = +6285102935062 
+                $telp2 = (string) "+62" . substr($telp2, 1);
+            } else if (substr($telp2, 0, 2) == "62") {
+                $telp2 = (string) "+" . $telp2;
+            }
             DB::table('karyawan')
             ->where('id', $karyawan['id'])
                 ->update(array(
@@ -472,8 +546,8 @@ class KaryawanController extends Controller
                     'kota_domisili'=>$data['kota_sekarang'],
                     'alamat_ktp'=>$data['alamat_ktp'],
                     'kota_ktp'=>$data['kota_ktp'],
-                    'telp1'=>$data['telp1'],
-                    'telp2'=>$data['telp2'],
+                    'telp1'=>$telp1,
+                    'telp2'=>$telp2,
                     'email'=>$data['email'],
                     'ptkp_id'=>$data['ptkp'],
                     'norek'=>$data['no_rekening'],
@@ -616,9 +690,33 @@ class KaryawanController extends Controller
 
             // return redirect()->route('karyawan.index')->with('status','Success!!');
         } catch (ValidationException $e) {
-            // return redirect()->back()->withErrors($e->errors())->withInput();
+            // cancel input db
+            DB::rollBack();
+            
+            if ( public_path($path)!== $fotoPathDariDB) {
+                // Delete the image using the Storage facade
+                if (file_exists(public_path($path))) {
+                        unlink(public_path($path));
+                    }
+            }
                 return response()->json(['errorsCatch' => $e->errors()], 422);
+        } catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+
+            if (!empty($path)) {
+                // Jika gambar sudah di-upload sebelumnya, hapus gambar yang baru saja dibuat
+                if(public_path($path)!== $fotoPathDariDB)
+                {
+                     if (file_exists(public_path($path))) {
+                            unlink(public_path($path));
+                        }
+                }
+               
+            }
+            return response()->json(['errorServer' => $ex->getMessage()],500);
         }
+        
     }
 
     /**
