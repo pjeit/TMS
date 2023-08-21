@@ -37,7 +37,12 @@
     <form action="{{ route('pair_kendaraan.update', [$dataKendaraan[0]->id]) }}" method="POST" id="formPair">
         @csrf
         @method('PUT')
-
+        <div class="card radiusSendiri">
+            <div class="card-header">
+                <button type="button" class="btn btn-secondary radiusSendiri float-left">Kembali</button>
+                <button type="submit" class="btn btn-success radiusSendiri float-right" name="save" id="save" value="save" ><i class="fa fa-fw fa-save"></i>Simpan</button>
+            </div>
+        </div>
         <div class="row">
             <div class="col-6">
                 <div class="card radiusSendiri" >
@@ -86,7 +91,6 @@
                          <tr>
                              <td >
                                  <a href="javascript:;" class="btn btn-secondary radiusSendiri" id="addmore"><i class="fa fa-fw fa-plus-circle"></i>Tambah Chassis</a>
-                                 <button type="submit" name="save" id="save" value="save" class="btn btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i>Simpan</button>
                                  {{-- <button id="coba" type="button">coba </button> --}}
                              </td>
                          </tr>

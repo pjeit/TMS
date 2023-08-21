@@ -456,7 +456,7 @@
 
                 {{-- ============komponen============ --}}
 
-                <div class='row' >
+                <div class='row' id="showKomponen">
                             {{-- ============komponen identitas============ --}}
                             <div class="col-lg-6 col-md-6 col-12">
                                 <button type="button" class="btn btn-sm btn-secondary" onclick="open_detail('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; IDENTITAS</b></button>
@@ -761,6 +761,7 @@
     }
 
   $(document).ready(function() {
+    $('#showKomponen').hide();
 
     // encode ubah array jadi json
     //decode ubah json jadi array
@@ -953,6 +954,8 @@
         $("#empat").hide(); 
 
             $('#ptkp').prop('disabled', true);
+         $('#showKomponen').hide();
+
       
      });
      $('.step2').click(function() {
@@ -966,7 +969,8 @@
         $("#tiga").hide(); 
         $("#empat").hide(); 
             $('#ptkp').prop('disabled', false);
-
+     $('#showKomponen').hide();
+        
      });
      $('.step3').click(function() {
          $(this).find('button').removeClass('btn-outline-secondary').addClass('btn-secondary');
@@ -980,6 +984,7 @@
         $("#tiga").show();  
         $("#empat").hide(); 
             $('#ptkp').prop('disabled', false);
+    $('#showKomponen').hide();
 
      });
      $('.step4').click(function() {
@@ -992,6 +997,7 @@
         $("#tiga").hide();  
         $("#empat").show(); 
             $('#ptkp').prop('disabled', false);
+    $('#showKomponen').show();
 
      });
     // <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-right"><strong>Back</strong></button>
@@ -1009,6 +1015,7 @@
         $("#tiga").hide(); 
         $("#empat").hide();
             $('#ptkp').prop('disabled', true);
+    $('#showKomponen').hide();
 
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
@@ -1025,6 +1032,7 @@
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
             $('#ptkp').prop('disabled', false);
+    $('#showKomponen').hide();
 
      });
        $('#nextDariAlamat').click(function() {
@@ -1039,6 +1047,7 @@
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
             $('#ptkp').prop('disabled', false);
+    $('#showKomponen').hide();
 
      });
          $('#BackDariDarurat').click(function() {
@@ -1053,6 +1062,7 @@
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
             $('#ptkp').prop('disabled', false);
+    $('#showKomponen').hide();
 
      });
        $('#nextDariDarurat').click(function() {
@@ -1068,6 +1078,7 @@
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
             $('#ptkp').prop('disabled', false);
+    $('#showKomponen').show();
 
      });
      $('#BackDariStatus').click(function() {
@@ -1082,6 +1093,7 @@
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
             $('#ptkp').prop('disabled', false);
+    $('#showKomponen').hide();
 
      });
 
