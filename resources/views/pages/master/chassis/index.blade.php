@@ -21,9 +21,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('chassis.create')}}" class="btn btn-secondary btn-responsive float-left">
+                    <a href="{{route('chassis.create')}}" class="btn btn-primary btn-responsive float-left">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
                     </a> 
                 </div>
@@ -44,11 +44,11 @@
                                 <td>{{ $item->karoseri }}</td>  
                                 <td>{{ $item->nama_model }}</td>
                                 <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('chassis.edit',[$item->id])}}">
+                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('chassis.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
+                                    <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
                                                <i class="fas fa-trash"></i> Hapus
                                     </button>          
                                     

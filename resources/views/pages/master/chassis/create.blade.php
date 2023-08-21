@@ -32,10 +32,15 @@
     <form data-action="{{ route('chassis.store') }}" method="POST" enctype="multipart/form-data" id="chassis_save">
     
     @csrf
-
+    <div class="card radiusSendiri">
+        <div class="card-header">
+            <a href="{{ route('chassis.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+            <button type="submit" class="btn btn-success radiusSendiri float-right"><i class="fa fa-fw fa-save"></i> Simpan</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-6 col-md-6 col-12">
-            <div class="card">
+            <div class="card radiusSendiri">
                 <div class="card-header">
                     <h5 class="card-title">Data</h5>
                 </div>
@@ -66,14 +71,14 @@
               
 
                 </div>
-                <div class="card-footer">
+                {{-- <div class="card-footer">
                     <button type="submit" class="btn btn-success float-left">Simpan</button>
-                </div>
+                </div> --}}
             </div>
         </div>
  
         <div class="col-lg-6 col-md-6 col-12">
-            <div class="card">
+            <div class="card radiusSendiri">
                 <div class="card-header">
                  
                     <button type="button" class="btn btn-primary" onclick="open_detail('')">

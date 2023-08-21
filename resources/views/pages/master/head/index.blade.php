@@ -21,9 +21,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('head.create')}}" class="btn btn-secondary btn-responsive float-left">
+                    <a href="{{route('head.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
                     </a> 
                 </div>
@@ -50,10 +50,10 @@
                                     <td>{{$item->tahun_pembuatan}} - {{$item->warna}} </td>  
                                     <td>{{ $item->nama_lengkap }}</td>
                                     <td>                                    
-                                        <a class="btn btn-default bg-info" href="{{route('head.edit',[$item->id])}}">
+                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('head.edit',[$item->id])}}">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>   
-                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
+                                        <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
                                                 <i class="fas fa-trash"></i> Hapus
                                         </button>          
                                         

@@ -12,9 +12,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('grup.create')}}" class="btn btn-success btn-responsive float-left">
+                    <a href="{{route('grup.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
                     </a> 
                 </div>
@@ -37,11 +37,11 @@
                                 <td>{{ number_format($item->total_kredit,0,",",".") }}</td>
                                 <td>{{ number_format($item->total_max_kredit,0,",",".") }}</td>
                                 <td>                                    
-                                    <a class="btn btn-default bg-primary" href="{{route('grup.edit',[$item->id])}}">
+                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('grup.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modalHapus_{{$item->id}}">
+                                    <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus_{{$item->id}}">
                                                <i class="fas fa-trash"></i> Hapus
                                     </button>          
                                     
