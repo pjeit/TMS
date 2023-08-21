@@ -20,7 +20,7 @@
    
 </style>
 
-<div class="container">
+<div class="container-fluid">
         @if ($errors->any())
     {{-- <div class="alert alert-danger">
         <ul>
@@ -42,8 +42,19 @@
      <form action="{{ route('kas_bank.store') }}" method="POST" >
       @csrf
         <div class="row">
+            <div class="col-12 ">
+                <div class="card radiusSendiri">
+                    <div class="card-header d-flex justify-content-between">
+                        <div>
+                            <a href="{{ route('kas_bank.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
+                        </div>
+                        <button type="submit" name="save" id="save" value="save" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-lg-6 col-md-12">
-                <div class="card">
+                <div class="card radiusSendiri">
                     <div class="card-header">
                         <h5 class="card-title">Data</h5>
                     </div>
@@ -64,7 +75,7 @@
                                 <input id="kasRadio" type="radio" name="tipe" value="1" {{'1' == old('tipe','')? 'checked' :'' }}>
                                 <label class="form-check-label" for="kasRadio">Kas</label>
                             </div>
-                            <div class="icheck-primary d-inline">
+                            <div class="icheck-primary d-inline ml-5">
                                 <input id="bankRadio" type="radio" name="tipe" value="2" {{'2'== old('tipe','')? 'checked' :'' }}>
                                 <label class="form-check-label" for="bankRadio">Bank</label><br>
                             </div>
@@ -90,13 +101,11 @@
                             <input type="text" class="form-control" id="tanggalDibuatDisplay" placeholder="DD-MMM-YYYY" value="{{old('tgl_saldo','')}}" required>
                             <input type="hidden" id="tanggalDibuat" name="tgl_saldo">
                         </div>
-                        <a href="{{ route('kas_bank.index') }}" class="btn btn-info"><strong>Kembali</strong></a>
-                        <button type="submit" class="btn btn-success"><strong>Simpan</strong></button>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6 col-md-12">
-                <div class="card">
+                <div class="card radiusSendiri">
                     <div class="card-header">
                         <h5 class="card-title">Rekening Bank</h5>
                     </div>

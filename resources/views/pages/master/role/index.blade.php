@@ -31,9 +31,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('role.create')}}" class="btn btn-secondary btn-responsive float-left">
+                    <a href="{{route('role.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
                     </a> 
                 </div>

@@ -263,7 +263,7 @@
                   <a href="{{route('role.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('role*') ? ' active' : '' }}">
                     <i class="far nav-icon"></i>
                     <p>
-                      Role
+                      Master Role
                     </p>
                   </a> 
                 </li>

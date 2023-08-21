@@ -28,7 +28,7 @@ class GrupMemberController extends Controller
                         ->get();
         
         return view('pages.master.grup_member.index',[
-            'judul' => "Grup Member",
+            'judul' => "Marketing Grup",
             'data' => $data,
         ]);
     }
@@ -45,7 +45,7 @@ class GrupMemberController extends Controller
         // dd($role[2]->id);
 
         return view('pages.master.grup_member.create',[
-            'judul' => "Grup Member",
+            'judul' => "Marketing Grup",
             'grup' => $grup,
             'role' => $role,
         ]);
@@ -118,7 +118,7 @@ class GrupMemberController extends Controller
         $data = $grupMember;
 
         return view('pages.master.grup_member.edit',[
-            'judul' => "Grup Member",
+            'judul' => "Marketing Grup",
             'data' => $data,
             'grup' => $grup,
             'role' => $role,

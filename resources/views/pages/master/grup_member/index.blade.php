@@ -23,7 +23,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <a href="{{route('grup_member.create')}}" class="btn btn-secondary btn-responsive float-left">
+                    <a href="{{route('grup_member.create')}}" class="btn btn-primary btn-responsive float-left">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
                     </a> 
                 </div>

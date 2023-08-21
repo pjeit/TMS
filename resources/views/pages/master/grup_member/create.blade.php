@@ -31,41 +31,41 @@
     @csrf
     
     <div class="row">
-        <div class="col-6">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <div></div>
+                    <button type="submit" name="save" id="save" value="save" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">Data</h5>
                 </div>
                 <div class="card-body">
-
-                    <div class="form-group">
-                        <label for="">Parent Grup</label>
-                        <select class="form-control select2" style="width: 100%;" id='grup_id' name="grup_id" required>
-                            <option value="0">&nbsp;</option>
-                            @foreach ($grup as $item)
-                                <option value="{{$item->id}}">{{ $item['nama_grup'] }}</option>
-                            @endforeach
-                        </select>
-                    </div>   
-
-                    <div class="form-group">
-                        <label for="">Nama</label>
-                        <input  type="text" required name="nama" class="form-control" value="{{old('nama','')}}" >                         
-                    </div>
-             
-                    {{-- <div class="form-group">
-                        <label for="">Role</label>
-                        <select class="form-control select2" style="width: 100%;" id='role_id' name="role_id" required>
-                            <option value="0">&nbsp;</option>
-                            @foreach ($role as $item)
-                                <option value="{{$item->id}}">{{ $item['nama'] }}</option>
-                            @endforeach
-                        </select>
-                    </div>    --}}
-                    
-                    <div class="form-group">
-                        <label for="">No Rekening</label>
-                        <input type="text" name="no_rek" maxlength="25" class="form-control numaja" value="{{old('no_rek','')}}" >                         
+                    <div class="row">
+                        <div class="form-group  col-12 col-md-4 col-sm-12">
+                            <label for="">Grup</label>
+                            <select class="form-control select2" style="width: 100%;" id='grup_id' name="grup_id" required>
+                                <option value="0">&nbsp;</option>
+                                @foreach ($grup as $item)
+                                    <option value="{{$item->id}}">{{ $item['nama_grup'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>   
+    
+                        <div class="form-group  col-12 col-md-4 col-sm-12">
+                            <label for="">Nama</label>
+                            <input  type="text" required name="nama" class="form-control" value="{{old('nama','')}}" >                         
+                        </div>
+                 
+                        <div class="form-group  col-12 col-md-4 col-sm-12">
+                            <label for="">No Rekening</label>
+                            <input type="text" name="no_rek" maxlength="25" class="form-control numaja" value="{{old('no_rek','')}}" >                         
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -92,9 +92,7 @@
                     </div>
 
                 </div>
-                <div class="card-footer">
-                     <button type="submit" class="btn btn-success float-left">Simpan</button>
-                </div>
+              
             </div>
         </div>
       
