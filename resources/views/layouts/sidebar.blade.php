@@ -215,7 +215,7 @@
                       <a href="{{route('pair_kendaraan.index')}}" style="font-weight: 500;" class="nav-link ">
                       <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                         <p>
-                          Master Pair kendaraan
+                          Master Pairing Truck
                         </p>
                       </a>
                     </li>

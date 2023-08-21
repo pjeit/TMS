@@ -31,15 +31,14 @@
 
     <form data-action="{{ route('head.store') }}" id="grup_forms" enctype="multipart/form-data" method="POST">
     @csrf
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="row">
         <div class="col-6">
             <div class="card">
@@ -51,6 +50,14 @@
                         <label for="">Kategori Kendaraan</label>
                         <select class="form-control select2" style="width: 100%;" id='kategori' name="kategori">
                             @foreach ($kategoriTruck as $k)
+                                <option value="{{$k->id}}">{{$k->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div> 
+                    <div class="form-group">
+                        <label for="">Letak Kendaraan</label>
+                        <select class="form-control select2" style="width: 100%;" id='kota' name="kota">
+                            @foreach ($kota as $k)
                                 <option value="{{$k->id}}">{{$k->nama}}</option>
                             @endforeach
                         </select>
@@ -71,8 +78,11 @@
                         <label for="">Merk & Model</label>
                         <input required type="text" name="merk_model" class="form-control" value="{{old('merk_model','')}}" >
                     </div>     
-                        
-                    
+                
+
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-success float-left">Simpan</button>
                 </div>
             </div>
         </div>

@@ -54,7 +54,7 @@
                         <input  type="text" required name="nama" class="form-control" value="{{$data->nama}}" >                         
                     </div>
              
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <label for="">Role</label>
                         <select class="form-control select2" style="width: 100%;" id='role_id' name="role_id" required>
                             <option value="0">&nbsp;</option>
@@ -62,7 +62,7 @@
                                 <option value="{{$item->id}}" <?= ($item->id == $data->role_id)? 'selected':''; ?> >{{ $item['nama'] }}</option>
                             @endforeach
                         </select>
-                    </div>   
+                    </div>    --}}
                     
                     <div class="form-group">
                         <label for="">No Rekening</label>
@@ -94,9 +94,7 @@
 
                 </div>
                 <div class="card-footer">
-                    <div class="col">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
+                    <button type="submit" class="btn btn-success float-left">Simpan</button>
                 </div>
             </div>
         </div>

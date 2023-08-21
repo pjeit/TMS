@@ -65,6 +65,11 @@
 
 </head>
 
+<style>
+  .radiusSendiri{
+    border-radius: 16px;
+  }
+</style>
 <body class="hold-transition sidebar-mini layout-fixed">
 
 

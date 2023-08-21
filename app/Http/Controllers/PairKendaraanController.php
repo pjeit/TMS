@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
+use Exception;
+
 class PairKendaraanController extends Controller
 {
     /**
@@ -19,17 +21,18 @@ class PairKendaraanController extends Controller
     {
         //
          $dataPair = DB::table('kendaraan AS k')
-            ->select('k.id', 'k.no_polisi', DB::raw('GROUP_CONCAT(c.kode SEPARATOR ", ") AS chassis'), DB::raw('GROUP_CONCAT(m.nama SEPARATOR ", ") AS "model_chassis"'))
-            ->leftJoin('pair_kendaraan_chassis AS pk', 'k.id', '=', 'pk.kendaraan_id')
-            ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
-            ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
-            ->where('k.is_aktif', '=','Y') 
-            ->groupBy('k.id', 'k.no_polisi')
-            // ->paginate(5);
-            ->get();
+                    ->select('k.id', 'k.no_polisi', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+                    ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
+                        $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
+                    })
+                    ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+                    ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+                    ->where('k.is_aktif', '=', 'Y') 
+                    ->groupBy('k.id', 'k.no_polisi')
+                    ->get();
 
         return view('pages.master.pair_kendaraan.index', [
-            'judul' => "Pair Kendaraan",
+            'judul' => "Pair Truck",
             'dataPair' => $dataPair,
         ]);
     }
@@ -100,7 +103,7 @@ class PairKendaraanController extends Controller
                 ->get();
         // dd($dataKendaraan[0]->id);
         return view('pages.master.pair_kendaraan.edit', [
-            'judul' => "Pair Kendaraan",
+            'judul' => "Pair Truck",
             'dataPair' => $dataPair,
             'dataKendaraan'=>$dataKendaraan,
             'dataChassis'=>$dataChassis,
@@ -120,70 +123,88 @@ class PairKendaraanController extends Controller
         //
          $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
-           try {
-            // $pesanKustom = [
-             
-            //     'nama.required' => 'Nama kas Harus diisi!',
-            //     // 'no_akun.required' => 'Nomor kas akun Harus diisi!',
-            //     'tipe.required' =>'Tipe kas harap dipilih salah satu!',
-            //     'saldo_awal.required' => 'Saldo awal Harus diisi!',
-            //     'tgl_saldo.required' => 'Tanngal saldo awal Harus diisi!',
+        try {
+            $pesanKustom = [
+                'chasis.*.required' => 'Semua Kolom Chasis harus diisi!',
+            ];
+            
+            $request->validate([
+                'chasis.*' => 'required',
       
-            // ];
-            
-            // $request->validate([
-            //     'nama' => 'required',
-            //     // 'no_akun' => 'required',
-            //     'tipe' =>'required|in:1,2',
-            //     'saldo_awal' => 'required',
-            //     'tgl_saldo' => 'required'
-            //     // 'catatan' => 'required',
-            // ], $pesanKustom);
-    
+            ], $pesanKustom);
             $data = $request->collect();
-            // dd($data['idPairedNya']);
-            // dd($idKendaraan);
-
-            // $cobaPrint="";
-            
-            for ($i = 0; $i < count($data['idPairedNya']); $i++) {
-
-                if($data['idPairedNya'][$i])
-                {
-                    DB::table('pair_kendaraan_chassis')
-                    ->where('id', $data['idPairedNya'])
-                    ->where('kendaraan_id', $idKendaraan)
-                    ->update(array(
-                            'chassis_id' => $data['chassis_id'][$i],
-                            'updated_at'=> VariableHelper::TanggalFormat()[$i],
-                            'updated_by'=> $user[$i],
+            if(!empty($data['idPairedNya']))
+            {
+                for ($i = 0; $i < count($data['idPairedNya']); $i++) {
+                    // semisal id pairednya 
+                    //  "idPairedNya" => array:3 [▼
+                    //     0 => "4"
+                    //     1 => "5"
+                    //     2 => "6"
+                    //     ] taruh [$i] supaya sesuai array
+                    if($data['idPairedNya'][$i])
+                    {
+                        if($data['isAktif'][$i])
+                        {
+                                DB::table('pair_kendaraan_chassis')
+                                ->where('id', $data['idPairedNya'][$i])
+                                ->where('kendaraan_id', $idKendaraan)
+                                ->update(array(
+                                        'chassis_id' => $data['chasis'][$i],
+                                        'updated_at'=> VariableHelper::TanggalFormat(),
+                                        'updated_by'=> $user,
+                                        'is_aktif'=>$data['isAktif'][$i]
+    
+                                    )
+                                );
+                        }
+                        DB::table('pair_kendaraan_chassis')
+                        ->where('id', $data['idPairedNya'][$i])
+                        ->where('kendaraan_id', $idKendaraan)
+                        ->update(array(
+                                'chassis_id' => $data['chasis'][$i],
+                                'updated_at'=> VariableHelper::TanggalFormat(),
+                                'updated_by'=> $user,
+                            )
+                        );
+                    }
+                    else
+                    {
+                        DB::table('pair_kendaraan_chassis')->insert(
+                        array(
+                            'kendaraan_id' => $idKendaraan,
+                            'chassis_id' => $data['chasis'][$i],
+                            'created_at'=> VariableHelper::TanggalFormat(),
+                            'created_by'=> $user,
+                            'updated_at'=> VariableHelper::TanggalFormat(),
+                            'updated_by'=> $user,
+                            'is_aktif'=>'Y'
                         )
                     );
-
+                    }
+                    // $cobaPrint.=$data['idPairedNya'][$i];
                 }
-                else
-                {
-
-                }
-                // $cobaPrint.=$data['idPairedNya'][$i];
-
-                // DB::table('purchase_request_detail')->insert(
-                //     array(
-                //         // 'idPurchaseRequest' => $purchaseRequest->id,
-                //         'jumlah' => $data['itemTotal'][$i],
-                //         'ItemID' => $data['itemId'][$i],
-                //         'harga' => $data['itemHarga'][$i],
-                //         'keterangan_jasa' => $data['itemKeterangan'][$i],
-                //     )
-                // );
+                
             }
-            // dd($cobaPrint);
+     
 
           
+            return response()->json(['message' => 'Sukses mengupdate data truck pairing', 'id' => $idKendaraan]);
         
-            return redirect()->route('pair_kendaraan.index')->with('status','Sukses mengupdate data kas!');
-        } catch (ValidationException $e) {
+            // return redirect()->route('pair_kendaraan.index')->with('status','Sukses mengupdate data truck pairing!');
+        } /*catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
+        }*/
+         catch (ValidationException $e) {
+            // cancel input db
+            DB::rollBack();
+          
+            return response()->json(['errorsCatch' => $e->errors()], 422);
+        } catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+
+            return response()->json(['errorServer' => $ex->getMessage()],500);
         }
     }
 

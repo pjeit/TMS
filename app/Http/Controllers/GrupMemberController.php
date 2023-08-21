@@ -42,6 +42,7 @@ class GrupMemberController extends Controller
     {
         $grup = Grup::where('is_aktif', 'Y')->get();
         $role = Role::where('is_aktif', 'Y')->get();
+        // dd($role[2]->id);
 
         return view('pages.master.grup_member.create',[
             'judul' => "Grup Member",
@@ -62,20 +63,22 @@ class GrupMemberController extends Controller
             $pesanKustom = [
                 'nama.required' => 'Nama Harus diisi!',
                 'grup_id.required' => 'Grup Harus diisi!',
-                'role_id.required' => 'Role Harus diisi!',
+                // 'role_id.required' => 'Role Harus diisi!',
             ];
             
             $request->validate([
                 'nama' => 'required',
                 'grup_id' => 'required',
-                'role_id' => 'required',
+                // 'role_id' => 'required',
             ], $pesanKustom);
 
             $user = Auth::user()->id;
-
+        
             $new_customer = new GrupMember();
             $new_customer->grup_id = $request->grup_id;
-            $new_customer->role_id = $request->role_id;
+            // hardcode langsung id marketing
+            $role = Role::where('is_aktif', 'Y')->get();
+            $new_customer->role_id = $role[2]->id;
             $new_customer->nama = $request->nama;
             $new_customer->no_rek = $request->no_rek;
             $new_customer->telp1 = $request->telp1;
@@ -135,19 +138,21 @@ class GrupMemberController extends Controller
             $pesanKustom = [
                 'nama.required' => 'Nama Harus diisi!',
                 'grup_id.required' => 'Grup Harus diisi!',
-                'role_id.required' => 'Role Harus diisi!',
+                // 'role_id.required' => 'Role Harus diisi!',
             ];
             
             $request->validate([
                 'nama' => 'required',
                 'grup_id' => 'required',
-                'role_id' => 'required',
+                // 'role_id' => 'required',
             ], $pesanKustom);
 
             $user = Auth::user()->id;
 
             $grupMember->grup_id = $request->grup_id;
-            $grupMember->role_id = $request->role_id;
+            // hardcode langsung id marketing
+            $role = Role::where('is_aktif', 'Y')->get();
+            $grupMember->role_id = $role[2]->id;
             $grupMember->nama = $request->nama;
             $grupMember->no_rek = $request->no_rek;
             $grupMember->telp1 = $request->telp1;

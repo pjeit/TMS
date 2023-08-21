@@ -64,9 +64,9 @@
 
                 </div>
                 <div class="card-footer">
-                    <div class="col">
-                        <button type="submit" class="btn btn-primary"><strong>Simpan</strong></button>
-                    </div>
+                 
+                        <button type="submit" class="btn btn-success float-left"><strong>Simpan</strong></button>
+                    
                 </div>
             </div>
         </div>

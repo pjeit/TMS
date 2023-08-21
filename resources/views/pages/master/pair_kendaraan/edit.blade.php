@@ -34,93 +34,190 @@
         @endforeach
 
     @endif
-    <form action="{{ route('pair_kendaraan.update', [$dataKendaraan[0]->id]) }}" method="POST" >
-    @csrf
-    @method('PUT')
-     <div class="card">
-                <div class="card-header">
-                     <tr>
-                        <td colspan="6">
-                            <a href="javascript:;" class="btn btn-danger" id="addmore"><i class="fa fa-fw fa-plus-circle"></i>Tambah Chassis</a>
-                            <button type="submit" name="save" id="save" value="save" class="btn btn-primary"><i class="fa fa-fw fa-save"></i>Simpan</button>
-                        </td>
-                    </tr>
-                </div>
-                <div class="card-body">
-                    <input type="hidden" name="action" value="saveAddMore">
-                    <table class="table table-bordered table-striped" id="sortable">
-                        <thead>
-                            <tr>
-                                {{-- <th width="120" class="text-center">Insetion Date</th>
-                                <th>User Name</th> --}}
-                                <th width="250">Model Chassis</th>
-                                {{-- <th>User Email</th>
-                                <th>User Phone#</th> --}}
-                                <th width="20" class="text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                            <tbody id="tb"> 
-                                @if(!empty($dataPaired))
+    <form action="{{ route('pair_kendaraan.update', [$dataKendaraan[0]->id]) }}" method="POST" id="formPair">
+        @csrf
+        @method('PUT')
 
-                                    @foreach ($dataPaired as $dataP)
-                                    <tr>
-                                        <td>
-                                            <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
-                                            <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Chasis--</option>
-                                                @foreach($dataChassis as $data)
-                                                    <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                        <td align="center" class="text-danger"><button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data chassis ini?')){$(this).closest('tr').remove();}" class="btn btn-danger"><i class="fa fa-fw fa-trash-alt"></i></button></td>
-                                    </tr>
-                                    
-                                    @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="2" class="bg-light text-center"><strong>No Record(s) Found!</strong></td>
-                                    </tr>
-
-                                @endif
-                            </tbody>
-                            <tfoot>
-                            
-                            </tfoot>
-                    </table>
+        <div class="row">
+            <div class="col-6">
+                <div class="card radiusSendiri" >
+                    <div class="card-header">
+                        <h3 class="card-title">Keterangan Kendaraan</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                            <i class="fas fa-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" >
+                        <div class="form-group">
+                            <label for="inputName">Project Name</label>
+                            <input type="text" id="inputName" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputClientCompany">Client Company</label>
+                            <input type="text" id="inputClientCompany" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputProjectLeader">Project Leader</label>
+                            <input type="text" id="inputProjectLeader" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputProjectLeader">Project Leader</label>
+                            <input type="text" id="inputProjectLeader" class="form-control" readonly>
+                        </div>
+                          <div class="form-group">
+                                <label for="inputProjectLeader">Project Leader</label>
+                                <input type="text" id="inputProjectLeader" class="form-control" readonly>
+                            </div>
+                              <div class="form-group">
+                                <label for="inputProjectLeader">Project Leader</label>
+                                <input type="text" id="inputProjectLeader" class="form-control" readonly>
+                            </div>
+                        
+                    </div>
                 </div>
-                {{-- <div class="card-footer">
-               
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                
-                </div> --}}
+
             </div>
-   
-    </form>
 
+             <div class="col-6">
+                 <div class="card radiusSendiri" >
+                     <div class="card-header">
+                         <tr>
+                             <td >
+                                 <a href="javascript:;" class="btn btn-secondary radiusSendiri" id="addmore"><i class="fa fa-fw fa-plus-circle"></i>Tambah Chassis</a>
+                                 <button type="submit" name="save" id="save" value="save" class="btn btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i>Simpan</button>
+                                 {{-- <button id="coba" type="button">coba </button> --}}
+                             </td>
+                         </tr>
+                     </div>
+                     <div class="card-body" style="max-height: 300px; overflow-y: scroll;">
+                         <input type="hidden" name="action" value="saveAddMore">
+                         <table class="table" id="sortable">
+                             <thead>
+                                 <tr>
+                                     {{-- <th width="120" class="text-center">Insetion Date</th>
+                                     <th>User Name</th> --}}
+                                     <th width="250">Model Chassis</th>
+                                     {{-- <th>User Email</th>
+                                     <th>User Phone#</th> --}}
+                                     <th width="20" class="text-center">Aksi</th>
+                                 </tr>
+                             </thead>
+                                 <tbody id="tb"> 
+                                     @if(!empty($dataPaired))
+         
+                                         @foreach ($dataPaired as $dataP)
+                                         <tr>
+                                             <td>
+                                                 <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
+                                                 <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
+                                                 <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                     <option value="">--Pilih Chasis--</option>
+                                                     @foreach($dataChassis as $data)
+                                                         <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                                                     @endforeach
+                                                 </select>
+                                             </td>
+                                         <td align="center" class="text-danger">
+                                                 <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data chassis ini?')){ $(this).closest('tr').hide(); $(this).closest('tr').find('input[name^=\'isAktif\']').val('N');}" class="btn btn-danger radiusSendiri">
+                                                     <i class="fa fa-fw fa-trash-alt"></i>
+                                                 </button>
+                                         </td>
+                                         </tr>
+                                         
+                                         @endforeach
+                                     @else
+                                         <tr>
+                                             <td colspan="2" class="bg-light text-center"><strong>No Record(s) Found!</strong></td>
+                                         </tr>
+         
+                                     @endif
+                                 </tbody>
+                                 <tfoot>
+                                 
+                                 </tfoot>
+                         </table>
+                     </div>
+                     {{-- <div class="card-footer">
+                 
+                             <button type="submit" class="btn btn-primary">Simpan</button>
+                     
+                     </div> --}}
+                 </div>
+                
+            </div>
+        </div>
+    </form>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function(){
-  $("#addmore").on("click",function(){
-         
-    $('#tb').append(
-        `<tr>
-            <td>
-               <input type="hidden" name='idPairedNya[]' value="">
-                <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                    <option value="">--Pilih Chasis--</option>
-                    @foreach($dataChassis as $data)
-                        <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td align="center" class="text-danger"><button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data chassis ini?')){$(this).closest('tr').remove();}" class="btn btn-danger"><i class="fa fa-fw fa-trash-alt"></i></button></td>
-        </tr>`
-    );
-    $('.selectpicker').selectpicker('refresh');
-    // $('#save').removeAttr('hidden',true);
-               
+    $("#formPair").on("submit",function(e){
+            var url = $("#formPair").attr('action');
+            var formElement = document.getElementById("formPair"); 
+            var formData = new FormData(formElement);
+            e.preventDefault();
+            $.ajax({
+                method: 'POST',
+                url: url,
+                data: formData,
+                dataType: 'JSON',
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(response) {
+                    if (response.hasOwnProperty('id')) {
+                        toastr.success(response.message);
+                        console.log(response);
+
+                        window.location.href = '{{ route("pair_kendaraan.index") }}';
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                 error: function (xhr, status, error) {
+                    if (xhr.responseJSON && xhr.responseJSON.errorsCatch) {
+                        var pesanError = xhr.responseJSON.errorsCatch;
+
+                        for (var i in pesanError) {
+                            toastr.error(pesanError[i]);
+                        }
+
+                    } 
+                    else if (xhr.responseJSON && xhr.responseJSON.errorServer) {
+                        var pesanError = xhr.responseJSON.errorServer;
+                        console.table(pesanError);
+
+                    }
+                    
+                    else {
+                        toastr.error("Terjadi kesalahan saat mengirim data. " + error);
+                    }
+
+                    console.log("XHR status:", status);
+                    console.log("Error:", error);
+                    console.log("Response:", xhr.responseJSON);
+                }
+            });
+    });
+    $("#addmore").on("click",function(){
+        $('#tb').append(
+            `<tr>
+                <td>
+                <input type="hidden" name='idPairedNya[]' value="">
+                    <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                        <option value="">--Pilih Chasis--</option>
+                        @foreach($dataChassis as $data)
+                            <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                        @endforeach
+                    </select>
+                </td>
+                <td align="center" class="text-danger"><button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="{$(this).closest('tr').remove();}" class="btn btn-danger radiusSendiri"><i class="fa fa-fw fa-trash-alt"></i></button></td>
+            </tr>`
+        );
+        $('.selectpicker').selectpicker('refresh');
+        // $('#save').removeAttr('hidden',true);
     });
 });
 
