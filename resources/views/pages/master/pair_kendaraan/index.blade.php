@@ -33,7 +33,6 @@
                             <tr>
                               <th>No Polisi Kendaraan</th>
                               <th>Chassis Kendaraan</th>
-                              <th>Model Chassis</th>
                               <th>Aksi</th>
                             </tr>
                           </thead>
@@ -41,16 +40,15 @@
                             @foreach($dataPair as $item)
                              <tr>
                                 <td>{{ $item->no_polisi }}</td>
-                                <td>{{ $item->chassis }}</td>  
-                                <td>{{ $item->model_chassis }}</td>  
+                                <td>{{ $item->chassis_model }}</td>  
                                 <td>                                    
                                     <a class="btn btn-default bg-info" href="{{route('pair_kendaraan.edit',[$item->id])}}">
-                                        <i class="fas fa-edit"></i> Edit
+                                        <i class="far nav-icon fa fa-truck">+</i> Tambah Chassis
                                     </a>   
                                             <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
+                                    {{-- <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
                                                <i class="fas fa-trash"></i> Hapus
-                                    </button>          
+                                    </button>           --}}
                                     
                                 </td>
                                                    

@@ -52,7 +52,8 @@ class HeadController extends Controller
         $kategoriTruck = DB::table('kendaraan_kategori')
         ->where('kendaraan_kategori.is_aktif', '=', "Y")
         ->get();
-
+        $kota = DB::table('m_kota')
+        ->get();
 
         return view('pages.master.head.create',[
             'judul' => "Head",
@@ -60,6 +61,7 @@ class HeadController extends Controller
             // 'd_supplier' => $d_supplier,
             'drivers' => $drivers,
             'kategoriTruck' => $kategoriTruck,
+            'kota'=>$kota
 
         ]);
     }
@@ -84,6 +86,7 @@ class HeadController extends Controller
 
             $head = new Head();
             $head->id_kategori=$request->kategori;
+            $head->kota_id=$request->kota;
             $head->no_polisi = $request->no_polisi;
             $head->no_mesin = $request->no_mesin;
             $head->no_rangka = $request->no_rangka;
@@ -162,6 +165,8 @@ class HeadController extends Controller
        $kategoriTruck = DB::table('kendaraan_kategori')
         ->where('kendaraan_kategori.is_aktif', '=', "Y")
         ->get();
+         $kota = DB::table('m_kota')
+        ->get();
         return view('pages.master.head.edit',[
             'judul' => "Head",
             'data' => $data,
@@ -169,6 +174,7 @@ class HeadController extends Controller
             // 'd_supplier' => $d_supplier,
             'kategoriTruck' => $kategoriTruck,
             'drivers' => $drivers,
+            'kota'=>$kota
 
 
         ]);
@@ -195,6 +201,7 @@ class HeadController extends Controller
 
             $edit_head = Head::where('is_aktif', 'Y')->findOrFail($head->id);
             $edit_head->id_kategori=$request->kategori;
+            $edit_head->kota_id=$request->kota;
             $edit_head->no_polisi = $request->no_polisi;
             $edit_head->no_mesin = $request->no_mesin;
             $edit_head->no_rangka = $request->no_rangka;
@@ -207,7 +214,6 @@ class HeadController extends Controller
             // $edit_head->kepemilikan = $request->kepemilikan;
             $edit_head->updated_at = now();
             $edit_head->updated_by = $user;
-
             if($edit_head->save()){
                 $docs = json_decode($request->post()['dokumen']);
                 if( $docs != '[]'){

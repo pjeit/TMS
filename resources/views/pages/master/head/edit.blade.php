@@ -33,7 +33,7 @@
 
     @method('PUT')
     @csrf
-    <div class="row">
+    {{-- <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="row">
         <div class="col-6">
             <div class="card">
@@ -54,6 +54,14 @@
                         <select class="form-control select2" style="width: 100%;" id='kategori' name="kategori">
                             @foreach ($kategoriTruck as $k)
                                 <option value="{{$k->id}}" {{($k->id == $data->id_kategori)? 'selected':'';}}>{{$k->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div> 
+                    <div class="form-group">
+                        <label for="">Letak Kendaraan</label>
+                        <select class="form-control select2" style="width: 100%;" id='kota' name="kota">
+                            @foreach ($kota as $k)
+                                <option value="{{$k->id}}" {{($k->id == $data->kota_id)? 'selected':'';}}>{{$k->nama}}</option>
                             @endforeach
                         </select>
                     </div> 
@@ -73,7 +81,7 @@
                         <label for="">Merk & Model</label>
                         <input required type="text" name="merk_model" class="form-control" value="{{$data->merk_model}}" >
                     </div>           
-                     
+                    <button type="submit" class="btn btn-success float-left">Simpan</button>
                 </div>
             </div>
         </div>
