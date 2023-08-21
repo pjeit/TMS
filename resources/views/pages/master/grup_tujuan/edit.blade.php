@@ -29,9 +29,9 @@
 
     @endif
     
-    <form action="{{ route('grup_tujuan.update',[$id]) }}" method="POST">
-        @method('PUT')
+    <form action="{{ route('grup_tujuan.update',[$id]) }}" method="POST" >
         @csrf
+        @method('PUT')
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -47,7 +47,9 @@
                     <div class="card-body">
                         {{-- <button type="button" class="btn btn-sm btn-primary mx-4 my-3" onclick="open_detail('') "><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; DAFTAR TUJUAN & TARIF</b></button> --}}
                         <button type="button" name="add" id="add" class="btn btn-primary mx-4 my-3"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
-
+                        <input type="hidden" id="deleted_tujuan" name="data[deleted_tujuan]" placeholder="deleted_tujuan">
+                        <input type="hidden" id="deleted_biaya" name="data[deleted_biaya]" placeholder="deleted_biaya">
+          
                         <div class="table-responsive p-0">
                                 <form name="add_name" id="add_name">
                                     <table class="table table-hover table-bordered table-striped text-nowrap" id="dynamic_field">
@@ -64,40 +66,40 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (!empty($data))
-                                                @foreach ($data as $item)
-                                                    <tr id="row${i}">
+                                            @if (!empty($data['tujuan']))
+                                                @foreach ($data['tujuan'] as $key => $item)
+                                                    <tr id="row{{$key}}">
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="margin: auto; display: block;" type="text" name="data[${i}][nama_tujuan]" id="nama_tujuan_${i}" maxlength="10" class="form-control" readonly>
+                                                            <input style="margin: auto; display: block;" type="text" name="data[tujuan][{{$key}}][nama_tujuan]" id="nama_tujuan_{{$key}}" value="{{$item->nama_tujuan}}" maxlength="10" class="form-control" readonly>
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="margin: auto; display: block;" type="text" name="data[${i}][jenis_tujuan]" id="jenis_tujuan_${i}" class="form-control" readonly>
+                                                            <input style="margin: auto; display: block;" type="text" name="data[tujuan][{{$key}}][jenis_tujuan]" id="jenis_tujuan_{{$key}}" value="{{$item->jenis_tujuan}}" class="form-control" readonly>
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="" type="text" name="data[${i}][tarif]" id="tarif_${i}" class="form-control numaja uang" readonly/>
+                                                            <input style="" type="text" name="data[tujuan][{{$key}}][tarif]" id="tarif_{{$key}}" value="{{ number_format($item->tarif) }}" class="form-control numaja uang" readonly/>
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="" type="text" name="data[${i}][uang_jalan]" id="uang_jalan_${i}" class="form-control numaja uang" readonly/>
+                                                            <input style="" type="text" name="data[tujuan][{{$key}}][uang_jalan]" id="uang_jalan_{{$key}}" value="{{ number_format($item->uang_jalan) }}" class="form-control numaja uang" readonly/>
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="" type="text" name="data[${i}][komisi]" id="komisi_${i}" class="form-control numaja uang" readonly/>
+                                                            <input style="" type="text" name="data[tujuan][{{$key}}][komisi]" id="komisi_{{$key}}" value="{{ number_format($item->komisi) }}" class="form-control numaja uang" readonly/>
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="" type="text" name="data[${i}][catatan]" id="catatan_${i}" class="form-control" readonly/>
+                                                            <input style="" type="text" name="data[tujuan][{{$key}}][catatan]" id="catatan_{{$key}}" value="{{$item->catatan}}" class="form-control" readonly/>
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <button type="button" name="detail" id="detail_${i}" class="btn btn-info detail"><i class="fa fa-list-ul"></i></button>
+                                                            <button type="button" name="detail" id="detail_{{$key}}" class="btn btn-info detail"><i class="fa fa-list-ul"></i></button>
                                                         </td>  
-                                                        <input type="hidden" name="data[${i}][id_tujuan]" id="id_tujuan_${i}">
-                                                        <input type="hidden" name="data[${i}][alamat_hidden]" id="alamat_hidden_${i}">
-                                                        <input type="hidden" name="data[${i}][uang_jalan_hidden]" id="uang_jalan_hidden_${i}">
-                                                        <input type="hidden" name="data[${i}][komisi_hidden]" id="komisi_hidden_${i}">
-                                                        <input type="hidden" name="data[${i}][harga_per_kg_hidden]" id="harga_per_kg_hidden_${i}">
-                                                        <input type="hidden" name="data[${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}">
-                                                        <input type="hidden" name="data[${i}][grup_hidden]" id="grup_hidden_${i}" placeholder="">
-                                                        <input type="hidden" name="data[${i}][marketing_hidden]" id="marketing_hidden_${i}" placeholder="">
-                                                        <input type="hidden" name="data[${i}][obj_biaya]" id="obj_biaya${i}" placeholder="">
-                                                        <td><button type="button" name="remove" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][id_tujuan]" id="id_tujuan_{{$key}}" value="{{$item->id}}" >
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][alamat_hidden]" id="alamat_hidden_{{$key}}" value="{{$item->alamat}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][uang_jalan_hidden]" id="uang_jalan_hidden_{{$key}}" value="{{$item->uang_jalan}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][komisi_hidden]" id="komisi_hidden_{{$key}}" value="{{$item->komisi}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][harga_per_kg_hidden]" id="harga_per_kg_hidden_{{$key}}" value="{{number_format($item->harga_per_kg)}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][min_muatan_hidden]" id="min_muatan_hidden_{{$key}}" value="{{$item->min_muatan}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][grup_hidden]" id="grup_hidden_{{$key}}" value="{{$item->grup_id}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][marketing_hidden]" id="marketing_hidden_{{$key}}" value="{{$item->marketing_id}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][obj_biaya]" id="obj_biaya{{$key}}" value="{{$item->detail_uang_jalan}}">
+                                                        <td><button type="button" name="remove" id="{{$key}}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr> 
                                                     </tr>
                                                 @endforeach
                                             @endif
@@ -132,8 +134,8 @@
                     <div class='row'>
                             <div class="form-group col-lg-6 col-md-6 col-6">
                                 <label for="grup">Grup<span style="color:red;">*</span></label>
-                                <input type="text" class="form-control" name="nama_grup" id="nama_grup" value="{{ $data->nama_grup }}" readonly>
-                                <input type="hidden" name="grup" id="grup" value="{{ $data->id }}">
+                                <input type="text" class="form-control" name="nama_grup" id="nama_grup" value="{{ $data['grup']['nama_grup'] }}" readonly>
+                                <input type="hidden" name="grup" id="grup" value="{{ $data['grup']['id'] }}">
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-6">
                                 <label for="marketing">Marketing <span style="color:red;">*</span></label>
@@ -221,6 +223,7 @@
                         <div class="table-responsive p-0 mx-3">
                             <form name="add_biaya_detail" id="add_biaya_detail">
                                 <button type="button" name="add_biaya" id="add_biaya" class="btn btn-primary my-1"><i class="fa fa-plus-circle"></i> <strong >Tambah Biaya</strong></button> 
+                                <input type="hidden" id="deleted_biaya_temp" name="deleted_biaya_temp" placeholder="deleted_biaya_temp">
                                 <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel_biaya">
                                     <thead>
                                         <tr class="">
@@ -252,46 +255,67 @@
 
 <script>
 $(document).ready(function(){
+    // deklarasi golbal id yg didelete
+    var deleted_tujuan = [];
+    var deleted_biaya = [];
 
-    var i = 0;
-    var j = 0;
+    // Ambil semua elemen <tr> dengan ID yang dimulai dengan "row"
+    var rows = document.querySelectorAll('tr[id^="row"]');
+
+    // Cari ID terbesar dengan format "rowX" dan ambil nilai X-nya
+    var maxID = -1;
+    for (var i = 0; i < rows.length; i++) {
+        var idStr = rows[i].id.replace('row', ''); // Ambil nilai X dari "rowX"
+        var idNum = parseInt(idStr); // Konversi menjadi angka
+        if (idNum > maxID) {
+            maxID = idNum;
+        }
+    }
+
+    // Hasilkan ID terakhir dengan format "rowX+1"
+    var lastID = (maxID + 1);
+
+    if(lastID != 0){
+        var i = lastID-1;
+    }else{
+        var i = 0;
+    }
     var length;
  
     $("#add").click(function(){
         i++;
-
         var newRow = `
             <tr id="row${i}">
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                    <input style="margin: auto; display: block;" type="text" name="data[${i}][nama_tujuan]" id="nama_tujuan_${i}" maxlength="10" class="form-control" readonly>
+                    <input style="margin: auto; display: block;" type="text" name="data[tujuan][${i}][nama_tujuan]" id="nama_tujuan_${i}" maxlength="10" class="form-control" readonly>
                 </td>
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                    <input style="margin: auto; display: block;" type="text" name="data[${i}][jenis_tujuan]" id="jenis_tujuan_${i}" class="form-control" readonly>
+                    <input style="margin: auto; display: block;" type="text" name="data[tujuan][${i}][jenis_tujuan]" id="jenis_tujuan_${i}" class="form-control" readonly>
                 </td>
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                    <input style="" type="text" name="data[${i}][tarif]" id="tarif_${i}" class="form-control numaja uang" readonly/>
+                    <input style="" type="text" name="data[tujuan][${i}][tarif]" id="tarif_${i}" class="form-control numaja uang" readonly/>
                 </td>
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                    <input style="" type="text" name="data[${i}][uang_jalan]" id="uang_jalan_${i}" class="form-control numaja uang" readonly/>
+                    <input style="" type="text" name="data[tujuan][${i}][uang_jalan]" id="uang_jalan_${i}" class="form-control numaja uang" readonly/>
                 </td>
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                    <input style="" type="text" name="data[${i}][komisi]" id="komisi_${i}" class="form-control numaja uang" readonly/>
+                    <input style="" type="text" name="data[tujuan][${i}][komisi]" id="komisi_${i}" class="form-control numaja uang" readonly/>
                 </td>
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                    <input style="" type="text" name="data[${i}][catatan]" id="catatan_${i}" class="form-control" readonly/>
+                    <input style="" type="text" name="data[tujuan][${i}][catatan]" id="catatan_${i}" class="form-control" readonly/>
                 </td>
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
                     <button type="button" name="detail" id="detail_${i}" class="btn btn-info detail"><i class="fa fa-list-ul"></i></button>
                 </td>  
-                <input type="hidden" name="data[${i}][id_tujuan]" id="id_tujuan_${i}">
-                <input type="hidden" name="data[${i}][alamat_hidden]" id="alamat_hidden_${i}">
-                <input type="hidden" name="data[${i}][uang_jalan_hidden]" id="uang_jalan_hidden_${i}">
-                <input type="hidden" name="data[${i}][komisi_hidden]" id="komisi_hidden_${i}">
-                <input type="hidden" name="data[${i}][harga_per_kg_hidden]" id="harga_per_kg_hidden_${i}">
-                <input type="hidden" name="data[${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}">
-                <input type="hidden" name="data[${i}][grup_hidden]" id="grup_hidden_${i}" placeholder="">
-                <input type="hidden" name="data[${i}][marketing_hidden]" id="marketing_hidden_${i}" placeholder="">
-                <input type="hidden" name="data[${i}][obj_biaya]" id="obj_biaya${i}" placeholder="">
+                <input type="hidden" name="data[tujuan][${i}][id_tujuan]" id="id_tujuan_${i}">
+                <input type="hidden" name="data[tujuan][${i}][alamat_hidden]" id="alamat_hidden_${i}">
+                <input type="hidden" name="data[tujuan][${i}][uang_jalan_hidden]" id="uang_jalan_hidden_${i}">
+                <input type="hidden" name="data[tujuan][${i}][komisi_hidden]" id="komisi_hidden_${i}">
+                <input type="hidden" name="data[tujuan][${i}][harga_per_kg_hidden]" id="harga_per_kg_hidden_${i}">
+                <input type="hidden" name="data[tujuan][${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}">
+                <input type="hidden" name="data[tujuan][${i}][grup_hidden]" id="grup_hidden_${i}" placeholder="">
+                <input type="hidden" name="data[tujuan][${i}][marketing_hidden]" id="marketing_hidden_${i}" placeholder="">
+                <input type="hidden" name="data[tujuan][${i}][obj_biaya]" id="obj_biaya${i}" placeholder="">
                 <td><button type="button" name="remove" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
             </tr>
         `;
@@ -299,18 +323,41 @@ $(document).ready(function(){
 
         $('.select2').select2();
     });
-   
+
+        
     $("#add_biaya").click(function(){
-        j++;      
-        // var get_id_biaya = $(this).attr("id"); 
         var get_id_biaya = $(`#id_tujuan_${i}`).val();     
         var idBiaya = $('#key').val();
-        // alert(idBiaya);
+
+        // Get all elements with IDs starting with "row_biaya"
+        var rows = document.querySelectorAll('tr[id^="row_biaya"]');
+
+        // Find the maximum ID number
+        var maxIDRB = -1;
+        for (var i = 0; i < rows.length; i++) {
+            var idStrRB = rows[i].id.replace('row_biaya', ''); // Extract the number part
+            var idNumRB = parseInt(idStrRB); // Convert to number
+            if (idNumRB > maxIDRB) {
+                maxIDRB = idNumRB;
+            }
+        }
+
+        // Generate the last ID with the next number
+        var lastIDRB = (maxIDRB + 1);
+        console.log('lastIDRB '+ lastIDRB);
+
+        // var j = 0;
+        if(lastIDRB != 0){
+            var j = lastIDRB;
+        }else{
+            var j = 0;
+        }
+        console.log('j '+ j);
         $('#tabel_biaya > tbody:last-child').append(
         `
             <tr id="row_biaya${j}">
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                    <input style="margin: auto; display: block;" type="text" name="deskripsi_biaya" class="form-control" id="deskripsi_biaya${j}">
+                    <input style="margin: auto; display: block;" type="text" name="deskripsi" class="form-control" id="deskripsi${j}">
                 </td>
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
                     <input type="hidden" name="biaya_id" id="biaya_id${j}" class="form-control"/>
@@ -325,33 +372,32 @@ $(document).ready(function(){
             </tr>
         `
         );
-        // hitung_uang_jalan();
-
-        // $('#uang_jalan_'+key).val($('#uang_jalan').val());
-        // $('#uang_jalan').val($('#biaya'${j}).val());
-
 
         $('.select2').select2();
     });
 
+    // open detail
     $(document).on('click', '.detail', function(){  
         var button_id = $(this).attr("id");     
         var key = button_id.replace("detail_", "");
         $('#key').val(key);
 
-        console.log('key: '+ key);
-        console.log('sss: '+ $('#tarif_'+key).val());
-        
         // dropdownJenis();
-        if($('#jenis_tujuan_'+key).val() == 'FTL'){
-            $('#ftl_selected').css('display','');
-            $('#ltl_selected').css('display','none');
-        }else if($('#jenis_tujuan_'+key).val() == 'LTL'){
-            $('#ftl_selected').css('display','none');
-            $('#ltl_selected').css('display','');
+        // alert($('#jenis_tujuan_'+key).val());
+        const hargaInput = $('#harga_per_kg');
+        const tarifInput = $('#tarif');
+        const muatanInput = $('#min_muatan');
+        if($('#jenis_tujuan_'+key).val() == 'LTL'){
+            hargaInput.prop('readonly', false);
+            muatanInput.prop('readonly', false);
+            tarifInput.prop('readonly', true);
+            tarifInput.val('');
         }else{
-            $('#ftl_selected').css('display','');
-            $('#ltl_selected').css('display','none');
+            hargaInput.prop('readonly', true);
+            hargaInput.val('');
+            muatanInput.prop('readonly', true);
+            muatanInput.val('');
+            tarifInput.prop('readonly', false);
         }
         
         clearModal(); // clear dulu data sebelum open modal, baru get data ( biar clean )
@@ -402,6 +448,15 @@ $(document).ready(function(){
         if($('#catatan_'+key).val() != ''){
             $('#catatan').val($('#catatan_'+key).val());
         }
+        if($('#uang_jalan_'+key).val() != ''){
+            $('#uang_jalan').val($('#uang_jalan_'+key).val());
+        }
+        if($('#harga_per_kg_hidden_'+key).val() != ''){
+            $('#harga_per_kg').val($('#harga_per_kg_hidden_'+key).val());
+        }
+        if($('#min_muatan_hidden_'+key).val() != ''){
+            $('#min_muatan').val($('#min_muatan_hidden_'+key).val());
+        }
         
         // cek apakah ada isi detail biaya
         var cekBiaya = $('#obj_biaya'+key).val();
@@ -412,17 +467,18 @@ $(document).ready(function(){
                 JSON.parse(cekBiaya).forEach(function(item, index) {
                     $('#tabel_biaya > tbody:last-child').append(
                         `
-                            <tr id="row_biaya${index+1}">
+                            <tr id="row_biaya${index}">
                                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                    <input style="margin: auto; display: block;" type="text" class="form-control" id="deskripsi_biaya${index+1}" value="${item.deskripsi_biaya}">
+                                    <input style="margin: auto; display: block;" type="text" class="form-control" id="deskripsi${index}" value="${item.deskripsi}">
+                                    <input type="hidden" name="biaya_id${index}" id="biaya_id${index}" value="${item.id}">
                                 </td>
                                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                    <input style="" type="text" id="biaya${index+1}" value="${item.biaya}" class="form-control numaja uang" />
+                                    <input style="" type="text" id="biaya${index}" value="${item.biaya.toLocaleString()}" class="form-control numaja uang" />
                                 </td>
                                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                    <input style="" type="text" id="catatan_biaya${index+1}" value="${item.catatan_biaya}" class="form-control"/>
+                                    <input style="" type="text" id="catatan_biaya${index}" value="${item.catatan}" class="form-control"/>
                                 </td>
-                                <td><button type="button" name="del_biaya" id="${index+1}" class="btn btn-danger btn_remove_biaya"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
+                                <td><button type="button" name="del_biaya" id="${index}" class="btn btn-danger btn_remove_biaya"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
                             </tr>
                         `
                     );
@@ -438,72 +494,6 @@ $(document).ready(function(){
         $('#modal_detail').modal('show');
     });
     
-    function save_detailx(){
-        var key=$('#key').val();
-        if($('#nama_tujuan').val()==''){toastr.error('Nama tujuan harus diisi');return;}
-		
-		if($('#select_jenis_tujuan').val() == "LCL")
-		{
-			if($('#harga_per_kg').val() == ''){toastr.error('Harga Per Kg Harus Diisi');return;}
-			if($('#min_muatan').val() == ''){toastr.error('Minimum Muatan Harus Diisi');return;}
-		}
-        
-        var exist=$('#table_tujuan tbody').find('#'+key).attr('id');
-        if(typeof exist === 'undefined') {
-            var myjson;var array_detail_uang_jalan=[];
-            $('#table_uang_jalan > tbody  > tr').each(function(idx) {
-                var id=$(this).attr('id').split('_');
-                if(typeof id !== 'undefined') {
-                    myjson='{"biaya_id":'+JSON.stringify($('#biaya_id_'+id[1]).text())+', "biaya":'+JSON.stringify($('#biaya_'+id[1]).text())+', "deskripsi":'+JSON.stringify($('#deskripsi_'+id[1]).text())+', "catatan":'+JSON.stringify($('#catatan_biaya_'+id[1]).text())+'}';
-                    var obj=JSON.parse(myjson);
-                    array_detail_uang_jalan.push(obj);
-                }
-            });
-			if($('#select_jenis_tujuan').val()=="LCL")
-			{
-				var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="tujuan_id_'+key+'" hidden>'+$('#tujuan_id').val()+'</td><td id="nama_'+key+'" hidden>'+$('#nama_tujuan').val()+'</td><td id="alamat_'+key+'" hidden>'+$('#alamat_tujuan').val()+'</td><td id="tujuan_'+key+'">'+$('#nama_tujuan').val()+' ('+$('#alamat_tujuan').val()+')'+'</td><td id="jenis_tujuan_'+key+'">'+$('#select_jenis_tujuan').val()+'</td><td id="tarif_'+key+'">-</td><td id="harga_per_kg_'+key+'">'+$('#harga_per_kg').val()+'</td><td id="min_muatan_'+key+'">'+$('#min_muatan').val()+'</td><td id="uang_jalan_'+key+'">'+$('#uang_jalan').val()+'</td><td id="komisi_'+key+'">'+$('#komisi').val()+'</td><td id="catatan_'+key+'">'+$('#catatan_tujuan').val()+'</td><td id="detail_uang_jalan_'+key+'" hidden>'+JSON.stringify(array_detail_uang_jalan)+'</td></tr>';
-			}
-			else{
-				var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="tujuan_id_'+key+'" hidden>'+$('#tujuan_id').val()+'</td><td id="nama_'+key+'" hidden>'+$('#nama_tujuan').val()+'</td><td id="alamat_'+key+'" hidden>'+$('#alamat_tujuan').val()+'</td><td id="tujuan_'+key+'">'+$('#nama_tujuan').val()+' ('+$('#alamat_tujuan').val()+')'+'</td><td id="jenis_tujuan_'+key+'">'+$('#select_jenis_tujuan').val()+'</td><td id="tarif_'+key+'">'+$('#tarif').val()+'</td><td id="harga_per_kg_'+key+'">-</td><td id="min_muatan_'+key+'">-</td><td id="uang_jalan_'+key+'">'+$('#uang_jalan').val()+'</td><td id="komisi_'+key+'">'+$('#komisi').val()+'</td><td id="catatan_'+key+'">'+$('#catatan_tujuan').val()+'</td><td id="detail_uang_jalan_'+key+'" hidden>'+JSON.stringify(array_detail_uang_jalan)+'</td></tr>';
-			}
-            
-            $('#table_tujuan > tbody:last-child').append(new_row);
-        }else{
-            $('#tujuan_id_'+key).text($('#tujuan_id').val());
-            $('#tujuan_'+key).text($('#nama_tujuan').val()+' ('+$('#alamat_tujuan').val()+')');
-            $('#nama_'+key).text($('#nama_tujuan').val());
-			$('#jenis_tujuan_'+key).text($('#select_jenis_tujuan').val());
-            $('#alamat_'+key).text($('#alamat_tujuan').val());
-            $('#catatan_'+key).text($('#catatan_tujuan').val());
-			if($('#select_jenis_tujuan').val() == "LCL")
-			{
-				$('#tarif_'+key).text("-");
-				$('#harga_per_kg_'+key).text($('#harga_per_kg').val());
-				$('#min_muatan_'+key).text($('#min_muatan').val());
-			}
-			else
-			{
-				$('#tarif_'+key).text($('#tarif').val());
-				$('#harga_per_kg_'+key).text("-");
-				$('#min_muatan_'+key).text("-");
-			}
-            $('#uang_jalan_'+key).text($('#uang_jalan').val());
-            $('#komisi_'+key).text($('#komisi').val());
-            var myjson;var array_detail_uang_jalan=[];
-            $('#table_uang_jalan > tbody  > tr').each(function(idx) {
-                var id=$(this).attr('id').split('_');
-                if(typeof id !== 'undefined') {
-                    myjson='{"biaya_id":'+JSON.stringify($('#biaya_id_'+id[1]).text())+', "biaya":'+JSON.stringify($('#biaya_'+id[1]).text())+', "deskripsi":'+JSON.stringify($('#deskripsi_'+id[1]).text())+', "catatan":'+JSON.stringify($('#catatan_biaya_'+id[1]).text())+'}';
-                    var obj=JSON.parse(myjson);
-                    array_detail_uang_jalan.push(obj);
-                }
-            });
-            $('#detail_uang_jalan_'+key).text(JSON.stringify(array_detail_uang_jalan));
-            
-        }
-        $('#tujuan_dialog').modal('hide');
-    }
-
     $(document).on('click', '.save_detail', function(){
         var key=$('#key').val().trim();
         // simpan ke tampilan depan
@@ -515,10 +505,12 @@ $(document).ready(function(){
         $('#jenis_tujuan_'+key).val($('#select_jenis_tujuan').val());
         $('#alamat_hidden_'+key).val($('#alamat').val());
         $('#jenis_tujuan_'+key).val($('#select_jenis_tujuan').val());
-        $('#harga_per_kg_hidden_'+key).val($('#harga_per_kg_hidden').val());
+        $('#harga_per_kg_hidden_'+key).val($('#harga_per_kg').val());
         $('#min_muatan_hidden_'+key).val($('#min_muatan').val());
         $('#grup_hidden_'+key).val($('#grup').val());
         $('#marketing_hidden_'+key).val($('#marketing').val());
+
+        $('#deleted_biaya').val($('#deleted_biaya_temp').val());
 
         var myjson;
         var array_detail_biaya = [];
@@ -541,7 +533,8 @@ $(document).ready(function(){
             $('#tabel_biaya > tbody > tr').each(function(idx) {
                 var id=$(this).attr('id').replace("row_biaya", "");
                 if(typeof id !== 'undefined') {
-                    myjson='{"biaya_id":'+JSON.stringify($('#biaya_id'+id).val())+',"biaya":'+JSON.stringify($('#biaya'+id).val())+', "deskripsi_biaya":'+JSON.stringify($('#deskripsi_biaya'+id).val())+', "catatan_biaya":'+JSON.stringify($('#catatan_biaya'+id).val())+'}';
+                    let biayaId = $('#biaya_id' + id).val() ?? '';
+                    myjson='{"id":'+JSON.stringify(biayaId)+',"biaya":'+JSON.stringify($('#biaya'+id).val())+', "deskripsi":'+JSON.stringify($('#deskripsi'+id).val())+', "catatan":'+JSON.stringify($('#catatan_biaya'+id).val())+'}';
                     var obj=JSON.parse(myjson);
 
                     array_detail_biaya.push(obj);
@@ -592,16 +585,50 @@ $(document).ready(function(){
         $('#komisi').val('');
         $('#catatan').val('');
     }
-
+     
     $(document).on('click', '.btn_remove_biaya', function(){  
-        var button_id = $(this).attr("id");     
+        var button_id = $(this).attr("id");
+
+        // get id yg dihapus
+        var row = $(this).closest("tr");
+        var biayaIdInput = row.find("input[name='biaya_id"+button_id+"']");
+        var biaya_id_value = biayaIdInput.val();
+
+        // push ke array global
+        if(biaya_id_value) {
+            deleted_biaya.push(biaya_id_value);
+            $("#deleted_biaya_temp").val(deleted_biaya.join(","));
+        }
+
         $('#row_biaya'+button_id+'').remove();  
     });
 
+
+    $(document).on('click', '.btn_remove', function(){  
+        // get id button
+        var button_id = $(this).attr("id");             
+        
+        // get id yg dihapus
+        var row = $(this).closest("tr");
+        var hiddenInput = row.find("input[name^='data['][name$='[id_tujuan]']");
+        var deleted = hiddenInput.val();
+
+        // push ke array global
+        if(deleted_tujuan) {
+            deleted_tujuan.push(deleted);
+            $("#deleted_tujuan").val(deleted_tujuan.join(","));
+        }
+
+        // remove dari tabel
+        $('#row'+button_id+'').remove();  
+    });
+ 
     dropdownJenis();
 
     function dropdownJenis(){
+        // alert($('#select_jenis_tujuan').val());
         $('#select_jenis_tujuan').on('select2:select', function (e){
+            // if($('#jenis_tujuan_'+key).val() == 'FTL'){
 
             const hargaInput = $('#harga_per_kg');
             const tarifInput = $('#tarif');
@@ -620,43 +647,6 @@ $(document).ready(function(){
             }
         });
     }
-     
-
-
-    $(document).on('click', '.btn_remove', function(){  
-        var button_id = $(this).attr("id");     
-        $('#row'+button_id+'').remove();  
-    });
- 
-    $(document).on('keypress', ".biaya", function (e) {
-        // alert('xx');
-        // let uj = 0;
-        // if($('#uang_jalan').val() != ''){
-        //     uj = $('#uang_jalan').val(); 
-        // }
-        // var ujnow = uj+$(this).val();
-        // $('#uang_jalan').val(ujnow);
-        
-    });
-
-    $("#submit").on('click',function(event){
-     var formdata = $("#add_name").serialize();
-       console.log(formdata);
-       
-       event.preventDefault()
-       
-       $.ajax({
-         url   :"action.php",
-         type  :"POST",
-         data  :formdata,
-         cache :false,
-         success:function(result){
-           alert(result);
-           $("#add_name")[0].reset();
-         }
-       });
-       
-    });
 });
 
 		
