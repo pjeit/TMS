@@ -199,15 +199,7 @@
                       <a href="{{route('head.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
                       <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                         <p>
-                          Master Truck All
-                        </p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="{{route('head.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
-                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
-                        <p>
-                          Master Truck PJE
+                          Truck
                         </p>
                       </a>
                     </li>
@@ -215,7 +207,7 @@
                       <a href="{{route('pair_kendaraan.index')}}" style="font-weight: 500;" class="nav-link ">
                       <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                         <p>
-                          Master Pairing Truck
+                          Pairing Truck
                         </p>
                       </a>
                     </li>
