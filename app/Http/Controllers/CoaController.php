@@ -171,7 +171,6 @@ class CoaController extends Controller
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=>  $user,
                     'is_aktif' => "Y",
-
                 )
             );
             return redirect()->route('coa.index')->with('status','Success!!');

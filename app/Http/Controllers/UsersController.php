@@ -171,22 +171,22 @@ class UsersController extends Controller
     public function edit(Users $user)
     {
         //
-         $dataKaryawan = DB::table('karyawan')
+            $dataKaryawan = DB::table('karyawan')
             ->select('karyawan.*')
             ->where('karyawan.is_aktif', '=', "Y")
             ->where('karyawan.is_keluar', '=', "N")
             ->get();
 
-          $dataRole = DB::table('role')
+        $dataRole = DB::table('role')
             ->select('role.*')
             ->where('role.is_aktif', '=', "Y")
             ->get();
-             $dataCustomer = DB::table('customer')
+            $dataCustomer = DB::table('customer')
             ->select('customer.*')
             ->where('customer.is_aktif', '=', "Y")
             ->get();
             // dd($user);
-           return view('pages.master.users.edit',[
+        return view('pages.master.users.edit',[
             'judul' => "User",
             'user' => $user,
             'dataKaryawan' => $dataKaryawan,

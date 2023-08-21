@@ -71,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('grup_tujuan/getMarketing/{groupId}', [App\Http\Controllers\GrupTujuanController::class, 'getMarketing']);
 
         Route::resource('grup_tujuan', 'App\Http\Controllers\GrupTujuanController');
+        Route::resource('grup_tujuans', 'App\Http\Controllers\GrupTujuansController');
     
         Route::resource('customer', 'App\Http\Controllers\CustomerController');
         
