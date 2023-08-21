@@ -457,7 +457,7 @@
 
                 {{-- ============komponen============ --}}
 
-                <div class='row' >
+                <div class='row' id="showKomponen">
                             {{-- ============komponen identitas============ --}}
                             <div class="col-lg-6 col-md-6 col-12">
                                 <button type="button" class="btn btn-sm btn-secondary" onclick="open_detail('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; IDENTITAS</b></button>
@@ -828,6 +828,8 @@
   $(document).ready(function() {
 //             var url = $("#formDataKaryawan").attr('action');
 // alert(url);
+         $('#showKomponen').hide();
+
        function hitungPtkp(){
             var dataPtkp = <?php echo json_encode($dataPtkp); ?>;
             // Ambil value jumlah anak
@@ -1016,6 +1018,7 @@
         $("#dua").hide(); 
         $("#tiga").hide(); 
         $("#empat").hide(); 
+         $('#showKomponen').hide();
 
       
      });
@@ -1030,6 +1033,7 @@
         $("#dua").show(); 
         $("#tiga").hide(); 
         $("#empat").hide(); 
+         $('#showKomponen').hide();
 
      });
      $('.step3').click(function() {
@@ -1044,6 +1048,7 @@
         $("#dua").hide(); 
         $("#tiga").show();  
         $("#empat").hide(); 
+         $('#showKomponen').hide();
 
      });
      $('.step4').click(function() {
@@ -1056,6 +1061,7 @@
         $("#tiga").hide();  
         $("#empat").show(); 
             $('#ptkp').prop('disabled', false);
+         $('#showKomponen').show();
 
 
      });
@@ -1074,6 +1080,7 @@
         $("#tiga").hide(); 
         $("#empat").hide(); 
             $('#ptkp').prop('disabled', false);
+         $('#showKomponen').hide();
 
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
@@ -1088,6 +1095,7 @@
         $("#tiga").hide(); 
         $("#empat").hide(); 
             $('#ptkp').prop('disabled', false);
+         $('#showKomponen').hide();
 
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
@@ -1104,6 +1112,7 @@
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
             $('#ptkp').prop('disabled', false);
+         $('#showKomponen').hide();
 
      });
          $('#BackDariDarurat').click(function() {
@@ -1116,6 +1125,7 @@
         $("#tiga").hide(); 
         $("#empat").hide(); 
             $('#ptkp').prop('disabled', false);
+         $('#showKomponen').hide();
 
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
@@ -1131,6 +1141,7 @@
         $("#tiga").hide(); 
         $("#empat").show(); 
             $('#ptkp').prop('disabled', false);
+         $('#showKomponen').show();
 
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
@@ -1145,6 +1156,8 @@
         $("#tiga").show(); 
         $("#empat").hide(); 
             $('#ptkp').prop('disabled', false);
+                  $('#showKomponen').hide();
+
 
         // btn btn-secondary //kalo aktif
         // btn btn-outline-secondary // kalo ga aktif
