@@ -10,6 +10,7 @@
 <li class="breadcrumb-item"><a href="{{route('coa.index')}}">COA</a></li>
 @endsection
 @section('content')
+@include('sweetalert::alert')
 <!-- <div class="container-fluid">
         <h2 class="text-center display-4">Cari Nama COA</h2>
         <div class="row">
@@ -72,7 +73,7 @@
                                 <!-- Modal -->
                                 <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
+                                    <div class="">
                                         <div class="modal-header">
                                         <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -80,7 +81,7 @@
                                         </button>
                                         </div>
                                         <div class="modal-body">
-                                          <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
+                                          <p>Apakah anda yakin ingimodal-contentn menghapus data secara permanen?</p>
                                         </div>
                                        <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>

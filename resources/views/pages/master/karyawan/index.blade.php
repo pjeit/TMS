@@ -31,9 +31,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('karyawan.create')}}" class="btn btn-secondary btn-responsive float-left">
+                    <a href="{{route('karyawan.create')}}" class="btn btn-primary radiusSendiri btn-responsive float-left">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
                     </a> 
                 </div>

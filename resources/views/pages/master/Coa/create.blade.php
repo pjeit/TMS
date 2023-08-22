@@ -63,20 +63,19 @@
                                     <label for="no_akun">No. akun</label>
                                     <input required type="number" maxlength="10" name="no_akun" class="form-control" value="{{old('no_akun','')}}" >                         
                                 </div>  
-                                <div class="form-group">
+                                <div class="form-group col-md-6">
                                     <label for="tipe">Tipe</label>
                                     <br>
-
                                     <div class="icheck-primary d-inline">
                                         <input id="setuju" type="radio" name="tipe" value="1" {{'1' == old('tipe','')? 'checked' :'' }}>
                                         <label class="form-check-label" for="setuju">Pengeluaran</label>
                                     </div>
-                                    <div class="icheck-primary d-inline">
+                                    <div class="icheck-primary d-inline ml-5">
                                         <input id="tdkSetuju" type="radio" name="tipe" value="2" {{'2'== old('tipe','')? 'checked' :'' }}>
                                         <label class="form-check-label" for="tdkSetuju">Penerimaan</label><br>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-md-6">
                                     <label for="catatan">Catatan</label>
                                     <input  type="text" maxlength="100" name="catatan" class="form-control" value="{{old('catatan','')}}" >                         
                                 </div>  
