@@ -1,4 +1,4 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-primary elevation-4 ">
 {{-- <aside class="main-sidebar elevation-4 sidebar-light-primary"> --}}
 
   <!-- Brand Logo -->
@@ -8,7 +8,7 @@
   </a>
 
   <!-- Sidebar -->
-  <div class="sidebar">
+  <div class="sidebar ">
     <!-- Sidebar user panel (optional) -->
     {{-- <div class="user-panel mt-3 pb-3 mb-3 d-flex justify-content-center align-items-center">
      
@@ -30,8 +30,8 @@
     </div> -->
 
     <!-- Sidebar Menu -->
-    <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+    <nav class="mt-2 ">
+      <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
         <!-- =================================================== -->
@@ -127,7 +127,7 @@
                 request()->is('kas_bank*')||
                 request()->is('role*')||
                 request()->is('users*')||
-                request()->is('pengaturan_sistem*')
+                request()->is('pengaturan_keuangan*')
                 ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link" style="font-weight: 700;">
                   <i class="nav-icon fas fa-key"></i>
@@ -277,10 +277,10 @@
                   </a> 
                 </li>
                 <li class="nav-item">
-                  <a href="{{route('pengaturan_sistem.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pengaturan_sistem*') ? ' active' : '' }} ">
+                  <a href="{{route('pengaturan_keuangan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pengaturan_keuangan*') ? ' active' : '' }} ">
                   <i class="far nav-icon fa fa-cog"></i>
-                    <p>
-                      Pengaturan Sistem
+                    <p style="font-size: 15px;">
+                      Pengaturan Keuangan
                     </p>
                   </a> 
                 </li> 

@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['is_admin'])->group(function () {
         Route::resource('coa', 'App\Http\Controllers\CoaController');
 
-        Route::resource('pengaturan_sistem', 'App\Http\Controllers\PengaturanSistemController');
+        Route::resource('pengaturan_keuangan', 'App\Http\Controllers\PengaturanKeuanganController');
     
         Route::resource('kas_bank', 'App\Http\Controllers\KasBankController');
     

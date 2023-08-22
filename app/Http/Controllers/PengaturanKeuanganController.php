@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PengaturanSistem;
+use App\Models\PengaturanKeuangan;
 use App\Models\M_Kas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\VarDumper\VarDumper;
 use Illuminate\Support\Facades\Auth;
 
-class PengaturanSistemController extends Controller
+class PengaturanKeuanganController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,12 +18,12 @@ class PengaturanSistemController extends Controller
      */
     public function index()
     {
-        $dataPengaturanSistem = PengaturanSistem::where('id', 1)->first();
+        $dataPengaturanKeuangan = PengaturanKeuangan::where('id', 1)->first();
 
         $dataMKas = DB::table('m_kas')->get();
-        $judul = 'Pengaturan Sistem';
-        return view('pages.master.pengaturan_sistem.index',[
-            'dataPengaturanSistem' => $dataPengaturanSistem,
+        $judul = 'Pengaturan Keuangan';
+        return view('pages.master.pengaturan_keuangan.index',[
+            'dataPengaturanKeuangan' => $dataPengaturanKeuangan,
             'dataMKas' => $dataMKas,
             'judul' => $judul,
         ]);
@@ -50,7 +50,7 @@ class PengaturanSistemController extends Controller
        
      
       
-        // DB::table('pengaturan_sistem')
+        // DB::table('pengaturan_keuangan')
         //     ->insert(array(
         //         'uang_jajan' => $data['uang_jalan'],
         //         'reimburse' => $data['reimburse'],
@@ -100,7 +100,7 @@ class PengaturanSistemController extends Controller
         $user=Auth::user()->id;
 
         $data = $request->collect();
-        $update = PengaturanSistem::where('id', $id)->first();
+        $update = PengaturanKeuangan::where('id', $id)->first();
         $update->uang_jajan = $data['uang_jalan'];
         $update->reimburse = $data['reimburse'];
         $update->penerimaan_customer = $data['penerimaan_customer'];
@@ -115,7 +115,7 @@ class PengaturanSistemController extends Controller
 
         $update->save();
 
-        return redirect()->route('pengaturan_sistem.index')->with('status','Berhasil update data');
+        return redirect()->route('pengaturan_keuangan.index')->with('status','Berhasil update data');
 
     }
 
