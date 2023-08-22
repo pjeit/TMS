@@ -20,16 +20,68 @@ class SupplierController extends Controller
     public function index()
     {
         $data = DB::table('supplier')
-            ->select('*')
-            ->where('is_aktif', '=', "Y")
+            ->select('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama as jenis','m_kota.nama as kota')
+            ->join('jenis_supplier', 'supplier.jenis_supplier_id', '=', 'jenis_supplier.id')
+            ->join('m_kota', 'supplier.kota_id', '=', 'm_kota.id')
+            ->where('supplier.is_aktif', '=', "Y")
+            ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
             ->get();
+        $dataJenisFilter = DB::table('jenis_supplier')
+            ->select('*')
+            ->where('jenis_supplier.is_aktif', '=', "Y")
+            ->get();
+
+            // dd($dataJenisFilter);
 
             return view('pages.master.supplier.index',[
             'judul' => "Supplier",
             'data' => $data,
+            'dataJenisFilter' => $dataJenisFilter
         ]);
     }
+    public function filterSupplier(Request $request)
+    {
+        $jenisFilter = $request->input('jenisFilter');
+        // dd($jenisFilter);
 
+        if($jenisFilter==null)
+        {
+              $data = DB::table('supplier')
+            ->select('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama as jenis','m_kota.nama as kota')
+            ->join('jenis_supplier', 'supplier.jenis_supplier_id', '=', 'jenis_supplier.id')
+            ->join('m_kota', 'supplier.kota_id', '=', 'm_kota.id')
+            ->where('supplier.is_aktif', '=', "Y")
+            ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
+            ->get();
+
+        }
+        else
+
+        {
+            $data = DB::table('supplier')
+            ->select('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama as jenis','m_kota.nama as kota')
+            ->join('jenis_supplier', 'supplier.jenis_supplier_id', '=', 'jenis_supplier.id')
+            ->join('m_kota', 'supplier.kota_id', '=', 'm_kota.id')
+            ->where('supplier.is_aktif', '=', "Y")
+            ->where('jenis_supplier.id', '=',  $jenisFilter )
+            ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
+            ->get();
+        }
+
+       
+        $dataJenisFilter = DB::table('jenis_supplier')
+            ->select('*')
+            ->where('jenis_supplier.is_aktif', '=', "Y")
+            ->get();
+
+            // dd($dataJenisFilter);
+
+            return view('pages.master.supplier.index',[
+            'judul' => "Supplier",
+            'data' => $data,
+            'dataJenisFilter' => $dataJenisFilter
+        ]);
+    }
     /**
      * Show the form for creating a new resource.
      *
