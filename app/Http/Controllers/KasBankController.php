@@ -120,20 +120,22 @@ class KasBankController extends Controller
                 // 'catatan' => 'required',
             ], $pesanKustom);
             $data = $request->collect();
-            $tanggal = explode('-', $data['tgl_saldo']);
-                // dd($tanggal);
+            // $tanggal = explode('-', $data['tgl_saldo']);
+            //     // dd($tanggal);
 
-            $tahun =$tanggal[0];
-            $bulan =$tanggal[1];
-            $tanggal =$tanggal[2];
-            $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
+            // $tahun =$tanggal[0];
+            // $bulan =$tanggal[1];
+            // $tanggal =$tanggal[2];
+            // $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
+            $tgl_saldo = date_create_from_format('d-M-Y', $data['tgl_saldo']);
+
             DB::table('kas_bank')
                 ->insert(array(
                     'nama' => $data['nama'],
                     'no_akun' => $data['no_akun']==null ? null : $data['no_akun'],
                     'tipe' => $data['tipe']==1?'Kas':'Bank',
                     'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
-                    'tgl_saldo' => $data['tgl_saldo']==null ? null : $gabungan,
+                    'tgl_saldo' => $data['tgl_saldo']==null ? null : date_format($tgl_saldo, 'Y-m-d'),
                     'no_rek' => $data['no_rek']==null ? null : $data['no_rek'],
                     'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
                     'bank' => $data['bank']==null ? null : $data['bank'],
@@ -224,13 +226,14 @@ class KasBankController extends Controller
             ], $pesanKustom);
     
                $data = $request->collect();
-        $tanggal = explode('-', $data['tgl_saldo']);
-            // dd($tanggal);
+        // $tanggal = explode('-', $data['tgl_saldo']);
+        //     // dd($tanggal);
 
-        $tahun =$tanggal[0];
-        $bulan =$tanggal[1];
-        $tanggal =$tanggal[2];
-        $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
+        // $tahun =$tanggal[0];
+        // $bulan =$tanggal[1];
+        // $tanggal =$tanggal[2];
+        // $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
+            $tgl_saldo = date_create_from_format('d-M-Y', $data['tgl_saldo']);
         
             // dd($data);
             DB::table('kas_bank')
@@ -240,7 +243,7 @@ class KasBankController extends Controller
                     'no_akun' => $data['no_akun']==null ? null : $data['no_akun'],
                     'tipe' => $data['tipe']==1?'Kas':'Bank',
                     'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
-                    'tgl_saldo' => $data['tgl_saldo']==null ? null : $gabungan,
+                    'tgl_saldo' => $data['tgl_saldo']==null ? null : date_format($tgl_saldo, 'Y-m-d'),
                     'no_rek' => $data['no_rek']==null ? null : $data['no_rek'],
                     'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
                     'bank' => $data['bank']==null ? null : $data['bank'],

@@ -68,7 +68,7 @@
                 </div>
                     <div class="form-group">
                     <label for="karyawan_id">Customer</label>
-                    <select class="form-control selectpicker" name="karyawan" id="karyawan" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan">
+                    <select class="form-control selectpicker" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan">
                         <option value="">--Pilih customer--</option>
                         @foreach($dataCustomer as $data)
                             <option value="{{$data->id}}">{{$data->nama}}</option>

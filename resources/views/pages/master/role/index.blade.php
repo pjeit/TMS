@@ -52,11 +52,11 @@
                                 <td>{{$d->nama}}</td>
                                
                                 <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('role.edit',[$d->id])}}">
+                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('role.edit',[$d->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
+                                    <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
                                                <i class="fas fa-trash"></i> Hapus
                                     </button>          
                                     

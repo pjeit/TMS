@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <div class="col-12">
+            <div class="col-6">
                 <div class="card radiusSendiri">
                     <div class="card-header">
                         <h5 class="card-title">Data</h5>

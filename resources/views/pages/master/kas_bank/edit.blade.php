@@ -94,13 +94,22 @@
                                 <input readonly type="text" id="saldo" maxlength="100" name="saldo_awal" class="form-control uang numajaMinDesimal" value="{{old('saldo_awal', number_format($KasBank->saldo_awal,2))}}" >                         
                             </div>
                         </div>
-                        <div class="form-group">
-                            {{-- <label for="lastName">Tanggal Pembuatan</label>
+                        {{-- <div class="form-group">
+                            <label for="lastName">Tanggal Pembuatan</label>
                             <input type="date" class="form-control" id="tanggalDibuat" placeholder="" value="" required="" name="tgl_saldo" value="{{old('tgl_saldo','')}}">
-                            <div class="invalid-feedback"> Valid last name is required. </div> --}}
+                            <div class="invalid-feedback"> Valid last name is required. </div>
                             <label for="lastName">Tanggal Pembuatan</label>
                             <input type="text" class="form-control" id="tanggalDibuatDisplay" placeholder="DD-MMM-YYYY" value="{{old('tgl_saldo','')}}" required>
                             <input type="hidden" id="tanggalDibuat" name="tgl_saldo">
+                        </div> --}}
+                        <div class="form-group">
+                            <label for="tgl_saldo">Tanggal Pembuatan</label>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                </div>
+                                <input type="text" name="tgl_saldo" autocomplete="off" class="date form-control" id="tgl_saldo" placeholder="dd-M-yyyy" value="{{old('tgl_saldo',\Carbon\Carbon::parse($KasBank->tgl_saldo)->format('d-M-Y')) }}">     
+                            </div>
                         </div>
                       
                     </div>
@@ -143,30 +152,37 @@
 
     console.log(saldoAwal);
     // ====================================logic tanggal =================================
-    const initialDate = "{{ $KasBank->tgl_saldo }}"; 
-    console.log(initialDate);
-    const dateDisplay = moment(initialDate).format('DD-MMM-YYYY');
-    const dateHiddenDB = moment(initialDate).format('YYYY-MM-DD');
+    // const initialDate = "{{ $KasBank->tgl_saldo }}"; 
+    // console.log(initialDate);
+    // const dateDisplay = moment(initialDate).format('DD-MMM-YYYY');
+    // const dateHiddenDB = moment(initialDate).format('YYYY-MM-DD');
 
 
-    $('input[id="tanggalDibuatDisplay"]').daterangepicker({
-        opens: 'center',
-        drops: 'up',
-        singleDatePicker: true,
-        showDropdowns: true,
-        autoApply: true,
-        startDate: moment(initialDate),
-        locale: {
-            format: 'DD-MMM-YYYY',
-        }
-    }, function(start, end, label) {
-        const formattedDate = start.format('DD-MMM-YYYY');
-        $('#tanggalDibuatDisplay').val(formattedDate);
-        $('#tanggalDibuat').val(start.format('YYYY-MM-DD'));
-        console.log("A new date selection was made: " + formattedDate);
-    });
-    $('#tanggalDibuatDisplay').val(dateDisplay);
-    $('#tanggalDibuat').val(dateHiddenDB);
+    // $('input[id="tanggalDibuatDisplay"]').daterangepicker({
+    //     opens: 'center',
+    //     drops: 'up',
+    //     singleDatePicker: true,
+    //     showDropdowns: true,
+    //     autoApply: true,
+    //     startDate: moment(initialDate),
+    //     locale: {
+    //         format: 'DD-MMM-YYYY',
+    //     }
+    // }, function(start, end, label) {
+    //     const formattedDate = start.format('DD-MMM-YYYY');
+    //     $('#tanggalDibuatDisplay').val(formattedDate);
+    //     $('#tanggalDibuat').val(start.format('YYYY-MM-DD'));
+    //     console.log("A new date selection was made: " + formattedDate);
+    // });
+    // $('#tanggalDibuatDisplay').val(dateDisplay);
+    // $('#tanggalDibuat').val(dateHiddenDB);
+      $('#tgl_saldo').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language:'en',
+            endDate: "0d"
+        });
 
     // ====================================logic tanggal =================================
 
