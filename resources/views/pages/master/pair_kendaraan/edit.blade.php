@@ -39,7 +39,7 @@
         @method('PUT')
         <div class="card radiusSendiri">
             <div class="card-header">
-                <button type="button" class="btn btn-secondary radiusSendiri float-left">Kembali</button>
+                <a href="{{ route('pair_kendaraan.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
                 <button type="submit" class="btn btn-success radiusSendiri float-right" name="save" id="save" value="save" ><i class="fa fa-fw fa-save"></i>Simpan</button>
             </div>
         </div>
@@ -55,29 +55,47 @@
                         </div>
                     </div>
                     <div class="card-body" >
-                        <div class="form-group">
-                            <label for="inputName">Project Name</label>
-                            <input type="text" id="inputName" class="form-control" readonly>
+                        <div class="row">
+                            <div class="col-6">
+
+                                <div class="form-group">
+                                    <label for="inputName">Nomor Polisi</label>
+                                    <input type="text" id="inputName" class="form-control" value="{{$dataKendaraan[0]->no_polisi}}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                
+                                <div class="form-group">
+                                    <label for="inputClientCompany">Nomor Mesin</label>
+                                    <input type="text" id="inputClientCompany" class="form-control" value="{{$dataKendaraan[0]->no_mesin}}" readonly>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="inputClientCompany">Client Company</label>
-                            <input type="text" id="inputClientCompany" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputProjectLeader">Project Leader</label>
-                            <input type="text" id="inputProjectLeader" class="form-control" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputProjectLeader">Project Leader</label>
-                            <input type="text" id="inputProjectLeader" class="form-control" readonly>
+                        <div class="row">
+                            <div class="col-6">
+
+                                <div class="form-group">
+                                    <label for="inputProjectLeader">Merk</label>
+                                    <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->merk_model}}" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+
+                                <div class="form-group">
+                                    <label for="inputProjectLeader">Nomor Rangka</label>
+                                    <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->no_rangka}}" readonly>
+                                </div>
+                            </div>
+
                         </div>
                           <div class="form-group">
-                                <label for="inputProjectLeader">Project Leader</label>
-                                <input type="text" id="inputProjectLeader" class="form-control" readonly>
+                                <label for="inputProjectLeader">Tahun Pembuatan</label>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->tahun_pembuatan}}" readonly>
                             </div>
                               <div class="form-group">
                                 <label for="inputProjectLeader">Project Leader</label>
-                                <input type="text" id="inputProjectLeader" class="form-control" readonly>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->no_polisi}}" readonly>
                             </div>
                         
                     </div>

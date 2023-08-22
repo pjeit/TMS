@@ -196,6 +196,8 @@
                             </select>
                         </div>
                         <button type="button" id="nextDariPribadi" class="btn btn-success float-right"><strong>Next</strong></button>
+                        <a href="{{ route('karyawan.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
+
                     </div>
                 </div>
                 {{-- ============End Data pribadi============ --}}
