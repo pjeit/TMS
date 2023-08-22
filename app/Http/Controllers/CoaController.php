@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Helper\VariableHelper;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class CoaController extends Controller
 {
@@ -18,13 +19,19 @@ class CoaController extends Controller
      */
     public function index()
     {
-        //
         $dataCOA = DB::table('coa')
             // ->paginate(10);
             ->select('coa.*')
             ->where('coa.is_aktif', '=', "Y")
             ->get();
-            // dd( $dataCOA);
+
+
+        $title = 'Delete data!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+
         return view('pages.master.Coa.index',[
             'judul'=>"COA",
             'dataCOA' => $dataCOA,
@@ -91,6 +98,7 @@ class CoaController extends Controller
 
                 )
             ); 
+            
             return redirect()->route('coa.index')->with('status','Success!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();

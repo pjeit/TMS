@@ -52,7 +52,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-lg-6 col-md-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">

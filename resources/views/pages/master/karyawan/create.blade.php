@@ -86,7 +86,7 @@
             <form action="{{ route('karyawan.store') }}" method="POST" enctype="multipart/form-data" id="formDataKaryawan">
                 @csrf
                 {{-- ============Data pribadi============ --}}
-                <div class="card" id="satu">
+                <div class="card " id="satu">
                     <div class="card-header">
                         <h5 class="card-title">Data Pribadi</h5>
                     </div>
