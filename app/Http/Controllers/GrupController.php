@@ -11,6 +11,7 @@ use App\Models\GrupTujuan;
 use App\Models\GrupTujuanBiaya;
 use Symfony\Component\VarDumper\VarDumper;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class GrupController extends Controller
 {
@@ -24,6 +25,13 @@ class GrupController extends Controller
         $data = DB::table('grup')
             ->where('is_aktif', '=', "Y")
             ->get();
+
+        $title = 'Delete data!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+    
             
         return view('pages.master.grup.index',[
                 'judul' => "Grup",
@@ -168,6 +176,7 @@ class GrupController extends Controller
     public function destroy(Grup $grup)
     {
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies
+        // var_dump($grup); die;
         $del_grup = DB::table('grup')
                     ->where('id', $grup['id'])
                     ->update(array(
@@ -195,5 +204,9 @@ class GrupController extends Controller
         }
        
         return redirect()->route('grup.index')->with('status', 'Berhasil menghapus data!');
+        // return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'Berhasil menghapus data!'
+        // ]);
     }
 }

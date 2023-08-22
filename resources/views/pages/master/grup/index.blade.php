@@ -8,6 +8,8 @@
 @endif
 
 @section('content')
+@include('sweetalert::alert')
+<meta name="csrf-token" content="{{ csrf_token() }}" />
 
 <div class="container-fluid">
     <div class="row">
@@ -40,37 +42,11 @@
                                     <a class="btn btn-default bg-info radiusSendiri" href="{{route('grup.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
-                                            <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus_{{$item->id}}">
-                                               <i class="fas fa-trash"></i> Hapus
-                                    </button>          
-                                    
-                                </td>
-                                 <!-- Modal -->
-                                <div class="modal fade" id="modalHapus_{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal" style="">Tidak</button>
 
-                                                <form action="{{route('grup.destroy',[$item->id])}}" method="POST" class="">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button action="{{route('grup.destroy',[$item->id])}}" class="btn btn-primary px-3">Ya</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                    <a href="{{ route('grup.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
+                                    
+
+                                </td>
                                 
                             </tr>
                             @endforeach
@@ -86,6 +62,8 @@
 </div>
 
 <script>
+    
+    
     var sessionMessage = "{{ session()->has('message') ? session('message') : '' }}";
     if (sessionMessage !== '') {
         toastr.success(sessionMessage);
