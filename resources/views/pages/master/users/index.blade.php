@@ -58,11 +58,11 @@
                                 <td>{{$d->nama_panggilan}}</td>
                                 <td>{{$d->kota}}</td>
                                 <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('users.edit',[$d->id])}}">
+                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('users.edit',[$d->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
+                                    <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
                                                <i class="fas fa-trash"></i> Hapus
                                     </button>          
                                     

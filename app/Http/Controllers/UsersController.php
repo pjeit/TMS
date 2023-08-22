@@ -185,7 +185,7 @@ class UsersController extends Controller
             ->select('customer.*')
             ->where('customer.is_aktif', '=', "Y")
             ->get();
-            // dd($user);
+            // dd($user['password']);
         return view('pages.master.users.edit',[
             'judul' => "User",
             'user' => $user,
@@ -211,13 +211,13 @@ class UsersController extends Controller
         try {
             $pesanKustom = [
                 'username.required' => 'Username Harus diisi!',
-                'password.required' => 'Password Harus diisi!',
+                // 'password.required' => 'Password Harus diisi!',
                 'role.required' => 'Posisi Harus diisi!',
             ];
             
             $request->validate([
                 'username' => 'required',
-                'password' => 'required',
+                // 'password' => 'required',
                 'role' => 'required',
             ], $pesanKustom);
 
@@ -227,10 +227,10 @@ class UsersController extends Controller
                  ->where('id', $user['id'])
                 ->update(array(
                     'username' => $data['username'],
-                    'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+                    'password' => ($data['password'])?password_hash($data['password'], PASSWORD_DEFAULT):$user['password'],
                     'role_id' => $data['role'],
-                    'karyawan_id' => ($data['karyawan']==null)?null:$data['karyawan'],
-                    'customer_id' => ($data['customer']==null)?null:$data['customer'],
+                    'karyawan_id' => isset($data['karyawan']) ? $data['karyawan'] : null,
+                    'customer_id' => isset($data['customer']) ? $data['customer'] : null,
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $usersCrt,
                     'updated_at'=> VariableHelper::TanggalFormat(),

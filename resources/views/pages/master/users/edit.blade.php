@@ -42,9 +42,18 @@
     <form action="{{ route('users.update',[$user->id]) }}" method="POST" >
       @csrf
       @method('PUT')
+        <div class="card radiusSendiri">
+            <div class="card-header d-flex justify-content-between">
+                <div>
+                    <a href="{{ route('users.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
+                </div>
+                <button type="submit" name="save" id="save" value="save" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i> Simpan</button>
+            </div>
+        </div>
         <div class="row">
+            
             <div class="col-12">
-                <div class="card">
+                <div class="card radiusSendiri">
                     <div class="card-header">
                         <h5 class="card-title">Data</h5>
                     </div>
@@ -73,7 +82,7 @@
                     </div>
                       <div class="form-group">
                         <label for="karyawan_id">Customer</label>
-                        <select class="form-control selectpicker" name="karyawan" id="karyawan" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan">
+                        <select class="form-control selectpicker" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan">
                             <option value="">--Pilih customer--</option>
                             @foreach($dataCustomer as $data)
                                 <option value="{{$data->id}}"{{$data->id == $user->customer_id? 'selected' :'' }}>{{$data->nama}}</option>
@@ -88,10 +97,7 @@
                                 <option value="{{$data->id}}"{{$data->id == $user->role_id? 'selected' :'' }}>{{$data->nama}}</option>
                             @endforeach
                         </select>
-                    </div>
-                        <a href="{{ route('users.index') }}" class="btn btn-info"><strong>Kembali</strong></a>
-                        <button type="submit" class="btn btn-success"><strong>Simpan</strong></button>
-                    </div>
+                  
                 </div>
             </div>
         </div>

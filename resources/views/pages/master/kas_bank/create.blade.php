@@ -51,7 +51,8 @@
                         <button type="submit" name="save" id="save" value="save" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i> Simpan</button>
                     </div>
                 </div>
-            </div>
+            </div>  
+
             <div class="col-lg-6 col-md-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
@@ -92,13 +93,22 @@
                                 <input type="text" maxlength="100" id="saldo" name="saldo_awal" class="form-control uang numajaMinDesimal" value="{{old('saldo_awal','')}}" >                         
                             </div>
                         </div>
-                        <div class="form-group">
-                            {{-- <label for="lastName">Tanggal Pembuatan</label>
+                        {{-- <div class="form-group">
+                            <label for="lastName">Tanggal Pembuatan</label>
                             <input type="date" class="form-control" id="tanggalDibuat" placeholder="" value="" required="" name="tgl_saldo" value="{{old('tgl_saldo','')}}">
-                            <div class="invalid-feedback"> Valid last name is required. </div> --}}
+                            <div class="invalid-feedback"> Valid last name is required. </div>
                             <label for="lastName">Tanggal Pembuatan</label>
                             <input type="text" class="form-control" id="tanggalDibuatDisplay" placeholder="DD-MMM-YYYY" value="{{old('tgl_saldo','')}}" required>
                             <input type="hidden" id="tanggalDibuat" name="tgl_saldo">
+                        </div> --}}
+                        <div class="form-group">
+                            <label for="tgl_saldo">Tanggal Pembuatan</label>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                </div>
+                                <input type="text" name="tgl_saldo" autocomplete="off" class="date form-control" id="tgl_saldo" placeholder="dd-M-yyyy" value="{{old('tgl_saldo','')}}">     
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -150,25 +160,31 @@
 //   });
 
   $(document).ready(function() {
-    $('input[id="tanggalDibuatDisplay"]').daterangepicker({
-        opens: 'center',
-        drops: "up",
-        singleDatePicker: true,
-        showDropdowns: true,
-        autoApply: true,
-        startDate: moment(), // Set the initial date to today
-        // timePicker: true, 
-        // timePicker24Hour: true, 
-        locale: {
-            format: 'DD-MMM-YYYY',
-        }
-    }, function(start, end, label) {
-        const formattedDate = start.format('DD-MMM-YYYY');
-        $('#tanggalDibuatDisplay').val(formattedDate);
-        $('#tanggalDibuat').val(start.format('YYYY-MM-DD'));
-        console.log("A new date selection was made: " + formattedDate);
-    });
-    
+    // $('input[id="tanggalDibuatDisplay"]').daterangepicker({
+    //     opens: 'center',
+    //     drops: "up",
+    //     singleDatePicker: true,
+    //     showDropdowns: true,
+    //     autoApply: true,
+    //     startDate: moment(), // Set the initial date to today
+    //     // timePicker: true, 
+    //     // timePicker24Hour: true, 
+    //     locale: {
+    //         format: 'DD-MMM-YYYY',
+    //     }
+    // }, function(start, end, label) {
+    //     const formattedDate = start.format('DD-MMM-YYYY');
+    //     $('#tanggalDibuatDisplay').val(formattedDate);
+    //     $('#tanggalDibuat').val(start.format('YYYY-MM-DD'));
+    //     console.log("A new date selection was made: " + formattedDate);
+    // });
+     $('#tgl_saldo').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language:'en',
+            endDate: "0d"
+        });
     $('#no_rek, #rek_nama, #bank, #cabang').prop('readonly', true);
 
      $('#bankRadio').click(function() {

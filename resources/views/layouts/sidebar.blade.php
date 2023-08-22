@@ -139,7 +139,7 @@
                 <li class="nav-item">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
-                    <p>
+                    <p style="font-weight: 500;" >
                       Master Grup
                       <i class="right fas fa-angle-left"></i>
                     </p>
@@ -188,8 +188,8 @@
 
                 <li class="nav-item">
                   <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>
+                    <i class="far nav-icon fa fa-truck"></i>
+                    <p style="font-weight: 500;" >
                       Master Truck
                       <i class="right fas fa-angle-left"></i>
                     </p>
@@ -211,23 +211,24 @@
                         </p>
                       </a>
                     </li>
+                     <li class="nav-item">
+                      <a href="{{route('chassis.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('chassis*') ? ' active' : '' }} ">
+                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                        <p>
+                          Ekor Truck
+                        </p>
+                      </a>
+                    </li> 
                   </ul>
                 </li>
                 
                 
 
-                <li class="nav-item">
-                  <a href="{{route('chassis.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('chassis*') ? ' active' : '' }} ">
-                  <i class="far nav-icon fa fa-square" style="font-size: 15px;"></i>
-                    <p>
-                      Ekor Truck
-                    </p>
-                  </a>
-                </li> 
+               
         
                 <li class="nav-item">
                   <a href="{{route('supplier.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('supplier*') ? ' active' : '' }} ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                  <i class="far nav-icon fa fa-building" style="font-size: 15px;"></i>
                     <p>
                       Supplier
                     </p>
@@ -236,7 +237,7 @@
             
                 <li class="nav-item">
                   <a href="{{route('karyawan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('karyawan*') ? ' active' : '' }} ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                  <i class="far nav-icon fa fa-id-card" style="font-size: 15px;"></i>
                     <p>
                       Karyawan
                     </p>
@@ -244,7 +245,7 @@
                 </li>
                 <li class="nav-item">
                   <a href="{{route('coa.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('coa*') ? ' active' : '' }} ">
-                  <i class="far nav-icon"></i>
+                  <i class="far nav-icon fa fa-list"></i>
                     <p>
                       COA
                     </p>
@@ -253,7 +254,7 @@
                 
                 <li class="nav-item">
                   <a href="{{route('kas_bank.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('kas_bank*') ? ' active' : '' }}">
-                    <i class="far nav-icon"></i>
+                    <i class="far nav-icon fa fa-university"></i>
                     <p>
                       Kas / Bank
                     </p>
@@ -261,15 +262,15 @@
                 </li> 
                 <li class="nav-item">
                   <a href="{{route('role.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('role*') ? ' active' : '' }}">
-                    <i class="far nav-icon"></i>
+                    <i class="far nav-icon fa fa-users "></i>
                     <p>
-                      Master Role
+                      Role
                     </p>
                   </a> 
                 </li>
                 <li class="nav-item">
                   <a href="{{route('users.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('users*') ? ' active' : '' }}">
-                    <i class="far nav-icon"></i>
+                    <i class="far nav-icon fa fa-user-circle"></i>
                     <p>
                       User
                     </p>
@@ -277,13 +278,13 @@
                 </li>
                 <li class="nav-item">
                   <a href="{{route('pengaturan_sistem.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pengaturan_sistem*') ? ' active' : '' }} ">
-                  <i class="far nav-icon"></i>
+                  <i class="far nav-icon fa fa-cog"></i>
                     <p>
                       Pengaturan Sistem
                     </p>
                   </a> 
                 </li> 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="#" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>
@@ -311,7 +312,7 @@
                         </a>
                       </li>
                     </ul>
-                  </li>
+                  </li> --}}
               </ul>
             </li>
           @endif
