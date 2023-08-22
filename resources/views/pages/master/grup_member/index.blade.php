@@ -8,9 +8,6 @@
 @endif
 
 @section('pathjudul')
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item"><a href="{{route('grup_member.index')}}">Grup Member</a></li>
 @endsection
 
 @section('content')
@@ -21,9 +18,9 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('grup_member.create')}}" class="btn btn-primary btn-responsive float-left">
+                    <a href="{{route('grup_member.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
                     </a> 
                 </div>
@@ -45,10 +42,10 @@
                                     <td>{{ $item->nama_grup }}</td>  
                                     <td>{{ $item->nama_role }}</td>  
                                     <td>                                    
-                                        <a class="btn btn-default bg-info" href="{{route('grup_member.edit',[$item->id])}}">
+                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('grup_member.edit',[$item->id])}}">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>   
-                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus_{{ $item->id }}">
+                                        <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus_{{ $item->id }}">
                                             <i class="fas fa-trash"></i> Hapus
                                         </button>          
                                     </td>

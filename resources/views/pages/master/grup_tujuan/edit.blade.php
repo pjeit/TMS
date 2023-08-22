@@ -32,21 +32,20 @@
     <form action="{{ route('grup_tujuan.update',[$id]) }}" method="POST" >
         @csrf
         @method('PUT')
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                   
-                </div>
+        <div class="card radiusSendiri">
+            <div class="card-header">
+                <a href="{{ route('grup_tujuan.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                <button type="submit" class="btn btn-success radiusSendiri float-right"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
+        </div>
+        <div class="row">
+        
             
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
                         {{-- <button type="button" class="btn btn-sm btn-primary mx-4 my-3" onclick="open_detail('') "><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; DAFTAR TUJUAN & TARIF</b></button> --}}
-                        <button type="button" name="add" id="add" class="btn btn-primary mx-4 my-3"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
+                        <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri my-3"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
                         <input type="hidden" id="deleted_tujuan" name="data[deleted_tujuan]" placeholder="deleted_tujuan">
                         <input type="hidden" id="deleted_biaya" name="data[deleted_biaya]" placeholder="deleted_biaya">
           
