@@ -62,10 +62,9 @@
                                     <a class="btn btn-default bg-info radiusSendiri" href="{{route('coa.edit',[$d->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
-                                            <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
-                                               <i class="fas fa-trash"></i> Hapus
-                                    </button>          
+     
+                                    <a href="{{ route('coa.destroy', $d->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
+
                                     
                                 </td>
                                                    
