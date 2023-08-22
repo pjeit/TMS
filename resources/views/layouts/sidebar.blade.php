@@ -127,7 +127,10 @@
                 request()->is('kas_bank*')||
                 request()->is('role*')||
                 request()->is('users*')||
-                request()->is('pengaturan_keuangan*')
+                request()->is('pengaturan_keuangan*')||
+                 request()->is('head*')||
+                request()->is('pair_kendaraan*')||
+                request()->is('chassis*')
                 ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link" style="font-weight: 700;">
                   <i class="nav-icon fas fa-key"></i>
@@ -136,7 +139,11 @@
                   </p>
                 </a>
               <ul class="nav nav-treeview">
-                <li class="nav-item">
+                <li class="nav-item   {{ request()->is('grup*')||
+                request()->is('grup_member*')||
+                request()->is('customer*')||
+                request()->is('grup_tujuan*')
+                ? 'menu-is-opening menu-open' : '' }}">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p style="font-weight: 500;" >
@@ -186,7 +193,10 @@
                   {{-- {{request()->url() === route('karyawan.index') ? ' active' : '' }}  --}}
                 
 
-                <li class="nav-item">
+                <li class="nav-item {{ request()->is('head*')||
+                              request()->is('pair_kendaraan*')||
+                              request()->is('chassis*')
+                              ? 'menu-is-opening menu-open' : '' }}">
                   <a href="#" class="nav-link">
                     <i class="far nav-icon fa fa-truck"></i>
                     <p style="font-weight: 500;" >
@@ -204,7 +214,7 @@
                       </a>
                     </li>
                     <li class="nav-item">
-                      <a href="{{route('pair_kendaraan.index')}}" style="font-weight: 500;" class="nav-link ">
+                      <a href="{{route('pair_kendaraan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pair_kendaraan*') ? ' active' : '' }}">
                       <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                         <p>
                           Pairing Truck

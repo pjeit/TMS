@@ -23,7 +23,7 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('chassis.create')}}" class="btn btn-primary btn-responsive float-left">
+                    <a href="{{route('chassis.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
                     </a> 
                 </div>

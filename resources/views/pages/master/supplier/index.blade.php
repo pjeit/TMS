@@ -28,6 +28,25 @@
                     </a> 
                 </div>
                 <div class="card-body">
+                    <div class="form-group">
+                            <label>Filter Supplier</label>
+                            <form action="/supplier/jenisFilter/" method="get">
+                            <div class="input-group">
+                                <select class="form-control selectpicker" name="jenisFilter" id="jenisFilter" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
+                                        <option value="">--Pilih Jenis Supplier--</option>
+                                    
+                                    @foreach($dataJenisFilter as $dat)
+                                        <option value="{{$dat->id}}">{{$dat->nama}}</option>
+                                    @endforeach
+                                </select>
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-lg btn-default">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
@@ -35,6 +54,8 @@
                               <th>Alamat</th>
                               <th>Telp</th>
                               <th>Catatan</th>
+                              <th>Jenis Supplier</th>
+                              <th>Lokasi Supplier</th>
                               <th>Aksi</th>
                             </tr>
                           </thead>
@@ -45,12 +66,14 @@
                                 <td>{{ $item->alamat }}</td>  
                                 <td>{{ $item->telp }}</td>  
                                 <td>{{ $item->catatan }}</td>
+                                <td>{{ $item->jenis }}</td>
+                                <td>{{ $item->kota }}</td>
                                 <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('supplier.edit',[$item->id])}}">
+                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('supplier.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
+                                    <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
                                                <i class="fas fa-trash"></i> Hapus
                                     </button>          
                                     

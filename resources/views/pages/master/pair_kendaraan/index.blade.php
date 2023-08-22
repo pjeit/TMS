@@ -21,7 +21,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card radiusSendiri">
                 {{-- <div class="card-header">
                     <a href="{{route('pair_kendaraan.create')}}" class="btn btn-secondary btn-responsive float-left">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
@@ -33,6 +33,8 @@
                             <tr>
                               <th>No Polisi Kendaraan</th>
                               <th>Chassis Kendaraan</th>
+                              <th>Kategori Kendaraan</th>
+                              <th>Letak Kendaraan</th>
                               <th>Aksi</th>
                             </tr>
                           </thead>
@@ -41,8 +43,11 @@
                              <tr>
                                 <td>{{ $item->no_polisi }}</td>
                                 <td>{{ $item->chassis_model }}</td>  
+                                <td>{{ $item->kategoriKendaraan }}</td>  
+                                <td>{{ $item->namaKota }}</td>  
+
                                 <td>                                    
-                                    <a class="btn btn-default bg-info" href="{{route('pair_kendaraan.edit',[$item->id])}}">
+                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('pair_kendaraan.edit',[$item->id])}}">
                                         <i class="far nav-icon fa fa-truck">+</i> Tambah Chassis
                                     </a>   
                                             <!-- Button trigger modal -->
