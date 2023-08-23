@@ -112,7 +112,6 @@
             </div>
         </div>
 
-<<<<<<< HEAD
         <div class="col-6">
             <div class="card radiusSendiri">
                 <div class="card-header">
@@ -156,8 +155,6 @@
                 </div>
             </div>
         </div>
-=======
->>>>>>> df3f1583b5dc4bc6a9e9f78e313b91a908d25cdd
     </div>
 
     </form>
