@@ -19,12 +19,14 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $dataUser = DB::select(DB::raw("SELECT user.id,user.username as 'username',role.nama as 'role',karyawan.nama_panggilan,m_kota.nama as 'kota' 
+        $dataUser = DB::table(DB::raw("(SELECT user.id, user.username as 'username', role.nama as 'role', karyawan.nama_panggilan, m_kota.nama as 'kota'
                                 FROM user
-                                left join karyawan on user.karyawan_id = karyawan.id
-                                left JOIN m_kota on karyawan.m_kota_id = m_kota.id
-                                LEFT JOIN role on user.role_id = role.id
-                                where user.is_aktif = 'Y'  or  user.is_aktif = 'Y' and user.karyawan_id is null"));
+                                LEFT JOIN karyawan ON user.karyawan_id = karyawan.id
+                                LEFT JOIN m_kota ON karyawan.m_kota_id = m_kota.id
+                                LEFT JOIN role ON user.role_id = role.id
+                                WHERE user.is_aktif = 'Y' OR (user.is_aktif = 'Y' AND user.karyawan_id IS NULL)) AS data"))
+                ->select('data.*') // Select all columns from the subquery
+                ->paginate(10);
         //   $dataUser = DB::table('user')
         //     ->select('user.id','role.nama as role','karyawan.nama_panggilan')
         //     // ->select('user.id','user.username','role.nama as role','karyawan.nama_panggilan','m_kota.nama as kota')
@@ -144,7 +146,7 @@ class UsersController extends Controller
 
                 )
             ); 
-            return redirect()->route('users.index')->with('status','Sukses menambahkan user baru!!');
+            return redirect()->route('users.index')->with('status','Sukses Menambahkan User Baru!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -239,7 +241,7 @@ class UsersController extends Controller
 
                 )
             ); 
-            return redirect()->route('users.index')->with('status','Sukses merubah data user!!');
+            return redirect()->route('users.index')->with('status','Sukses Merubah Data User!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -264,7 +266,7 @@ class UsersController extends Controller
                 'updated_by'=> $useras, // masih hardcode nanti diganti cookies
               )
             );
-             return redirect()->route('users.index')->with('status','Sukses Menghapus Data User!');
+             return redirect()->route('users.index')->with('status','Sukses Menghapus Data User!!');
 
         }
         catch (ValidationException $e) {

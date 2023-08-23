@@ -327,7 +327,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
                                     </div>
-                                    <input type="number" class="form-control numaja" id="nomor_kontak_darurat" name="nomor_kontak_darurat"  placeholder="" value="{{old('nomor_kontak_darurat','')}}">
+                                    <input type="text" class="form-control numaja" id="nomor_kontak_darurat" name="nomor_kontak_darurat"  placeholder="" value="{{old('nomor_kontak_darurat','')}}">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -355,9 +355,13 @@
                                 <input id="Kontrak" type="radio" name="status_pegawai" value="Kontrak" {{'Kontrak' == old('status_pegawai','')? 'checked' :'' }} checked>
                                 <label class="form-check-label" for="Kontrak">Kontrak</label>
                             </div>
-                            <div class="icheck-primary d-inline">
+                            <div class="icheck-primary d-inline ml-3">
                                 <input id="Tetap" type="radio" name="status_pegawai" value="Tetap" {{'Tetap'== old('status_pegawai','')? 'checked' :'' }}>
-                                <label class="form-check-label" for="Tetap">Tetap</label><br>
+                                <label class="form-check-label" for="Tetap">Tetap</label>
+                            </div>
+                            <div class="icheck-primary d-inline ml-3">
+                                <input id="Magang" type="radio" name="status_pegawai" value="Magang" {{'Magang' == old('status_pegawai','')? 'checked' :'' }}>
+                                <label class="form-check-label" for="Magang">Magang</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -371,7 +375,7 @@
                         </div>
                      
                         <div class="form-group" id="tglKontrakMulai">
-                            <label for="tanggal_kontrak">Tanggal Mulai Kontrak</label>
+                            <label for="tanggal_kontrak">Tanggal Mulai</label>
                             <div class="input-group mb-0">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -380,7 +384,7 @@
                             </div>
                         </div>
                         <div class="form-group" id="tglKontrakSelesai">
-                            <label for="tanggal_selesai_kontrak">Tanggal Selesai Kontrak</label>
+                            <label for="tanggal_selesai_kontrak">Tanggal Selesai</label>
                             <div class="input-group mb-0">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -667,18 +671,37 @@
         var tampungahJenis = pisahIDJenisSamaNama.split("-");
         if($('#jenis').val()==''){toastr.error('Jenis identitas harus diisi');return;}
         if($('#nomor').val()==''){toastr.error('Nomor identitas harus diisi');return;}
+
+        
+        
         var exist=$('#table_identitas tbody').find('#'+key).attr('id');
         if(typeof exist === 'undefined') {
           
             var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="identitas_id_'+key+'" hidden>'+$('#identitas_id').val()+'</td><td id="jenis_id_'+key+'" hidden>'+tampungahJenis[0]+'</td><td id="jenis_'+key+'">'+tampungahJenis[1]+'</td><td id="nomor_'+key+'">'+$('#nomor').val()+'</td><td id="catatan_'+key+'">'+$('#catatan').val()+'</td></tr>';
+            // pengecekan sebelum ditambah
+            var existingRow = $('#table_identitas tbody').find('td[id^="jenis_id_"]').filter(function() {
+                return $(this).text().trim() === tampungahJenis[0];
+            }).closest('tr');
+
+            // console.log($('#table_identitas tbody').find('td[id^="jenis_id_"]').text());
             
+            if (existingRow.length > 0 ) {
+                toastr.error('Identitas Sudah Ditambahkan');
+                // $("#jenis").val('').selectpicker('refresh');
+
+                return;
+            }
             $('#table_identitas > tbody:last-child').append(new_row);
+            // $("#jenis").val('').selectpicker('refresh');
+
         }else{
             $('#jenis_id_'+key).text(tampungahJenis[0]);
             $('#jenis_'+key).text(tampungahJenis[1]);
             $('#nomor_'+key).text($('#nomor').val());
             $('#catatan_'+key).text($('#catatan').val());
             $('#identitas_id_'+key).text($('#identitas_id').val());
+            // $("#jenis").val('').selectpicker('refresh');
+
         }
         $('#identitas_dialog').modal('hide');
     }
@@ -724,10 +747,23 @@
         var key=$('#key').val();
         if($('#nama_komponen').val()==''){toastr.error('Komponen harus diisi');return;}
         if($('#nominal').val()==''){toastr.error('Nominal harus diisi');return;}
+       
         var exist=$('#table_komponen tbody').find('#komponen_'+key).attr('id');
         if(typeof exist === 'undefined') {
             var new_row='<tr id="komponen_'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_komponen('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_komponen('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="komponen_id_'+key+'" hidden>'+$('#komponen_id').val()+'</td><td id="is_aktif_'+key+'" hidden>Y</td><td id="nama_'+key+'">'+$('#nama_komponen').val()+'</td><td id="nominal_'+key+'">'+$('#nominal').val()+'</td></tr>';
+             var komponenName = $('#nama_komponen').val();
+            // pengecekan data udah ada atau belom
+            var dataKomponen = $('#table_komponen tbody').find('td[id^="nama_"]').filter(function() {
+                return $(this).text().trim() === komponenName;
+            }).closest('tr');
+
+            // console.log($('#table_komponen tbody').find('td[id^="nama_"]').text());
             
+            if (dataKomponen.length > 0 ) {
+                toastr.error('Komponen Sudah Ditambahkan');
+                $('#nama_komponen').val('');
+                return;
+            }
             $('#table_komponen > tbody:last-child').append(new_row);
         }else{
             $('#nama_'+key).text($('#nama_komponen').val());
@@ -735,6 +771,8 @@
             $('#komponen_id_'+key).text($('#komponen_id').val());
             $('#is_aktif_'+key).text('Y');
         }
+
+      
         $('#komponen_dialog').modal('hide');
         hitung_gaji();
     }
@@ -1100,6 +1138,11 @@
      });
 
      $('#Kontrak').click(function() {
+      if ($(this).prop('checked')) {
+        $('#tglKontrakMulai, #tglKontrakSelesai').show();
+      }
+     });
+     $('#Magang').click(function() {
       if ($(this).prop('checked')) {
         $('#tglKontrakMulai, #tglKontrakSelesai').show();
       }

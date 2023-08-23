@@ -30,7 +30,7 @@ class KaryawanController extends Controller
             ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
             ->where('karyawan.is_aktif', '=', "Y")
             ->where('karyawan.is_keluar', '=', "N")
-            ->get();
+            ->paginate(10);
 
             return view('pages.master.karyawan.indexx',[
             'judul'=>"Karyawan",
@@ -213,7 +213,6 @@ class KaryawanController extends Controller
             $tanggal_selesai_kontrak = date_create_from_format('d-M-Y', $data['tanggal_selesai_kontrak']);
             $tanggal_keluar = date_create_from_format('d-M-Y', $data['tanggal_keluar']);
             $telp1= $data['telp1'];
-            $telp2 = $data['telp2'];
              // misal 085102935062, jadi yang diambil cuman index 0
             if (substr($telp1, 0, 1) == "0" && $telp1!=null) {
                 //terus di ubah jadi +62 . 85102935062 = +6285102935062 
@@ -221,6 +220,7 @@ class KaryawanController extends Controller
             } else if (substr($telp1, 0, 2) == "62"&& $telp1!=null) {
                 $telp1 = (string) "+" . $telp1;
             }
+            $telp2 = $data['telp2'];
 
             // misal 085102935062, jadi yang diambil cuman index 0
             if (substr($telp2, 0, 1) == "0"&& $telp2!=null) {
@@ -229,48 +229,57 @@ class KaryawanController extends Controller
             } else if (substr($telp2, 0, 2) == "62"&& $telp2!=null) {
                 $telp2 = (string) "+" . $telp2;
             }
+            $telpDarurat = $data['nomor_kontak_darurat'];
+
+            // misal 085102935062, jadi yang diambil cuman index 0
+            if (substr($telpDarurat, 0, 1) == "0"&& $telpDarurat!=null) {
+                //terus di ubah jadi +62 . 85102935062 = +6285102935062 
+                $telpDarurat = (string) "+62" . substr($telpDarurat, 1);
+            } else if (substr($telpDarurat, 0, 2) == "62"&& $telpDarurat!=null) {
+                $telpDarurat = (string) "+" . $telpDarurat;
+            }
             $idKaryawan=DB::table('karyawan')
                 ->insertGetId(array(
                     // data pribadi
                     'foto' => ($request->hasFile('foto'))?$path:null,
                     'nik' => $newNik,
-                    'nama_panggilan' => $data['nama_panggilan'],
-                    'nama_lengkap' => $data['nama_lengkap'],
+                    'nama_panggilan' => strtoupper($data['nama_panggilan']),
+                    'nama_lengkap' => strtoupper($data['nama_lengkap']),
                     'jenis_kelamin' => $data['jenis_kelamin'],
                     'status_menikah'=>$data['status_menikah'],
-                    'jumlah_anak'=>$data['jumlah_anak'],
-                    'tempat_lahir'=>$data['tempat_lahir'],
+                    'jumlah_anak'=>$data['jumlah_anak']?$data['jumlah_anak']:0,
+                    'tempat_lahir'=>strtoupper($data['tempat_lahir']),
                     'tanggal_lahir'=>date_format($tanggal_lahir, 'Y-m-d'),
                     'agama'=>$data['agama'],
                     // end data pribadi
 
                     // data Alamat & Kontak
-                    'alamat_domisili'=>$data['alamat_sekarang'],
-                    'kota_domisili'=>$data['kota_sekarang'],
-                    'alamat_ktp'=>$data['alamat_ktp'],
-                    'kota_ktp'=>$data['kota_ktp'],
+                    'alamat_domisili'=>strtoupper($data['alamat_sekarang']),
+                    'kota_domisili'=>strtoupper($data['kota_sekarang']),
+                    'alamat_ktp'=>strtoupper($data['alamat_ktp']),
+                    'kota_ktp'=>strtoupper($data['kota_ktp']),
                     'telp1'=>$telp1,
                     'telp2'=>$telp2?$telp2:null,
                     'email'=>$data['email'],
                     'ptkp_id'=>$data['ptkp'],
                     'norek'=>$data['no_rekening'],
-                    'rek_nama'=>$data['atas_nama'],
-                    'bank'=>$data['nama_bank'],
-                    'cabang_bank'=>$data['cabang_bank'],
+                    'rek_nama'=>strtoupper($data['atas_nama']),
+                    'bank'=>strtoupper($data['nama_bank']),
+                    'cabang_bank'=>strtoupper($data['cabang_bank']),
                     // end data Alamat & Kontak
 
                     // data Kontak Darurat
-                    'nama_kontak_darurat'=>$data['nama_kontak_darurat'],
-                    'hubungan_kontak_darurat'=>$data['hubungan_kontak_darurat'],
-                    'nomor_kontak_darurat'=>$data['nomor_kontak_darurat'],
-                    'alamat_kontak_darurat'=>$data['alamat_kontak_darurat'],
+                    'nama_kontak_darurat'=>strtoupper($data['nama_kontak_darurat']),
+                    'hubungan_kontak_darurat'=>strtoupper($data['hubungan_kontak_darurat']),
+                    'nomor_kontak_darurat'=>$telpDarurat,
+                    'alamat_kontak_darurat'=>strtoupper($data['alamat_kontak_darurat']),
                     // end data Kontak Darurat
 
                      // data status Karyawan
                     'status_pegawai'=>$data['status_pegawai'],
                     'tgl_gabung'=>date_format($tanggal_gabung, 'Y-m-d'),
-                    'tgl_mulai_kontrak'=>($data['status_pegawai'] == 'Kontrak')?date_format($tanggal_kontrak, 'Y-m-d'):null,
-                    'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
+                    'tgl_mulai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_kontrak, 'Y-m-d'):null,
+                    'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
                     'posisi_id'=>$data['posisi'], // ini itu idrole
                     'm_kota_id'=>$data['cabang_kantor'],
                     'saldo_cuti'=>$data['sisa_cuti'],
@@ -313,7 +322,7 @@ class KaryawanController extends Controller
                    DB::table('karyawan_komponen')
                         ->insert(array(
                         'karyawan_id'=>$idKaryawan,
-                        'nama' => $item['nama'] ,
+                        'nama' => strtoupper($item['nama']) ,
                         'nominal' => str_replace(',', '',$item['nominal']),
                         'created_at'=>VariableHelper::TanggalFormat(), 
                         'created_by'=> $user,
@@ -525,49 +534,64 @@ class KaryawanController extends Controller
             } else if (substr($telp2, 0, 2) == "62") {
                 $telp2 = (string) "+" . $telp2;
             }
+
+            $telpDarurat = $data['nomor_kontak_darurat'];
+
+            // misal 085102935062, jadi yang diambil cuman index 0
+            if (substr($telpDarurat, 0, 1) == "0"&& $telpDarurat!=null) {
+                //terus di ubah jadi +62 . 85102935062 = +6285102935062 
+                $telpDarurat = (string) "+62" . substr($telpDarurat, 1);
+            } else if (substr($telpDarurat, 0, 2) == "62"&& $telpDarurat!=null) {
+                $telpDarurat = (string) "+" . $telpDarurat;
+            }
+            else
+            {
+                $telpDarurat = (string) "+62" . $telpDarurat;
+
+            }
             DB::table('karyawan')
             ->where('id', $karyawan['id'])
                 ->update(array(
                     // data pribadi
                     'foto' => ($request->hasFile('foto'))?$path:$fotoPathDariDB ,
                     'nik' => $data['nik'],
-                    'nama_panggilan' => $data['nama_panggilan'],
-                    'nama_lengkap' => $data['nama_lengkap'],
+                    'nama_panggilan' => strtoupper($data['nama_panggilan']) ,
+                    'nama_lengkap' => strtoupper($data['nama_lengkap']),
                     'jenis_kelamin' => $data['jenis_kelamin'],
                     'status_menikah'=>$data['status_menikah'],
-                    'jumlah_anak'=>$data['jumlah_anak'],
-                    'tempat_lahir'=>$data['tempat_lahir'],
+                    'jumlah_anak'=>$data['jumlah_anak']?$data['jumlah_anak']:0,
+                    'tempat_lahir'=>strtoupper($data['tempat_lahir']),
                     'tanggal_lahir'=>date_format($tanggal_lahir, 'Y-m-d'),
                     'agama'=>$data['agama'],
                     // end data pribadi
 
                     // data Alamat & Kontak
-                    'alamat_domisili'=>$data['alamat_sekarang'],
-                    'kota_domisili'=>$data['kota_sekarang'],
-                    'alamat_ktp'=>$data['alamat_ktp'],
-                    'kota_ktp'=>$data['kota_ktp'],
+                    'alamat_domisili'=>strtoupper($data['alamat_sekarang']),
+                    'kota_domisili'=>strtoupper($data['kota_sekarang']),
+                    'alamat_ktp'=>strtoupper($data['alamat_ktp']),
+                    'kota_ktp'=>strtoupper($data['kota_ktp']),
                     'telp1'=>$telp1,
                     'telp2'=>$telp2,
                     'email'=>$data['email'],
                     'ptkp_id'=>$data['ptkp'],
                     'norek'=>$data['no_rekening'],
-                    'rek_nama'=>$data['atas_nama'],
-                    'bank'=>$data['nama_bank'],
-                    'cabang_bank'=>$data['cabang_bank'],
+                    'rek_nama'=>strtoupper($data['atas_nama']),
+                    'bank'=>strtoupper($data['nama_bank']),
+                    'cabang_bank'=>strtoupper($data['cabang_bank']),
                     // end data Alamat & Kontak
 
                     // data Kontak Darurat
-                    'nama_kontak_darurat'=>$data['nama_kontak_darurat'],
-                    'hubungan_kontak_darurat'=>$data['hubungan_kontak_darurat'],
-                    'nomor_kontak_darurat'=>$data['nomor_kontak_darurat'],
-                    'alamat_kontak_darurat'=>$data['alamat_kontak_darurat'],
+                    'nama_kontak_darurat'=>strtoupper($data['nama_kontak_darurat']),
+                    'hubungan_kontak_darurat'=>strtoupper($data['hubungan_kontak_darurat']),
+                    'nomor_kontak_darurat'=>$telpDarurat,
+                    'alamat_kontak_darurat'=>strtoupper($data['alamat_kontak_darurat']),
                     // end data Kontak Darurat
 
                      // data status Karyawan
                     'status_pegawai'=>$data['status_pegawai'],
                     'tgl_gabung'=>date_format($tanggal_gabung, 'Y-m-d'),
-                    'tgl_mulai_kontrak'=>($data['status_pegawai'] == 'Kontrak')?date_format($tanggal_kontrak, 'Y-m-d'):null,
-                    'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
+                    'tgl_mulai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_kontrak, 'Y-m-d'):null,
+                    'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
                     'posisi_id'=>$data['posisi'], // ini itu idrole
                     'm_kota_id'=>$data['cabang_kantor'],
                     'saldo_cuti'=>$data['sisa_cuti'],
@@ -576,14 +600,15 @@ class KaryawanController extends Controller
                     'is_keluar'=>($data['is_keluar'] == 'Y')?'Y':'N',
                     'tgl_keluar'=>($data['is_keluar'] == 'Y')?date_format($tanggal_keluar, 'Y-m-d'):null,
                     // end data status Karyawan
-                    'created_at'=>VariableHelper::TanggalFormat(), 
-                    'created_by'=> $user,
+                    // 'created_at'=>VariableHelper::TanggalFormat(), 
+                    // 'created_by'=> $user,
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
                     'is_aktif' => "Y",
                 )
             ); 
             
+            // var_dump($data['nomor_kontak_darurat']); die;
           
             // buat ? data diri
             if (isset($data['identitas'])) {
@@ -662,7 +687,7 @@ class KaryawanController extends Controller
                                 ->where('karyawan_id', $karyawan['id'])
                                 ->where('id', $value['komponen_id'])
                                     ->update(array(
-                                    'nama' => $value['nama'] ,
+                                    'nama' => strtoupper($value['nama']) ,
                                     'nominal' => str_replace(',', '',$value['nominal']),
                                     'updated_at'=> VariableHelper::TanggalFormat(),
                                     'is_aktif' => $value['is_aktif'],
@@ -674,7 +699,7 @@ class KaryawanController extends Controller
                         DB::table('karyawan_komponen')
                                 ->insert(array(
                                 'karyawan_id'=>$karyawan['id'],
-                                'nama' => $value['nama'] ,
+                                'nama' =>strtoupper($value['nama'])  ,
                                 'nominal' => str_replace(',', '',$value['nominal']),
                                 'created_by'=> $user,
                                 'created_at'=> now(), 

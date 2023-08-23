@@ -55,7 +55,7 @@
                              <tr>
                                 <td>{{$d->nama_jenis}}</td>
                                 <td>{{$d->no_akun}}</td>  
-                                <td>{{$d->tipe}}</td>  
+                                <td>{{strtoupper($d->tipe) }}</td>  
                                 <td>{{$d->catatan}}</td>  
                       
                                 <td>                                    
@@ -99,6 +99,8 @@
                         </tbody>
                       
                     </table>
+                {{ $dataCOA->links('pagination::bootstrap-4') }}
+
                 </div>
                 <!-- /.card-body -->
             </div>

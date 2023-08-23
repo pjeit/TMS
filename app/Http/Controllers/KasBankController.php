@@ -22,7 +22,7 @@ class KasBankController extends Controller
          $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
-            ->paginate(5);
+            ->paginate(10);
 
             return view('pages.master.kas_bank.index',[
             'judul'=>"Kas Bank",
@@ -131,15 +131,15 @@ class KasBankController extends Controller
 
             DB::table('kas_bank')
                 ->insert(array(
-                    'nama' => $data['nama'],
-                    'no_akun' => $data['no_akun']==null ? null : $data['no_akun'],
-                    'tipe' => $data['tipe']==1?'Kas':'Bank',
+                    'nama' => strtoupper($data['nama']),
+                    'no_akun' => $data['no_akun']==null ? null :strtoupper($data['no_akun']) ,
+                    'tipe' => $data['tipe']==1?'KAS':'BANK',
                     'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
                     'tgl_saldo' => $data['tgl_saldo']==null ? null : date_format($tgl_saldo, 'Y-m-d'),
-                    'no_rek' => $data['no_rek']==null ? null : $data['no_rek'],
-                    'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
-                    'bank' => $data['bank']==null ? null : $data['bank'],
-                    'cabang' => $data['cabang']==null ? null : $data['cabang'],
+                    'no_rek' => $data['no_rek']==null ? null : strtoupper($data['no_rek']),
+                    'rek_nama' => $data['rek_nama']==null ? null :strtoupper($data['rek_nama']) ,
+                    'bank' => $data['bank']==null ? null : strtoupper($data['bank']),
+                    'cabang' => $data['cabang']==null ? null :strtoupper($data['cabang']) ,
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $user,
                     'updated_at'=> VariableHelper::TanggalFormat(),
@@ -148,7 +148,7 @@ class KasBankController extends Controller
 
                 )
             ); 
-            return redirect()->route('kas_bank.index')->with('status','Success!!');
+            return redirect()->route('kas_bank.index')->with('status','Sukses menambahkan Kas Bank Baru!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -239,22 +239,22 @@ class KasBankController extends Controller
             DB::table('kas_bank')
             ->where('id', $KasBank['id'])
             ->update(array(
-                   'nama' => $data['nama'],
-                    'no_akun' => $data['no_akun']==null ? null : $data['no_akun'],
-                    'tipe' => $data['tipe']==1?'Kas':'Bank',
+                   'nama' => strtoupper($data['nama']),
+                    'no_akun' => $data['no_akun']==null ? null :strtoupper($data['no_akun']) ,
+                    'tipe' => $data['tipe']==1?'KAS':'BANK',
                     'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
                     'tgl_saldo' => $data['tgl_saldo']==null ? null : date_format($tgl_saldo, 'Y-m-d'),
-                    'no_rek' => $data['no_rek']==null ? null : $data['no_rek'],
-                    'rek_nama' => $data['rek_nama']==null ? null : $data['rek_nama'],
-                    'bank' => $data['bank']==null ? null : $data['bank'],
-                    'cabang' => $data['cabang']==null ? null : $data['cabang'],
+                    'no_rek' => $data['no_rek']==null ? null : strtoupper($data['no_rek']),
+                    'rek_nama' => $data['rek_nama']==null ? null :strtoupper($data['rek_nama']) ,
+                    'bank' => $data['bank']==null ? null : strtoupper($data['bank']),
+                    'cabang' => $data['cabang']==null ? null :strtoupper($data['cabang']) ,
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
                     'is_aktif' => "Y",
                 )
             );
         
-            return redirect()->route('kas_bank.index')->with('status','Sukses mengupdate data kas!');
+            return redirect()->route('kas_bank.index')->with('status','Sukses Mengubah Data Kas Bank!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -280,7 +280,7 @@ class KasBankController extends Controller
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
               )
             );
-             return redirect()->route('kas_bank.index')->with('status','Sukses Menghapus Data Kas!');
+             return redirect()->route('kas_bank.index')->with('status','Sukses Menghapus Data Kas Bank!!');
 
         }
         catch (ValidationException $e) {
