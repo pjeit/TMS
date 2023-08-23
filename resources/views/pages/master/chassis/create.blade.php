@@ -32,17 +32,13 @@
     <form data-action="{{ route('chassis.store') }}" method="POST" enctype="multipart/form-data" id="chassis_save">
     
     @csrf
-    <div class="card radiusSendiri">
-        <div class="card-header">
-            <a href="{{ route('chassis.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-            <button type="submit" class="btn btn-success radiusSendiri float-right"><i class="fa fa-fw fa-save"></i> Simpan</button>
-        </div>
-    </div>
+ 
     <div class="row">
         <div class="col-lg-6 col-md-6 col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <h5 class="card-title">Data</h5>
+                    <a href="{{ route('chassis.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                    <button type="submit" class="btn btn-success radiusSendiri float-right"><i class="fa fa-fw fa-save"></i> Simpan</button>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
@@ -153,15 +149,7 @@
                         <label for="nomor">Nomor<span style='color:red'>*</span></label>
                         <input type="text" name="nomor" class="form-control" id="nomor" placeholder=""> 
                     </div>
-                    {{-- <div class="form-group">
-                        <label for="berlaku_hingga">Berlaku hingga</label>
-                        <div class="input-group mb-3">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                          </div>
-                          <input type="text" name="berlaku_hingga" autocomplete="off" class="date form-control" id="berlaku_hingga" placeholder="dd/mm/yyyy"> 
-                        </div>
-                    </div> --}}
+                 
                     <div class="form-group">
                         <label for="">Berlaku hingga</label>
                         <input type="text" class="form-control" id="berlaku_hinggaDisplay" >

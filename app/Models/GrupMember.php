@@ -16,6 +16,9 @@ class GrupMember extends Model
         'role_id',
         'nama',
         'no_rek',
+        'atas_nama',
+        'bank',
+        'cabang',
         'telp1',
         'telp2',
         
