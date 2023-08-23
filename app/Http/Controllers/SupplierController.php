@@ -25,7 +25,7 @@ class SupplierController extends Controller
             ->join('m_kota', 'supplier.kota_id', '=', 'm_kota.id')
             ->where('supplier.is_aktif', '=', "Y")
             ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
-            ->get();
+            ->paginate(10);
         $dataJenisFilter = DB::table('jenis_supplier')
             ->select('*')
             ->where('jenis_supplier.is_aktif', '=', "Y")
@@ -52,7 +52,8 @@ class SupplierController extends Controller
             ->join('m_kota', 'supplier.kota_id', '=', 'm_kota.id')
             ->where('supplier.is_aktif', '=', "Y")
             ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
-            ->get();
+            ->paginate(10);
+
 
         }
         else
@@ -65,7 +66,8 @@ class SupplierController extends Controller
             ->where('supplier.is_aktif', '=', "Y")
             ->where('jenis_supplier.id', '=',  $jenisFilter )
             ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
-            ->get();
+            ->paginate(10);
+
         }
 
        
@@ -147,7 +149,7 @@ class SupplierController extends Controller
             $supplier->is_aktif = "Y";
             $supplier->save();
 
-            return redirect()->route('supplier.index')->with('status','Success!!');
+            return redirect()->route('supplier.index')->with('status','Sukses Menambahkan Supplier Baru!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -234,7 +236,7 @@ class SupplierController extends Controller
                     'is_aktif' => "Y",
                 )
             );
-            return redirect()->route('supplier.index')->with('status','Success!!');
+            return redirect()->route('supplier.index')->with('status','Sukses Merubah Data Supplier!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -257,6 +259,6 @@ class SupplierController extends Controller
             'updated_by'=> $user, // masih hardcode nanti diganti cookies
           )
         );
-        return redirect()->route('supplier.index')->with('status','Berhasil menghapus data!');
+        return redirect()->route('supplier.index')->with('status','Sukses Menghapus Data Supplier!');
     }
 }

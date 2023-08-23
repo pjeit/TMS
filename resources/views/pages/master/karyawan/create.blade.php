@@ -751,7 +751,7 @@
         var exist=$('#table_komponen tbody').find('#komponen_'+key).attr('id');
         if(typeof exist === 'undefined') {
             var new_row='<tr id="komponen_'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_komponen('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_komponen('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="komponen_id_'+key+'" hidden>'+$('#komponen_id').val()+'</td><td id="is_aktif_'+key+'" hidden>Y</td><td id="nama_'+key+'">'+$('#nama_komponen').val()+'</td><td id="nominal_'+key+'">'+$('#nominal').val()+'</td></tr>';
-             var komponenName = $('#nama_komponen').val();
+            var komponenName = $('#nama_komponen').val();
             // pengecekan data udah ada atau belom
             var dataKomponen = $('#table_komponen tbody').find('td[id^="nama_"]').filter(function() {
                 return $(this).text().trim() === komponenName;

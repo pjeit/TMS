@@ -116,7 +116,7 @@
     
                         <div class="form-group col-4">
                             <label for="">Catatan</label>
-                            <input required type="text" name="catatan" class="form-control" value="{{ $data->catatan }}" >                         
+                            <input type="text" name="catatan" class="form-control" value="{{ $data->catatan }}" >                         
                         </div>
                              
                         <div class="form-group col-4">
@@ -198,10 +198,14 @@ $(document).ready(function(){
    $('#cekPPH').click(function(){
             if($(this).is(":checked")){
                 $('#pph').attr('readonly',false);
-             
+                
+                $('#pph').val('');
+
+                
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
-                // $('#pph').val(2.0);
+                $('#pph').val(0);
+
                 $('#pph').attr('readonly',true);
                 // console.log("Checkbox is unchecked.");
             }

@@ -92,7 +92,7 @@
                                 <span class="input-group-text" id="basic-addon1">+62</i>
                                 </span>
                                 </div>
-                                <input type="text" class="form-control" name="telp"  value="{{old('telp','')}}" >
+                                <input type="text" class="form-control numaja" name="telp"  value="{{old('telp','')}}" >
                             </div>
                         </div>
     
@@ -117,7 +117,7 @@
                         </div>
                         <div class="form-group col-4">
                             <label for="">Catatan</label>
-                            <input required type="text" name="catatan" class="form-control" value="{{old('catatan','')}}" >                         
+                            <input type="text" name="catatan" class="form-control" value="{{old('catatan','')}}" >                         
                         </div>
 
                         <div class="form-group col-4">
@@ -126,7 +126,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><input type="checkbox" id="cekPPH" name="cekPPH"></span>
                                 </div>
-                                <input type="number" step=".01" name="pph" class="form-control" id="pph" value="2" min="0" readonly>
+                                <input type="number" step=".01" name="pph" class="form-control" id="pph" value="0" min="0" readonly>
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">%</span>
                                 </div>
@@ -181,10 +181,11 @@ $(document).ready(function(){
    $('#cekPPH').click(function(){
             if($(this).is(":checked")){
                 $('#pph').attr('readonly',false);
-             
+                $('#pph').val('');
+                
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
-                $('#pph').val(2.0);
+                $('#pph').val(0);
                 $('#pph').attr('readonly',true);
                 // console.log("Checkbox is unchecked.");
             }
