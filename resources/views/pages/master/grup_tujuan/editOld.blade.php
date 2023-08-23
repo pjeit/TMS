@@ -366,6 +366,7 @@ $(document).ready(function(){
         $('.select2').select2();
     });
 
+          
     $("#add_biaya").click(function(){
         var get_id_biaya = $(`#id_tujuan_${i}`).val();     
         var idBiaya = $('#key').val();
@@ -488,6 +489,8 @@ $(document).ready(function(){
         
 
     });
+
+  
 
     // open detail
     $(document).on('click', '.detail', function(){  
@@ -634,196 +637,264 @@ $(document).ready(function(){
         $('#modal_detail').modal('show');
     });
     
-    $(document).on('click', '.save_detail', function(event){
+    $(document).on('click', '.save_detail', function(){
         var key=$('#key').val().trim();
-        var namTuj = $('#nama_tujuan').val();
-        var mrkId = $('#marketing').val();
-        // console.log('namTuj '+namTuj+' mrkId '+mrkId);
-        if(namTuj == '' || mrkId  == '' || mrkId == null){
-            event.preventDefault(); // Prevent form submission
-            Swal.fire({
-                icon: 'error',
-                text: 'Marketing dan Nama Tujuan wajib diisi!',
-            })
-            return false;
-        }else{
-            // simpan ke bawah
-            if(key != ''){
-                var key=$('#key').val().trim();
-                var selJns = $("input[name='select_jenis_tujuan']:checked").val();
-                if(selJns == 'FTL'){
-                    var cekTarif = $('#tarif').val();
-                    console.log("Tarif value:", cekTarif);
-                    if(cekTarif == '' || cekTarif == null){
-                        event.preventDefault(); // Prevent form submission
-                        Swal.fire({
-                            icon: 'error',
-                            text: 'Tarif wajib diisi!',
-                        })
-                        return false;
-                    }
-                }else{
-                    var cekHrg = $('#harga_per_kg').val();
-                    var cekMinMtn = $('#min_muatan').val();
-                    if(cekHrg == '' || cekHrg == null || cekMinMtn == '' || cekMinMtn == null){
-                        event.preventDefault(); // Prevent form submission
-                        Swal.fire({
-                            icon: 'error',
-                            text: 'Harga/KG dan minimun muatan wajib diisi!',
-                        })
-                        return false;
-                    }
-                }
 
-                // simpan ke tampilan depan
-                $('#tarif_'+key).val($('#tarif').val());
-                $('#nama_tujuan_'+key).val($('#nama_tujuan').val());
-                $('#uang_jalan_'+key).val(parseFloat($('#uang_jalan').val()));
-                $('#komisi_'+key).val($('#komisi').val());
-                $('#catatan_'+key).val($('#catatan').val());
-                $('#alamat_hidden_'+key).val($('#alamat').val());
-                $('#jenis_tujuan_'+key).val(selJns);
-                $('#harga_per_kg_hidden_'+key).val($('#harga_per_kg').val());
-                $('#min_muatan_hidden_'+key).val($('#min_muatan').val());
-                $('#grup_hidden_'+key).val($('#grup').val());
-                $('#marketing_hidden_'+key).val($('#marketing').val());
-                $('#deleted_biaya').val($('#deleted_biaya_temp').val());
+        // simpan ke bawah
+        if(key != ''){
+            var key=$('#key').val().trim();
+            // simpan ke tampilan depan
+            $('#tarif_'+key).val($('#tarif').val());
+            $('#nama_tujuan_'+key).val($('#nama_tujuan').val());
+            $('#uang_jalan_'+key).val(parseFloat($('#uang_jalan').val()));
+            $('#komisi_'+key).val($('#komisi').val());
+            $('#catatan_'+key).val($('#catatan').val());
+            $('#alamat_hidden_'+key).val($('#alamat').val());
 
-                // cek apakah ada detail biaya didalam modal
-                var myjson;
-                var array_detail_biaya = [];
-                let cekBiaya = $('#tabel_biaya > tbody > tr');
-                var total_biaya = 0;
-                if (cekBiaya.length > 0) {
-                    // kalau ada, datanya ditampilkan ke dalam tabel biaya
-                    $('#tabel_biaya > tbody > tr').each(function(idx) {
-                        var id=$(this).attr('id').replace("row_biaya", "");
-                        if(typeof id !== 'undefined') {
-                            let biayaId = $('#biaya_id' + id).val() ?? '';
-                            myjson='{"id":'+JSON.stringify(biayaId)+',"biaya":'+JSON.stringify($('#biaya'+id).val())+', "deskripsi":'+JSON.stringify($('#deskripsi'+id).val())+', "catatan":'+JSON.stringify($('#catatan_biaya'+id).val())+'}';
-                            var obj=JSON.parse(myjson);
-    
-                            array_detail_biaya.push(obj);
-    
-                            //logic itung uang
-                            total_biaya += parseFloat($('#biaya' + id).val().replace(/,/g, "")) || 0;
-                        }
-    
-                        // ini buat di simpan (hidden), nanti dikirim waktu post
-                        // $('#obj_biaya'+key).val('');
-                        $('#obj_biaya'+key).val(JSON.stringify(array_detail_biaya));
-                    });
-                    // ini ngitung semua uangnya
-                    $('#uang_jalan_'+key).val(total_biaya.toLocaleString());
-                } else {
-                    // kalau ga, delete semua
-                    $('#uang_jalan_'+key).val(0);
-                    $('#obj_biaya'+key).val('');
-                }
-            }else{
-                i++;
-                var selectedValue = $("input[name='select_jenis_tujuan']:checked").val();
-                // cek apakah ada isinya apa tidak
-                if($('#uang_jalan').val() == ''){
-                    // kalau ga, di deklarasikan 0
-                    var uang_jalan = 0;
-                }else{
-                    // kalo ada ambil data sekarang
-                    var uang_jalan = parseFloat($('#uang_jalan').val());
-                }
-    
-                var myjson;
-                var array_detail_biaya = [];
+            var selJns = $("input[name='select_jenis_tujuan']:checked").val();
 
-                var selJns = $("input[name='select_jenis_tujuan']:checked").val();
-                if(selJns == 'FTL'){
-                    var cekTarif = $('#tarif').val();
-                    console.log("Tarif value:", cekTarif);
-                    if(cekTarif == '' || cekTarif == null){
-                        event.preventDefault(); // Prevent form submission
-                        Swal.fire({
-                            icon: 'error',
-                            text: 'Tarif wajib diisi!',
-                        })
-                        return false;
+            $('#jenis_tujuan_'+key).val(selJns);
+            $('#harga_per_kg_hidden_'+key).val($('#harga_per_kg').val());
+            $('#min_muatan_hidden_'+key).val($('#min_muatan').val());
+            $('#grup_hidden_'+key).val($('#grup').val());
+            $('#marketing_hidden_'+key).val($('#marketing').val());
+
+            $('#deleted_biaya').val($('#deleted_biaya_temp').val());
+
+            // cek apakah ada detail biaya didalam modal
+            var myjson;
+            var array_detail_biaya = [];
+            let cekBiaya = $('#tabel_biaya > tbody > tr');
+            var total_biaya = 0;
+            if (cekBiaya.length > 0) {
+                // kalau ada, datanya ditampilkan ke dalam tabel biaya
+                $('#tabel_biaya > tbody > tr').each(function(idx) {
+                    var id=$(this).attr('id').replace("row_biaya", "");
+                    if(typeof id !== 'undefined') {
+                        let biayaId = $('#biaya_id' + id).val() ?? '';
+                        myjson='{"id":'+JSON.stringify(biayaId)+',"biaya":'+JSON.stringify($('#biaya'+id).val())+', "deskripsi":'+JSON.stringify($('#deskripsi'+id).val())+', "catatan":'+JSON.stringify($('#catatan_biaya'+id).val())+'}';
+                        var obj=JSON.parse(myjson);
+
+                        array_detail_biaya.push(obj);
+
+                        //logic itung uang
+                        total_biaya += parseFloat($('#biaya' + id).val().replace(/,/g, "")) || 0;
                     }
-                }else{
-                    var cekHrg = $('#harga_per_kg').val();
-                    var cekMinMtn = $('#min_muatan').val();
-                    if(cekHrg == '' || cekHrg == null || cekMinMtn == '' || cekMinMtn == null){
-                        event.preventDefault(); // Prevent form submission
-                        Swal.fire({
-                            icon: 'error',
-                            text: 'Harga/KG dan minimun muatan wajib diisi!',
-                        })
-                        return false;
-                    }
-                }
-                
-                // cek apakah ada detail biaya didalam modal
-                let cekBiaya = $('#tabel_biaya > tbody > tr');
-                var total_biaya = 0;
-                if (cekBiaya.length > 0) {
-                    // kalau ada, datanya ditampilkan ke dalam tabel biaya
-                    $('#tabel_biaya > tbody > tr').each(function(idx) {
-                        var id=$(this).attr('id').replace("row_biaya", "");
-                        if(typeof id !== 'undefined') {
-                            let biayaId = $('#biaya_id' + id).val() ?? '';
-                            myjson='{"id":'+JSON.stringify(biayaId)+',"biaya":'+JSON.stringify($('#biaya'+id).val())+', "deskripsi":'+JSON.stringify($('#deskripsi'+id).val())+', "catatan":'+JSON.stringify($('#catatan_biaya'+id).val())+'}';
-                            var obj=JSON.parse(myjson);
-                            array_detail_biaya.push(obj);
-                            //logic itung uang
-                            total_biaya += parseFloat($('#biaya' + id).val().replace(/,/g, "")) || 0;
-                        }
-                    });
-                } else {
-                    // kalau ga, delete semua
-                    $('#obj_biaya').val('');
-                }
-    
-                var newRow = `
-                    <tr id="row${i}">
-                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                            <input value="${$('#nama_tujuan').val()}" name="data[tujuan][${i}][nama_tujuan]" id="nama_tujuan_${i}" maxlength="10" class="form-control" type="text" style="margin: auto; display: block;" readonly>
-                        </td>
-                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                            <input value="${selectedValue}" name="data[tujuan][${i}][jenis_tujuan]" id="jenis_tujuan_${i}" class="form-control" type="text" style="margin: auto; display: block;" readonly>
-                        </td>
-                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                            <input value="${$('#tarif').val()}" name="data[tujuan][${i}][tarif]" id="tarif_${i}" class="form-control numaja uang tarif" type="text" readonly/>
-                        </td>
-                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                            <input value="${total_biaya.toLocaleString()}" name="data[tujuan][${i}][uang_jalan]" id="uang_jalan_${i}" class="form-control numaja uang uangJalan" type="text" readonly/>
-                        </td>
-                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                            <input value="${$('#komisi').val()}" name="data[tujuan][${i}][komisi]" id="komisi_${i}" class="form-control numaja uang" type="text" readonly/>
-                        </td>
-                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                            <input value="${$('#catatan').val()}" name="data[tujuan][${i}][catatan]" id="catatan_${i}" class="form-control" type="text" readonly/>
-                        </td>
-                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                            <button name="detail" id="detail_${i}" class="btn btn-info detail" type="button"><i class="fa fa-list-ul"></i></button>
-                        </td>  
-                        <input value="${$('#id_tujuan').val()}" name="data[tujuan][${i}][id_tujuan]" id="id_tujuan_${i}" type="hidden" >
-                        <input value="${$('#alamat').val()}" name="data[tujuan][${i}][alamat_hidden]" id="alamat_hidden_${i}" type="hidden" >
-                        <input value="${total_biaya}" name="data[tujuan][${i}][uang_jalan_hidden]" id="uang_jalan_hidden_${i}" type="hidden" >
-                        <input value="${$('#komisi').val()}" name="data[tujuan][${i}][komisi_hidden]" id="komisi_hidden_${i}" type="hidden" >
-                        <input value="${$('#harga_per_kg').val()}" name="data[tujuan][${i}][harga_per_kg_hidden]" id="harga_per_kg_hidden_${i}" type="hidden" >
-                        <input value="${$('#min_muatan').val()}" name="data[tujuan][${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}" type="hidden" >
-                        <input value="${$('#grup').val()}" name="data[tujuan][${i}][grup_hidden]" id="grup_hidden_${i}" type="hidden"  placeholder="">
-                        <input value="${$('#marketing').val()}" name="data[tujuan][${i}][marketing_hidden]" id="marketing_hidden_${i}" type="hidden" placeholder="">
-                        <input value='${JSON.stringify(array_detail_biaya)}' name="data[tujuan][${i}][obj_biaya]" id="obj_biaya${i}" type="hidden" placeholder="">
-                        <td><button type="button" name="remove" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
-                    </tr>
-                `;
 
-                $('#dynamic_field > tbody:last-child').append(newRow);
-               
+                    // ini buat di simpan (hidden), nanti dikirim waktu post
+                    // $('#obj_biaya'+key).val('');
+                    $('#obj_biaya'+key).val(JSON.stringify(array_detail_biaya));
+                });
+                alert(total_biaya);
+                // ini ngitung semua uangnya
+                $('#uang_jalan_'+key).val(total_biaya);
+            } else {
+                // kalau ga, delete semua
+                $('#uang_jalan_'+key).val(0);
+                $('#obj_biaya'+key).val('');
             }
+        }else{
+            i++;
+            var selectedValue = $("input[name='select_jenis_tujuan']:checked").val();
+            // cek apakah ada isinya apa tidak
+            if($('#uang_jalan').val() == ''){
+                // kalau ga, di deklarasikan 0
+                var uang_jalan = 0;
+            }else{
+                // kalo ada ambil data sekarang
+                var uang_jalan = parseFloat($('#uang_jalan').val());
+            }
+
+            var myjson;
+            var array_detail_biaya = [];
+            
+            // cek apakah ada detail biaya didalam modal
+            let cekBiaya = $('#tabel_biaya > tbody > tr');
+            var total_biaya = 0;
+            if (cekBiaya.length > 0) {
+                // kalau ada, datanya ditampilkan ke dalam tabel biaya
+                $('#tabel_biaya > tbody > tr').each(function(idx) {
+                    var id=$(this).attr('id').replace("row_biaya", "");
+                    if(typeof id !== 'undefined') {
+                        let biayaId = $('#biaya_id' + id).val() ?? '';
+                        myjson='{"id":'+JSON.stringify(biayaId)+',"biaya":'+JSON.stringify($('#biaya'+id).val())+', "deskripsi":'+JSON.stringify($('#deskripsi'+id).val())+', "catatan":'+JSON.stringify($('#catatan_biaya'+id).val())+'}';
+                        var obj=JSON.parse(myjson);
+                        array_detail_biaya.push(obj);
+                        //logic itung uang
+                        total_biaya += parseFloat($('#biaya' + id).val().replace(/,/g, "")) || 0;
+                    }
+                });
+            } else {
+                // kalau ga, delete semua
+                $('#obj_biaya').val('');
+            }
+
+            var newRow = `
+                <tr id="row${i}">
+                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                        <input value="${$('#nama_tujuan').val()}" name="data[tujuan][${i}][nama_tujuan]" id="nama_tujuan_${i}" maxlength="10" class="form-control" type="text" style="margin: auto; display: block;" readonly>
+                    </td>
+                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                        <input value="${selectedValue}" name="data[tujuan][${i}][jenis_tujuan]" id="jenis_tujuan_${i}" class="form-control" type="text" style="margin: auto; display: block;" readonly>
+                    </td>
+                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                        <input value="${$('#tarif').val()}" name="data[tujuan][${i}][tarif]" id="tarif_${i}" class="form-control numaja uang tarif" type="text" readonly/>
+                    </td>
+                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                        <input value="${total_biaya}" name="data[tujuan][${i}][uang_jalan]" id="uang_jalan_${i}" class="form-control numaja uang uangJalan" type="text" readonly/>
+                    </td>
+                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                        <input value="${$('#komisi').val()}" name="data[tujuan][${i}][komisi]" id="komisi_${i}" class="form-control numaja uang" type="text" readonly/>
+                    </td>
+                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                        <input value="${$('#catatan').val()}" name="data[tujuan][${i}][catatan]" id="catatan_${i}" class="form-control" type="text" readonly/>
+                    </td>
+                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                        <button name="detail" id="detail_${i}" class="btn btn-info detail" type="button"><i class="fa fa-list-ul"></i></button>
+                    </td>  
+                    <input value="${$('#id_tujuan').val()}" name="data[tujuan][${i}][id_tujuan]" id="id_tujuan_${i}" type="hidden" >
+                    <input value="${$('#alamat').val()}" name="data[tujuan][${i}][alamat_hidden]" id="alamat_hidden_${i}" type="hidden" >
+                    <input value="${total_biaya}" name="data[tujuan][${i}][uang_jalan_hidden]" id="uang_jalan_hidden_${i}" type="hidden" >
+                    <input value="${$('#komisi').val()}" name="data[tujuan][${i}][komisi_hidden]" id="komisi_hidden_${i}" type="hidden" >
+                    <input value="${$('#harga_per_kg').val()}" name="data[tujuan][${i}][harga_per_kg_hidden]" id="harga_per_kg_hidden_${i}" type="hidden" >
+                    <input value="${$('#min_muatan').val()}" name="data[tujuan][${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}" type="hidden" >
+                    <input value="${$('#grup').val()}" name="data[tujuan][${i}][grup_hidden]" id="grup_hidden_${i}" type="hidden"  placeholder="">
+                    <input value="${$('#marketing').val()}" name="data[tujuan][${i}][marketing_hidden]" id="marketing_hidden_${i}" type="hidden" placeholder="">
+                    <input value='${JSON.stringify(array_detail_biaya)}' name="data[tujuan][${i}][obj_biaya]" id="obj_biaya${i}" type="hidden" placeholder="">
+                    <td><button type="button" name="remove" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
+                </tr>
+            `;
         }
+       
+        $('#dynamic_field > tbody:last-child').append(newRow);
+
+        // // clear biar ga nyantol data lama
+        $('#tabel_biaya tbody').html('');
+
+ 
+        $('#deleted_biaya').val($('#deleted_biaya_temp').val());
+       
+        $('#modal_detail').modal('hide');
+    });
+
+    $(document).on('click', '.edit_detail', function(){
+        var key=$('#key').val().trim();
+        // simpan ke tampilan depan
+        alert(key);
+
+        // var myjson;
+        // var array_detail_biaya = [];
+
+        // // fungsi tambah uang jalan
+        // // cek apakah ada isinya apa tidak
+        // if($('#uang_jalan_'+key).val() == ''){
+        //     // kalau ga, di deklarasikan 0
+        //     var uang_jalan = 0;
+        // }else{
+        //     // kalo ada ambil data sekarang
+        //     var uang_jalan = parseFloat($('#uang_jalan_'+key).val());
+        // }
+
+        // // cek apakah ada detail biaya didalam modal
+        // let cekBiaya = $('#tabel_biaya > tbody > tr');
+        // var total_biaya = 0;
+        // if (cekBiaya.length > 0) {
+        //     // kalau ada, datanya ditampilkan ke dalam tabel biaya
+        //     $('#tabel_biaya > tbody > tr').each(function(idx) {
+        //         var id=$(this).attr('id').replace("row_biaya", "");
+        //         if(typeof id !== 'undefined') {
+        //             let biayaId = $('#biaya_id' + id).val() ?? '';
+        //             myjson='{"id":'+JSON.stringify(biayaId)+',"biaya":'+JSON.stringify($('#biaya'+id).val())+', "deskripsi":'+JSON.stringify($('#deskripsi'+id).val())+', "catatan":'+JSON.stringify($('#catatan_biaya'+id).val())+'}';
+        //             var obj=JSON.parse(myjson);
+
+        //             array_detail_biaya.push(obj);
+
+        //             //logic itung uang
+        //             total_biaya += parseFloat($('#biaya' + id).val().replace(/,/g, "")) || 0;
+        //         }
+
+        //         // ini buat di simpan (hidden), nanti dikirim waktu post
+        //         $('#obj_biaya'+key).val(JSON.stringify(array_detail_biaya));
+        //     });
+            
+        //     // ini ngitung semua uangnya
+        //     $('#uang_jalan_'+key).val(total_biaya);
+        // } else {
+        //     // kalau ga, delete semua
+        //     $('#obj_biaya'+key).val('');
+        // }
+
+        // // clear biar ga nyantol data lama
+        // $('#tabel_biaya tbody').html('');
+
+
+        $('#modal_detail').modal('hide');
+    });
+
+    $(document).on('click', '.save_detailOld', function(){
+        var key=$('#key').val().trim();
+        // simpan ke tampilan depan
+        $('#tarif_'+key).val($('#tarif').val());
+        $('#nama_tujuan_'+key).val($('#nama_tujuan').val());
+        $('#uang_jalan_'+key).val($('#uang_jalan').val());
+        $('#komisi_'+key).val($('#komisi').val());
+        $('#catatan_'+key).val($('#catatan').val());
+        $('#jenis_tujuan_'+key).val($('#select_jenis_tujuan').val());
+        $('#alamat_hidden_'+key).val($('#alamat').val());
+        $('#jenis_tujuan_'+key).val($('#select_jenis_tujuan').val());
+        $('#harga_per_kg_hidden_'+key).val($('#harga_per_kg').val());
+        $('#min_muatan_hidden_'+key).val($('#min_muatan').val());
+        $('#grup_hidden_'+key).val($('#grup').val());
+        $('#marketing_hidden_'+key).val($('#marketing').val());
+
+        $('#deleted_biaya').val($('#deleted_biaya_temp').val());
+
+        var myjson;
+        var array_detail_biaya = [];
+
+        // fungsi tambah uang jalan
+        // cek apakah ada isinya apa tidak
+        if($('#uang_jalan_'+key).val() == ''){
+            // kalau ga, di deklarasikan 0
+            var uang_jalan = 0;
+        }else{
+            // kalo ada ambil data sekarang
+            var uang_jalan = parseFloat($('#uang_jalan_'+key).val());
+        }
+
+        // cek apakah ada detail biaya didalam modal
+        let cekBiaya = $('#tabel_biaya > tbody > tr');
+        var total_biaya = 0;
+        if (cekBiaya.length > 0) {
+            // kalau ada, datanya ditampilkan ke dalam tabel biaya
+            $('#tabel_biaya > tbody > tr').each(function(idx) {
+                var id=$(this).attr('id').replace("row_biaya", "");
+                if(typeof id !== 'undefined') {
+                    let biayaId = $('#biaya_id' + id).val() ?? '';
+                    myjson='{"id":'+JSON.stringify(biayaId)+',"biaya":'+JSON.stringify($('#biaya'+id).val())+', "deskripsi":'+JSON.stringify($('#deskripsi'+id).val())+', "catatan":'+JSON.stringify($('#catatan_biaya'+id).val())+'}';
+                    var obj=JSON.parse(myjson);
+
+                    array_detail_biaya.push(obj);
+
+                    //logic itung uang
+                    total_biaya += parseFloat($('#biaya' + id).val().replace(/,/g, "")) || 0;
+                }
+
+                // ini buat di simpan (hidden), nanti dikirim waktu post
+                $('#obj_biaya'+key).val(JSON.stringify(array_detail_biaya));
+            });
+            
+            // ini ngitung semua uangnya
+            $('#uang_jalan_'+key).val(total_biaya);
+        } else {
+            // kalau ga, delete semua
+            $('#obj_biaya'+key).val('');
+        }
+
         // clear biar ga nyantol data lama
         $('#tabel_biaya tbody').html('');
-        $('#deleted_biaya').val($('#deleted_biaya_temp').val());
+
+
         $('#modal_detail').modal('hide');
     });
 

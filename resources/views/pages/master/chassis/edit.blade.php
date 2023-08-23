@@ -111,7 +111,7 @@
                                             <td id='dokumen_id_<?=$key?>' hidden><?=$value->id?></td>
                                             <td id='is_reminder_<?=$key?>' hidden><?=$value->is_reminder?></td>
                                             <td id='reminder_hari_<?=$key?>' hidden><?=$value->reminder_hari?></td>
-                                            <td id='jenis_<?=$key?>'><?=$value->jenis_chassis?></td>
+                                            <td id='jenis_<?=$key?>' class="jenisCek"><?=$value->jenis_chassis?></td>
                                             <td id='nomor_<?=$key?>'><?=$value->nomor?></td>
                                             <td id='berlaku_hingga_<?=$key?>'><?= date("d-M-Y", strtotime($value->berlaku_hingga)) ?></td>
                                             
@@ -329,20 +329,34 @@ $(document).ready(function(e){
             var reminder_desc='Tidak';
         }
         var exist=$('#table_dokumen tbody').find('#'+key).attr('id');
-        if(typeof exist === 'undefined') {
-            var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="dokumen_id_'+key+'" hidden>'+$('#dokumen_id').val()+'</td><td id="jenis_'+key+'">'+$('#jenis').val()+'</td><td id="nomor_'+key+'">'+$('#nomor').val()+'</td><td id="berlaku_hingga_'+key+'">'+$('#berlaku_hinggaDisplay').val()+'</td><td id="reminder_deskripsi_'+key+'">'+reminder_desc+'</td><td id="is_reminder_'+key+'" hidden>'+$('#is_reminder').val()+'</td><td id="reminder_hari_'+key+'" hidden>'+$('#reminder_hari').val()+'</td></tr>';
-            
-            $('#table_dokumen > tbody:last-child').append(new_row);
-        }else{
-            $('#jenis_'+key).text($('#jenis').val());
-            $('#nomor_'+key).text($('#nomor').val());
-            // $('#berlaku_hingga_'+key).text($('#berlaku_hingga').val());
-            $('#is_reminder_'+key).text($('#is_reminder').val());
-            $('#reminder_hari_'+key).text($('#reminder_hari').val());
-            $('#berlaku_hingga_'+key).text($('#berlaku_hinggaDisplay').val());
-            $('#dokumen_id_'+key).text($('#dokumen_id').val());
-            $('#reminder_deskripsi_'+key).text(reminder_desc);
+
+        const inputValue = $('#jenis').val(); // Convert element text to lowercase
+        const jenisCekElements = document.querySelectorAll('.jenisCek');
+        const textArray = []; // Initialize an array to store the text content
+
+        jenisCekElements.forEach(element => {
+            const elementText = element.textContent; // Get the element's text content
+            textArray.push(elementText); // Push the text content to the array
+        });
+        if (textArray.includes(inputValue)) {
+            toastr.error('Jenis dokumen sudah ada');return;
+            console.log('Input value is already in the textArray.');
+        } else {
+            if(typeof exist === 'undefined') {
+                var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="dokumen_id_'+key+'" hidden>'+$('#dokumen_id').val()+'</td><td id="jenis_'+key+'" class="jenisCek">'+$('#jenis').val()+'</td><td id="nomor_'+key+'">'+$('#nomor').val()+'</td><td id="berlaku_hingga_'+key+'">'+$('#berlaku_hinggaDisplay').val()+'</td><td id="reminder_deskripsi_'+key+'">'+reminder_desc+'</td><td id="is_reminder_'+key+'" hidden>'+$('#is_reminder').val()+'</td><td id="reminder_hari_'+key+'" hidden>'+$('#reminder_hari').val()+'</td></tr>';
+                $('#table_dokumen > tbody:last-child').append(new_row);
+            }else{
+                $('#jenis_'+key).text($('#jenis').val());
+                $('#nomor_'+key).text($('#nomor').val());
+                // $('#berlaku_hingga_'+key).text($('#berlaku_hingga').val());
+                $('#is_reminder_'+key).text($('#is_reminder').val());
+                $('#reminder_hari_'+key).text($('#reminder_hari').val());
+                $('#berlaku_hingga_'+key).text($('#berlaku_hinggaDisplay').val());
+                $('#dokumen_id_'+key).text($('#dokumen_id').val());
+                $('#reminder_deskripsi_'+key).text(reminder_desc);
+            }
         }
+        
 
         $('#dokumen_dialog').modal('hide');
     }
