@@ -42,22 +42,22 @@
         <div id="stepper-example" class="bs-stepper stepper-horizontal">
             <div class="bs-stepper-header">
                 <div class="step1" data-target="#test-l-1">
-                    <button type="button" class="btn btn-secondary" ><b>Data Pribadi</b></button>
+                    <button type="button" class="btn btn-secondary radiusSendiri" ><b>Data Pribadi</b></button>
                 </div>
                 <div class="line"></div>
                 <div class="step2" data-target="#test-l-2">
                     <a href="#">
-                     <button type="button" class="btn btn-outline-secondary"><b>Alamat & Kontak</b></button>
+                     <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Alamat & Kontak</b></button>
                     </a>
                 </div>
                 <div class="line"></div>
                 <div class="step3" data-target="#test-l-3">
-                     <button type="button" class="btn btn-outline-secondary"><b>Kontak Darurat</b></button>
+                     <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Kontak Darurat</b></button>
                 </div>
                 <div class="line"></div>
                 
                 <div class="step4" data-target="#test-l-3">
-                     <button type="button" class="btn btn-outline-secondary"><b>Status Karyawan</b></button>
+                     <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Status Karyawan</b></button>
                 </div>
               
             </div>
@@ -88,7 +88,7 @@
                  @method('PUT')
 
                   {{-- ============Data pribadi============ --}}
-                <div class="card" id="satu">
+                <div class="card radiusSendiri" id="satu">
                     <div class="card-header">
                         <h5 class="card-title">Data Pribadi</h5>
                     </div>
@@ -195,7 +195,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right"><strong>Next</strong></button>
+                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
                         <a href="{{ route('karyawan.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
 
                     </div>
@@ -204,7 +204,7 @@
 
                 {{-- ============Alamat & Kontak============ --}}
                 
-                <div class="card" id="dua">
+                <div class="card radiusSendiri" id="dua">
                     <div class="card-header">
                         <h5 class="card-title">Alamat & Kontak</h5>
                     </div>  
@@ -299,8 +299,8 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right"><strong>Next</strong></button>
+                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
+                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
 
                     </div>
                            
@@ -309,7 +309,7 @@
                 {{-- ============End Alamat & Kontak============ --}}
 
                 {{-- ============Kontak Darurat============ --}}
-                <div class="card" id="tiga">
+                <div class="card radiusSendiri" id="tiga">
                     <div class="card-header">
                         <h5 class="card-title">Kontak Darurat</h5>
                     </div>  
@@ -338,15 +338,15 @@
                                     <input type="text" name="alamat_kontak_darurat" class="form-control" placeholder="" value="{{old('alamat_kontak_darurat',$karyawan->alamat_kontak_darurat)}}">
                                 </div>
 
-                                <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                                <button type="button" id="nextDariDarurat" class="btn btn-success float-right"><strong>Next</strong></button>
+                                <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
+                                <button type="button" id="nextDariDarurat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
                         </div>     
                     </div>           
                 </div>
                 {{-- ============End Kontak Darurat============ --}}
 
                 {{-- ============Status Karyawan============ --}}
-                <div class="card" id="empat">
+                <div class="card radiusSendiri" id="empat">
                     <div class="card-header">
                         <h5 class="card-title">Status Karyawan</h5>
                     </div>  
@@ -452,8 +452,8 @@
                         </div>
                         
 
-                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                        <button type="submit" class="btn btn-success float-right" id="btnSimpan"><strong>Simpan</strong></button>
+                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
+                        <button type="submit" class="btn btn-success float-right radiusSendiri" id="btnSimpan"><strong>Simpan</strong></button>
                         
                         {{-- <button type="button" id="btnCobaBuatData" class="btn btn-outline-success float-right"><strong>coba</strong></button> --}}
 
@@ -626,8 +626,8 @@
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-sm btn-success" style='width:85px' onclick='save_detail()'>Simpan</button>
+          <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
+          <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_detail()'><strong>Simpan</strong> </button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -663,8 +663,8 @@
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-sm btn-success" style='width:85px' onclick='save_komponen()'>Simpan</button>
+          <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
+          <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_komponen()'><strong>Simpan</strong> </button>
         </div>
       </div>
       <!-- /.modal-content -->

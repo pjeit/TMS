@@ -86,6 +86,8 @@
                             @endforeach
                         </tbody>
                     </table>
+{{ $dataPair->links('pagination::bootstrap-4') }}
+
                 </div>
             </div>
         </div>

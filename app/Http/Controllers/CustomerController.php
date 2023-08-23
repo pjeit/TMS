@@ -77,7 +77,7 @@ class CustomerController extends Controller
             // $new_customer->email = $request->email;
             $new_customer->alamat = $request->alamat;
             $new_customer->catatan = $request->catatan;
-            $new_customer->kredit_sekarang = ($request->kredit_sekarang == 0)? NULL:$request->kredit_sekarang;
+            $new_customer->kredit_sekarang = 0/*($request->kredit_sekarang == 0)? NULL:$request->kredit_sekarang*/;
             // $new_customer->max_kredit = $max_kredit;
             $new_customer->ketentuan_bayar = $request->ketentuan_bayar;
             $new_customer->created_by = $user;

@@ -38,7 +38,7 @@
     @csrf
     @method('PUT')
     <div class="row">
-        <div class="col-12 ">
+        {{-- <div class="col-12 ">
             <div class="card radiusSendiri">
                 <div class="card-header d-flex justify-content-between">
                     <div>
@@ -47,11 +47,12 @@
                     <button type="submit" name="save" id="save" value="save" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i> Simpan</button>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <h5 class="card-title">Data</h5>
+                     <a href="{{ route('supplier.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
+                    <button type="submit" name="save" id="save" value="save" class="btn ml-2 btn-success radiusSendiri"><strong><i class="fa fa-fw fa-save"></i> Simpan</strong></button>
                 </div>
                 <div class="card-body">
                     <div class="row col-12">

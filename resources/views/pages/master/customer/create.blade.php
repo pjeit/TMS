@@ -139,7 +139,7 @@
                 <div class="card-body">
                     <div class="form-group">
                     <div class='row'>
-                        <div class='col-6 col-md-6 col-lg-6'>
+                        {{-- <div class='col-6 col-md-6 col-lg-6'>
                             <label for="kredit_sekarang">Kredit Sekarang</label>
                             <div class="input-group mb-0">
                                 <div class="input-group-prepend">
@@ -147,8 +147,8 @@
                                 </div>
                                 <input type="text" name="kredit_sekarang" class="form-control numaja uang" id="kredit_sekarang" placeholder="" value="0" readonly>    
                             </div>
-                        </div>
-                           <div class="col-6 col-md-6 col-lg-6">
+                        </div> --}}
+                           <div class="col">
                             <label for="ketentuan_pembayaran">Ketentuan Pembayaran</label>
                             <div class="input-group mb-0">
                                 <input type="text" name="ketentuan_bayar" class="form-control numaja" id="ketentuan_bayar" placeholder="" value="30">

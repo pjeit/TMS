@@ -42,22 +42,22 @@
         <div id="stepper-example" class="bs-stepper stepper-horizontal">
             <div class="bs-stepper-header">
                 <div class="step1" data-target="#test-l-1">
-                    <button type="button" class="btn btn-secondary" ><b>Data Pribadi</b></button>
+                    <button type="button" class="btn btn-secondary radiusSendiri" ><b>Data Pribadi</b></button>
                 </div>
                 <div class="line"></div>
                 <div class="step2" data-target="#test-l-2">
                     <a href="#">
-                     <button type="button" class="btn btn-outline-secondary"><b>Alamat & Kontak</b></button>
+                     <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Alamat & Kontak</b></button>
                     </a>
                 </div>
                 <div class="line"></div>
                 <div class="step3" data-target="#test-l-3">
-                     <button type="button" class="btn btn-outline-secondary"><b>Kontak Darurat</b></button>
+                     <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Kontak Darurat</b></button>
                 </div>
                 <div class="line"></div>
                 
                 <div class="step4" data-target="#test-l-3">
-                     <button type="button" class="btn btn-outline-secondary"><b>Status Karyawan</b></button>
+                     <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Status Karyawan</b></button>
                 </div>
               
             </div>
@@ -86,7 +86,7 @@
             <form action="{{ route('karyawan.store') }}" method="POST" enctype="multipart/form-data" id="formDataKaryawan">
                 @csrf
                 {{-- ============Data pribadi============ --}}
-                <div class="card " id="satu">
+                <div class="card radiusSendiri" id="satu">
                     <div class="card-header">
                         <h5 class="card-title">Data Pribadi</h5>
                     </div>
@@ -129,11 +129,11 @@
                                         <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah','')? 'checked' :'' }} checked>
                                         <label class="form-check-label" for="belumNikah">Belum Menikah</label>
                                     </div>
-                                    <div class="icheck-primary d-inline">
+                                    <div class="icheck-primary d-inline ml-3">
                                         <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah','')? 'checked' :'' }}>
                                         <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
                                     </div>
-                                    <div class="icheck-primary d-inline">
+                                    <div class="icheck-primary d-inline ml-3">
                                         <input id="cerai" type="radio" name="status_menikah" value="2" {{'2'== old('status_menikah','')? 'checked' :'' }}>
                                         <label class="form-check-label" for="cerai">Cerai</label><br>
                                     </div>
@@ -147,7 +147,7 @@
                                         <input id="laki" type="radio" name="jenis_kelamin" value="L" {{'L' == old('jenis_kelamin','')? 'checked' :'' }} checked>
                                         <label class="form-check-label" for="laki">Laki-laki</label>
                                     </div>
-                                    <div class="icheck-primary d-inline">
+                                    <div class="icheck-primary d-inline ml-3">
                                         <input id="perempuan" type="radio" name="jenis_kelamin" value="P" {{'P'== old('jenis_kelamin','')? 'checked' :'' }}>
                                         <label class="form-check-label" for="perempuan">Perempuan</label><br>
                                     </div>
@@ -195,14 +195,14 @@
                         </div>
                         <a href="{{ route('karyawan.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
 
-                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right"><strong>Next</strong></button>
+                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
                     </div>
                 </div>
                 {{-- ============End Data pribadi============ --}}
 
                 {{-- ============Alamat & Kontak============ --}}
                 
-                <div class="card" id="dua">
+                <div class="card radiusSendiri" id="dua">
                     <div class="card-header">
                         <h5 class="card-title">Alamat & Kontak</h5>
                     </div>  
@@ -297,8 +297,8 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right"><strong>Next</strong></button>
+                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
+                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
 
                     </div>
                            
@@ -307,7 +307,7 @@
                 {{-- ============End Alamat & Kontak============ --}}
 
                 {{-- ============Kontak Darurat============ --}}
-                <div class="card" id="tiga">
+                <div class="card radiusSendiri" id="tiga">
                     <div class="card-header">
                         <h5 class="card-title">Kontak Darurat</h5>
                     </div>  
@@ -335,15 +335,15 @@
                                     <input type="text" name="alamat_kontak_darurat" class="form-control" placeholder="" value="">
                                 </div>
 
-                                <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                                <button type="button" id="nextDariDarurat" class="btn btn-success float-right"><strong>Next</strong></button>
+                                <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
+                                <button type="button" id="nextDariDarurat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
                         </div>     
                     </div>           
                 </div>
                 {{-- ============End Kontak Darurat============ --}}
 
                 {{-- ============Status Karyawan============ --}}
-                <div class="card" id="empat">
+                <div class="card radiusSendiri" id="empat">
                     <div class="card-header">
                         <h5 class="card-title">Status Karyawan</h5>
                     </div>  
@@ -448,8 +448,8 @@
                         </div>
                         
 
-                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                        <button type="submit" class="btn btn-success float-right" id="btnSimpan"><strong>Simpan</strong></button>
+                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
+                        <button type="submit" class="btn btn-success float-right radiusSendiri" id="btnSimpan"><strong>Simpan</strong></button>
                         
                         {{-- <button type="button" id="btnCobaBuatData" class="btn btn-outline-success float-right"><strong>coba</strong></button> --}}
 
@@ -465,7 +465,7 @@
                 <div class='row' id="showKomponen">
                             {{-- ============komponen identitas============ --}}
                             <div class="col-lg-6 col-md-6 col-12">
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="open_detail('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; IDENTITAS</b></button>
+                                <button type="button" class="btn btn-sm btn-secondary radiusSendiri" onclick="open_detail('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; IDENTITAS</b></button>
                                 <div class="row" style='margin-top:5px;'>
                                     <div class='col-12 table-responsive'>
                                         <table class="table table-hover table-bordered table-striped text-nowrap" id='table_identitas'>
@@ -488,7 +488,7 @@
 
                             {{-- ============komponen gaji============ --}}
                             <div class="col-lg-6 col-md-6 col-12" style="padding-left:6px;">
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="open_komponen('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; KOMPONEN GAJI</b></button>
+                                <button type="button" class="btn btn-sm btn-secondary radiusSendiri" onclick="open_komponen('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; KOMPONEN GAJI</b></button>
                                 <div class="row" style='margin-top:5px;'>
                                     <div class='col-12 table-responsive'>
                                         <table class="table table-hover table-bordered table-striped text-nowrap" id='table_komponen'>
@@ -576,8 +576,8 @@
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-sm btn-success" style='width:85px' onclick='save_detail()'>Tambah</button>
+          <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
+          <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_detail()'><strong>Tambah</strong> </button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -613,8 +613,8 @@
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-sm btn-success" style='width:85px' onclick='save_komponen()'>Tambah</button>
+          <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
+          <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_komponen()'><strong>Tambah</strong> </button>
         </div>
       </div>
       <!-- /.modal-content -->
