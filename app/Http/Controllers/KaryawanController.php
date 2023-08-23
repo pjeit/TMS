@@ -238,6 +238,7 @@ class KaryawanController extends Controller
             } else if (substr($telpDarurat, 0, 2) == "62"&& $telpDarurat!=null) {
                 $telpDarurat = (string) "+" . $telpDarurat;
             }
+            // var_dump($data['status_pegawai']);die;
             $idKaryawan=DB::table('karyawan')
                 ->insertGetId(array(
                     // data pribadi
@@ -544,11 +545,11 @@ class KaryawanController extends Controller
             } else if (substr($telpDarurat, 0, 2) == "62"&& $telpDarurat!=null) {
                 $telpDarurat = (string) "+" . $telpDarurat;
             }
-            else
-            {
-                $telpDarurat = (string) "+62" . $telpDarurat;
+            // else
+            // {
+            //     $telpDarurat = (string) "+62" . $telpDarurat;
 
-            }
+            // }
             DB::table('karyawan')
             ->where('id', $karyawan['id'])
                 ->update(array(

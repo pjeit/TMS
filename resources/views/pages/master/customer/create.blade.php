@@ -112,6 +112,49 @@
             </div>
         </div>
 
+        <div class="col-6">
+            <div class="card radiusSendiri">
+                <div class="card-header">
+                <h3 class="card-title">Kredit & Ketentuan Pembayaran</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                    <div class='row'>
+                        {{-- <div class='col-6 col-md-6 col-lg-6'>
+                            <label for="kredit_sekarang">Kredit Sekarang</label>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text">Rp.</span>
+                                </div>
+                                <input type="text" name="kredit_sekarang" class="form-control numaja uang" id="kredit_sekarang" placeholder="" value="0" readonly>    
+                            </div>
+                        </div> --}}
+                           <div class="col">
+                            <label for="ketentuan_pembayaran">Ketentuan Pembayaran</label>
+                            <div class="input-group mb-0">
+                                <input type="text" name="ketentuan_bayar" class="form-control numaja" id="ketentuan_bayar" placeholder="" value="30">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">Hari</span>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- <div class='col-6 col-md-6 col-lg-6'>
+                            <label for="maks_kredit">Maks Kredit</label>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text">Rp.</span>
+                                </div>
+                                <input type="text" name="maks_kredit" class="form-control numaja uang" id="maks_kredit" placeholder="" value="">    
+                            </div>
+                        </div> --}}
+                    </div>
+                    </div>
+                    <div class="form-group">
+                
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     </form>

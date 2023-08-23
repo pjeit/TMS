@@ -42,22 +42,22 @@
         <div id="stepper-example" class="bs-stepper stepper-horizontal">
             <div class="bs-stepper-header">
                 <div class="step1" data-target="#test-l-1">
-                    <button type="button" class="btn btn-secondary" ><b>Data Pribadi</b></button>
+                    <button type="button" class="btn btn-secondary radiusSendiri" ><b>Data Pribadi</b></button>
                 </div>
                 <div class="line"></div>
                 <div class="step2" data-target="#test-l-2">
                     <a href="#">
-                     <button type="button" class="btn btn-outline-secondary"><b>Alamat & Kontak</b></button>
+                     <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Alamat & Kontak</b></button>
                     </a>
                 </div>
                 <div class="line"></div>
                 <div class="step3" data-target="#test-l-3">
-                     <button type="button" class="btn btn-outline-secondary"><b>Kontak Darurat</b></button>
+                     <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Kontak Darurat</b></button>
                 </div>
                 <div class="line"></div>
                 
                 <div class="step4" data-target="#test-l-3">
-                     <button type="button" class="btn btn-outline-secondary"><b>Status Karyawan</b></button>
+                     <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Status Karyawan</b></button>
                 </div>
               
             </div>
@@ -88,7 +88,7 @@
                  @method('PUT')
 
                   {{-- ============Data pribadi============ --}}
-                <div class="card" id="satu">
+                <div class="card radiusSendiri" id="satu">
                     <div class="card-header">
                         <h5 class="card-title">Data Pribadi</h5>
                     </div>
@@ -195,7 +195,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right"><strong>Next</strong></button>
+                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
                         <a href="{{ route('karyawan.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
 
                     </div>
@@ -204,7 +204,7 @@
 
                 {{-- ============Alamat & Kontak============ --}}
                 
-                <div class="card" id="dua">
+                <div class="card radiusSendiri" id="dua">
                     <div class="card-header">
                         <h5 class="card-title">Alamat & Kontak</h5>
                     </div>  
@@ -299,8 +299,8 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right"><strong>Next</strong></button>
+                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
+                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
 
                     </div>
                            
@@ -309,7 +309,7 @@
                 {{-- ============End Alamat & Kontak============ --}}
 
                 {{-- ============Kontak Darurat============ --}}
-                <div class="card" id="tiga">
+                <div class="card radiusSendiri" id="tiga">
                     <div class="card-header">
                         <h5 class="card-title">Kontak Darurat</h5>
                     </div>  
@@ -338,15 +338,15 @@
                                     <input type="text" name="alamat_kontak_darurat" class="form-control" placeholder="" value="{{old('alamat_kontak_darurat',$karyawan->alamat_kontak_darurat)}}">
                                 </div>
 
-                                <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                                <button type="button" id="nextDariDarurat" class="btn btn-success float-right"><strong>Next</strong></button>
+                                <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
+                                <button type="button" id="nextDariDarurat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
                         </div>     
                     </div>           
                 </div>
                 {{-- ============End Kontak Darurat============ --}}
 
                 {{-- ============Status Karyawan============ --}}
-                <div class="card" id="empat">
+                <div class="card radiusSendiri" id="empat">
                     <div class="card-header">
                         <h5 class="card-title">Status Karyawan</h5>
                     </div>  
@@ -358,9 +358,13 @@
                                 <input id="Kontrak" type="radio" name="status_pegawai" value="Kontrak" {{'Kontrak' == old('status_pegawai',$karyawan->status_pegawai)? 'checked' :'' }}>
                                 <label class="form-check-label" for="Kontrak">Kontrak</label>
                             </div>
-                            <div class="icheck-primary d-inline">
+                            <div class="icheck-primary d-inline ml-3">
                                 <input id="Tetap" type="radio" name="status_pegawai" value="Tetap" {{'Tetap'== old('status_pegawai',$karyawan->status_pegawai)? 'checked' :'' }}>
-                                <label class="form-check-label" for="Tetap">Tetap</label><br>
+                                <label class="form-check-label" for="Tetap">Tetap</label>
+                            </div>
+                            <div class="icheck-primary d-inline ml-3">
+                                <input id="Magang" type="radio" name="status_pegawai" value="Magang" {{'Magang' == old('status_pegawai',$karyawan->status_pegawai)? 'checked' :'' }}>
+                                <label class="form-check-label" for="Magang">Magang</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -374,7 +378,7 @@
                         </div>
                      
                         <div class="form-group" id="tglKontrakMulai">
-                            <label for="tanggal_kontrak">Tanggal Mulai Kontrak</label>
+                            <label for="tanggal_kontrak">Tanggal Mulai</label>
                             <div class="input-group mb-0">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -384,7 +388,7 @@
                             </div>
                         </div>
                         <div class="form-group" id="tglKontrakSelesai">
-                            <label for="tanggal_selesai_kontrak">Tanggal Selesai Kontrak</label>
+                            <label for="tanggal_selesai_kontrak">Tanggal Selesai</label>
                             <div class="input-group mb-0">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -448,8 +452,8 @@
                         </div>
                         
 
-                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left"><strong>Back</strong></button>
-                        <button type="submit" class="btn btn-success float-right" id="btnSimpan"><strong>Simpan</strong></button>
+                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
+                        <button type="submit" class="btn btn-success float-right radiusSendiri" id="btnSimpan"><strong>Simpan</strong></button>
                         
                         {{-- <button type="button" id="btnCobaBuatData" class="btn btn-outline-success float-right"><strong>coba</strong></button> --}}
 
@@ -622,8 +626,8 @@
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-sm btn-success" style='width:85px' onclick='save_detail()'>Simpan</button>
+          <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
+          <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_detail()'><strong>Simpan</strong> </button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -659,8 +663,8 @@
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-sm btn-success" style='width:85px' onclick='save_komponen()'>Simpan</button>
+          <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
+          <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_komponen()'><strong>Simpan</strong> </button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -721,7 +725,19 @@
         if(typeof exist === 'undefined') {
           
             var new_row='<tr id="'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="identitas_id_'+key+'" hidden>'+$('#identitas_id').val()+'</td><td id="jenis_id_'+key+'" hidden>'+tampungahJenis[0]+'</td><td id="jenis_'+key+'">'+tampungahJenis[1]+'</td><td id="nomor_'+key+'">'+$('#nomor').val()+'</td><td id="catatan_'+key+'">'+$('#catatan').val()+'</td></tr>';
+            // pengecekan sebelum ditambah
+            var existingRow = $('#table_identitas tbody').find('td[id^="jenis_id_"]').filter(function() {
+                return $(this).text().trim() === tampungahJenis[0];
+            }).closest('tr');
+
+            // console.log($('#table_identitas tbody').find('td[id^="jenis_id_"]').text());
             
+            if (existingRow.length > 0 ) {
+                toastr.error('Identitas Sudah Ditambahkan');
+                // $("#jenis").val('').selectpicker('refresh');
+
+                return;
+            }
             $('#table_identitas > tbody:last-child').append(new_row);
         }else{
             $('#jenis_id_'+key).text(tampungahJenis[0]);
@@ -791,7 +807,19 @@
         if(typeof exist === 'undefined') {
               console.log(key+'sd');
             var new_row='<tr id="komponen_'+key+'"><td><div class="btn-group"><button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button><ul class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(-22px, -84px, 0px); top: 0px; left: 0px; will-change: transform;"><li><a class="dropdown-item" href="javascript:void(0)" onclick="open_komponen('+key+')"><span class="fas fa-edit"></span> Ubah</a></li><li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_komponen('+key+')"><span class="fas fa-eraser"></span> Hapus</a></li></ul></div></td><td id="komponen_id_'+key+'" hidden>'+$('#komponen_id').val()+'</td><td id="is_aktif_'+key+'" hidden>Y</td><td id="nama_'+key+'">'+$('#nama_komponen').val()+'</td><td id="nominal_'+key+'">'+$('#nominal').val()+'</td></tr>';
+             var komponenName = $('#nama_komponen').val();
+            // pengecekan data udah ada atau belom
+            var dataKomponen = $('#table_komponen tbody').find('td[id^="nama_"]').filter(function() {
+                return $(this).text().trim() === komponenName;
+            }).closest('tr');
+
+            // console.log($('#table_komponen tbody').find('td[id^="nama_"]').text());
             
+            if (dataKomponen.length > 0 ) {
+                toastr.error('Komponen Sudah Ditambahkan');
+                $('#nama_komponen').val('');
+                return;
+            }
             $('#table_komponen > tbody:last-child').append(new_row);
         }else{
                           console.log("kkkk");
@@ -1173,6 +1201,11 @@
         $('#tanggal_kontrak, #tanggal_selesai_kontrak').val('');
       }
      $('#Kontrak').click(function() {
+      if ($(this).prop('checked')) {
+        $('#tglKontrakMulai, #tglKontrakSelesai').show();
+      }
+     });
+        $('#Magang').click(function() {
       if ($(this).prop('checked')) {
         $('#tglKontrakMulai, #tglKontrakSelesai').show();
       }

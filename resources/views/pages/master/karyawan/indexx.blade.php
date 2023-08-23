@@ -100,7 +100,10 @@
                         </tbody>
                         
                     </table>
+                    <div class="float-right">
             {{ $dataKaryawan->links('pagination::bootstrap-4') }}
+
+                    </div>
 
                 </div>
                 <!-- /.card-body -->

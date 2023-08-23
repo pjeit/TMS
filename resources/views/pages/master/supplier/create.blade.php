@@ -37,7 +37,7 @@
     <form action="{{ route('supplier.store') }}" method="POST" >
     @csrf
     <div class="row">
-        <div class="col-12 ">
+        {{-- <div class="col-12 ">
             <div class="card radiusSendiri">
                 <div class="card-header d-flex justify-content-between">
                     <div>
@@ -46,11 +46,13 @@
                     <button type="submit" name="save" id="save" value="save" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i> Simpan</button>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <h5 class="card-title"><b>Data</b></h5>
+                    {{-- <h5 class="card-title"><b>Data</b></h5> --}}
+                     <a href="{{ route('supplier.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
+                    <button type="submit" name="save" id="save" value="save" class="btn ml-2 btn-success radiusSendiri"><strong><i class="fa fa-fw fa-save"></i> Simpan</strong></button>
                 </div>
                 <div class="card-body">
                     <div class="row col-12">
@@ -92,7 +94,7 @@
                                 <span class="input-group-text" id="basic-addon1">+62</i>
                                 </span>
                                 </div>
-                                <input type="text" class="form-control" name="telp"  value="{{old('telp','')}}" >
+                                <input type="text" class="form-control numaja" name="telp"  value="{{old('telp','')}}" >
                             </div>
                         </div>
     
@@ -117,7 +119,7 @@
                         </div>
                         <div class="form-group col-4">
                             <label for="">Catatan</label>
-                            <input required type="text" name="catatan" class="form-control" value="{{old('catatan','')}}" >                         
+                            <input type="text" name="catatan" class="form-control" value="{{old('catatan','')}}" >                         
                         </div>
 
                         <div class="form-group col-4">
@@ -126,7 +128,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><input type="checkbox" id="cekPPH" name="cekPPH"></span>
                                 </div>
-                                <input type="number" step=".01" name="pph" class="form-control" id="pph" value="2" min="0" readonly>
+                                <input type="number" step=".01" name="pph" class="form-control" id="pph" value="0" min="0" readonly>
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">%</span>
                                 </div>
@@ -138,8 +140,8 @@
             </div>
         </div>
 
-        <div class="col-12 radiusSendiri">
-            <div class="card">
+        <div class="col-12 ">
+            <div class="card radiusSendiri">
                 <div class="card-header">
                     <h5 class="card-title"><b>Rekening bank</b></h5>
                 </div>
@@ -181,10 +183,11 @@ $(document).ready(function(){
    $('#cekPPH').click(function(){
             if($(this).is(":checked")){
                 $('#pph').attr('readonly',false);
-             
+                $('#pph').val('');
+                
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
-                $('#pph').val(2.0);
+                $('#pph').val(0);
                 $('#pph').attr('readonly',true);
                 // console.log("Checkbox is unchecked.");
             }

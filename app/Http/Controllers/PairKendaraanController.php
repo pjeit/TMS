@@ -31,10 +31,10 @@ class PairKendaraanController extends Controller
                     ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
                     ->where('k.is_aktif', '=', 'Y') 
                     ->where('k.id_kategori', '=', 1) 
-                    ->orWhere('k.id_kategori', '=', 2) 
+                    // ->orWhere('k.id_kategori', '=', 2) 
 
                     ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','kt.nama')
-                    ->get();
+                    ->paginate(10);
         // dd($dataPair);
         return view('pages.master.pair_kendaraan.index', [
             'judul' => "Pair Truck",
@@ -107,6 +107,8 @@ class PairKendaraanController extends Controller
                 ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
                 ->get();
         // dd($dataKendaraan[0]->id);
+        // dd($dataPaired);
+
         return view('pages.master.pair_kendaraan.edit', [
             'judul' => "Pair Truck",
             'dataPair' => $dataPair,
@@ -129,14 +131,14 @@ class PairKendaraanController extends Controller
          $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
-            $pesanKustom = [
-                'chasis.*.required' => 'Semua Kolom Chasis harus diisi!',
-            ];
+            // $pesanKustom = [
+            //     'chasis.*.required' => 'Semua Kolom Chasis harus diisi!',
+            // ];
             
-            $request->validate([
-                'chasis.*' => 'required',
+            // $request->validate([
+            //     'chasis.*' => 'required',
       
-            ], $pesanKustom);
+            // ], $pesanKustom);
             $data = $request->collect();
             if(!empty($data['idPairedNya']))
             {

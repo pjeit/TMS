@@ -37,24 +37,22 @@
     <form action="{{ route('pair_kendaraan.update', [$dataKendaraan[0]->id]) }}" method="POST" id="formPair">
         @csrf
         @method('PUT')
-        {{-- <div class="card radiusSendiri">
+        <div class="card radiusSendiri">
             <div class="card-header">
                 <a href="{{ route('pair_kendaraan.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
                 <button type="submit" class="btn btn-success radiusSendiri float-right" name="save" id="save" value="save" ><i class="fa fa-fw fa-save"></i>Simpan</button>
             </div>
-        </div> --}}
+        </div>
         <div class="row">
-            <div class="col">
+            <div class="col-6">
                 <div class="card radiusSendiri" >
                     <div class="card-header">
-                        <a href="{{ route('pair_kendaraan.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
-                        <button type="submit" class="btn btn-success radiusSendiri float-right" name="save" id="save" value="save" ><i class="fa fa-fw fa-save"></i>Simpan</button>
-                        {{-- <h3 class="card-title">Keterangan Kendaraan</h3>
+                        <h3 class="card-title">Keterangan Kendaraan</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
                             <i class="fas fa-minus"></i>
                             </button>
-                        </div> --}}
+                        </div>
                     </div>
                     <div class="card-body" >
                         <div class="row">
@@ -91,53 +89,27 @@
                             </div>
 
                         </div>
-                        <div class="form-group">
-                            <label for="inputProjectLeader">Tahun Pembuatan</label>
-                            <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->tahun_pembuatan}}" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputProjectLeader">Nomor Polisi</label>
-                            <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->no_polisi}}" readonly>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="chassisKendaraan">Ekor Kendaraan</label>
-                               @if($dataPaired=='[]')
-                                        <input type="hidden" name='idPairedNya[]' value="">
-                                        <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                            <option value="">--Pilih Chasis--</option>
-                                            @foreach($dataChassis as $data)
-                                            <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                            @endforeach
-                                        </select>
-                                        
-                                @else
-                                    @foreach ($dataPaired as $dataP)
-                                
-                                        <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
-                                        <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
-                                        <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                            <option value="">--Pilih Chasis--</option>
-                                            @foreach($dataChassis as $data)
-                                                <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                            @endforeach
-                                        </select>
-                                    
-                                    @endforeach
-                                @endif
-                        </div>
+                          <div class="form-group">
+                                <label for="inputProjectLeader">Tahun Pembuatan</label>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->tahun_pembuatan}}" readonly>
+                            </div>
+                              <div class="form-group">
+                                <label for="inputProjectLeader">Project Leader</label>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->no_polisi}}" readonly>
+                            </div>
                         
                     </div>
                 </div>
 
             </div>
-{{-- 
+
              <div class="col-6">
                  <div class="card radiusSendiri" >
                      <div class="card-header">
                          <tr>
                              <td >
                                  <a href="javascript:;" class="btn btn-secondary radiusSendiri" id="addmore"><i class="fa fa-fw fa-plus-circle"></i>Tambah Chassis</a>
+                                 {{-- <button id="coba" type="button">coba </button> --}}
                              </td>
                          </tr>
                      </div>
@@ -146,61 +118,65 @@
                          <table class="table" id="sortable">
                              <thead>
                                  <tr>
+                                     {{-- <th width="120" class="text-center">Insetion Date</th>
+                                     <th>User Name</th> --}}
                                      <th width="250">Model Chassis</th>
+                                     {{-- <th>User Email</th>
+                                     <th>User Phone#</th> --}}
                                      <th width="20" class="text-center">Aksi</th>
                                  </tr>
                              </thead>
                                  <tbody id="tb"> 
-                                    @if($dataPaired=='[]')
-                                        <tr>
-                                            <td>
-                                                <input type="hidden" name='idPairedNya[]' value="">
-                                                <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                    <option value="">--Pilih Chasis--</option>
-                                                    @foreach($dataChassis as $data)
-                                                    <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    @else
-                                        @foreach ($dataPaired as $dataP)
-                                        <tr>
-                                            <td>
-                                                <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
-                                                <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
-                                                <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                    <option value="">--Pilih Chasis--</option>
-                                                    @foreach($dataChassis as $data)
-                                                        <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                        <td align="center" class="text-danger">
-                                                <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data chassis ini?')){ $(this).closest('tr').hide(); $(this).closest('tr').find('input[name^=\'isAktif\']').val('N');}" class="btn btn-danger radiusSendiri">
-                                                    <i class="fa fa-fw fa-trash-alt"></i>
-                                                </button>
-                                        </td>
-                                        </tr>
-                                        @endforeach
-                                    @endif
+                                     @if(!empty($dataPaired))
+                                     {{$counter=0;}}
+         
+                                         @foreach ($dataPaired as $dataP)
+                                        {{$counter++;}}
+                                         <tr>
+                                             <td>
+                                                 <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
+                                                 <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
+                                                 <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                     <option value="">--Pilih Chasis--</option>
+                                                     @foreach($dataChassis as $data)
+                                                         <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                                                     @endforeach
+                                                 </select>
+                                             </td>
+                                         <td align="center" class="text-danger">
+                                                 <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data chassis ini?')){ $(this).closest('tr').hide(); $(this).closest('tr').find('input[name^=\'isAktif\']').val('N');}" class="btn btn-danger radiusSendiri">
+                                                     <i class="fa fa-fw fa-trash-alt"></i>
+                                                 </button>
+                                         </td>
+                                         </tr>
+                                         
+                                         @endforeach
+                                     @else
+                                         <tr>
+                                             <td colspan="2" class="bg-light text-center"><strong>No Record(s) Found!</strong></td>
+                                         </tr>
+         
+                                     @endif
                                  </tbody>
                                  <tfoot>
                                  
                                  </tfoot>
                          </table>
                      </div>
+                     {{-- <div class="card-footer">
+                 
+                             <button type="submit" class="btn btn-primary">Simpan</button>
+                     
+                     </div> --}}
                  </div>
                 
-            </div> --}}
+            </div>
         </div>
     </form>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function(){
-    var idBarang = $("#barang").val();
-    
     $("#formPair").on("submit",function(e){
             var url = $("#formPair").attr('action');
             var formElement = document.getElementById("formPair"); 
