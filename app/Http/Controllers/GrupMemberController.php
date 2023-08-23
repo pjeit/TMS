@@ -25,7 +25,8 @@ class GrupMemberController extends Controller
                         ->leftJoin('role as r', 'gm.role_id', '=', 'r.id')
                         ->select('gm.*', 'g.nama_grup as nama_grup', 'r.nama as nama_role')
                         ->where('gm.is_aktif', '=', "Y")
-                        ->get();
+                        ->paginate(5);
+                        // ->get();
         
         return view('pages.master.grup_member.index',[
             'judul' => "Marketing Grup",

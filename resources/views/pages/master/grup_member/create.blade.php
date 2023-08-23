@@ -29,17 +29,13 @@
     @endif
     <form action="{{ route('grup_member.store') }}" method="POST" >
     @csrf
-      <div class="card radiusSendiri">
-            <div class="card-header">
-                <a href="{{ route('grup_member.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                <button type="submit" class="btn btn-success radiusSendiri float-right"><i class="fa fa-fw fa-save"></i> Simpan</button>
-            </div>
-        </div>
+
     <div class="row">
-        <div class="col-6">
+        <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <h5 class="card-title">Data</h5>
+                    <a href="{{ route('grup_member.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                    <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -88,9 +84,6 @@
                     </div>
 
                 </div>
-                {{-- <div class="card-footer">
-                     <button type="submit" class="btn btn-success float-left">Simpan</button>
-                </div> --}}
             </div>
         </div>
       
