@@ -22,7 +22,7 @@ class RoleController extends Controller
          $dataRole = DB::table('role')
             ->select('*')
             ->where('is_aktif', '=', "Y")
-            ->paginate(2);
+            ->paginate(10);
 
             return view('pages.master.role.index',[
             'judul'=>"Role",
@@ -70,7 +70,7 @@ class RoleController extends Controller
           
             DB::table('role')
                 ->insert(array(
-                    'nama' => $data['nama'],
+                    'nama' => strtoupper($data['nama']),
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $user,
                     'updated_at'=> VariableHelper::TanggalFormat(),
@@ -79,7 +79,7 @@ class RoleController extends Controller
 
                 )
             ); 
-            return redirect()->route('role.index')->with('status','Sukses menambahkan role baru!!');
+            return redirect()->route('role.index')->with('status','Sukses Menambahkan Role Baru!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -143,14 +143,14 @@ class RoleController extends Controller
             DB::table('role')
             ->where('id', $role['id'])
             ->update(array(
-                    'nama' => $data['nama'],
+                    'nama' => strtoupper($data['nama']),
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
                     'is_aktif' => "Y",
 
                 )
             ); 
-            return redirect()->route('role.index')->with('status','Success!!');
+            return redirect()->route('role.index')->with('status','Sukses Mengubah Data role!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -177,7 +177,7 @@ class RoleController extends Controller
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
               )
             );
-             return redirect()->route('role.index')->with('status','Sukses Menghapus Data Kas!');
+             return redirect()->route('role.index')->with('status','Sukses Menghapus Data Role!!');
 
         }
         catch (ValidationException $e) {

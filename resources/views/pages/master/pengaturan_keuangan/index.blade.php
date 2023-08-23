@@ -38,19 +38,20 @@
         @csrf
         @method('PUT')
 
-        <div class="col-md-12">
-            <div class="card radiusSendiri ">
+        {{-- <div class="col-md-12">
+            <div class="card radiusSendiri">
                 <div class="card-header d-flex justify-content-between">
                     <div></div>
-                    <button type="submit" name="save" id="save" value="save" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i>Simpan</button>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <div class="col-12">
-            <div class="card radiusSendiri card-outline card-lightblue">
+            <div class="card radiusSendiri">
                 <div class="card-header ">
-                    <h5 class="card-title">Pengaturan Keuangan</h5>
+                    <div class="float-left">
+                        <button type="submit" name="save" id="save" value="save" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i>Simpan</button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">

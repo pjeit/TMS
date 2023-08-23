@@ -23,7 +23,7 @@ class CoaController extends Controller
             // ->paginate(10);
             ->select('coa.*')
             ->where('coa.is_aktif', '=', "Y")
-            ->get();
+            ->paginate(10);
 
 
         $title = 'Delete data!';
@@ -85,11 +85,11 @@ class CoaController extends Controller
             
             DB::table('coa')
                 ->insert(array(
-                    'no_akun' => $data['no_akun'],
-                    'nama_jenis' => $data['nama_jenis'],
+                    'no_akun' => strtoupper($data['no_akun']),
+                    'nama_jenis' => strtoupper($data['nama_jenis']),
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
                     // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'] == null?null:$data['jenis_laporan_keuangan'],
-                    'catatan' => $data['catatan'],
+                    'catatan' => strtoupper($data['catatan']),
                     'created_at'=> VariableHelper::TanggalFormat(), 
                     'created_by'=>$user,
                     'updated_at'=> VariableHelper::TanggalFormat(),
@@ -99,7 +99,7 @@ class CoaController extends Controller
                 )
             ); 
             
-            return redirect()->route('coa.index')->with('status','Success!!');
+            return redirect()->route('coa.index')->with('status','Sukses Menambahkan Coa Baru!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -171,17 +171,17 @@ class CoaController extends Controller
             DB::table('COA')
                 ->where('id', $coa['id'])
                 ->update(array(
-                    'no_akun' => $data['no_akun'],
-                    'nama_jenis' => $data['nama_jenis'],
+                  'no_akun' => strtoupper($data['no_akun']),
+                    'nama_jenis' => strtoupper($data['nama_jenis']),
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
-                    // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'],
-                    'catatan' => $data['catatan'],
+                    // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'] == null?null:$data['jenis_laporan_keuangan'],
+                    'catatan' => strtoupper($data['catatan']),
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=>  $user,
                     'is_aktif' => "Y",
                 )
             );
-            return redirect()->route('coa.index')->with('status','Success!!');
+            return redirect()->route('coa.index')->with('status','Sukses Mengubah Data Coa!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -206,6 +206,6 @@ class CoaController extends Controller
             'updated_by'=> $user, // masih hardcode nanti diganti cookies
             )
         );
-        return redirect()->route('coa.index')->with('status','Success!!');
+        return redirect()->route('coa.index')->with('status','Sukses menghapus Data Coa!!');
     }
 }

@@ -120,7 +120,7 @@
                             <div class="col-lg-3 col-md-12">
                                 <div class="form-group">
                                     <label for="jumlah_anak">Jumlah Anak</label>
-                                    <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',$karyawan->jumlah_anak)}}" min="0" >
+                                    <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',$karyawan->jumlah_anak)}}" min="0" max="3">
                                 </div>
                             </div>
                             <div class="col-lg-5 col-md-12">
@@ -128,7 +128,7 @@
                                     <label for="tipe">Status kawin</label>
                                     <br>
                                     <div class="icheck-primary d-inline">
-                                        <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }} checked>
+                                        <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
                                         <label class="form-check-label" for="belumNikah">Belum Menikah</label>
                                     </div>
                                     <div class="icheck-primary d-inline">
@@ -329,7 +329,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-phone"></i></span>
                                     </div>
-                                    <input type="number" class="form-control numaja" id="nomor_kontak_darurat" name="nomor_kontak_darurat"  placeholder="" value="{{old('nomor_kontak_darurat',$karyawan->nomor_kontak_darurat)}}">
+                                    {{-- numaja itu js buat nganu number doang --}}
+                                    <input type="text" class="form-control numaja" id="nomor_kontak_darurat" name="nomor_kontak_darurat"  placeholder="" value="{{old('nomor_kontak_darurat',$karyawan->nomor_kontak_darurat)}}">
                                     </div>
                                 </div>
                                 <div class="form-group">
