@@ -146,7 +146,7 @@
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-6">
                                 <label for="nama_tujuan">Nama Tujuan <span style="color:red;">*</span></label>
-                                <input required ="text" class="form-control" maxlength="20" name="nama_tujuan" id="nama_tujuan" placeholder="Singkatan 20 Karakter"> 
+                                <input required type="text" class="form-control" maxlength="20" name="nama_tujuan" id="nama_tujuan" placeholder="Singkatan 20 Karakter"> 
                             </div>
                 
                             <div class="form-group col-lg-6 col-md-6 col-6">
@@ -295,6 +295,8 @@
     });
 </script>
 
+
+
 <script>
 $(document).ready(function(){
     // deklarasi golbal id yg didelete
@@ -386,7 +388,6 @@ $(document).ready(function(){
 
         // Generate the last ID with the next number
         var lastIDRB = (maxIDRB + 1);
-        console.log('lastIDRB '+ lastIDRB);
 
         // var j = 0;
         if(lastIDRB != 0){
@@ -394,7 +395,6 @@ $(document).ready(function(){
         }else{
             var j = 0;
         }
-        console.log('j '+ j);
         $('#tabel_biaya > tbody:last-child').append(
         `
             <tr id="row_biaya${j}">
@@ -403,10 +403,10 @@ $(document).ready(function(){
                 </td>
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
                     <input type="hidden" name="biaya_id" id="biaya_id${j}" class="form-control"/>
-                    <input style="" type="text" name="biaya" id="biaya${j}" class="form-control numaja uang biaya" />
+                    <input type="text" name="biaya" id="biaya${j}" class="form-control numaja uang biaya" />
                 </td>
                 <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                    <input style="" type="text" name="catatan_biaya" id="catatan_biaya${j}" class="form-control"/>
+                    <input type="text" name="catatan_biaya" id="catatan_biaya${j}" class="form-control"/>
                 </td>
                 <td>
                     <button type="button" name="del_biaya" id="${j}" class="btn btn-danger btn_remove_biaya"><i class="fa fa-trash" aria-hidden="true"></i></button>
@@ -414,6 +414,12 @@ $(document).ready(function(){
             </tr>
         `
         );
+
+        $('input[type="text"]').on('input', function() {
+            var inputValue = $(this).val();
+            var uppercaseValue = inputValue.toUpperCase();
+            $(this).val(uppercaseValue);
+        });
 
         $('.select2').select2();
     });
@@ -460,7 +466,6 @@ $(document).ready(function(){
         const marketingSelect = document.getElementById('marketing');
         const selectedValue = $('#grup').val();
         const selectedGroupId = selectedValue;
-        console.log('selectedValue '+selectedValue);
         var selected_marketing = null;
         if (selectedGroupId) {
             fetch(`/grup_tujuan/getMarketing/${selectedGroupId}`)
@@ -524,7 +529,6 @@ $(document).ready(function(){
         
 
         const radioButtons = document.querySelectorAll('input[name="select_jenis_tujuan"]');
-        // console.log('ftlRadioButton '+ftlRadioButton);
         // Menambahkan event listener untuk setiap radio button
         radioButtons.forEach(radioButton => {
             radioButton.addEventListener('change', function() {
@@ -602,7 +606,6 @@ $(document).ready(function(){
         
         // cek apakah ada isi detail biaya
         var cekBiaya = $('#obj_biaya'+key).val();
-        // console.log('cekBiaya '+cekBiaya);
         if (cekBiaya) {
             // var jsonData = JSON.parse(jsonString);
             if(cekBiaya != null || cekBiaya != ''){

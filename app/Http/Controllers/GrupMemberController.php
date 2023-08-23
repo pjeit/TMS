@@ -79,11 +79,16 @@ class GrupMemberController extends Controller
             $new_customer->grup_id = $request->grup_id;
             // hardcode langsung id marketing
             $role = Role::where('is_aktif', 'Y')->get();
-            $new_customer->role_id = $role[2]->id;
+            $new_customer->role_id = $role[2]->id; // marketing
             $new_customer->nama = $request->nama;
             $new_customer->no_rek = $request->no_rek;
-            $new_customer->telp1 = $request->telp1;
-            $new_customer->telp2 = $request->telp2;
+            $new_customer->atas_nama = $request->atas_nama;
+            $new_customer->bank = $request->bank;
+            $new_customer->cabang = $request->cabang;
+            $telp1 = isset($request->telp1) ? (substr($request->telp1, 0, 2) === "08" ? "8" . substr($request->telp1, 2) : $request->telp1) : '';
+            $telp2 = isset($request->telp2) ? (substr($request->telp2, 0, 2) === "08" ? "8" . substr($request->telp2, 2) : $request->telp2) : '';
+            $new_customer->telp1 = $telp1;
+            $new_customer->telp2 = $telp2;
             $new_customer->created_by = $user;
             $new_customer->created_at = now();
             $new_customer->is_aktif = 'Y';
@@ -156,8 +161,13 @@ class GrupMemberController extends Controller
             $grupMember->role_id = $role[2]->id;
             $grupMember->nama = $request->nama;
             $grupMember->no_rek = $request->no_rek;
-            $grupMember->telp1 = $request->telp1;
-            $grupMember->telp2 = $request->telp2;
+            $grupMember->atas_nama = $request->atas_nama;
+            $grupMember->bank = $request->bank;
+            $grupMember->cabang = $request->cabang;
+            $telp1 = isset($request->telp1) ? (substr($request->telp1, 0, 2) === "08" ? "8" . substr($request->telp1, 2) : $request->telp1) : '';
+            $telp2 = isset($request->telp2) ? (substr($request->telp2, 0, 2) === "08" ? "8" . substr($request->telp2, 2) : $request->telp2) : '';
+            $grupMember->telp1 = $telp1;
+            $grupMember->telp2 = $telp2;
             $grupMember->updated_by = $user;
             $grupMember->updated_at = now();
             $grupMember->is_aktif = 'Y';
