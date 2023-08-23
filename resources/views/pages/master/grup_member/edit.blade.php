@@ -35,7 +35,7 @@
             </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="form-group col-4">
+                        <div class="form-group col-6">
                             <label for="">Grup</label>
                             <select class="form-control select2" style="width: 100%;" id='grup_id' name="grup_id" required>
                                 <option value="0">&nbsp;</option>
@@ -45,15 +45,28 @@
                             </select>
                         </div>   
     
-                        <div class="form-group col-4">
+                        <div class="form-group col-6">
                             <label for="">Nama</label>
                             <input  type="text" required name="nama" class="form-control" value="{{$data->nama}}" >                         
                         </div>
 
-                        <div class="form-group col-4">
+                        <div class="form-group col-6">
                             <label for="">No Rekening</label>
-                            <input type="text" name="no_rek" maxlength="25" class="form-control numaja" value="{{$data->no_rek}}" >                         
+                            <input type="text" name="no_rek" maxlength="20" class="form-control " value="{{$data->no_rek}}" >                         
                         </div>
+                        <div class="form-group col-6">
+                            <label for="">Atas Nama</label>
+                            <input  type="text" required name="atas_nama" maxlength="30" class="form-control" value="{{$data->atas_nama}}" >                         
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="">Bank</label>
+                            <input type="text" name="bank" maxlength="15" class="form-control " value="{{$data->bank}}" >                         
+                        </div>
+                        <div class="form-group col-6">
+                            <label for="">Cabang</label>
+                            <input  type="text" required name="cabang" maxlength="25" class="form-control" value="{{$data->cabang}}" >                         
+                        </div>
+
 
                     </div>
                     
@@ -64,7 +77,7 @@
                                 <label for="telp_1">Telp 1</label>
                                 <div class="input-group mb-0">
                                   <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <span class="input-group-text">+62</span>
                                   </div>
                                   <input type="text" name="telp1" class="form-control numaja" maxlength="15" id="telp1" placeholder="" value="{{$data->telp1}}">    
                                 </div>
@@ -73,7 +86,7 @@
                                 <label for="telp_2">Telp 2</label>
                                 <div class="input-group mb-0">
                                   <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <span class="input-group-text">+62</span>
                                   </div>
                                   <input type="text" name="telp2" class="form-control numaja" maxlength="15" id="telp2" placeholder="" value="{{$data->telp2}}">    
                                 </div>

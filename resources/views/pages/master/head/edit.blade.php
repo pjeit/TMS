@@ -42,86 +42,73 @@
             </div>
         </div>
     </div> --}}
-      <div class="card radiusSendiri">
-        <div class="card-header">
-            <a href="{{ route('head.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-            <button type="submit" class="btn btn-success radiusSendiri float-right"><i class="fa fa-fw fa-save"></i> Simpan</button>
-        </div>
-    </div>
+     
     <div class="row">
-        <div class="col-6">
+        <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <h5 class="card-title">Data</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="">Kategori Kendaraan</label>
-                        <select class="form-control select2" style="width: 100%;" id='kategori' name="kategori">
-                            @foreach ($kategoriTruck as $k)
-                                <option value="{{$k->id}}" {{($k->id == $data->id_kategori)? 'selected':'';}}>{{$k->nama}}</option>
-                            @endforeach
-                        </select>
-                    </div> 
-                    <div class="form-group">
-                        <label for="">Letak Kendaraan</label>
-                        <select class="form-control select2" style="width: 100%;" id='kota' name="kota">
-                            @foreach ($kota as $k)
-                                <option value="{{$k->id}}" {{($k->id == $data->kota_id)? 'selected':'';}}>{{$k->nama}}</option>
-                            @endforeach
-                        </select>
-                    </div> 
-                    <div class="form-group">
-                        <label for="">No. Polisi<span class="text-red">*</span></label>
-                        <input required type="text"  name="no_polisi" class="form-control" value="{{ $data->no_polisi }}" >                         
-                    </div>
-                    <div class="form-group">
-                        <label for="">No. Mesin</label>
-                        <input required type="text" name="no_mesin" class="form-control" value="{{$data->no_mesin}}" >
-                    </div>           
-                    <div class="form-group">
-                        <label for="">No. Rangka</label>
-                        <input required type="text"name="no_rangka" class="form-control" value="{{$data->no_rangka}}" >
-                    </div>           
-                    <div class="form-group">
-                        <label for="">Merk & Model</label>
-                        <input required type="text" name="merk_model" class="form-control" value="{{$data->merk_model}}" >
-                    </div>           
-                    <button type="submit" class="btn btn-success float-left">Simpan</button>
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="card radiusSendiri">
-                <div class="card-header">
-                    <h5 class="card-title">Detail</h5>
+                    <a href="{{ route('head.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                    <button type="submit" class="btn btn-success radiusSendiri ml-3"><i class="fa fa-fw fa-save"></i> Simpan</button>
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="form-group col-6">
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                            <label for="">Kategori Kendaraan</label>
+                            <select class="form-control select2" style="width: 100%;" id='kategori' name="kategori">
+                                @foreach ($kategoriTruck as $k)
+                                    <option value="{{$k->id}}" {{($k->id == $data->id_kategori)? 'selected':'';}}>{{$k->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div> 
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                            <label for="">Letak Kendaraan</label>
+                            <select class="form-control select2" style="width: 100%;" id='kota' name="kota">
+                                @foreach ($kota as $k)
+                                    <option value="{{$k->id}}" {{($k->id == $data->kota_id)? 'selected':'';}}>{{$k->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div> 
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                            <label for="">No. Polisi<span class="text-red">*</span></label>
+                            <input required type="text"  name="no_polisi" class="form-control" value="{{ $data->no_polisi }}" >                         
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-md-3 col-lg-3">
+                            <label for="">No. Mesin</label>
+                            <input required type="text" name="no_mesin" class="form-control" value="{{$data->no_mesin}}" >
+                        </div>           
+                        <div class="form-group col-sm-12 col-md-3 col-lg-3">
+                            <label for="">No. Rangka</label>
+                            <input required type="text"name="no_rangka" class="form-control" value="{{$data->no_rangka}}" >
+                        </div>           
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                            <label for="">Merk & Model</label>
+                            <input required type="text" name="merk_model" class="form-control" value="{{$data->merk_model}}" >
+                        </div>     
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4">
                             <label for="">Tahun Pembuatan</label>
                             <input required type="text" name="tahun_pembuatan" maxlength="4" class="form-control" value="{{$data->tahun_pembuatan}}" >
                         </div>          
-                        <div class="form-group col-6">
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4">
                             <label for="">Warna</label>
                             <input required type="text" name="warna" class="form-control" value="{{$data->warna}}" >
-                        </div>          
-                    </div>
-                 
-                    <div class="form-group">
-                        <label for="">Driver (Optional)</label>
-                        <select class="form-control select2" style="width: 100%;" id='driver_id' name="driver_id">
-                          @foreach ($drivers as $driver)
-                                <option value="{{$driver->id}}" {{($driver->id == $data->driver_id)? 'selected':'';}}>{{$driver->nama_lengkap}}</option>
-                          @endforeach
-                        </select>
-                    </div>   
-                    
-                    
+                        </div>  
+                        <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                            <label for="">Driver (Optional)</label>
+                            <select class="form-control select2" style="width: 100%;" id='driver_id' name="driver_id">
+                                @foreach ($drivers as $driver)
+                                    <option value="{{$driver->id}}" {{($driver->id == $data->driver_id)? 'selected':'';}}>{{$driver->nama_lengkap}}</option>
+                                @endforeach
+                            </select>
+                        </div>   
+                    </div> 
                 </div>
             </div>
         </div>
-     
+        
     </div>
 
     <div class='row' >
