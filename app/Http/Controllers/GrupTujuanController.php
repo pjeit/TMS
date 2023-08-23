@@ -22,7 +22,8 @@ class GrupTujuanController extends Controller
      */
     public function index()
     {
-        $data = Grup::where('is_aktif', 'Y')->get();
+        $data = Grup::where('is_aktif', 'Y')->paginate(5);
+        // ->get();
 
         return view('pages.master.grup_tujuan.index',[
                 'judul' => "Grup Tujuan",
@@ -120,7 +121,7 @@ class GrupTujuanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // try {
+        try {
             $data = $request->post();
             $user = Auth::user()->id;
 
@@ -153,62 +154,26 @@ class GrupTujuanController extends Controller
                     ]);
             }
 
-
             foreach ($data['data']['tujuan'] as $key => $value) {
-                // ini create baru
-                if($value['id_tujuan'] == null){
-                    $tarif = ($value['tarif'] != '')? floatval(str_replace(',', '', $value['tarif'])):0;
-                    $komisi = ($value['komisi'] != '')? floatval(str_replace(',', '', $value['komisi'])):0;
-                    $uang_jalan = ($value['uang_jalan'] != '')? floatval(str_replace(',', '', $value['uang_jalan'])):0;
-                    $harga_per_kg = ($value['harga_per_kg_hidden'] != '')? floatval(str_replace(',', '', $value['harga_per_kg_hidden'])):0;
+                if($value['id_tujuan'] != 'undefined'){
+                    // ini edit 
 
-                    $new_tuj = new GrupTujuan();
-                    $new_tuj->grup_id = $value['grup_hidden'];
-                    $new_tuj->marketing_id = $value['marketing_hidden'];
-                    $new_tuj->nama_tujuan = $value['nama_tujuan'];
-                    $new_tuj->alamat = $value['alamat_hidden'];
-                    $new_tuj->jenis_tujuan = $value['jenis_tujuan'];
-                    $new_tuj->harga_per_kg = $harga_per_kg;
-                    $new_tuj->min_muatan = $value['min_muatan_hidden'];
-                    $new_tuj->uang_jalan = $uang_jalan;
-                    $new_tuj->tarif = $tarif;
-                    $new_tuj->komisi = $komisi;
-                    $new_tuj->catatan = $value['catatan'];
-                    $new_tuj->created_by = $user;
-                    $new_tuj->created_at = now();
-
-                    if($new_tuj->save()){
-                        $data_biaya = json_decode($value['obj_biaya'], true);
-
-                        foreach ($data_biaya as $key => $item) {
-                            $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
-
-                            $new_biaya = new GrupTujuanBiaya();
-                            $new_biaya->grup_id = $value['grup_hidden'];
-                            $new_biaya->grup_tujuan_id = $new_tuj->id;
-                            $new_biaya->biaya = $biaya;
-                            $new_biaya->deskripsi = $item['deskripsi'];
-                            $new_biaya->catatan = $item['catatan'];
-                            $new_biaya->created_by = $user;
-                            $new_biaya->created_at = now();
-                            $new_biaya->save();
-                        }
-                    }
-                }else{ // ini edit 
                     $tarif = ($value['tarif'] != '')? floatval(str_replace(',', '', $value['tarif'])):0;
                     $komisi = ($value['komisi'] != '')? floatval(str_replace(',', '', $value['komisi'])):0;
                     $uang_jalan = ($value['uang_jalan'] != '')? floatval(str_replace(',', '', $value['uang_jalan'])):0;
                     $harga_per_kg = ($value['harga_per_kg_hidden'] != '')? floatval(str_replace(',', '', $value['harga_per_kg_hidden'])):0;
 
                     $edit_tujuan = GrupTujuan::where('is_aktif', 'Y')->findOrFail($value['id_tujuan']);
+                    var_dump($value['id_tujuan']);
+
                     if($edit_tujuan){
-                        $edit_tujuan->grup_id = $value['grup_hidden'];
+                        // $edit_tujuan->grup_id = $value['grup_hidden'];
                         $edit_tujuan->marketing_id = $value['marketing_hidden'];
                         $edit_tujuan->nama_tujuan = $value['nama_tujuan'];
                         $edit_tujuan->alamat = $value['alamat_hidden'];
                         $edit_tujuan->jenis_tujuan = $value['jenis_tujuan'];
                         $edit_tujuan->harga_per_kg = $harga_per_kg;
-                        $edit_tujuan->min_muatan = $value['min_muatan_hidden'];
+                        $edit_tujuan->min_muatan = 0;
                         $edit_tujuan->uang_jalan = $uang_jalan;
                         $edit_tujuan->tarif = $tarif;
                         $edit_tujuan->komisi = $komisi;
@@ -247,17 +212,56 @@ class GrupTujuanController extends Controller
                                 }
                             }
                         }
-                        // die;
+                    }
+                }else{
+                     // ini create baru
+
+                    $tarif = ($value['tarif'] != '')? floatval(str_replace(',', '', $value['tarif'])):0;
+                    $komisi = ($value['komisi'] != '')? floatval(str_replace(',', '', $value['komisi'])):0;
+                    $uang_jalan = ($value['uang_jalan'] != '')? floatval(str_replace(',', '', $value['uang_jalan'])):0;
+                    $harga_per_kg = ($value['harga_per_kg_hidden'] != '')? floatval(str_replace(',', '', $value['harga_per_kg_hidden'])):0;
+
+                    $new_tuj = new GrupTujuan();
+                    $new_tuj->grup_id = $value['grup_hidden'];
+                    $new_tuj->marketing_id = $value['marketing_hidden'];
+                    $new_tuj->nama_tujuan = $value['nama_tujuan'];
+                    $new_tuj->alamat = $value['alamat_hidden'];
+                    $new_tuj->jenis_tujuan = $value['jenis_tujuan'];
+                    $new_tuj->harga_per_kg = $harga_per_kg;
+                    $new_tuj->min_muatan = $value['min_muatan_hidden'];
+                    $new_tuj->uang_jalan = $uang_jalan;
+                    $new_tuj->tarif = $tarif;
+                    $new_tuj->komisi = $komisi;
+                    $new_tuj->catatan = $value['catatan'];
+                    $new_tuj->created_by = $user;
+                    $new_tuj->created_at = now();
+
+                    if($new_tuj->save()){
+                        $data_biaya = json_decode($value['obj_biaya'], true);
+
+                        foreach ($data_biaya as $key => $item) {
+                            $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
+
+                            $new_biaya = new GrupTujuanBiaya();
+                            $new_biaya->grup_id = $value['grup_hidden'];
+                            $new_biaya->grup_tujuan_id = $new_tuj->id;
+                            $new_biaya->biaya = $biaya;
+                            $new_biaya->deskripsi = $item['deskripsi'];
+                            $new_biaya->catatan = $item['catatan'];
+                            $new_biaya->created_by = $user;
+                            $new_biaya->created_at = now();
+                            $new_biaya->save();
+                        }
                     }
                 }
-
+               
             }
 
-            return redirect()->route('grup_tujuan.index')->with('status','Success!!');
-        //     // return redirect('grup_tujuan')->with('status','Success!');;
-        // } catch (ValidationException $e) {
-        //     return redirect('grup_tujuan')->with('status','Error!!');
-        // }
+            // return redirect()->route('grup_tujuan.index')->with('status','Success!!');
+            return redirect('grup_tujuan')->with('status','Success!!');
+        } catch (ValidationException $e) {
+            return redirect('grup_tujuan')->with('status','Error!!');
+        }
     }
 
     /**

@@ -13,11 +13,11 @@
     <div class="row">
         <div class="col-12">
             <div class="card radiusSendiri">
-                <div class="card-header">
+                {{-- <div class="card-header">
                     <a href="{{route('grup_tujuan.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
                     </a> 
-                </div>
+                </div> --}}
                 <div class="card-body">
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
@@ -69,6 +69,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    {{ $data->links('pagination::bootstrap-4') }}
                    
                 </div>
             </div>

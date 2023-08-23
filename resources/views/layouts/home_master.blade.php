@@ -237,6 +237,9 @@
   <script src="{{asset('assets/dist/js/formatUang.js')}}"></script>
   <script src="{{asset('assets/dist/js/keyPressuang.js')}}"></script>
 
+  {{-- script bikin capslock upper case --}}
+  <script src="{{asset('assets/dist/js/capslock.js')}}"></script>
+
 
 {{-- datepicker ambil yang lama --}}
   <link rel="stylesheet" href="{{asset('assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')}}">

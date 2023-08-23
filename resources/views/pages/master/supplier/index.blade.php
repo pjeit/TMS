@@ -31,7 +31,7 @@
                     <div class="form-group">
                             <label>Filter Supplier</label>
                             <form action="/supplier/jenisFilter/" method="get">
-                            <div class="input-group">
+                            <div class="input-group col-md-4">
                                 <select class="form-control selectpicker" name="jenisFilter" id="jenisFilter" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
                                         <option value="">--Pilih Jenis Supplier--</option>
                                     

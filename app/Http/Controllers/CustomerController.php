@@ -18,7 +18,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $data = Customer::where('is_aktif', 'Y')->get();
+        $data = Customer::where('is_aktif', 'Y')->paginate(5);
 
         return view('pages.master.customer.index',[
             'judul' => "Customer",

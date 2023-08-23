@@ -24,7 +24,8 @@ class GrupController extends Controller
     {
         $data = DB::table('grup')
             ->where('is_aktif', '=', "Y")
-            ->get();
+            ->paginate(5);
+            // ->get();
 
         $title = 'Delete data!';
         $text = "Apakah Anda yakin?";
@@ -75,6 +76,8 @@ class GrupController extends Controller
                 'total_max_kredit' => 'required',
             ], $pesanKustom);
 
+            var_dump($request->post()); die;
+
             $total_kredit = 0;
             $total_max_kredit = floatval(str_replace(',', '', $request['total_max_kredit']));
 
@@ -83,8 +86,26 @@ class GrupController extends Controller
             $grup->nama_grup = $request->nama_grup;
             $grup->nama_pic = $request->nama_pic;
             $grup->email = $request->email;
-            $grup->telp1 = $request->telp1;
-            $grup->telp2 = $request->telp2;
+            if(isset($request['telp1'])){
+                if (substr($request['telp1'], 0, 2) === "08") {
+                    $telp1 = "8" . substr($request['telp1'], 2);
+                }else{
+                    $telp1 = $request['telp1'];
+                }
+            }else{
+                $telp1 = '';
+            }
+            if(isset($request['telp2'])){
+                if (substr($request['telp2'], 0, 2) === "08") {
+                    $telp2 = "8" . substr($request['telp2'], 2);
+                }else{
+                    $telp2 = $request['telp2'];
+                }
+            }else{
+                $telp2 = '';
+            }
+            $grup->telp1 = $telp1;
+            $grup->telp2 = $telp2;
             $grup->total_kredit = $total_kredit;
             $grup->total_max_kredit = $total_max_kredit;
             $grup->created_at = now();
@@ -154,8 +175,26 @@ class GrupController extends Controller
                 $edit_grup->nama_grup = $data['nama_grup'];
                 $edit_grup->nama_pic = $data['nama_pic'];
                 $edit_grup->email = $data['email'];
-                $edit_grup->telp1 = $data['telp1'];
-                $edit_grup->telp2 = $data['telp2'];
+                if(isset($data['telp1'])){
+                    if (substr($data['telp1'], 0, 2) === "08") {
+                        $telp1 = "8" . substr($data['telp1'], 2);
+                    }else{
+                        $telp1 = $data['telp1'];
+                    }
+                }else{
+                    $telp1 = '';
+                }
+                if(isset($data['telp2'])){
+                    if (substr($data['telp2'], 0, 2) === "08") {
+                        $telp2 = "8" . substr($data['telp2'], 2);
+                    }else{
+                        $telp2 = $data['telp2'];
+                    }
+                }else{
+                    $telp2 = '';
+                }
+                $edit_grup->telp1 = $telp1;
+                $edit_grup->telp2 = $telp2;
                 $edit_grup->updated_at = now();
                 $edit_grup->updated_by = $user;
                 $edit_grup->save();
