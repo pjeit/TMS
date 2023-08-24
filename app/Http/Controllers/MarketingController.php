@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Grup;
 use App\Models\GrupMember;
+use App\Models\Marketing;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
-class GrupMemberController extends Controller
+class MarketingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,7 +29,7 @@ class GrupMemberController extends Controller
                         ->paginate(5);
                         // ->get();
         
-        return view('pages.master.grup_member.index',[
+        return view('pages.master.marketing.index',[
             'judul' => "Marketing Grup",
             'data' => $data,
         ]);
@@ -45,7 +46,7 @@ class GrupMemberController extends Controller
         $role = Role::where('is_aktif', 'Y')->get();
         // dd($role[2]->id);
 
-        return view('pages.master.grup_member.create',[
+        return view('pages.master.marketing.create',[
             'judul' => "Marketing Grup",
             'grup' => $grup,
             'role' => $role,
@@ -75,7 +76,7 @@ class GrupMemberController extends Controller
 
             $user = Auth::user()->id;
         
-            $new_customer = new GrupMember();
+            $new_customer = new Marketing();
             $new_customer->grup_id = $request->grup_id;
             // hardcode langsung id marketing
             $role = Role::where('is_aktif', 'Y')->get();
@@ -94,7 +95,7 @@ class GrupMemberController extends Controller
             $new_customer->is_aktif = 'Y';
             $new_customer->save();
 
-            return redirect()->route('grup_member.index')->with('status','Success!!');
+            return redirect()->route('marketing.index')->with('status','Success!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -106,7 +107,7 @@ class GrupMemberController extends Controller
      * @param  \App\Models\GrupMember  $grupMember
      * @return \Illuminate\Http\Response
      */
-    public function show(GrupMember $grupMember)
+    public function show(Marketing $marketing)
     {
         //
     }
@@ -117,13 +118,13 @@ class GrupMemberController extends Controller
      * @param  \App\Models\GrupMember  $grupMember
      * @return \Illuminate\Http\Response
      */
-    public function edit(GrupMember $grupMember)
+    public function edit(Marketing $marketing)
     {
         $grup = Grup::where('is_aktif', 'Y')->get();
         $role = Role::where('is_aktif', 'Y')->get();
-        $data = $grupMember;
+        $data = $marketing;
 
-        return view('pages.master.grup_member.edit',[
+        return view('pages.master.marketing.edit',[
             'judul' => "Marketing Grup",
             'data' => $data,
             'grup' => $grup,
@@ -138,7 +139,7 @@ class GrupMemberController extends Controller
      * @param  \App\Models\GrupMember  $grupMember
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, GrupMember $grupMember)
+    public function update(Request $request, Marketing $marketing)
     {
         try {
             $pesanKustom = [
@@ -155,25 +156,25 @@ class GrupMemberController extends Controller
 
             $user = Auth::user()->id;
 
-            $grupMember->grup_id = $request->grup_id;
+            $marketing->grup_id = $request->grup_id;
             // hardcode langsung id marketing
             $role = Role::where('is_aktif', 'Y')->get();
-            $grupMember->role_id = $role[2]->id;
-            $grupMember->nama = $request->nama;
-            $grupMember->no_rek = $request->no_rek;
-            $grupMember->atas_nama = $request->atas_nama;
-            $grupMember->bank = $request->bank;
-            $grupMember->cabang = $request->cabang;
+            $marketing->role_id = $role[2]->id;
+            $marketing->nama = $request->nama;
+            $marketing->no_rek = $request->no_rek;
+            $marketing->atas_nama = $request->atas_nama;
+            $marketing->bank = $request->bank;
+            $marketing->cabang = $request->cabang;
             $telp1 = isset($request->telp1) ? (substr($request->telp1, 0, 2) === "08" ? "8" . substr($request->telp1, 2) : $request->telp1) : '';
             $telp2 = isset($request->telp2) ? (substr($request->telp2, 0, 2) === "08" ? "8" . substr($request->telp2, 2) : $request->telp2) : '';
-            $grupMember->telp1 = $telp1;
-            $grupMember->telp2 = $telp2;
-            $grupMember->updated_by = $user;
-            $grupMember->updated_at = now();
-            $grupMember->is_aktif = 'Y';
-            $grupMember->save();
+            $marketing->telp1 = $telp1;
+            $marketing->telp2 = $telp2;
+            $marketing->updated_by = $user;
+            $marketing->updated_at = now();
+            $marketing->is_aktif = 'Y';
+            $marketing->save();
 
-            return redirect()->route('grup_member.index')->with('status','Success!!');
+            return redirect()->route('marketing.index')->with('status','Success!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -185,14 +186,14 @@ class GrupMemberController extends Controller
      * @param  \App\Models\GrupMember  $grupMember
      * @return \Illuminate\Http\Response
      */
-    public function destroy(GrupMember $grupMember)
+    public function destroy(Marketing $marketing)
     {
         $user = Auth::user()->id;
-        $grupMember->updated_by = $user;
-        $grupMember->updated_at = now();
-        $grupMember->is_aktif = "N";
-        $grupMember->save();
+        $marketing->updated_by = $user;
+        $marketing->updated_at = now();
+        $marketing->is_aktif = "N";
+        $marketing->save();
 
-        return redirect()->route('grup_member.index')->with('status','Success!!');
+        return redirect()->route('marketing.index')->with('status','Success!!');
     }
 }

@@ -23,14 +23,14 @@
         @endforeach
 
     @endif
-    <form action="{{ route('grup_member.update', ['grup_member' => $data->id]) }}" method="POST" >
+    <form action="{{ route('marketing.update', ['marketing' => $data->id]) }}" method="POST" >
     @method('PUT')
     @csrf
     <div class="row">
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                <a href="{{ route('grup_member.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                <a href="{{ route('marketing.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
                 <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
                 <div class="card-body">

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GrupMember extends Model
+class Marketing extends Model
 {
     use HasFactory;
     protected $table = 'grup_member';

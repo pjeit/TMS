@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\GrupMember;
 use App\Models\GrupTujuan;
 use App\Models\GrupTujuanBiaya;
+use App\Models\Marketing;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +34,7 @@ class GrupTujuanController extends Controller
 
     public function getMarketing($groupId)
     {
-        $marketingList = GrupMember::where('grup_id', $groupId)->where('role_id', 3)->get();
+        $marketingList = Marketing::where('grup_id', $groupId)->where('role_id', 3)->get();
         return response()->json($marketingList);
     }
 

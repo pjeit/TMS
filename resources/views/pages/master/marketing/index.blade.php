@@ -20,7 +20,7 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('grup_member.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                    <a href="{{route('marketing.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
                     </a> 
                 </div>
@@ -42,7 +42,7 @@
                                     <td>{{ $item->nama_grup }}</td>  
                                     <td>{{ $item->nama_role }}</td>  
                                     <td>                                    
-                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('grup_member.edit',[$item->id])}}">
+                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('marketing.edit',[$item->id])}}">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>   
                                         <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus_{{ $item->id }}">
@@ -64,10 +64,10 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal" >Tidak</button>
-                                                <form action="{{route('grup_member.destroy',[$item->id])}}" method="POST" >
+                                                <form action="{{route('marketing.destroy',[$item->id])}}" method="POST" >
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button action="{{route('grup_member.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
+                                                    <button action="{{route('marketing.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
                                                 </form>
                                             </div>
                                         </div>

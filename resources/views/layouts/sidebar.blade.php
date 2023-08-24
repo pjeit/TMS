@@ -117,7 +117,7 @@
           @if ($user_role == 1 || $user_role == 2)
             <li class="nav-item 
                 {{ request()->is('grup*')||
-                request()->is('grup_member*')||
+                request()->is('marketing*')||
                 request()->is('customer*')||
                 request()->is('head*')||
                 request()->is('chassis*')||
@@ -140,7 +140,7 @@
                 </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item   {{ request()->is('grup*')||
-                request()->is('grup_member*')||
+                request()->is('marketing*')||
                 request()->is('customer*')||
                 request()->is('grup_tujuan*')
                 ? 'menu-is-opening menu-open' : '' }}">
@@ -162,7 +162,7 @@
                     </li>
 
                     <li class="nav-item">
-                      <a href="{{route('grup_member.index')}}" style="font-weight: 500;" class="nav-link {{ request()->url() === route('grup_member.index')? ' active' : '' }} ">
+                      <a href="{{route('marketing.index')}}" style="font-weight: 500;" class="nav-link {{ request()->url() === route('marketing.index')? ' active' : '' }} ">
                       <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
                         <p>
                           Marketing Grup

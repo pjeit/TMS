@@ -80,7 +80,7 @@ Route::middleware(['auth'])->group(function () {
     
         Route::resource('users', 'App\Http\Controllers\UsersController');
     
-        Route::resource('grup_member', 'App\Http\Controllers\GrupMemberController');
+        Route::resource('marketing', 'App\Http\Controllers\MarketingController');
         Route::resource('pair_kendaraan', 'App\Http\Controllers\PairKendaraanController');
 
     });
