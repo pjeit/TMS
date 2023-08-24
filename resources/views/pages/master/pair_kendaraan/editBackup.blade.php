@@ -128,10 +128,8 @@
                              </thead>
                                  <tbody id="tb"> 
                                      @if(!empty($dataPaired))
-                                     {{$counter=0;}}
          
                                          @foreach ($dataPaired as $dataP)
-                                        {{$counter++;}}
                                          <tr>
                                              <td>
                                                  <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">

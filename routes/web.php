@@ -51,6 +51,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['is_admin'])->group(function () {
         Route::resource('coa', 'App\Http\Controllers\CoaController');
+        Route::resource('booking', 'App\Http\Controllers\BookingController');
+
+        Route::get('job_order/createx', [App\Http\Controllers\JobOrderController::class, 'createx']);
+        Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
 
         Route::resource('pengaturan_keuangan', 'App\Http\Controllers\PengaturanKeuanganController');
     

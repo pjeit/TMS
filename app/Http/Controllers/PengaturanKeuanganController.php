@@ -18,12 +18,12 @@ class PengaturanKeuanganController extends Controller
      */
     public function index()
     {
-        $dataPengaturanKeuangan = PengaturanKeuangan::where('id', 1)->first();
+        $data = PengaturanKeuangan::where('id', 1)->first();
 
         $dataMKas = DB::table('m_kas')->get();
         $judul = 'Pengaturan Keuangan';
         return view('pages.master.pengaturan_keuangan.index',[
-            'dataPengaturanKeuangan' => $dataPengaturanKeuangan,
+            'data' => $data,
             'dataMKas' => $dataMKas,
             'judul' => $judul,
         ]);

@@ -327,6 +327,35 @@
             </li>
           @endif
 
+          <li class="nav-item">
+            <a href="#" class="nav-link" style="font-weight: 700;">
+              <i class="fas fa-shipping-fast"></i>
+              <p>
+                Inbound Job Order <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('job_order.index')}}" class="nav-link {{request()->url() === route('job_order.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Job Order
+                  </p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('booking.index')}}" class="nav-link {{request()->url() === route('booking.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="far fa-bookmark nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Booking
+                  </p>
+                </a>
+              </li>
+            </ul>
+        </li>
+
           @if ($user_role == 1 || $user_role == 3)
             {{-- menu marketing --}}
             <li class="nav-item">
@@ -403,6 +432,9 @@
           @endif
 
         @endif
+
+        
+
 
 
         <!-- <li class="nav-item">
