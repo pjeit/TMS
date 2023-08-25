@@ -126,7 +126,6 @@
                                         <input type="hidden" name="hargaThc[]" value="">
                                         <input type="hidden" name="hargaLolo[]" value="">
                                         <input type="hidden" name="hargaApbs[]" value="">
-                                        <input type="hidden" name="hargaCleaning[]" value="">
                                         <input type="hidden" name="hargaDocFee[]" value="">
 
                                     </td>
@@ -302,21 +301,13 @@
        // encode ubah array jadi json
     //decode ubah json jadi array
         var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
-        var harga20Ft = {
-            'thc': dataKeuangan.thc_20ft,
-            'lolo': dataKeuangan.lolo_20ft,
-            'apbs': dataKeuangan.apbs_20ft,
-            'cleaning': dataKeuangan.cleaning_20ft,
-            'doc_fee': dataKeuangan.doc_fee_20ft,
+        console.log(dataKeuangan.apbs_20ft)
+
+        var hargaApbs = {
+            '20': dataKeuangan.apbs_20ft,
+            '40': dataKeuangan.apbs_40ft
         };
-        // console.log(harga20Ft.thc)
-        var harga40Ft = {
-            'thc': dataKeuangan.thc_40ft,
-            'lolo': dataKeuangan.lolo_40ft,
-            'apbs': dataKeuangan.apbs_40ft,
-            'cleaning': dataKeuangan.cleaning_40ft,
-            'doc_fee': dataKeuangan.doc_fee_40ft,
-        };
+
       
 
         // total_thc
@@ -336,32 +327,36 @@
     //    <input type="hidden" name="hargaThc[]" value="">
     //     <input type="hidden" name="hargaLolo[]" value="">
     //     <input type="hidden" name="hargaApbs[]" value="">
-    // <input type="hidden" name="hargaCleaning[]" value="">
     //     <input type="hidden" name="hargaDocFee[]" value="">
         // thc_cekbox
         // lolo_cekbox
         // apbs_cekbox
         // cleaning_cekbox
         // doc_fee_cekbox
-
-
-        // harga20Ft.thc
-        // harga20Ft.lolo
-        // harga20Ft.apbs
-        // harga20Ft.cleaning
-        // harga20Ft.doc_fee
         var tampunganValueThc2040 = [];
         $('#thc_cekbox').on('change', function() {
             if ($(this).prop('checked')) {
-                $('#tb select[name="tipe[]"]').each(function(i) {
+
+                $('#tb select[name="tipe[]"]').each(function() {
                     var valueCombobox = $(this).val();
-                    $('#tb input[name="hargaThc[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.thc : harga40Ft.thc);
+                    $('#tb input[name="hargaThc[]"]').each(function(i) {
+                        if(valueCombobox=='20')
+                        {
+                            $(this)[i].val(20000);
+
+                        }
+                    });
+                    // tampunganValueThc2040.push(valueCombobox);
                  });
+                console.log('Thc:'+tampunganValueThc2040);
+                $(tampunganValueThc2040).each(function(i) {
+                    var valueCombobox = $(this).val();
+                    tampunganValueThc2040.push(valueCombobox);
+                 });
+                
             } else {
                 tampunganValueThc2040 = [];
-                 $('#tb input[name="hargaThc[]"]').each(function(i) {
-                      $(this).val('');
-                });
+                console.log('Thc Kosong:'+tampunganValueThc2040);
                 console.log('Checkbox is not checked');
             }
         });
@@ -369,17 +364,15 @@
          $('#lolo_cekbox').on('change', function() {
             if ($(this).prop('checked')) {
 
-                 $('#tb select[name="tipe[]"]').each(function(i) {
+                $('#tb select[name="tipe[]"]').each(function() {
                     var valueCombobox = $(this).val();
-                    $('#tb input[name="hargaLolo[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.lolo : harga40Ft.lolo);
-            
+                    tampunganValueLolo2040.push(valueCombobox);
                  });
+                console.log('Lolo:'+tampunganValueLolo2040);
                 
             } else {
                 tampunganValueLolo2040 = [];
-                 $('#tb input[name="hargaLolo[]"]').each(function(i) {
-                      $(this).eq(i).val('');
-                });
+                console.log('Lolo Kosong:'+tampunganValueLolo2040);
                 console.log('Checkbox is not checked');
             }
         });
@@ -387,16 +380,15 @@
          $('#apbs_cekbox').on('change', function() {
             if ($(this).prop('checked')) {
 
-                 $('#tb select[name="tipe[]"]').each(function(i) {
+                $('#tb select[name="tipe[]"]').each(function() {
                     var valueCombobox = $(this).val();
-                    $('#tb input[name="hargaApbs[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.apbs : harga40Ft.apbs);
+                    tampunganValueApbs2040.push(valueCombobox);
                  });
+                console.log('Apbs:'+tampunganValueApbs2040);
                 
             } else {
                 tampunganValueApbs2040 = [];
-                $('#tb input[name="hargaApbs[]"]').each(function(i) {
-                      $(this).eq(i).val('');
-                });
+                console.log('Apbs Kosong:'+tampunganValueApbs2040);
                 console.log('Checkbox is not checked');
             }
         });
@@ -404,17 +396,15 @@
          $('#cleaning_cekbox').on('change', function() {
             if ($(this).prop('checked')) {
 
-                $('#tb select[name="tipe[]"]').each(function(i) {
+                $('#tb select[name="tipe[]"]').each(function() {
                     var valueCombobox = $(this).val();
-                    $('#tb input[name="hargaCleaning[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
-             
+                    tampunganValueCleaning2040.push(valueCombobox);
                  });
+                console.log('Cleaning:'+tampunganValueCleaning2040);
                 
             } else {
                 tampunganValueCleaning2040 = [];
-                 $('#tb input[name="hargaCleaning[]"]').each(function(i) {
-                      $(this).eq(i).val('');
-                });
+                console.log('Cleaning Kosong:'+tampunganValueCleaning2040);
                 console.log('Checkbox is not checked');
             }
         });
@@ -422,25 +412,19 @@
          $('#doc_fee_cekbox').on('change', function() {
             if ($(this).prop('checked')) {
 
-                 $('#tb select[name="tipe[]"]').each(function(i) {
+                $('#tb select[name="tipe[]"]').each(function() {
                     var valueCombobox = $(this).val();
-                    $('#tb input[name="hargaDocFee[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.doc_fee : harga40Ft.doc_fee);
+                    tampunganValueDocfee2040.push(valueCombobox);
                  });
+                console.log('DocFee:'+tampunganValueDocfee2040);
+                
             } else {
                 tampunganValueDocfee2040 = [];
-                  $('#tb input[name="hargaDocFee[]"]').each(function(i) {
-                        $(this).eq(i).val('');
-
-                });
+                console.log('DocFee Kosong:'+tampunganValueDocfee2040);
                 console.log('Checkbox is not checked');
             }
         });
-//     $('#tb input[name="hargaThc[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.thc : harga40Ft.thc);
-// $('#tb input[name="hargaLolo[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.lolo : harga40Ft.lolo);
-// $('#tb input[name="hargaApbs[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.apbs : harga40Ft.apbs);
-// $('#tb input[name="hargaCleaning[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
-// $('#tb input[name="hargaDocFee[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.doc_fee : harga40Ft.doc_fee);
-//                         $('#tb input[name="hargaThc[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.thc : harga40Ft.thc);
+    
         function updateId()
         {
             $('#tb select[name="tipe[]"]').each(function(i) {   
@@ -448,87 +432,44 @@
                 $(this).on('change', function() {
 
                     if ($('#thc_cekbox').prop('checked')) {
-                       
-                        //this val ini ambil value dari combobox bukan dari checkbox
-                        var valueCombobox = $(this).val();
-                        $('#tb input[name="hargaThc[]"]').each(function(index) {
-                             $('#tb input[name="hargaThc[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.thc : harga40Ft.thc);
-                            if(valueCombobox=='20')
-                            {
-                                $(this)[index].value=harga20Ft.thc;
-                            }
-                            else
-                            {
-                                $(this)[index].value=harga40Ft.thc;
-
-                            }
-                        });
-
+                        if(tampunganValueThc2040.length > 0)
+                        {
+                            //this val ini ambil value dari combobox bukan dari checkbox
+                            tampunganValueThc2040[i] = $(this).val(); 
+                        }    
                     }   
                     if ($('#lolo_cekbox').prop('checked')) {
-                          var valueCombobox = $(this).val();
-                            $('#tb input[name="hargaLolo[]"]').each(function(index) {
-                                if(valueCombobox=='20')
-                                {
-                                    $(this)[index].value=harga20Ft.lolo;
-                                }
-                                else
-                                {
-                                    $(this)[index].value=harga40Ft.lolo;
-
-                                }
-                            });
+                         
+                        if(tampunganValueLolo2040.length > 0)
+                        {
+                            tampunganValueLolo2040[i] = $(this).val(); 
+                        }
                     }  
                     if ($('#apbs_cekbox').prop('checked')) {
-                       
-                          var valueCombobox = $(this).val();
-                            $('#tb input[name="hargaApbs[]"]').each(function(index) {
-                                if(valueCombobox=='20')
-                                {
-                                    $(this)[index].value=harga20Ft.apbs;
-                                }
-                                else
-                                {
-                                    $(this)[index].value=harga40Ft.apbs;
-
-                                }
-                            });
+                        if(tampunganValueApbs2040.length > 0)
+                        {
+                            tampunganValueApbs2040[i] = $(this).val(); 
+                        }
                         
                     }        
                     if ($('#cleaning_cekbox').prop('checked')) {
-                        
-                          var valueCombobox = $(this).val();
-                            $('#tb input[name="hargaCleaning[]"]').each(function(index) {
-                                if(valueCombobox=='20')
-                                {
-                                    $(this)[index].value=harga20Ft.cleaning;
-                                }
-                                else
-                                {
-                                    $(this)[index].value=harga40Ft.cleaning;
-
-                                }
-                            });
+                        if(tampunganValueCleaning2040.length > 0)
+                        {
+                            tampunganValueCleaning2040[i] = $(this).val(); 
+                        }
                     }
                     if ($('#doc_fee_cekbox').prop('checked')) {
-                         var valueCombobox = $(this).val();
-                        $('#tb input[name="hargaDocFee[]"]').each(function(index) {
-                            if(valueCombobox=='20')
-                            {
-                                $(this)[index].value=harga20Ft.doc_fee;
-                            }
-                            else
-                            {
-                                $(this)[index].value=harga40Ft.doc_fee;
-
-                            }
-                        });
+                         
+                        if(tampunganValueDocfee2040.length > 0)
+                        {
+                            tampunganValueDocfee2040[i] = $(this).val(); 
+                        }
                     }
-                    // console.log('Thc:'+tampunganValueThc2040);
-                    // console.log('Lolo:'+tampunganValueLolo2040);
-                    // console.log('Apbs:'+tampunganValueApbs2040);
-                    // console.log('Cleaning:'+tampunganValueCleaning2040);
-                    // console.log('Docfee:'+tampunganValueDocfee2040);
+                    console.log('Thc:'+tampunganValueThc2040);
+                    console.log('Lolo:'+tampunganValueLolo2040);
+                    console.log('Apbs:'+tampunganValueApbs2040);
+                    console.log('Cleaning:'+tampunganValueCleaning2040);
+                    console.log('Docfee:'+tampunganValueDocfee2040);
                 });  
                     
             });
@@ -572,11 +513,6 @@
                         <option value="20">20Ft</option>
                         <option value="40">40Ft</option>
                     </select>
-                    <input type="hidden" name="hargaThc[]" value="">
-                    <input type="hidden" name="hargaLolo[]" value="">
-                    <input type="hidden" name="hargaApbs[]" value="">
-                    <input type="hidden" name="hargaCleaning[]" value="">
-                    <input type="hidden" name="hargaDocFee[]" value="">
                 </td>
                 <td>
                     <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >

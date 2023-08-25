@@ -46,11 +46,18 @@ class JobOrderController extends Controller
             ->select('*')
             ->where('customer.is_aktif', '=', "Y")
             ->get();
+        $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
+            ->select('*')
+            ->where('pengaturan_keuangan.is_aktif', '=', "Y")
+            ->get();
+        // dd($dataPengaturanKeuangan[0]);
 
         return view('pages.order.job_order.create',[
             'judul'=>"Job Order",
             'dataSupplier' => $dataSupplier,
-            'dataCustomer' =>$dataCustomer
+            'dataCustomer' =>$dataCustomer,
+            'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
+
         ]);
     }
 
