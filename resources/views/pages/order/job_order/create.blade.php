@@ -29,7 +29,7 @@
     <form action="{{ route('job_order.store') }}" method="POST" >
       @csrf
         <div class="row m-2">
-            <div class="col-12">
+             <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
                         <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
@@ -47,36 +47,56 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-6" >
-                                    <div class="form-group ">
-                                        <label for="">Pelayaran</label>
-                                        <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                            <option value="0">--Pilih Pelayaran--</option>
-                                            @foreach ($dataSupplier as $sup)
-                                                <option value="{{$sup->id}}">{{ $sup->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                            </div>
+                            <div class="col-6" >
+                                <div class="form-group ">
+                                    <label for="">Pelayaran</label>
+                                    <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                        <option value="0">--Pilih Pelayaran--</option>
+                                        @foreach ($dataSupplier as $sup)
+                                            <option value="{{$sup->id}}">{{ $sup->nama }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group ">
-                                        <label for="">No. BL<span class="text-red">*</span></label>
-                                        <input required type="text" name="nama_pic" class="form-control" value="{{old('nama_pic','')}}" >
-                                    </div>           
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                            <label for="tgl_sandar">Tanggal Sandar</label>
-                                        <div class="input-group mb-0">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{old('tgl_sandar','')}}">     
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group ">
+                                    <label for="">No. BL<span class="text-red">*</span></label>
+                                    <input required type="text" name="nama_pic" class="form-control" value="{{old('nama_pic','')}}" >
+                                </div>           
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                        <label for="tgl_sandar">Tanggal Sandar</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                    </div>           
-                                </div>
+                                        <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{old('tgl_sandar','')}}">     
+                                    </div>
+                                </div>           
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
+                                    <input required type="text" name="pelabuhan_muat" class="form-control" value="{{old('pelabuhan_muat','')}}" >
+                                </div>     
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('pelauhan_bongkar','')}}" >
+                                </div>              
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Free Time<span class="text-red">*</span></label>
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('freetime','')}}" >
+                                </div>              
                             </div>
                         </div>  
                             <!-- <div class="card radiusSendiri">
@@ -112,7 +132,6 @@
                                         <input type="hidden" name="hargaThc[]" value="">
                                         <input type="hidden" name="hargaLolo[]" value="">
                                         <input type="hidden" name="hargaApbs[]" value="">
-                                        <input type="hidden" name="hargaCleaning[]" value="">
                                         <input type="hidden" name="hargaDocFee[]" value="">
 
                                     </td>
