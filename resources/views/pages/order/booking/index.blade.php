@@ -8,9 +8,7 @@
 @endif
 
 @section('pathjudul')
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item">Master</li>
-    <li class="breadcrumb-item"><a href="{{route('customer.index')}}">Customer</a></li>
+
 @endsection
 
 @section('content')
@@ -23,7 +21,7 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('customer.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                    <a href="{{route('booking.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
                     </a> 
                 </div>
@@ -31,27 +29,26 @@
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                              <th>Nama</th>
-                              <th>Alamat</th>
-                              {{-- <th>Telp</th> --}}
-                              <th>Kredit Sekarang</th>
-                              {{-- <th>Kredit Max</th> --}}
+                              <th>No Booking</th>
+                              <th>Tgl Booking</th>
+                              <th>Tgl Berangkat</th>
+                              <th>Tujuan</th>
+                              <th>Catatan</th>
                               <th>Aksi</th>
                             </tr>
                           </thead>
                         <tbody>
+
                             @foreach($data as $item)
                              <tr>
                                 <td>{{ $item->nama }}</td>
                                 <td>{{ $item->alamat }}</td>  
-                                {{-- <td>{{ $item->telp1 }}</td>   --}}
                                 <td>{{ number_format($item->kredit_sekarang) }}</td>  
-                                {{-- <td>{{ number_format($item->max_kredit) }}</td> --}}
                                 <td>                                    
-                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('customer.edit',[$item->id])}}">
+                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('booking.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
-                                    <!-- Button trigger modal -->
+                                    <!-- Bu tton trigger modal -->
                                     <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus_{{ $item->id }}">
                                         <i class="fas fa-trash"></i> Hapus
                                     </button>          
@@ -71,10 +68,10 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal" >Tidak</button>
-                                            <form action="{{route('customer.destroy',[$item->id])}}" method="POST" >
+                                            <form action="{{route('booking.destroy',[$item->id])}}" method="POST" >
                                                 @csrf
                                                 @method('DELETE')
-                                                <button action="{{route('customer.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
+                                                <button action="{{route('booking.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
                                             </form>
                                         </div>
                                     </div>

@@ -28,4 +28,12 @@ class Marketing extends Model
         'updated_by',
         'is_aktif',
     ];
+
+    public function tujuans($id)
+    {
+        // return $this->hasMany('App\GrupTujuan');
+        $tujuans = GrupTujuan::where('grup_id', $id)->get();
+        return $tujuans;
+    }
+   
 }
