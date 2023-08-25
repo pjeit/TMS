@@ -116,39 +116,39 @@
                                     </tr>
                                 </thead>
                                 <tbody id="tb"> 
-                                    {{-- <tr >
-                                        <td>
-                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
-                                        </td>
-                                        <td>
-                                            <input type="text" id="seal" name="seal[]"class="form-control" value="">
-                                        </td>
-                                        <td>
-                                            <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Tipe Kontainer--</option>
-                                                <option value="20">20Ft</option>
-                                                <option value="40">40Ft</option>
-                                            </select>
-                                            <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
-                                            <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
-                                            <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
-                                            <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
-                                            <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
-                                        </td>
-                                        <td>
-                                            <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Tujuan--</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
-                                        </td>
-                                        <td align="center" class="text-danger">
-                                            <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
-                                                <i class="fa fa-fw fa-trash-alt"></i>
-                                            </button>
-                                        </td>
-                                    </tr> --}}
+                                <tr>
+                                    <td>
+                                        <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control" value="">
+                                    </td>
+                                    <td>
+                                        <input type="text" id="seal" name="seal[]"class="form-control" value="">
+                                    </td>
+                                    <td>
+                                        <select class="form-control selectpicker" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                            <option value="">--Pilih Tipe Kontainer--</option>
+                                            <option value="20">20Ft</option>
+                                            <option value="40">40Ft</option>
+                                        </select>
+                                        <input type="hidden" class="hargaThc" name="hargaThc[]" value="">
+                                        <input type="hidden" class="hargaLolo" name="hargaLolo[]" value="">
+                                        <input type="hidden" class="hargaApbs" name="hargaApbs[]" value="">
+                                        <input type="hidden" class="hargaDocFee" name="hargaDocFee[]" value="">
+
+                                    </td>
+                                    <td>
+                                        <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                            <option value="">--Pilih Tujuan--</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
+                                    </td>
+                                    <td align="center" class="text-danger">
+                                        <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger radiusSendiri">
+                                            <i class="fa fa-fw fa-trash-alt"></i>
+                                        </button>
+                                    </td>
+                                </tr>
                                 </tbody>
                                 <tfoot>
                                 
@@ -184,23 +184,23 @@
                                 <tbody > 
                                     <tr>
                                         <th><span> <input type="checkbox" name="thc_cekbox" id="thc_cekbox"></span> THC</th>
-                                        <td name="total_thc"><input type="text" id="total_thc" class="form-control" readonly></td>
+                                        <td name="total_thc" id="total_thc">Harga</td>
                                     </tr>
                                     <tr>
                                         <th><span> <input type="checkbox" name="lolo_cekbox" id="lolo_cekbox"></span> LOLO</th>
-                                        <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" readonly></td>
+                                        <td name="total_lolo" id="total_lolo">Harga</td>
                                     </tr>
                                     <tr>
                                         <th><span> <input type="checkbox" name="apbs_cekbox" id="apbs_cekbox"></span> APBS</th>
-                                        <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" readonly></td>
+                                        <td name="total_apbs" id="total_apbs">Harga</td>
                                     </tr>
                                     <tr>
                                         <th><span> <input type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox"></span> CLEANING</th>
-                                        <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" readonly></td>
+                                        <td name="total_cleaning" id="total_cleaning">Harga</td>
                                     </tr>
                                     <tr>
                                         <th><span> <input type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox"></span> DOC FEE</th>
-                                        <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" readonly></td>
+                                        <td name="total_doc_fee" id="total_doc_fee">Harga</td>
                                     </tr>
                                     <tr>
                                         <th>SUB TOTAL</th>
@@ -300,14 +300,12 @@
         </div>
     </form>
 
-<script>
-   
-
-
-</script>
 <script type="text/javascript">
     $(document).ready(function() {
+      // Listen for input events on all input fields
 
+       // encode ubah array jadi json
+    //decode ubah json jadi array
         var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
         var harga20Ft = {
             'thc': dataKeuangan.thc_20ft,
@@ -325,6 +323,221 @@
             'doc_fee': dataKeuangan.doc_fee_40ft,
         };
       
+        // total_thc
+        // total_lolo
+        // total_apbs
+        // total_cleaning
+        // total_doc_fee
+        // total_sblm_dooring
+
+        setInterval(function() {
+            //  $('#tb select[name="tipe[]"]').each(function() {
+            //     var selectedValue = $(this).val();
+            //     selectedValues.push(selectedValue);
+            // });
+            // console.log(selectedValues);
+        }, 2000);
+        //    <input type="hidden" name="hargaThc[]" value="">
+        //     <input type="hidden" name="hargaLolo[]" value="">
+        //     <input type="hidden" name="hargaApbs[]" value="">
+        // <input type="hidden" name="hargaCleaning[]" value="">
+        //     <input type="hidden" name="hargaDocFee[]" value="">
+        // thc_cekbox
+        // lolo_cekbox
+        // apbs_cekbox
+        // cleaning_cekbox
+        // doc_fee_cekbox
+
+
+        // harga20Ft.thc
+        // harga20Ft.lolo
+        // harga20Ft.apbs
+        // harga20Ft.cleaning
+        // harga20Ft.doc_fee
+        var tampunganValueThc2040 = [];
+        $('#thc_cekbox').on('change', function() {
+            if ($(this).prop('checked')) {
+                $('#tb select[name="tipe[]"]').each(function(i) {
+                    var valueCombobox = $(this).val();
+                    $('#tb input[name="hargaThc[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.thc : harga40Ft.thc);
+                 });
+            } else {
+                tampunganValueThc2040 = [];
+                 $('#tb input[name="hargaThc[]"]').each(function(i) {
+                      $(this).val('');
+                });
+                console.log('Checkbox is not checked');
+            }
+        });
+         var tampunganValueLolo2040 = [];
+         $('#lolo_cekbox').on('change', function() {
+            if ($(this).prop('checked')) {
+
+                 $('#tb select[name="tipe[]"]').each(function(i) {
+                    var valueCombobox = $(this).val();
+                    $('#tb input[name="hargaLolo[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.lolo : harga40Ft.lolo);
+            
+                 });
+                
+            } else {
+                tampunganValueLolo2040 = [];
+                 $('#tb input[name="hargaLolo[]"]').each(function(i) {
+                      $(this).eq(i).val('');
+                });
+                console.log('Checkbox is not checked');
+            }
+        });
+        var tampunganValueApbs2040 = [];
+         $('#apbs_cekbox').on('change', function() {
+            if ($(this).prop('checked')) {
+
+                 $('#tb select[name="tipe[]"]').each(function(i) {
+                    var valueCombobox = $(this).val();
+                    $('#tb input[name="hargaApbs[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.apbs : harga40Ft.apbs);
+                 });
+                
+            } else {
+                tampunganValueApbs2040 = [];
+                $('#tb input[name="hargaApbs[]"]').each(function(i) {
+                      $(this).eq(i).val('');
+                });
+                console.log('Checkbox is not checked');
+            }
+        });
+        var tampunganValueCleaning2040 = [];
+         $('#cleaning_cekbox').on('change', function() {
+            if ($(this).prop('checked')) {
+
+                $('#tb select[name="tipe[]"]').each(function(i) {
+                    var valueCombobox = $(this).val();
+                    $('#tb input[name="hargaCleaning[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
+             
+                 });
+                
+            } else {
+                tampunganValueCleaning2040 = [];
+                 $('#tb input[name="hargaCleaning[]"]').each(function(i) {
+                      $(this).eq(i).val('');
+                });
+                console.log('Checkbox is not checked');
+            }
+        });
+        var tampunganValueDocfee2040 = [];
+         $('#doc_fee_cekbox').on('change', function() {
+            if ($(this).prop('checked')) {
+
+                 $('#tb select[name="tipe[]"]').each(function(i) {
+                    var valueCombobox = $(this).val();
+                    $('#tb input[name="hargaDocFee[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.doc_fee : harga40Ft.doc_fee);
+                 });
+            } else {
+                tampunganValueDocfee2040 = [];
+                  $('#tb input[name="hargaDocFee[]"]').each(function(i) {
+                        $(this).eq(i).val('');
+
+                });
+                console.log('Checkbox is not checked');
+            }
+        });
+            //     $('#tb input[name="hargaThc[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.thc : harga40Ft.thc);
+            // $('#tb input[name="hargaLolo[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.lolo : harga40Ft.lolo);
+            // $('#tb input[name="hargaApbs[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.apbs : harga40Ft.apbs);
+            // $('#tb input[name="hargaCleaning[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
+            // $('#tb input[name="hargaDocFee[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.doc_fee : harga40Ft.doc_fee);
+            //                         $('#tb input[name="hargaThc[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.thc : harga40Ft.thc);
+        function updateId()
+        {
+            $('#tb select[name="tipe[]"]').each(function(i) {   
+                // console.log(i);     
+                $(this).on('change', function() {
+
+                    if ($('#thc_cekbox').prop('checked')) {
+                        //this val ini ambil value dari combobox bukan dari checkbox
+                        var valueCombobox = $(this).val();
+                        $('#tb input[name="hargaThc[]"]').each(function(index) {
+                             $('#tb input[name="hargaThc[]"]').eq(i).val(valueCombobox == '20' ? harga20Ft.thc : harga40Ft.thc);
+                            if(valueCombobox=='20')
+                            {
+                                $(this)[index].value=harga20Ft.thc;
+                            }
+                            else
+                            {
+                                $(this)[index].value=harga40Ft.thc;
+
+                            }
+                        });
+
+                    }   
+                    if ($('#lolo_cekbox').prop('checked')) {
+                          var valueCombobox = $(this).val();
+                            $('#tb input[name="hargaLolo[]"]').each(function(index) {
+                                if(valueCombobox=='20')
+                                {
+                                    $(this)[index].value=harga20Ft.lolo;
+                                }
+                                else
+                                {
+                                    $(this)[index].value=harga40Ft.lolo;
+
+                                }
+                            });
+                    }  
+                    if ($('#apbs_cekbox').prop('checked')) {
+                       
+                          var valueCombobox = $(this).val();
+                            $('#tb input[name="hargaApbs[]"]').each(function(index) {
+                                if(valueCombobox=='20')
+                                {
+                                    $(this)[index].value=harga20Ft.apbs;
+                                }
+                                else
+                                {
+                                    $(this)[index].value=harga40Ft.apbs;
+
+                                }
+                            });
+                        
+                    }        
+                    if ($('#cleaning_cekbox').prop('checked')) {
+                        
+                          var valueCombobox = $(this).val();
+                            $('#tb input[name="hargaCleaning[]"]').each(function(index) {
+                                if(valueCombobox=='20')
+                                {
+                                    $(this)[index].value=harga20Ft.cleaning;
+                                }
+                                else
+                                {
+                                    $(this)[index].value=harga40Ft.cleaning;
+
+                                }
+                            });
+                    }
+                    if ($('#doc_fee_cekbox').prop('checked')) {
+                         var valueCombobox = $(this).val();
+                        $('#tb input[name="hargaDocFee[]"]').each(function(index) {
+                            if(valueCombobox=='20')
+                            {
+                                $(this)[index].value=harga20Ft.doc_fee;
+                            }
+                            else
+                            {
+                                $(this)[index].value=harga40Ft.doc_fee;
+
+                            }
+                        });
+                    }
+                    // console.log('Thc:'+tampunganValueThc2040);
+                    // console.log('Lolo:'+tampunganValueLolo2040);
+                    // console.log('Apbs:'+tampunganValueApbs2040);
+                    // console.log('Cleaning:'+tampunganValueCleaning2040);
+                    // console.log('Docfee:'+tampunganValueDocfee2040);
+                });  
+                    
+            });
+
+        }
+        updateId();
         $('input[type="text"]').on('input', function() {
             var inputValue = $(this).val();
             var uppercaseValue = inputValue.toUpperCase();
@@ -349,57 +562,26 @@
             });
         });
 
-        $("#addmore").on("click",function(event){
-            var customerId = $("#customer").val();
-            if(customerId == 0 || customerId == null || customerId == ''){
-                Swal.fire(
-                    '',
-                    'Harap isi data pengirim dahulu.',
-                    'error'
-                );
-                return false;
-            }
-
-            var selectedValue = customerId;
-            let dataOption = ''; // Initialize as an array
-
-            $.ajax({
-                url: '/booking/getTujuan/' + selectedValue,
-                method: 'GET',
-                success: function(response) {
-                    response.forEach(tujuan => {
-                        const option = document.createElement('option');
-                        var xxx = `<option id="${tujuan.id}">${tujuan.nama_tujuan}</option>`;
-                        dataOption += xxx;
-                        // console.log('xxx '+xxx);
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-            console.log('dataOption '+dataOption);
-
-
+        $("#addmore").on("click",function(){
             $('#tb').append(
                 `<tr>
                     <td>
-                        <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
+                        <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control" value="">
                     </td>
                     <td>
                         <input type="text" id="seal" name="seal[]"class="form-control" value="">
                     </td>
                     <td>
-                        <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                        <select class="form-control selectpicker" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                             <option value="">--Pilih Tipe Kontainer--</option>
                             <option value="20">20Ft</option>
                             <option value="40">40Ft</option>
                         </select>
-                        <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
-                        <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
-                        <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
-                        <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
-                        <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
+                        <input type="hidden" class="hargaThc" name="hargaThc[]" value="">
+                        <input type="hidden" class="hargaLolo" name="hargaLolo[]" value="">
+                        <input type="hidden" class="hargaApbs" name="hargaApbs[]" value="">
+                        <input type="hidden" class="hargaCleaning" name="hargaCleaning[]" value="">
+                        <input type="hidden" class="hargaDocFee" name="hargaDocFee[]" value="">
                     </td>
                     <td>
                         <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
@@ -410,81 +592,19 @@
                         <input type="text" name="tgl_booking[]" autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
                     </td>
                     <td align="center" class="text-danger">
-                        <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger radiusSendiri hapus">
+                        <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger radiusSendiri">
                             <i class="fa fa-fw fa-trash-alt"></i>
                         </button>
                     </td>
                 </tr>`
             );
+            updateId();
             $('.selectpicker').selectpicker('refresh');
             // $('#save').removeAttr('hidden',true);
         });
-
-        // logic hitung biaya
-            $( document ).on( 'change', '.tipeKontainer', function (event) {
-                event.stopPropagation();
-                var selectedValue = $(event.target).val();
-                var selectedValue = $(this).val();
-
-                var parentTd = $(this).closest('td');
-                parentTd.find('.hargaThc').val(selectedValue == '20' ? harga20Ft.thc : harga40Ft.thc);
-                parentTd.find('.hargaLolo').val(selectedValue == '20' ? harga20Ft.lolo : harga40Ft.lolo);
-                parentTd.find('.hargaApbs').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
-                parentTd.find('.hargaCleaning').val(selectedValue == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
-                parentTd.find('.hargaDocFee').val(selectedValue == '20' ? harga20Ft.doc_fee : harga40Ft.doc_fee);
-
-                calculateTotalHarga();
-            });
-            
-            $( document ).on( 'click', '.hapus', function (event) {
-                calculateTotalHarga();
-            });
-
-            function calculateTotalHarga() {
-                var totalhargaThc = 0;
-                var totalhargaLolo = 0;
-                var totalhargaApbs = 0;
-                var totalhargaCleaning = 0;
-                var totalhargaDocFee = 0;
-
-                $('#total_thc').val(totalhargaThc);
-                $('#total_lolo').val(totalhargaLolo);
-                $('#total_apbs').val(totalhargaApbs);
-                $('#total_cleaning').val(totalhargaCleaning);
-                $('#total_doc_fee').val(totalhargaDocFee);
-                
-                $('.hargaThc').each(function() {
-                    var value = parseFloat($(this).val()) || 0;
-                    totalhargaThc += value;
-                    $('#total_thc').val(totalhargaThc);
-                });
-                $('.hargaLolo').each(function() {
-                    var value = parseFloat($(this).val()) || 0;
-                    totalhargaLolo += value;
-                    $('#total_lolo').val(totalhargaLolo);
-                });
-                $('.hargaApbs').each(function() {
-                    var value = parseFloat($(this).val()) || 0;
-                    totalhargaApbs += value;
-                    $('#total_apbs').val(totalhargaApbs);
-                });
-                $('.hargaCleaning').each(function() {
-                    var value = parseFloat($(this).val()) || 0;
-                    totalhargaCleaning += value;
-                    $('#total_cleaning').val(totalhargaCleaning);
-                });
-                $('.hargaDocFee').each(function() {
-                    var value = parseFloat($(this).val()) || 0;
-                    totalhargaDocFee += value;
-                    $('#total_doc_fee').val(totalhargaDocFee);
-                });
-                
-            }
-        // end of logic hitung biaya
-
+  
     });
 </script>
-
 @endsection
 
 
