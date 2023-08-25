@@ -51,10 +51,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['is_admin'])->group(function () {
         Route::resource('coa', 'App\Http\Controllers\CoaController');
+
+        Route::get('/booking/getTujuan/{id}', [App\Http\Controllers\BookingController::class, 'getTujuan']);
+        // Route::get('/booking/getTujuan/{id}', ['uses' => 'UserController@attendance']);
         Route::resource('booking', 'App\Http\Controllers\BookingController');
 
-        Route::get('job_order/createx', [App\Http\Controllers\JobOrderController::class, 'createx']);
         Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
+
+        Route::resource('appeal_job_order', 'App\Http\Controllers\AppealJobOrderController');
 
         Route::resource('pengaturan_keuangan', 'App\Http\Controllers\PengaturanKeuanganController');
     

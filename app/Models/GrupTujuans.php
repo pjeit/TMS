@@ -30,4 +30,6 @@ class GrupTujuans extends Model
        'updated_by',
        'is_aktif',
    ];
+
+
 }
