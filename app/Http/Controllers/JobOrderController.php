@@ -170,7 +170,28 @@ class JobOrderController extends Controller
      */
     public function edit(JobOrder $jobOrder)
     {
-        //
+        $data = $jobOrder;
+        $dataSupplier = DB::table('supplier')
+            ->select('*')
+            ->where('supplier.is_aktif', '=', "Y")
+            ->get();
+        $dataCustomer = DB::table('customer')
+            ->select('*')
+            ->where('customer.is_aktif', '=', "Y")
+            ->get();
+        $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
+            ->select('*')
+            ->where('pengaturan_keuangan.is_aktif', '=', "Y")
+            ->get();
+
+        return view('pages.order.job_order.edit',[
+            'judul'=>"Job Order",
+            'data' => $data,
+            'dataSupplier' => $dataSupplier,
+            'dataCustomer' =>$dataCustomer,
+            'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
+
+        ]);
     }
 
     /**

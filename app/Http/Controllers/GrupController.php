@@ -24,8 +24,7 @@ class GrupController extends Controller
     {
         $data = DB::table('grup')
             ->where('is_aktif', '=', "Y")
-            ->paginate(5);
-            // ->get();
+            ->get();
 
         $title = 'Delete data!';
         $text = "Apakah Anda yakin?";
@@ -75,8 +74,6 @@ class GrupController extends Controller
                 'telp1' => 'required',
                 'total_max_kredit' => 'required',
             ], $pesanKustom);
-
-            var_dump($request->post()); die;
 
             $total_kredit = 0;
             $total_max_kredit = floatval(str_replace(',', '', $request['total_max_kredit']));

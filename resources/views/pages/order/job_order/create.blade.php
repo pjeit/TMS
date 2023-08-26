@@ -83,23 +83,23 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_muat" class="form-control" value="{{old('pelabuhan_muat','')}}" >
+                                    <input required type="text" name="pelabuhan_muat" class="form-control" >
                                 </div>     
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('pelauhan_bongkar','')}}" >
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" >
                                 </div>              
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Free Time<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('freetime','')}}" >
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" >
                                 </div>              
                             </div>
                         </div>  
-                            <!-- <div class="card radiusSendiri">
+                        <!-- <div class="card radiusSendiri">
                         <div class="card-header"> -->
                             <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2"><i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah Kontainer</button>
                         <!-- </div> -->
@@ -225,7 +225,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                 </div>
-                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" value="">     
+                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" >     
                                             </div>
                                         </td>
                                     </tr>
@@ -359,17 +359,14 @@
         // end of handling tgl
 
         $(document).on('change', '#customer', function(event) {
-            // Clear existing options
-            console.log('aaa '+$('.tujuanC').length);
             // Get selected value from #customer
             var selectedValue = this.value;
-            // const id_tujuanSelect = document.getElementById('tujuan');
-            // var selectElement = document.querySelector('.tujuan');
 
             $.ajax({
                 url: '/booking/getTujuan/' + selectedValue,
                 method: 'GET',
                 success: function(response) { 
+                    // get semua data dropdown dengan class ini trus di kosongin
                     $('.form-control.selectpicker.tujuanC').empty().append('<option value="">--Pilih Tujuan--</option>');
 
                     response.forEach(tujuan => {
@@ -382,6 +379,22 @@
                     $(".form-control.selectpicker.tujuanC").selectpicker("refresh");
                 },
                 error: function(xhr, status, error) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 3000,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Terjadi kesalahan.'
+                    })
                     console.error(error); // Handle errors if necessary
                 }
             });
