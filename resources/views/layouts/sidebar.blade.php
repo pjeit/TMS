@@ -365,10 +365,10 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('appeal_job_order.index')}}" class="nav-link {{request()->url() === route('appeal_job_order.index')? ' active' : '' }} " style="font-weight: 500;">
+                <a href="{{route('persetujuan_jo.index')}}" class="nav-link {{request()->url() === route('persetujuan_jo.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
-                    Appeal JO
+                    Persetujuan JO
                   </p>
                 </a>
               </li>

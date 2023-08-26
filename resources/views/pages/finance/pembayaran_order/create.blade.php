@@ -32,76 +32,66 @@
              <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
-                        <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                        <a href="{{ route('persetujuan_jo.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <a href="{{ route('persetujuan_jo.index') }}"class="btn btn-success radiusSendiri"><i class="fa fa-check" aria-hidden="true"></i> Setujui</a>
+
+                        {{-- <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button> --}}
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6" >
                                 <div class="form-group">
                                     <label for="">Pengirim<span class="text-red">*</span></label>
-                                        <select class="form-control selectpicker"  id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                        <option value="0">--Pilih Pengirim--</option>
-                                        @foreach ($dataCustomer as $cust)
+                                        <select class="form-control selectpicker"  id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
+                                        <option value="0">PT. Pasifik Global Makmur</option>
+                                        {{-- @foreach ($dataCustomer as $cust)
                                             <option value="{{$cust->id}}">{{ $cust->nama }}</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-6" >
-                                <div class="form-group ">
+                                 <div class="form-group ">
                                     <label for="">Pelayaran</label>
-                                    <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                        <option value="0">--Pilih Pelayaran--</option>
-                                        @foreach ($dataSupplier as $sup)
+                                    <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
+                                        <option value="0">PT. TANTO INTI LINE</option>
+                                        {{-- @foreach ($dataSupplier as $sup)
                                             <option value="{{$sup->id}}">{{ $sup->nama }}</option>
-                                        @endforeach
+                                        @endforeach --}}
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
                                 <div class="form-group ">
                                     <label for="">No. BL<span class="text-red">*</span></label>
-                                    <input required type="text" name="nama_pic" class="form-control" value="{{old('nama_pic','')}}" >
-                                </div>           
+                                    <input required type="text" name="nama_pic" class="form-control" value="{{old('nama_pic','23450023929BL')}}" readonly>
+                                </div>  
+                                  <div class="form-group">
+                                    <label for="">Free Time<span class="text-red">*</span></label>
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('freetime','5')}}" readonly>
+                                </div>  
                             </div>
-                            <div class="col-md-6">
+                             <div class="col-6">
                                 <div class="form-group">
                                         <label for="tgl_sandar">Tanggal Sandar</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{old('tgl_sandar','')}}">     
+                                        <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{old('tgl_sandar','20-aug-2023')}}" readonly>     
                                     </div>
-                                </div>           
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
+                                </div>  
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_muat" class="form-control" value="{{old('pelabuhan_muat','')}}" >
-                                </div>     
-                            </div>
-                            <div class="col-md-4">
+                                    <input required type="text" name="pelabuhan_muat" class="form-control" value="{{old('pelabuhan_muat','Medan')}}" readonly>
+                                </div> 
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('pelauhan_bongkar','')}}" >
-                                </div>              
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="">Free Time<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('freetime','')}}" >
-                                </div>              
-                            </div>
-                        </div>  
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('pelauhan_bongkar','SBY')}}" readonly>
+                                </div>  
+                               
+                        </div>
+                        </div>
+                       
                             <!-- <div class="card radiusSendiri">
                         <div class="card-header"> -->
-                            <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2"><i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah Kontainer</button>
+                            {{-- <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2"><i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah Kontainer</button> --}}
                         <!-- </div> -->
                         <!-- <div class="card-body"> -->
                             <table class="table" id="sortable">
@@ -112,43 +102,146 @@
                                         <th width="250">Tipe</th>
                                         <th width="250">Tujuan</th>
                                         <th width="250">Tgl Planning</th>
-                                        <th width="20" class="text-center">Aksi</th>
+                                        {{-- <th width="20" class="text-center">Aksi</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody id="tb"> 
-                                    {{-- <tr >
+                                    <tr>
                                         <td>
-                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
+                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="TAKU-233333-3" readonly>
                                         </td>
                                         <td>
-                                            <input type="text" id="seal" name="seal[]"class="form-control" value="">
+                                            <input type="text" id="seal" name="seal[]"class="form-control" value="F334433" readonly>
                                         </td>
                                         <td>
-                                            <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Tipe Kontainer--</option>
+                                            <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled >
+                                                {{-- <option value="">--Pilih Tipe Kontainer--</option> --}}
                                                 <option value="20">20Ft</option>
-                                                <option value="40">40Ft</option>
+                                                {{-- <option value="40">40Ft</option> --}}
                                             </select>
-                                            <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
+                                            {{-- <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
                                             <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
                                             <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
                                             <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
-                                            <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
+                                            <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value=""> --}}
                                         </td>
                                         <td>
-                                            <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Tujuan--</option>
+                                            <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled >
+                                                {{-- <option value="">--Pilih Tujuan--</option> --}}
+                                                <option value="20">Pt.Yanasurya</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
+                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="18-Aug-2023" readonly>     
                                         </td>
-                                        <td align="center" class="text-danger">
-                                            <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
+                                        {{-- <td align="center" class="text-danger">
+                                           <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
                                                 <i class="fa fa-fw fa-trash-alt"></i>
-                                            </button>
+                                            </button> 
+                                        </td> --}}
+                                    </tr>
+                                         <tr>
+                                        <td>
+                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="TAKU-233333-3" readonly>
                                         </td>
-                                    </tr> --}}
+                                        <td>
+                                            <input type="text" id="seal" name="seal[]"class="form-control" value="F334433" readonly>
+                                        </td>
+                                        <td>
+                                            <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled >
+                                                {{-- <option value="">--Pilih Tipe Kontainer--</option> --}}
+                                                <option value="20">20Ft</option>
+                                                {{-- <option value="40">40Ft</option> --}}
+                                            </select>
+                                            {{-- <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
+                                            <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
+                                            <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
+                                            <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+                                            <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value=""> --}}
+                                        </td>
+                                        <td>
+                                            <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled >
+                                                {{-- <option value="">--Pilih Tujuan--</option> --}}
+                                                <option value="20">Pt.Yanasurya</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="18-Aug-2023" readonly>     
+                                        </td>
+                                        {{-- <td align="center" class="text-danger">
+                                           <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
+                                                <i class="fa fa-fw fa-trash-alt"></i>
+                                            </button> 
+                                        </td> --}}
+                                    </tr>
+                                         <tr>
+                                        <td>
+                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="TAKU-233333-3" readonly>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="seal" name="seal[]"class="form-control" value="F334433" readonly>
+                                        </td>
+                                        <td>
+                                            <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled >
+                                                {{-- <option value="">--Pilih Tipe Kontainer--</option> --}}
+                                                <option value="20">20Ft</option>
+                                                {{-- <option value="40">40Ft</option> --}}
+                                            </select>
+                                            {{-- <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
+                                            <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
+                                            <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
+                                            <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+                                            <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value=""> --}}
+                                        </td>
+                                        <td>
+                                            <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled >
+                                                {{-- <option value="">--Pilih Tujuan--</option> --}}
+                                                <option value="20">Pt.Yanasurya</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="18-Aug-2023" readonly>     
+                                        </td>
+                                        {{-- <td align="center" class="text-danger">
+                                           <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
+                                                <i class="fa fa-fw fa-trash-alt"></i>
+                                            </button> 
+                                        </td> --}}
+                                    </tr>
+                                         <tr>
+                                        <td>
+                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="TAKU-233333-3" readonly>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="seal" name="seal[]"class="form-control" value="F334433" readonly>
+                                        </td>
+                                        <td>
+                                            <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled >
+                                                {{-- <option value="">--Pilih Tipe Kontainer--</option> --}}
+                                                <option value="20">20Ft</option>
+                                                {{-- <option value="40">40Ft</option> --}}
+                                            </select>
+                                            {{-- <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
+                                            <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
+                                            <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
+                                            <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+                                            <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value=""> --}}
+                                        </td>
+                                        <td>
+                                            <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled >
+                                                {{-- <option value="">--Pilih Tujuan--</option> --}}
+                                                <option value="20">Pt.Yanasurya</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="18-Aug-2023" readonly>     
+                                        </td>
+                                        {{-- <td align="center" class="text-danger">
+                                           <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
+                                                <i class="fa fa-fw fa-trash-alt"></i>
+                                            </button> 
+                                        </td> --}}
+                                    </tr>
                                 </tbody>
                                 <tfoot>
                                 
@@ -183,28 +276,28 @@
                                 </thead>
                                 <tbody > 
                                     <tr>
-                                        <th><span> <input type="checkbox" name="thc_cekbox" id="thc_cekbox"></span> THC</th>
-                                        <td name="total_thc"><input type="text" id="total_thc" class="form-control" readonly></td>
+                                        <th><span> <input disabled type="checkbox" name="thc_cekbox" id="thc_cekbox" checked></span> THC</th>
+                                        <td name="total_thc"><input type="text" id="total_thc" class="form-control" value="Rp.550.000,00" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" name="lolo_cekbox" id="lolo_cekbox"></span> LOLO</th>
-                                        <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" readonly></td>
+                                        <th><span> <input disabled type="checkbox" name="lolo_cekbox" id="lolo_cekbox" checked></span> LOLO</th>
+                                        <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" value="Rp.650.000,00" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" name="apbs_cekbox" id="apbs_cekbox"></span> APBS</th>
+                                        <th><span> <input disabled type="checkbox" name="apbs_cekbox" id="apbs_cekbox"></span> APBS</th>
                                         <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox"></span> CLEANING</th>
+                                        <th><span> <input disabled type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox"></span> CLEANING</th>
                                         <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox"></span> DOC FEE</th>
+                                        <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox"></span> DOC FEE</th>
                                         <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" readonly></td>
                                     </tr>
                                     <tr>
                                         <th>SUB TOTAL</th>
-                                        <th name="total_sblm_dooring" id="total_sblm_dooring">Harga</th>
+                                        <th name="total_sblm_dooring" id="total_sblm_dooring">Rp.1.200.000,00</th>
                                     </tr>
                                 </tbody>
                                 <tfoot>
@@ -220,13 +313,13 @@
                                 <tbody > 
                                     <tr>
                                         <th>Tgl Bayar Jaminan</th>
-                                        <td>Harga</td>
+                                        <td><input type="text" name="" class="form-control" value="24-aug-2023" readonly></td>
                                     </tr>
                                     <tr>
                                         <th>Total Jaminan</th>
-                                        <td>Harga</td>
+                                        <td><input type="text" name="" class="form-control numaja" value="Rp. 2.500.00,00" readonly></td>
                                     </tr>
-                                    <tr>
+                                    {{-- <tr>
                                         <th>Potongan Jaminan</th>
                                         <td>Harga</td>
                                     </tr>
@@ -240,7 +333,7 @@
                                     <tr>
                                         <th> Tgl Jaminan Kembali </th>
                                         <td>Harga</td>
-                                    </tr>
+                                    </tr> --}}
                                     
                                 </tbody>
                                 <tfoot>
