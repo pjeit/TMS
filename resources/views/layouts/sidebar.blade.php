@@ -363,19 +363,10 @@
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
+          
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('persetujuan_jo.index')}}" class="nav-link {{request()->url() === route('persetujuan_jo.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Persetujuan JO
-                  </p>
-                </a>
-              </li>
-            </ul>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('persetujuan_jo.index')}}" class="nav-link {{request()->url() === route('persetujuan_jo.index')? ' active' : '' }} " style="font-weight: 500;">
+                <a href="{{route('pembayaran_jo.index')}}" class="nav-link {{request()->url() === route('pembayaran_jo.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Pembayaran JO
