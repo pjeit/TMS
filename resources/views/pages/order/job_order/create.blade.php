@@ -69,7 +69,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                        <label for="tgl_sandar">Tanggal Sandar</label>
+                                    <label for="tgl_sandar">Tanggal Sandar</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -141,7 +141,7 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
+                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_planning"  placeholder="dd-M-yyyy" value="{{old('tgl_planning','')}}">     
                                         </td>
                                         <td align="center" class="text-danger">
                                             <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
@@ -220,11 +220,25 @@
                                 <tbody > 
                                     <tr>
                                         <th>Tgl Bayar Jaminan</th>
-                                        <td>Harga</td>
+                                        <td>
+                                            <div class="input-group mb-0">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                </div>
+                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" value="">     
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Total Jaminan</th>
-                                        <td>Harga</td>
+                                        <td>
+                                            <div class="input-group mb-0">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><b>Rp.</b></span>
+                                                </div>
+                                                <input type="text" class="form-control uang numaja" id="total_jaminan" name="total_jaminan">
+                                            </div>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Potongan Jaminan</th>
@@ -308,44 +322,98 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
-        var harga20Ft = {
-            'thc': dataKeuangan.thc_20ft,
-            'lolo': dataKeuangan.lolo_20ft,
-            'apbs': dataKeuangan.apbs_20ft,
-            'cleaning': dataKeuangan.cleaning_20ft,
-            'doc_fee': dataKeuangan.doc_fee_20ft,
-        };
-        // console.log(harga20Ft.thc)
-        var harga40Ft = {
-            'thc': dataKeuangan.thc_40ft,
-            'lolo': dataKeuangan.lolo_40ft,
-            'apbs': dataKeuangan.apbs_40ft,
-            'cleaning': dataKeuangan.cleaning_40ft,
-            'doc_fee': dataKeuangan.doc_fee_40ft,
-        };
-      
-        $('input[type="text"]').on('input', function() {
-            var inputValue = $(this).val();
-            var uppercaseValue = inputValue.toUpperCase();
-            $(this).val(uppercaseValue);
-        });
+        // master harga tipe
+            var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
+            var harga20Ft = {
+                'thc': dataKeuangan.thc_20ft,
+                'lolo': dataKeuangan.lolo_20ft,
+                'apbs': dataKeuangan.apbs_20ft,
+                'cleaning': dataKeuangan.cleaning_20ft,
+                'doc_fee': dataKeuangan.doc_fee_20ft,
+            };
+            var harga40Ft = {
+                'thc': dataKeuangan.thc_40ft,
+                'lolo': dataKeuangan.lolo_40ft,
+                'apbs': dataKeuangan.apbs_40ft,
+                'cleaning': dataKeuangan.cleaning_40ft,
+                'doc_fee': dataKeuangan.doc_fee_40ft,
+            };
+        // end of master harga tipe
 
-        $('#tgl_sandar').datepicker({
+        // handling tanggal
+            $('#tgl_sandar').datepicker({
                 autoclose: true,
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language:'en',
                 endDate: "0d"
-        });
-
-        $(document).on('focus', '.tgl_booking', function() {
-            $(this).datepicker({
+            });
+            $('#tgl_bayar_jaminan').datepicker({
                 autoclose: true,
                 format: "dd-M-yyyy",
                 todayHighlight: true,
-                language: 'en',
-                endDate: "0d"
+            });
+            $(document).on('focus', '.tgl_planning', function() {
+                $(this).datepicker({
+                    autoclose: true,
+                    format: "dd-M-yyyy",
+                    todayHighlight: true,
+                    language: 'en',
+                    endDate: "0d"
+                });
+            });
+        // end of handling tgl
+
+        $(document).on('change', '#customer', function(event) {
+            // Clear existing options
+
+            // Get selected value from #customer
+            var selectedValue = this.value;
+            // const id_tujuanSelect = document.getElementById('tujuan');
+            // var selectElement = document.querySelector('.tujuan');
+            document.addEventListener('DOMContentLoaded', function() {
+                var selectElement = document.getElementById('tujuan');
+                
+                // Remove all existing options
+                selectElement.innerHTML = '';
+                
+                // Add the placeholder option
+                var placeholderOption = document.createElement('option');
+                placeholderOption.value = '';
+                placeholderOption.textContent = '--Pilih Tujuan--';
+                selectElement.appendChild(placeholderOption);
+            });
+            
+            $.ajax({
+                url: '/booking/getTujuan/' + selectedValue,
+                method: 'GET',
+                success: function(response) {
+                    // $('.tujuan').val(null).trigger('change');
+                    // selectElement.innerHTML = "<option val=''>xxx</option>"; 
+                    // selectElement.innerHTML = ""; 
+
+                    console.log('sukses masuk getTujuan '+$('.tujuan').length);
+                    // Loop through response and create options
+                    // var options = '';
+                    // response.forEach(tujuan => {
+                    //     options += `<option id="${tujuan.id}">${tujuan.nama_tujuan}</option>`;
+                    // });
+                    // response.forEach(tujuan => {
+                    //     const option = document.createElement('option');
+                    //     option.value = tujuan.id;
+                    //     option.textContent = tujuan.nama_tujuan;
+                    //     // if (selected_marketing == marketing.id) {
+                    //     //     option.selected = true;
+                    //     // }
+                    //     // id_tujuanSelect.appendChild(option);
+                    // });
+
+                    // Append options to .tujuan select element
+                    // $('.tujuan').append(options).trigger('change');
+                },
+                error: function(xhr, status, error) {
+                    console.error(error); // Handle errors if necessary
+                }
             });
         });
 
@@ -363,6 +431,7 @@
             var selectedValue = customerId;
             let dataOption = ''; // Initialize as an array
 
+            // get tujuan
             $.ajax({
                 url: '/booking/getTujuan/' + selectedValue,
                 method: 'GET',
@@ -370,58 +439,60 @@
                     response.forEach(tujuan => {
                         const option = document.createElement('option');
                         var xxx = `<option id="${tujuan.id}">${tujuan.nama_tujuan}</option>`;
+                        // store data ke dataOption buat di fetch ketika tambah data
                         dataOption += xxx;
-                        // console.log('xxx '+xxx);
                     });
+
+                    $('#tb').append(
+                        `<tr>
+                            <td>
+                                <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
+                            </td>
+                            <td>
+                                <input type="text" id="seal" name="seal[]"class="form-control" value="">
+                            </td>
+                            <td>
+                                <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <option value="">--Pilih Tipe Kontainer--</option>
+                                    <option value="20">20Ft</option>
+                                    <option value="40">40Ft</option>
+                                </select>
+                                <input type="hidden" readonly class="hargaThc" name="hargaThc[]" value="">
+                                <input type="hidden" readonly class="hargaLolo" name="hargaLolo[]" value="">
+                                <input type="hidden" readonly class="hargaApbs" name="hargaApbs[]" value="">
+                                <input type="hidden" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+                                <input type="hidden" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
+                            </td>
+                            <td>
+                                <select class="form-control selectpicker tujuan" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <option value="">--Pilih Tujuan--</option>
+                                    `+dataOption+`
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" name="tgl_planning[]" autocomplete="off" class="date form-control tgl_planning" placeholder="dd-M-yyyy" value="{{old('tgl_planning','')}}">     
+                            </td>
+                            <td align="center" class="text-danger">
+                                <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger radiusSendiri hapus">
+                                    <i class="fa fa-fw fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>`
+                    );
+                    $('.selectpicker').selectpicker('refresh');
+
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
                 }
             });
-            console.log('dataOption '+dataOption);
-
-
-            $('#tb').append(
-                `<tr>
-                    <td>
-                        <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
-                    </td>
-                    <td>
-                        <input type="text" id="seal" name="seal[]"class="form-control" value="">
-                    </td>
-                    <td>
-                        <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                            <option value="">--Pilih Tipe Kontainer--</option>
-                            <option value="20">20Ft</option>
-                            <option value="40">40Ft</option>
-                        </select>
-                        <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
-                        <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
-                        <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
-                        <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
-                        <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
-                    </td>
-                    <td>
-                        <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                            <option value="">--Pilih Tujuan--</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="text" name="tgl_booking[]" autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
-                    </td>
-                    <td align="center" class="text-danger">
-                        <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger radiusSendiri hapus">
-                            <i class="fa fa-fw fa-trash-alt"></i>
-                        </button>
-                    </td>
-                </tr>`
-            );
-            $('.selectpicker').selectpicker('refresh');
+        
             // $('#save').removeAttr('hidden',true);
         });
 
         // logic hitung biaya
             $( document ).on( 'change', '.tipeKontainer', function (event) {
+                // biar datanya ga ke get 2x ketika di get val
                 event.stopPropagation();
                 var selectedValue = $(event.target).val();
                 var selectedValue = $(this).val();
@@ -433,10 +504,12 @@
                 parentTd.find('.hargaCleaning').val(selectedValue == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
                 parentTd.find('.hargaDocFee').val(selectedValue == '20' ? harga20Ft.doc_fee : harga40Ft.doc_fee);
 
+                // tiap ada perubahan di class tipekontainer, di akhir akan di hitung total harganya
                 calculateTotalHarga();
             });
             
             $( document ).on( 'click', '.hapus', function (event) {
+                // ketika hapus data, di hitung lagi total harganya
                 calculateTotalHarga();
             });
 
@@ -478,7 +551,6 @@
                     totalhargaDocFee += value;
                     $('#total_doc_fee').val(totalhargaDocFee);
                 });
-                
             }
         // end of logic hitung biaya
 
