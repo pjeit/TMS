@@ -366,50 +366,26 @@
 
         $(document).on('change', '#customer', function(event) {
             // Clear existing options
-
+            console.log('aaa '+$('.tujuanC').length);
             // Get selected value from #customer
             var selectedValue = this.value;
             // const id_tujuanSelect = document.getElementById('tujuan');
             // var selectElement = document.querySelector('.tujuan');
-            document.addEventListener('DOMContentLoaded', function() {
-                var selectElement = document.getElementById('tujuan');
-                
-                // Remove all existing options
-                selectElement.innerHTML = '';
-                
-                // Add the placeholder option
-                var placeholderOption = document.createElement('option');
-                placeholderOption.value = '';
-                placeholderOption.textContent = '--Pilih Tujuan--';
-                selectElement.appendChild(placeholderOption);
-            });
-            
+
             $.ajax({
                 url: '/booking/getTujuan/' + selectedValue,
                 method: 'GET',
-                success: function(response) {
-                    // $('.tujuan').val(null).trigger('change');
-                    // selectElement.innerHTML = "<option val=''>xxx</option>"; 
-                    // selectElement.innerHTML = ""; 
+                success: function(response) { 
+                    $('.form-control.selectpicker.tujuanC').empty().append('<option value="">--Pilih Tujuan--</option>');
 
-                    console.log('sukses masuk getTujuan '+$('.tujuan').length);
-                    // Loop through response and create options
-                    // var options = '';
-                    // response.forEach(tujuan => {
-                    //     options += `<option id="${tujuan.id}">${tujuan.nama_tujuan}</option>`;
-                    // });
-                    // response.forEach(tujuan => {
-                    //     const option = document.createElement('option');
-                    //     option.value = tujuan.id;
-                    //     option.textContent = tujuan.nama_tujuan;
-                    //     // if (selected_marketing == marketing.id) {
-                    //     //     option.selected = true;
-                    //     // }
-                    //     // id_tujuanSelect.appendChild(option);
-                    // });
-
-                    // Append options to .tujuan select element
-                    // $('.tujuan').append(options).trigger('change');
+                    response.forEach(tujuan => {
+                    var option = new Option(tujuan.nama_tujuan, tujuan.id);
+                        $('.form-control.selectpicker.tujuanC').append('<option value="'+tujuan.id+'">'+tujuan.nama_tujuan+'</option>');
+                    });
+                    $('.form-control.selectpicker.tujuanC').selectpicker({
+                        noneSelectedText: "--Pilih Tujuan--"
+                    });
+                    $(".form-control.selectpicker.tujuanC").selectpicker("refresh");
                 },
                 error: function(xhr, status, error) {
                     console.error(error); // Handle errors if necessary
@@ -464,7 +440,7 @@
                                 <input type="hidden" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
                             </td>
                             <td>
-                                <select class="form-control selectpicker tujuan" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <select class="form-control selectpicker tujuanC" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                     <option value="">--Pilih Tujuan--</option>
                                     `+dataOption+`
                                 </select>
