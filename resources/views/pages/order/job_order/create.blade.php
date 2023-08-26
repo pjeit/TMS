@@ -104,6 +104,8 @@
                                         <th width="250">No. Kontainer</th>
                                         <th width="250">Seal</th>
                                         <th width="250">Tipe</th>
+                                        <th width="250">THC</th>
+                                        <th width="250">LOLO</th>
                                         <th width="250">Tujuan</th>
                                         <th width="250">Tgl Booking</th>
                                         <th width="20" class="text-center">Aksi</th>
