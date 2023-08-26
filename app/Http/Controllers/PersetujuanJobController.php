@@ -18,7 +18,7 @@ class PersetujuanJobController extends Controller
         //
          $data = JobOrder::where('is_aktif', 'Y')->paginate(5);
 
-        return view('pages.finance.pembayaran_job.index',[
+        return view('pages.finance.pembayaran_order.index',[
             'judul' => "Persetujuan Job Order",
             'data' => $data,
             'dataJO' => null,
@@ -47,7 +47,7 @@ class PersetujuanJobController extends Controller
             ->get();
         // dd($dataPengaturanKeuangan[0]);
 
-        return view('pages.finance.pembayaran_job.create',[
+        return view('pages.finance.pembayaran_order.create',[
             'judul'=>"Job Order",
             'dataSupplier' => $dataSupplier,
             'dataCustomer' =>$dataCustomer,
