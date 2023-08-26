@@ -129,6 +129,7 @@
             
                     var kode = $('#select2-id_customer-container').text();
                     kode  = kode.substring(0, 3);
+                    //trim untuk ngilangin spasi
                     $('#kode_cust').val(kode).trim();
                 },
                 error: function(xhr, status, error) {

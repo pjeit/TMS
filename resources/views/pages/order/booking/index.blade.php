@@ -32,8 +32,8 @@
                               <th>No Booking</th>
                               <th>Tgl Booking</th>
                               <th>Tgl Berangkat</th>
-                              <th>Tujuan</th>
-                              <th>Catatan</th>
+                              {{-- <th>Tujuan</th> --}}
+                              {{-- <th>Catatan</th> --}}
                               <th>Aksi</th>
                             </tr>
                           </thead>
@@ -41,9 +41,9 @@
 
                             @foreach($data as $item)
                              <tr>
-                                <td>{{ $item->nama }}</td>
-                                <td>{{ $item->alamat }}</td>  
-                                <td>{{ number_format($item->kredit_sekarang) }}</td>  
+                                <td>{{ $item->no_booking }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->tgl_booking )->format('d-M-Y')}}</td>  
+                                <td>{{  \Carbon\Carbon::parse($item->tgl_berangkat)->format('d-M-Y')}}</td>  
                                 <td>                                    
                                     <a class="btn btn-default bg-info radiusSendiri" href="{{route('booking.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
