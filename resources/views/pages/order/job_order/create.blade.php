@@ -64,7 +64,7 @@
                             <div class="col-md-6">
                                 <div class="form-group ">
                                     <label for="">No. BL<span class="text-red">*</span></label>
-                                    <input required type="text" name="nama_pic" class="form-control" value="{{old('nama_pic','')}}" >
+                                    <input required type="text" name="no_bl" class="form-control" value="" >
                                 </div>           
                             </div>
                             <div class="col-md-6">
@@ -449,7 +449,7 @@
                                 <input type="text" name="tgl_planning[]" autocomplete="off" class="date form-control tgl_planning" placeholder="dd-M-yyyy" value="{{old('tgl_planning','')}}">     
                             </td>
                             <td align="center" class="text-danger">
-                                <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger radiusSendiri hapus">
+                                <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" class="btn btn-danger radiusSendiri hapus">
                                     <i class="fa fa-fw fa-trash-alt"></i>
                                 </button>
                             </td>
@@ -464,6 +464,43 @@
             });
         
             // $('#save').removeAttr('hidden',true);
+        });
+
+        $( document ).on( 'click', '.hapus', function (event) {
+            $(this).closest('tr').remove();
+                    // toastr.success('Berhasil hapus data!');
+                    // return;
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                timer: 2500,
+                showConfirmButton: false,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Data dihapus'
+            })
+            // Swal.fire({
+            //     title: 'Apakah Anda yakin?',
+            //     text: "Data kan di hapus",
+            //     icon: 'warning',
+            //     showCancelButton: true,
+            //     cancelButtonColor: '#d33',
+            //     confirmButtonColor: '#3085d6',
+            //     cancelButtonText: 'Batal',
+            //     confirmButtonText: 'Ya',
+            //     reverseButtons: true
+            // }).then((result) => {
+            //     if (result.isConfirmed) {
+                   
+            //     }
+            // })
         });
 
         // logic hitung biaya
