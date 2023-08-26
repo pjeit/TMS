@@ -107,7 +107,7 @@
             ]
       });
     });
-  </script>
+</script>
 <script>
    $(document).ready(function() {
       

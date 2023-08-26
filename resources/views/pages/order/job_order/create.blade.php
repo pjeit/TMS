@@ -64,7 +64,7 @@
                             <div class="col-md-6">
                                 <div class="form-group ">
                                     <label for="">No. BL<span class="text-red">*</span></label>
-                                    <input required type="text" name="nama_pic" class="form-control" value="{{old('nama_pic','')}}" >
+                                    <input required type="text" name="no_bl" class="form-control" value="" >
                                 </div>           
                             </div>
                             <div class="col-md-6">
@@ -83,23 +83,23 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_muat" class="form-control" value="{{old('pelabuhan_muat','')}}" >
+                                    <input required type="text" name="pelabuhan_muat" class="form-control" >
                                 </div>     
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('pelauhan_bongkar','')}}" >
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" >
                                 </div>              
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Free Time<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('freetime','')}}" >
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" >
                                 </div>              
                             </div>
                         </div>  
-                            <!-- <div class="card radiusSendiri">
+                        <!-- <div class="card radiusSendiri">
                         <div class="card-header"> -->
                             <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2"><i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah Kontainer</button>
                         <!-- </div> -->
@@ -225,7 +225,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                 </div>
-                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" value="">     
+                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" >     
                                             </div>
                                         </td>
                                     </tr>
@@ -359,17 +359,14 @@
         // end of handling tgl
 
         $(document).on('change', '#customer', function(event) {
-            // Clear existing options
-            console.log('aaa '+$('.tujuanC').length);
             // Get selected value from #customer
             var selectedValue = this.value;
-            // const id_tujuanSelect = document.getElementById('tujuan');
-            // var selectElement = document.querySelector('.tujuan');
 
             $.ajax({
                 url: '/booking/getTujuan/' + selectedValue,
                 method: 'GET',
                 success: function(response) { 
+                    // get semua data dropdown dengan class ini trus di kosongin
                     $('.form-control.selectpicker.tujuanC').empty().append('<option value="">--Pilih Tujuan--</option>');
 
                     response.forEach(tujuan => {
@@ -382,6 +379,22 @@
                     $(".form-control.selectpicker.tujuanC").selectpicker("refresh");
                 },
                 error: function(xhr, status, error) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 3000,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Terjadi kesalahan.'
+                    })
                     console.error(error); // Handle errors if necessary
                 }
             });
@@ -443,7 +456,7 @@
                                 <input type="text" name="tgl_planning[]" autocomplete="off" class="date form-control tgl_planning" placeholder="dd-M-yyyy" value="{{old('tgl_planning','')}}">     
                             </td>
                             <td align="center" class="text-danger">
-                                <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger radiusSendiri hapus">
+                                <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" class="btn btn-danger radiusSendiri hapus">
                                     <i class="fa fa-fw fa-trash-alt"></i>
                                 </button>
                             </td>
@@ -458,6 +471,63 @@
             });
         
             // $('#save').removeAttr('hidden',true);
+        });
+
+        $( document ).on( 'click', '.hapus', function (event) {
+            $(this).closest('tr').remove();
+                 
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                timer: 2500,
+                showConfirmButton: false,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            Toast.fire({
+                icon: 'success',
+                title: 'Data dihapus'
+            })
+
+            // pop up confirmation
+                // Swal.fire({
+                //     title: 'Apakah Anda yakin?',
+                //     text: "Data kan di hapus",
+                //     icon: 'warning',
+                //     showCancelButton: true,
+                //     cancelButtonColor: '#d33',
+                //     confirmButtonColor: '#3085d6',
+                //     cancelButtonText: 'Batal',
+                //     confirmButtonText: 'Ya',
+                //     reverseButtons: true
+                // }).then((result) => {
+                //     if (result.isConfirmed) {
+                //         $(this).closest('tr').remove();
+
+                //         const Toast = Swal.mixin({
+                //             toast: true,
+                //             position: 'top-end',
+                //             timer: 2500,
+                //             showConfirmButton: false,
+                //             timerProgressBar: true,
+                //             didOpen: (toast) => {
+                //                 toast.addEventListener('mouseenter', Swal.stopTimer)
+                //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+                //             }
+                //         })
+
+                //         Toast.fire({
+                //             icon: 'success',
+                //             title: 'Data dihapus'
+                //         })
+                //     }
+                // })
+            // pop up confirmation
+
         });
 
         // logic hitung biaya
