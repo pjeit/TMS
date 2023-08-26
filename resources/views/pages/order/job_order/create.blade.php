@@ -80,21 +80,15 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
                                     <input required type="text" name="pelabuhan_muat" class="form-control" >
                                 </div>     
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelauhan_bongkar" class="form-control" >
-                                </div>              
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="">Free Time<span class="text-red">*</span></label>
                                     <input required type="text" name="pelauhan_bongkar" class="form-control" >
                                 </div>              
                             </div>
@@ -111,7 +105,7 @@
                                         <th width="250">Seal</th>
                                         <th width="250">Tipe</th>
                                         <th width="250">Tujuan</th>
-                                        <th width="250">Tgl Planning</th>
+                                        <th width="250">Tgl Booking</th>
                                         <th width="20" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -141,7 +135,7 @@
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_planning"  placeholder="dd-M-yyyy" value="{{old('tgl_planning','')}}">     
+                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
                                         </td>
                                         <td align="center" class="text-danger">
                                             <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
@@ -347,7 +341,7 @@
                 format: "dd-M-yyyy",
                 todayHighlight: true,
             });
-            $(document).on('focus', '.tgl_planning', function() {
+            $(document).on('focus', '.tgl_booking', function() {
                 $(this).datepicker({
                     autoclose: true,
                     format: "dd-M-yyyy",
@@ -453,7 +447,7 @@
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="tgl_planning[]" autocomplete="off" class="date form-control tgl_planning" placeholder="dd-M-yyyy" value="{{old('tgl_planning','')}}">     
+                                <input type="text" name="tgl_booking[]" autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
                             </td>
                             <td align="center" class="text-danger">
                                 <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" class="btn btn-danger radiusSendiri hapus">
@@ -536,20 +530,6 @@
                 event.stopPropagation();
                 var selectedValue = $(event.target).val();
                 var selectedValue = $(this).val();
-
-                //closest itu misal 
-                // <td dia nyarik ini closestnya kan parent>
-                //     <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                //         <option value="">--Pilih Tipe Kontainer--</option>
-                //         <option value="20">20Ft</option>
-                //         <option value="40">40Ft</option>
-                //     </select> trs nyarik anak" nya
-                //     <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
-                //     <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
-                //     <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
-                //     <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
-                //     <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
-                // </td>
 
                 var parentTd = $(this).closest('td');
                 parentTd.find('.hargaThc').val(selectedValue == '20' ? harga20Ft.thc : harga40Ft.thc);
