@@ -16,9 +16,9 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('persetujuan_jo.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                    {{-- <a href="{{route('persetujuan_jo.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah JO
-                    </a> 
+                    </a>  --}}
                 </div>
                 <div class="card-body">
                     <table id="example1" class="table table-bordered table-striped">
@@ -52,10 +52,10 @@
                                     <td>JO/TAN/2008001</td>
                                     <td>PT. AGUNG SEJAHTERAH</td>
                                     <td>PT. TANTO</td>
-                                    <td>Menunggu persetujuan finance</td>
+                                    <td>Menunggu Pembayaran Finance</td>
                                     <td>                                    
-                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('persetujuan_jo.create')}}">
-                                            <i class="fas fa-edit"></i> Persetujuan
+                                        <a class="btn btn-default bg-success radiusSendiri" href="{{route('persetujuan_jo.create')}}">
+                                            <i class="fas fa-credit-card"></i> Pembayaran
                                         </a>   
                                     </td>
                                 </tr>

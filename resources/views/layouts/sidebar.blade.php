@@ -373,6 +373,16 @@
                 </a>
               </li>
             </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('persetujuan_jo.index')}}" class="nav-link {{request()->url() === route('persetujuan_jo.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Pembayaran JO
+                  </p>
+                </a>
+              </li>
+            </ul>
           </li>
 
           @if ($user_role == 1 || $user_role == 3)
