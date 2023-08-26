@@ -468,8 +468,7 @@
 
         $( document ).on( 'click', '.hapus', function (event) {
             $(this).closest('tr').remove();
-                    // toastr.success('Berhasil hapus data!');
-                    // return;
+                 
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top-end',
@@ -486,21 +485,42 @@
                 icon: 'success',
                 title: 'Data dihapus'
             })
-            // Swal.fire({
-            //     title: 'Apakah Anda yakin?',
-            //     text: "Data kan di hapus",
-            //     icon: 'warning',
-            //     showCancelButton: true,
-            //     cancelButtonColor: '#d33',
-            //     confirmButtonColor: '#3085d6',
-            //     cancelButtonText: 'Batal',
-            //     confirmButtonText: 'Ya',
-            //     reverseButtons: true
-            // }).then((result) => {
-            //     if (result.isConfirmed) {
-                   
-            //     }
-            // })
+
+            // pop up confirmation
+                // Swal.fire({
+                //     title: 'Apakah Anda yakin?',
+                //     text: "Data kan di hapus",
+                //     icon: 'warning',
+                //     showCancelButton: true,
+                //     cancelButtonColor: '#d33',
+                //     confirmButtonColor: '#3085d6',
+                //     cancelButtonText: 'Batal',
+                //     confirmButtonText: 'Ya',
+                //     reverseButtons: true
+                // }).then((result) => {
+                //     if (result.isConfirmed) {
+                //         $(this).closest('tr').remove();
+
+                //         const Toast = Swal.mixin({
+                //             toast: true,
+                //             position: 'top-end',
+                //             timer: 2500,
+                //             showConfirmButton: false,
+                //             timerProgressBar: true,
+                //             didOpen: (toast) => {
+                //                 toast.addEventListener('mouseenter', Swal.stopTimer)
+                //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+                //             }
+                //         })
+
+                //         Toast.fire({
+                //             icon: 'success',
+                //             title: 'Data dihapus'
+                //         })
+                //     }
+                // })
+            // pop up confirmation
+
         });
 
         // logic hitung biaya
