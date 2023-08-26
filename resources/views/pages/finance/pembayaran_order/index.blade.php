@@ -16,7 +16,7 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('job_order.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                    <a href="{{route('persetujuan_jo.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah JO
                     </a> 
                 </div>
@@ -40,14 +40,25 @@
                                     <td>{{ $item->id_supplier }}</td>
                                     <td>{{ $item->status}}</td>
                                     <td>                                    
-                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('job_order.edit',[$item->id])}}">
+                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('persetujuan_jo.edit',[$item->id])}}">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>   
-                                        <a href="{{ route('job_order.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
+                                        <a href="{{ route('persetujuan_jo.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
                                     </td>
                                 </tr>
                                 @endforeach
                             <?php } ?>
+                            <tr>
+                                    <td>JO/TAN/2008001</td>
+                                    <td>PT. AGUNG SEJAHTERAH</td>
+                                    <td>PT. TANTO</td>
+                                    <td>Menunggu persetujuan finance</td>
+                                    <td>                                    
+                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('persetujuan_jo.create')}}">
+                                            <i class="fas fa-edit"></i> Persetujuan
+                                        </a>   
+                                    </td>
+                                </tr>
                         </tbody>
                     </table>
                     <?php if(isset($dataJO)){ ?>

@@ -58,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
 
-        Route::resource('appeal_job_order', 'App\Http\Controllers\AppealJobOrderController');
+        Route::resource('persetujuan_jo', 'App\Http\Controllers\PersetujuanJobController');
 
         Route::resource('pengaturan_keuangan', 'App\Http\Controllers\PengaturanKeuanganController');
     

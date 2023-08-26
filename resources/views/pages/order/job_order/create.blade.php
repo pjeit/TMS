@@ -261,9 +261,6 @@
                                 </tfoot>
                             </table>
                         </div>
-                           
-                         
-                          
                        </div>
                 </div> 
                 <!-- <div class="col-6">
@@ -315,9 +312,6 @@
     </form>
 
 <script>
-   
-
-
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
@@ -529,6 +523,20 @@
                 event.stopPropagation();
                 var selectedValue = $(event.target).val();
                 var selectedValue = $(this).val();
+
+                //closest itu misal 
+                // <td dia nyarik ini closestnya kan parent>
+                //     <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                //         <option value="">--Pilih Tipe Kontainer--</option>
+                //         <option value="20">20Ft</option>
+                //         <option value="40">40Ft</option>
+                //     </select> trs nyarik anak" nya
+                //     <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
+                //     <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
+                //     <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
+                //     <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+                //     <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
+                // </td>
 
                 var parentTd = $(this).closest('td');
                 parentTd.find('.hargaThc').val(selectedValue == '20' ? harga20Ft.thc : harga40Ft.thc);
