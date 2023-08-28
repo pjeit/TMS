@@ -80,16 +80,22 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
                                     <input required type="text" name="pelabuhan_muat" class="form-control" >
                                 </div>     
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_bongkar" class="form-control" >
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" >
+                                </div>              
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Free Time<span class="text-red">*</span></label>
+                                    <input required type="text" name="pelauhan_bongkar" class="form-control" >
                                 </div>              
                             </div>
                         </div>  
@@ -101,49 +107,51 @@
                             <table class="table" id="sortable">
                                 <thead>
                                     <tr>
-                                        <th width="350">No. Kontainer</th>
-                                        <th width="280">Seal</th>
-                                        <th width="150">Tipe</th>
-                                        <th width="150">THC</th>
-                                        <th width="350">Tujuan</th>
-                                        <th width="200">Tgl Booking</th>
+                                        <th width="250">No. Kontainer</th>
+                                        <th width="250">Seal</th>
+                                        <th width="250">Tipe</th>
+                                        <th width="250">Tujuan</th>
+                                        <th width="250">Tgl Planning</th>
                                         <th width="20" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tb"> 
-                                    {{-- <tr >
+                                    <tr >
                                         <td>
-                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
+                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="EDW30103001" readonly>
                                         </td>
                                         <td>
-                                            <input type="text" id="seal" name="seal[]"class="form-control" value="">
+                                            <input type="text" id="seal" name="seal[]"class="form-control" value="222291283" readonly>
                                         </td>
                                         <td>
-                                            <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Tipe--</option>
-                                                <option value="20">20Ft</option>
+                                            <select class="form-control selectpicker tipeKontainer" disabled name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                <option value="">--Pilih Tipe Kontainer--</option>
+                                                <option value="20" selected>20Ft</option>
                                                 <option value="40">40Ft</option>
                                             </select>
-                                            <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
-                                            <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
-                                            <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
-                                            <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
-                                            <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
+                                            <input type="hidden" readonly class="hargaThc" name="hargaThc[]" value="">
+                                            <input type="hidden" readonly class="hargaLolo" name="hargaLolo[]" value="">
+                                            <input type="hidden" readonly class="hargaApbs" name="hargaApbs[]" value="">
+                                            <input type="hidden" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+                                            <input type="hidden" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
                                         </td>
                                         <td>
-                                            <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                            <select class="form-control selectpicker" disabled name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                                 <option value="">--Pilih Tujuan--</option>
                                             </select>
                                         </td>
                                         <td>
-                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
+                                            <input type="text" name="tgl_brngkt_booking[]" readonly autocomplete="off" class="date form-control tgl_planning"  placeholder="dd-M-yyyy" value="{{old('tgl_planning','')}}">     
                                         </td>
                                         <td align="center" class="text-danger">
-                                            <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
-                                                <i class="fa fa-fw fa-trash-alt"></i>
+                                            <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Edit" class="btn btn-info edit radiusSendiri">
+                                                <i class="fa fa-fw fa-pencil-alt"></i>
                                             </button>
+                                            {{-- <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
+                                                <i class="fa fa-fw fa-trash-alt"></i>
+                                            </button> --}}
                                         </td>
-                                    </tr> --}}
+                                    </tr>
                                 </tbody>
                                 <tfoot>
                                 
@@ -178,46 +186,28 @@
                                 </thead>
                                 <tbody > 
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox" id="thc_cekbox"></span> THC</th>
-                                        <td name="">
-                                            <input type="text" id="thc_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_thc" id="total_thc" class="form-control" readonly hidden>
-                                        </td>
+                                        <th><span> <input type="checkbox" name="thc_cekbox" id="thc_cekbox"></span> THC</th>
+                                        <td name="total_thc"><input type="text" id="total_thc" class="form-control" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox" id="lolo_cekbox"></span> LOLO</th>
-                                        <td name="">
-                                            <input type="text" id="lolo_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_lolo" id="total_lolo" class="form-control" readonly hidden>
-                                        </td>
+                                        <th><span> <input type="checkbox" name="lolo_cekbox" id="lolo_cekbox"></span> LOLO</th>
+                                        <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox" id="apbs_cekbox"></span> APBS</th>
-                                        <td name="">
-                                            <input type="text" id="apbs_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_apbs" id="total_apbs" class="form-control" readonly hidden>
-                                        </td>
+                                        <th><span> <input type="checkbox" name="apbs_cekbox" id="apbs_cekbox"></span> APBS</th>
+                                        <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="cleaning_cekbox" id="cleaning_cekbox"></span> CLEANING</th>
-                                        <td name="">
-                                            <input type="text" id="cleaning_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_cleaning" id="total_cleaning" class="form-control" readonly hidden>
-                                        </td>
+                                        <th><span> <input type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox"></span> CLEANING</th>
+                                        <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox" id="doc_fee_cekbox"></span> DOC FEE</th>
-                                        <td name="">
-                                            <input type="text" id="doc_fee_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_doc_fee" id="total_doc_fee" class="form-control" readonly hidden>
-                                        </td>
+                                        <th><span> <input type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox"></span> DOC FEE</th>
+                                        <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" readonly></td>
                                     </tr>
                                     <tr>
                                         <th>SUB TOTAL</th>
-                                        <td>
-                                            <input type="text" id="total_sblm_dooring_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" class="form-control" readonly>
-                                        </td>
+                                        <th name="total_sblm_dooring" id="total_sblm_dooring">Harga</th>
                                     </tr>
                                 </tbody>
                                 <tfoot>
@@ -227,7 +217,7 @@
                             <table class="table table-bordered" id="sortable">
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Biaya Jaminan</th>
+                                        <th colspan="2">Biaya Setelah Dooring</th>
                                     </tr>
                                 </thead>
                                 <tbody > 
@@ -253,7 +243,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    {{-- <tr>
+                                    <tr>
                                         <th>Potongan Jaminan</th>
                                         <td>Harga</td>
                                     </tr>
@@ -267,7 +257,7 @@
                                     <tr>
                                         <th> Tgl Jaminan Kembali </th>
                                         <td>Harga</td>
-                                    </tr> --}}
+                                    </tr>
                                     
                                 </tbody>
                                 <tfoot>
@@ -332,26 +322,20 @@
         // master harga tipe
             var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
             var harga20Ft = {
-                'thcLuar': dataKeuangan.thc_20ft_luar,
-                'thcDalam': dataKeuangan.thc_20ft_dalam,
-                'loloLuar': dataKeuangan.lolo_20ft_luar,
-                'loloDalam': dataKeuangan.lolo_20ft_dalam,
+                'thc': dataKeuangan.thc_20ft,
+                'lolo': dataKeuangan.lolo_20ft,
                 'apbs': dataKeuangan.apbs_20ft,
                 'cleaning': dataKeuangan.cleaning_20ft,
                 'doc_fee': dataKeuangan.doc_fee_20ft,
             };
             var harga40Ft = {
-                'thcLuar': dataKeuangan.thc_40ft_luar,
-                'thcDalam': dataKeuangan.thc_40ft_dalam,
-                'loloLuar': dataKeuangan.lolo_40ft_luar,
-                'loloDalam': dataKeuangan.lolo_40ft_dalam,
+                'thc': dataKeuangan.thc_40ft,
+                'lolo': dataKeuangan.lolo_40ft,
                 'apbs': dataKeuangan.apbs_40ft,
                 'cleaning': dataKeuangan.cleaning_40ft,
                 'doc_fee': dataKeuangan.doc_fee_40ft,
             };
         // end of master harga tipe
-        // console.log('harga20Ft '+JSON.stringify(harga20Ft));
-        // console.log('harga40Ft '+JSON.stringify(harga40Ft));
 
         // handling tanggal
             $('#tgl_sandar').datepicker({
@@ -359,18 +343,20 @@
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language:'en',
+                endDate: "0d"
             });
             $('#tgl_bayar_jaminan').datepicker({
                 autoclose: true,
                 format: "dd-M-yyyy",
                 todayHighlight: true,
             });
-            $(document).on('focus', '.tgl_booking', function() {
+            $(document).on('focus', '.tgl_planning', function() {
                 $(this).datepicker({
                     autoclose: true,
                     format: "dd-M-yyyy",
                     todayHighlight: true,
                     language: 'en',
+                    endDate: "0d"
                 });
             });
         // end of handling tgl
@@ -431,31 +417,6 @@
             var selectedValue = customerId;
             let dataOption = ''; // Initialize as an array
 
-            // logic kasih id di row
-                // Ambil semua elemen <tr> dengan ID yang dimulai dengan "row"
-                var rows = document.querySelectorAll('tr[id^="row"]');
-
-                // Cari ID terbesar dengan format "rowX" dan ambil nilai X-nya
-                var maxID = -1;
-                for (var i = 0; i < rows.length; i++) {
-                    var idStr = rows[i].id.replace('row', ''); // Ambil nilai X dari "rowX"
-                    var idNum = parseInt(idStr); // Konversi menjadi angka
-                    if (idNum > maxID) {
-                        maxID = idNum;
-                    }
-                }   
-
-                // Hasilkan ID terakhir dengan format "rowX+1"
-                var lastID = (maxID + 1);
-
-                if(lastID != 0){
-                    var i = lastID-1;
-                }else{
-                    var i = 0;
-                }
-                var length;
-            // end of logic
-
             // get tujuan
             $.ajax({
                 url: '/booking/getTujuan/' + selectedValue,
@@ -463,54 +424,40 @@
                 success: function(response) {
                     response.forEach(tujuan => {
                         const option = document.createElement('option');
-                        var xxx = `<option value="${tujuan.id}">${tujuan.nama_tujuan}</option>`;
+                        var xxx = `<option id="${tujuan.id}">${tujuan.nama_tujuan}</option>`;
                         // store data ke dataOption buat di fetch ketika tambah data
                         dataOption += xxx;
                     });
-                    i++;
 
                     $('#tb').append(
-                        `<tr id="row`+i+`">
+                        `<tr>
                             <td>
-                                <input type="text" id="no_kontainer" name="detail[${i}][no_kontainer]"class="form-control no_kontainerx" maxlength="20" value="">
+                                <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
                             </td>
                             <td>
-                                <input type="text" id="seal" name="detail[${i}][seal]"class="form-control" maxlength="10" value="">
+                                <input type="text" id="seal" name="seal[]"class="form-control" value="">
                             </td>
                             <td>
-                                <select class="form-control selectpicker tipeKontainer" name="detail[${i}][tipe]" id="tipe${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value="">--Pilih Tipe--</option>
+                                <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <option value="">--Pilih Tipe Kontainer--</option>
                                     <option value="20">20Ft</option>
                                     <option value="40">40Ft</option>
                                 </select>
-                                <input type="hidden" readonly class="hargaThc" hargaThc_${i} name="detail[${i}][hargaThc]" value="">
-                                <input type="hidden" readonly class="hargaLolo" hargaLolo_${i} name="detail[${i}][hargaLolo]" value="">
-                                <input type="hidden" readonly class="hargaApbs" hargaApbs_${i} name="detail[${i}][hargaApbs]" value="">
-                                <input type="hidden" readonly class="hargaCleaning" hargaCleaning_${i} name="detail[${i}][hargaCleaning]" value="">
-                                <input type="hidden" readonly class="hargaDocFee" hargaDocFee_${i} name="detail[${i}][hargaDocFee]" value="">
+                                <input type="hidden" readonly class="hargaThc" name="hargaThc[]" value="">
+                                <input type="hidden" readonly class="hargaLolo" name="hargaLolo[]" value="">
+                                <input type="hidden" readonly class="hargaApbs" name="hargaApbs[]" value="">
+                                <input type="hidden" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+                                <input type="hidden" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
                             </td>
                             <td>
-                                <div class="form-group mb-0">
-                                    <div class="icheck-primary">
-                                        <input id="thcLuar${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][thcLD]" value="luar" checked>
-                                        <label class="form-check-label" for="thcLuar${i}">Luar</label>
-                                    </div>
-                                    <div class="icheck-primary mt-3">
-                                        <input id="thcDalam${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][thcLD]" value="dalam" >
-                                        <label class="form-check-label" for="thcDalam${i}">Dalam</label><br>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <select class="form-control selectpicker tujuanC" name="detail[${i}][tujuan]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <select class="form-control selectpicker tujuanC" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                     <option value="">--Pilih Tujuan--</option>
                                     `+dataOption+`
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="detail[${i}][tgl_booking]" autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
+                                <input type="text" name="tgl_planning[]" autocomplete="off" class="date form-control tgl_planning" placeholder="dd-M-yyyy" value="{{old('tgl_planning','')}}">     
                             </td>
-                        
                             <td align="center" class="text-danger">
                                 <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" class="btn btn-danger radiusSendiri hapus">
                                     <i class="fa fa-fw fa-trash-alt"></i>
@@ -518,7 +465,6 @@
                             </td>
                         </tr>`
                     );
-                    uncheck();
                     $('.selectpicker').selectpicker('refresh');
 
                 },
@@ -587,179 +533,42 @@
 
         });
 
-        // handling checkbox biaya dibawah
-            var tmpTot = 0;
-            $('#thc_cekbox').on('change', function() {
-                if ($(this).prop('checked')) {
-                    $('#thc_null').prop('hidden', true);
-                    $('#total_thc').prop('hidden', false);
-                    hitungTotal();
-                    // tmpTot = tmpTot+parseFloat($('#total_thc').val());
-                    // $('#total_sblm_dooring').val(tmpTot);
-                } else {
-                    $('#thc_null').prop('hidden', false);
-                    $('#total_thc').prop('hidden', true);
-                    hitungTotal();
-                    // tmpTot = tmpTot-parseFloat($('#total_thc').val());
-                    // $('#total_sblm_dooring').val(tmpTot);
-                }
-            });
-            $('#lolo_cekbox').on('change', function() {
-                if ($(this).prop('checked')) {
-                    $('#lolo_null').prop('hidden', true);
-                    $('#total_lolo').prop('hidden', false);
-                    hitungTotal();
-                } else {
-                    $('#lolo_null').prop('hidden', false);
-                    $('#total_lolo').prop('hidden', true);
-                    hitungTotal();
-                }
-            });
-            $('#apbs_cekbox').on('change', function() {
-                if ($(this).prop('checked')) {
-                    $('#apbs_null').prop('hidden', true);
-                    $('#total_apbs').prop('hidden', false);
-                    hitungTotal();
-                } else {
-                    $('#apbs_null').prop('hidden', false);
-                    $('#total_apbs').prop('hidden', true);
-                    hitungTotal();
-                }
-            });
-            $('#cleaning_cekbox').on('change', function() {
-                if ($(this).prop('checked')) {
-                    $('#cleaning_null').prop('hidden', true);
-                    $('#total_cleaning').prop('hidden', false);
-                    hitungTotal();
-                } else {
-                    $('#cleaning_null').prop('hidden', false);
-                    $('#total_cleaning').prop('hidden', true);
-                    hitungTotal();
-                }
-            });
-            $('#doc_fee_cekbox').on('change', function() {
-                if ($(this).prop('checked')) {
-                    $('#doc_fee_null').prop('hidden', true);
-                    $('#total_doc_fee').prop('hidden', false);
-                    hitungTotal();
-                } else {
-                    $('#doc_fee_null').prop('hidden', false);
-                    $('#total_doc_fee').prop('hidden', true);
-                    hitungTotal();
-                }
-            });
-        // end of it
-
         // logic hitung biaya
             $( document ).on( 'change', '.tipeKontainer', function (event) {
                 // biar datanya ga ke get 2x ketika di get val
                 event.stopPropagation();
-                
-                var selectedId = $(this).attr('id');
-                var id = selectedId.replace('tipe', ''); // Remove 'thc' from the beginning
-
+                var selectedValue = $(event.target).val();
                 var selectedValue = $(this).val();
 
-                var parentTd = $(this).closest('td');
-                if(selectedValue == '20'){
-                    var thcldVal = $("input[name='detail[" + id + "][thcLD]']:checked").val();
-                    parentTd.find('.hargaThc').val(thcldVal == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
-                    parentTd.find('.hargaLolo').val(thcldVal == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
-                }else{
-                    var thcldVal = $("input[name='detail[" + id + "][thcLD]']:checked").val();
-                    parentTd.find('.hargaThc').val(thcldVal == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
-                    parentTd.find('.hargaLolo').val(thcldVal == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
-                }
+                //closest itu misal 
+                // <td dia nyarik ini closestnya kan parent>
+                //     <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                //         <option value="">--Pilih Tipe Kontainer--</option>
+                //         <option value="20">20Ft</option>
+                //         <option value="40">40Ft</option>
+                //     </select> trs nyarik anak" nya
+                //     <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
+                //     <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
+                //     <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
+                //     <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+                //     <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
+                // </td>
 
+                var parentTd = $(this).closest('td');
+                parentTd.find('.hargaThc').val(selectedValue == '20' ? harga20Ft.thc : harga40Ft.thc);
+                parentTd.find('.hargaLolo').val(selectedValue == '20' ? harga20Ft.lolo : harga40Ft.lolo);
                 parentTd.find('.hargaApbs').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
                 parentTd.find('.hargaCleaning').val(selectedValue == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
                 parentTd.find('.hargaDocFee').val(selectedValue == '20' ? harga20Ft.doc_fee : harga40Ft.doc_fee);
-                
-           
-                uncheck();
+
                 // tiap ada perubahan di class tipekontainer, di akhir akan di hitung total harganya
                 calculateTotalHarga();
-                hitungTotal();
             });
-
-            $( document ).on( 'change', '.thcc', function (event) {
-                // var selectedValue = $("input[name='detail[" + i + "][thcLD]']:checked").val();
-                var selectedId = $(this).attr('id');
-                // console.log('Selected ID:', selectedId);
-
-                var selectedValue = $(this).val();
-                // console.log('selectedValue '+selectedValue);
-
-                var dataId = $(this).attr('dataId');
-                // console.log("dataId: -"+dataId+"-");
-                
-                var tk = $(`#tipe${dataId}`).val();
-                // console.log('tk '+tk);
-                if(tk == '20'){
-                    const thc_change = document.querySelector(`input[hargaThc_${dataId}]`);
-                    var valueThc = selectedValue == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam;
-                    thc_change.value = valueThc;
-
-                    const lolo_change = document.querySelector(`input[hargaLolo_${dataId}]`);
-                    var valueLolo = selectedValue == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam;
-                    lolo_change.value = valueLolo;
-                }else{
-                    const thc_change = document.querySelector(`input[hargaThc_${dataId}]`);
-                    var valueThc = selectedValue == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam;
-                    thc_change.value = valueThc;
-
-                    const lolo_change = document.querySelector(`input[hargaLolo_${dataId}]`);
-                    var valueLolo = selectedValue == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam;
-                    lolo_change.value = valueLolo;
-                    // document.querySelector(`input[hargaThc_${dataId}]`).val(selectedValue == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
-                    // document.querySelector(`input[hargaLolo_${dataId}]`).val(selectedValue == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
-                }
-
-                uncheck();
-                calculateTotalHarga();
-                hitungTotal();
-            });
-
             
             $( document ).on( 'click', '.hapus', function (event) {
                 // ketika hapus data, di hitung lagi total harganya
-                uncheck();
                 calculateTotalHarga();
-                hitungTotal();
             });
-
-            function hitungTotal(){
-                var total_thc = parseFloat(($('#thc_cekbox').prop('checked')) ? $('#total_thc').val() : 0);
-                var total_lolo = parseFloat(($('#lolo_cekbox').prop('checked')) ? $('#total_lolo').val() : 0);
-                var total_apbs = parseFloat(($('#apbs_cekbox').prop('checked')) ? $('#total_apbs').val() : 0);
-                var total_cleaning = parseFloat(($('#cleaning_cekbox').prop('checked')) ? $('#total_cleaning').val() : 0);
-                var total_doc_fee = parseFloat(($('#doc_fee_cekbox').prop('checked')) ? $('#total_doc_fee').val() : 0);
-                
-                var total = parseFloat(total_thc + total_lolo + total_apbs + total_cleaning + total_doc_fee);
-
-                var total_sblm_dooring = $('#total_sblm_dooring').val(total);
-            }
-
-            function uncheck(){
-                // $('.checkitem').each(function() {
-                //     this.checked = false; 
-                // });  
-
-                // $('#thc_null').prop('hidden', false);
-                // $('#total_thc').prop('hidden', true);
-
-                // $('#lolo_null').prop('hidden', false);
-                // $('#total_lolo').prop('hidden', true);
-   
-                // $('#apbs_null').prop('hidden', false);
-                // $('#total_apbs').prop('hidden', true);
-
-                // $('#cleaning_null').prop('hidden', false);
-                // $('#total_cleaning').prop('hidden', true);
-
-                // $('#doc_fee_null').prop('hidden', false);
-                // $('#total_doc_fee').prop('hidden', true);
-            }
 
             function calculateTotalHarga() {
                 var totalhargaThc = 0;

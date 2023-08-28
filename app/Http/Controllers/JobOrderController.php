@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use App\Models\JobOrderDetail;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class JobOrderController extends Controller
 {
@@ -70,71 +71,107 @@ class JobOrderController extends Controller
     public function store(Request $request)
     {
         try {
-            $pesanKustom = [
-                'no_jo.required' => 'Tanggal JO Harus diisi!',
-                'tgl_plan_book.required' => 'Tanggal Plan Book Harus diisi!',
-            ];
+            // var_dump($request->post()); die;
+            // $pesanKustom = [
+            //     'no_jo.required' => 'Tanggal JO Harus diisi!',
+            //     'tgl_plan_book.required' => 'Tanggal Plan Book Harus diisi!',
+            // ];
             
-            $request->validate([
-                'no_jo' => 'required',
-                'tgl_plan_book' => 'required',
-            ], $pesanKustom);
+            // $request->validate([
+            //     'no_jo' => 'required',
+            //     'tgl_plan_book' => 'required',
+            // ], $pesanKustom);
 
             $user = Auth::user()->id;
             $data = $request->post();
 
+            $currentYear = Carbon::now()->format('y');
+            $currentMonth = Carbon::now()->format('m');
+
+            $kode = DB::table('customer')
+                ->select('kode')
+                ->where('id', $data['customer'])
+                ->first();
+
+            //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
+            //bisa juga substr(no_booking, 8,10)
+            $maxBooking = DB::table('job_order')
+                ->selectRaw("ifnull(max(substr(no_jo, -3)), 0) + 1 as max_jo")
+                ->whereRaw("substr(no_jo, 1, length(no_jo) - 3) = concat(?, ?, ?)", [$kode->kode,$currentYear, $currentMonth])
+                ->value('max_booking');
+
+            if (is_null($maxBooking)) {
+                $newBookingNumber = 'PJE/'. $kode->kode . '/' . $currentYear . $currentMonth . '001';
+            }else{
+                // str pad itu nambain angka 0 ke sebelah kiri (str_pad_left, defaultnya ke kanan) misal maxbookint 4 jadinya 004
+                $newBookingNumber = 'PJE/'. $kode->kode . '/' . $currentYear . $currentMonth . str_pad($maxBooking, 3, '0', STR_PAD_LEFT);
+            }
+            // var_dump($data); die;
             $newJO = new JobOrder();
-            $newJO->no_jo = $data['no_jo'];
-            $newJO->tgl_plan_book = $data['tgl_plan_book'];
-            $newJO->id_customer = $data['id_customer'];
-            $newJO->id_supplier = $data['id_supplier'];
-            $newJO->id_booking = $data['id_booking'];
+            $newJO->no_jo = $newBookingNumber;
+            $newJO->id_customer = $data['customer'];
+            $newJO->id_supplier = $data['supplier'];
             $newJO->pelabuhan_muat = $data['pelabuhan_muat'];
-            $newJO->pelabuhan_bongkar = $data['pelabuhan_bongkar'];
+            $newJO->pelabuhan_bongkar = $data['pelauhan_bongkar'];
             $newJO->no_bl = $data['no_bl'];
-            $newJO->tgl_sandar = $data['tgl_sandar'];
-            $newJO->free_time = $data['free_time'];
-            $newJO->jo_expired = $data['jo_expired'];
-            $newJO->total_thc = $data['total_thc'];
-            $newJO->total_lolo = $data['total_lolo'];
-            $newJO->total_apbs = $data['total_apbs'];
-            $newJO->total_cleaning = $data['total_cleaning'];
-            $newJO->total_docfee = $data['total_docfee'];
-            $newJO->total_biaya_sebelum_dooring = $data['total_biaya_sebelum_dooring'];
-            $newJO->total_storage = $data['total_storage'];
-            $newJO->total_demurage = $data['total_demurage'];
-            $newJO->total_detention = $data['total_detention'];
-            $newJO->total_repair_washing = $data['total_repair_washing'];
-            $newJO->total_biaya_setelah_dooring = $data['total_biaya_setelah_dooring'];
-            $newJO->status = $data['status'];
-            $newJO->createad_by = $user;
-            $newJO->createad_at = now();
+            $newJO->tgl_sandar = date_create_from_format('d-M-Y', $data['tgl_sandar']); 
+            
+            if(isset($data['thc_cekbox'])){
+                $newJO->total_thc = $data['total_thc'];
+            }
+            if(isset($data['lolo_cekbox'])){
+                $newJO->total_lolo = $data['total_lolo'];
+            }
+            if(isset($data['apbs_cekbox'])){
+                $newJO->total_apbs = $data['total_apbs'];
+            }
+            if(isset($data['cleaning_cekbox'])){
+                $newJO->total_cleaning = $data['total_cleaning'];
+            }
+            if(isset($data['doc_fee_cekbox'])){
+                $newJO->total_docfee = $data['total_doc_fee'];
+            }
+            $newJO->total_biaya_sebelum_dooring = $data['total_sblm_dooring'];
+            // $newJO->free_time = $data['free_time']; // hapus
+            // $newJO->tgl_plan_book = $data['tgl_plan_book']; // hapus
+            // $newJO->id_booking = $data['id_booking']; // kosong dulu
+            // $newJO->jo_expired = $data['jo_expired']; // kosongkan dulu
+            // $newJO->total_storage = $data['total_storage']; // kosongkan dulu
+            // $newJO->total_demurage = $data['total_demurage']; // kosongkan dulu
+            // $newJO->total_detention = $data['total_detention']; // kosongkan dulu
+            // $newJO->total_repair_washing = $data['total_repair_washing']; // kosongkan dulu
+            // $newJO->total_biaya_setelah_dooring = $data['total_biaya_setelah_dooring']; // kosongkan dulu
+            $newJO->status = 'Waiting Payment';
+            $newJO->created_by = $user;
+            $newJO->created_at = now();
+            $newJO->is_aktif = 'Y';
             
             if($newJO->save()){
                 if(isset($data['detail'])){
                     foreach ($data['detail'] as $key => $detail) {
                         $JOD = new JobOrderDetail();
                         $JOD->id_jo = $newJO->id; // get id jo
-                        $JOD->no_kontainer = $detail->no_kontainer;
-                        $JOD->seal = $detail->seal;
-                        $JOD->seal_pje = $detail->seal_pje;
-                        $JOD->seal_pje = $detail->seal_pje;
-                        $JOD->id_kendaraan = $detail->id_kendaraan;
-                        $JOD->nopol_kendaraan = $detail->nopol_kendaraan;
-                        $JOD->id_grup_tujuan = $detail->id_grup_tujuan;
-                        $JOD->tgl_dooring = $detail->tgl_dooring;
-                        $JOD->storage = $detail->storage;
-                        $JOD->demurage = $detail->demurage;
-                        $JOD->detention = $detail->detention;
-                        $JOD->repair_washing = $detail->repair_washing;
-                        $JOD->thc = $detail->thc;
-                        $JOD->lolo = $detail->lolo;
-                        $JOD->apbs = $detail->apbs;
-                        $JOD->cleaning = $detail->cleaning;
-                        $JOD->docfee = $detail->docfee;
-                        $JOD->tipe_kontainer = $detail->tipe_kontainer;
-                        $JOD->status = $detail->status;
-                        $JOD->do_expaired = $detail->do_expaired;
+                        // $JOD->id_booking = $detail->id_booking; // kosong dulu
+                        // $JOD->tgl_berangkat_booking = $detail->tgl_berangkat_booking; // kosong dulu
+                        $JOD->no_kontainer = $detail['no_kontainer'];
+                        $JOD->seal = $detail['seal'];
+                        // $JOD->seal_pje = $detail->seal_pje; // kosong dulu
+                        // $JOD->id_kendaraan = $detail->id_kendaraan; // kosong dulu
+                        // $JOD->nopol_kendaraan = $detail->nopol_kendaraan; // kosong dulu 
+                        $JOD->id_grup_tujuan = $detail['tujuan']; 
+                        // $JOD->tgl_dooring = $detail->tgl_dooring; // kosong dulu
+                        // $JOD->storage = $detail->storage; // kosong dulu
+                        // $JOD->demurage = $detail->demurage; // kosong dulu
+                        // $JOD->detention = $detail->detention; // kosong dulu
+                        // $JOD->repair_washing = $detail->repair_washing; // kosong dulu
+                        $JOD->thc = $detail['hargaThc'];
+                        $JOD->lolo = $detail['hargaLolo'];
+                        $JOD->apbs = $detail['hargaApbs'];
+                        $JOD->cleaning = $detail['hargaCleaning'];
+                        $JOD->docfee = $detail['hargaDocFee'];
+                        $JOD->tipe_kontainer = $detail['tipe'];
+                        $JOD->status = "Waiting Payment";
+                        // $JOD->do_expaired = $detail->do_expaired; // kosong dulu
                         $JOD->created_by = $user;
                         $JOD->created_at = now();
                         $JOD->is_aktif = 'Y';
@@ -145,7 +182,7 @@ class JobOrderController extends Controller
             }
         
 
-            return redirect()->route('customer.index')->with('status','Success!!');
+            return redirect()->route('job_order.index')->with('status','Success!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
