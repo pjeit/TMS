@@ -40,7 +40,7 @@
                                     <td>{{ $item->id_supplier }}</td>
                                     <td>{{ $item->status}}</td>
                                     <td>                                    
-                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('persetujuan_jo.edit',[$item->id])}}">
+                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('pembayaran_jo.edit',[$item->id])}}">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>   
                                         <a href="{{ route('persetujuan_jo.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
@@ -54,7 +54,7 @@
                                     <td>PT. TANTO</td>
                                     <td>Menunggu Pembayaran Finance</td>
                                     <td>                                    
-                                        <a class="btn btn-default bg-success radiusSendiri" href="{{route('persetujuan_jo.create')}}">
+                                        <a class="btn btn-default bg-success radiusSendiri" href="{{route('pembayaran_jo.create')}}">
                                             <i class="fas fa-credit-card"></i> Pembayaran
                                         </a>   
                                     </td>

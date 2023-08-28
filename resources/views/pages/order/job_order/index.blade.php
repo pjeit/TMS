@@ -43,6 +43,8 @@
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                     <a href="{{ route('job_order.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
+                                    <a href="/job_order/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+
                                 </td>
                             </tr>
                             @endforeach

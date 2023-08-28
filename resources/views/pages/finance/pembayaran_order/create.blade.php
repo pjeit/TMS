@@ -26,14 +26,14 @@
             </div>
         @endforeach
     @endif
-    <form action="{{ route('job_order.store') }}" method="POST" >
+    <form action="{{ route('pembayaran_jo.store') }}" method="POST" >
       @csrf
         <div class="row m-2">
              <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
-                        <a href="{{ route('persetujuan_jo.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <a href="{{ route('persetujuan_jo.index') }}"class="btn btn-success radiusSendiri"><i class="fa fa-check" aria-hidden="true"></i> Setujui</a>
+                        <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-success radiusSendiri"><i class="fa fa-check" aria-hidden="true"></i> Setujui</a>
 
                         {{-- <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button> --}}
                     </div>
