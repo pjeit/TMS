@@ -56,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/booking/getTujuan/{id}', ['uses' => 'UserController@attendance']);
         Route::resource('booking', 'App\Http\Controllers\BookingController');
 
+        Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO']);
         Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
 
         Route::resource('pembayaran_jo', 'App\Http\Controllers\PaymentJobController');

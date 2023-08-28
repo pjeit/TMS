@@ -10,6 +10,10 @@ use App\Helper\VariableHelper;
 use App\Models\JobOrderDetail;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use PDF;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\HtmlString;
 
 class JobOrderController extends Controller
 {
@@ -252,5 +256,60 @@ class JobOrderController extends Controller
     public function destroy(JobOrder $jobOrder)
     {
         //
+    }
+
+     public function printJO(JobOrder $JobOrder)
+    {
+        //
+        $dataSupplier = DB::table('supplier')
+            ->select('*')
+            ->where('supplier.is_aktif', '=', "Y")
+            ->where('supplier.id', '=', $JobOrder->id_supplier)
+            ->get();
+        $dataCustomer = DB::table('customer')
+            ->select('*')
+            ->where('customer.is_aktif', '=', "Y")
+            ->where('customer.id', '=', $JobOrder->id_customer)
+            ->get();
+        $dataJoDetail = DB::table('job_order_detail')
+            ->select('*')
+            ->where('job_order_detail.is_aktif', '=', "Y")
+            ->where('job_order_detail.id_jo', '=', $JobOrder->id)
+            ->get();
+        $dataJaminan = DB::table('jaminan')
+            ->select('*')
+            ->where('jaminan.is_aktif', '=', "Y")
+            ->where('jaminan.id_job_order', '=', $JobOrder->id)
+            ->get();
+        // dd($dataJoDetail);   
+        $pdf = PDF::loadView('pages.order.job_order.print',[
+            'judul'=>"Job Order",
+            'JobOrder'=>$JobOrder,
+            'dataSupplier'=>$dataSupplier,
+            'dataCustomer'=>$dataCustomer,
+            'dataJoDetail'=>$dataJoDetail,
+            'dataJaminan'=>$dataJaminan,
+        ]); 
+        // dd($JobOrder);
+        $pdf->setPaper('A5', 'portrait');
+        // Customize the PDF generation process if needed
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true, // Enable HTML5 parser
+            'isPhpEnabled' => true, // Enable inline PHP execution
+            'defaultFont' => 'sans-serif'
+        ]);
+        // langsung download
+        // return $pdf->download('fileCoba.pdf'); 
+        // preview dulu
+        return $pdf->stream('fileCoba.pdf'); 
+
+        //  return view('pages.order.job_order.print',[
+        //     'judul'=>"Job Order",
+        //     'JobOrder'=>$JobOrder,
+        //     'dataSupplier'=>$dataSupplier,
+        //     'dataCustomer'=>$dataCustomer,
+        //     'dataJoDetail'=>$dataJoDetail
+
+        // ]);
     }
 }
