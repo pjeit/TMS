@@ -130,13 +130,13 @@
         <tfoot>
         </tfoot>
     </table>
-    <h3 class="text">Kontainer</h3>
-     <table>
+    {{-- <h3 class="text">Container</h3>
+    <table>
         <thead>
             <tr>
-                <td>No. Kontainer</td>
+                <td>No. Container</td>
                 <td>No Pol Kendaraan</td>
-                <td>Tipe Kontainer</td>
+                <td>Tipe Container</td>
                 <td>Test tambah</td>
                 <td>Test asdsad</td>
 
@@ -159,7 +159,7 @@
         </tbody>
         <tfoot>
         </tfoot>
-    </table>
+    </table> --}}
 
     <h3 class="text">Biaya Sebelum Dooring</h3>
       <table class="table table-bordered" id="sortable" >
@@ -209,19 +209,7 @@
             <tfoot>
             </tfoot>
       </table>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+    
     <h3 class="text" style="margin-top: 3rem;">Biaya Jaminan</h3>
 
          <table class="table table-bordered" id="sortable" >

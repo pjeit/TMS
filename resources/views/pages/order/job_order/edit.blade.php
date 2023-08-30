@@ -13,7 +13,8 @@
 
 @section('content')
 <style>
-   
+
+
 </style>
 
     @if ($errors->any())
@@ -26,35 +27,36 @@
             </div>
         @endforeach
     @endif
-    <form action="{{ route('job_order.store') }}" method="POST" >
-      @csrf
+    <form action="{{ route('job_order.update', ['job_order' => $data['JO'] ]) }}" id='send' method="POST" >
+        @method('PUT')
+        @csrf
         <div class="row m-2">
              <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
                         <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                        <button type="submit" id='submitButton' class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6" >
-                                <div class="form-group">
+                                <div class="form-group" style="pointer-events: none;" >
                                     <label for="">Pengirim<span class="text-red">*</span></label>
-                                        <select class="form-control selectpicker"  id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                        <select class="form-control selectpicker" readonly style="pointer-events: none;" id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                         <option value="0">--Pilih Pengirim--</option>
                                         @foreach ($dataCustomer as $cust)
-                                            <option value="{{$cust->id}}" <?= $data->id_customer == $cust->id ? 'selected':''; ?> >{{ $cust->nama }}</option>
+                                            <option value="{{$cust->id}}" <?= $data['JO']->id_customer == $cust->id ? 'selected':''; ?> >{{ $cust->nama }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="col-6" >
-                                <div class="form-group ">
+                                <div class="form-group" style="pointer-events: none;" >
                                     <label for="">Pelayaran</label>
-                                    <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <select class="form-control selectpicker" readonly disabled id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                         <option value="0">--Pilih Pelayaran--</option>
                                         @foreach ($dataSupplier as $sup)
-                                            <option value="{{$sup->id}}" <?= $data->id_supplier == $sup->id? 'selected':''; ?> >{{ $sup->nama }}</option>
+                                            <option value="{{$sup->id}}" <?= $data['JO']->id_supplier == $sup->id? 'selected':''; ?> >{{ $sup->nama }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -64,7 +66,7 @@
                             <div class="col-md-6">
                                 <div class="form-group ">
                                     <label for="">No. BL<span class="text-red">*</span></label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{$data->no_bl}}" >
+                                    <input required type="text" name="no_bl" class="form-control" value="{{$data['JO']->no_bl}}" readonly disabled >
                                 </div>           
                             </div>
                             <div class="col-md-6">
@@ -74,28 +76,33 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{$data->tgl_sandar}}">     
+                                        <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse($data['JO']->tgl_sandar)->format('d-M-Y') }}" readonly disabled>     
                                     </div>
                                 </div>           
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_muat" class="form-control" value="{{$data->pelabuhan_muat}}">
+                                    <input required type="text" name="pelabuhan_muat" class="form-control" value="{{$data['JO']->pelabuhan_muat}}" readonly>
                                 </div>     
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_bongkar" class="form-control" value="{{$data->pelabuhan_bongkar}}">
+                                    <input required type="text" name="pelabuhan_bongkar" class="form-control" value="{{$data['JO']->pelabuhan_bongkar}}" readonly>
+                                </div>              
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="">Status</label>
+                                    <input required type="text" name="status" class="form-control" value="{{$data['JO']->status}}" readonly>
                                 </div>              
                             </div>
                         </div>  
                         <!-- <div class="card radiusSendiri">
                         <div class="card-header"> -->
-                            <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2"><i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah Kontainer</button>
                         <!-- </div> -->
                         <!-- <div class="card-body"> -->
                             <table class="table" id="sortable">
@@ -104,46 +111,68 @@
                                         <th width="350">No. Kontainer</th>
                                         <th width="280">Seal</th>
                                         <th width="150">Tipe</th>
-                                        <th width="150">THC</th>
+                                        <th width="150">Stripping</th>
                                         <th width="350">Tujuan</th>
-                                        <th width="200">Tgl Booking</th>
-                                        <th width="20" class="text-center">Aksi</th>
+                                        <th width="250">Tgl Booking</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tb"> 
-                                    {{-- <tr >
-                                        <td>
-                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
-                                        </td>
-                                        <td>
-                                            <input type="text" id="seal" name="seal[]"class="form-control" value="">
-                                        </td>
-                                        <td>
-                                            <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Tipe--</option>
-                                                <option value="20">20Ft</option>
-                                                <option value="40">40Ft</option>
-                                            </select>
-                                            <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
-                                            <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
-                                            <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
-                                            <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
-                                            <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
-                                        </td>
-                                        <td>
-                                            <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Tujuan--</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
-                                        </td>
-                                        <td align="center" class="text-danger">
-                                            <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
-                                                <i class="fa fa-fw fa-trash-alt"></i>
-                                            </button>
-                                        </td>
-                                    </tr> --}}
+                                    @if ($data['detail'])
+                                        @foreach (json_decode($data['detail']) as $key => $item)
+                                            <tr id="row{{$key}}">
+                                                <td>
+                                                    <input type="text" id="no_kontainer" name="detail[{{$key}}][no_kontainer]"class="form-control no_kontainerx" maxlength="20" value="{{$item->no_kontainer}}" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id="seal" name="detail[{{$key}}][seal]"class="form-control" maxlength="10" value="{{$item->seal}}" readonly>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control selectpicker tipeKontainer" name="detail[{{$key}}][tipe]" id="tipe{{$key}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" readonly disabled>
+                                                        <option value="">--Pilih Tipe --</option>
+                                                        <option value="20" <?= $item->tipe_kontainer == '20' ? 'selected':''; ?> >20Ft </option>
+                                                        <option value="40" <?= $item->tipe_kontainer == '40' ? 'selected':''; ?> >40Ft </option>
+                                                    </select>
+                                                    <input type="hidden" readonly name="detail[{{$key}}][id_detail]" value="{{$item->id}}">
+                                                    <input type="hidden" readonly name="detail[{{$key}}][id_booking]" value="{{$item->id_booking}}">
+                                                    <input type="hidden" readonly class="hargaThc" <?= 'hargaThc_'.$key ?> name="detail[{{$key}}][hargaThc]" value="">
+                                                    <input type="hidden" readonly class="hargaLolo" <?= 'hargaLolo_'.$key ?> name="detail[{{$key}}][hargaLolo]" value="">
+                                                    <input type="hidden" readonly class="hargaApbs" <?= 'hargaApbs_'.$key ?> name="detail[{{$key}}][hargaApbs]" value="">
+                                                    <input type="hidden" readonly class="hargaCleaning" <?= 'hargaCleaning_'.$key ?> name="detail[{{$key}}][hargaCleaning]" value="">
+                                                    <input type="hidden" readonly class="hargaDocFee" <?= 'hargaDocFee_'.$key ?> name="detail[{{$key}}][hargaDocFee]" value="">
+                                                </td>
+                                                <td>
+                                                    <div class="form-group mb-0">
+                                                        <div class="icheck-primary">
+                                                            <input id="thcLuar{{$key}}" dataId="{{$key}}" class="thcc" type="radio" name="detail[{{$key}}][thcLD]" value="luar" <?=  $item->thc_tipe == 'luar'? 'checked':''; ?> readonly disabled>
+                                                            <label class="form-check-label" for="thcLuar{{$key}}"><span class="opacit">Luar</span></label>
+                                                        </div>
+                                                        <div class="icheck-primary mt-3">
+                                                            <input id="thcDalam{{$key}}" dataId="{{$key}}" class="thcc" type="radio" name="detail[{{$key}}][thcLD]" value="dalam" <?=  $item->thc_tipe == 'dalam'? 'checked':''; ?> readonly disabled>
+                                                            <label class="form-check-label" for="thcDalam{{$key}}"><span class="opacit">Dalam</span></label><br>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control selectpicker tujuanC" name="detail[{{$key}}][tujuan]" id="tujuan{{$key}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                        <option value="">--Pilih Tujuan--</option>
+                                                        @if ($dataTujuan)
+                                                            @foreach ($dataTujuan as $tuj)
+                                                                <option value="{{$tuj->id}}"  <?= $item->id_grup_tujuan == $tuj->id ? 'selected':''; ?> >{{ $tuj->nama_tujuan }}</option>
+                                                            @endforeach
+                                                        @endif
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <div class="input-group mb-0">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                        </div>
+                                                        <input type="text" name="detail[{{$key}}][tgl_booking]" id='tgl_booking' autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{ isset($item->tgl_booking)? \Carbon\Carbon::parse($item->tgl_booking)->format('d-M-Y'):NULL;}} ">     
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
                                 <tfoot>
                                 
@@ -158,7 +187,7 @@
             <div class="col-12">
                     <div class="card radiusSendiri">
                         <div class="card-header">
-                            <h3 class="card-title">Keterangan Biaya</h3>
+                            <h3 class="card-title mt-2"><b>KETERANGAN BIAYA</b></h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
@@ -173,50 +202,44 @@
                             <table class="table table-bordered" id="sortable" >
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Biaya Sebelum Dooring</th>
+                                        <th colspan="2" class="card-outline card-primary">BIAYA SEBELUM DOORING</th>
                                     </tr>
                                 </thead>
                                 <tbody > 
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox" id="thc_cekbox"></span> THC</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox" id="thc_cekbox" <?= isset($data['JO']['total_thc'])? (($data['JO']['total_thc'] == 0) ? '':'checked'):''; ?> disabled></span> THC</th>
                                         <td name="">
-                                            <input type="text" id="thc_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_thc" id="total_thc" class="form-control" readonly hidden>
+                                            <input type="text" name="total_thc" id="total_thc" class="form-control" value="{{$data['JO']['total_thc']}}" readonly >
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox" id="lolo_cekbox"></span> LOLO</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox" id="lolo_cekbox" <?= isset($data['JO']['total_lolo'])? (($data['JO']['total_lolo'] == 0) ? '':'checked'):''; ?> disabled></span> LOLO</th>
                                         <td name="">
-                                            <input type="text" id="lolo_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_lolo" id="total_lolo" class="form-control" readonly hidden>
+                                            <input type="text" name="total_lolo" id="total_lolo" class="form-control" value="{{$data['JO']['total_lolo']}}" readonly >
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox" id="apbs_cekbox"></span> APBS</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox" id="apbs_cekbox" <?= isset($data['JO']['total_apbs'])? (($data['JO']['total_apbs'] == 0) ? '':'checked'):''; ?> disabled></span> APBS</th>
                                         <td name="">
-                                            <input type="text" id="apbs_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_apbs" id="total_apbs" class="form-control" readonly hidden>
+                                            <input type="text" name="total_apbs" id="total_apbs" class="form-control" value="{{$data['JO']['total_apbs']}}" readonly >
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="cleaning_cekbox" id="cleaning_cekbox"></span> CLEANING</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="cleaning_cekbox" id="cleaning_cekbox" <?= isset($data['JO']['total_cleaning'])? (($data['JO']['total_cleaning'] == 0) ? '':'checked'):''; ?> disabled></span> CLEANING</th>
                                         <td name="">
-                                            <input type="text" id="cleaning_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_cleaning" id="total_cleaning" class="form-control" readonly hidden>
+                                            <input type="text" name="total_cleaning" id="total_cleaning" class="form-control" value="{{$data['JO']['total_cleaning']}}" readonly >
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox" id="doc_fee_cekbox"></span> DOC FEE</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox" id="doc_fee_cekbox" <?= isset($data['JO']['total_docfee'])? (($data['JO']['total_docfee'] == 0) ? '':'checked'):''; ?> disabled></span> DOC FEE</th>
                                         <td name="">
-                                            <input type="text" id="doc_fee_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_doc_fee" id="total_doc_fee" class="form-control" readonly hidden>
+                                            <input type="text" name="total_doc_fee" id="total_doc_fee" class="form-control" value="{{$data['JO']['total_docfee']}}" readonly >
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>SUB TOTAL</th>
                                         <td>
-                                            <input type="text" id="total_sblm_dooring_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" class="form-control" readonly>
+                                            <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" class="form-control" value="{{$data['JO']['total_biaya_sebelum_dooring']}}" readonly>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -227,99 +250,46 @@
                             <table class="table table-bordered" id="sortable">
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Biaya Jaminan</th>
+                                        <th colspan="2" class="card-outline card-primary">BIAYA JAMINAN</th>
                                     </tr>
                                 </thead>
                                 <tbody > 
                                     <tr>
-                                        <th>Tgl Bayar Jaminan</th>
+                                        <th style="height: 5px;">Tgl Bayar Jaminan</th>
                                         <td>
                                             <div class="input-group mb-0">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                 </div>
-                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" >     
+                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" value="{{ ($data['jaminan'] != null)? \Carbon\Carbon::parse($data['jaminan']['tgl_bayar'])->format('d-M-Y'):null }}">     
+                                                <input type="hidden" name="id_jaminan" value="<?= ($data['jaminan'] != null)? $data['jaminan']['id']:NULL; ?>">     
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Total Jaminan</th>
+                                        <th style="height: 5px;">Total Jaminan</th>
                                         <td>
                                             <div class="input-group mb-0">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><b>Rp.</b></span>
                                                 </div>
-                                                <input type="text" class="form-control uang numaja" id="total_jaminan" name="total_jaminan">
+                                                <input type="text" class="form-control uang numaja" id="total_jaminan" name="total_jaminan" value="{{ $data['jaminan'] != null ? number_format($data['jaminan']['nominal']):null }}">
                                             </div>
                                         </td>
                                     </tr>
-                                    {{-- <tr>
-                                        <th>Potongan Jaminan</th>
-                                        <td>Harga</td>
-                                    </tr>
-                                    <tr >
-                                        <td colspan="2"></td>
-                                    </tr>
                                     <tr>
-                                        <th> Nominal Kembali Jaminan </th>
-                                        <td> Harga</td>
+                                        <th>Catatan</th>
+                                        <td>
+                                           <textarea name="catatan" class="form-control" id="catatan" cols="50" rows="10">{{ $data['jaminan'] != null ? $data['jaminan']['catatan']:null }}</textarea>
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <th> Tgl Jaminan Kembali </th>
-                                        <td>Harga</td>
-                                    </tr> --}}
-                                    
                                 </tbody>
                                 <tfoot>
                                 </tfoot>
                             </table>
                         </div>
                        </div>
-                </div> 
-                <!-- <div class="col-6">
-                        <div class="card radiusSendiri">
-                           <div class="card-header">
-                           </div>
-                           <div class="card-body">
-                               <table class="table table-bordered" id="sortable">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="2">Total Biaya Setelah Dooring</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody > 
-                                        <tr>
-                                            <th>Tgl Bayar Jaminan</th>
-                                            <td>Harga</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Total Jaminan</th>
-                                            <td>Harga</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Potongan Jaminan</th>
-                                            <td>Harga</td>
-                                        </tr>
-                                        <tr >
-                                            <td colspan="2"></td>
-                                        </tr>
-                                        <tr>
-                                            <th> Nominal Kembali Jaminan </th>
-                                            <td> Harga</td>
-                                        </tr>
-                                        <tr>
-                                            <th> Tgl Jaminan Kembali </th>
-                                            <td>Harga</td>
-                                        </tr>
-                                        
-                                    </tbody>
-                                    <tfoot>
-                                    </tfoot>
-                               </table>
-                           </div>
-                       </div>
-                </div>  -->
-                
+                </div>                 
             </div>
         </div>
     </form>
@@ -328,6 +298,65 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
+
+        // logic save
+        $( document ).on( 'click', '#submitButton', function (event) {
+            event.preventDefault();
+            // pop up confirmation
+                Swal.fire({
+                    title: 'Apakah Anda yakin data sudah benar?',
+                    text: "Periksa kembali data anda",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonText: 'Batal',
+                    confirmButtonText: 'Ya',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Data Disimpan'
+                        })
+
+                        // form.submit();
+                        $("#send").submit();
+                    }else{
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Batal Disimpan'
+                        })
+                        event.preventDefault();
+                        // return;
+                    }
+                })
+            // pop up confirmation
+        });
 
         // master harga tipe
             var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
@@ -355,6 +384,12 @@
 
         // handling tanggal
             $('#tgl_sandar').datepicker({
+                autoclose: true,
+                format: "dd-M-yyyy",
+                todayHighlight: true,
+                language:'en',
+            });
+            $('.tgl_booking').datepicker({
                 autoclose: true,
                 format: "dd-M-yyyy",
                 todayHighlight: true,
@@ -469,8 +504,8 @@
                     });
                     i++;
 
-                    $('#tb').append(
-                        `<tr id="row`+i+`">
+                    $('#tb').append(`
+                        <tr id="row`+i+`">
                             <td>
                                 <input type="text" id="no_kontainer" name="detail[${i}][no_kontainer]"class="form-control no_kontainerx" maxlength="20" value="">
                             </td>
@@ -516,8 +551,8 @@
                                     <i class="fa fa-fw fa-trash-alt"></i>
                                 </button>
                             </td>
-                        </tr>`
-                    );
+                        </tr>
+                    `);
                     uncheck();
                     $('.selectpicker').selectpicker('refresh');
 
@@ -550,40 +585,7 @@
                 title: 'Data dihapus'
             })
 
-            // pop up confirmation
-                // Swal.fire({
-                //     title: 'Apakah Anda yakin?',
-                //     text: "Data kan di hapus",
-                //     icon: 'warning',
-                //     showCancelButton: true,
-                //     cancelButtonColor: '#d33',
-                //     confirmButtonColor: '#3085d6',
-                //     cancelButtonText: 'Batal',
-                //     confirmButtonText: 'Ya',
-                //     reverseButtons: true
-                // }).then((result) => {
-                //     if (result.isConfirmed) {
-                //         $(this).closest('tr').remove();
-
-                //         const Toast = Swal.mixin({
-                //             toast: true,
-                //             position: 'top-end',
-                //             timer: 2500,
-                //             showConfirmButton: false,
-                //             timerProgressBar: true,
-                //             didOpen: (toast) => {
-                //                 toast.addEventListener('mouseenter', Swal.stopTimer)
-                //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
-                //             }
-                //         })
-
-                //         Toast.fire({
-                //             icon: 'success',
-                //             title: 'Data dihapus'
-                //         })
-                //     }
-                // })
-            // pop up confirmation
+         
 
         });
 

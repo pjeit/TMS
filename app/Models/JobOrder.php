@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class JobOrder extends Model
 {
@@ -44,4 +45,30 @@ class JobOrder extends Model
         'updated_by',
         'is_aktif',
    ];
+
+    //    public function getGrupId(){
+    //         $idTuj = Customer::where('is_aktif', 'Y')->select('grup_id')->where('id', $id)->first();
+
+    //         return $idTuj;
+    //    }
+
+   public function getGrupId(): HasOne
+   {
+        return $this->hasOne(Customer::class, 'id', 'id_customer')->select('grup_id');
+   }
+
+   public function getCustomer(): HasOne
+   {
+        return $this->hasOne(Customer::class, 'id', 'id_customer')->select('kode', 'nama');
+   }
+
+   public function getSupplier(): HasOne
+   {
+        return $this->hasOne(Customer::class, 'id', 'id_supplier')->select('nama');
+   }
+   
+   public function getKodeCustomer(): HasOne
+   {
+        return $this->hasOne(Customer::class, 'id', 'id_customer')->select('kode');
+   }
 }

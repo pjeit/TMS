@@ -26,26 +26,27 @@
             </div>
         @endforeach
     @endif
-    <form action="{{ route('job_order.store') }}" method="POST" >
+    <form action="{{ route('job_order.store') }}" id="save" method="POST" >
       @csrf
         <div class="row m-2">
              <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
                         <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6" >
                                 <div class="form-group">
                                     <label for="">Pengirim<span class="text-red">*</span></label>
-                                        <select class="form-control selectpicker"  id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                        <option value="0">--Pilih Pengirim--</option>
+                                    <select class="form-control selectpicker" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                        <option value="">--Pilih Pengirim--</option>
                                         @foreach ($dataCustomer as $cust)
-                                            <option value="{{$cust->id}}">{{ $cust->nama }}</option>
+                                            <option value="{{$cust->id}}" kode="{{$cust->kode}}">{{ $cust->nama }}</option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" id='kode_cust' name='kode_cust' >
                                 </div>
                             </div>
                             <div class="col-6" >
@@ -74,7 +75,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{old('tgl_sandar','')}}">     
+                                        <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="" required>     
                                     </div>
                                 </div>           
                             </div>
@@ -83,13 +84,47 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_muat" class="form-control" >
+                                    <select class="form-control selectpicker" name="pelabuhan_muat" id="pelabuhan_muat" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                        <option value="">--Pilih--</option>
+                                        <option value="SURABAYA">SURABAYA</option>
+                                        <option value="MEDAN">MEDAN</option>
+                                        <option value="JAKARTA">JAKARTA</option>
+                                        <option value="AMBON">AMBON</option>
+                                        <option value="BALIKPAPAN">BALIKPAPAN</option>
+                                        <option value="BANJARMASIN">BANJARMASIN</option>
+                                        <option value="BITUNG">BITUNG</option>
+                                        <option value="JAYAPURA">JAYAPURA</option>
+                                        <option value="KUPANG">KUPANG</option>
+                                        <option value="MAKASSAR">MAKASSAR</option>
+                                        <option value="PADANG">PADANG</option>
+                                        <option value="PALEMBANG">PALEMBANG</option>
+                                        <option value="PARE-PARE">PARE-PARE</option>
+                                        <option value="SEMARANG">SEMARANG</option>
+                                        <option value="SORONG">SORONG</option>
+                                    </select>
                                 </div>     
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_bongkar" class="form-control" >
+                                    <select class="form-control selectpicker" name="pelabuhan_bongkar" id="pelabuhan_bongkar" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                        <option value="">--Pilih--</option>
+                                        <option value="SURABAYA">SURABAYA</option>
+                                        <option value="MEDAN">MEDAN</option>
+                                        <option value="JAKARTA">JAKARTA</option>
+                                        <option value="AMBON">AMBON</option>
+                                        <option value="BALIKPAPAN">BALIKPAPAN</option>
+                                        <option value="BANJARMASIN">BANJARMASIN</option>
+                                        <option value="BITUNG">BITUNG</option>
+                                        <option value="JAYAPURA">JAYAPURA</option>
+                                        <option value="KUPANG">KUPANG</option>
+                                        <option value="MAKASSAR">MAKASSAR</option>
+                                        <option value="PADANG">PADANG</option>
+                                        <option value="PALEMBANG">PALEMBANG</option>
+                                        <option value="PARE-PARE">PARE-PARE</option>
+                                        <option value="SEMARANG">SEMARANG</option>
+                                        <option value="SORONG">SORONG</option>
+                                    </select>
                                 </div>              
                             </div>
                         </div>  
@@ -104,46 +139,15 @@
                                         <th width="350">No. Kontainer</th>
                                         <th width="280">Seal</th>
                                         <th width="150">Tipe</th>
-                                        <th width="150">THC</th>
+                                        <th width="150">Stripping</th>
                                         <th width="350">Tujuan</th>
                                         <th width="200">Tgl Booking</th>
                                         <th width="20" class="text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tb"> 
-                                    {{-- <tr >
-                                        <td>
-                                            <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
-                                        </td>
-                                        <td>
-                                            <input type="text" id="seal" name="seal[]"class="form-control" value="">
-                                        </td>
-                                        <td>
-                                            <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Tipe--</option>
-                                                <option value="20">20Ft</option>
-                                                <option value="40">40Ft</option>
-                                            </select>
-                                            <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
-                                            <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
-                                            <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
-                                            <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
-                                            <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
-                                        </td>
-                                        <td>
-                                            <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">--Pilih Tujuan--</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="tgl_brngkt_booking[]" autocomplete="off" class="date form-control tgl_booking"  placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
-                                        </td>
-                                        <td align="center" class="text-danger">
-                                            <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger hapus radiusSendiri">
-                                                <i class="fa fa-fw fa-trash-alt"></i>
-                                            </button>
-                                        </td>
-                                    </tr> --}}
+                                    
+                                      
                                 </tbody>
                                 <tfoot>
                                 
@@ -181,42 +185,41 @@
                                         <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox" id="thc_cekbox"></span> THC</th>
                                         <td name="">
                                             <input type="text" id="thc_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_thc" id="total_thc" class="form-control" readonly hidden>
+                                            <input type="text" name="total_thc" id="total_thc" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox" id="lolo_cekbox"></span> LOLO</th>
                                         <td name="">
                                             <input type="text" id="lolo_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_lolo" id="total_lolo" class="form-control" readonly hidden>
+                                            <input type="text" name="total_lolo" id="total_lolo" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox" id="apbs_cekbox"></span> APBS</th>
                                         <td name="">
                                             <input type="text" id="apbs_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_apbs" id="total_apbs" class="form-control" readonly hidden>
+                                            <input type="text" name="total_apbs" id="total_apbs" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th><span> <input type="checkbox" class="checkitem" name="cleaning_cekbox" id="cleaning_cekbox"></span> CLEANING</th>
                                         <td name="">
                                             <input type="text" id="cleaning_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_cleaning" id="total_cleaning" class="form-control" readonly hidden>
+                                            <input type="text" name="total_cleaning" id="total_cleaning" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox" id="doc_fee_cekbox"></span> DOC FEE</th>
                                         <td name="">
                                             <input type="text" id="doc_fee_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_doc_fee" id="total_doc_fee" class="form-control" readonly hidden>
+                                            <input type="text" name="total_doc_fee" id="total_doc_fee" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>SUB TOTAL</th>
                                         <td>
-                                            <input type="text" id="total_sblm_dooring_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" class="form-control" readonly>
+                                            <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" value="0" class="form-control uang numaja" readonly>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -232,43 +235,34 @@
                                 </thead>
                                 <tbody > 
                                     <tr>
-                                        <th>Tgl Bayar Jaminan</th>
+                                        <th style="height: 5px;">Tgl Bayar Jaminan</th>
                                         <td>
                                             <div class="input-group mb-0">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                 </div>
-                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" >     
+                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" value="">     
+                                                <input type="hidden" name="id_jaminan" value="">     
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Total Jaminan</th>
+                                        <th style="height: 5px;">Total Jaminan</th>
                                         <td>
                                             <div class="input-group mb-0">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><b>Rp.</b></span>
                                                 </div>
-                                                <input type="text" class="form-control uang numaja" id="total_jaminan" name="total_jaminan">
+                                                <input type="text" class="form-control uang numaja" id="total_jaminan" name="total_jaminan" value="">
                                             </div>
                                         </td>
                                     </tr>
-                                    {{-- <tr>
-                                        <th>Potongan Jaminan</th>
-                                        <td>Harga</td>
-                                    </tr>
-                                    <tr >
-                                        <td colspan="2"></td>
-                                    </tr>
                                     <tr>
-                                        <th> Nominal Kembali Jaminan </th>
-                                        <td> Harga</td>
+                                        <th>Catatan</th>
+                                        <td>
+                                           <textarea name="catatan" class="form-control" id="catatan" cols="50" rows="10"></textarea>
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <th> Tgl Jaminan Kembali </th>
-                                        <td>Harga</td>
-                                    </tr> --}}
-                                    
                                 </tbody>
                                 <tfoot>
                                 </tfoot>
@@ -276,50 +270,7 @@
                         </div>
                        </div>
                 </div> 
-                <!-- <div class="col-6">
-                        <div class="card radiusSendiri">
-                           <div class="card-header">
-                           </div>
-                           <div class="card-body">
-                               <table class="table table-bordered" id="sortable">
-                                    <thead>
-                                        <tr>
-                                            <th colspan="2">Total Biaya Setelah Dooring</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody > 
-                                        <tr>
-                                            <th>Tgl Bayar Jaminan</th>
-                                            <td>Harga</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Total Jaminan</th>
-                                            <td>Harga</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Potongan Jaminan</th>
-                                            <td>Harga</td>
-                                        </tr>
-                                        <tr >
-                                            <td colspan="2"></td>
-                                        </tr>
-                                        <tr>
-                                            <th> Nominal Kembali Jaminan </th>
-                                            <td> Harga</td>
-                                        </tr>
-                                        <tr>
-                                            <th> Tgl Jaminan Kembali </th>
-                                            <td>Harga</td>
-                                        </tr>
-                                        
-                                    </tbody>
-                                    <tfoot>
-                                    </tfoot>
-                               </table>
-                           </div>
-                       </div>
-                </div>  -->
-                
+    
             </div>
         </div>
     </form>
@@ -328,6 +279,66 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
+
+        // logic save
+            $( document ).on( 'click', '#submitButton', function (event) {
+                event.preventDefault();
+                // pop up confirmation
+                    Swal.fire({
+                        title: 'Apakah Anda yakin data sudah benar?',
+                        text: "Periksa kembali data anda",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        cancelButtonColor: '#d33',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonText: 'Batal',
+                        confirmButtonText: 'Ya',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                timer: 2500,
+                                showConfirmButton: false,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Data Disimpan'
+                            })
+
+                            // form.submit();
+                            $("#save").submit();
+                        }else{
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                timer: 2500,
+                                showConfirmButton: false,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+
+                            Toast.fire({
+                                icon: 'warning',
+                                title: 'Batal Disimpan'
+                            })
+                            event.preventDefault();
+                            // return;
+                        }
+                    })
+                // pop up confirmation
+            });
+        //
 
         // master harga tipe
             var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
@@ -338,7 +349,6 @@
                 'loloDalam': dataKeuangan.lolo_20ft_dalam,
                 'apbs': dataKeuangan.apbs_20ft,
                 'cleaning': dataKeuangan.cleaning_20ft,
-                'doc_fee': dataKeuangan.doc_fee_20ft,
             };
             var harga40Ft = {
                 'thcLuar': dataKeuangan.thc_40ft_luar,
@@ -347,7 +357,6 @@
                 'loloDalam': dataKeuangan.lolo_40ft_dalam,
                 'apbs': dataKeuangan.apbs_40ft,
                 'cleaning': dataKeuangan.cleaning_40ft,
-                'doc_fee': dataKeuangan.doc_fee_40ft,
             };
         // end of master harga tipe
         // console.log('harga20Ft '+JSON.stringify(harga20Ft));
@@ -378,6 +387,13 @@
         $(document).on('change', '#customer', function(event) {
             // Get selected value from #customer
             var selectedValue = this.value;
+
+            // get kode customer
+                var selectElement = document.getElementById('customer');
+                var selectedOption = selectElement.options[selectElement.selectedIndex];
+                var kodeValue = selectedOption.getAttribute('kode');
+                $('#kode_cust').val(kodeValue.trim());
+            //
 
             $.ajax({
                 url: '/booking/getTujuan/' + selectedValue,
@@ -483,11 +499,11 @@
                                     <option value="20">20Ft</option>
                                     <option value="40">40Ft</option>
                                 </select>
-                                <input type="hidden" readonly class="hargaThc" hargaThc_${i} name="detail[${i}][hargaThc]" value="">
-                                <input type="hidden" readonly class="hargaLolo" hargaLolo_${i} name="detail[${i}][hargaLolo]" value="">
-                                <input type="hidden" readonly class="hargaApbs" hargaApbs_${i} name="detail[${i}][hargaApbs]" value="">
-                                <input type="hidden" readonly class="hargaCleaning" hargaCleaning_${i} name="detail[${i}][hargaCleaning]" value="">
-                                <input type="hidden" readonly class="hargaDocFee" hargaDocFee_${i} name="detail[${i}][hargaDocFee]" value="">
+                                <input type="hidden" readonly class="hargaThc " hargaThc_${i} name="detail[${i}][hargaThc]" value="">
+                                <input type="hidden" readonly class="hargaLolo " hargaLolo_${i} name="detail[${i}][hargaLolo]" value="">
+                                <input type="hidden" readonly class="hargaApbs " hargaApbs_${i} name="detail[${i}][hargaApbs]" value="">
+                                <input type="hidden" readonly class="hargaCleaning " hargaCleaning_${i} name="detail[${i}][hargaCleaning]" value="">
+                                <input type="hidden" readonly class="hargaDocFee " hargaDocFee_${i} name="detail[${i}][hargaDocFee]" value="">
                             </td>
                             <td>
                                 <div class="form-group mb-0">
@@ -673,7 +689,7 @@
 
                 parentTd.find('.hargaApbs').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
                 parentTd.find('.hargaCleaning').val(selectedValue == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
-                parentTd.find('.hargaDocFee').val(selectedValue == '20' ? harga20Ft.doc_fee : harga40Ft.doc_fee);
+                parentTd.find('.hargaDocFee').val(dataKeuangan.doc_fee);
                 
            
                 uncheck();
@@ -735,6 +751,7 @@
                 var total_cleaning = parseFloat(($('#cleaning_cekbox').prop('checked')) ? $('#total_cleaning').val() : 0);
                 var total_doc_fee = parseFloat(($('#doc_fee_cekbox').prop('checked')) ? $('#total_doc_fee').val() : 0);
                 
+                console.log('total_thc '+ total_thc);
                 var total = parseFloat(total_thc + total_lolo + total_apbs + total_cleaning + total_doc_fee);
 
                 var total_sblm_dooring = $('#total_sblm_dooring').val(total);

@@ -21,7 +21,7 @@
                     </a> 
                 </div>
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="datatb" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                               <th>Kode JO</th>
@@ -32,25 +32,26 @@
                             </tr>
                           </thead>
                         <tbody>
-                            @foreach($dataJO as $item)
-                             <tr>
-                                <td>{{ $item->no_jo }}</td>
-                                <td>{{ $item->id_customer }}</td>
-                                <td>{{ $item->id_supplier }}</td>
-                                <td>{{ $item->status}}</td>
-                                <td>                                    
-                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('job_order.edit',[$item->id])}}">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>   
-                                    <a href="{{ route('job_order.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
-                                    <a href="/job_order/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+                            @if (isset($dataJO))
+                                @foreach($dataJO as $item)
+                                <tr>
+                                    <td>{{ $item->no_jo }}</td>
+                                    <td>{{ $item->kode }} - {{ $item->nama_cust }}</td>
+                                    <td>{{ $item->nama_supp }}</td>
+                                    <td>{{ $item->status}}</td>
+                                    <td>                                    
+                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('job_order.edit',[$item->id])}}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>   
+                                        <a href="{{ route('job_order.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
+                                        <a href="/job_order/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank" class="btn btn-outline-dark btn-default radiusSendiri"><i class="fas fa-print"></i> Print</a>
 
-                                </td>
-                            </tr>
-                            @endforeach
+                                    </td>
+                                </tr>
+                                @endforeach
+                            @endif
                         </tbody>
                     </table>
-                    {{ $dataJO->links('pagination::bootstrap-4') }}
                 </div>
             </div>
         </div>
@@ -59,7 +60,16 @@
     
 </div>
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#datatb').dataTable({
+            responsive: true,
+        });
+    } );
+</script>
 <script>
+ 
+
     var sessionMessage = "{{ session()->has('message') ? session('message') : '' }}";
     if (sessionMessage !== '') {
         toastr.success(sessionMessage);
