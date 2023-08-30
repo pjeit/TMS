@@ -63,7 +63,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
         $('#datatb').dataTable({
-            responsive: true,
+            // responsive: true,
+            // scrollX: true
         });
     } );
 </script>

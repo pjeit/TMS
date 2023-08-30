@@ -29,6 +29,7 @@ class SupplierController extends Controller
         $dataJenisFilter = DB::table('jenis_supplier')
             ->select('*')
             ->where('jenis_supplier.is_aktif', '=', "Y")
+            ->orderBy('nama')
             ->get();
 
             // dd($dataJenisFilter);
@@ -94,8 +95,8 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        $kota = M_Kota::orderBy('id', 'ASC')->get();
-        $jenis_supplier = JenisSupplier::orderBy('id', 'ASC')->get();
+        $kota = M_Kota::orderBy('nama', 'ASC')->get();
+        $jenis_supplier = JenisSupplier::orderBy('nama', 'ASC')->get();
 
         return view('pages.master.supplier.create',[
             'judul' => "Supplier",
@@ -178,8 +179,8 @@ class SupplierController extends Controller
     public function edit($id)
     {
         $data = Supplier::where('is_aktif', 'Y')->findOrFail($id);
-        $kota = M_Kota::orderBy('id', 'ASC')->get();
-        $jenis_supplier = JenisSupplier::orderBy('id', 'ASC')->get();
+        $kota = M_Kota::orderBy('nama', 'asc')->get();
+        $jenis_supplier = JenisSupplier::orderBy('nama', 'asc')->get();
 
         return view('pages.master.supplier.edit',[
             'judul' => "Supplier",

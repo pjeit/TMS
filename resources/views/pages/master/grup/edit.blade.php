@@ -32,7 +32,7 @@
 
     @endif
     
-    <form action="{{ route('grup.update', ['grup' => $data->id]) }}" method="POST">
+    <form action="{{ route('grup.update', ['grup' => $data->id]) }}" id='post' method="POST">
         @method('PUT')
         @csrf
         <div class="row">
@@ -63,7 +63,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input readonly type="text" name="total_max_kredit" class="form-control numaja uang" value="{{number_format($data->total_max_kredit)}}" id='total_max_kredit' >
+                                    <input  type="text" name="total_max_kredit" class="form-control numaja uang" value="{{number_format($data->total_max_kredit)}}" id='total_max_kredit' >
                                 </div>
                             </div>
                         </div>
@@ -71,7 +71,7 @@
                         <div class="row col-12">
                             <div class="form-group col-md-6">
                                 <label for="">Nama PIC<span class="text-red">*</span></label>
-                                <input required type="password" name="nama_pic" class="form-control" value="{{$data->nama_pic}}" >
+                                <input required type="text" name="nama_pic" class="form-control" value="{{$data->nama_pic}}" >
                             </div>           
                             <div class="form-group col-md-6">
                                 <label for="">Email</label>
@@ -101,12 +101,70 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </form>
-    
-
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#post').submit(function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Disimpan'
+                    })
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 1000); // 2000 milliseconds = 2 seconds
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function() {
       // Listen for input events on all input fields

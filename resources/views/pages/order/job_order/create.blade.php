@@ -13,7 +13,9 @@
 
 @section('content')
 <style>
-   
+    .card-header:first-child{
+        border-radius:inherit;
+    }
 </style>
 
     @if ($errors->any())
@@ -26,16 +28,26 @@
             </div>
         @endforeach
     @endif
+<div class="container-fluid">
     <form action="{{ route('job_order.store') }}" id="save" method="POST" >
-      @csrf
-        <div class="row m-2">
-             <div class="col-12">
-                <div class="card radiusSendiri">
-                    <div class="card-header">
+        @csrf
+        <div class="row ">
+            <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
+                <div class="card radiusSendiri" style="">
+                    <div class="card-header ">
                         <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                     </div>
-                    <div class="card-body">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card radiusSendiri">
+                    {{-- <div class="card-header sticky-top radiusSendiri" style="background: #f7f7f7;">
+                        <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                    </div> --}}
+                    <div class="card-body" >
+                    {{-- <div class="card-body" style="overflow-y: scroll; max-height:675px;"> --}}
                         <div class="row">
                             <div class="col-6" >
                                 <div class="form-group">
@@ -65,7 +77,7 @@
                             <div class="col-md-6">
                                 <div class="form-group ">
                                     <label for="">No. BL<span class="text-red">*</span></label>
-                                    <input required type="text" name="no_bl" class="form-control" value="" >
+                                    <input required type="text" id="no_bl" name="no_bl" class="form-control" value="" >
                                 </div>           
                             </div>
                             <div class="col-md-6">
@@ -162,7 +174,6 @@
             <div class="col-12">
                     <div class="card radiusSendiri">
                         <div class="card-header">
-                            <h3 class="card-title">Keterangan Biaya</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
@@ -172,12 +183,12 @@
                                 </button> -->
                             </div>
                         </div>
-                       <div class="card-body" >
+                       <div class="card-body " >
                         <div class="d-flex justify-content-between" style="gap: 10px;">
-                            <table class="table table-bordered" id="sortable" >
+                            <table class="table table-bordered card-outline card-primary" id="sortable" >
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Biaya Sebelum Dooring</th>
+                                        <th colspan="2">BIAYA SEBELUM DOORING</th>
                                     </tr>
                                 </thead>
                                 <tbody > 
@@ -226,11 +237,11 @@
                                 <tfoot>
                                 </tfoot>
                             </table>
-
-                            <table class="table table-bordered" id="sortable">
+    
+                            <table class="table table-bordered card-outline card-primary" id="sortable">
                                 <thead>
                                     <tr>
-                                        <th colspan="2">Biaya Jaminan</th>
+                                        <th colspan="2">BIAYA JAMINAN</th>
                                     </tr>
                                 </thead>
                                 <tbody > 
@@ -274,6 +285,8 @@
             </div>
         </div>
     </form>
+</div>
+
 
 <script>
 </script>
@@ -296,25 +309,41 @@
                         reverseButtons: true
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                timer: 2500,
-                                showConfirmButton: false,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            })
+                            var cust = $('#customer').val();
+                            var nobl = $('#no_bl').val();
+                            var plmt = $('#pelabuhan_muat').val();
+                            var plbn = $('#pelabuhan_bongkar').val();
 
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Data Disimpan'
-                            })
-
-                            // form.submit();
-                            $("#save").submit();
+                            if( cust == ''|| nobl == ''|| plmt == ''|| plbn == '' ){
+                                Swal.fire(
+                                    'Data tidak lengkap!',
+                                    'Cek ulang data anda.',
+                                    'warning'
+                                )
+                                
+                                event.preventDefault();
+                                return false;
+                            }else{
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    timer: 2500,
+                                    showConfirmButton: false,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+    
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Data Disimpan'
+                                })
+    
+                                // form.submit();
+                                $("#save").submit();
+                            }
                         }else{
                             const Toast = Swal.mixin({
                                 toast: true,
@@ -572,42 +601,6 @@
                 icon: 'success',
                 title: 'Data dihapus'
             })
-
-            // pop up confirmation
-                // Swal.fire({
-                //     title: 'Apakah Anda yakin?',
-                //     text: "Data kan di hapus",
-                //     icon: 'warning',
-                //     showCancelButton: true,
-                //     cancelButtonColor: '#d33',
-                //     confirmButtonColor: '#3085d6',
-                //     cancelButtonText: 'Batal',
-                //     confirmButtonText: 'Ya',
-                //     reverseButtons: true
-                // }).then((result) => {
-                //     if (result.isConfirmed) {
-                //         $(this).closest('tr').remove();
-
-                //         const Toast = Swal.mixin({
-                //             toast: true,
-                //             position: 'top-end',
-                //             timer: 2500,
-                //             showConfirmButton: false,
-                //             timerProgressBar: true,
-                //             didOpen: (toast) => {
-                //                 toast.addEventListener('mouseenter', Swal.stopTimer)
-                //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
-                //             }
-                //         })
-
-                //         Toast.fire({
-                //             icon: 'success',
-                //             title: 'Data dihapus'
-                //         })
-                //     }
-                // })
-            // pop up confirmation
-
         });
 
         // handling checkbox biaya dibawah
@@ -617,14 +610,10 @@
                     $('#thc_null').prop('hidden', true);
                     $('#total_thc').prop('hidden', false);
                     hitungTotal();
-                    // tmpTot = tmpTot+parseFloat($('#total_thc').val());
-                    // $('#total_sblm_dooring').val(tmpTot);
                 } else {
                     $('#thc_null').prop('hidden', false);
                     $('#total_thc').prop('hidden', true);
                     hitungTotal();
-                    // tmpTot = tmpTot-parseFloat($('#total_thc').val());
-                    // $('#total_sblm_dooring').val(tmpTot);
                 }
             });
             $('#lolo_cekbox').on('change', function() {

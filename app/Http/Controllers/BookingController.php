@@ -78,14 +78,13 @@ class BookingController extends Controller
             if (is_null($maxBooking)) {
                 $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . '001';
             }
-            $tgl_berangkat = date_create_from_format('d-M-Y', $request->tgl_berangkat);
             
             $booking = new Booking();
             $booking->no_booking =$newBookingNumber;
-            $booking->tgl_booking =date("Y-m-d h:i:s");
-            $booking->tgl_berangkat =date_format($tgl_berangkat, 'Y-m-d');
+            $booking->tgl_booking = date_create_from_format('d-M-Y', $request->tgl_booking);
+            // $booking->tgl_berangkat =date_format($tgl_berangkat, 'Y-m-d');
             $booking->id_customer =$request->id_customer;
-            $booking->id_grub_tujuan =$request->id_tujuan;
+            $booking->id_grup_tujuan =$request->id_tujuan;
             $booking->no_kontainer =$request->no_kontainer;
             $booking->catatan =$request->catatan;
             $booking->created_at = date("Y-m-d h:i:s");
@@ -150,16 +149,17 @@ class BookingController extends Controller
             // $booking->catatan =$request->catatan;
          try {
             $data = $request->collect();
-            $tgl_berangkat = date_create_from_format('d-M-Y', $request->tgl_berangkat);
+            // $tgl_berangkat = date_create_from_format('d-M-Y', $request->tgl_berangkat);
              DB::table('booking')
                 ->where('id', $booking['id'])
                 ->update(array(
-                        'tgl_berangkat' => date_format($tgl_berangkat, 'Y-m-d'),
+                        // 'tgl_berangkat' => date_format($tgl_berangkat, 'Y-m-d'),
+                        'tgl_booking' => date_create_from_format('d-M-Y', $request->tgl_booking),
                         'id_customer' => $data['id_customer'],
-                        'id_grub_tujuan' => $data['id_tujuan'],
+                        'id_grup_tujuan' => $data['id_tujuan'],
                         'no_kontainer' => $data['no_kontainer'],
                         'catatan' => $data['catatan'],
-                        'updated_at'=> VariableHelper::TanggalFormat(),
+                        'updated_at'=> now(),
                         'updated_by'=> $user,
                     )
                 );

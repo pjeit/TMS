@@ -50,10 +50,15 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                 </div>
-                                <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" disabled>
+                                <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" >
                             </div>
                         </div>
                         <div class="form-group col-12 col-md-4 col-lg-4">
+                            <label>No Kontainer </label>
+                            <input type="text" name="no_kontainer" id="no_kontainer" class="form-control" >    
+                        </div>
+                       
+                        {{-- <div class="form-group col-12 col-md-4 col-lg-4">
                             <div class="form-group">
                                 <label>Tgl Berangkat <span class="text-red">*</span></label>
                                 <div class="input-group mb-0">
@@ -63,10 +68,10 @@
                                     <input type="text" name="tgl_berangkat" autocomplete="off" class="date form-control" id="tgl_berangkat" placeholder="dd-M-yyyy" value   ="{{old('tanggal_lahir','')}}">     
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div> 
                     <div class='row'>
-                        <div class="form-group col-12 col-md-3 col-lg-3">
+                        <div class="form-group col-12 col-md-6 col-lg-6">
                             <label>Customer <span class="text-red">*</span></label>
                             <select class="form-control select2" style="width: 100%;" id='id_customer' name="id_customer" required>
                                 <option value="0">&nbsp;</option>
@@ -80,15 +85,11 @@
                             <label>Tujuan <span class="text-red">*</span></label>
                             <select id="id_tujuan" name="id_tujuan" style="width: 100%" class="select2"></select>
                         </div>
-                        
-                        <div class="form-group col-12 col-md-3 col-lg-3">
-                            <label>No Kontainer </label>
-                            <input type="text" name="no_kontainer" id="no_kontainer" class="form-control" >    
-                        </div>
                       
                         <div class="form-group col-12 col-md-6 col-lg-6">
                             <label>Catatan </label>
-                            <input type="text" name="catatan" id="catatan" class="form-control" >    
+                            <textarea name="catatan" id="catatan" class="form-control" cols="30" rows="3"></textarea>
+                            {{-- <input type="text" name="catatan" id="catatan" class="form-control" >     --}}
                         </div>
                     </div> 
                 </div>
@@ -145,11 +146,11 @@
         var year = today.getFullYear();
         var formattedDate = year + '-' + month + '-' + day;
 
-        $('#tgl_booking').datepicker({
-                format:'dd-M-yyyy',
-        }).datepicker("setDate",'now');
+        // $('#tgl_booking').datepicker({
+        //         format:'dd-M-yyyy',
+        // }).datepicker("setDate",'now');
 
-        $('#tgl_berangkat').datepicker({
+        $('#tgl_booking').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,

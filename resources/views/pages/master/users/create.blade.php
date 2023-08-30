@@ -57,7 +57,7 @@
                                 <input id="karyawanRadio" type="radio" name="status_karyawan" checked  >
                                 <label class="form-check-label" for="karyawanRadio">Karyawan</label>
                             </div>
-                            <div class="icheck-primary d-inline ml-2">
+                            <div class="icheck-primary d-inline ml-4">
                                 <input id="customerRadio" type="radio" name="status_karyawan" >
                                 <label class="form-check-label" for="customerRadio">Customer</label><br>
                             </div>

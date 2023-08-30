@@ -213,14 +213,6 @@
                         </p>
                       </a>
                     </li>
-                    <li class="nav-item">
-                      <a href="{{route('pair_kendaraan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pair_kendaraan*') ? ' active' : '' }}">
-                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
-                        <p>
-                          Pairing Truck
-                        </p>
-                      </a>
-                    </li>
                      <li class="nav-item">
                       <a href="{{route('chassis.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('chassis*') ? ' active' : '' }} ">
                       <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
@@ -229,6 +221,14 @@
                         </p>
                       </a>
                     </li> 
+                    <li class="nav-item">
+                      <a href="{{route('pair_kendaraan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pair_kendaraan*') ? ' active' : '' }}">
+                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                        <p>
+                          Pairing Truck
+                        </p>
+                      </a>
+                    </li>
                   </ul>
                 </li>
                 

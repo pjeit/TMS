@@ -5,4 +5,10 @@ $(document).ready(function () {
         var uppercaseValue = inputValue.toUpperCase();
         $(this).val(uppercaseValue);
     });
+
+    $("textarea").on("input", function () {
+        var inputValue = $(this).val();
+        var uppercaseValue = inputValue.toUpperCase();
+        $(this).val(uppercaseValue);
+    });
 });

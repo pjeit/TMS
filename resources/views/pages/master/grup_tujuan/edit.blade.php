@@ -14,6 +14,9 @@
     .col-5{
         padding-left: 1px;
     }
+    .card-header:first-child{
+        border-radius:inherit;
+    }
 </style>
 <div class="container-fluid">
   
@@ -43,17 +46,29 @@
                         </div>
                 </div>
             </div> --}}
-        
+            
+            {{-- sticky header --}}
+            <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
+                <div class="card radiusSendiri" style="">
+                    <div class="card-header ">
+                        <a href="{{ route('grup_tujuan.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+
+                        <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
+                    </div>
+                </div>
+            </div>
             
             <div class="col-12">
                 <div class="card radiusSendiri">
-                    <div class="card-header">
+                    {{-- <div class="card-header">
                         <a href="{{ route('grup_tujuan.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
                         <button type="submit" class="btn btn-success radiusSendiri float-left ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                     
                         <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
-                    </div>
-                    <div class="card-body" style="overflow-y: scroll; max-height:675px;">
+                    </div> --}}
+                    <div class="card-body" >
+                    {{-- <div class="card-body" style="overflow-y: scroll; max-height:675px;"> --}}
                         {{-- <button type="button" class="btn btn-sm btn-primary mx-4 my-3" onclick="open_detail('') "><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; DAFTAR TUJUAN & TARIF</b></button> --}}
 
 
@@ -143,7 +158,7 @@
                     <input type="hidden" name="tujuan_id" id="tujuan_id">
                     <div class='row'>
                             <div class="form-group col-lg-6 col-md-6 col-6">
-                                <label for="grup">Grup<span style="color:red;">*</span></label>
+                                <label for="grup">Grup <span style="color:red;">*</span></label>
                                 <input type="text" class="form-control" name="nama_grup" id="nama_grup" value="{{ $data['grup']['nama_grup'] }}" readonly>
                                 <input type="hidden" name="grup" id="grup" value="{{ $data['grup']['id'] }}">
                             </div>
@@ -188,7 +203,7 @@
                             </div>
 
                             <div class="form-group col-12 col-12-6 col-lg-4">
-                                <label for="tarif">Tarif</label>
+                                <label for="tarif">Tarif <span class="text-red">*</span></label>
                                 <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Rp.</span>
@@ -295,11 +310,75 @@
                 event.preventDefault(); // Prevent form submission
                 Swal.fire({
                     icon: 'error',
-                    // title: 'Oops...',
                     text: 'Tarif harus lebih besar daripada uang jalan!',
-                    // footer: '<a href="">Why do I have this issue?</a>'
                 })
             }
+
+            let cekKolom = $('#dynamic_field > tbody > tr');
+            if (cekKolom.length <= 0) {
+                Swal.fire(
+                'Gagal menyimpan!',
+                'Tidak ada data untuk disimpan.',
+                'error'
+                )
+                event.preventDefault();
+                return false;
+            }
+
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Disimpan'
+                    })
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 1000); // 2000 milliseconds = 2 seconds
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                    // return;
+                }
+            })
         });
     });
 </script>
@@ -490,9 +569,6 @@
             }
 
             $('#modal_detail').modal('show');
-
-            
-
         });
 
         // open detail

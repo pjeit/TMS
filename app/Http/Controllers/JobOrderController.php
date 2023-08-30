@@ -50,10 +50,13 @@ class JobOrderController extends Controller
         $dataSupplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
+            ->where('jenis_supplier_id', 6) // jenis pelayaran
+            ->orderBy('nama')
             ->get();
         $dataCustomer = DB::table('customer')
             ->select('*')
-            ->where('customer.is_aktif', '=', "Y")
+            ->where('customer.is_aktif', "Y")
+            ->orderBy('nama')
             ->get();
         $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
             ->select('*')
@@ -321,6 +324,7 @@ class JobOrderController extends Controller
 
                         $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($detail['id_detail']);
                         $JOD->id_booking = $detail['id_booking']; // kosong dulu
+                        $JOD->id_grup_tujuan = $detail['tujuan'];
                         $JOD->tgl_booking = $detail['tgl_booking'] != NULL? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL; // kosong dulu
                         $JOD->updated_by = $user;
                         $JOD->updated_at = now();

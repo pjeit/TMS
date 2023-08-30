@@ -117,7 +117,7 @@
             <div class="col-lg-6 col-md-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
-                        <h5 class="card-title">Rekening Bank</h5>
+                        <h5 class="card-title mt-2"><b>REKENING BANK</b></h5>
                     </div>
                     <div class="card-body">
                         <div class="form-group">

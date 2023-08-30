@@ -43,7 +43,6 @@
                             <div class='col-sm-12 col-md-5 col-lg-5'>
                                 <label for="">Grup <span style='color:red'>*</span></label>
                                 <select class="form-control select2" required style="width: 100%;" id='grup_id' name="grup_id">
-                                    <option value="0">&nbsp;</option>
                                     @foreach ($grups as $grup)
                                         <option value="{{$grup['id']}}" <?= ($grup['id']==$data->grup_id)? 'selected':''; ?> >{{ $grup['nama_grup'] }} </option>
                                     @endforeach
@@ -67,7 +66,6 @@
                             <div class="form-group col-sm-12 col-md-3 col-lg-3">
                                 <label for="">Kota</label>
                                 <select class="form-control select2" style="width: 100%;" id='kota_id' name="kota_id">
-                                    <option value="0">&nbsp;</option>
                                     @foreach ($kota as $city)
                                         <option value="{{$city->id}}" <?= ($city['id']==$data->kota_id)? 'selected':'xxx' ?> >{{ $city->nama }}</option>
                                     @endforeach

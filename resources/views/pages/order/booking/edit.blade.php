@@ -53,6 +53,10 @@
                                 </div>
                             </div>
                             <div class="form-group col-12 col-md-4 col-lg-4">
+                                <label>No Kontainer </label>
+                                <input type="text" name="no_kontainer" id="no_kontainer" class="form-control" value="{{old('no_booking',$booking->no_kontainer) }}">    
+                            </div>
+                            {{-- <div class="form-group col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label>Tgl Berangkat <span class="text-red">*</span></label>
                                     <div class="input-group mb-0">
@@ -62,10 +66,10 @@
                                         <input type="text" name="tgl_berangkat" autocomplete="off" class="date form-control" id="tgl_berangkat" placeholder="dd-M-yyyy" value="{{old('tgl_berangkat',\Carbon\Carbon::parse($booking->tgl_berangkat)->format('d-M-Y')) }}">     
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div> 
                         <div class='row'>
-                            <div class="form-group col-12 col-md-3 col-lg-3">
+                            <div class="form-group col-12 col-md-6 col-lg-6">
                                 <label>Customer <span class="text-red">*</span></label>
                                 <select class="form-control select2" style="width: 100%;" id='id_customer' name="id_customer" required>
                                     <option value="0">&nbsp;</option>
@@ -80,14 +84,11 @@
                                 <select id="id_tujuan" name="id_tujuan" style="width: 100%" class="select2"></select>
                             </div>
                             
-                            <div class="form-group col-12 col-md-3 col-lg-3">
-                                <label>No Kontainer </label>
-                                <input type="text" name="no_kontainer" id="no_kontainer" class="form-control" value="{{old('no_booking',$booking->no_kontainer) }}">    
-                            </div>
-                        
                             <div class="form-group col-12 col-md-6 col-lg-6">
                                 <label>Catatan </label>
-                                <input type="text" name="catatan" id="catatan" class="form-control" value="{{old('no_booking',$booking->catatan) }}">    
+                            <textarea type="text" name="catatan" id="catatan" class="form-control" cols="30" rows="3">{{old('no_booking',$booking->catatan) }}</textarea>
+                                {{-- <input type="text" name="catatan" id="catatan" class="form-control" value="{{old('no_booking',$booking->catatan) }}">     --}}
+
                             </div>
                         </div> 
                     </div>
@@ -101,9 +102,8 @@
 <script>
     $(document).ready(function() {
         const id_tujuanSelect = document.getElementById('id_tujuan');
-            var selectedValue = $('#id_customer').val();
+        var selectedValue = $('#id_customer').val();
         var datacUST = <?php echo json_encode($booking); ?>;
-        console.log(datacUST.id_grub_tujuan);
 
           $.ajax({
                 url: '/booking/getTujuan/'+ selectedValue, 
@@ -118,7 +118,7 @@
                         const option = document.createElement('option');
                         option.value = tujuan.id;
                         option.textContent = tujuan.nama_tujuan;
-                        if (datacUST.id_grub_tujuan == tujuan.id) {
+                        if (datacUST.id_grup_tujuan == tujuan.id) {
                             option.selected = true;
                         }
                         id_tujuanSelect.appendChild(option);

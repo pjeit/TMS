@@ -13,8 +13,9 @@
 
 @section('content')
 <style>
-
-
+    .card-header:first-child{
+        border-radius:inherit;
+    }
 </style>
 
     @if ($errors->any())
@@ -31,12 +32,20 @@
         @method('PUT')
         @csrf
         <div class="row m-2">
+            <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
+                <div class="card radiusSendiri" style="">
+                    <div class="card-header ">
+                        <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                    </div>
+                </div>
+            </div>
              <div class="col-12">
                 <div class="card radiusSendiri">
-                    <div class="card-header">
+                    {{-- <div class="card-header">
                         <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
                         <button type="submit" id='submitButton' class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-                    </div>
+                    </div> --}}
                     <div class="card-body">
                         <div class="row">
                             <div class="col-6" >
