@@ -34,6 +34,15 @@
         @method('PUT')
 
         <div class="row">
+            {{-- <div class="col-12 position-fixed">
+                <div class="card radiusSendiri">
+                    <div class="card-header">
+                            <a href="{{ route('grup_tujuan.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                            <button type="submit" class="btn btn-success radiusSendiri float-left ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                            <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
+                        </div>
+                </div>
+            </div> --}}
         
             
             <div class="col-12">
@@ -44,7 +53,7 @@
                     
                         <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="overflow-y: scroll; max-height:675px;">
                         {{-- <button type="button" class="btn btn-sm btn-primary mx-4 my-3" onclick="open_detail('') "><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; DAFTAR TUJUAN & TARIF</b></button> --}}
 
 

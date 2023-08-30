@@ -53,6 +53,7 @@ class SupplierController extends Controller
             ->where('supplier.is_aktif', '=', "Y")
             ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
             ->paginate(10);
+            // ->get();
 
 
         }
@@ -67,6 +68,7 @@ class SupplierController extends Controller
             ->where('jenis_supplier.id', '=',  $jenisFilter )
             ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
             ->paginate(10);
+            // ->get();
 
         }
 
@@ -77,8 +79,9 @@ class SupplierController extends Controller
             ->get();
 
             // dd($dataJenisFilter);
+        // return response()->json(['datas' => $data]);
 
-            return view('pages.master.supplier.index',[
+        return view('pages.master.supplier.index',[
             'judul' => "Supplier",
             'data' => $data,
             'dataJenisFilter' => $dataJenisFilter

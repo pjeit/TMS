@@ -32,45 +32,27 @@
                             </tr>
                           </thead>
                         <tbody>
-                            <?php if(isset($dataJO)){ ?>
-                                @foreach($dataJO as $item)
+                                @foreach($data as $item)
                                  <tr>
                                     <td>{{ $item->no_jo }}</td>
-                                    <td>{{ $item->id_customer }}</td>
-                                    <td>{{ $item->id_supplier }}</td>
+                                    <td>{{ $item->namaCustomer }}</td>
+                                    <td>{{ $item->namaSupplier }}</td>
                                     <td>{{ $item->status}}</td>
                                     <td>                                    
-                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('pembayaran_jo.edit',[$item->id])}}">
-                                            <i class="fas fa-edit"></i> Edit
+                                        <a class="btn btn-success radiusSendiri" href="{{route('pembayaran_jo.edit',[$item->id])}}">
+                                              <i class="fas fa-credit-card"></i> Pembayaran
                                         </a>   
-                                        <a href="{{ route('persetujuan_jo.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
                                     </td>
                                 </tr>
                                 @endforeach
-                            <?php } ?>
-                            <tr>
-                                    <td>JO/TAN/2008001</td>
-                                    <td>PT. AGUNG SEJAHTERAH</td>
-                                    <td>PT. TANTO</td>
-                                    <td>Menunggu Pembayaran Finance</td>
-                                    <td>                                    
-                                        <a class="btn btn-default bg-success radiusSendiri" href="{{route('pembayaran_jo.create')}}">
-                                            <i class="fas fa-credit-card"></i> Pembayaran
-                                        </a>   
-                                    </td>
-                                </tr>
+                     
                         </tbody>
                     </table>
-                    <?php if(isset($dataJO)){ ?>
-                        {{ $dataJO->links('pagination::bootstrap-4') }}
-                    <?php } ?>
-
+                        {{ $data->links('pagination::bootstrap-4') }}
                 </div>
             </div>
         </div>
     </div>
-
-    
 </div>
 
 <script>

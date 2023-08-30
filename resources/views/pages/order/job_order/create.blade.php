@@ -450,18 +450,25 @@
             // logic kasih id di row
                 // Ambil semua elemen <tr> dengan ID yang dimulai dengan "row"
                 var rows = document.querySelectorAll('tr[id^="row"]');
+                console.log(rows);
 
                 // Cari ID terbesar dengan format "rowX" dan ambil nilai X-nya
                 var maxID = -1;
                 for (var i = 0; i < rows.length; i++) {
+                    //misal row1 jadi 1 doang yang diambil
                     var idStr = rows[i].id.replace('row', ''); // Ambil nilai X dari "rowX"
+                    console.log(idStr);
+
                     var idNum = parseInt(idStr); // Konversi menjadi angka
+                    //terus kalau 1 >-1
                     if (idNum > maxID) {
+                        //maka maxID = 1
                         maxID = idNum;
                     }
                 }   
 
                 // Hasilkan ID terakhir dengan format "rowX+1"
+                //misal maxid = 1, pad diappend jadi 1+1=2
                 var lastID = (maxID + 1);
 
                 if(lastID != 0){
