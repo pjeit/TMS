@@ -68,7 +68,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('head', 'App\Http\Controllers\HeadController');
     
         Route::resource('chassis', 'App\Http\Controllers\ChassisController');
-        Route::get('/supplier/jenisFilter/', [App\Http\Controllers\SupplierController::class, 'filterSupplier']);
+        // filterSupplier itu nama method yang ada di controller
+        Route::get('/supplier/filter', [App\Http\Controllers\SupplierController::class, 'filterSupplier'])->name('filterSupplier.cari');
     
         Route::resource('supplier', 'App\Http\Controllers\SupplierController');
     

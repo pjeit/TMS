@@ -1,125 +1,394 @@
+
 @extends('layouts.home_master')
+
 @if(session()->has('message'))
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible">
         {{ session()->get('message') }}
     </div>
 @endif
+
 @section('pathjudul')
-@endsection
-<style>
-.modal {
-    /* overflow: hidden;
-    position: relative; */
-}
-
-.modal-content {
-    /* height: 90%;
-    overflow: auto; */
-}</style>
-@section('content')
-
-<div class="container-fluid " style="height: 90%; overflow: auto;">
   
+@endsection
+
+@section('content')
+<style >
+   .tinggi{
+    height: 20px;
+   }
+</style>
+
     @if ($errors->any())
         @foreach ($errors->all() as $error)
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ $error }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        @endforeach
-
-    @endif
-    
-    <form action="{{ route('grup.update', ['grup' => $data->id]) }}" method="POST">
-        @method('PUT')
-        @csrf
-        <div class="row">
-            <div class="col-12">
-                <div class="card radiusSendiri">
-                    <div class="card-header">
-                        <a href="{{ route('grup.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-                    </div>
-                    <div class="card-body">
-                        <div class="row col-12">
-                            <div class="form-group col-md-4 col-sm-12">
-                                <label for="">Nama Grup<span class="text-red">*</span></label>
-                                <input required type="text" name="nama_grup" class="form-control" value="{{$data->nama_grup}}" >
-                            </div>
-                            <div class="form-group col-md-4 col-sm-12">
-                                <label for="">Total Kredit</label>
-                                <div class="input-group ">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" name="total_kredit" class="form-control numaja uang" disabled value="{{number_format($data->total_kredit) }}">
-                                </div>
-                            </div>
-                            <div class="form-group col-md-4 col-sm-12">
-                                <label for="">Total Max Kredit</label>
-                                <div class="input-group ">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input readonly type="text" name="total_max_kredit" class="form-control numaja uang" value="{{number_format($data->total_max_kredit)}}" id='total_max_kredit' >
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row col-12">
-                            <div class="form-group col-md-6">
-                                <label for="">Nama PIC<span class="text-red">*</span></label>
-                                <input required type="password" name="nama_pic" class="form-control" value="{{$data->nama_pic}}" >
-                            </div>           
-                            <div class="form-group col-md-6">
-                                <label for="">Email</label>
-                                <input  type="email" name="email" class="form-control" value="{{$data->email}}" >
-                            </div>           
-                        </div>
-                        <div class="row col-12">
-                            <div class="form-group col-6">
-                                <label for="">Telp 1<span class="text-red">*</span></label>
-                                <div class="input-group ">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
-                                    </div>
-                                    <input required type="text" maxlength="12" name="telp1" class="form-control numaja " value="{{$data->telp1}}" id='telp1' >
-                                </div>
-                            </div>      
-                            <div class="form-group col-6">
-                                <label for="">Telp 2</label>
-                                <div class="input-group ">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text ">+62</span>
-                                    </div>
-                                    <input  type="text" maxlength="12" name="telp2" class="form-control numaja " value="{{$data->telp2}}" id='telp2' >
-                                </div>
-                            </div>               
-                        </div>   
-                    </div>
-                </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ $error }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
             </div>
+        @endforeach
+    @endif
+    <form action="{{ route('pembayaran_jo.update',[$pembayaran_jo->id]) }}" method="POST" >
+      @csrf
+                 @method('PUT')
 
-        </div>
-    </form>
+    <div class="row m-2">
     
+        <div class="col-12">
+            <div class="card radiusSendiri">
+                <div class="card-header">
+                    <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                </div>
+                <div class="card-body" >
+                    <div class="row">
+                        <div class="col-6">
+                                <div class="row">
+                                <div class="col-6" > 
+                                        <div class="form-group">
+                                            <label for="">Pengirim<span class="text-red">*</span></label>
+                                                <select class="form-control selectpicker"  id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
+                                                <option value="0">PT. Pasifik Global Makmur</option>
+                                                {{-- @foreach ($dataCustomer as $cust)
+                                                    <option value="{{$cust->id}}">{{ $cust->nama }}</option>
+                                                @endforeach --}}
+                                            </select>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label for="">Pelayaran</label>
+                                            <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
+                                                <option value="0">PT. TANTO INTI LINE</option>
+                                                {{-- @foreach ($dataSupplier as $sup)
+                                                    <option value="{{$sup->id}}">{{ $sup->nama }}</option>
+                                                @endforeach --}}
+                                            </select>
+                                        </div>
+                                        <div class="form-group ">
+                                            <label for="">No. BL<span class="text-red">*</span></label>
+                                            <input required type="text" name="nama_pic" class="form-control" value="{{old('nama_pic','23450023929BL')}}" readonly>
+                                        </div>  
+                                </div>
+                                <div class="col-6"> 
+                                    <div class="form-group">
+                                            <label for="tgl_sandar">Tanggal Sandar</label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{old('tgl_sandar','20-aug-2023')}}" disabled>     
+                                        </div>
+                                    </div>  
+                                    <div class="form-group">
+                                        <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
+                                        <input required type="text" name="pelabuhan_muat" class="form-control" value="{{old('pelabuhan_muat','Medan')}}" readonly>
+                                    </div> 
+                                    <div class="form-group">
+                                        <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
+                                        <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('pelauhan_bongkar','SBY')}}" readonly>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-primary">Total Biaya</span>
+                                {{-- <span class="badge bg-primary rounded-pill">3</span> --}}
+                            </h4>
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                    <h6 class="my-0">Biaya Sebelum Dooring</h6>
+                                    {{-- <small class="text-muted">total</small> --}}
+                                    </div>
+                                    <span class="text-muted">Rp. {{number_format($pembayaran_jo->total_biaya_sebelum_dooring,2)}}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                    <h6 class="my-0">Biaya Jaminan</h6>
+                                    {{-- <small class="text-muted">total</small> --}}
+                                    </div>
+                                    <span class="text-muted">Rp. {{number_format($dataJaminan[0]->nominal,2)}}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total (IDR)</span>
+                                    <strong>Rp. {{number_format($pembayaran_jo->total_biaya_sebelum_dooring+$dataJaminan[0]->nominal,2)}}</strong>
+                                </li>
+                            </ul>
+                            <div class="input-group">
+                                <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                    <option value="0">--PILIH PEMBAYARAN--</option>
+                                    @foreach ($dataKas as $data)
+                                        <option value="{{$data->id}}">{{ $data->nama }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
 
-</div>
-<script>
+                                {{-- <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</a> --}}
+
+                            </div>
+                        </div>
+                    </div>
+                  
+                </div>
+            </div> 
+        </div>
+        <div class="col-12">
+              <div class="d-flex justify-content-between" style="gap: 10px;">
+                        <table class="table" id="sortable" >
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Biaya Sebelum Dooring</th>
+                                </tr>
+                            </thead>
+                            <tbody > 
+                                <tr>
+                                    <th><span> <input disabled type="checkbox" name="thc_cekbox" id="thc_cekbox" {{$pembayaran_jo->total_thc!=0?'checked':''}}></span> THC</th>
+                                    <td name="total_thc"><input type="text" id="total_thc" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_thc,2)}}" readonly></td>
+                                </tr>
+                                <tr>
+                                    <th><span> <input disabled type="checkbox" name="lolo_cekbox" id="lolo_cekbox" {{$pembayaran_jo->total_lolo!=0?'checked':''}}></span> LOLO</th>
+                                    <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_lolo,2)}}" readonly></td>
+                                </tr>
+                                <tr>
+                                    <th><span> <input disabled type="checkbox" name="apbs_cekbox" id="apbs_cekbox" {{$pembayaran_jo->total_apbs!=0?'checked':''}}></span> APBS</th>
+                                    <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_apbs,2)}}" readonly></td>
+                                </tr>
+                                <tr>
+                                    <th><span> <input disabled type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox" {{$pembayaran_jo->total_cleaning!=0?'checked':''}}></span> CLEANING</th>
+                                    <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_cleaning,2)}}" readonly></td>
+                                </tr>
+                                <tr>
+                                    <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox" {{$pembayaran_jo->total_doc_fee!=0?'checked':''}}></span> DOC FEE</th>
+                                    <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_doc_fee,2)}}" readonly></td>
+                                </tr>
+                                <tr>
+                                    <th>SUB TOTAL</th>
+                                    <th name="total_sblm_dooring" id="total_sblm_dooring">Rp. {{number_format($pembayaran_jo->total_biaya_sebelum_dooring,2)}}</th>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                        <table class="table" id="sortable">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Biaya Jaminan</th>
+                                </tr>
+                            </thead>
+                            <tbody > 
+                                <tr class="tinggi">
+                                    <th>Tgl Bayar Jaminan</th>
+                                    <td><input type="text" name="" class="form-control" value="{{\Carbon\Carbon::parse($dataJaminan[0]->tgl_bayar)->format('d-M-Y')}}" readonly></td>
+                                </tr>
+                                <tr>
+                                    <th>Total Jaminan</th>
+                                    <th>Rp. {{number_format($dataJaminan[0]->nominal,2)}}</th>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                        
+                    </div>
+        </div>
+       
+    </div>
+ 
+    </form>
+<script type="text/javascript">
     $(document).ready(function() {
-      // Listen for input events on all input fields
-      $('input[type="text"]').on('input', function() {
-        var inputValue = $(this).val();
-        var uppercaseValue = inputValue.toUpperCase();
-        $(this).val(uppercaseValue);
-      });
-      $('input[type="email"]').on('input', function() {
-        var inputValue = $(this).val();
-        var uppercaseValue = inputValue.toUpperCase();
-        $(this).val(uppercaseValue);
-      });
+
+        // var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
+        // var harga20Ft = {
+        //     'thc': dataKeuangan.thc_20ft,
+        //     'lolo': dataKeuangan.lolo_20ft,
+        //     'apbs': dataKeuangan.apbs_20ft,
+        //     'cleaning': dataKeuangan.cleaning_20ft,
+        //     'doc_fee': dataKeuangan.doc_fee_20ft,
+        // };
+        // // console.log(harga20Ft.thc)
+        // var harga40Ft = {
+        //     'thc': dataKeuangan.thc_40ft,
+        //     'lolo': dataKeuangan.lolo_40ft,
+        //     'apbs': dataKeuangan.apbs_40ft,
+        //     'cleaning': dataKeuangan.cleaning_40ft,
+        //     'doc_fee': dataKeuangan.doc_fee_40ft,
+        // };
+        
+        // $('input[type="text"]').on('input', function() {
+        //     var inputValue = $(this).val();
+        //     var uppercaseValue = inputValue.toUpperCase();
+        //     $(this).val(uppercaseValue);
+        // });
+
+        // $('#tgl_sandar').datepicker({
+        //         autoclose: true,
+        //         format: "dd-M-yyyy",
+        //         todayHighlight: true,
+        //         language:'en',
+        //         endDate: "0d"
+        // });
+
+        // $(document).on('focus', '.tgl_booking', function() {
+        //     $(this).datepicker({
+        //         autoclose: true,
+        //         format: "dd-M-yyyy",
+        //         todayHighlight: true,
+        //         language: 'en',
+        //         endDate: "0d"
+        //     });
+        // });
+
+        // $("#addmore").on("click",function(event){
+        //     var customerId = $("#customer").val();
+        //     if(customerId == 0 || customerId == null || customerId == ''){
+        //         Swal.fire(
+        //             '',
+        //             'Harap isi data pengirim dahulu.',
+        //             'error'
+        //         );
+        //         return false;
+        //     }
+
+        //     var selectedValue = customerId;
+        //     let dataOption = ''; // Initialize as an array
+
+        //     $.ajax({
+        //         url: '/booking/getTujuan/' + selectedValue,
+        //         method: 'GET',
+        //         success: function(response) {
+        //             response.forEach(tujuan => {
+        //                 const option = document.createElement('option');
+        //                 var xxx = `<option id="${tujuan.id}">${tujuan.nama_tujuan}</option>`;
+        //                 dataOption += xxx;
+        //                 // console.log('xxx '+xxx);
+        //             });
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error('Error:', error);
+        //         }
+        //     });
+        //     console.log('dataOption '+dataOption);
+
+
+        //     $('#tb').append(
+        //         `<tr>
+        //             <td>
+        //                 <input type="text" id="no_kontainer" name="no_kontainer[]"class="form-control no_kontainerx" value="">
+        //             </td>
+        //             <td>
+        //                 <input type="text" id="seal" name="seal[]"class="form-control" value="">
+        //             </td>
+        //             <td>
+        //                 <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+        //                     <option value="">--Pilih Tipe Kontainer--</option>
+        //                     <option value="20">20Ft</option>
+        //                     <option value="40">40Ft</option>
+        //                 </select>
+        //                 <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
+        //                 <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
+        //                 <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
+        //                 <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+        //                 <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
+        //             </td>
+        //             <td>
+        //                 <select class="form-control selectpicker" name="tujuan[]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+        //                     <option value="">--Pilih Tujuan--</option>
+        //                 </select>
+        //             </td>
+        //             <td>
+        //                 <input type="text" name="tgl_booking[]" autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
+        //             </td>
+        //             <td align="center" class="text-danger">
+        //                 <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data kontainer ini?')){ $(this).closest('tr').remove(); }" class="btn btn-danger radiusSendiri hapus">
+        //                     <i class="fa fa-fw fa-trash-alt"></i>
+        //                 </button>
+        //             </td>
+        //         </tr>`
+        //     );
+        //     $('.selectpicker').selectpicker('refresh');
+        //     // $('#save').removeAttr('hidden',true);
+        // });
+
+        // // logic hitung biaya
+        //     $( document ).on( 'change', '.tipeKontainer', function (event) {
+        //         // ini buat biar klik sesuatu di anaknya, tdnya ga keeksekusi
+        //         event.stopPropagation();
+        //         var selectedValue = $(event.target).val();
+        //         var selectedValue = $(this).val();
+
+        //         //closest itu misal 
+        //         // <td dia nyarik ini closestnya kan parent>
+        //         //     <select class="form-control selectpicker tipeKontainer" name="tipe[]" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+        //         //         <option value="">--Pilih Tipe Kontainer--</option>
+        //         //         <option value="20">20Ft</option>
+        //         //         <option value="40">40Ft</option>
+        //         //     </select> trs nyarik anak" nya
+        //         //     <input type="text" readonly class="hargaThc" name="hargaThc[]" value="">
+        //         //     <input type="text" readonly class="hargaLolo" name="hargaLolo[]" value="">
+        //         //     <input type="text" readonly class="hargaApbs" name="hargaApbs[]" value="">
+        //         //     <input type="text" readonly class="hargaCleaning" name="hargaCleaning[]" value="">
+        //         //     <input type="text" readonly class="hargaDocFee" name="hargaDocFee[]" value="">
+        //         // </td>
+
+        //         var parentTd = $(this).closest('td');
+        //         parentTd.find('.hargaThc').val(selectedValue == '20' ? harga20Ft.thc : harga40Ft.thc);
+        //         parentTd.find('.hargaLolo').val(selectedValue == '20' ? harga20Ft.lolo : harga40Ft.lolo);
+        //         parentTd.find('.hargaApbs').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
+        //         parentTd.find('.hargaCleaning').val(selectedValue == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
+        //         parentTd.find('.hargaDocFee').val(selectedValue == '20' ? harga20Ft.doc_fee : harga40Ft.doc_fee);
+
+        //         calculateTotalHarga();
+        //     });
+            
+        //     $( document ).on( 'click', '.hapus', function (event) {
+        //         calculateTotalHarga();
+        //     });
+
+        //     function calculateTotalHarga() {
+        //         var totalhargaThc = 0;
+        //         var totalhargaLolo = 0;
+        //         var totalhargaApbs = 0;
+        //         var totalhargaCleaning = 0;
+        //         var totalhargaDocFee = 0;
+
+        //         $('#total_thc').val(totalhargaThc);
+        //         $('#total_lolo').val(totalhargaLolo);
+        //         $('#total_apbs').val(totalhargaApbs);
+        //         $('#total_cleaning').val(totalhargaCleaning);
+        //         $('#total_doc_fee').val(totalhargaDocFee);
+                
+        //         $('.hargaThc').each(function() {
+        //             var value = parseFloat($(this).val()) || 0;
+        //             totalhargaThc += value;
+        //             $('#total_thc').val(totalhargaThc);
+        //         });
+        //         $('.hargaLolo').each(function() {
+        //             var value = parseFloat($(this).val()) || 0;
+        //             totalhargaLolo += value;
+        //             $('#total_lolo').val(totalhargaLolo);
+        //         });
+        //         $('.hargaApbs').each(function() {
+        //             var value = parseFloat($(this).val()) || 0;
+        //             totalhargaApbs += value;
+        //             $('#total_apbs').val(totalhargaApbs);
+        //         });
+        //         $('.hargaCleaning').each(function() {
+        //             var value = parseFloat($(this).val()) || 0;
+        //             totalhargaCleaning += value;
+        //             $('#total_cleaning').val(totalhargaCleaning);
+        //         });
+        //         $('.hargaDocFee').each(function() {
+        //             var value = parseFloat($(this).val()) || 0;
+        //             totalhargaDocFee += value;
+        //             $('#total_doc_fee').val(totalhargaDocFee);
+        //         });
+                
+        //     }
+        // end of logic hitung biaya
+
     });
 </script>
+
 @endsection
+
+

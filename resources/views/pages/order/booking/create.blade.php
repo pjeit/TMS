@@ -110,6 +110,7 @@
                 url: '/booking/getTujuan/'+selectedValue, 
                 method: 'GET', 
                 success: function(response) {
+                    console.log(response);
                     $('#result').html(response); 
                     var tujuanSelect = $('#id_tujuan');
                     tujuanSelect.empty(); // Clear previous options

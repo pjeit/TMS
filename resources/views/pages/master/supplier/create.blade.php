@@ -180,6 +180,65 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
+    // Flag to track form changes
+    var formChanged = false;
+
+    // Listen for changes in form fields
+    $('input, select').on('change', function() {
+        formChanged = true;
+    });
+
+    // Listen for form submission
+    $('#filterForm').submit(function() {
+        // Reset form changed flag on submission
+        formChanged = false;
+    });
+
+    // Listen for beforeunload event
+    $(window).on('beforeunload', function() {
+        if (formChanged) {
+            return 'You have unsaved changes. Are you sure you want to leave?';
+        }
+    });
+    
+    $(document).on('click', 'a', function(event) {
+        if (formChanged) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Anda memiliki perubahan yang belum disimpan',
+                text: 'Anda Yakin?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.onbeforeunload = null;
+                    window.location.href = $(this).attr('href');
+                }
+            });
+        }
+    });
+     $(window).on('popstate', function(event) {
+        if (formChanged) {
+            Swal.fire({
+                title: 'Anda memiliki perubahan yang belum disimpan',
+                text: 'Anda Yakin?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Tidak'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.onbeforeunload = null;
+                    history.back(); // Go back in history
+                } else {
+                    // Prevent navigating back if the user chooses not to
+                    history.pushState(null, null, window.location.href);
+                }
+            });
+        }
+    });
    $('#cekPPH').click(function(){
             if($(this).is(":checked")){
                 $('#pph').attr('readonly',false);
