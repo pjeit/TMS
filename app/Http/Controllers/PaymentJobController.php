@@ -24,6 +24,8 @@ class PaymentJobController extends Controller
         ->Join('supplier', 'job_order.id_supplier', '=', 'supplier.id')
         ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
         ->where('job_order.is_aktif', '=', 'Y') 
+        ->where('job_order.status', 'like', 'FINANCE PENDING') 
+
         ->paginate(5);
 
         // dd($data);
@@ -126,10 +128,13 @@ class PaymentJobController extends Controller
         $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
+            // ->where('kas_bank.id', '=', 2)
             ->get();
             // kalau bug misal data ga ada, ganti variable sama nama routing sama
         // dd($dataJaminan[0]);
         // dd($pembayaran_jo->no_jo);
+        // dd($dataKas[0]->saldo_awal);
+
 
         return view('pages.finance.pembayaran_order.edit',[
             'judul'=>"Pembayaran Job Order",
@@ -156,27 +161,75 @@ class PaymentJobController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
            try {
-            // $pesanKustom = [
+            $pesanKustom = [
              
-            //     'pembayaran.required' => 'Pembayaran harus dipilih',
-            // ];
+                'pembayaran.required' => 'Pembayaran harus dipilih',
+            ];
             
-            // $request->validate([
-            //     'pembayaran' => 'required',
-            // ], $pesanKustom);
+            $request->validate([
+                'pembayaran' => 'required',
+            ], $pesanKustom);
             $data = $request->collect();
             // dd($data);
             // 'FINANCE_PENDING','FINANCE_APPROVED'
+            $data_saldo_kas_sekarang = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->where('kas_bank.id', '=', $data['pembayaran'])
+            ->get();
+            $dataJaminan = DB::table('jaminan')
+            ->select('*')
+            ->where('jaminan.is_aktif', '=', "Y")
+            ->where('jaminan.id_job_order', '=', $pembayaran_jo->id)
+            ->get();
+            // dd($pembayaran_jo->total_biaya_sebelum_dooring);
+            // dd($dataJaminan[0]->nominal);
+            // dd($data_saldo_kas_sekarang[0]->saldo_awal = $data_saldo_kas_sekarang[0]->saldo_awal - ($pembayaran_jo->total_biaya_sebelum_dooring+$dataJaminan[0]->nominal));
             DB::table('job_order')
             ->where('id', $pembayaran_jo['id'])
             ->update(array(
                 //    'nama' => strtoupper($data['nama']),
-                    'status' => 'LUNAS',
+                    'status' => 'FINANCE APPROVED',
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
                     'is_aktif' => "Y",
                 )
             );
+            $perhitunganSaldo = $data_saldo_kas_sekarang[0]->saldo_awal - ($pembayaran_jo->total_biaya_sebelum_dooring+$dataJaminan[0]->nominal);
+            // dd( $perhitunganSaldo );
+            DB::table('kas_bank')
+            ->where('id', $data['pembayaran'])
+            ->update(array(
+                //    'nama' => strtoupper($data['nama']),
+                    'saldo_awal' => $perhitunganSaldo,
+                    'updated_at'=> VariableHelper::TanggalFormat(),
+                    'updated_by'=> $user,
+                    'is_aktif' => "Y",
+                )
+            );
+
+            // IN keterangan_p varchar(50) ,
+            // IN kode_coa_p varchar(10),
+            // IN nominal_p double(15,2), 
+            // IN keterangan_transaksi_p varchar(50),
+            // IN keterangan_kode_transaksi_p varchar(50)
+            $coaJaminan = DB::table('coa')
+            ->select('*')
+            ->where('coa.is_aktif', '=', "Y")
+            ->where('coa.no_akun', '=', 1205)
+            ->get();
+
+            $coaPelayaran = DB::table('coa')
+            ->select('*')
+            ->where('coa.is_aktif', '=', "Y")
+            ->where('coa.no_akun', '=', 5003)
+            ->get();
+            // dd( $coaJaminan[0]->no_akun );
+
+            DB::select('CALL InsertDumpCOA(?,?,?,?,?)',array('UANG KELUAR',$coaPelayaran[0]->no_akun,$pembayaran_jo->total_biaya_sebelum_dooring,'BIAYA PELAYARAN - JO',$pembayaran_jo->no_jo));
+            DB::select('CALL InsertDumpCOA(?,?,?,?,?)',array('UANG KELUAR',$coaJaminan[0]->no_akun,$dataJaminan[0]->nominal,'UANG JAMINAN - JO',$pembayaran_jo->no_jo));
+
+           
             return redirect()->route('pembayaran_jo.index')->with('status', "Pembayaran Job Order Dengan Kode $pembayaran_jo->no_jo berhasil");
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();

@@ -55,7 +55,7 @@
                                         </div>
                                         <div class="form-group ">
                                             <label for="">Pelayaran</label>
-                                            <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
+                                            <select class="form-control selectpicker"  id='pembayaran' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
                                                 <option value="0">PT. TANTO INTI LINE</option>
                                                 {{-- @foreach ($dataSupplier as $sup)
                                                     <option value="{{$sup->id}}">{{ $sup->nama }}</option>
@@ -114,8 +114,8 @@
                                 </li>
                             </ul>
                             <div class="input-group">
-                                <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                    <option value="0">--PILIH PEMBAYARAN--</option>
+                                <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                    <option value="">--PILIH PEMBAYARAN--</option>
                                     @foreach ($dataKas as $data)
                                         <option value="{{$data->id}}">{{ $data->nama }}</option>
                                     @endforeach
