@@ -195,24 +195,18 @@ class PaymentJobController extends Controller
                     'is_aktif' => "Y",
                 )
             );
-            $perhitunganSaldo = $data_saldo_kas_sekarang[0]->saldo_awal - ($pembayaran_jo->total_biaya_sebelum_dooring+$dataJaminan[0]->nominal);
+            $perhitunganSaldo = $data_saldo_kas_sekarang[0]->saldo_sekarang - ($pembayaran_jo->total_biaya_sebelum_dooring+$dataJaminan[0]->nominal);
             // dd( $perhitunganSaldo );
             DB::table('kas_bank')
             ->where('id', $data['pembayaran'])
             ->update(array(
                 //    'nama' => strtoupper($data['nama']),
-                    'saldo_awal' => $perhitunganSaldo,
+                    'saldo_sekarang' => $perhitunganSaldo,
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
                     'is_aktif' => "Y",
                 )
             );
-
-            // IN keterangan_p varchar(50) ,
-            // IN kode_coa_p varchar(10),
-            // IN nominal_p double(15,2), 
-            // IN keterangan_transaksi_p varchar(50),
-            // IN keterangan_kode_transaksi_p varchar(50)
             $coaJaminan = DB::table('coa')
             ->select('*')
             ->where('coa.is_aktif', '=', "Y")
@@ -225,11 +219,51 @@ class PaymentJobController extends Controller
             ->where('coa.no_akun', '=', 5003)
             ->get();
             // dd( $coaJaminan[0]->no_akun );
+            // id_kas_bank,1
+            //tanggal,2
+            // debit,3
+            // kredit, 4
+            // kode_coa,5
+            // keterangan_transaksi,6
+            // keterangan_kode_transaksi,7
+            // created_by,8
+            // created_at,9
+            // updated_by,10
+            // updated_at 11
+            // is_aktif 12
+            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?)',
+            array(
+                $data['pembayaran'],// id kas_bank dr form
+                now(),//tanggal
+                0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                $pembayaran_jo->total_biaya_sebelum_dooring, //uang keluar (kredit)
+                $coaPelayaran[0]->no_akun, //kode coa
+                'UANG KELUAR - BIAYA PELAYARAN - JO', //keterangan_transaksi
+                $pembayaran_jo->no_jo,//keterangan_kode_transaksi
+                $user,//created_by
+                now(),//created_at
+                $user,//updated_by
+                now(),//updated_at
+                'Y'
+                ) 
+            );
 
-            DB::select('CALL InsertDumpCOA(?,?,?,?,?)',array('UANG KELUAR',$coaPelayaran[0]->no_akun,$pembayaran_jo->total_biaya_sebelum_dooring,'BIAYA PELAYARAN - JO',$pembayaran_jo->no_jo));
-            DB::select('CALL InsertDumpCOA(?,?,?,?,?)',array('UANG KELUAR',$coaJaminan[0]->no_akun,$dataJaminan[0]->nominal,'UANG JAMINAN - JO',$pembayaran_jo->no_jo));
-
-           
+            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?)',
+            array(
+                $data['pembayaran'],// id kas_bank dr form
+                now(),//tanggal
+                0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                $dataJaminan[0]->nominal, //uang keluar (kredit)
+                $coaJaminan[0]->no_akun, //kode coa
+                'UANG KELUAR - UANG JAMINAN - JO', //keterangan_transaksi
+                $pembayaran_jo->no_jo,//keterangan_kode_transaksi
+                $user,//created_by
+                now(),//created_at
+                $user,//updated_by
+                now(),//updated_at
+                'Y'
+                ) 
+            );
             return redirect()->route('pembayaran_jo.index')->with('status', "Pembayaran Job Order Dengan Kode $pembayaran_jo->no_jo berhasil");
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
