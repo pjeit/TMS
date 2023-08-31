@@ -93,6 +93,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('marketing', 'App\Http\Controllers\MarketingController');
         Route::resource('pair_kendaraan', 'App\Http\Controllers\PairKendaraanController');
 
+        Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
+        Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
+
     });
 
     Route::middleware(['is_marketing'])->group(function () {
