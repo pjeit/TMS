@@ -49,7 +49,7 @@
                         </div>   
     
                         <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Nama</label>
+                            <label for="">Nama Marketing</label>
                             <input  type="text" required name="nama" class="form-control" value="{{old('nama','')}}" >                         
                         </div>
                  
@@ -58,15 +58,15 @@
                             <input type="text" name="no_rek" maxlength="20" class="form-control " value="{{old('no_rek','')}}" >                         
                         </div>
                         <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Atas Nama</label>
+                            <label for="">Atas Nama Rekening</label>
                             <input type="text" name="atas_nama" maxlength="30" class="form-control " value="{{old('atas_nama','')}}" >                         
                         </div>
                         <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Bank</label>
+                            <label for="">Nama Bank</label>
                             <input type="text" name="bank" maxlength="15" class="form-control " value="{{old('bank','')}}" >                         
                         </div>
                         <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Cabang</label>
+                            <label for="">Cabang Bank</label>
                             <input type="text" name="cabang" maxlength="25" class="form-control " value="{{old('cabang','')}}" >                         
                         </div>
                     </div>

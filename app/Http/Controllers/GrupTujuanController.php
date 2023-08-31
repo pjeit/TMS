@@ -11,6 +11,7 @@ use App\Models\Marketing;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use Illuminate\Http\RedirectResponse;
 use Mockery\Undefined;
 
@@ -274,5 +275,47 @@ class GrupTujuanController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function printDetail($grup)
+    {
+        //
+        die($grup);
+        $dataSupplier = DB::table('grup_tujuan')
+            ->select('*')
+            ->where('supplier.is_aktif', '=', "Y")
+            ->where('supplier.id', '=', $JobOrder->id_supplier)
+            ->get();
+     
+        // dd($dataJoDetail);   
+        $pdf = PDF::loadView('pages.order.job_order.print',[
+            'judul'=>"Job Order",
+            'JobOrder'=>$JobOrder,
+            'dataSupplier'=>$dataSupplier,
+            'dataCustomer'=>$dataCustomer,
+            'dataJoDetail'=>$dataJoDetail,
+            'dataJaminan'=>$dataJaminan,
+        ]); 
+        // dd($JobOrder);
+        $pdf->setPaper('A5', 'portrait');
+        // Customize the PDF generation process if needed
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true, // Enable HTML5 parser
+            'isPhpEnabled' => true, // Enable inline PHP execution
+            'defaultFont' => 'sans-serif'
+        ]);
+        // langsung download
+        // return $pdf->download('fileCoba.pdf'); 
+        // preview dulu
+        return $pdf->stream('fileCoba.pdf'); 
+
+        //  return view('pages.order.job_order.print',[
+        //     'judul'=>"Job Order",
+        //     'JobOrder'=>$JobOrder,
+        //     'dataSupplier'=>$dataSupplier,
+        //     'dataCustomer'=>$dataCustomer,
+        //     'dataJoDetail'=>$dataJoDetail
+
+        // ]);
     }
 }

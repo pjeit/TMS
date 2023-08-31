@@ -48,7 +48,7 @@
 
                                 <td>                                    
                                     <a class="btn btn-default bg-info radiusSendiri" href="{{route('pair_kendaraan.edit',[$item->id])}}">
-                                        <i class="far nav-icon fa fa-truck">+</i> Tambah Chassis
+                                        <i class="far nav-icon fa fa-truck">+</i> Pairing Chassis
                                     </a>   
                                             <!-- Button trigger modal -->
                                     {{-- <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
