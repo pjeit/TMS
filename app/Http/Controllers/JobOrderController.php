@@ -132,7 +132,7 @@ class JobOrderController extends Controller
                 $newJO->total_docfee = $data['total_doc_fee'];
             }
             $newJO->total_biaya_sebelum_dooring = $data['total_sblm_dooring'];
-            $newJO->status = 'Waiting Payment';
+            $newJO->status = 'FINANCE PENDING';
             $newJO->created_by = $user;
             $newJO->created_at = now();
             $newJO->is_aktif = 'Y';
@@ -150,53 +150,53 @@ class JobOrderController extends Controller
                 // create JO detail 
                 if(isset($data['detail'])){
                     foreach ($data['detail'] as $key => $detail) {
-                        $bookid = NULL;
-                        // create booking
-                        if(isset($detail['tgl_booking'])){
-                            $booking = new Booking();
-                            $booking->tgl_booking = date_create_from_format('d-M-Y', $detail['tgl_booking']);
-                            $booking->id_grup_tujuan = $detail['tujuan'];
-                            $booking->no_kontainer = $detail['no_kontainer'];
-                            $booking->id_customer = $data['customer'];
-                            // logic nomer booking
-                                //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
-                                //bisa juga substr(no_booking, 8,10)
-                                $maxBooking = DB::table('booking')
-                                    ->selectRaw("ifnull(max(substr(no_booking, -3)), 0) + 1 as max_booking")
-                                    ->whereRaw("substr(no_booking, 1, length(no_booking) - 3) = concat(?, ?, ?)", [$data['kode_cust'],$currentYear, $currentMonth])
-                                    ->value('max_booking');
-                                
-                                // str pad itu nambain angka 0 ke sebelah kiri (str_pad_left, defaultnya ke kanan) misal maxbookint 4 jadinya 004
-                                $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . str_pad($maxBooking, 3, '0', STR_PAD_LEFT);
+                        // create booking || sementara di offkan dulu
+                            // if(isset($detail['tgl_booking'])){
+                            //     $booking = new Booking();
+                            //     $booking->tgl_booking = date_create_from_format('d-M-Y', $detail['tgl_booking']);
+                            //     $booking->id_grup_tujuan = $detail['tujuan'];
+                            //     $booking->no_kontainer = $detail['no_kontainer'];
+                            //     $booking->id_customer = $data['customer'];
+                            //     // logic nomer booking
+                            //         //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
+                            //         //bisa juga substr(no_booking, 8,10)
+                            //         $maxBooking = DB::table('booking')
+                            //             ->selectRaw("ifnull(max(substr(no_booking, -3)), 0) + 1 as max_booking")
+                            //             ->whereRaw("substr(no_booking, 1, length(no_booking) - 3) = concat(?, ?, ?)", [$data['kode_cust'],$currentYear, $currentMonth])
+                            //             ->value('max_booking');
+                                    
+                            //         // str pad itu nambain angka 0 ke sebelah kiri (str_pad_left, defaultnya ke kanan) misal maxbookint 4 jadinya 004
+                            //         $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . str_pad($maxBooking, 3, '0', STR_PAD_LEFT);
 
-                                if (is_null($maxBooking)) {
-                                    $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . '001';
-                                }
-                            //
-                            $booking->no_booking = $newBookingNumber;
-                            $booking->id_customer = $data['customer'];
-                            $booking->created_by = $user;
-                            $booking->created_at = now();
-                            $booking->save();
+                            //         if (is_null($maxBooking)) {
+                            //             $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . '001';
+                            //         }
+                            //     //
+                            //     $booking->no_booking = $newBookingNumber;
+                            //     $booking->id_customer = $data['customer'];
+                            //     $booking->created_by = $user;
+                            //     $booking->created_at = now();
+                            //     $booking->save();
 
-                            $bookid = $booking->id;
-                        }
-
+                            //     $bookid = $booking->id;
+                            // }
+                        //
                         $JOD = new JobOrderDetail();
                         $JOD->id_jo = $newJO->id; // get id jo
-                        $JOD->id_booking = isset($detail['tgl_booking'])? $bookid:NULL ; // get id jo
+                        // $JOD->id_booking = isset($detail['tgl_booking'])? $bookid:NULL ; // get id jo
+                        $JOD->id_grup_tujuan = $detail['tujuan']; 
                         $JOD->tgl_booking = isset($detail['tgl_booking'])? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL ; // get id jo
                         $JOD->no_kontainer = $detail['no_kontainer'];
+                        $JOD->jenis = $detail['jenis']; 
                         $JOD->seal = $detail['seal'];
-                        $JOD->id_grup_tujuan = $detail['tujuan']; 
-                        $JOD->thc_tipe = $detail['thcLD'];
+                        $JOD->tipe_kontainer = $detail['tipe'];
+                        $JOD->stripping = $detail['stripping'];
                         $JOD->thc = $detail['hargaThc'];
                         $JOD->lolo = $detail['hargaLolo'];
                         $JOD->apbs = $detail['hargaApbs'];
                         $JOD->cleaning = $detail['hargaCleaning'];
                         $JOD->docfee = $detail['hargaDocFee'];
-                        $JOD->tipe_kontainer = $detail['tipe'];
-                        $JOD->status = "Waiting Payment";
+                        $JOD->status = "FINANCE PENDING";
                         $JOD->created_by = $user;
                         $JOD->created_at = now();
                         $JOD->is_aktif = 'Y';
@@ -316,56 +316,56 @@ class JobOrderController extends Controller
             if(isset($data['detail'])){
                 foreach ($data['detail'] as $key => $detail) {
                     // var_dump($detail['tgl_booking']);
-                    if($detail['id_booking'] != NULL && $detail['tgl_booking'] != NULL){
-                        $booking = Booking::where('is_aktif', 'Y')->find($detail['id_booking']);
-                        $booking->tgl_booking = $detail['tgl_booking'] != NULL? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL; // kosong dulu
-                        $booking->id_grup_tujuan = $detail['tujuan'];
-                        $booking->save();
+                        // if($detail['id_booking'] != NULL && $detail['tgl_booking'] != NULL){
+                            //     $booking = Booking::where('is_aktif', 'Y')->find($detail['id_booking']);
+                            //     $booking->tgl_booking = $detail['tgl_booking'] != NULL? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL; // kosong dulu
+                            //     $booking->id_grup_tujuan = $detail['tujuan'];
+                            //     $booking->save();
 
-                        $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($detail['id_detail']);
-                        $JOD->id_booking = $detail['id_booking']; // kosong dulu
-                        $JOD->id_grup_tujuan = $detail['tujuan'];
-                        $JOD->tgl_booking = $detail['tgl_booking'] != NULL? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL; // kosong dulu
-                        $JOD->updated_by = $user;
-                        $JOD->updated_at = now();
-                        $JOD->save();
-                    }else{
-                        $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($detail['id_detail']);
-                        if($detail['tgl_booking'] != null){
-                            $booking = new Booking();
-                            $booking->tgl_booking = date_create_from_format('d-M-Y', $detail['tgl_booking']);
-                            $booking->id_grup_tujuan = $detail['tujuan'];
-                            $booking->no_kontainer = $detail['no_kontainer'];
-                            $booking->id_customer = $data['customer'];
-                            // logic nomer booking
-                                //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
-                                //bisa juga substr(no_booking, 8,10)
-                                $maxBooking = DB::table('booking')
-                                    ->selectRaw("ifnull(max(substr(no_booking, -3)), 0) + 1 as max_booking")
-                                    ->whereRaw("substr(no_booking, 1, length(no_booking) - 3) = concat(?, ?, ?)", [$jobOrder->getKodeCustomer->kode,$currentYear, $currentMonth])
-                                    ->value('max_booking');
-                                
-                                // str pad itu nambain angka 0 ke sebelah kiri (str_pad_left, defaultnya ke kanan) misal maxbookint 4 jadinya 004
-                                $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . str_pad($maxBooking, 3, '0', STR_PAD_LEFT);
+                            //     $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($detail['id_detail']);
+                            //     $JOD->id_booking = $detail['id_booking']; // kosong dulu
+                            //     $JOD->id_grup_tujuan = $detail['tujuan'];
+                            //     $JOD->tgl_booking = $detail['tgl_booking'] != NULL? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL; // kosong dulu
+                            //     $JOD->updated_by = $user;
+                            //     $JOD->updated_at = now();
+                            //     $JOD->save();
+                            // }else{
+                            // if($detail['tgl_booking'] != null){
+                            //     $booking = new Booking();
+                            //     $booking->tgl_booking = date_create_from_format('d-M-Y', $detail['tgl_booking']);
+                            //     $booking->id_grup_tujuan = $detail['tujuan'];
+                            //     $booking->no_kontainer = $detail['no_kontainer'];
+                            //     $booking->id_customer = $data['customer'];
+                            //     // logic nomer booking
+                            //         //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
+                            //         //bisa juga substr(no_booking, 8,10)
+                            //         $maxBooking = DB::table('booking')
+                            //             ->selectRaw("ifnull(max(substr(no_booking, -3)), 0) + 1 as max_booking")
+                            //             ->whereRaw("substr(no_booking, 1, length(no_booking) - 3) = concat(?, ?, ?)", [$jobOrder->getKodeCustomer->kode,$currentYear, $currentMonth])
+                            //             ->value('max_booking');
+                                    
+                            //         // str pad itu nambain angka 0 ke sebelah kiri (str_pad_left, defaultnya ke kanan) misal maxbookint 4 jadinya 004
+                            //         $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . str_pad($maxBooking, 3, '0', STR_PAD_LEFT);
 
-                                if (is_null($maxBooking)) {
-                                    $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . '001';
-                                }
-                            //
-                            $booking->no_booking = $newBookingNumber;
-                            $booking->id_customer = $data['customer'];
-                            $booking->created_by = $user;
-                            $booking->created_at = now();
-                            $booking->save();
+                            //         if (is_null($maxBooking)) {
+                            //             $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . '001';
+                            //         }
+                            //     //
+                            //     $booking->no_booking = $newBookingNumber;
+                            //     $booking->id_customer = $data['customer'];
+                            //     $booking->created_by = $user;
+                            //     $booking->created_at = now();
+                            //     $booking->save();
 
-                            $JOD->id_booking = $booking->id; // kosong dulu
-                        }
-                        $JOD->id_grup_tujuan = $detail['tujuan'];
-                        $JOD->tgl_booking = $detail['tgl_booking'] != NULL? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL; // kosong dulu
-                        $JOD->updated_by = $user;
-                        $JOD->updated_at = now();
-                        $JOD->save();
-                    }
+                            //     $JOD->id_booking = $booking->id; // kosong dulu
+                        // }
+                    $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($detail['id_detail']);
+
+                    $JOD->id_grup_tujuan = $detail['tujuan'];
+                    $JOD->tgl_booking = $detail['tgl_booking'] != NULL? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL; // kosong dulu
+                    $JOD->updated_by = $user;
+                    $JOD->updated_at = now();
+                    $JOD->save();
 
                 }
                 // die;
@@ -400,7 +400,7 @@ class JobOrderController extends Controller
         //
     }
 
-     public function printJO(JobOrder $JobOrder)
+    public function printJO(JobOrder $JobOrder)
     {
         //
         $dataSupplier = DB::table('supplier')
@@ -453,5 +453,11 @@ class JobOrderController extends Controller
         //     'dataJoDetail'=>$dataJoDetail
 
         // ]);
+    }
+
+    public function unloading_plan(){
+        // die('xx');
+        return view('pages.order.job_order.unloading_plan');
+        // return view('job_order.unloading_plan');
     }
 }

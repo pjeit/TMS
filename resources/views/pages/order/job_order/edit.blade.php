@@ -114,21 +114,23 @@
                         <div class="card-header"> -->
                         <!-- </div> -->
                         <!-- <div class="card-body"> -->
-                            <table class="table" id="sortable">
+                            <table class="table" id="sortable" style="style="overflow-y: scroll;"">
                                 <thead>
                                     <tr>
                                         <th width="350">No. Kontainer</th>
                                         <th width="280">Seal</th>
                                         <th width="150">Tipe</th>
                                         <th width="150">Stripping</th>
+                                        <th width="150">Jenis</th>
                                         <th width="350">Tujuan</th>
-                                        <th width="250">Tgl Booking</th>
+                                        <th width="300">Tgl Booking</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tb"> 
                                     @if ($data['detail'])
                                         @foreach (json_decode($data['detail']) as $key => $item)
-                                            <tr id="row{{$key}}">
+                                            <tr id="row{{$key}}" >
+
                                                 <td>
                                                     <input type="text" id="no_kontainer" name="detail[{{$key}}][no_kontainer]"class="form-control no_kontainerx" maxlength="20" value="{{$item->no_kontainer}}" readonly>
                                                 </td>
@@ -152,14 +154,22 @@
                                                 <td>
                                                     <div class="form-group mb-0">
                                                         <div class="icheck-primary">
-                                                            <input id="thcLuar{{$key}}" dataId="{{$key}}" class="thcc" type="radio" name="detail[{{$key}}][thcLD]" value="luar" <?=  $item->thc_tipe == 'luar'? 'checked':''; ?> readonly disabled>
+                                                            <input id="thcLuar{{$key}}" dataId="{{$key}}" class="thcc" type="radio" name="detail[{{$key}}][stripping]" value="luar" <?=  $item->stripping== 'luar'? 'checked':''; ?> readonly disabled>
                                                             <label class="form-check-label" for="thcLuar{{$key}}"><span class="opacit">Luar</span></label>
                                                         </div>
                                                         <div class="icheck-primary mt-3">
-                                                            <input id="thcDalam{{$key}}" dataId="{{$key}}" class="thcc" type="radio" name="detail[{{$key}}][thcLD]" value="dalam" <?=  $item->thc_tipe == 'dalam'? 'checked':''; ?> readonly disabled>
+                                                            <input id="thcDalam{{$key}}" dataId="{{$key}}" class="thcc" type="radio" name="detail[{{$key}}][stripping]" value="dalam" <?=  $item->stripping== 'dalam'? 'checked':''; ?> readonly disabled>
                                                             <label class="form-check-label" for="thcDalam{{$key}}"><span class="opacit">Dalam</span></label><br>
                                                         </div>
                                                     </div>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control selectpicker jenis" name="detail[{{$key}}][jenis]" id="tipe{{$key}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" readonly disabled>
+                                                        <option value="">--Jenis--</option>
+                                                        <option value="TTL" <?= $item->jenis == 'TTL' ? 'selected':''; ?> >TTL</option>
+                                                        <option value="TPS" <?= $item->jenis == 'TPS' ? 'selected':''; ?> >TPS</option>
+                                                        <option value="DEPO" <?= $item->jenis == 'DEPO' ? 'selected':''; ?> >DEPO</option>
+                                                    </select>
                                                 </td>
                                                 <td>
                                                     <select class="form-control selectpicker tujuanC" name="detail[{{$key}}][tujuan]" id="tujuan{{$key}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
@@ -536,11 +546,11 @@
                             <td>
                                 <div class="form-group mb-0">
                                     <div class="icheck-primary">
-                                        <input id="thcLuar${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][thcLD]" value="luar" checked>
+                                        <input id="thcLuar${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][stripping]" value="luar" checked>
                                         <label class="form-check-label" for="thcLuar${i}">Luar</label>
                                     </div>
                                     <div class="icheck-primary mt-3">
-                                        <input id="thcDalam${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][thcLD]" value="dalam" >
+                                        <input id="thcDalam${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][stripping]" value="dalam" >
                                         <label class="form-check-label" for="thcDalam${i}">Dalam</label><br>
                                     </div>
                                 </div>
@@ -673,13 +683,13 @@
 
                 var parentTd = $(this).closest('td');
                 if(selectedValue == '20'){
-                    var thcldVal = $("input[name='detail[" + id + "][thcLD]']:checked").val();
-                    parentTd.find('.hargaThc').val(thcldVal == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
-                    parentTd.find('.hargaLolo').val(thcldVal == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
+                    var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
+                    parentTd.find('.hargaThc').val(strippingVal == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
+                    parentTd.find('.hargaLolo').val(strippingVal == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
                 }else{
-                    var thcldVal = $("input[name='detail[" + id + "][thcLD]']:checked").val();
-                    parentTd.find('.hargaThc').val(thcldVal == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
-                    parentTd.find('.hargaLolo').val(thcldVal == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
+                    var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
+                    parentTd.find('.hargaThc').val(strippingVal == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
+                    parentTd.find('.hargaLolo').val(strippingVal == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
                 }
 
                 parentTd.find('.hargaApbs').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
@@ -694,7 +704,7 @@
             });
 
             $( document ).on( 'change', '.thcc', function (event) {
-                // var selectedValue = $("input[name='detail[" + i + "][thcLD]']:checked").val();
+                // var selectedValue = $("input[name='detail[" + i + "][stripping]']:checked").val();
                 var selectedId = $(this).attr('id');
                 // console.log('Selected ID:', selectedId);
 

@@ -179,11 +179,7 @@
                             </div>
                             
                             <div class="form-group class='col-lg-6 col-md-6 col-12'">
-                                {{-- <label for="select_jenis_tujuan">Jenis Tujuan <span style="color:red;">*</span></label>
-                                <select name="select_jenis_tujuan[]" class="select2" style="width: 100%" id="select_jenis_tujuan" required>
-                                    <option value=""></option>
-                                    <option value=""></option>
-                                </select> --}}
+                             
                                 <label for="tipe">Tipe</label>
                                 <br>
                                 <div class="icheck-primary d-inline">
@@ -236,7 +232,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group col-lg-6 col-md-6 col-12">
+                            <div class="form-group col-lg-4 col-md-4 col-12">
                                 <label for="uang_jalan">Uang Jalan Driver</label>
                                 <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -245,7 +241,7 @@
                                 <input type="text" name="uang_jalan" class="form-control numaja uang" id="uang_jalan" placeholder="" readonly> 
                                 </div>
                             </div>
-                            <div class="form-group col-lg-6 col-md-6 col-12">
+                            <div class="form-group col-lg-4 col-md-4 col-12">
                                 <label for="komisi">Komisi</label>
                                 <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -253,6 +249,15 @@
                                 </div>
                                 <input type="text" name="komisi" class="form-control numaja uang" id="komisi" placeholder=""> 
                                 </div>
+                            </div>
+                            <div class="form-group col-lg-4 col-md-4 col-12">
+                                <label for="">Cargo</label>
+                                <select class="form-control select2" id='cargo' name="cargo" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <option value="">—— Pilih Kargo ——</option>
+                                    {{-- @foreach ($dataCustomer as $cust)
+                                        <option value="{{$cust->id}}" <?= $data['JO']->id_customer == $cust->id ? 'selected':''; ?> >{{ $cust->nama }}</option>
+                                    @endforeach --}}
+                                </select>
                             </div>
                     </div>
                     <div class='row'>

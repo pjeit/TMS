@@ -152,6 +152,7 @@
                                         <th width="280">Seal</th>
                                         <th width="150">Tipe</th>
                                         <th width="150">Stripping</th>
+                                        <th width="150">Jenis</th>
                                         <th width="350">Tujuan</th>
                                         <th width="200">Tgl Booking</th>
                                         <th width="20" class="text-center">Aksi</th>
@@ -531,7 +532,7 @@
                             </td>
                             <td>
                                 <select class="form-control selectpicker tipeKontainer" name="detail[${i}][tipe]" id="tipe${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value="">--Pilih Tipe--</option>
+                                    <option value="">--Tipe--</option>
                                     <option value="20">20Ft</option>
                                     <option value="40">40Ft</option>
                                 </select>
@@ -541,17 +542,26 @@
                                 <input type="hidden" readonly class="hargaCleaning " hargaCleaning_${i} name="detail[${i}][hargaCleaning]" value="">
                                 <input type="hidden" readonly class="hargaDocFee " hargaDocFee_${i} name="detail[${i}][hargaDocFee]" value="">
                             </td>
+                        
                             <td>
                                 <div class="form-group mb-0">
                                     <div class="icheck-primary">
-                                        <input id="thcLuar${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][thcLD]" value="luar" checked>
+                                        <input id="thcLuar${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][stripping]" value="luar" checked>
                                         <label class="form-check-label" for="thcLuar${i}">Luar</label>
                                     </div>
                                     <div class="icheck-primary mt-3">
-                                        <input id="thcDalam${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][thcLD]" value="dalam" >
+                                        <input id="thcDalam${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][stripping]" value="dalam" >
                                         <label class="form-check-label" for="thcDalam${i}">Dalam</label><br>
                                     </div>
                                 </div>
+                            </td>
+                            <td>
+                                <select class="form-control selectpicker jenisPelayaran" name="detail[${i}][jenis]" id="jenis${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <option value="">--Jenis--</option>
+                                    <option value="TTL">TTL</option>
+                                    <option value="TPS">TPS</option>
+                                    <option value="DEPO">DEPO</option>
+                                </select>
                             </td>
                             <td>
                                 <select class="form-control selectpicker tujuanC" name="detail[${i}][tujuan]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
@@ -674,13 +684,13 @@
 
                 var parentTd = $(this).closest('td');
                 if(selectedValue == '20'){
-                    var thcldVal = $("input[name='detail[" + id + "][thcLD]']:checked").val();
-                    parentTd.find('.hargaThc').val(thcldVal == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
-                    parentTd.find('.hargaLolo').val(thcldVal == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
+                    var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
+                    parentTd.find('.hargaThc').val(strippingVal == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
+                    parentTd.find('.hargaLolo').val(strippingVal == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
                 }else{
-                    var thcldVal = $("input[name='detail[" + id + "][thcLD]']:checked").val();
-                    parentTd.find('.hargaThc').val(thcldVal == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
-                    parentTd.find('.hargaLolo').val(thcldVal == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
+                    var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
+                    parentTd.find('.hargaThc').val(strippingVal == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
+                    parentTd.find('.hargaLolo').val(strippingVal == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
                 }
 
                 parentTd.find('.hargaApbs').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
@@ -695,7 +705,7 @@
             });
 
             $( document ).on( 'change', '.thcc', function (event) {
-                // var selectedValue = $("input[name='detail[" + i + "][thcLD]']:checked").val();
+                // var selectedValue = $("input[name='detail[" + i + "][stripping]']:checked").val();
                 var selectedId = $(this).attr('id');
                 // console.log('Selected ID:', selectedId);
 

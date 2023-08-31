@@ -19,7 +19,7 @@
                     </a> 
                 </div> --}}
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="datatable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                               <th>Grup</th>
@@ -70,8 +70,6 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $data->links('pagination::bootstrap-4') }}
-                   
                 </div>
             </div>
         </div>
@@ -79,7 +77,14 @@
 
     
 </div>
-
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#datatable').dataTable({
+            // responsive: true,
+            // scrollX: true
+        });
+    } );
+</script>
 <script>
     var sessionMessage = "{{ session()->has('message') ? session('message') : '' }}";
     if (sessionMessage !== '') {

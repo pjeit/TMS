@@ -24,13 +24,9 @@ class LaporanKasController extends Controller
         ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
         ->where('job_order.is_aktif', '=', 'Y') 
         ->where('job_order.status', 'like', 'FINANCE PENDING') 
-
-        ->paginate(5);
+        ->get();
 
         // dd($data);
-        
-
-
         //  $data = JobOrder::where('is_aktif', 'Y')->paginate(5);
 
         return view('pages.laporan.Kas.index',[

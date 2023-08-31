@@ -24,7 +24,7 @@ class GrupTujuanController extends Controller
      */
     public function index()
     {
-        $data = Grup::where('is_aktif', 'Y')->paginate(5);
+        $data = Grup::where('is_aktif', 'Y')->get();
         // ->get();
 
         return view('pages.master.grup_tujuan.index',[
@@ -277,45 +277,45 @@ class GrupTujuanController extends Controller
         //
     }
 
-    public function printDetail($grup)
-    {
-        //
-        die($grup);
-        $dataSupplier = DB::table('grup_tujuan')
-            ->select('*')
-            ->where('supplier.is_aktif', '=', "Y")
-            ->where('supplier.id', '=', $JobOrder->id_supplier)
-            ->get();
+    // public function printDetail($grup)
+    // {
+    //     //
+    //     die($grup);
+    //     $dataSupplier = DB::table('grup_tujuan')
+    //         ->select('*')
+    //         ->where('supplier.is_aktif', '=', "Y")
+    //         ->where('supplier.id', '=', $JobOrder->id_supplier)
+    //         ->get();
      
-        // dd($dataJoDetail);   
-        $pdf = PDF::loadView('pages.order.job_order.print',[
-            'judul'=>"Job Order",
-            'JobOrder'=>$JobOrder,
-            'dataSupplier'=>$dataSupplier,
-            'dataCustomer'=>$dataCustomer,
-            'dataJoDetail'=>$dataJoDetail,
-            'dataJaminan'=>$dataJaminan,
-        ]); 
-        // dd($JobOrder);
-        $pdf->setPaper('A5', 'portrait');
-        // Customize the PDF generation process if needed
-        $pdf->setOptions([
-            'isHtml5ParserEnabled' => true, // Enable HTML5 parser
-            'isPhpEnabled' => true, // Enable inline PHP execution
-            'defaultFont' => 'sans-serif'
-        ]);
-        // langsung download
-        // return $pdf->download('fileCoba.pdf'); 
-        // preview dulu
-        return $pdf->stream('fileCoba.pdf'); 
+    //     // dd($dataJoDetail);   
+    //     $pdf = PDF::loadView('pages.order.job_order.print',[
+    //         'judul'=>"Job Order",
+    //         'JobOrder'=>$JobOrder,
+    //         'dataSupplier'=>$dataSupplier,
+    //         'dataCustomer'=>$dataCustomer,
+    //         'dataJoDetail'=>$dataJoDetail,
+    //         'dataJaminan'=>$dataJaminan,
+    //     ]); 
+    //     // dd($JobOrder);
+    //     $pdf->setPaper('A5', 'portrait');
+    //     // Customize the PDF generation process if needed
+    //     $pdf->setOptions([
+    //         'isHtml5ParserEnabled' => true, // Enable HTML5 parser
+    //         'isPhpEnabled' => true, // Enable inline PHP execution
+    //         'defaultFont' => 'sans-serif'
+    //     ]);
+    //     // langsung download
+    //     // return $pdf->download('fileCoba.pdf'); 
+    //     // preview dulu
+    //     return $pdf->stream('fileCoba.pdf'); 
 
-        //  return view('pages.order.job_order.print',[
-        //     'judul'=>"Job Order",
-        //     'JobOrder'=>$JobOrder,
-        //     'dataSupplier'=>$dataSupplier,
-        //     'dataCustomer'=>$dataCustomer,
-        //     'dataJoDetail'=>$dataJoDetail
+    //     //  return view('pages.order.job_order.print',[
+    //     //     'judul'=>"Job Order",
+    //     //     'JobOrder'=>$JobOrder,
+    //     //     'dataSupplier'=>$dataSupplier,
+    //     //     'dataCustomer'=>$dataCustomer,
+    //     //     'dataJoDetail'=>$dataJoDetail
 
-        // ]);
-    }
+    //     // ]);
+    // }
 }

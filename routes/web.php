@@ -57,6 +57,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('booking', 'App\Http\Controllers\BookingController');
 
         Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO']);
+        // Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
+        Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');
+
+        // Route::get('/unloading_plan', 'JobOrderController@unloading_plan')->name('unloading_plan');
         Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
 
         Route::resource('pembayaran_jo', 'App\Http\Controllers\PaymentJobController');

@@ -346,6 +346,16 @@
             </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="{{route('job_order.unloading_plan')}}" class="nav-link {{request()->url() === route('job_order.unloading_plan')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Unloading Plan
+                  </p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
                 <a href="{{route('booking.index')}}" class="nav-link {{request()->url() === route('booking.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="far fa-bookmark nav-icon" style="font-size: 15px;"></i>
                   <p>
