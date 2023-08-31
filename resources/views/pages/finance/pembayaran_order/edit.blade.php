@@ -47,24 +47,24 @@
                                         <div class="form-group">
                                             <label for="">Pengirim<span class="text-red">*</span></label>
                                                 <select class="form-control selectpicker"  id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
-                                                <option value="0">PT. Pasifik Global Makmur</option>
-                                                {{-- @foreach ($dataCustomer as $cust)
-                                                    <option value="{{$cust->id}}">{{ $cust->nama }}</option>
-                                                @endforeach --}}
+                                                {{-- <option value="0">PT. Pasifik Global Makmur</option> --}}
+                                                @foreach ($dataCustomer as $cust)
+                                                    <option value="{{$cust->id}}" {{$cust->id == $pembayaran_jo->id_customer?'checked':''}}>{{ $cust->nama }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                         <div class="form-group ">
                                             <label for="">Pelayaran</label>
                                             <select class="form-control selectpicker"  id='pembayaran' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
-                                                <option value="0">PT. TANTO INTI LINE</option>
-                                                {{-- @foreach ($dataSupplier as $sup)
-                                                    <option value="{{$sup->id}}">{{ $sup->nama }}</option>
-                                                @endforeach --}}
+                                                {{-- <option value="0">PT. TANTO INTI LINE</option> --}}
+                                                @foreach ($dataSupplier as $sup)
+                                                    <option value="{{$sup->id}}" {{$sup->id == $pembayaran_jo->id_supplier?'checked':''}}>{{ $sup->nama }}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                         <div class="form-group ">
                                             <label for="">No. BL<span class="text-red">*</span></label>
-                                            <input required type="text" name="nama_pic" class="form-control" value="{{old('nama_pic','23450023929BL')}}" readonly>
+                                            <input required type="text" name="nama_pic" class="form-control" value="{{$pembayaran_jo->no_bl}}" readonly>
                                         </div>  
                                 </div>
                                 <div class="col-6"> 
@@ -74,16 +74,16 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                             </div>
-                                            <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{old('tgl_sandar','20-aug-2023')}}" disabled>     
+                                            <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{\Carbon\Carbon::parse($pembayaran_jo->tgl_sandar)->format('d-M-Y')}}" disabled>     
                                         </div>
                                     </div>  
                                     <div class="form-group">
                                         <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                        <input required type="text" name="pelabuhan_muat" class="form-control" value="{{old('pelabuhan_muat','Medan')}}" readonly>
+                                        <input required type="text" name="pelabuhan_muat" class="form-control" value="{{$pembayaran_jo->pelabuhan_muat}}" readonly>
                                     </div> 
                                     <div class="form-group">
                                         <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                        <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{old('pelauhan_bongkar','SBY')}}" readonly>
+                                        <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{$pembayaran_jo->pelabuhan_bongkar}}" readonly>
                                     </div>  
                                 </div>
                             </div>

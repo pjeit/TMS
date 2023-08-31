@@ -63,22 +63,6 @@
                         </div>
                     </div> 
                     <div class="row">
-                    
-                        <div class="form-group col-sm-12 col-md-3 col-lg-3">
-                            <label for="">No. Mesin</label>
-                            <input required type="text" maxlength="20" name="no_mesin" class="form-control" value="{{old('no_mesin','')}}" >
-                        </div>    
-                        <div class="form-group col-sm-12 col-md-3 col-lg-3">
-                            <label for="">No. Rangka</label>
-                            <input required type="text" maxlength="20" name="no_rangka" class="form-control" value="{{old('no_rangka','')}}" >
-                        </div>           
-                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                            <label for="">Merk & Model</label>
-                            <input required type="text" name="merk_model" class="form-control" value="{{old('merk_model','')}}" >
-                        </div>    
-                    </div>
-                         
-                    <div class="row">
                         <div class="form-group col-sm-12 col-md-4 col-lg-4">
                             <label for="">Tahun Pembuatan</label>
                             <input required type="text" name="tahun_pembuatan" maxlength="4" class="form-control" value="{{old('tahun_pembuatan','')}}" >
@@ -97,6 +81,23 @@
                             </select>
                         </div>        
                     </div>
+                    <div class="row">
+                    
+                        <div class="form-group col-sm-12 col-md-5 col-lg-5">
+                            <label for="">No. Mesin</label>
+                            <input required type="text" maxlength="20" name="no_mesin" class="form-control" value="{{old('no_mesin','')}}" >
+                        </div>    
+                        <div class="form-group col-sm-12 col-md-5 col-lg-5">
+                            <label for="">No. Rangka</label>
+                            <input required type="text" maxlength="20" name="no_rangka" class="form-control" value="{{old('no_rangka','')}}" >
+                        </div>           
+                        <div class="form-group col-sm-12 col-md-2 col-lg-2">
+                            <label for="">Merk & Model</label>
+                            <input required type="text" name="merk_model" class="form-control" value="{{old('merk_model','')}}" >
+                        </div>    
+                    </div>
+                         
+                    
                 
 
                 </div>
