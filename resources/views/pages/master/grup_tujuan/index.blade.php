@@ -37,6 +37,7 @@
                                     <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus_{{$item->id}}">
                                         <i class="fas fa-trash"></i> Hapus
                                     </button>          
+                                    <a href="/grup_tujuan/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank" class="btn btn-outline-dark btn-default radiusSendiri"><i class="fas fa-print"></i> Print</a>
                                     
                                 </td>
                                  <!-- Modal -->

@@ -80,9 +80,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('grup', 'App\Http\Controllers\GrupController');
 
         Route::get('grup_tujuan/getMarketing/{groupId}', [App\Http\Controllers\GrupTujuanController::class, 'getMarketing']);
-
+        Route::get('/grup_tujuan/printJob/{grup}', [App\Http\Controllers\GrupTujuanController::class, 'printDetail']);
         Route::resource('grup_tujuan', 'App\Http\Controllers\GrupTujuanController');
-        Route::resource('grup_tujuans', 'App\Http\Controllers\GrupTujuansController');
+        // Route::resource('grup_tujuans', 'App\Http\Controllers\GrupTujuansController');
     
         Route::resource('customer', 'App\Http\Controllers\CustomerController');
         
