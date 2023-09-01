@@ -19,7 +19,7 @@ class Jaminan extends Model
         'tgl_kembali',
         'nominal_kembali',
         'alasan',
-        
+        'status',
         'created_at',
         'created_by',
         'updated_at',

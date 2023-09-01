@@ -92,23 +92,29 @@ class JobOrderController extends Controller
                 ->select('kode')
                 ->where('id', $data['customer'])
                 ->first();
+            $now = now()->format('ym');
+            $t_kode = $kode->kode;
 
-            //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
-            //bisa juga substr(no_booking, 8,10)
-            $maxBooking = DB::table('job_order')
-                ->selectRaw("ifnull(max(substr(no_jo, -3)), 0) + 1 as max_jo")
-                ->whereRaw("substr(no_jo, 1, length(no_jo) - 3) = concat(?, ?, ?)", [$kode->kode,$currentYear, $currentMonth])
-                ->value('max_booking');
+            // "PJE/3DW/2309001"
+            //8 PJE/3DW/
+            //7 2309001
+            //length 15
+            // SELECT ifnull(max(substr(job_order.no_jo, -1)), 0) + 1 AS t_no_jo
+            // FROM job_order
+            // WHERE SUBSTRING(job_order.no_jo, 1, 12) = CONCAT('PJE/', 'CBA/' ,DATE_FORMAT(NOW(), '%y%m'));
+            $max_jo = DB::table('job_order')
+                ->selectRaw("ifnull(max(substr(no_jo, -3)), 0) + 1 AS t_no_jo")
+                ->whereRaw("SUBSTRING(no_jo, 1, 12) = CONCAT('PJE/', '$t_kode/','$now')")
+                ->value('t_no_jo');
 
-            if (is_null($maxBooking)) {
-                $newBookingNumber = 'PJE/'. $kode->kode . '/' . $currentYear . $currentMonth . '001';
-            }else{
-                // str pad itu nambain angka 0 ke sebelah kiri (str_pad_left, defaultnya ke kanan) misal maxbookint 4 jadinya 004
-                $newBookingNumber = 'PJE/'. $kode->kode . '/' . $currentYear . $currentMonth . str_pad($maxBooking, 3, '0', STR_PAD_LEFT);
+            if (is_null($max_jo) || empty($max_jo)) {
+                $no_jo = "PJE/$t_kode/" . $now . '001';
             }
-
+            //strpad itu nambah 00 yang awalnya cuman 4 jd 004
+            $no_jo = 'PJE/'. $kode->kode . '/' . $now . str_pad($max_jo, 3, '0', STR_PAD_LEFT);
+            // dd($no_jo);
             $newJO = new JobOrder();
-            $newJO->no_jo = $newBookingNumber;
+            $newJO->no_jo = $no_jo;
             $newJO->id_customer = $data['customer'];
             $newJO->id_supplier = $data['supplier'];
             $newJO->pelabuhan_muat = $data['pelabuhan_muat'];
@@ -129,7 +135,7 @@ class JobOrderController extends Controller
                 $newJO->total_cleaning = $data['total_cleaning'];
             }
             if(isset($data['doc_fee_cekbox'])){
-                $newJO->total_docfee = $data['total_doc_fee'];
+                $newJO->doc_fee = $data['total_doc_fee'];
             }
             $newJO->total_biaya_sebelum_dooring = $data['total_sblm_dooring'];
             $newJO->status = 'FINANCE PENDING';
@@ -191,11 +197,11 @@ class JobOrderController extends Controller
                         $JOD->seal = $detail['seal'];
                         $JOD->tipe_kontainer = $detail['tipe'];
                         $JOD->stripping = $detail['stripping'];
-                        $JOD->thc = $detail['hargaThc'];
-                        $JOD->lolo = $detail['hargaLolo'];
-                        $JOD->apbs = $detail['hargaApbs'];
-                        $JOD->cleaning = $detail['hargaCleaning'];
-                        $JOD->docfee = $detail['hargaDocFee'];
+                        $JOD->thc =  isset($data['thc_cekbox'])?$detail['hargaThc']:0;
+                        $JOD->lolo = isset($data['lolo_cekbox'])?$detail['hargaLolo']:0;
+                        $JOD->apbs = isset($data['apbs_cekbox'])?$detail['hargaApbs']:0;
+                        $JOD->cleaning = isset($data['cleaning_cekbox'])?$detail['hargaCleaning']:0;
+                        // $JOD->docfee = isset($data['doc_fee_cekbox'])?$detail['hargaDocFee']:0;
                         $JOD->status = "FINANCE PENDING";
                         $JOD->created_by = $user;
                         $JOD->created_at = now();
@@ -223,6 +229,8 @@ class JobOrderController extends Controller
                     $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
                     $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
                     $jaminan->catatan = $data['catatan'];
+                     // 'MENUNGGU PEMBAYARAN','DIBAYARKAN','KEMBALI'
+                    $jaminan->status = 'MENUNGGU PEMBAYARAN';
                     $jaminan->created_by = $user;
                     $jaminan->created_at = now();
                     $jaminan->is_aktif = 'Y';

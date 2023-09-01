@@ -124,6 +124,15 @@
                                                         <input type="hidden" name="data[tujuan][{{$key}}][grup_hidden]" id="grup_hidden_{{$key}}" value="{{$item->grup_id}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][marketing_hidden]" id="marketing_hidden_{{$key}}" value="{{$item->marketing_id}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][obj_biaya]" id="obj_biaya{{$key}}" value="{{$item->detail_uang_jalan}}">
+                                                        {{-- timoth tambah --}}
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][seal_hidden]" id="seal_pje_hidden_{{$key}}" value="{{$item->seal_pje?number_format($item->seal_pje):''}}"placeholder="">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][tally_hidden]" id="tally_hidden_{{$key}}" value="{{$item->tally?number_format($item->tally):''}}"placeholder="">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][plastik_hidden]" id="plastik_hidden_{{$key}}" value="{{$item->plastik?number_format($item->plastik):''}}"placeholder="">
+                                                        {{-- <td style="padding: 5px; text-align: center; vertical-align: middle;"> --}}
+                                                            <input type="hidden" name="data[tujuan][{{$key}}][kargo_hidden]" id="kargo_hidden_{{$key}}" value="{{$item->kargo}}">
+                                                        {{-- </td>  --}}
+
+
                                                         <td><button type="button" name="remove" id="{{$key}}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr> 
                                                     </tr>
                                                 @endforeach
@@ -251,13 +260,55 @@
                                 </div>
                             </div>
                             <div class="form-group col-lg-4 col-md-4 col-12">
-                                <label for="">Cargo</label>
-                                <select class="form-control select2" id='cargo' name="cargo" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <label for="">Kargo</label>
+                                <select class="form-control select2" id='kargo_pje' name="kargo_pje" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                     <option value="">—— Pilih Kargo ——</option>
-                                    {{-- @foreach ($dataCustomer as $cust)
-                                        <option value="{{$cust->id}}" <?= $data['JO']->id_customer == $cust->id ? 'selected':''; ?> >{{ $cust->nama }}</option>
-                                    @endforeach --}}
+                                    @foreach ($dataKargo as $kargo)
+                                        <option value="{{$kargo->id}}"  >{{ $kargo->nama }}</option>
+                                    @endforeach
                                 </select>
+                            </div>
+                          
+                             <div class="form-group col-lg-4 col-md-4 col-12">
+                                <label for="komisi">Seal PJE</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp.</span>
+                                    </div>
+                                    <input type="text" name="seal_pje" class="form-control numaja uang" id="seal_pje" placeholder="" readonly> 
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><input type="checkbox" id="check_is_seal_pje" name="is_seal_pje"></span>
+                                    </div>
+                                </div>
+                            </div>
+                              
+      
+                            <div class="form-group col-lg-4 col-md-4 col-12">
+                                <label for="komisi">Tally</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp.</span>
+                                    </div>
+                                    <input type="text" name="tally_pje" class="form-control numaja uang" id="tally_pje" placeholder="" readonly> 
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><input type="checkbox" id="check_is_tally" name="is_tally"></span>
+                                    </div>
+                                    
+
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4 col-md-4 col-12">
+                                <label for="komisi">Plastik</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp.</span>
+                                    </div>
+                                    <input type="text" name="plastik_pje" class="form-control numaja uang" id="plastik_pje" placeholder="" readonly> 
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><input type="checkbox" id="check_is_plastik" name="is_plastik"></span>
+                                    </div>
+
+                                </div>
                             </div>
                     </div>
                     <div class='row'>
@@ -390,6 +441,42 @@
 
 <script>
     $(document).ready(function(){
+            // <input value="${$('#tally_pje').val()}" type="hidden" name="data[tujuan][${i}][tally_hidden]" id="tally_hidden_${i}" placeholder="">
+            // <input value="${$('#plastik_pje').val()}" type="hidden" name="data[tujuan][${i}][plastik_hidden]" id="plastik_hidden_${i}" placeholder="">
+            // <input value="${$('#kargo_pje').val()}" type="hidden" name="data[tujuan][${i}][kargo_hidden]" id="kargo_hidden_${i}" >
+          $('#check_is_seal_pje').click(function(){
+            if($(this).is(":checked")){
+                $('#seal_pje').attr('readonly',false);
+               
+                // console.log("Checkbox is checked.");
+            }else if($(this).is(":not(:checked)")){
+                $('#seal_pje').val('');
+                $('#seal_pje').attr('readonly',true);
+                // console.log("Checkbox is unchecked.");
+            }
+        });
+        
+
+          $('#check_is_tally').click(function(){
+            if($(this).is(":checked")){
+                $('#tally_pje').attr('readonly',false);
+                // console.log("Checkbox is checked.");
+            }else if($(this).is(":not(:checked)")){
+                $('#tally_pje').val('');
+                $('#tally_pje').attr('readonly',true);
+                // console.log("Checkbox is unchecked.");
+            }
+        });
+          $('#check_is_plastik').click(function(){
+            if($(this).is(":checked")){
+                $('#plastik_pje').attr('readonly',false);
+                // console.log("Checkbox is checked.");
+            }else if($(this).is(":not(:checked)")){
+                $('#plastik_pje').val('');
+                $('#plastik_pje').attr('readonly',true);
+                // console.log("Checkbox is unchecked.");
+            }
+        });
         // deklarasi golbal id yg didelete
         var deleted_tujuan = [];
         var deleted_biaya = [];
@@ -417,6 +504,7 @@
         }
         var length;
     
+        //===============gadipake====================
         $("#addOld").click(function(){
             i++;
             var newRow = `
@@ -458,6 +546,8 @@
 
             $('.select2').select2();
         });
+        //===============end gadipake====================
+
 
         $("#add_biaya").click(function(){
             var get_id_biaya = $(`#id_tujuan_${i}`).val();     
@@ -685,7 +775,31 @@
             if($('#min_muatan_hidden_'+key).val() != ''){
                 $('#min_muatan').val($('#min_muatan_hidden_'+key).val());
             }
-            
+            if($('#seal_pje_hidden_'+key).val() != ''){
+                $('#seal_pje').val($('#seal_pje_hidden_'+key).val());
+                $('#check_is_seal_pje').prop('checked',true);
+                $('#seal_pje').attr('readonly',false);
+          
+            }
+
+            if($('#tally_hidden_'+key).val() != ''){
+                $('#tally_pje').val($('#tally_hidden_'+key).val());
+                $('#check_is_tally').prop('checked',true);
+                $('#tally_pje').attr('readonly',false);
+            }
+            if($('#plastik_hidden_'+key).val() != ''){
+                $('#plastik_pje').val($('#plastik_hidden_'+key).val());
+                $('#check_is_plastik').prop('checked',true);
+                $('#plastik_pje').attr('readonly',false);
+                
+            }
+            if($('#kargo_hidden_'+key).val() != ''){
+                
+                // $('#kargo_pje').val($('#kargo_hidden_'+key).val());
+                $('#kargo_pje').val($('#kargo_hidden_'+key).val()).trigger('change');
+
+            }
+          
             // cek apakah ada isi detail biaya
             var cekBiaya = $('#obj_biaya'+key).val();
             if (cekBiaya) {
@@ -725,6 +839,7 @@
             var key=$('#key').val().trim();
             var namTuj = $('#nama_tujuan').val();
             var mrkId = $('#marketing').val();
+
             // console.log('namTuj '+namTuj+' mrkId '+mrkId);
             if(namTuj == '' || mrkId  == '' || mrkId == null){
                 event.preventDefault(); // Prevent form submission
@@ -761,6 +876,7 @@
                             return false;
                         }
                     }
+                     var kargoID = $('#kargo_pje').val();
 
                     // simpan ke tampilan depan
                     $('#tarif_'+key).val($('#tarif').val());
@@ -774,6 +890,10 @@
                     $('#min_muatan_hidden_'+key).val($('#min_muatan').val());
                     $('#grup_hidden_'+key).val($('#grup').val());
                     $('#marketing_hidden_'+key).val($('#marketing').val());
+                    $('#seal_pje_hidden_'+key).val($('#seal_pje').val());
+                    $('#tally_hidden_'+key).val($('#tally_pje').val());
+                    $('#plastik_hidden_'+key).val($('#plastik_pje').val());
+                    $('#kargo_hidden_'+key).val($('#kargo_pje').val());
                     $('#deleted_biaya').val($('#deleted_biaya_temp').val());
 
                     // cek apakah ada detail biaya didalam modal
@@ -899,6 +1019,10 @@
                             <input value="${$('#min_muatan').val()}" name="data[tujuan][${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}" type="hidden" >
                             <input value="${$('#grup').val()}" name="data[tujuan][${i}][grup_hidden]" id="grup_hidden_${i}" type="hidden"  placeholder="">
                             <input value="${$('#marketing').val()}" name="data[tujuan][${i}][marketing_hidden]" id="marketing_hidden_${i}" type="hidden" placeholder="">
+                            <input value="${$('#seal_pje').val()}" type="hidden" name="data[tujuan][${i}][seal_hidden]" id="seal_pje_hidden_${i}" placeholder="">
+                            <input value="${$('#tally_pje').val()}" type="hidden" name="data[tujuan][${i}][tally_hidden]" id="tally_hidden_${i}" placeholder="">
+                            <input value="${$('#plastik_pje').val()}" type="hidden" name="data[tujuan][${i}][plastik_hidden]" id="plastik_hidden_${i}" placeholder="">
+                            <input value="${$('#kargo_pje').val()}" type="hidden" name="data[tujuan][${i}][kargo_hidden]" id="kargo_hidden_${i}" >
                             <input value='${JSON.stringify(array_detail_biaya)}' name="data[tujuan][${i}][obj_biaya]" id="obj_biaya${i}" type="hidden" placeholder="">
                             <td><button type="button" name="remove" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
                         </tr>
@@ -937,6 +1061,20 @@
             $('#uang_jalan').val('');
             $('#komisi').val('');
             $('#catatan').val('');
+            $('#seal_pje').val('');
+            $('#tally_pje').val('');
+            $('#plastik_pje').val('');
+            // $('#kargo_pje').empty();
+            // $('#kargo_pje').prop("selected",false)
+            $('#kargo_pje').val('').trigger('change');
+            $('#check_is_seal_pje').prop('checked',false);
+            $('#check_is_tally').prop('checked',false);
+            $('#check_is_plastik').prop('checked',false);
+            $('#seal_pje').attr('readonly',true);
+            $('#tally_pje').attr('readonly',true);
+            $('#plastik_pje').attr('readonly',true);
+
+            
         }
         
         $(document).on('click', '.btn_remove_biaya', function(){  

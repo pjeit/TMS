@@ -23,6 +23,7 @@ class PaymentJobController extends Controller
         ->select('job_order.id','job_order.no_jo','customer.nama as namaCustomer','supplier.nama as namaSupplier','job_order.pelabuhan_muat','job_order.pelabuhan_bongkar','job_order.tgl_sandar','job_order.status')
         ->Join('supplier', 'job_order.id_supplier', '=', 'supplier.id')
         ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
+        ->join('jaminan', 'job_order.id', '=', 'jaminan.id_job_order')
         ->where('job_order.is_aktif', '=', 'Y') 
         ->where('job_order.status', 'like', 'FINANCE PENDING') 
 
@@ -204,7 +205,16 @@ class PaymentJobController extends Controller
                     'saldo_sekarang' => $perhitunganSaldo,
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
-                    'is_aktif' => "Y",
+                )
+            );
+            // 'MENUNGGU PEMBAYARAN','DIBAYARKAN','KEMBALI'
+            DB::table('jaminan')
+            ->where('id_job_order', $pembayaran_jo['id'])
+            ->update(array(
+                //    'nama' => strtoupper($data['nama']),
+                    'status' => 'DIBAYARKAN',
+                    'updated_at'=> VariableHelper::TanggalFormat(),
+                    'updated_by'=> $user,
                 )
             );
             $coaJaminan = DB::table('coa')
@@ -231,13 +241,14 @@ class PaymentJobController extends Controller
             // updated_by,10
             // updated_at 11
             // is_aktif 12
-            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?)',
+            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
             array(
                 $data['pembayaran'],// id kas_bank dr form
                 now(),//tanggal
                 0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                 $pembayaran_jo->total_biaya_sebelum_dooring, //uang keluar (kredit)
                 $coaPelayaran[0]->no_akun, //kode coa
+                'biaya_pelayaran',
                 'UANG KELUAR - BIAYA PELAYARAN - JO', //keterangan_transaksi
                 $pembayaran_jo->no_jo,//keterangan_kode_transaksi
                 $user,//created_by
@@ -248,13 +259,14 @@ class PaymentJobController extends Controller
                 ) 
             );
 
-            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?)',
+            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
             array(
                 $data['pembayaran'],// id kas_bank dr form
                 now(),//tanggal
                 0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                 $dataJaminan[0]->nominal, //uang keluar (kredit)
                 $coaJaminan[0]->no_akun, //kode coa
+                'uang_jaminan',
                 'UANG KELUAR - UANG JAMINAN - JO', //keterangan_transaksi
                 $pembayaran_jo->no_jo,//keterangan_kode_transaksi
                 $user,//created_by
