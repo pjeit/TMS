@@ -18,20 +18,34 @@ class LaporanKasController extends Controller
     public function index()
     {
         //
-        $data = DB::table('job_order')
-        ->select('job_order.id','job_order.no_jo','customer.nama as namaCustomer','supplier.nama as namaSupplier','job_order.pelabuhan_muat','job_order.pelabuhan_bongkar','job_order.tgl_sandar','job_order.status')
-        ->Join('supplier', 'job_order.id_supplier', '=', 'supplier.id')
-        ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
-        ->where('job_order.is_aktif', '=', 'Y') 
-        ->where('job_order.status', 'like', 'FINANCE PENDING') 
-        ->get();
+        $data = DB::table('kas_bank_transaction')
+            ->where('is_aktif', '=', 'Y') 
+            ->where('id_kas_bank', '3') 
+            ->whereBetween('tanggal', ['2023-07-01', '2023-07-31'])
+            ->orderBy('tanggal', 'ASC')
+            ->get();
 
-        // dd($data);
-        //  $data = JobOrder::where('is_aktif', 'Y')->paginate(5);
+        $kas = DB::table('kas_bank')
+            ->where('id', '3') 
+            ->first();
+
+        $sumKredit = DB::table('kas_bank_transaction')
+            ->where('is_aktif', '=', 'Y') 
+            ->where('id_kas_bank', '3') 
+            ->whereBetween('tanggal', ['2023-07-01', '2023-07-31'])
+            ->sum('kredit');
+        $sumDebit = DB::table('kas_bank_transaction')
+            ->where('is_aktif', '=', 'Y') 
+            ->where('id_kas_bank', '3') 
+            ->whereBetween('tanggal', ['2023-07-01', '2023-07-31'])
+            ->sum('debit');
 
         return view('pages.laporan.Kas.index',[
             'judul' => "LAPORAN KAS",
             'data' => $data,
+            'kas' => $kas,
+            'sumKredit' => $sumKredit,
+            'sumDebit' => $sumDebit,
         ]);
     }
 

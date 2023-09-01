@@ -58,24 +58,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                        <tr>
-                            <td colspan="7">KAS KECIL (Saldo:&nbsp;4,009,100)</td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>31-Aug-2023</td>
-                            <td></td>
-                            <td>Saldo Awal</td>
-                            <td style="text-align:right">0</td>
-                            <td style="text-align:right">1,079,900</td>
-                            <td style="text-align:right">-1,079,900</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" style="text-align:right"><label>Total</label></td>
-                            <td style="text-align:right"><label>0</label></td>
-                            <td style="text-align:right"><label>1,079,900</label></td>
-                            <td></td>
-                        </tr>
+                        @if (isset($data))
+                            <tr>
+                                <td colspan="7">KAS KECIL {{$kas->saldo_sekarang}} {{$sumDebit}} {{$sumKredit}} ({{number_format($kas->saldo_sekarang + $sumDebit - $sumKredit)}})</td>
+                            </tr>
+                            @foreach ($data as $item)
+                            <tr>
+                                <td></td>
+                                <td>{{$item->tanggal}}</td>
+                                <td>{{$item->kode_coa}}</td>
+                                <td>{{$item->keterangan_transaksi}}</td>
+                                <td>{{number_format($item->debit)}}</td>
+                                <td>{{number_format($item->kredit)}}</td>
+                                <td></td>
+                            </tr>
+                            @endforeach
+                        @endif
                 </tbody>
             </table>
         </section>
