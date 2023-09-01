@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LaporanTransaksi extends Model
 {
     use HasFactory;
-     protected $table = 'kas_bank_transaction';
+    protected $table = 'kas_bank_transaction';
     protected $primaryKey='id';
     protected $fillable=[
         'id_kas_bank',
