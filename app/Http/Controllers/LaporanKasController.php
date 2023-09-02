@@ -19,6 +19,7 @@ class LaporanKasController extends Controller
     {
         $tanggal_awal   = $request->input('tanggal_awal');
         $tanggal_akhir  = $request->input('tanggal_akhir');
+        $tipe           = $request->input('tipe');
 
         if(strlen($tanggal_awal) && strlen($tanggal_akhir)){
             $tgl_default = '2000-01-01';
@@ -27,7 +28,7 @@ class LaporanKasController extends Controller
     
             $data = DB::table('kas_bank_transaction')
                 ->where('is_aktif', '=', 'Y') 
-                ->where('id_kas_bank', '3') 
+                ->where('id_kas_bank', "$tipe") 
                 ->whereBetween('tanggal', [$tgl_awal, $tgl_akhir])
                 ->orderBy('tanggal', 'ASC')
                 ->get();
@@ -43,64 +44,75 @@ class LaporanKasController extends Controller
                 ) as total,
                 if(@subtotal >= 0, abs(@subtotal), 0) as subtotal_debit,
                 if(@subtotal >= 0, 0, abs(@subtotal)) as subtotal_kredit,
-                @kas_bank_id := d.id_kas_bank as xx, d.id_kas_bank as idx
+                @kas_bank_id := d.id_kas_bank as xx, d.id_kas_bank as id_kas_bank,
+                case
+                  when d.jenis = 'saldo_awal' then
+                    'Saldo Awal'
+                  when d.jenis = 'uang_jalan' then
+                    'Uang Jalan'
+                  when d.jenis = 'reimburse' then
+                    'Reimburse'
+                  when d.jenis = 'invoice_customer' then
+                    'Invoice'
+                  when d.jenis = 'tagihan_supplier' then
+                    'Pembelian'
+                  when d.jenis = 'hutang_karyawan' then
+                    'Hutang'
+                  when d.jenis = 'gaji' then
+                    'Gaji'
+                  when d.jenis = 'transfer_dana' then
+                    'Pindah Dana'
+                  when d.jenis = 'lainnya' then
+                    'Lainnya'
+                when d.jenis = 'biaya_admin' then
+                    'Biaya_admin'
+                when d.jenis = 'uang_klaim_supir' then
+                    'Klaim Supir'
+                  end jenis_deskripsi
                 FROM (
                     SELECT 
                     id, id_kas_bank, CAST('$tgl_awal' AS DATE) AS tanggal, NULL AS jenis, 
                     'Saldo Awal' AS keterangan_transaksi, NULL AS kode_coa, 
                     IF(SUM(debit) - SUM(kredit) >= 0, ABS(SUM(debit) - SUM(kredit)), 0) AS debit,
-                    IF(SUM(debit) - SUM(kredit) >= 0, 0, ABS(SUM(debit) - SUM(kredit))) AS kredit
+                    IF(SUM(debit) - SUM(kredit) >= 0, 0, ABS(SUM(debit) - SUM(kredit))) AS kredit,keterangan_kode_transaksi
                     FROM kas_bank_transaction 
-                    WHERE id_kas_bank = '3'
-                    AND CAST(tanggal AS DATE) BETWEEN '$tgl_default' AND '$tgl_awal'
+                    WHERE id_kas_bank = '$tipe'
+                    AND CAST(tanggal AS DATE) BETWEEN date_add('$tgl_default', interval 1 day) 
+                    AND date_add('$tgl_awal', interval -1 day)
                     AND is_aktif = 'Y'
-                    group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit
+                    -- group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                     UNION ALL
                     SELECT 
-                        id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit
+                        id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                     FROM kas_bank_transaction 
-                    WHERE id_kas_bank = '3'
+                    WHERE id_kas_bank = '$tipe'
                     AND CAST(tanggal AS DATE) BETWEEN '$tgl_awal' AND '$tgl_akhir'
                     AND is_aktif = 'Y'
-                    group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit
+                    -- group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                 ) AS d 
-                ORDER BY CAST(d.tanggal AS DATE)
+                -- ORDER BY id_kas_bank, cast(tanggal as datetime), keterangan_kode_transaksi            
             ");
 
-            $kas = DB::table('kas_bank')->where('id', '3') ->first();
-    
-            $sumKredit = DB::table('kas_bank_transaction')
-                ->where('is_aktif', '=', 'Y') 
-                ->where('id_kas_bank', '3') 
-                // ->where('tanggal', '<=', '2023-06-01')
-                ->whereBetween('tanggal', [$tgl_awal, $tgl_akhir])
-                ->sum('kredit');
-    
-            $sumDebit = DB::table('kas_bank_transaction')
-                ->where('is_aktif', '=', 'Y') 
-                ->where('id_kas_bank', '3') 
-                // ->where('tanggal', '<=', '2023-06-01')
-                ->whereBetween('tanggal', [$tgl_awal, $tgl_akhir])
-                ->sum('debit');
+            $kas = DB::table('kas_bank')->where('id', "$tipe")->first();
+            $kasBank = DB::table('kas_bank')->where('is_aktif', 'Y')->orderBy('nama', 'asc')->get();
     
             return view('pages.laporan.Kas.index',[
                 'judul' => "LAPORAN KAS",
                 'data' => $data,
                 'kas' => $kas,
-                'sumKredit' => $sumKredit,
-                'sumDebit' => $sumDebit,
+                'request' => $request,
+                'kasBank' => $kasBank,
             ]);
         }else{
+            $kasBank = DB::table('kas_bank')->where('is_aktif', 'Y')->orderBy('nama', 'asc')->get();
             $data = NULL;
             $kas = NULL;
-            $sumKredit = NULL;
-            $sumDebit = NULL;
             return view('pages.laporan.Kas.index',[
                 'judul' => "LAPORAN KAS",
                 'data' => $data,
+                'request' => $request,
                 'kas' => $kas,
-                'sumKredit' => $sumKredit,
-                'sumDebit' => $sumDebit,
+                'kasBank' => $kasBank,
             ]);
         }
        
