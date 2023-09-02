@@ -21,33 +21,49 @@
         {{-- <div class="row"> --}}
             <div class="card-header ">
                 {{-- <div class="" style="position: relative; left: 0px; top: 0px; background-color:#edf4fc;"> --}}
-                    <div class="card-header">
+                    <div class="card-header" style="border: 2px solid #bbbbbb;">
                             <form id="form_report" action="{{ route('laporan_kas.index') }}" method="GET">
-                                <div class="form-group">
-                                    <label for="periode">Periode</label>
-                                    <div class="col-lg-12">
+                                <div class="row" >
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <label for="periode">Tanggal Mulai</label>
+                                            <div class="input-group mb-0">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                </div>
+                                                <input type="text" name="tanggal_awal" autocomplete="off" class="date form-control" id="tanggal_awal" placeholder="dd-M-yyyy" value="{{ $request['tanggal_awal'] ?? '' }}">     
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-2">
+                                        <div class="form-group">
+                                            <label for="periode">Tanggal Akhir</label>
+                                            <div class="input-group mb-0">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                </div>
+                                                <input type="text" name="tanggal_akhir" autocomplete="off" class="date  form-control" id="tanggal_akhir" placeholder="dd-M-yyyy" value="{{ $request['tanggal_akhir'] ?? '' }}">     
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="form-group">
+                                            <label for="">Kas / Bank<span class="text-red">*</span> {{$request['tipe'] ?? ''}} </label>
+                                            <select class="form-control selectpicker" name="tipe" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                                @foreach ($kasBank as $kb)
+                                                    <option value="{{$kb->id}}" <?= $request['tipe'] == $kb->id ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <label for="">&nbsp;</label>
                                         <div class="row">
-                                            <div class="form-group">
-                                                <div class="input-group mb-0">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                    </div>
-                                                    <input type="text" name="tanggal_awal" autocomplete="off" class="date  form-control" id="tanggal_awal" placeholder="dd-M-yyyy" value="{{ $request['tanggal_awal'] ?? '' }}">     
-                                                </div>
+                                            <div class="col-6">
+                                                <button type="submit" class="btn btn-primary radiusSendiri " onclick=""><i class="fas fa-search"></i> <b> Tampilkan Data</b></button>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="periode" class="mt-2 ml-2 mr-2">s/d</label>  
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="input-group mb-0">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                    </div>
-                                                    <input type="text" name="tanggal_akhir" autocomplete="off" class="date  form-control" id="tanggal_akhir" placeholder="dd-M-yyyy" value="{{ $request['tanggal_akhir'] ?? '' }}">     
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-sm btn-primary ml-3 mt-1 radiusSendiri" onclick="show_report()"><i class="fas fa-search"></i> <b>Tampilkan Data</b></button>
+                                            <div class="col-6">
+                                                <button type="button" class="btn btn-success radiusSendiri " onclick=""><i class="fas fa-file-excel"></i> <b> Export Excel</b></button>
                                             </div>
                                         </div>
                                     </div>
@@ -62,10 +78,10 @@
             </div>
             
             <div class="card-body">
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;">
                     <thead>
                         <tr>
-                            <th></th>
+                            {{-- <th></th> --}}
                             <th style="width:1px; white-space: nowrap;">Tgl. Transaksi</th>
                             <th>Jenis</th>
                             <th>Keterangan</th>
@@ -75,22 +91,36 @@
                         </tr>
                     </thead>
                     <tbody>
+                            @php
+                                $total_debit=$total_kredit=0;
+                            @endphp
                             @if (isset($data))
                                 <tr>
                                     {{-- <td colspan="7">KAS KECIL {{number_format($kas->saldo_sekarang)}} | DEBIT: {{number_format($sumDebit)}} | KREDIT: {{number_format($sumKredit)}} | TOT SKRG: ({{number_format($kas->saldo_sekarang + $sumDebit - $sumKredit)}})</td> --}}
-                                    <td colspan="7">KAS KECIL (Saldo: {{number_format($kas->saldo_sekarang + $sumDebit - $sumKredit)}})</td>
+                                    <td colspan="6">{{$kas->nama}} (Saldo: {{number_format($kas->saldo_sekarang, 2)}})</td>
                                 </tr>
-                                @foreach ($data as $item)
+                                @foreach ($data as $key => $item)
+                                    @php
+                                        // ngitung jumlah kredit sama debit
+                                        $total_kredit += $item->kredit;
+                                        $total_debit += $item->debit;
+                                    @endphp
                                 <tr>
-                                    <td></td>
+                                    {{-- <td>{{$key}}</td> --}}
                                     <td>{{date('d-M-Y', strtotime($item->tanggal)) }}</td>
-                                    <td>{{$item->jenis}}</td>
+                                    <td>{{$item->jenis_deskripsi}}</td>
                                     <td>{{$item->keterangan_transaksi}}</td>
-                                    <td>{{number_format($item->debit)}}</td>
-                                    <td>{{number_format($item->kredit)}}</td>
-                                    <td>{{number_format($item->total)}}</td>
+                                    <td>{{number_format($item->debit, 2)}}</td>
+                                    <td>{{number_format($item->kredit, 2)}}</td>
+                                    <td>{{number_format($item->total, 2)}}</td>
                                 </tr>
                                 @endforeach
+                                <tr>
+                                    <td colspan='3' style='text-align:right'><label>Total</label></td>
+                                    <td style='text-align:right'><label><?= number_format($total_debit, 2);?></label></td>
+                                    <td style='text-align:right'><label><?= number_format($total_kredit, 2);?></label></td>
+                                    <td></td>
+                                </tr>
                             @endif
                     </tbody>
                 </table>
