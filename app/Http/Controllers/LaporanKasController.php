@@ -80,7 +80,7 @@ class LaporanKasController extends Controller
                     AND CAST(tanggal AS DATE) BETWEEN date_add('$tgl_default', interval 1 day) 
                     AND date_add('$tgl_awal', interval -1 day)
                     AND is_aktif = 'Y'
-                    -- group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
+                    --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                     UNION ALL
                     SELECT 
                         id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
@@ -88,7 +88,7 @@ class LaporanKasController extends Controller
                     WHERE id_kas_bank = '$tipe'
                     AND CAST(tanggal AS DATE) BETWEEN '$tgl_awal' AND '$tgl_akhir'
                     AND is_aktif = 'Y'
-                    -- group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
+                    --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                 ) AS d 
                 -- ORDER BY id_kas_bank, cast(tanggal as datetime), keterangan_kode_transaksi            
             ");
