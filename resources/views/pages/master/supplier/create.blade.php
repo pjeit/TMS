@@ -143,29 +143,67 @@
         <div class="col-12 ">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <h5 class="card-title"><b>Rekening bank</b></h5>
+                    <h5 class="card-title"><b>Informasi Rekening</b></h5>
                 </div>
                 <div class="card-body">
-                    <div class="row col-12">
-                        <div class="form-group col-6">
-                            <label for="">No. Rekening</label>
-                            <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek','')}}" >                         
+                    <div class="form-group">
+                        <label for="tipe">Status kawin</label>
+                        <br>
+                        <div class="icheck-primary d-inline">
+                            <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah',)? 'checked' :'' }}>
+                            <label class="form-check-label" for="belumNikah">Belum Menikah</label>
                         </div>
-                 
-                        <div class="form-group col-6">
-                            <label for="">Atas Nama</label>
-                            <input required type="text" name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
+                        <div class="icheck-primary d-inline">
+                            <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah',)? 'checked' :'' }}>
+                            <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
                         </div>
                     </div>
-                    <div class="row col-12">
-                        <div class="form-group col-6">
-                            <label for="">Bank</label>
-                            <input required type="text" name="bank" class="form-control" value="{{old('bank','')}}" >                         
+                    <div id="bank">
+                        <div class="row col-12">
+                            <div class="form-group col-6">
+                                <label for="">No. Rekening</label>
+                                <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek','')}}" >                         
+                            </div>
+                     
+                            <div class="form-group col-6">
+                                <label for="">Atas Nama</label>
+                                <input required type="text" name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
+                            </div>
                         </div>
-                 
-                        <div class="form-group col-6">
-                            <label for="">Cabang</label>
-                            <input required type="text" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
+                        <div class="row col-12">
+                            <div class="form-group col-6">
+                                <label for="">Bank</label>
+                                <input required type="text" name="bank" class="form-control" value="{{old('bank','')}}" >                         
+                            </div>
+                     
+                            <div class="form-group col-6">
+                                <label for="">Cabang</label>
+                                <input required type="text" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
+                            </div>
+                        </div>
+                    </div>
+                     <div id="virtual">
+                        <div class="row col-12">
+                            <div class="form-group col-6">
+                                <label for="">No. Rekening</label>
+                                <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek','')}}" >                         
+                            </div>
+                     
+                            <div class="form-group col-6">
+                                <label for="">Atas Nama</label>
+                                <input required type="text" name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
+                            </div>
+                        </div>
+                        <div class="row col-12">
+                            <div class="form-group col-6">
+                                <label for="">Bank</label>
+                                <input required type="text" name="bank" class="form-control" value="{{old('bank','')}}" >                         
+                            </div>
+                     
+                            <div class="form-group col-6">
+                                <label for="">Cabang</label>
+                                <input required type="text" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
+                            </div>
                         </div>
                     </div>
                 </div>

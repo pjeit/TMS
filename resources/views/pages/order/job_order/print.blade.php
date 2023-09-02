@@ -13,14 +13,19 @@
 
     <title>Document</title>
     <style type="text/css">
-    table {
-        width: 100%; /* Optional: Set table width */
+   .table-bawah{
+    float: left;
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+   }
+    .border-table{
+        width: 100%; /* Optional: Set table width */    
         border: 1px solid #00000; /* Border around the table */
     }
-        .kontener{
+        /* .kontener{
             display: flex;
             justify-content: space-between;
-        }
+        } */
         .align-left{
             text-align: left;
             font-weight: 10;   
@@ -34,28 +39,33 @@
         .text{
               text-transform: uppercase;
               font-family: Arial, sans-serif;
+              font-size: 20px;
+
+              
+        }
+        .text-kecil{
+        
+              font-family: Arial, sans-serif;
+              font-size: 20px;
+
         }
         .p-50{
             padding-left: 50px;
         }
-        td{
+        .td-atas{
             text-transform: uppercase;
               font-family: Arial, sans-serif;
-              font-size: 11px;
+              font-size: 20px;
 
         }
-        th{
-            text-transform: uppercase;
-              font-family: Arial, sans-serif;
-
-        }
+       
     </style>
 </head>
 <body>
     <div class="kontener">
-         <h2 class="text">BILLING TO</h2>
+         <h2 class="text">BILLING JO</h2>
     </div>
-     <table>
+     <table class="border-table">
         <thead>
             {{-- <tr>
                 <td>
@@ -64,10 +74,10 @@
                 </td>
             </tr> --}}
         </thead>
-        <tbody> 
+        <tbody  class="td-atas"> 
               <tr>
                 {{-- customer --}}
-                <td class="align-left text">ID. Billing</td> 
+                <td class="align-left text ">ID. Billing</td> 
                 <td >:</td>
 
                 <td class="aligh-right" style="margin-left: 20px;">
@@ -110,7 +120,7 @@
                 <td class="align-left text">Tanggal Sandar</td>
                 <td>:</td>
 
-                <td class="aligh-right"> {{$JobOrder->tgl_sandar}}</td>
+                <td class="aligh-right">{{\Carbon\Carbon::parse($JobOrder->tgl_sandar)->format('d-M-Y')}}</td>
             </tr>
             <tr>
                 <td class="align-left text">Pelabuhan Muat</td>
@@ -118,14 +128,14 @@
 
                 <td class="aligh-right">{{$JobOrder->pelabuhan_muat}}</td>
             </tr>
-             <tr>
+            <tr>
                 <td class="align-left text">Pelabuhan Bongkar</td>
                 <td>:</td>
                 <td class="aligh-right">{{$JobOrder->pelabuhan_bongkar}}</td>
             </tr>
-           
-           
-         
+            
+            
+            
         </tbody>
         <tfoot>
         </tfoot>
@@ -161,8 +171,8 @@
         </tfoot>
     </table> --}}
 
-    <h3 class="text">Biaya Sebelum Dooring</h3>
-      <table class="table table-bordered" id="sortable" >
+    <h3 class="text">Biaya pelayaran</h3>
+      <table class="border-table td-atas"  id="sortable" >
             <thead>
                 {{-- <tr>
                     <th colspan="2">Biaya Sebelum Dooring</th>
@@ -196,7 +206,7 @@
                 <tr>
                     <td>DOC FEE</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_docfee,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
 
                 </tr>
                 <tr>
@@ -210,9 +220,9 @@
             </tfoot>
       </table>
     
-    <h3 class="text" style="margin-top: 3rem;">Biaya Jaminan</h3>
+    <h3 class="text" style="margin-top: 1rem;">Biaya Jaminan</h3>
 
-         <table class="table table-bordered" id="sortable" >
+         <table class="border-table td-atas" id="sortable" >
             <thead>
                 {{-- <tr>
                     <th colspan="2">Biaya Sebelum Dooring</th>
@@ -232,7 +242,7 @@
                 <tr>
                     <td>Tanggal Bayar</td>
                     <td>:</td>
-                    <td class="aligh-right">{{$dJ->tgl_bayar}}</td>
+                    <td class="aligh-right">{{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
                 </tr>
                 @endif
             @endforeach
@@ -241,14 +251,67 @@
             <tfoot>
             </tfoot>
       </table>
-      <p class="text" >Total Biaya : Rp. {{number_format($total,2) }}</p>
-      <p style="margin-right: 30px; float: right;">Finance,</p>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+      <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
+          @foreach ($dataSupplier as $ds)
+            @if($JobOrder->id_supplier == $ds->id)
 
-      <p style="float: right;">(.........................)</p>
+         <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$ds->bank}} </b><br> 
+            atas nama : <b>{{$ds->rek_nama}} </b><br>
+            dengan nomor rekening : <b><u>{{$ds->no_rek}}</u></b></p>
+
+               
+            @endif
+        @endforeach
+      
+  {{-- <div style="display: flex; justify-content: space-between;">
+    <div style="flex-basis: 49%;">
+        <p style="text-align: left;">Finance,</p>
+        <br/>
+        <p style="text-align: left;">(.........................)</p>
+    </div>
+
+    <div style="flex-basis: 49%;">
+        <p style="text-align: right;">keterangan,</p>
+        <br/>
+        <br/>
+        <p style="text-align: right;">(.........................)</p>
+    </div>
+</div> --}}
+<br/>
+<table class="table-bawah" >
+      <thead>
+        
+        </thead>
+        <tbody> 
+            <tr>
+                {{-- customer --}}
+                <td style="text-align: left; ">Di siapkan Oleh :</td> 
+                <td style="text-align: right; padding-left: 550px;">
+                   Di setujui Oleh :
+                </td>
+            </tr>
+            <br>
+            <br/>
+            <br/>
+            <br/>
+
+
+
+        
+             <tr>
+                {{-- customer --}}
+                <td style="text-align: left; ">(.........................)</td> 
+                <td style="text-align: right; padding-left: 550px;">
+                   (.........................)
+                </td>
+            </tr>
+        
+        </tbody>
+        <tfoot>
+        </tfoot>
+</table>
+
+    
 
 </body>
 

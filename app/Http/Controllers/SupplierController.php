@@ -141,6 +141,9 @@ class SupplierController extends Controller
             $supplier->email = $request->email;
             $supplier->npwp = $request->npwp;
             $supplier->no_rek = $request->no_rek;
+            $supplier->no_virtual_account = $request->no_virtual_account;
+            $supplier->bank_virtual_account = $request->bank_virtual_account;
+            $supplier->nama_virtual_account = $request->nama_virtual_account;
             $supplier->rek_nama = $request->rek_nama;
             $supplier->bank = $request->bank;
             $supplier->cabang = $request->cabang;

@@ -441,12 +441,14 @@ class JobOrderController extends Controller
             'dataJaminan'=>$dataJaminan,
         ]); 
         // dd($JobOrder);
+        // $pdf->setPaper('A5', 'landscape');
         $pdf->setPaper('A5', 'portrait');
-        // Customize the PDF generation process if needed
+
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true, // Enable HTML5 parser
             'isPhpEnabled' => true, // Enable inline PHP execution
-            'defaultFont' => 'sans-serif'
+            'defaultFont' => 'sans-serif',
+             'dpi' => 180, // Set a high DPI for better resolution
         ]);
         // langsung download
         // return $pdf->download('fileCoba.pdf'); 
@@ -458,7 +460,8 @@ class JobOrderController extends Controller
         //     'JobOrder'=>$JobOrder,
         //     'dataSupplier'=>$dataSupplier,
         //     'dataCustomer'=>$dataCustomer,
-        //     'dataJoDetail'=>$dataJoDetail
+        //     'dataJoDetail'=>$dataJoDetail,
+        //     'dataJaminan'=>$dataJaminan,
 
         // ]);
     }
