@@ -81,7 +81,10 @@ class GrupTujuanController extends Controller
     {
         $data['grup'] = Grup::where('is_aktif', 'Y')->findOrFail($id);
         $tujuan = GrupTujuan::where('grup_id', $id)->where('is_aktif', 'Y')->get();
-
+        $dataKargo = DB::table('m_kargo') 
+            ->select('m_kargo.*')
+            ->where('m_kargo.is_aktif', '=', "Y")
+            ->get();
         foreach ($tujuan as $key => $value) {
             $biaya = GrupTujuanBiaya::where('grup_id', $id)
                                 ->where('is_aktif', 'Y')
@@ -101,6 +104,11 @@ class GrupTujuanController extends Controller
                 'tarif'=>$value->tarif,
                 'komisi'=>$value->komisi,
                 'catatan'=>$value->catatan,
+                'seal_pje'=>$value->seal_pje,
+                'tally'=>$value->tally,
+                'plastik'=>$value->plastik,
+                'kargo'=>$value->kargo,
+
                 'detail_uang_jalan'=>json_encode($biaya),
             );
         }
@@ -110,6 +118,7 @@ class GrupTujuanController extends Controller
         return view('pages.master.grup_tujuan.edit',[
             'judul' => "Grup",
             'data' => $data,
+            'dataKargo'=>$dataKargo,
             'id' => $id,
         ]);
     }
@@ -180,6 +189,11 @@ class GrupTujuanController extends Controller
                         $edit_tujuan->tarif = $tarif;
                         $edit_tujuan->komisi = $komisi;
                         $edit_tujuan->catatan = $value['catatan'];
+                        $edit_tujuan->seal_pje = ($value['seal_hidden'] != '')? floatval(str_replace(',', '', $value['seal_hidden'])):null;
+                        $edit_tujuan->plastik = ($value['tally_hidden'] != '')? floatval(str_replace(',', '', $value['tally_hidden'])):null;
+                        $edit_tujuan->tally = ($value['plastik_hidden'] != '')? floatval(str_replace(',', '', $value['plastik_hidden'])):null;
+                        $edit_tujuan->kargo = $value['kargo_hidden'];
+
                         $edit_tujuan->updated_by = $user;
                         $edit_tujuan->updated_at = now();
 
@@ -235,6 +249,10 @@ class GrupTujuanController extends Controller
                     $new_tuj->tarif = $tarif;
                     $new_tuj->komisi = $komisi;
                     $new_tuj->catatan = $value['catatan'];
+                    $new_tuj->seal_pje = ($value['seal_hidden'] != '')? floatval(str_replace(',', '', $value['seal_hidden'])):null;
+                    $new_tuj->plastik = ($value['tally_hidden'] != '')? floatval(str_replace(',', '', $value['tally_hidden'])):null;
+                    $new_tuj->tally = ($value['plastik_hidden'] != '')? floatval(str_replace(',', '', $value['plastik_hidden'])):null;
+                    $new_tuj->kargo = $value['kargo_hidden'];
                     $new_tuj->created_by = $user;
                     $new_tuj->created_at = now();
 

@@ -67,6 +67,7 @@ class BookingController extends Controller
 
             //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
             //bisa juga substr(no_booking, 8,10)
+            //length 10
             $maxBooking = DB::table('booking')
                 ->selectRaw("ifnull(max(substr(no_booking, -3)), 0) + 1 as max_booking")
                 ->whereRaw("substr(no_booking, 1, length(no_booking) - 3) = concat(?, ?, ?)", [$request->kode_cust,$currentYear, $currentMonth])

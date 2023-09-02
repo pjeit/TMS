@@ -250,9 +250,9 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox" id="doc_fee_cekbox" <?= isset($data['JO']['total_docfee'])? (($data['JO']['total_docfee'] == 0) ? '':'checked'):''; ?> disabled></span> DOC FEE</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox" id="doc_fee_cekbox" <?= isset($data['JO']['doc_fee'])? (($data['JO']['doc_fee'] == 0) ? '':'checked'):''; ?> disabled></span> DOC FEE</th>
                                         <td name="">
-                                            <input type="text" name="total_doc_fee" id="total_doc_fee" class="form-control" value="{{$data['JO']['total_docfee']}}" readonly >
+                                            <input type="text" name="total_doc_fee" id="total_doc_fee" class="form-control" value="{{$data['JO']['doc_fee']}}" readonly >
                                         </td>
                                     </tr>
                                     <tr>

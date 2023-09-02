@@ -540,7 +540,7 @@
                                 <input type="hidden" readonly class="hargaLolo " hargaLolo_${i} name="detail[${i}][hargaLolo]" value="">
                                 <input type="hidden" readonly class="hargaApbs " hargaApbs_${i} name="detail[${i}][hargaApbs]" value="">
                                 <input type="hidden" readonly class="hargaCleaning " hargaCleaning_${i} name="detail[${i}][hargaCleaning]" value="">
-                                <input type="hidden" readonly class="hargaDocFee " hargaDocFee_${i} name="detail[${i}][hargaDocFee]" value="">
+                                
                             </td>
                         
                             <td>
@@ -695,7 +695,7 @@
 
                 parentTd.find('.hargaApbs').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
                 parentTd.find('.hargaCleaning').val(selectedValue == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
-                parentTd.find('.hargaDocFee').val(dataKeuangan.doc_fee);
+                // parentTd.find('.hargaDocFee').val(dataKeuangan.doc_fee);
                 
            
                 uncheck();
@@ -795,7 +795,7 @@
                 $('#total_lolo').val(totalhargaLolo);
                 $('#total_apbs').val(totalhargaApbs);
                 $('#total_cleaning').val(totalhargaCleaning);
-                $('#total_doc_fee').val(totalhargaDocFee);
+                $('#total_doc_fee').val(dataKeuangan.doc_fee);
                 
                 $('.hargaThc').each(function() {
                     var value = parseFloat($(this).val()) || 0;
@@ -817,11 +817,11 @@
                     totalhargaCleaning += value;
                     $('#total_cleaning').val(totalhargaCleaning);
                 });
-                $('.hargaDocFee').each(function() {
-                    var value = parseFloat($(this).val()) || 0;
-                    totalhargaDocFee += value;
-                    $('#total_doc_fee').val(totalhargaDocFee);
-                });
+                // $('.hargaDocFee').each(function() {
+                //     var value = parseFloat($(this).val()) || 0;
+                //     totalhargaDocFee += value;
+                //     $('#total_doc_fee').val(totalhargaDocFee);
+                // });
             }
         // end of logic hitung biaya
 
