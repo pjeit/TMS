@@ -90,7 +90,7 @@ class LaporanKasController extends Controller
                     AND is_aktif = 'Y'
                     --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                 ) AS d 
-                -- ORDER BY id_kas_bank, cast(tanggal as datetime), keterangan_kode_transaksi            
+                ORDER BY cast(tanggal as datetime),id     
             ");
 
             $kas = DB::table('kas_bank')->where('id', "$tipe")->first();
