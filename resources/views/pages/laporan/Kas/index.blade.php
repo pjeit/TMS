@@ -110,15 +110,15 @@
                                     <td>{{date('d-M-Y', strtotime($item->tanggal)) }}</td>
                                     <td>{{$item->jenis_deskripsi}}</td>
                                     <td>{{$item->keterangan_transaksi}}</td>
-                                    <td>{{number_format($item->debit)}}</td>
-                                    <td>{{number_format($item->kredit)}}</td>
-                                    <td>{{number_format($item->total)}}</td>
+                                    <td>{{number_format($item->debit, 2)}}</td>
+                                    <td>{{number_format($item->kredit, 2)}}</td>
+                                    <td>{{number_format($item->total, 2)}}</td>
                                 </tr>
                                 @endforeach
                                 <tr>
                                     <td colspan='3' style='text-align:right'><label>Total</label></td>
-                                    <td style='text-align:right'><label><?= number_format($total_debit);?></label></td>
-                                    <td style='text-align:right'><label><?= number_format($total_kredit);?></label></td>
+                                    <td style='text-align:right'><label><?= number_format($total_debit, 2);?></label></td>
+                                    <td style='text-align:right'><label><?= number_format($total_kredit, 2);?></label></td>
                                     <td></td>
                                 </tr>
                             @endif
