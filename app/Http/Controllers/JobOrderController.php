@@ -468,7 +468,41 @@ class JobOrderController extends Controller
 
     public function unloading_plan(){
         // die('xx');
-        return view('pages.order.job_order.unloading_plan');
+        $dataJO = DB::table('job_order AS jo')
+                ->select('jo.*','jod.*','c.kode AS kode', 'c.nama AS nama_cust', 's.nama AS nama_supp')
+                ->leftJoin('customer AS c', 'c.id', '=', 'jo.id_customer')
+                ->leftJoin('supplier AS s', 's.id', '=', 'jo.id_supplier')
+                ->join('job_order_detail AS jod', function($join) {
+                        $join->on('jo.id', '=', 'jod.id_jo') ->where('jod.status','like','%FINANCE pending%');
+                })
+                ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
+                ->where('jo.is_aktif', '=', 'Y')
+                ->where('jo.status', '!=', 'COMPLETE')
+                ->groupBy('jod.id')
+                ->get();
+        // $dataJODetail = DB::table('job_order_detail AS jod')
+        //         ->select('jod.*','gt.nama_tujuan',)
+        //         ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
+        //         ->where('jod.is_aktif', '=', 'Y')
+        //         ->where('jod.status','FINANCE PENDING')
+        //         ->get();
+        // // Convert the result set into an array
+        // $dataJOArray = $dataJO->toArray();
+
+        // // Loop through the array and add the "detail" key
+        // foreach ($dataJOArray as $key => $value) {
+        //     $dataJOArray[$key]->detailJo = (object)array(
+        //         'id'=>'coba1',
+        //         'grup_id'=>'coba1\2',
+        //         'marketing_id'=>'coba1\3',
+        //     );
+        // }
+        // dd($dataJO);
+        return view('pages.order.job_order.unloading_plan',[
+                'judul'=>"Uloading Plan Job Order",
+                'dataJO' => $dataJO,
+                // 'dataJODetail'=>$dataJODetail
+            ]);
         // return view('job_order.unloading_plan');
     }
 }
