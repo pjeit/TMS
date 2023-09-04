@@ -67,34 +67,46 @@
                     </thead>
                     <tbody>
                         @if (isset($dataJO))
-                            @php
-                                $nyimpenIdBapakJO = null;
-                            @endphp
+                           
                             @foreach($dataJO as $item)
-                                @if ($item->id_jo != $nyimpenIdBapakJO)
+                                @php
+                                    $cekDetail = true; 
+                                @endphp
+                                @foreach($dataJODetail as $item1)
+                                    @if($item->id != $item1->id_jo)
+                                        @php
+                                            $cekDetail = false; 
+                                        @endphp
+                                    @endif
+                                @endforeach
+                                   
+                                @if($cekDetail)
                                     <tr>
-                                        <td colspan="6">{{ $item->no_jo }}</td>
+                                        <td colspan="6">{{ $item->no_jo }} - {{ $item->status }}</td>
                                     </tr>
-                                    @php
-                                        $nyimpenIdBapakJO = $item->id_jo;
-                                    @endphp
+                                 @foreach($dataJODetail as $item1)
+                                    @if($item->id == $item1->id_jo)
+                                    
+                                    <tr>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
+                                                <ul class="dropdown-menu" style="">
+                                                    <li><a class="dropdown-item" href="{{ route('job_order.edit', [$item->id]) }}"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('job_order.destroy', $item->id) }}"><span class="fas fa-trash" style="width:24px"></span>Hapus</a></li>
+                                                    <li><a class="dropdown-item" href="https://testapps.pjexpress.co.id/index.php/c_cetak_invoice/cetak/4891"><span class="fas fa-print" style="width:24px"></span>Cetak</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        <td>{{ $item1->no_kontainer }}</td>
+                                        <td>{{ $item->kode }} - {{ $item->nama_cust }}</td>
+                                        <td>{{ $item->nama_supp }}</td>
+                                        <td>{{ $item1->status }}</td>
+                                    </tr>
+                                    @endif
+                                 @endforeach
                                 @endif
-                                <tr>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
-                                            <ul class="dropdown-menu" style="">
-                                                <li><a class="dropdown-item" href="{{ route('job_order.edit', [$item->id]) }}"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
-                                                <li><a class="dropdown-item" href="{{ route('job_order.destroy', $item->id) }}"><span class="fas fa-trash" style="width:24px"></span>Hapus</a></li>
-                                                <li><a class="dropdown-item" href="https://testapps.pjexpress.co.id/index.php/c_cetak_invoice/cetak/4891"><span class="fas fa-print" style="width:24px"></span>Cetak</a></li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td>{{ $item->no_kontainer }}</td>
-                                    <td>{{ $item->kode }} - {{ $item->nama_cust }}</td>
-                                    <td>{{ $item->nama_supp }}</td>
-                                    <td>{{ $item->status }}</td>
-                                </tr>
+
                             @endforeach
                         @endif
 

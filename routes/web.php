@@ -100,6 +100,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
         Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
 
+
     });
 
     Route::middleware(['is_marketing'])->group(function () {
