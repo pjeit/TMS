@@ -266,7 +266,7 @@ class JobOrderController extends Controller
                     $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
                     $jaminan->catatan = $data['catatan'];
                      // 'MENUNGGU PEMBAYARAN','DIBAYARKAN','KEMBALI'
-                    $jaminan->status = 'WAITING PAYMENT';
+                    $jaminan->status = 'MENUNGGU PEMBAYARAN';
                     $jaminan->created_by = $user;
                     $jaminan->created_at = now();
                     $jaminan->is_aktif = 'Y';
@@ -466,24 +466,51 @@ class JobOrderController extends Controller
             ->where('customer.is_aktif', '=', "Y")
             ->where('customer.id', '=', $JobOrder->id_customer)
             ->get();
-        $dataJoDetail = DB::table('job_order_detail')
-            ->select('*')
-            ->where('job_order_detail.is_aktif', '=', "Y")
-            ->where('job_order_detail.id_jo', '=', $JobOrder->id)
-            ->get();
+ 
         $dataJaminan = DB::table('jaminan')
             ->select('*')
             ->where('jaminan.is_aktif', '=', "Y")
             ->where('jaminan.id_job_order', '=', $JobOrder->id)
             ->get();
+
+        $totalThc =  DB::table('job_order_detail_biaya')
+            ->where('id_jo', $JobOrder->id)
+            ->where('keterangan', 'LIKE', '%THC%')
+            ->sum('nominal');
+        $totalLolo =  DB::table('job_order_detail_biaya')
+            ->where('id_jo', $JobOrder->id)
+            ->where('keterangan', 'LIKE', '%LOLO%')
+            ->sum('nominal');
+        $totalApbs =  DB::table('job_order_detail_biaya')
+            ->where('id_jo', $JobOrder->id)
+            ->where('keterangan', 'LIKE', '%APBS%')
+            ->sum('nominal');
+         $totalCleaning =  DB::table('job_order_detail_biaya')
+            ->where('id_jo', $JobOrder->id)
+            ->where('keterangan', 'LIKE', '%CLEANING%')
+            ->sum('nominal');
+         $Docfee =  DB::table('job_order_detail_biaya')
+            ->select('nominal')
+            ->where('id_jo', $JobOrder->id)
+            ->where('keterangan', 'LIKE', '%DOC_FEE%')
+            ->first();
+        $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
+        // dd($TotalBiaya);
+
+
         // dd($dataJoDetail);   
         $pdf = PDF::loadView('pages.order.job_order.print',[
             'judul'=>"Job Order",
             'JobOrder'=>$JobOrder,
             'dataSupplier'=>$dataSupplier,
             'dataCustomer'=>$dataCustomer,
-            'dataJoDetail'=>$dataJoDetail,
             'dataJaminan'=>$dataJaminan,
+            'totalThc'=> $totalThc,
+            'totalLolo'=> $totalLolo,
+            'totalApbs'=> $totalApbs,
+            'totalCleaning'=>$totalCleaning,
+            'Docfee'=>$Docfee,
+            'TotalBiaya'=>$TotalBiaya
         ]); 
         // dd($JobOrder);
         // $pdf->setPaper('A5', 'landscape');

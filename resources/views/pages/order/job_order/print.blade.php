@@ -182,37 +182,37 @@
                 <tr>
                     <td>THC</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_thc,2) }}</td>
+                    <td class="aligh-right">Rp. {{number_format($totalThc,2) }}</td>
 
                 </tr>
                 <tr>
                     <td>LOLO</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_lolo,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($totalLolo,2)}}</td>
 
                 </tr>
                 <tr>
                     <td>APBS</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_apbs,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($totalApbs,2)}}</td>
 
                 </tr>
                 <tr>
                     <td>CLEANING</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_cleaning,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($totalCleaning,2)}}</td>
 
                 </tr>
                 <tr>
                     <td>DOC FEE</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($Docfee->nominal,2)}}</td>
 
                 </tr>
                 <tr>
                     <td>SUB TOTAL</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_biaya_sebelum_dooring,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($TotalBiaya,2)}}</td>
 
                 </tr>
             </tbody>
@@ -235,7 +235,7 @@
                     <td>nominal</td>
                     <td>:</td>
                     <?php $nominal = $dJ->nominal ?>
-                    <?php $total = $dJ->nominal+$JobOrder->total_biaya_sebelum_dooring ?>
+                    <?php $total = $dJ->nominal+$TotalBiaya ?>
                     <td class="aligh-right">Rp. {{number_format($dJ->nominal,2) }}</td>
 
                 </tr>

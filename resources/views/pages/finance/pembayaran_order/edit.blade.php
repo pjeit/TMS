@@ -30,168 +30,169 @@
     @endif
     <form action="{{ route('pembayaran_jo.update',[$pembayaran_jo->id]) }}" method="POST" >
       @csrf
-                 @method('PUT')
+        @method('PUT')
 
-    <div class="row m-2">
-    
-        <div class="col-12">
-            <div class="card radiusSendiri">
-                <div class="card-header">
-                    <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                </div>
-                <div class="card-body" >
-                    <div class="row">
-                        <div class="col-6">
-                                <div class="row">
-                                <div class="col-6" > 
-                                        <div class="form-group">
-                                            <label for="">Pengirim<span class="text-red">*</span></label>
-                                                <select class="form-control selectpicker"  id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
-                                                {{-- <option value="0">PT. Pasifik Global Makmur</option> --}}
-                                                @foreach ($dataCustomer as $cust)
-                                                    <option value="{{$cust->id}}" {{$cust->id == $pembayaran_jo->id_customer?'checked':''}}>{{ $cust->nama }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group ">
-                                            <label for="">Pelayaran</label>
-                                            <select class="form-control selectpicker"  id='pembayaran' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
-                                                {{-- <option value="0">PT. TANTO INTI LINE</option> --}}
-                                                @foreach ($dataSupplier as $sup)
-                                                    <option value="{{$sup->id}}" {{$sup->id == $pembayaran_jo->id_supplier?'checked':''}}>{{ $sup->nama }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group ">
-                                            <label for="">No. BL<span class="text-red">*</span></label>
-                                            <input required type="text" name="nama_pic" class="form-control" value="{{$pembayaran_jo->no_bl}}" readonly>
-                                        </div>  
-                                </div>
-                                <div class="col-6"> 
-                                    <div class="form-group">
-                                            <label for="tgl_sandar">Tanggal Sandar</label>
-                                        <div class="input-group mb-0">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+        <div class="row m-2">
+        
+            <div class="col-12">
+                <div class="card radiusSendiri">
+                    <div class="card-header">
+                        <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                    </div>
+                    <div class="card-body" >
+                        <div class="row">
+                            <div class="col-6">
+                                    <div class="row">
+                                    <div class="col-6" > 
+                                            <div class="form-group">
+                                                <label for="">Pengirim<span class="text-red">*</span></label>
+                                                    <select class="form-control selectpicker"  id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
+                                                    {{-- <option value="0">PT. Pasifik Global Makmur</option> --}}
+                                                    @foreach ($dataCustomer as $cust)
+                                                        <option value="{{$cust->id}}" {{$cust->id == $pembayaran_jo->id_customer?'checked':''}}>{{ $cust->nama }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                            <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{\Carbon\Carbon::parse($pembayaran_jo->tgl_sandar)->format('d-M-Y')}}" disabled>     
+                                            <div class="form-group ">
+                                                <label for="">Pelayaran</label>
+                                                <select class="form-control selectpicker"  id='pembayaran' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
+                                                    {{-- <option value="0">PT. TANTO INTI LINE</option> --}}
+                                                    @foreach ($dataSupplier as $sup)
+                                                        <option value="{{$sup->id}}" {{$sup->id == $pembayaran_jo->id_supplier?'checked':''}}>{{ $sup->nama }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group ">
+                                                <label for="">No. BL<span class="text-red">*</span></label>
+                                                <input required type="text" name="nama_pic" class="form-control" value="{{$pembayaran_jo->no_bl}}" readonly>
+                                            </div>  
+                                    </div>
+                                    <div class="col-6"> 
+                                        <div class="form-group">
+                                                <label for="tgl_sandar">Tanggal Sandar</label>
+                                            <div class="input-group mb-0">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                </div>
+                                                <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{\Carbon\Carbon::parse($pembayaran_jo->tgl_sandar)->format('d-M-Y')}}" disabled>     
+                                            </div>
+                                        </div>  
+                                        <div class="form-group">
+                                            <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
+                                            <input required type="text" name="pelabuhan_muat" class="form-control" value="{{$pembayaran_jo->pelabuhan_muat}}" readonly>
+                                        </div> 
+                                        <div class="form-group">
+                                            <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
+                                            <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{$pembayaran_jo->pelabuhan_bongkar}}" readonly>
+                                        </div>  
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-primary">Total Biaya</span>
+                                    {{-- <span class="badge bg-primary rounded-pill">3</span> --}}
+                                </h4>
+                                <ul class="list-group mb-3">
+                                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                                        <div>
+                                        <h6 class="my-0">Biaya Sebelum Dooring</h6>
+                                        {{-- <small class="text-muted">total</small> --}}
                                         </div>
-                                    </div>  
-                                    <div class="form-group">
-                                        <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                        <input required type="text" name="pelabuhan_muat" class="form-control" value="{{$pembayaran_jo->pelabuhan_muat}}" readonly>
-                                    </div> 
-                                    <div class="form-group">
-                                        <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                        <input required type="text" name="pelauhan_bongkar" class="form-control" value="{{$pembayaran_jo->pelabuhan_bongkar}}" readonly>
-                                    </div>  
+                                        <span class="text-muted">Rp. {{number_format($TotalBiaya,2)}}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                                        <div>
+                                        <h6 class="my-0">Biaya Jaminan</h6>
+                                        {{-- <small class="text-muted">total</small> --}}
+                                        </div>
+                                        <span class="text-muted">Rp. {{number_format($dataJaminan[0]->nominal,2)}}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Total (IDR)</span>
+                                        <input type="hidden" name="total_sblm_dooring" value="{{$TotalBiaya}}">
+                                        <strong>Rp. {{number_format($TotalBiaya+$dataJaminan[0]->nominal,2)}}</strong>
+                                    </li>
+                                </ul>
+                                <div class="input-group">
+                                    <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                        <option value="">--PILIH PEMBAYARAN--</option>
+                                        @foreach ($dataKas as $data)
+                                            <option value="{{$data->id}}">{{ $data->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
+
+                                    {{-- <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</a> --}}
+
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6">
-                            <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                <span class="text-primary">Total Biaya</span>
-                                {{-- <span class="badge bg-primary rounded-pill">3</span> --}}
-                            </h4>
-                            <ul class="list-group mb-3">
-                                <li class="list-group-item d-flex justify-content-between lh-sm">
-                                    <div>
-                                    <h6 class="my-0">Biaya Sebelum Dooring</h6>
-                                    {{-- <small class="text-muted">total</small> --}}
-                                    </div>
-                                    <span class="text-muted">Rp. {{number_format($pembayaran_jo->total_biaya_sebelum_dooring,2)}}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between lh-sm">
-                                    <div>
-                                    <h6 class="my-0">Biaya Jaminan</h6>
-                                    {{-- <small class="text-muted">total</small> --}}
-                                    </div>
-                                    <span class="text-muted">Rp. {{number_format($dataJaminan[0]->nominal,2)}}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Total (IDR)</span>
-                                    <strong>Rp. {{number_format($pembayaran_jo->total_biaya_sebelum_dooring+$dataJaminan[0]->nominal,2)}}</strong>
-                                </li>
-                            </ul>
-                            <div class="input-group">
-                                <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                    <option value="">--PILIH PEMBAYARAN--</option>
-                                    @foreach ($dataKas as $data)
-                                        <option value="{{$data->id}}">{{ $data->nama }}</option>
-                                    @endforeach
-                                </select>
-                                <button type="submit" class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
-
-                                {{-- <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</a> --}}
-
-                            </div>
+                    
+                    </div>
+                </div> 
+            </div>
+            <div class="col-12">
+                <div class="d-flex justify-content-between" style="gap: 10px;">
+                            <table class="table" id="sortable" >
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Biaya Sebelum Dooring</th>
+                                    </tr>
+                                </thead>
+                                <tbody > 
+                                    <tr>
+                                        <th><span> <input disabled type="checkbox" name="thc_cekbox" id="thc_cekbox" {{$totalThc!=0?'checked':''}}></span> THC</th>
+                                        <td name="total_thc"><input type="text" id="total_thc" class="form-control" value="Rp. {{number_format($totalThc,2)}}" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><span> <input disabled type="checkbox" name="lolo_cekbox" id="lolo_cekbox" {{$totalLolo!=0?'checked':''}}></span> LOLO</th>
+                                        <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" value="Rp. {{number_format($totalLolo,2)}}" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><span> <input disabled type="checkbox" name="apbs_cekbox" id="apbs_cekbox" {{$totalApbs!=0?'checked':''}}></span> APBS</th>
+                                        <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" value="Rp. {{number_format($totalApbs,2)}}" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><span> <input disabled type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox" {{$totalCleaning!=0?'checked':''}}></span> CLEANING</th>
+                                        <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" value="Rp. {{number_format($totalCleaning,2)}}" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox" {{$Docfee->nominal!=0?'checked':''}}></span> DOC FEE</th>
+                                        <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($Docfee->nominal,2)}}" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th>SUB TOTAL</th>
+                                        <th name="total_sblm_dooring" id="total_sblm_dooring" >Rp. {{number_format($TotalBiaya,2)}}</th>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                </tfoot>
+                            </table>
+                            <table class="table" id="sortable">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2">Biaya Jaminan</th>
+                                    </tr>
+                                </thead>
+                                <tbody > 
+                                    <tr class="tinggi">
+                                        <th>Tgl Bayar Jaminan</th>
+                                        <td><input type="text" name="" class="form-control" value="{{\Carbon\Carbon::parse($dataJaminan[0]->tgl_bayar)->format('d-M-Y')}}" readonly></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Total Jaminan</th>
+                                        <th>Rp. {{number_format($dataJaminan[0]->nominal,2)}}</th>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                </tfoot>
+                            </table>
+                            
                         </div>
-                    </div>
-                  
-                </div>
-            </div> 
+            </div>
+        
         </div>
-        <div class="col-12">
-              <div class="d-flex justify-content-between" style="gap: 10px;">
-                        <table class="table" id="sortable" >
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Biaya Sebelum Dooring</th>
-                                </tr>
-                            </thead>
-                            <tbody > 
-                                <tr>
-                                    <th><span> <input disabled type="checkbox" name="thc_cekbox" id="thc_cekbox" {{$pembayaran_jo->total_thc!=0?'checked':''}}></span> THC</th>
-                                    <td name="total_thc"><input type="text" id="total_thc" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_thc,2)}}" readonly></td>
-                                </tr>
-                                <tr>
-                                    <th><span> <input disabled type="checkbox" name="lolo_cekbox" id="lolo_cekbox" {{$pembayaran_jo->total_lolo!=0?'checked':''}}></span> LOLO</th>
-                                    <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_lolo,2)}}" readonly></td>
-                                </tr>
-                                <tr>
-                                    <th><span> <input disabled type="checkbox" name="apbs_cekbox" id="apbs_cekbox" {{$pembayaran_jo->total_apbs!=0?'checked':''}}></span> APBS</th>
-                                    <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_apbs,2)}}" readonly></td>
-                                </tr>
-                                <tr>
-                                    <th><span> <input disabled type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox" {{$pembayaran_jo->total_cleaning!=0?'checked':''}}></span> CLEANING</th>
-                                    <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_cleaning,2)}}" readonly></td>
-                                </tr>
-                                <tr>
-                                    <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox" {{$pembayaran_jo->total_doc_fee!=0?'checked':''}}></span> DOC FEE</th>
-                                    <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($pembayaran_jo->total_doc_fee,2)}}" readonly></td>
-                                </tr>
-                                <tr>
-                                    <th>SUB TOTAL</th>
-                                    <th name="total_sblm_dooring" id="total_sblm_dooring">Rp. {{number_format($pembayaran_jo->total_biaya_sebelum_dooring,2)}}</th>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                            </tfoot>
-                        </table>
-                        <table class="table" id="sortable">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">Biaya Jaminan</th>
-                                </tr>
-                            </thead>
-                            <tbody > 
-                                <tr class="tinggi">
-                                    <th>Tgl Bayar Jaminan</th>
-                                    <td><input type="text" name="" class="form-control" value="{{\Carbon\Carbon::parse($dataJaminan[0]->tgl_bayar)->format('d-M-Y')}}" readonly></td>
-                                </tr>
-                                <tr>
-                                    <th>Total Jaminan</th>
-                                    <th>Rp. {{number_format($dataJaminan[0]->nominal,2)}}</th>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                            </tfoot>
-                        </table>
-                        
-                    </div>
-        </div>
-       
-    </div>
  
     </form>
 <script type="text/javascript">
