@@ -73,8 +73,16 @@
   .btn-rounded{
     border-radius: 10rem;
   }
-
-
+.bottom-nav-indicator.active-green {
+  border-color: #009d4a;
+}
+.rubik-heading-2 {
+  font-family: "Rubik" !important;
+  font-style: normal !important;
+  font-weight: 300 !important;
+  font-size: 20px !important;
+  line-height: 24px !important;
+}
 /* styling dropdown */
   .content {
     padding: 7rem 0; }

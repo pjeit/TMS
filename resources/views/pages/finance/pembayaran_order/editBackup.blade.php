@@ -99,7 +99,7 @@
                                         <h6 class="my-0">Biaya Sebelum Dooring</h6>
                                         {{-- <small class="text-muted">total</small> --}}
                                         </div>
-                                        <span class="text-muted">Rp. {{number_format($TotalBiayaRev,2)}}</span>
+                                        <span class="text-muted">Rp. {{number_format($TotalBiaya,2)}}</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between lh-sm">
                                         <div>
@@ -110,8 +110,8 @@
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between">
                                         <span>Total (IDR)</span>
-                                        <input type="hidden" name="total_sblm_dooring" value="{{$TotalBiayaRev}}">
-                                        <strong>Rp. {{number_format($TotalBiayaRev+$dataJaminan[0]->nominal,2)}}</strong>
+                                        <input type="hidden" name="total_sblm_dooring" value="{{$TotalBiaya}}">
+                                        <strong>Rp. {{number_format($TotalBiaya+$dataJaminan[0]->nominal,2)}}</strong>
                                     </li>
                                 </ul>
                                 <div class="input-group">
@@ -142,28 +142,28 @@
                                 </thead>
                                 <tbody > 
                                     <tr>
-                                        <th><span> <input disabled type="checkbox" name="thc_cekbox" id="thc_cekbox" {{$pembayaran_jo->thc!=0?'checked':''}}></span> THC</th>
-                                        <td name="total_thc"><input type="text" id="total_thc" class="form-control" value="Rp. {{number_format($pembayaran_jo->thc,2)}}" readonly></td>
+                                        <th><span> <input disabled type="checkbox" name="thc_cekbox" id="thc_cekbox" {{$totalThc!=0?'checked':''}}></span> THC</th>
+                                        <td name="total_thc"><input type="text" id="total_thc" class="form-control" value="Rp. {{number_format($totalThc,2)}}" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input disabled type="checkbox" name="lolo_cekbox" id="lolo_cekbox" {{$pembayaran_jo->lolo!=0?'checked':''}}></span> LOLO</th>
-                                        <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" value="Rp. {{number_format($pembayaran_jo->lolo,2)}}" readonly></td>
+                                        <th><span> <input disabled type="checkbox" name="lolo_cekbox" id="lolo_cekbox" {{$totalLolo!=0?'checked':''}}></span> LOLO</th>
+                                        <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" value="Rp. {{number_format($totalLolo,2)}}" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input disabled type="checkbox" name="apbs_cekbox" id="apbs_cekbox" {{$pembayaran_jo->apbs!=0?'checked':''}}></span> APBS</th>
-                                        <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" value="Rp. {{number_format($pembayaran_jo->apbs,2)}}" readonly></td>
+                                        <th><span> <input disabled type="checkbox" name="apbs_cekbox" id="apbs_cekbox" {{$totalApbs!=0?'checked':''}}></span> APBS</th>
+                                        <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" value="Rp. {{number_format($totalApbs,2)}}" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input disabled type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox" {{$pembayaran_jo->cleaning!=0?'checked':''}}></span> CLEANING</th>
-                                        <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" value="Rp. {{number_format($pembayaran_jo->cleaning,2)}}" readonly></td>
+                                        <th><span> <input disabled type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox" {{$totalCleaning!=0?'checked':''}}></span> CLEANING</th>
+                                        <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" value="Rp. {{number_format($totalCleaning,2)}}" readonly></td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox" {{$pembayaran_jo->doc_fee!=0?'checked':''}}></span> DOC FEE</th>
-                                        <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($pembayaran_jo->doc_fee,2)}}" readonly></td>
+                                        <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox" {{$Docfee->nominal!=0?'checked':''}}></span> DOC FEE</th>
+                                        <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($Docfee->nominal,2)}}" readonly></td>
                                     </tr>
                                     <tr>
                                         <th>SUB TOTAL</th>
-                                        <th name="total_sblm_dooring" id="total_sblm_dooring" >Rp. {{number_format($TotalBiayaRev,2)}}</th>
+                                        <th name="total_sblm_dooring" id="total_sblm_dooring" >Rp. {{number_format($TotalBiaya,2)}}</th>
                                     </tr>
                                 </tbody>
                                 <tfoot>

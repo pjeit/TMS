@@ -473,30 +473,31 @@ class JobOrderController extends Controller
             ->where('jaminan.id_job_order', '=', $JobOrder->id)
             ->get();
 
-        $totalThc =  DB::table('job_order_detail_biaya')
-            ->where('id_jo', $JobOrder->id)
-            ->where('keterangan', 'LIKE', '%THC%')
-            ->sum('nominal');
-        $totalLolo =  DB::table('job_order_detail_biaya')
-            ->where('id_jo', $JobOrder->id)
-            ->where('keterangan', 'LIKE', '%LOLO%')
-            ->sum('nominal');
-        $totalApbs =  DB::table('job_order_detail_biaya')
-            ->where('id_jo', $JobOrder->id)
-            ->where('keterangan', 'LIKE', '%APBS%')
-            ->sum('nominal');
-         $totalCleaning =  DB::table('job_order_detail_biaya')
-            ->where('id_jo', $JobOrder->id)
-            ->where('keterangan', 'LIKE', '%CLEANING%')
-            ->sum('nominal');
-         $Docfee =  DB::table('job_order_detail_biaya')
-            ->select('nominal')
-            ->where('id_jo', $JobOrder->id)
-            ->where('keterangan', 'LIKE', '%DOC_FEE%')
-            ->first();
-        $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
+        // $totalThc =  DB::table('job_order_detail_biaya')
+        //     ->where('id_jo', $JobOrder->id)
+        //     ->where('keterangan', 'LIKE', '%THC%')
+        //     ->sum('nominal');
+        // $totalLolo =  DB::table('job_order_detail_biaya')
+        //     ->where('id_jo', $JobOrder->id)
+        //     ->where('keterangan', 'LIKE', '%LOLO%')
+        //     ->sum('nominal');
+        // $totalApbs =  DB::table('job_order_detail_biaya')
+        //     ->where('id_jo', $JobOrder->id)
+        //     ->where('keterangan', 'LIKE', '%APBS%')
+        //     ->sum('nominal');
+        //  $totalCleaning =  DB::table('job_order_detail_biaya')
+        //     ->where('id_jo', $JobOrder->id)
+        //     ->where('keterangan', 'LIKE', '%CLEANING%')
+        //     ->sum('nominal');
+        //  $Docfee =  DB::table('job_order_detail_biaya')
+        //     ->select('nominal')
+        //     ->where('id_jo', $JobOrder->id)
+        //     ->where('keterangan', 'LIKE', '%DOC_FEE%')
+        //     ->first();
+        // $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
         // dd($TotalBiaya);
 
+        $TotalBiayaRev = $JobOrder->thc+$JobOrder->lolo+$JobOrder->apbs+$JobOrder->cleaning+$JobOrder->doc_fee;
 
         // dd($dataJoDetail);   
         $pdf = PDF::loadView('pages.order.job_order.print',[
@@ -505,12 +506,14 @@ class JobOrderController extends Controller
             'dataSupplier'=>$dataSupplier,
             'dataCustomer'=>$dataCustomer,
             'dataJaminan'=>$dataJaminan,
-            'totalThc'=> $totalThc,
-            'totalLolo'=> $totalLolo,
-            'totalApbs'=> $totalApbs,
-            'totalCleaning'=>$totalCleaning,
-            'Docfee'=>$Docfee,
-            'TotalBiaya'=>$TotalBiaya
+            // 'totalThc'=> $totalThc,
+            // 'totalLolo'=> $totalLolo,
+            // 'totalApbs'=> $totalApbs,
+            // 'totalCleaning'=>$totalCleaning,
+            // 'Docfee'=>$Docfee,
+            // 'TotalBiaya'=>$TotalBiaya
+            'TotalBiayaRev'=>$TotalBiayaRev
+
         ]); 
         // dd($JobOrder);
         // $pdf->setPaper('A5', 'landscape');
