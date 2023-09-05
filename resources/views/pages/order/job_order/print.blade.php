@@ -182,25 +182,25 @@
                 <tr>
                     <td>THC</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_thc,2) }}</td>
+                    <td class="aligh-right">Rp. {{number_format($JobOrder->thc,2) }}</td>
 
                 </tr>
                 <tr>
                     <td>LOLO</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_lolo,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($JobOrder->lolo,2)}}</td>
 
                 </tr>
                 <tr>
                     <td>APBS</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_apbs,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($JobOrder->apbs,2)}}</td>
 
                 </tr>
                 <tr>
                     <td>CLEANING</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_cleaning,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($JobOrder->cleaning,2)}}</td>
 
                 </tr>
                 <tr>
@@ -212,7 +212,7 @@
                 <tr>
                     <td>SUB TOTAL</td>
                     <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->total_biaya_sebelum_dooring,2)}}</td>
+                    <td class="aligh-right">Rp. {{number_format($TotalBiayaRev,2)}}</td>
 
                 </tr>
             </tbody>
@@ -235,7 +235,7 @@
                     <td>nominal</td>
                     <td>:</td>
                     <?php $nominal = $dJ->nominal ?>
-                    <?php $total = $dJ->nominal+$JobOrder->total_biaya_sebelum_dooring ?>
+                    <?php $total = $dJ->nominal+$TotalBiayaRev ?>
                     <td class="aligh-right">Rp. {{number_format($dJ->nominal,2) }}</td>
 
                 </tr>

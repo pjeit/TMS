@@ -40,7 +40,7 @@
           <a href="#" class="nav-link" style="font-weight: 700;">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
-              Dashboard
+              DASHBOARD
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
@@ -132,7 +132,7 @@
                 request()->is('pair_kendaraan*')||
                 request()->is('chassis*')
                 ? 'menu-is-opening menu-open' : '' }}">
-                <a href="#" class="nav-link" style="font-weight: 700;">
+                <a href="#" class="nav-link" style="font-weight: 700; font-size: 15px;">
                   <i class="nav-icon fas fa-key"></i>
                   <p>MASTER 
                     <i class="fas fa-angle-left right"></i>
@@ -328,10 +328,10 @@
           @endif
 
           <li class="nav-item">
-            <a href="#" class="nav-link" style="font-weight: 700;">
+            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-shipping-fast"></i>
               <p>
-                Inbound Job Order <i class="fas fa-angle-left right"></i>
+                INBOUND ORDER <i class="fas fa-angle-left right"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
@@ -364,6 +364,19 @@
                 </a>
               </li>
             </ul>
+         
+          </li>
+
+           <li class="nav-item">
+            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+              {{-- <i class="nav-icon fas fa-shipping-fast"></i> --}}
+              <i class="nav-icon fas fa-solid fa-truck"></i>
+              
+
+              <p>
+                TRUCKING ORDER <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{route('booking.index')}}" class="nav-link {{request()->url() === route('booking.index')? ' active' : '' }} " style="font-weight: 500;">
@@ -374,12 +387,23 @@
                 </a>
               </li>
             </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('truck_order.index')}}" class="nav-link {{request()->url() === route('job_order.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                     Order
+                  </p>
+                </a>
+              </li>
+            </ul>
+           
           </li>
          
           <li class="nav-item">
-            <a href="#" class="nav-link" style="font-weight: 700;">
+            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-dollar-sign"></i>
-              <p>Finance 
+              <p>FINANCE 
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -397,9 +421,9 @@
           </li>
 
           <li class="nav-item">
-            <a href="#" class="nav-link" style="font-weight: 700;">
+            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-dollar-sign"></i>
-              <p>Laporan Finance 
+              <p>LAPORAN FINANCE
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -429,9 +453,9 @@
           @if ($user_role == 1 || $user_role == 3)
             {{-- menu marketing --}}
             <li class="nav-item">
-              <a href="#" class="nav-link" style="font-weight: 700;">
+              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-key"></i>
-                <p>Menu Marketing
+                <p>MARKETING
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -465,7 +489,7 @@
 
           @if ($user_role == 1 || $user_role == 4)
             {{-- menu finnance --}}
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a href="#" class="nav-link" style="font-weight: 700;">
                 <i class="nav-icon fas fa-key"></i>
                 <p>Menu Finnance
@@ -498,7 +522,7 @@
                   </a>
                 </li>
               </ul>
-            </li>
+            </li> --}}
           @endif
 
         @endif

@@ -56,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('/booking/getTujuan/{id}', ['uses' => 'UserController@attendance']);
         Route::resource('booking', 'App\Http\Controllers\BookingController');
 
-        Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO']);
+        Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO'])->name('job_order.print');
         // Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
         Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');
         // Route::get('job_order/storage_demurage/{jobOrder}', 'App\Http\Controllers\JobOrderController@storage_demurage')->name('job_order.storage_demurage');
@@ -106,7 +106,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
         Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
 
-
+        Route::resource('truck_order', 'App\Http\Controllers\SewaController');
     });
 
     Route::middleware(['is_marketing'])->group(function () {

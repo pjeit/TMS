@@ -49,28 +49,7 @@ class PaymentJobController extends Controller
      */
     public function create()
     {
-        //
-         $dataSupplier = DB::table('supplier')
-            ->select('*')
-            ->where('supplier.is_aktif', '=', "Y")
-            ->get();
-        $dataCustomer = DB::table('customer')
-            ->select('*')
-            ->where('customer.is_aktif', '=', "Y")
-            ->get();
-        $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
-            ->select('*')
-            ->where('pengaturan_keuangan.is_aktif', '=', "Y")
-            ->get();
-        // dd($dataPengaturanKeuangan[0]);
-
-        return view('pages.finance.pembayaran_order.create',[
-            'judul'=>"Pembayaran Job Order",
-            'dataSupplier' => $dataSupplier,
-            'dataCustomer' =>$dataCustomer,
-            'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
-
-        ]);
+        
     }
 
     /**
@@ -116,11 +95,7 @@ class PaymentJobController extends Controller
             ->select('*')
             ->where('pengaturan_keuangan.is_aktif', '=', "Y")
             ->get();
-        $dataJoDetail = DB::table('job_order_detail')
-            ->select('*')
-            ->where('job_order_detail.is_aktif', '=', "Y")
-            ->where('job_order_detail.id_jo', '=', $pembayaran_jo->id)
-            ->get();
+     
         $dataJaminan = DB::table('jaminan')
             ->select('*')
             ->where('jaminan.is_aktif', '=', "Y")
@@ -135,7 +110,30 @@ class PaymentJobController extends Controller
         // dd($dataJaminan[0]);
         // dd($pembayaran_jo->no_jo);
         // dd($dataKas[0]->saldo_awal);
-
+        
+        // $totalThc =  DB::table('job_order_detail_biaya')
+        //     ->where('id_jo', $pembayaran_jo->id)
+        //     ->where('keterangan', 'LIKE', '%THC%')
+        //     ->sum('nominal');
+        // $totalLolo =  DB::table('job_order_detail_biaya')
+        //     ->where('id_jo', $pembayaran_jo->id)
+        //     ->where('keterangan', 'LIKE', '%LOLO%')
+        //     ->sum('nominal');
+        // $totalApbs =  DB::table('job_order_detail_biaya')
+        //     ->where('id_jo', $pembayaran_jo->id)
+        //     ->where('keterangan', 'LIKE', '%APBS%')
+        //     ->sum('nominal');
+        //  $totalCleaning =  DB::table('job_order_detail_biaya')
+        //     ->where('id_jo', $pembayaran_jo->id)
+        //     ->where('keterangan', 'LIKE', '%CLEANING%')
+        //     ->sum('nominal');
+        //  $Docfee =  DB::table('job_order_detail_biaya')
+        //     ->select('nominal')
+        //     ->where('id_jo', $pembayaran_jo->id)
+        //     ->where('keterangan', 'LIKE', '%DOC_FEE%')
+        //     ->first();
+        // $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
+        $TotalBiayaRev = $pembayaran_jo->thc+$pembayaran_jo->lolo+$pembayaran_jo->apbs+$pembayaran_jo->cleaning+$pembayaran_jo->doc_fee;
 
         return view('pages.finance.pembayaran_order.edit',[
             'judul'=>"Pembayaran Job Order",
@@ -143,9 +141,15 @@ class PaymentJobController extends Controller
             'dataSupplier' => $dataSupplier,
             'dataCustomer' =>$dataCustomer,
             'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
-            'dataJoDetail' =>$dataJoDetail,
             'dataJaminan' =>$dataJaminan,
-            'dataKas'=>$dataKas
+            'dataKas'=>$dataKas,
+            // 'totalThc'=> $totalThc,
+            // 'totalLolo'=> $totalLolo,
+            // 'totalApbs'=> $totalApbs,
+            // 'totalCleaning'=>$totalCleaning,
+            // 'Docfee'=>$Docfee,
+            // 'TotalBiaya'=>$TotalBiaya,
+            'TotalBiayaRev'=>$TotalBiayaRev
         ]);
     }
 
@@ -163,15 +167,13 @@ class PaymentJobController extends Controller
 
            try {
             $pesanKustom = [
-             
                 'pembayaran.required' => 'Pembayaran harus dipilih',
             ];
-            
             $request->validate([
                 'pembayaran' => 'required',
             ], $pesanKustom);
             $data = $request->collect();
-            // dd($data);
+            // dd($data['total_sblm_dooring']);die;
             // 'FINANCE_PENDING','FINANCE_APPROVED'
             $data_saldo_kas_sekarang = DB::table('kas_bank')
             ->select('*')
@@ -196,7 +198,7 @@ class PaymentJobController extends Controller
                     'is_aktif' => "Y",
                 )
             );
-            $perhitunganSaldo = $data_saldo_kas_sekarang[0]->saldo_sekarang - ($pembayaran_jo->total_biaya_sebelum_dooring+$dataJaminan[0]->nominal);
+            $perhitunganSaldo = $data_saldo_kas_sekarang[0]->saldo_sekarang - ($data['total_sblm_dooring']+$dataJaminan[0]->nominal);
             // dd( $perhitunganSaldo );
             DB::table('kas_bank')
             ->where('id', $data['pembayaran'])
@@ -222,7 +224,6 @@ class PaymentJobController extends Controller
             ->where('coa.is_aktif', '=', "Y")
             ->where('coa.no_akun', '=', 1205)
             ->get();
-
             $coaPelayaran = DB::table('coa')
             ->select('*')
             ->where('coa.is_aktif', '=', "Y")
@@ -246,7 +247,7 @@ class PaymentJobController extends Controller
                 $data['pembayaran'],// id kas_bank dr form
                 now(),//tanggal
                 0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                $pembayaran_jo->total_biaya_sebelum_dooring, //uang keluar (kredit)
+                $data['total_sblm_dooring'], //uang keluar (kredit)
                 $coaPelayaran[0]->no_akun, //kode coa
                 'biaya_pelayaran',
                 'UANG KELUAR - BIAYA PELAYARAN - JO', //keterangan_transaksi
