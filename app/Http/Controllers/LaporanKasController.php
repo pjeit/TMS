@@ -19,7 +19,7 @@ class LaporanKasController extends Controller
     {
         $tanggal_awal   = $request->input('tanggal_awal');
         $tanggal_akhir  = $request->input('tanggal_akhir');
-        $tipe           = $request->input('tipe');
+        // $tipe           = $request->input('tipe');
 
         if(strlen($tanggal_awal) && strlen($tanggal_akhir)){
             $tgl_default = '2000-01-01';
@@ -28,7 +28,7 @@ class LaporanKasController extends Controller
     
             $data = DB::table('kas_bank_transaction')
                 ->where('is_aktif', '=', 'Y') 
-                ->where('id_kas_bank', "$tipe") 
+                ->where('id_kas_bank', 2) 
                 ->whereBetween('tanggal', [$tgl_awal, $tgl_akhir])
                 ->orderBy('tanggal', 'ASC')
                 ->get();
@@ -76,7 +76,7 @@ class LaporanKasController extends Controller
                     IF(SUM(debit) - SUM(kredit) >= 0, ABS(SUM(debit) - SUM(kredit)), 0) AS debit,
                     IF(SUM(debit) - SUM(kredit) >= 0, 0, ABS(SUM(debit) - SUM(kredit))) AS kredit,keterangan_kode_transaksi
                     FROM kas_bank_transaction 
-                    WHERE id_kas_bank = '$tipe'
+                    WHERE id_kas_bank = 2
                     AND CAST(tanggal AS DATE) BETWEEN date_add('$tgl_default', interval 1 day) 
                     AND date_add('$tgl_awal', interval -1 day)
                     AND is_aktif = 'Y'
@@ -85,7 +85,7 @@ class LaporanKasController extends Controller
                     SELECT 
                         id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                     FROM kas_bank_transaction 
-                    WHERE id_kas_bank = '$tipe'
+                    WHERE id_kas_bank = 2
                     AND CAST(tanggal AS DATE) BETWEEN '$tgl_awal' AND '$tgl_akhir'
                     AND is_aktif = 'Y'
                     --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
@@ -93,7 +93,7 @@ class LaporanKasController extends Controller
                 ORDER BY cast(tanggal as datetime),id     
             ");
 
-            $kas = DB::table('kas_bank')->where('id', "$tipe")->first();
+            $kas = DB::table('kas_bank')->where('id', 2)->first();
             $kasBank = DB::table('kas_bank')->where('is_aktif', 'Y')->orderBy('nama', 'asc')->get();
     
             return view('pages.laporan.Kas.index',[
