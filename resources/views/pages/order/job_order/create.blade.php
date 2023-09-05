@@ -194,38 +194,38 @@
                                 </thead>
                                 <tbody > 
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox" id="thc_cekbox"></span> THC</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[THC]" id="thc_cekbox"></span> THC</th>
                                         <td name="">
                                             <input type="text" id="thc_null" class="form-control" value="0" readonly>
                                             <input type="text" name="total_thc" id="total_thc" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox" id="lolo_cekbox"></span> LOLO</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[LOLO]" id="lolo_cekbox"></span> LOLO</th>
                                         <td name="">
                                             <input type="text" id="lolo_null" class="form-control" value="0" readonly>
                                             <input type="text" name="total_lolo" id="total_lolo" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox" id="apbs_cekbox"></span> APBS</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[APBS]" id="apbs_cekbox"></span> APBS</th>
                                         <td name="">
                                             <input type="text" id="apbs_null" class="form-control" value="0" readonly>
                                             <input type="text" name="total_apbs" id="total_apbs" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="cleaning_cekbox" id="cleaning_cekbox"></span> CLEANING</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[CLEANING]" id="cleaning_cekbox"></span> CLEANING</th>
                                         <td name="">
                                             <input type="text" id="cleaning_null" class="form-control" value="0" readonly>
                                             <input type="text" name="total_cleaning" id="total_cleaning" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox" id="doc_fee_cekbox"></span> DOC FEE</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[DOC_FEE]" id="doc_fee_cekbox"></span> DOC FEE</th>
                                         <td name="">
                                             <input type="text" id="doc_fee_null" class="form-control" value="0" readonly>
-                                            <input type="text" name="total_doc_fee" id="total_doc_fee" value="0" class="form-control uang numaja" readonly hidden>
+                                            <input type="text" name="DOC_FEE" id="DOC_FEE" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
@@ -398,6 +398,7 @@
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language:'en',
+                orientation: 'bottom',
             });
             $('#tgl_bayar_jaminan').datepicker({
                 autoclose: true,
@@ -536,10 +537,10 @@
                                     <option value="20">20Ft</option>
                                     <option value="40">40Ft</option>
                                 </select>
-                                <input type="hidden" readonly class="hargaThc " hargaThc_${i} name="detail[${i}][hargaThc]" value="">
-                                <input type="hidden" readonly class="hargaLolo " hargaLolo_${i} name="detail[${i}][hargaLolo]" value="">
-                                <input type="hidden" readonly class="hargaApbs " hargaApbs_${i} name="detail[${i}][hargaApbs]" value="">
-                                <input type="hidden" readonly class="hargaCleaning " hargaCleaning_${i} name="detail[${i}][hargaCleaning]" value="">
+                                <input type="hidden" readonly class="THC" THC_${i} name="detail[${i}][biaya][THC]" value="">
+                                <input type="hidden" readonly class="LOLO" LOLO_${i} name="detail[${i}][biaya][LOLO]" value="">
+                                <input type="hidden" readonly class="APBS" APBS_${i} name="detail[${i}][biaya][APBS]" value="">
+                                <input type="hidden" readonly class="CLEANING" CLEANING_${i} name="detail[${i}][biaya][CLEANING]" value="">
                                 
                             </td>
                         
@@ -580,6 +581,13 @@
                             </td>
                         </tr>`
                     );
+
+                    $('input[type="text"]').on("input", function () {
+                        var inputValue = $(this).val();
+                        var uppercaseValue = inputValue.toUpperCase();
+                        $(this).val(uppercaseValue);
+                    });
+
                     uncheck();
                     $('.selectpicker').selectpicker('refresh');
 
@@ -662,11 +670,11 @@
             $('#doc_fee_cekbox').on('change', function() {
                 if ($(this).prop('checked')) {
                     $('#doc_fee_null').prop('hidden', true);
-                    $('#total_doc_fee').prop('hidden', false);
+                    $('#DOC_FEE').prop('hidden', false);
                     hitungTotal();
                 } else {
                     $('#doc_fee_null').prop('hidden', false);
-                    $('#total_doc_fee').prop('hidden', true);
+                    $('#DOC_FEE').prop('hidden', true);
                     hitungTotal();
                 }
             });
@@ -685,16 +693,16 @@
                 var parentTd = $(this).closest('td');
                 if(selectedValue == '20'){
                     var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
-                    parentTd.find('.hargaThc').val(strippingVal == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
-                    parentTd.find('.hargaLolo').val(strippingVal == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
+                    parentTd.find('.THC').val(strippingVal == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
+                    parentTd.find('.LOLO').val(strippingVal == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
                 }else{
                     var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
-                    parentTd.find('.hargaThc').val(strippingVal == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
-                    parentTd.find('.hargaLolo').val(strippingVal == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
+                    parentTd.find('.THC').val(strippingVal == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
+                    parentTd.find('.LOLO').val(strippingVal == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
                 }
 
-                parentTd.find('.hargaApbs').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
-                parentTd.find('.hargaCleaning').val(selectedValue == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
+                parentTd.find('.APBS').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
+                parentTd.find('.CLEANING').val(selectedValue == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
                 // parentTd.find('.hargaDocFee').val(dataKeuangan.doc_fee);
                 
            
@@ -718,23 +726,23 @@
                 var tk = $(`#tipe${dataId}`).val();
                 // console.log('tk '+tk);
                 if(tk == '20'){
-                    const thc_change = document.querySelector(`input[hargaThc_${dataId}]`);
+                    const thc_change = document.querySelector(`input[THC_${dataId}]`);
                     var valueThc = selectedValue == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam;
                     thc_change.value = valueThc;
 
-                    const lolo_change = document.querySelector(`input[hargaLolo_${dataId}]`);
+                    const lolo_change = document.querySelector(`input[LOLO_${dataId}]`);
                     var valueLolo = selectedValue == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam;
                     lolo_change.value = valueLolo;
                 }else{
-                    const thc_change = document.querySelector(`input[hargaThc_${dataId}]`);
+                    const thc_change = document.querySelector(`input[THC_${dataId}]`);
                     var valueThc = selectedValue == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam;
                     thc_change.value = valueThc;
 
-                    const lolo_change = document.querySelector(`input[hargaLolo_${dataId}]`);
+                    const lolo_change = document.querySelector(`input[LOLO_${dataId}]`);
                     var valueLolo = selectedValue == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam;
                     lolo_change.value = valueLolo;
-                    // document.querySelector(`input[hargaThc_${dataId}]`).val(selectedValue == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
-                    // document.querySelector(`input[hargaLolo_${dataId}]`).val(selectedValue == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
+                    // document.querySelector(`input[THC_${dataId}]`).val(selectedValue == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
+                    // document.querySelector(`input[LOLO_${dataId}]`).val(selectedValue == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
                 }
 
                 uncheck();
@@ -755,10 +763,10 @@
                 var total_lolo = parseFloat(($('#lolo_cekbox').prop('checked')) ? $('#total_lolo').val() : 0);
                 var total_apbs = parseFloat(($('#apbs_cekbox').prop('checked')) ? $('#total_apbs').val() : 0);
                 var total_cleaning = parseFloat(($('#cleaning_cekbox').prop('checked')) ? $('#total_cleaning').val() : 0);
-                var total_doc_fee = parseFloat(($('#doc_fee_cekbox').prop('checked')) ? $('#total_doc_fee').val() : 0);
+                var DOC_FEE = parseFloat(($('#doc_fee_cekbox').prop('checked')) ? $('#DOC_FEE').val() : 0);
                 
                 console.log('total_thc '+ total_thc);
-                var total = parseFloat(total_thc + total_lolo + total_apbs + total_cleaning + total_doc_fee);
+                var total = parseFloat(total_thc + total_lolo + total_apbs + total_cleaning + DOC_FEE);
 
                 var total_sblm_dooring = $('#total_sblm_dooring').val(total);
             }
@@ -781,46 +789,46 @@
                 // $('#total_cleaning').prop('hidden', true);
 
                 // $('#doc_fee_null').prop('hidden', false);
-                // $('#total_doc_fee').prop('hidden', true);
+                // $('#DOC_FEE').prop('hidden', true);
             }
 
             function calculateTotalHarga() {
-                var totalhargaThc = 0;
-                var totalhargaLolo = 0;
-                var totalhargaApbs = 0;
-                var totalhargaCleaning = 0;
+                var totalTHC = 0;
+                var totalLOLO = 0;
+                var totalAPBS = 0;
+                var totalCLEANING = 0;
                 var totalhargaDocFee = 0;
 
-                $('#total_thc').val(totalhargaThc);
-                $('#total_lolo').val(totalhargaLolo);
-                $('#total_apbs').val(totalhargaApbs);
-                $('#total_cleaning').val(totalhargaCleaning);
-                $('#total_doc_fee').val(dataKeuangan.doc_fee);
+                $('#total_thc').val(totalTHC);
+                $('#total_lolo').val(totalLOLO);
+                $('#total_apbs').val(totalAPBS);
+                $('#total_cleaning').val(totalCLEANING);
+                $('#DOC_FEE').val(dataKeuangan.doc_fee);
                 
-                $('.hargaThc').each(function() {
+                $('.THC').each(function() {
                     var value = parseFloat($(this).val()) || 0;
-                    totalhargaThc += value;
-                    $('#total_thc').val(totalhargaThc);
+                    totalTHC += value;
+                    $('#total_thc').val(totalTHC);
                 });
-                $('.hargaLolo').each(function() {
+                $('.LOLO').each(function() {
                     var value = parseFloat($(this).val()) || 0;
-                    totalhargaLolo += value;
-                    $('#total_lolo').val(totalhargaLolo);
+                    totalLOLO += value;
+                    $('#total_lolo').val(totalLOLO);
                 });
-                $('.hargaApbs').each(function() {
+                $('.APBS').each(function() {
                     var value = parseFloat($(this).val()) || 0;
-                    totalhargaApbs += value;
-                    $('#total_apbs').val(totalhargaApbs);
+                    totalAPBS += value;
+                    $('#total_apbs').val(totalAPBS);
                 });
-                $('.hargaCleaning').each(function() {
+                $('.CLEANING').each(function() {
                     var value = parseFloat($(this).val()) || 0;
-                    totalhargaCleaning += value;
-                    $('#total_cleaning').val(totalhargaCleaning);
+                    totalCLEANING += value;
+                    $('#total_cleaning').val(totalCLEANING);
                 });
                 // $('.hargaDocFee').each(function() {
                 //     var value = parseFloat($(this).val()) || 0;
                 //     totalhargaDocFee += value;
-                //     $('#total_doc_fee').val(totalhargaDocFee);
+                //     $('#DOC_FEE').val(totalhargaDocFee);
                 // });
             }
         // end of logic hitung biaya

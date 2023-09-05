@@ -190,8 +190,8 @@ class GrupTujuanController extends Controller
                         $edit_tujuan->komisi = $komisi;
                         $edit_tujuan->catatan = $value['catatan'];
                         $edit_tujuan->seal_pje = ($value['seal_hidden'] != '')? floatval(str_replace(',', '', $value['seal_hidden'])):null;
-                        $edit_tujuan->plastik = ($value['tally_hidden'] != '')? floatval(str_replace(',', '', $value['tally_hidden'])):null;
-                        $edit_tujuan->tally = ($value['plastik_hidden'] != '')? floatval(str_replace(',', '', $value['plastik_hidden'])):null;
+                        $edit_tujuan->plastik = ($value['plastik_hidden'] != '')? floatval(str_replace(',', '', $value['plastik_hidden'])):null;
+                        $edit_tujuan->tally = ($value['tally_hidden'] != '')? floatval(str_replace(',', '', $value['tally_hidden'])):null;
                         $edit_tujuan->kargo = $value['kargo_hidden'];
 
                         $edit_tujuan->updated_by = $user;
