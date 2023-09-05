@@ -46,7 +46,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                    {{-- <div class="col-4">
                                         <div class="form-group">
                                             <label for="">Kas / Bank <span class="text-red">*</span></label>
                                             <select class="form-control selectpicker" name="tipe" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
@@ -55,17 +55,15 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-4">
                                         <label for="">&nbsp;</label>
-                                        <div class="row">
-                                            <div class="col-6">
+                                        <div class="d-flex justify-content-start" style="gap: 5px;">
                                                 <button type="submit" class="btn btn-primary radiusSendiri " onclick=""><i class="fas fa-search"></i> <b> Tampilkan Data</b></button>
-                                            </div>
-                                            <div class="col-6">
                                                 <button type="button" class="btn btn-success radiusSendiri " onclick=""><i class="fas fa-file-excel"></i> <b> Export Excel</b></button>
-                                            </div>
                                         </div>
+
+                                     
                                     </div>
                                 </div>
                             </form>
