@@ -40,12 +40,38 @@
                                     <td>{{ $item->nama_supp }}</td>
                                     <td>{{ $item->status}}</td>
                                     <td>                                    
-                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('job_order.edit',[$item->id])}}">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>   
-                                        <a href="{{ route('job_order.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
-                                        <a href="/job_order/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank" class="btn btn-outline-dark btn-default radiusSendiri"><i class="fas fa-print"></i> Print</a>
-
+                                        <div class="dropdown custom-dropdown">
+                                            <a href="#" data-toggle="dropdown" class="dropdown-link bg-gray rounded-circle" aria-haspopup="true" aria-expanded="false">
+                                                <span class="fa fa-bolt "></span>
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
+                                                    <span class="fas fa-edit mr-3"></span> Edit
+                                                </a>
+                                                <a href="/job_order/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
+                                                    <span class="fas fa-print mr-3"></span> Photoshop PDF
+                                                </a>
+                                                <a href="{{ route('job_order.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                    <span class="fas fa-trash mr-3"></span> Delete
+                                                </a>
+                                              
+                                            </div>
+                                        </div>
+                                        {{-- <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <div class="btn-group" role="group">
+                                              <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-bolt"></i>
+                                              </button>
+                                              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                                <a class="dropdown-item bg-info radiusSendiri" href="{{route('job_order.edit',[$item->id])}}">
+                                                    <i class="fas fa-edit"></i> 
+                                                </a>   
+                                                <a href="/job_order/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank" class="dropdown-item bg-fuchsia radiusSendiri"><i class="fas fa-print"></i> </a>
+                                                <a href="{{ route('job_order.destroy', $item->id) }}" class="dropdown-item bg-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> </a>
+                                              </div>
+                                            </div>
+                                          </div> --}}
+                                       
                                     </td>
                                 </tr>
                                 @endforeach
