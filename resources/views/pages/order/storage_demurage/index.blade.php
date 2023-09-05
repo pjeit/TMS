@@ -22,36 +22,28 @@
             <div class="card-header ">
                 {{-- <div class="" style="position: relative; left: 0px; top: 0px; background-color:#edf4fc;"> --}}
                     <div class="card-header" style="border: 2px solid #bbbbbb;">
-                            <form id="form_report" action="{{ route('job_order.unloading_plan') }}" method="POST">
+                            <form id="form_report" action="{{ route('job_order.storage_demurage') }}" method="POST">
                                 @csrf
                                 <div class="row" >
                                     <div class="col-4">
                                         <div class="form-group">
-                                            <label for="">Status JO<span class="text-red">*</span></label>
-                                            <select class="form-control selectpicker" name="statusJO" id="statusJO" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">ALL</option>
-                                                <option value="WAITING PAYMENT">WAITING PAYMENT</option>
-                                                <option value="FINANCE PENDING">MENUNGGU FINANCE</option>
-                                                <option value="FINANCE APPROVED">DISETUJUI FINANCE</option>
-
-                                                {{-- @foreach ($kasBank as $kb)
-                                                    <option value="{{$kb->id}}" <?= $request['tipe'] == $kb->id ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
-                                                @endforeach --}}
+                                            <label for="">Pengirim</label>
+                                            <select class="form-control selectpicker" name="pengirim" id="pengirim" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                <option value="">SEMUA DATA</option>
+                                                @foreach ($customer as $cust)
+                                                    <option value="{{$cust->id}}">{{$cust->nama}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
                                      <div class="col-4">
                                         <div class="form-group">
-                                            <label for="">Status Kontainer<span class="text-red">*</span></label>
+                                            <label for="">Pelayaran</label>
                                             <select class="form-control selectpicker" name="statusJODetail" id="statusJODetail" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">ALL</option>
-                                                <option value="WAITING PAYMENT">WAITING PAYMENT</option>
-                                                <option value="FINANCE PENDING">MENUNGGU FINANCE</option>
-                                                <option value="FINANCE APPROVED">DISETUJUI FINANCE</option>
-
-                                                {{-- @foreach ($kasBank as $kb)
-                                                    <option value="{{$kb->id}}" <?= $request['tipe'] == $kb->id ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
-                                                @endforeach --}}
+                                                <option value="">SEMUA DATA</option>
+                                                @foreach ($supplier as $supp)
+                                                    <option value="{{$supp->id}}">{{$supp->nama}}</option>
+                                                @endforeach
                                             </select>
                                         </div>
                                     </div>
@@ -139,7 +131,7 @@
                                      <div class="btn-group">
                                         <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
                                         <ul class="dropdown-menu" style="">
-                                            <li><a class="dropdown-item" href="{!! url('/job_order/${data[i].id_jo}/edit') !!}"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
+                                            <li><a class="dropdown-item" href="{!! url('/job_order/storage_demurage_input/${data[i].id}') !!}"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
                                             
                                             <li><a class="dropdown-item" href="https://testapps.pjexpress.co.id/index.php/c_cetak_invoice/cetak/4891"><span class="fas fa-print" style="width:24px"></span>Cetak</a></li>
                                         </ul>
@@ -173,55 +165,6 @@
                  
                 }
             });
-			//disarankan seperti ini
-			// $.get("{{ route('job_order.unloading_data') }}",
-            // {
-            //     statusJO : $("#statusJO").val(),
-			// 	statusJODetail:$("#statusJODetail").val()
-            // },function(d){
-            //         var data = d.data;
-            //          $("#hasil").html(" ");
-            //             console.log(d);
-
-            //           var nyimpenIdBapakJO = null;
-
-
-            //          for (var i = 0; i < data.length; i++) {
-                            
-            //                 if (data[i].id_jo !== nyimpenIdBapakJO) {
-            //                     var row = $("<tr></tr>");
-            //                     row.append("<td colspan='6'>" + data[i].no_jo + "<br> Status Jo: " + data[i].statusJO + "</td>");
-            //                     $("#hasil").append(row);
-            //                     nyimpenIdBapakJO = data[i].id_jo;
-            //                 }
-
-            //                 var row = $("<tr></tr>");
-            //                 row.append(`
-            //                     <td>
-            //                          <div class="btn-group">
-            //                             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
-            //                             <ul class="dropdown-menu" style="">
-            //                                 <li><a class="dropdown-item" href="{!! url('/job_order/${data[i].id_jo}/edit') !!}"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
-                                            
-            //                                 <li><a class="dropdown-item" href="https://testapps.pjexpress.co.id/index.php/c_cetak_invoice/cetak/4891"><span class="fas fa-print" style="width:24px"></span>Cetak</a></li>
-            //                             </ul>
-            //                         </div>
-                                
-            //                     </td>
-            //                     `); 
-                            
-            //                 row.append("<td>" + data[i].no_kontainer + "</td>");
-            //                 row.append("<td>" + data[i].kode + " - " + data[i].nama_cust + "</td>");
-            //                 row.append("<td>" + data[i].nama_supp + "</td>");
-            //                 row.append("<td>" + data[i].statusDetail + "</td>");
-                            
-            //                 $("#hasil").append(row);
-            //             }
-
-
-			// 	});
-
-
 		});
     
         $('#tanggal_awal').datepicker({

@@ -194,35 +194,35 @@
                                 </thead>
                                 <tbody > 
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[THC]" id="thc_cekbox"></span> THC</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox_THC" id="thc_cekbox"></span> THC</th>
                                         <td name="">
                                             <input type="text" id="thc_null" class="form-control" value="0" readonly>
                                             <input type="text" name="total_thc" id="total_thc" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[LOLO]" id="lolo_cekbox"></span> LOLO</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox_LOLO" id="lolo_cekbox"></span> LOLO</th>
                                         <td name="">
                                             <input type="text" id="lolo_null" class="form-control" value="0" readonly>
                                             <input type="text" name="total_lolo" id="total_lolo" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[APBS]" id="apbs_cekbox"></span> APBS</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox_APBS" id="apbs_cekbox"></span> APBS</th>
                                         <td name="">
                                             <input type="text" id="apbs_null" class="form-control" value="0" readonly>
                                             <input type="text" name="total_apbs" id="total_apbs" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[CLEANING]" id="cleaning_cekbox"></span> CLEANING</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox_CLEANING" id="cleaning_cekbox"></span> CLEANING</th>
                                         <td name="">
                                             <input type="text" id="cleaning_null" class="form-control" value="0" readonly>
                                             <input type="text" name="total_cleaning" id="total_cleaning" value="0" class="form-control uang numaja" readonly hidden>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox[DOC_FEE]" id="doc_fee_cekbox"></span> DOC FEE</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="checkbox_DOC_FEE" id="doc_fee_cekbox"></span> DOC FEE</th>
                                         <td name="">
                                             <input type="text" id="doc_fee_null" class="form-control" value="0" readonly>
                                             <input type="text" name="DOC_FEE" id="DOC_FEE" value="0" class="form-control uang numaja" readonly hidden>

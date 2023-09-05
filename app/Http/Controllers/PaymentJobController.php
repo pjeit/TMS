@@ -25,7 +25,7 @@ class PaymentJobController extends Controller
         ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
         ->join('jaminan', 'job_order.id', '=', 'jaminan.id_job_order')
         ->where('job_order.is_aktif', '=', 'Y') 
-        ->where('job_order.status', 'like', 'FINANCE PENDING') 
+        ->where('job_order.status', 'like', 'MENUNGGU PEMBAYARAN') 
 
         ->paginate(5);
 
@@ -190,7 +190,7 @@ class PaymentJobController extends Controller
             ->where('id', $pembayaran_jo['id'])
             ->update(array(
                 //    'nama' => strtoupper($data['nama']),
-                    'status' => 'FINANCE APPROVED',
+                    'status' => 'DALAM PENGIRIMAN',
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
                     'is_aktif' => "Y",

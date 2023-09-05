@@ -48,8 +48,11 @@
                                                 <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
                                                     <span class="fas fa-edit mr-3"></span> Edit
                                                 </a>
+                                                <a href="{{route('job_order.storage_demurage',[$item->id])}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
+                                                    <span class="fas fa-inbox mr-3"></span> Input Storage/Demurage
+                                                </a>
                                                 <a href="/job_order/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
-                                                    <span class="fas fa-print mr-3"></span> Photoshop PDF
+                                                    <span class="fas fa-print mr-3"></span> Export PDF
                                                 </a>
                                                 <a href="{{ route('job_order.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
                                                     <span class="fas fa-trash mr-3"></span> Delete
