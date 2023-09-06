@@ -48,6 +48,9 @@
                                                 <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
                                                     <span class="fas fa-edit mr-3"></span> Edit
                                                 </a>
+                                                <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
+                                                    <span class="fas fa-edit mr-3"></span> Edit
+                                                </a>
                                                 {{-- <a href="{{route('storage_demurage.edit',[$item->id])}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
                                                     <span class="fas fa-inbox mr-3"></span> Input Storage/Demurage
                                                 </a> --}}

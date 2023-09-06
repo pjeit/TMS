@@ -29,10 +29,6 @@ class PaymentJobController extends Controller
 
         ->paginate(5);
 
-        // dd($data);
-        
-
-
         //  $data = JobOrder::where('is_aktif', 'Y')->paginate(5);
 
         return view('pages.finance.pembayaran_order.index',[

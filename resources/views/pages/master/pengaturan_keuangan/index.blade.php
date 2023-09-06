@@ -50,7 +50,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="row">
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Uang Jalan</label>
                                         <select class="form-control select2" style="width: 100%;" id='uang_jalan' name="uang_jalan">
                                             @foreach ($dataMKas as $item)
@@ -59,7 +59,7 @@
                                         </select>
                                     </div>
                 
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Reimburse</label>
                                         <select class="form-control select2" style="width: 100%;" id='reimburse' name="reimburse">
                                             @foreach ($dataMKas as $item)
@@ -68,7 +68,7 @@
                                         </select>
                                     </div>
                     
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Penerimaan Customer</label>
                                         <select class="form-control select2" style="width: 100%;" id='penerimaan_customer' name="penerimaan_customer">
                                             @foreach ($dataMKas as $item)
@@ -81,7 +81,7 @@
 
                             <div class="col-12">
                                 <div class="row">
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Pembayaran Supplier</label>
                                         <select class="form-control select2" style="width: 100%;" id='pembayaran_supplier' name="pembayaran_supplier">
                                             @foreach ($dataMKas as $item)
@@ -90,7 +90,7 @@
                                         </select>
                                     </div>
                                 
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Pembayaran Gaji</label>
                                         <select class="form-control select2" style="width: 100%;" id='pembayaran_gaji' name="pembayaran_gaji">
                                             @foreach ($dataMKas as $item)
@@ -99,7 +99,7 @@
                                         </select>
                                     </div>
                     
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Hutang Karyawan</label>
                                         <select class="form-control select2" style="width: 100%;" id='hutang_karyawan' name="hutang_karyawan">
                                             @foreach ($dataMKas as $item)
@@ -112,7 +112,7 @@
                             
                             <div class="col-12">
                                 <div class="row">
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Klaim Supir</label>
                                         <select class="form-control select2" style="width: 100%;" id='klaim_supir' name="klaim_supir">
                                             @foreach ($dataMKas as $item)
@@ -121,7 +121,7 @@
                                         </select>
                                     </div>
     
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Doc Fee</label>
                                         <div class="input-group ">
                                             <div class="input-group-prepend">
@@ -131,7 +131,7 @@
                                         </div>
                                     </div>
                 
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Batas Pemutihan </label>
                                         <br>
                                         <!-- <input type="number" class="form-control" name="batas_pemutihan" id="batas_pemutihan" value="<?= isset($data->batas_pemutihan) ? $data->batas_pemutihan:null; ?>"> -->
@@ -139,6 +139,39 @@
                                             <input id="batas_pemutihan" type="text" name="batas_pemutihan" value="<?= ($data->batas_pemutihan)? $data->batas_pemutihan:0; ?>">
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                           
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                        <label>Seal PJE</label>
+                                        <div class="input-group ">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input required type="text" name="seal_pje" class="form-control numaja uang" value="{{number_format($data->seal_pje)}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                        <label>Tally</label>
+                                        <div class="input-group ">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input required type="text" name="tally" class="form-control numaja uang" value="{{number_format($data->tally)}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                        <label>Plastik</label>
+                                        <div class="input-group ">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input required type="text" name="plastik" class="form-control numaja uang" value="{{number_format($data->plastik)}}">
+                                        </div>
+                                    </div>
+                
                                 </div>
                             </div>
                         </div>

@@ -81,10 +81,6 @@ class GrupTujuanController extends Controller
     {
         $data['grup'] = Grup::where('is_aktif', 'Y')->findOrFail($id);
         $tujuan = GrupTujuan::where('grup_id', $id)->where('is_aktif', 'Y')->get();
-        $dataKargo = DB::table('m_kargo') 
-            ->select('m_kargo.*')
-            ->where('m_kargo.is_aktif', '=', "Y")
-            ->get();
         foreach ($tujuan as $key => $value) {
             $biaya = GrupTujuanBiaya::where('grup_id', $id)
                                 ->where('is_aktif', 'Y')
@@ -108,18 +104,21 @@ class GrupTujuanController extends Controller
                 'tally'=>$value->tally,
                 'plastik'=>$value->plastik,
                 'kargo'=>$value->kargo,
-
                 'detail_uang_jalan'=>json_encode($biaya),
             );
         }
-        // dd($data);
-        // var_dump($data); die;
+
+        $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
+            ->select('*')
+            ->where('pengaturan_keuangan.is_aktif', '=', "Y")
+            ->get();
+        // dd($dataPengaturanKeuangan);
 
         return view('pages.master.grup_tujuan.edit',[
             'judul' => "Grup",
             'data' => $data,
-            'dataKargo'=>$dataKargo,
             'id' => $id,
+            'dataPengaturanKeuangan' => $dataPengaturanKeuangan,
         ]);
     }
 

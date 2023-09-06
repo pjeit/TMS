@@ -34,7 +34,7 @@
             </div>
         @endforeach
     @endif
-    <form action="{{ route('job_order.update', ['job_order' => $data['JO'] ]) }}" id='send' method="POST" >
+    <form action="{{ route('storage_demurage.update', ['storage_demurage' => $data['detail'] ]) }}" id='send' method="POST" >
         @method('PUT')
         @csrf
         <div class="row m-2">
@@ -59,7 +59,9 @@
                             <div class="col-4" >
                                 <div class="form-group" style="" >
                                     <label for="">Pengirim</label>
-                                    <input type="text" value="{{$data['JO']->getCustomer    ->nama}}" class="form-control" disabled>
+                                    <input type="text" value="{{$data['JO']->getCustomer->nama}}" class="form-control" disabled>
+                                    <input type="hidden" value="{{$data['JO']->id}}" class="form-control" name="id_jo">
+                                    <input type="hidden" value="{{$data['detail']->id}}" class="form-control" name="id_jo_detail">
                                 </div>
                             </div>
                             <div class="col-4" >
@@ -108,11 +110,45 @@
                                             <th style="">Storage</th>
                                             <th style="">Demurage</th>
                                             <th style="">Detention</th>
+                                            <th style="">Status</th>
                                             <th style="width:30px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    
+                                        @if (isset($data['biaya']))
+                                            @foreach ($data['biaya'] as $key => $item)
+                                            <tr id="row_{{$key}}">
+                                                <td style="width: 22%">
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">Rp.</span>
+                                                        </div>
+                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->storage, 2) }}" disabled>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 22%">
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">Rp.</span>
+                                                        </div>
+                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->demurage, 2) }}" disabled>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 22%">
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">Rp.</span>
+                                                        </div>
+                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->detention, 2) }}" disabled>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 29%" >
+                                                    <input type="text" class="form-control" value="{{$item->status_bayar}}" disabled>
+                                                </td>
+                                                <td style="width: 5%"></td>
+                                            </tr>
+                                            @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
                             </form>
@@ -219,7 +255,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp.</span>
                             </div>
-                            <input type="text" name="storage" class="form-control numaja uang " id="storage${i}">
+                            <input type="text" name="data[${i}][storage]" class="form-control numaja uang " id="storage${i}">
                         </div>
                     </td>
                     <td style="text-align: center; vertical-align: middle;">
@@ -228,7 +264,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp.</span>
                             </div>
-                            <input type="text" name="demurage" id="demurage${i}" class="form-control numaja uang " />
+                            <input type="text" name="data[${i}][demurage]" id="demurage${i}" class="form-control numaja uang " />
                         </div>
                     </td>
                     <td style="text-align: center; vertical-align: middle;">
@@ -236,7 +272,12 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp.</span>
                             </div>
-                            <input type="text" name="detention" id="detention${i}" class="form-control numaja uang"/>
+                            <input type="text" name="data[${i}][detention]" id="detention${i}" class="form-control numaja uang"/>
+                        </div>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;">
+                        <div class="input-group mb-3">
+                            <input type="text" id="status${i}" class="form-control"/ disabled>
                         </div>
                     </td>
                     <td>

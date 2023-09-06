@@ -16,7 +16,7 @@ class JobOrderDetailBiaya extends Model
         'id_jo_detail',
         'keterangan',
         'nominal',
-        'status',
+        'status_bayar',
         'tgl_bayar',
         
         'created_at',
