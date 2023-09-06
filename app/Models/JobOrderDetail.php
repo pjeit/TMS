@@ -46,9 +46,9 @@ class JobOrderDetail extends Model
         'is_aktif',
    ];
 
-   public function getTujuan(): ?HasOne
+   public function getTujuan(): HasOne
    {
-       $relation = $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan')->select('id');
+       $relation = $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan')->select('id', 'nama_tujuan', 'alamat');
    
        return $relation ? $relation : null;
    }

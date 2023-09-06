@@ -22,14 +22,14 @@
             <div class="card-header ">
                 {{-- <div class="" style="position: relative; left: 0px; top: 0px; background-color:#edf4fc;"> --}}
                     <div class="card-header" style="border: 2px solid #bbbbbb;">
-                            <form id="form_report" action="{{ route('job_order.storage_demurage') }}" method="POST">
+                            <form id="form_report" action="{{ route('storage_demurage.index') }}" method="POST">
                                 @csrf
                                 <div class="row" >
                                     <div class="col-4">
                                         <div class="form-group">
                                             <label for="">Pengirim</label>
                                             <select class="form-control selectpicker" name="pengirim" id="pengirim" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">SEMUA DATA</option>
+                                                <option value="">­­— SEMUA DATA —</option>
                                                 @foreach ($customer as $cust)
                                                     <option value="{{$cust->id}}">{{$cust->nama}}</option>
                                                 @endforeach
@@ -39,8 +39,8 @@
                                      <div class="col-4">
                                         <div class="form-group">
                                             <label for="">Pelayaran</label>
-                                            <select class="form-control selectpicker" name="statusJODetail" id="statusJODetail" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">SEMUA DATA</option>
+                                            <select class="form-control selectpicker" name="pelayaran" id="pelayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                <option value="">­­— SEMUA DATA —</option>
                                                 @foreach ($supplier as $supp)
                                                     <option value="{{$supp->id}}">{{$supp->nama}}</option>
                                                 @endforeach
@@ -100,7 +100,7 @@
              $("#loading-spinner").show();
              $.ajax({
                 method: 'POST',
-                url: '{{ route('job_order.unloading_data') }}',
+                url: '{{ route('storage_demurage.load_data') }}',
                 data: formData,
                 dataType: 'JSON',
                 contentType: false,
@@ -108,8 +108,6 @@
                 processData:false,
                 success: function(response) {
                     $("#loading-spinner").hide();
-                    console.log($("#statusJO").val());
-                    console.log($("#statusJODetail").val());
                     console.log(response);
                     var data = response.data;
                      $("#hasil").html(" ");
@@ -131,7 +129,7 @@
                                      <div class="btn-group">
                                         <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"></button>
                                         <ul class="dropdown-menu" style="">
-                                            <li><a class="dropdown-item" href="{!! url('/job_order/storage_demurage_input/${data[i].id}') !!}"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
+                                            <li><a class="dropdown-item" href="{!! url('/storage_demurage/${data[i].id}/edit') !!}"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
                                             
                                             <li><a class="dropdown-item" href="https://testapps.pjexpress.co.id/index.php/c_cetak_invoice/cetak/4891"><span class="fas fa-print" style="width:24px"></span>Cetak</a></li>
                                         </ul>

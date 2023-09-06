@@ -116,7 +116,16 @@ class StorageDemurageController extends Controller
      */
     public function edit($id)
     {
-        //
+        $detail = JobOrderDetail::where('is_aktif', 'Y')->find($id);
+        $data['detail'] = $detail;
+
+        $jobOrder = JobOrder::where('is_aktif', 'Y')->find($detail->id_jo);
+        $data['JO'] = $jobOrder;
+
+        return view('pages.order.storage_demurage.edit',[
+            'judul'=>"Input Storage Demurage Detention",
+            'data' => $data,
+        ]);
     }
 
     /**
@@ -140,5 +149,39 @@ class StorageDemurageController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function load_data(Request $request){
+        try {
+            $data = $request->collect();
+            $pengirim  = $data['pengirim'];
+            $pelayaran   =  $data['pelayaran'];
+
+            // var_dump($statusJO);die;
+
+            $dataJO = DB::table('job_order AS jo')
+                    ->select('jo.*','jod.*','jo.status as statusJO','jod.status as statusDetail','c.kode AS kode', 'c.nama AS nama_cust', 's.nama AS nama_supp')
+                    ->leftJoin('customer AS c', 'c.id', '=', 'jo.id_customer')
+                    ->leftJoin('supplier AS s', 's.id', '=', 'jo.id_supplier')
+                    ->join('job_order_detail AS jod', function($join){
+                            $join->on('jo.id', '=', 'jod.id_jo') ->where('jod.is_aktif',"Y");
+                    })
+                    ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
+                    ->where('jo.is_aktif', '=', 'Y')
+                        ->where('jo.status', 'like', "DALAM PENGIRIMAN")
+                    ->groupBy('jod.id_jo','jod.id')
+                    ->get();
+            return response()->json(["result" => "success",'data' => $dataJO], 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(["result" => "error",'message' => $th->getMessage()], 500);
+
+        }
+       
+        // return view('pages.order.job_order.unloading_plan',[
+        //         'judul'=>"Uloading Plan Job Order",
+        //         'dataJO' => $dataJO,
+        //         // 'dataJODetail'=>$dataJODetail
+        //     ]);
     }
 }
