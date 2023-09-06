@@ -117,7 +117,7 @@ class JobOrderController extends Controller
             $newJO->apbs = isset($data['checkbox_APBS'])? $data['total_apbs']:0;
             $newJO->cleaning = isset($data['checkbox_CLEANING'])? $data['total_cleaning']:0;
             $newJO->doc_fee = isset($data['checkbox_DOC_FEE'])? $data['DOC_FEE']:0;
-            $newJO->status = 'WAITING PAYMENT';
+            $newJO->status = 'MENUNGGU PEMBAYARAN';
             $newJO->created_by = $user;
             $newJO->created_at = now();
             $newJO->is_aktif = 'Y';
@@ -145,7 +145,7 @@ class JobOrderController extends Controller
                         $JOD->tipe_kontainer = $detail['tipe'];
                         $JOD->stripping = $detail['stripping'];
                       
-                        $JOD->status = "WAITING PAYMENT";
+                        $JOD->status = "MENUNGGU PEMBAYARAN";
                         $JOD->created_by = $user;
                         $JOD->created_at = now();
                         $JOD->is_aktif = 'Y';

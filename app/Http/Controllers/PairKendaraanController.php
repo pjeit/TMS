@@ -35,6 +35,8 @@ class PairKendaraanController extends Controller
 
                     ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','kt.nama')
                     ->paginate(10);
+                    // ->get(10);
+
         // dd($dataPair);
         return view('pages.master.pair_kendaraan.index', [
             'judul' => "Pair Truck",

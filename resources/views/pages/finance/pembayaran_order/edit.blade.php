@@ -28,7 +28,7 @@
             </div>
         @endforeach
     @endif
-    <form action="{{ route('pembayaran_jo.update',[$pembayaran_jo->id]) }}" method="POST" >
+    <form action="{{ route('pembayaran_jo.update',[$pembayaran_jo->id]) }}" method="POST" id="form">
       @csrf
         @method('PUT')
 
@@ -121,7 +121,7 @@
                                             <option value="{{$data->id}}">{{ $data->nama }}</option>
                                         @endforeach
                                     </select>
-                                    <button type="submit" class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
+                                    <button type="button" class="btn btn-success" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
 
                                     {{-- <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</a> --}}
 
@@ -197,6 +197,72 @@
     </form>
 <script type="text/javascript">
     $(document).ready(function() {
+         $('body').on('click','#bttonBayar', function (event) {
+                event.preventDefault();
+                // pop up confirmation
+                    Swal.fire({
+                        title: 'Apakah Anda yakin data sudah benar?',
+                        text: "Periksa kembali data anda",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        cancelButtonColor: '#d33',
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonText: 'Batal',
+                        confirmButtonText: 'Ya',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var pembayaran = $('#pembayaran').val();
+                            if( pembayaran == '' ){
+                                Swal.fire(
+                                    'Pembayaran Belum Dipilih!',
+                                    'Silahkan pilih pembayaran terlebih dahulu',
+                                    'warning'
+                                )
+                                event.preventDefault();
+                                return false;
+                            }else{
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    timer: 2500,
+                                    showConfirmButton: false,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+    
+                                Toast.fire({
+                                    icon: 'Sukses',
+                                    title: 'Data Pembayaran Berhasil Disimpan'
+                                })
+                                $("#form").submit();
+                            }
+                        }else{
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                timer: 2500,
+                                showConfirmButton: false,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+
+                            Toast.fire({
+                                icon: 'warning',
+                                title: 'Batal Disimpan'
+                            })
+                            event.preventDefault();
+                            // return;
+                        }
+                    })
+                // pop up confirmation
+            });
 
         // var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
         // var harga20Ft = {
