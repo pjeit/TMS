@@ -47,9 +47,6 @@ class PengaturanKeuanganController extends Controller
      */
     public function store(Request $request)
     {
-       
-     
-      
         // DB::table('pengaturan_keuangan')
         //     ->insert(array(
         //         'uang_jajan' => $data['uang_jalan'],
@@ -110,6 +107,9 @@ class PengaturanKeuanganController extends Controller
         $update->klaim_supir = $data['klaim_supir'];
         $update->batas_pemutihan = $data['batas_pemutihan'];
         $update->hutang_karyawan = $data['hutang_karyawan'];
+        $update->seal_pje = $data['seal_pje'];
+        $update->tally = $data['tally'];
+        $update->plastik = $data['plastik'];
         $update->updated_at = date("Y-m-d h:i:s");
         $update->updated_by = $user;
 

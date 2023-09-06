@@ -389,9 +389,7 @@
                 'cleaning': dataKeuangan.cleaning_40ft,
             };
         // end of master harga tipe
-        // console.log('harga20Ft '+JSON.stringify(harga20Ft));
-        // console.log('harga40Ft '+JSON.stringify(harga40Ft));
-
+    
         // handling tanggal
             $('#tgl_sandar').datepicker({
                 autoclose: true,
@@ -832,7 +830,6 @@
                 // });
             }
         // end of logic hitung biaya
-
     });
 </script>
 

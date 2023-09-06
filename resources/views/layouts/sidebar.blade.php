@@ -327,7 +327,10 @@
             </li>
           @endif
 
-          <li class="nav-item">
+          <li class="nav-item {{ request()->is('job_order*')||
+            request()->is('storage_demurage*')||
+            request()->is('unloading_plan*')
+            ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-shipping-fast"></i>
               <p>
@@ -367,12 +370,12 @@
          
           </li>
 
-           <li class="nav-item">
+           <li class="nav-item {{ request()->is('booking*')||
+            request()->is('truck_order*')
+            ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               {{-- <i class="nav-icon fas fa-shipping-fast"></i> --}}
               <i class="nav-icon fas fa-solid fa-truck"></i>
-              
-
               <p>
                 TRUCKING ORDER <i class="fas fa-angle-left right"></i>
               </p>
@@ -389,7 +392,7 @@
             </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('truck_order.index')}}" class="nav-link {{request()->url() === route('job_order.index')? ' active' : '' }} " style="font-weight: 500;">
+                <a href="{{route('truck_order.index')}}" class="nav-link {{request()->url() === route('truck_order.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                   <p>
                      Order
@@ -400,7 +403,9 @@
            
           </li>
          
-          <li class="nav-item">
+          <li class="nav-item {{ request()->is('pembayaran_jo*')||
+            request()->is('pembayaran_sdt*')
+            ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-dollar-sign"></i>
               <p>FINANCE 
@@ -414,6 +419,16 @@
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Pembayaran JO
+                  </p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{request()->url() === route('pembayaran_sdt.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Pembayaran S/D/T
                   </p>
                 </a>
               </li>

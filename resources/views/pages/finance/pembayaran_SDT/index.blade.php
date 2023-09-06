@@ -68,20 +68,20 @@
             <div class="card-body">
                <section class="col-lg-12" id="show_report">
 
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
                         <th style="width:30px"><div class="btn-group"></div></th>
                         <th>No. Kontainer</th>
                         <th>Pengirim</th>
                         <th>Pelayaran</th>
-                        <th>Status Kontainer</th>
+                        <th>Belum Dibayar</th>
                         </tr>
                     </thead>
                     <tbody id="hasil">
-                         <tr id="loading-spinner" style="display: none;">
+                         {{-- <tr id="loading-spinner" style="display: none;">
                             <td colspan="6"><i class="fas fa-spinner fa-spin"></i> Harap tunggu data sedang di proses...</td>
-                        </tr>
+                        </tr> --}}
                     
 
                     </tbody>
@@ -96,7 +96,7 @@
         var formElement = document.querySelector("#form_report");
         var formData = new FormData(formElement);
         $("#loading-spinner").show();
-        showTable(formData);
+        // showTable(formData);
 
         $(document).on('click','#btnKu',function(e){
             var formElement = document.querySelector("#form_report");
@@ -108,7 +108,7 @@
         function showTable(formData){
             $.ajax({
                 method: 'POST',
-                url: '{{ route('storage_demurage.load_data') }}',
+                url: '{{ route('pembayaran_sdt.load_data') }}',
                 data: formData,
                 dataType: 'JSON',
                 contentType: false,
@@ -118,26 +118,31 @@
                     $("#loading-spinner").hide();
                     console.log(response);
                     var data = response.data;
+                    console.log('data '+data);
                         $("#hasil").html(" ");
 
                         var nyimpenIdBapakJO = null;
                         for (var i = 0; i < data.length; i++) {
                             if (data[i].id_jo !== nyimpenIdBapakJO) {
                                 var row = $("<tr></tr>");
-                                row.append("<td colspan='6'>" + data[i].no_jo + "<br> Status Jo: " + data[i].statusJO + "</td>");
+                                row.append(`<td style='background: #efefef'> <a class="btn btn-sm btn-primary radiusSendiri" href="{!! url('/pembayaran_sdt/${data[i].id_jo}/edit') !!}">
+                                        <span class="fa fa-share" ></span> 
+                                    </a> </td>`)
+                                row.append("<td colspan='5' style='background: #efefef'>" + "No. JO : " + data[i].no_jo + "<br> No. BL : " + data[i].no_bl + "</td>");
                                 $("#hasil").append(row);
                                 nyimpenIdBapakJO = data[i].id_jo;
                             }
 
                             var row = $("<tr></tr>");
-                            row.append(`
-                                <td>
-                                    <a class="btn btn-sm btn-primary radiusSendiri" href="{!! url('/storage_demurage/${data[i].id}/edit') !!}">
-                                        <span class="fas fa-edit" ></span> <b>Input S/D/T</b>
-                                    </a>
-                                </td>
-                                `); 
+                            // row.append(`
+                            //     <td>
+                            //         <a class="btn btn-sm btn-primary radiusSendiri" href="{!! url('/pembayaran_sdt/${data[i].id}/edit') !!}">
+                            //             <span class="fas fa-edit" ></span> <b></b>
+                            //         </a>
+                            //     </td>
+                            // `); 
                             
+                            row.append("<td> </td>");
                             row.append("<td>" + data[i].no_kontainer + "</td>");
                             row.append("<td>" + data[i].kode + " - " + data[i].nama_cust + "</td>");
                             row.append("<td>" + data[i].nama_supp + "</td>");

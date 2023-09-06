@@ -119,7 +119,10 @@ class StorageDemurageController extends Controller
         $detail = JobOrderDetail::where('is_aktif', 'Y')->find($id);
         $data['detail'] = $detail;
 
-        $jobOrder = JobOrder::where('is_aktif', 'Y')->find($detail->id_jo);
+        $biaya = JobOrderDetailBiaya::where('is_aktif', 'Y')->where('id_jo_detail', $id)->get();
+        $data['biaya'] = $biaya;
+
+        $jobOrder = JobOrder::where('is_aktif', 'Y')->find($detail['id_jo']);
         $data['JO'] = $jobOrder;
 
         return view('pages.order.storage_demurage.edit',[
@@ -137,7 +140,30 @@ class StorageDemurageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->post();
+        $user = Auth::user()->id;
+        // dd($data);
+
+        try {
+            if(isset($data['data'])){
+                foreach ($data['data'] as $key => $value) {
+                    $newBiaya = new JobOrderDetailBiaya();
+                    $newBiaya->id_jo = $data['id_jo'];
+                    $newBiaya->id_jo_detail = $id;
+                    $newBiaya->storage = floatval(str_replace(',', '', $value['storage']));
+                    $newBiaya->demurage = floatval(str_replace(',', '', $value['demurage']));
+                    $newBiaya->detention = floatval(str_replace(',', '', $value['detention']));
+                    $newBiaya->status_bayar = "MENUNGGU PEMBAYARAN";
+                    $newBiaya->created_by = $user;
+                    $newBiaya->created_at = now();
+                    $newBiaya->save();
+                }
+            }
+
+            return redirect()->route('storage_demurage.index')->with('status','Sukses Menambahkan Data!!');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
     }
 
     /**

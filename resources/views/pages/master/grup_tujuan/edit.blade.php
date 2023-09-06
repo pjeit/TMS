@@ -261,12 +261,7 @@
                             </div>
                             <div class="form-group col-lg-4 col-md-4 col-12">
                                 <label for="">Kargo</label>
-                                <select class="form-control select2" id='kargo_pje' name="kargo_pje" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value="">—— Pilih Kargo ——</option>
-                                    @foreach ($dataKargo as $kargo)
-                                        <option value="{{$kargo->id}}"  >{{ $kargo->nama }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" name="kargo" class="form-control" id="kargo" placeholder=""> 
                             </div>
                           
                              <div class="form-group col-lg-4 col-md-4 col-12">
@@ -441,13 +436,19 @@
 
 <script>
     $(document).ready(function(){
-            // <input value="${$('#tally_pje').val()}" type="hidden" name="data[tujuan][${i}][tally_hidden]" id="tally_hidden_${i}" placeholder="">
-            // <input value="${$('#plastik_pje').val()}" type="hidden" name="data[tujuan][${i}][plastik_hidden]" id="plastik_hidden_${i}" placeholder="">
-            // <input value="${$('#kargo_pje').val()}" type="hidden" name="data[tujuan][${i}][kargo_hidden]" id="kargo_hidden_${i}" >
-          $('#check_is_seal_pje').click(function(){
+         // master harga tipe
+         var master = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
+            var uang = {
+                'seal_pje': master.seal_pje,
+                'tally': master.tally,
+                'plastik': master.plastik,
+            };
+            console.log(uang);
+        // end of master harga tipe
+        $('#check_is_seal_pje').click(function(){
             if($(this).is(":checked")){
-                $('#seal_pje').attr('readonly',false);
-               
+                $('#seal_pje').val(uang['seal_pje']);
+                // $('#seal_pje').attr('readonly',false);
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
                 $('#seal_pje').val('');
@@ -456,10 +457,10 @@
             }
         });
         
-
-          $('#check_is_tally').click(function(){
+        $('#check_is_tally').click(function(){
             if($(this).is(":checked")){
-                $('#tally_pje').attr('readonly',false);
+                $('#tally_pje').val(uang['tally']);
+                // $('#tally_pje').attr('readonly',false);
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
                 $('#tally_pje').val('');
@@ -467,9 +468,11 @@
                 // console.log("Checkbox is unchecked.");
             }
         });
-          $('#check_is_plastik').click(function(){
+
+        $('#check_is_plastik').click(function(){
             if($(this).is(":checked")){
-                $('#plastik_pje').attr('readonly',false);
+                $('#plastik_pje').val(uang['tally']);
+                // $('#plastik_pje').attr('readonly',false);
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
                 $('#plastik_pje').val('');
@@ -481,72 +484,71 @@
         var deleted_tujuan = [];
         var deleted_biaya = [];
 
-        // Ambil semua elemen <tr> dengan ID yang dimulai dengan "row"
-        var rows = document.querySelectorAll('tr[id^="row"]');
-
-        // Cari ID terbesar dengan format "rowX" dan ambil nilai X-nya
-        var maxID = -1;
-        for (var i = 0; i < rows.length; i++) {
-            var idStr = rows[i].id.replace('row', ''); // Ambil nilai X dari "rowX"
-            var idNum = parseInt(idStr); // Konversi menjadi angka
-            if (idNum > maxID) {
-                maxID = idNum;
+        // logic get id row table
+            // Ambil semua elemen <tr> dengan ID yang dimulai dengan "row"
+            var rows = document.querySelectorAll('tr[id^="row"]');
+            // Cari ID terbesar dengan format "rowX" dan ambil nilai X-nya
+            var maxID = -1;
+            for (var i = 0; i < rows.length; i++) {
+                var idStr = rows[i].id.replace('row', ''); // Ambil nilai X dari "rowX"
+                var idNum = parseInt(idStr); // Konversi menjadi angka
+                if (idNum > maxID) {
+                    maxID = idNum;
+                }
             }
-        }
-
-        // Hasilkan ID terakhir dengan format "rowX+1"
-        var lastID = (maxID + 1);
-
-        if(lastID != 0){
-            var i = lastID-1;
-        }else{
-            var i = 0;
-        }
-        var length;
+            // Hasilkan ID terakhir dengan format "rowX+1"
+            var lastID = (maxID + 1);
+            if(lastID != 0){
+                var i = lastID-1;
+            }else{
+                var i = 0;
+            }
+            var length;
+        //
     
         //===============gadipake====================
-        $("#addOld").click(function(){
-            i++;
-            var newRow = `
-                <tr id="row${i}">
-                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                        <input style="margin: auto; display: block;" type="text" name="data[tujuan][${i}][nama_tujuan]" id="nama_tujuan_${i}" maxlength="10" class="form-control" readonly>
-                    </td>
-                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                        <input style="margin: auto; display: block;" type="text" name="data[tujuan][${i}][jenis_tujuan]" id="jenis_tujuan_${i}" class="form-control" readonly>
-                    </td>
-                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                        <input style="" type="text" name="data[tujuan][${i}][tarif]" id="tarif_${i}" class="form-control numaja uang tarif" readonly/>
-                    </td>
-                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                        <input style="" type="text" name="data[tujuan][${i}][uang_jalan]" id="uang_jalan_${i}" class="form-control numaja uang uangJalan" readonly/>
-                    </td>
-                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                        <input style="" type="text" name="data[tujuan][${i}][komisi]" id="komisi_${i}" class="form-control numaja uang" readonly/>
-                    </td>
-                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                        <input style="" type="text" name="data[tujuan][${i}][catatan]" id="catatan_${i}" class="form-control" readonly/>
-                    </td>
-                    <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                        <button type="button" name="detail" id="detail_${i}" class="btn btn-info detail"><i class="fa fa-list-ul"></i></button>
-                    </td>  
-                    <input type="hidden" name="data[tujuan][${i}][id_tujuan]" id="id_tujuan_${i}">
-                    <input type="hidden" name="data[tujuan][${i}][alamat_hidden]" id="alamat_hidden_${i}">
-                    <input type="hidden" name="data[tujuan][${i}][uang_jalan_hidden]" id="uang_jalan_hidden_${i}">
-                    <input type="hidden" name="data[tujuan][${i}][komisi_hidden]" id="komisi_hidden_${i}">
-                    <input type="hidden" name="data[tujuan][${i}][harga_per_kg_hidden]" id="harga_per_kg_hidden_${i}">
-                    <input type="hidden" name="data[tujuan][${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}">
-                    <input type="hidden" name="data[tujuan][${i}][grup_hidden]" id="grup_hidden_${i}" placeholder="">
-                    <input type="hidden" name="data[tujuan][${i}][marketing_hidden]" id="marketing_hidden_${i}" placeholder="">
-                    <input type="hidden" name="data[tujuan][${i}][obj_biaya]" id="obj_biaya${i}" placeholder="">
-                    <td><button type="button" name="remove" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
-                </tr>
-            `;
-            $('#dynamic_field > tbody:last-child').append(newRow);
+            $("#addOld").click(function(){
+                i++;
+                var newRow = `
+                    <tr id="row${i}">
+                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                            <input style="margin: auto; display: block;" type="text" name="data[tujuan][${i}][nama_tujuan]" id="nama_tujuan_${i}" maxlength="10" class="form-control" readonly>
+                        </td>
+                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                            <input style="margin: auto; display: block;" type="text" name="data[tujuan][${i}][jenis_tujuan]" id="jenis_tujuan_${i}" class="form-control" readonly>
+                        </td>
+                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                            <input style="" type="text" name="data[tujuan][${i}][tarif]" id="tarif_${i}" class="form-control numaja uang tarif" readonly/>
+                        </td>
+                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                            <input style="" type="text" name="data[tujuan][${i}][uang_jalan]" id="uang_jalan_${i}" class="form-control numaja uang uangJalan" readonly/>
+                        </td>
+                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                            <input style="" type="text" name="data[tujuan][${i}][komisi]" id="komisi_${i}" class="form-control numaja uang" readonly/>
+                        </td>
+                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                            <input style="" type="text" name="data[tujuan][${i}][catatan]" id="catatan_${i}" class="form-control" readonly/>
+                        </td>
+                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                            <button type="button" name="detail" id="detail_${i}" class="btn btn-info detail"><i class="fa fa-list-ul"></i></button>
+                        </td>  
+                        <input type="hidden" name="data[tujuan][${i}][id_tujuan]" id="id_tujuan_${i}">
+                        <input type="hidden" name="data[tujuan][${i}][alamat_hidden]" id="alamat_hidden_${i}">
+                        <input type="hidden" name="data[tujuan][${i}][uang_jalan_hidden]" id="uang_jalan_hidden_${i}">
+                        <input type="hidden" name="data[tujuan][${i}][komisi_hidden]" id="komisi_hidden_${i}">
+                        <input type="hidden" name="data[tujuan][${i}][harga_per_kg_hidden]" id="harga_per_kg_hidden_${i}">
+                        <input type="hidden" name="data[tujuan][${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}">
+                        <input type="hidden" name="data[tujuan][${i}][grup_hidden]" id="grup_hidden_${i}" placeholder="">
+                        <input type="hidden" name="data[tujuan][${i}][marketing_hidden]" id="marketing_hidden_${i}" placeholder="">
+                        <input type="hidden" name="data[tujuan][${i}][obj_biaya]" id="obj_biaya${i}" placeholder="">
+                        <td><button type="button" name="remove" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
+                    </tr>
+                `;
+                $('#dynamic_field > tbody:last-child').append(newRow);
 
-            $('.select2').select2();
-        });
-        //===============end gadipake====================
+                $('.select2').select2();
+            });
+        //===============end gadipake================
 
 
         $("#add_biaya").click(function(){
@@ -778,19 +780,18 @@
             if($('#seal_pje_hidden_'+key).val() != ''){
                 $('#seal_pje').val($('#seal_pje_hidden_'+key).val());
                 $('#check_is_seal_pje').prop('checked',true);
-                $('#seal_pje').attr('readonly',false);
-          
+                // $('#seal_pje').attr('readonly',false);
             }
 
             if($('#tally_hidden_'+key).val() != ''){
                 $('#tally_pje').val($('#tally_hidden_'+key).val());
                 $('#check_is_tally').prop('checked',true);
-                $('#tally_pje').attr('readonly',false);
+                // $('#tally_pje').attr('readonly',false);
             }
             if($('#plastik_hidden_'+key).val() != ''){
                 $('#plastik_pje').val($('#plastik_hidden_'+key).val());
                 $('#check_is_plastik').prop('checked',true);
-                $('#plastik_pje').attr('readonly',false);
+                // $('#plastik_pje').attr('readonly',false);
                 
             }
             if($('#kargo_hidden_'+key).val() != ''){

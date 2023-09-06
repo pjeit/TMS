@@ -70,6 +70,9 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('pembayaran_jo', 'App\Http\Controllers\PaymentJobController');
 
+        Route::post('pembayaran_sdt/load_data', 'App\Http\Controllers\PaymentSDTController@load_data')->name('pembayaran_sdt.load_data');
+        Route::resource('pembayaran_sdt', 'App\Http\Controllers\PaymentSDTController');
+
         Route::resource('pengaturan_keuangan', 'App\Http\Controllers\PengaturanKeuanganController');
     
         Route::resource('kas_bank', 'App\Http\Controllers\KasBankController');
