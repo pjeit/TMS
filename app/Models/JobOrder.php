@@ -26,11 +26,11 @@ class JobOrder extends Model
         'tgl_sandar',
         'free_time',
         'jo_expired',
-        'total_thc',
-        'total_lolo',
-        'total_apbs',
-        'total_cleaning',
-        'total_focfee',
+        'thc',
+        'lolo',
+        'apbs',
+        'cleaning',
+        'foc_fee',
         'total_biaya_sebelum_dooring',
         'total_storage',
         'total_demurage',
@@ -64,7 +64,7 @@ class JobOrder extends Model
 
    public function getSupplier(): HasOne
    {
-        return $this->hasOne(Customer::class, 'id', 'id_supplier')->select('nama');
+        return $this->hasOne(Supplier::class, 'id', 'id_supplier')->select('nama');
    }
    
    public function getKodeCustomer(): HasOne

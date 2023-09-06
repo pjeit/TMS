@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class JobOrderDetail extends Model
 {
@@ -44,4 +45,13 @@ class JobOrderDetail extends Model
         'updated_by',
         'is_aktif',
    ];
+
+   public function getTujuan(): ?HasOne
+   {
+       $relation = $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan')->select('id');
+   
+       return $relation ? $relation : null;
+   }
+   
+   
 }

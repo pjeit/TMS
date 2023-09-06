@@ -6,10 +6,7 @@ use App\Models\JobOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use App\Helper\VariableHelper;
-use App\Models\Booking;
 use App\Models\Jaminan;
-use App\Models\job_order_detail_biaya;
 use App\Models\JobOrderDetail;
 use App\Models\JobOrderDetailBiaya;
 use Illuminate\Support\Facades\Auth;
@@ -88,9 +85,6 @@ class JobOrderController extends Controller
             $user = Auth::user()->id;
             $data = $request->post();
 
-            // $currentYear = Carbon::now()->format('y');
-            // $currentMonth = Carbon::now()->format('m');
-
             $kode = DB::table('customer')
                 ->select('kode')
                 ->where('id', $data['customer'])
@@ -98,13 +92,6 @@ class JobOrderController extends Controller
             $now = now()->format('ym');
             $t_kode = $kode->kode;
 
-            // "PJE/3DW/2309001"
-            //8 PJE/3DW/
-            //7 2309001
-            //length 15
-            // SELECT ifnull(max(substr(job_order.no_jo, -1)), 0) + 1 AS t_no_jo
-            // FROM job_order
-            // WHERE SUBSTRING(job_order.no_jo, 1, 12) = CONCAT('PJE/', 'CBA/' ,DATE_FORMAT(NOW(), '%y%m'));
             $max_jo = DB::table('job_order')
                 ->selectRaw("ifnull(max(substr(no_jo, -3)), 0) + 1 AS t_no_jo")
                 ->whereRaw("SUBSTRING(no_jo, 1, 11) = CONCAT('JO/', '$t_kode/','$now')")
@@ -125,23 +112,11 @@ class JobOrderController extends Controller
             $newJO->pelabuhan_bongkar = $data['pelabuhan_bongkar'];
             $newJO->no_bl = $data['no_bl'];
             $newJO->tgl_sandar = isset($data['tgl_sandar'])? date_create_from_format('d-M-Y', $data['tgl_sandar']):NULL; 
-            
-            // if(isset($data['thc_cekbox'])){
-            //     $newJO->total_thc = $data['total_thc'];
-            // }
-            // if(isset($data['lolo_cekbox'])){
-            //     $newJO->total_lolo = $data['total_lolo'];
-            // }
-            // if(isset($data['apbs_cekbox'])){
-            //     $newJO->total_apbs = $data['total_apbs'];
-            // }
-            // if(isset($data['cleaning_cekbox'])){
-            //     $newJO->total_cleaning = $data['total_cleaning'];
-            // }
-            // if(isset($data['doc_fee_cekbox'])){
-            //     $newJO->doc_fee = $data['total_doc_fee'];
-            // }
-            // $newJO->total_biaya_sebelum_dooring = $data['total_sblm_dooring'];
+            $newJO->thc =  isset($data['checkbox_THC'])? $data['total_thc']:0;
+            $newJO->lolo = isset($data['checkbox_LOLO'])? $data['total_lolo']:0;
+            $newJO->apbs = isset($data['checkbox_APBS'])? $data['total_apbs']:0;
+            $newJO->cleaning = isset($data['checkbox_CLEANING'])? $data['total_cleaning']:0;
+            $newJO->doc_fee = isset($data['checkbox_DOC_FEE'])? $data['DOC_FEE']:0;
             $newJO->status = 'WAITING PAYMENT';
             $newJO->created_by = $user;
             $newJO->created_at = now();
@@ -157,57 +132,11 @@ class JobOrderController extends Controller
             // $newJO->total_biaya_setelah_dooring = $data['total_biaya_setelah_dooring']; // kosongkan dulu
 
             if($newJO->save()){
-                if(isset($data['checkbox']['DOC_FEE'])){
-                    // var_dump($data['DOC_FEE']); die;
-                    $JOD_biaya = new JobOrderDetailBiaya();
-                    $JOD_biaya->id_jo = $newJO->id; 
-                    $JOD_biaya->keterangan = 'DOC_FEE'; 
-                    $JOD_biaya->nominal = $data['DOC_FEE']; 
-                    $JOD_biaya->status = "WAITING PAYMENT"; 
-                    $JOD_biaya->created_by = $user;
-                    $JOD_biaya->created_at = now();
-                    $JOD_biaya->is_aktif = 'Y';
-
-                    $JOD_biaya->save();
-                }
-
                 // create JO detail 
                 if(isset($data['detail'])){
                     foreach ($data['detail'] as $key => $detail) {
-                        // create booking || sementara di offkan dulu
-                            // if(isset($detail['tgl_booking'])){
-                            //     $booking = new Booking();
-                            //     $booking->tgl_booking = date_create_from_format('d-M-Y', $detail['tgl_booking']);
-                            //     $booking->id_grup_tujuan = $detail['tujuan'];
-                            //     $booking->no_kontainer = $detail['no_kontainer'];
-                            //     $booking->id_customer = $data['customer'];
-                            //     // logic nomer booking
-                            //         //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
-                            //         //bisa juga substr(no_booking, 8,10)
-                            //         $maxBooking = DB::table('booking')
-                            //             ->selectRaw("ifnull(max(substr(no_booking, -3)), 0) + 1 as max_booking")
-                            //             ->whereRaw("substr(no_booking, 1, length(no_booking) - 3) = concat(?, ?, ?)", [$data['kode_cust'],$currentYear, $currentMonth])
-                            //             ->value('max_booking');
-                                    
-                            //         // str pad itu nambain angka 0 ke sebelah kiri (str_pad_left, defaultnya ke kanan) misal maxbookint 4 jadinya 004
-                            //         $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . str_pad($maxBooking, 3, '0', STR_PAD_LEFT);
-
-                            //         if (is_null($maxBooking)) {
-                            //             $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . '001';
-                            //         }
-                            //     //
-                            //     $booking->no_booking = $newBookingNumber;
-                            //     $booking->id_customer = $data['customer'];
-                            //     $booking->created_by = $user;
-                            //     $booking->created_at = now();
-                            //     $booking->save();
-
-                            //     $bookid = $booking->id;
-                            // }
-                        //
                         $JOD = new JobOrderDetail();
                         $JOD->id_jo = $newJO->id; // get id jo
-                        // $JOD->id_booking = isset($detail['tgl_booking'])? $bookid:NULL ; // get id jo
                         $JOD->id_grup_tujuan = $detail['tujuan']; 
                         $JOD->tgl_booking = isset($detail['tgl_booking'])? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL ; // get id jo
                         $JOD->no_kontainer = $detail['no_kontainer'];
@@ -215,45 +144,12 @@ class JobOrderController extends Controller
                         $JOD->seal = $detail['seal'];
                         $JOD->tipe_kontainer = $detail['tipe'];
                         $JOD->stripping = $detail['stripping'];
-                        // $JOD->thc =  isset($data['thc_cekbox'])?$detail['hargaThc']:0;
-                        // $JOD->lolo = isset($data['lolo_cekbox'])?$detail['hargaLolo']:0;
-                        // $JOD->apbs = isset($data['apbs_cekbox'])?$detail['hargaApbs']:0;
-                        // $JOD->cleaning = isset($data['cleaning_cekbox'])?$detail['hargaCleaning']:0;
-                        // $JOD->docfee = isset($data['doc_fee_cekbox'])?$detail['hargaDocFee']:0;
+                      
                         $JOD->status = "WAITING PAYMENT";
                         $JOD->created_by = $user;
                         $JOD->created_at = now();
                         $JOD->is_aktif = 'Y';
-                        if($JOD->save()){
-                            foreach ($data['checkbox'] as $key => $biaya) {
-                                // doc fee di skip karna sudah di save duluan di atas
-                                if($key != 'DOC_FEE'){
-                                    $JOD_biaya = new JobOrderDetailBiaya();
-                                    $JOD_biaya->id_jo = $newJO->id; 
-                                    $JOD_biaya->id_jo_detail = $JOD->id; 
-                                    $JOD_biaya->keterangan = $key; 
-                                    $JOD_biaya->nominal = $detail['biaya'][$key]; // get data biaya sesuai key-nya. THC, LOLO, APBS
-                                    $JOD_biaya->status = "WAITING PAYMENT"; 
-                                    $JOD_biaya->created_by = $user;
-                                    $JOD_biaya->created_at = now();
-                                    $JOD_biaya->is_aktif = 'Y';
-                                    $JOD_biaya->save();
-                                }
-                            }
-
-                        }
-                        // $JOD->save();
-                        // $JOD->id_booking = $detail->id_booking; // kosong dulu
-                        // $JOD->tgl_berangkat_booking = $detail->tgl_berangkat_booking; // kosong dulu
-                        // $JOD->seal_pje = $detail->seal_pje; // kosong dulu
-                        // $JOD->id_kendaraan = $detail->id_kendaraan; // kosong dulu
-                        // $JOD->nopol_kendaraan = $detail->nopol_kendaraan; // kosong dulu 
-                        // $JOD->tgl_dooring = $detail->tgl_dooring; // kosong dulu
-                        // $JOD->storage = $detail->storage; // kosong dulu
-                        // $JOD->demurage = $detail->demurage; // kosong dulu
-                        // $JOD->detention = $detail->detention; // kosong dulu
-                        // $JOD->repair_washing = $detail->repair_washing; // kosong dulu
-                        // $JOD->do_expaired = $detail->do_expaired; // kosong dulu
+                        $JOD->save();
                     }
                 }
 
@@ -324,17 +220,6 @@ class JobOrderController extends Controller
         $jaminan = Jaminan::where('id_job_order', $jobOrder->id)->where('is_aktif', 'Y')->first();
         $data['detail'] = json_encode($detail);
         $data['jaminan'] = $jaminan;
-
-        $total_thc = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'thc')->sum('nominal');
-        $total_lolo = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'lolo')->sum('nominal');
-        $total_apbs = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'apbs')->sum('nominal');
-        $total_cleaning = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'cleaning')->sum('nominal');
-        $total_doc_fee = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'doc_fee')->sum('nominal');
-        $data['biaya']['thc'] = $total_thc;
-        $data['biaya']['lolo'] = $total_lolo;
-        $data['biaya']['apbs'] = $total_apbs;
-        $data['biaya']['cleaning'] = $total_cleaning;
-        $data['biaya']['doc_fee'] = $total_doc_fee;
 
         return view('pages.order.job_order.edit',[
             'judul'=>"Job Order",
@@ -542,17 +427,16 @@ class JobOrderController extends Controller
     }
 
     public function unloading_plan(){
-       
- 
         return view('pages.order.job_order.unloading_plan',[
-                'judul'=>"Uloading Plan Job Order",
-                // 'dataJODetail'=>$dataJODetail
-            ]);
+            'judul'=>"Uloading Plan Job Order",
+            // 'dataJODetail'=>$dataJODetail
+        ]);
     }
-     public function unloading_data(Request $request){
+
+    public function unloading_data(Request $request){
         try {
             $data = $request->collect();
-             $statusJO  = $data['statusJO'];
+            $statusJO  = $data['statusJO'];
             $statusJODetail   =  $data['statusJODetail'];
 
             // var_dump($statusJO);die;
@@ -567,12 +451,12 @@ class JobOrderController extends Controller
                     ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
                     ->where('jo.is_aktif', '=', 'Y')
                         ->where('jo.status', 'like', "%$statusJO%")
-                    ->groupBy('jod.id')
+                    ->groupBy('jod.id_jo','jod.id')
                     ->get();
-            return response()->json(["result" => "success",'data' => $dataJO],200);
+            return response()->json(["result" => "success",'data' => $dataJO], 200);
         } catch (\Throwable $th) {
             //throw $th;
-            return response()->json(["result" => "error",'message' => $th->getMessage()],500);
+            return response()->json(["result" => "error",'message' => $th->getMessage()], 500);
 
         }
        
@@ -582,4 +466,106 @@ class JobOrderController extends Controller
         //         // 'dataJODetail'=>$dataJODetail
         //     ]);
     }
+
+    
+    
+
+    public function storage_demurage_input($id){
+
+        $detail = JobOrderDetail::where('is_aktif', 'Y')->find($id);
+        $data['detail'] = $detail;
+
+        $jobOrder = JobOrder::where('is_aktif', 'Y')->find($detail->id_jo);
+        $data['JO'] = $jobOrder;
+
+        $dataSupplier = DB::table('supplier')
+            ->select('*')
+            ->where('supplier.is_aktif', '=', "Y")
+            ->get();
+        $dataTujuan = DB::table('grup_tujuan')
+            ->select('*')
+            ->where('grup_id', $jobOrder->getGrupId->grup_id)
+            ->where('is_aktif', "Y")
+            ->get();
+        $dataCustomer = DB::table('customer')
+            ->select('*')
+            ->where('customer.is_aktif', '=', "Y")
+            ->get();
+        $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
+            ->select('*')
+            ->where('pengaturan_keuangan.is_aktif', '=', "Y")
+            ->get();
+
+        $jaminan = Jaminan::where('id_job_order', $jobOrder->id)->where('is_aktif', 'Y')->first();
+        $data['jaminan'] = $jaminan;
+
+        $total_thc = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'thc')->sum('nominal');
+        $total_lolo = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'lolo')->sum('nominal');
+        $total_apbs = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'apbs')->sum('nominal');
+        $total_cleaning = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'cleaning')->sum('nominal');
+        $total_doc_fee = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'doc_fee')->sum('nominal');
+        $data['biaya']['thc'] = $total_thc;
+        $data['biaya']['lolo'] = $total_lolo;
+        $data['biaya']['apbs'] = $total_apbs;
+        $data['biaya']['cleaning'] = $total_cleaning;
+        $data['biaya']['doc_fee'] = $total_doc_fee;
+        // var_dump($data['detail']); die;
+        return view('pages.order.job_order.storage_demurage_input',[
+            'judul'=>"Job Order",
+            'data' => $data,
+            'dataSupplier' => $dataSupplier,
+            'dataTujuan' => $dataTujuan,
+            'dataCustomer' =>$dataCustomer,
+            'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
+
+        ]);
+    }
+
+
+    // public function storage_demurageOLD(JobOrder $jobOrder){
+    //     $data['JO'] = $jobOrder;
+    //     $dataSupplier = DB::table('supplier')
+    //         ->select('*')
+    //         ->where('supplier.is_aktif', '=', "Y")
+    //         ->get();
+    //     $dataTujuan = DB::table('grup_tujuan')
+    //         ->select('*')
+    //         ->where('grup_id', $jobOrder->getGrupId->grup_id)
+    //         ->where('is_aktif', "Y")
+    //         ->get();
+    //     $dataCustomer = DB::table('customer')
+    //         ->select('*')
+    //         ->where('customer.is_aktif', '=', "Y")
+    //         ->get();
+    //     $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
+    //         ->select('*')
+    //         ->where('pengaturan_keuangan.is_aktif', '=', "Y")
+    //         ->get();
+
+    //     $detail = JobOrderDetail::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->get();
+    //     $jaminan = Jaminan::where('id_job_order', $jobOrder->id)->where('is_aktif', 'Y')->first();
+    //     $data['detail'] = json_encode($detail);
+    //     $data['jaminan'] = $jaminan;
+
+    //     $total_thc = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'thc')->sum('nominal');
+    //     $total_lolo = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'lolo')->sum('nominal');
+    //     $total_apbs = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'apbs')->sum('nominal');
+    //     $total_cleaning = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'cleaning')->sum('nominal');
+    //     $total_doc_fee = JobOrderDetailBiaya::where('id_jo', $jobOrder->id)->where('is_aktif', 'Y')->where('keterangan', 'doc_fee')->sum('nominal');
+    //     $data['biaya']['thc'] = $total_thc;
+    //     $data['biaya']['lolo'] = $total_lolo;
+    //     $data['biaya']['apbs'] = $total_apbs;
+    //     $data['biaya']['cleaning'] = $total_cleaning;
+    //     $data['biaya']['doc_fee'] = $total_doc_fee;
+    //     // var_dump($data['detail']); die;
+    //     return view('pages.order.job_order.storage_demurage',[
+    //         'judul'=>"Job Order",
+    //         'data' => $data,
+    //         'dataSupplier' => $dataSupplier,
+    //         'dataTujuan' => $dataTujuan,
+    //         'dataCustomer' =>$dataCustomer,
+    //         'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
+
+    //     ]);
+    // }
 }
