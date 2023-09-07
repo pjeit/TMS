@@ -40,43 +40,25 @@
                                     <td>{{ $item->nama_supp }}</td>
                                     <td>{{ $item->status}}</td>
                                     <td>                                    
-                                        <div class="dropdown custom-dropdown">
-                                            <a href="#" data-toggle="dropdown" class="dropdown-link bg-gray rounded-circle" aria-haspopup="true" aria-expanded="false">
-                                                <span class="fa fa-bolt "></span>
-                                            </a>
-                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <!-- Default dropleft button -->
+                                        <div class="btn-group dropleft">
+                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
                                                 <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
                                                     <span class="fas fa-edit mr-3"></span> Edit
                                                 </a>
-                                                <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
-                                                    <span class="fas fa-edit mr-3"></span> Edit
-                                                </a>
-                                                {{-- <a href="{{route('storage_demurage.edit',[$item->id])}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
-                                                    <span class="fas fa-inbox mr-3"></span> Input Storage/Demurage
-                                                </a> --}}
                                                 <a href="/job_order/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
                                                     <span class="fas fa-print mr-3"></span> Export PDF
                                                 </a>
                                                 <a href="{{ route('job_order.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
                                                     <span class="fas fa-trash mr-3"></span> Delete
                                                 </a>
-                                              
                                             </div>
                                         </div>
-                                        {{-- <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                            <div class="btn-group" role="group">
-                                              <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fas fa-bolt"></i>
-                                              </button>
-                                              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                                <a class="dropdown-item bg-info radiusSendiri" href="{{route('job_order.edit',[$item->id])}}">
-                                                    <i class="fas fa-edit"></i> 
-                                                </a>   
-                                                <a href="/job_order/printJob/{{$item->id}}" method="get" rel="noopener" target="_blank" class="dropdown-item bg-fuchsia radiusSendiri"><i class="fas fa-print"></i> </a>
-                                                <a href="{{ route('job_order.destroy', $item->id) }}" class="dropdown-item bg-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> </a>
-                                              </div>
-                                            </div>
-                                          </div> --}}
+                                        
+                                       
                                        
                                     </td>
                                 </tr>
