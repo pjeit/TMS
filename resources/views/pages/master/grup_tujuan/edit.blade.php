@@ -82,7 +82,7 @@
                                             <tr class="">
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Nama Tujuan</th>
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Jenis</th>
-                                                <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Tarif</th>
+                                                <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Total Tarif</th>
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Uang Jalan</th>
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center; width: 110px;">Komisi</th>
                                                 <th style="">Catatan</th>
@@ -101,7 +101,8 @@
                                                             <input style="margin: auto; display: block;" type="text" name="data[tujuan][{{$key}}][jenis_tujuan]" id="jenis_tujuan_{{$key}}" value="{{$item->jenis_tujuan}}" class="form-control" readonly>
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="" type="text" name="data[tujuan][{{$key}}][tarif]" id="tarif_{{$key}}" value="{{ number_format($item->tarif) }}" class="form-control numaja uang tarif" readonly/>
+                                                            <input type="hidden" name="data[tujuan][{{$key}}][tarif]" id="tarif_{{$key}}" value="{{ number_format($item->tarif) }}" class="form-control numaja uang tarif" readonly/>
+                                                            <input type="text" id="total_tarif_{{$key}}" value="{{number_format($item->tarif+$item->seal_pje+$item->tally+$item->plastik)}}" class="form-control numaja uang tarif" readonly placeholder="total tarif"/>
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
                                                             <input style="" type="text" name="data[tujuan][{{$key}}][uang_jalan]" id="uang_jalan_{{$key}}" value="{{ number_format($item->uang_jalan) }}" class="form-control numaja uang uangJalan" readonly/>
@@ -128,10 +129,7 @@
                                                         <input type="hidden" name="data[tujuan][{{$key}}][seal_hidden]" id="seal_pje_hidden_{{$key}}" value="{{$item->seal_pje?number_format($item->seal_pje):''}}"placeholder="">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][tally_hidden]" id="tally_hidden_{{$key}}" value="{{$item->tally?number_format($item->tally):''}}"placeholder="">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][plastik_hidden]" id="plastik_hidden_{{$key}}" value="{{$item->plastik?number_format($item->plastik):''}}"placeholder="">
-                                                        {{-- <td style="padding: 5px; text-align: center; vertical-align: middle;"> --}}
-                                                            <input type="hidden" name="data[tujuan][{{$key}}][kargo_hidden]" id="kargo_hidden_{{$key}}" value="{{$item->kargo}}">
-                                                        {{-- </td>  --}}
-
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][kargo_hidden]" id="kargo_hidden_{{$key}}" value="{{$item->kargo}}">
 
                                                         <td><button type="button" name="remove" id="{{$key}}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr> 
                                                     </tr>
@@ -241,7 +239,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-4 col-12">
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
                                 <label for="uang_jalan">Uang Jalan Driver</label>
                                 <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -250,7 +248,7 @@
                                 <input type="text" name="uang_jalan" class="form-control numaja uang" id="uang_jalan" placeholder="" readonly> 
                                 </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-4 col-12">
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
                                 <label for="komisi">Komisi</label>
                                 <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -259,12 +257,12 @@
                                 <input type="text" name="komisi" class="form-control numaja uang" id="komisi" placeholder=""> 
                                 </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-4 col-12">
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
                                 <label for="">Kargo</label>
-                                <input type="text" name="kargo" class="form-control" id="kargo" placeholder=""> 
+                                <input type="text" name="kargo_pje" class="form-control" id="kargo_pje" placeholder=""> 
                             </div>
                           
-                             <div class="form-group col-lg-4 col-md-4 col-12">
+                             <div class="form-group col-lg-4 col-md-6 col-sm-6">
                                 <label for="komisi">Seal PJE</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
@@ -278,7 +276,7 @@
                             </div>
                               
       
-                            <div class="form-group col-lg-4 col-md-4 col-12">
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
                                 <label for="komisi">Tally</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
@@ -292,7 +290,7 @@
 
                                 </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-4 col-12">
+                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
                                 <label for="komisi">Plastik</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
@@ -303,6 +301,15 @@
                                         <span class="input-group-text"><input type="checkbox" id="check_is_plastik" name="is_plastik"></span>
                                     </div>
 
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4 col-md-12 col-sm-12">
+                                <label for="uang_jalan">Total Tarif</label>
+                                <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Rp</span>
+                                </div>
+                                <input type="text" name="total_tarif" class="form-control numaja uang" id="total_tarif" placeholder="" readonly> 
                                 </div>
                             </div>
                     </div>
@@ -443,11 +450,10 @@
                 'tally': master.tally,
                 'plastik': master.plastik,
             };
-            console.log(uang);
         // end of master harga tipe
         $('#check_is_seal_pje').click(function(){
             if($(this).is(":checked")){
-                $('#seal_pje').val(uang['seal_pje']);
+                $('#seal_pje').val(uang['seal_pje'].toLocaleString());
                 // $('#seal_pje').attr('readonly',false);
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
@@ -455,11 +461,12 @@
                 $('#seal_pje').attr('readonly',true);
                 // console.log("Checkbox is unchecked.");
             }
+            totalTarif();
         });
         
         $('#check_is_tally').click(function(){
             if($(this).is(":checked")){
-                $('#tally_pje').val(uang['tally']);
+                $('#tally_pje').val(uang['tally'].toLocaleString());
                 // $('#tally_pje').attr('readonly',false);
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
@@ -467,11 +474,12 @@
                 $('#tally_pje').attr('readonly',true);
                 // console.log("Checkbox is unchecked.");
             }
+            totalTarif();
         });
 
         $('#check_is_plastik').click(function(){
             if($(this).is(":checked")){
-                $('#plastik_pje').val(uang['tally']);
+                $('#plastik_pje').val(uang['tally'].toLocaleString());
                 // $('#plastik_pje').attr('readonly',false);
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
@@ -479,6 +487,7 @@
                 $('#plastik_pje').attr('readonly',true);
                 // console.log("Checkbox is unchecked.");
             }
+            totalTarif();
         });
         // deklarasi golbal id yg didelete
         var deleted_tujuan = [];
@@ -585,7 +594,7 @@
                     </td>
                     <td style="padding: 5px; text-align: center; vertical-align: middle;">
                         <input type="hidden" name="biaya_id" id="biaya_id${j}" class="form-control"/>
-                        <input type="text" name="biaya" id="biaya${j}" class="form-control numaja uang biaya" />
+                        <input type="text" name="biaya" id="biaya${j}" class="form-control numaja uang biaya hitungBiaya" />
                     </td>
                     <td style="padding: 5px; text-align: center; vertical-align: middle;">
                         <input type="text" name="catatan_biaya" id="catatan_biaya${j}" class="form-control"/>
@@ -664,7 +673,6 @@
             } else {
                 marketingSelect.innerHTML = '<option value="">Pilih Marketing</option>';
             }
-
             $('#modal_detail').modal('show');
         });
 
@@ -795,9 +803,7 @@
                 
             }
             if($('#kargo_hidden_'+key).val() != ''){
-                
-                // $('#kargo_pje').val($('#kargo_hidden_'+key).val());
-                $('#kargo_pje').val($('#kargo_hidden_'+key).val()).trigger('change');
+                $('#kargo_pje').val($('#kargo_hidden_'+key).val());
 
             }
           
@@ -815,7 +821,7 @@
                                         <input type="hidden" name="biaya_id${index}" id="biaya_id${index}" value="${item.id}">
                                     </td>
                                     <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                        <input style="" type="text" id="biaya${index}" value="${item.biaya.toLocaleString()}" class="form-control numaja uang" />
+                                        <input style="" type="text" id="biaya${index}" value="${item.biaya.toLocaleString()}" class="form-control numaja uang hitungBiaya" />
                                     </td>
                                     <td style="padding: 5px; text-align: center; vertical-align: middle;">
                                         <input style="" type="text" id="catatan_biaya${index}" value="${item.catatan}" class="form-control"/>
@@ -832,9 +838,51 @@
             // if(typeof exist === 'undefined') {
 
             $('.select2').select2();
-
+            totalTarif();
             $('#modal_detail').modal('show');
         });
+
+        // change total tarif
+        $('#tarif').on('keyup', function(event){
+            totalTarif();
+        });
+
+        function totalTarif(){
+            var t_tarif_input = $('#tarif').val();
+            var t_tarif_parsed = parseFloat(t_tarif_input.replace(/,/g, '')) || 0;
+
+            var t_seal_input = $('#seal_pje').val();
+            var t_seal_parsed = parseFloat(t_seal_input.replace(/,/g, '')) || 0;
+
+            var t_tally_input = $('#tally_pje').val();
+            var t_tally_parsed = parseFloat(t_tally_input.replace(/,/g, '')) || 0;
+
+            var t_plastik_input = $('#plastik_pje').val();
+            var t_plastik_parsed = parseFloat(t_plastik_input.replace(/,/g, '')) || 0;
+            
+            var t_total = t_tarif_parsed + t_seal_parsed + t_tally_parsed + t_plastik_parsed;
+            var formattedTotal = t_total.toLocaleString(); // Format with commas
+            $('#total_tarif').val(formattedTotal);
+        }
+        
+       
+
+        // $('.hitungBiaya').on('keyup', function(event){
+        //     // totalBiaya();
+        // });
+        $(document).on('keyup', '.hitungBiaya', function(){
+            totalBiaya();
+        });
+
+        function totalBiaya(){
+            var sum = 0;
+            $('.hitungBiaya').each(function() {
+                var t_biaya = parseFloat($(this).val().replace(/,/g, '')) || 0;
+                sum += t_biaya;
+            });
+            $('#uang_jalan').val(sum.toLocaleString());
+        }
+
         
         $(document).on('click', '.save_detail', function(event){
             var key=$('#key').val().trim();
@@ -1065,6 +1113,7 @@
             $('#seal_pje').val('');
             $('#tally_pje').val('');
             $('#plastik_pje').val('');
+            $('#total_tarif').val('');
             // $('#kargo_pje').empty();
             // $('#kargo_pje').prop("selected",false)
             $('#kargo_pje').val('').trigger('change');
@@ -1091,8 +1140,8 @@
                 deleted_biaya.push(biaya_id_value);
                 $("#deleted_biaya_temp").val(deleted_biaya.join(","));
             }
-
             $('#row_biaya'+button_id+'').remove();  
+            totalBiaya();
         });
 
 

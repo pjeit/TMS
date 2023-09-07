@@ -71,11 +71,11 @@
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                        <th style="width:30px"><div class="btn-group"></div></th>
-                        <th>No. Kontainer</th>
-                        <th>Pengirim</th>
-                        <th>Pelayaran</th>
-                        <th>Status Kontainer</th>
+                            <th>No. Kontainer</th>
+                            <th>Pengirim</th>
+                            <th>Pelayaran</th>
+                            <th>Status Kontainer</th>
+                            <th style="width:30px"><div class="btn-group"></div></th>
                         </tr>
                     </thead>
                     <tbody id="hasil">
@@ -124,12 +124,39 @@
                         for (var i = 0; i < data.length; i++) {
                             if (data[i].id_jo !== nyimpenIdBapakJO) {
                                 var row = $("<tr></tr>");
-                                row.append("<td colspan='6'>" + data[i].no_jo + "<br> Status Jo: " + data[i].statusJO + "</td>");
+                                // row.append(`<td>
+                                //     <div class="btn-group ">
+                                //         <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                //             <i class="fa fa-list"></i>
+                                //         </button>
+                                //         <div class="dropdown-menu">
+                                //             <a href="#" class="dropdown-item">
+                                //                 <span class="fas fa-edit mr-3"></span> Edit
+                                //             </a>
+                                //             <a href="#" class="dropdown-item">
+                                //                 <span class="fas fa-edit mr-3"></span> Edit
+                                //             </a>
+                                //             <a href="#" method="get" rel="noopener" target="_blank"  class="dropdown-item">
+                                //                 <span class="fas fa-print mr-3"></span> Export PDF
+                                //             </a>
+                                //             <a href="#" class="dropdown-item" data-confirm-delete="true">
+                                //                 <span class="fas fa-trash mr-3"></span> Delete
+                                //             </a>
+                                //         </div>
+                                //     </div>
+                                // </td>`);
+                                row.append("<td colspan='5'>" + data[i].no_jo + "<br> Status Jo: " + data[i].statusJO + "</td>");
                                 $("#hasil").append(row);
                                 nyimpenIdBapakJO = data[i].id_jo;
                             }
 
                             var row = $("<tr></tr>");
+                      
+                            
+                            row.append("<td>" + data[i].no_kontainer + "</td>");
+                            row.append("<td>" + data[i].kode + " - " + data[i].nama_cust + "</td>");
+                            row.append("<td>" + data[i].nama_supp + "</td>");
+                            row.append("<td>" + data[i].statusDetail + "</td>");
                             row.append(`
                                 <td>
                                     <a class="btn btn-sm btn-primary radiusSendiri" href="{!! url('/storage_demurage/${data[i].id}/edit') !!}">
@@ -137,11 +164,6 @@
                                     </a>
                                 </td>
                                 `); 
-                            
-                            row.append("<td>" + data[i].no_kontainer + "</td>");
-                            row.append("<td>" + data[i].kode + " - " + data[i].nama_cust + "</td>");
-                            row.append("<td>" + data[i].nama_supp + "</td>");
-                            row.append("<td>" + data[i].statusDetail + "</td>");
                             
                             $("#hasil").append(row);
                         }

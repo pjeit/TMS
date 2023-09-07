@@ -226,22 +226,22 @@ class PaymentSDTController extends Controller
             ");
 
 
-            $dataJO = DB::select("SELECT
-                    jo.id,
-                    jo.no_bl,
-                    CONCAT('[', GROUP_CONCAT(
-                        JSON_OBJECT(
-                            'no_jo', jo.no_jo,
-                            'no_kontainer', jod.no_kontainer,
-                            'seal', jod.seal
-                        )
-                        SEPARATOR ','
-                    ), ']') AS json_detail
-                FROM job_order jo
-                LEFT JOIN job_order_detail jod ON jod.id_jo = jo.id
-                GROUP BY jo.id, jo.no_bl
-                ORDER BY no_bl;
-            ");
+            // $dataJO = DB::select("SELECT
+            //         jo.id,
+            //         jo.no_bl,
+            //         CONCAT('[', GROUP_CONCAT(
+            //             JSON_OBJECT(
+            //                 'no_jo', jo.no_jo,
+            //                 'no_kontainer', jod.no_kontainer,
+            //                 'seal', jod.seal
+            //             )
+            //             SEPARATOR ','
+            //         ), ']') AS json_detail
+            //     FROM job_order jo
+            //     LEFT JOIN job_order_detail jod ON jod.id_jo = jo.id
+            //     GROUP BY jo.id, jo.no_bl
+            //     ORDER BY no_bl;
+            // ");
        
             // var_dump($result); die;
             // var_dump($dataJO); die;
