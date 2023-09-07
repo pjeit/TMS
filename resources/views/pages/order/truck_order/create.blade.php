@@ -42,10 +42,20 @@
     @endif
     <form action="{{ route('truck_order.store') }}" method="POST" >
     @csrf
-    <button type="submit">wet</button>
+    {{-- <div class="row">
+        <div class="col">
+  
+        </div>
+    </div>
+    <hr> --}}
         <div class="row">
             <div class="col">
                 <div class="card radiusSendiri card-outline card-primary">
+                    <div class="card-header">
+                        <a href="{{ route('truck_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                        {{-- <button type="submit">wet</button> --}}
+                    </div>
                     <div class="card-body">
                          <div class="row mb-2">
                             <div class="col-6 text-center radiusSendiri" id="inbound">
