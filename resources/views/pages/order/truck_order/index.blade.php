@@ -38,6 +38,8 @@
                             </tr>
                           </thead>
                         <tbody>
+                        @if (isset($dataSewa))
+                            @foreach($dataSewa as $item)
                              <tr>
                                 <td>                                    
                                     <div class="dropdown custom-dropdown">
@@ -48,9 +50,9 @@
                                             <a href="" class="dropdown-item">
                                                 <span class="fas fa-edit mr-3"></span> Edit
                                             </a>
-                                            <a href="" method="get" rel="noopener" target="_blank"  class="dropdown-item">
+                                            {{-- <a href="" method="get" rel="noopener" target="_blank"  class="dropdown-item">
                                                 <span class="fas fa-print mr-3"></span> Photoshop PDF
-                                            </a>
+                                            </a> --}}
                                             <a href="" class="dropdown-item" data-confirm-delete="true">
                                                 <span class="fas fa-trash mr-3"></span> Delete
                                             </a>
@@ -58,12 +60,20 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>L 9990 KK</td>
+                                  {{-- <td>L 9990 KK</td>
                                 <td>2023/CUST/VII/004</td>
                                 <td>21-Jul-2023</td>
-                                <td>** PT. Multi Bintang - Bir Bintang 20</td>
-                                <td>SUPIR GENSA (081123123123)</td>
+                                <td>** PT. Multi Bintang - Bir Bintang 20 </td>
+                                <td>SUPIR GENSA (081123123123)</td> --}}
+
+                                <td>{{ $item->no_pol }}</td>
+                                <td>{{ $item->id_sewa }}</td>
+                                <td>{{ $item->tanggal_berangkat }}</td>
+                                <td>{{ $item->idGrup_tujuan }}</td>
+                                <td>{{ $item->id_karyawan }}</td>
                             </tr>
+                               @endforeach
+                            @endif
 
                         </tbody>
                     </table>
