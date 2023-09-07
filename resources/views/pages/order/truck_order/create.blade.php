@@ -87,7 +87,7 @@
                                         <option value="">Pilih No Booking</option>
                 
                                         @foreach ($dataBooking as $book)
-                                            <option value="{{$book->id}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_berangkat)->format('d-M-Y')}}">{{ \Carbon\Carbon::parse($book->tgl_berangkat)->format('d-M-Y') }} / {{ $book->nama_tujuan }}  / {{ $book->kode }}</option>
+                                            <option value="{{$book->idBooking}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_berangkat)->format('d-M-Y')}}">{{ \Carbon\Carbon::parse($book->tgl_berangkat)->format('d-M-Y') }} / {{ $book->nama_tujuan }}  / {{ $book->kode }}</option>
                                         @endforeach
                                     </select>
                                 </div>  
@@ -110,6 +110,7 @@
                                                 <option value="{{$city->id}}">{{ $city->nama }}</option>
                                             @endforeach --}}
                                         </select>
+                                        <input type="hidden" name="no_kontainer" id="no_kontainer" value="">
                                     </div> 
                                 </div>
                                 <div class="form-group">
@@ -138,7 +139,7 @@
                                 </div>
                                 <div class="form-group">
                                         <label for="catatan">Catatan</label>
-                                        <input type="text" name="catatan" class="form-control" id="catatan" placeholder="" value=""> 
+                                        <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value=""> 
                                     </div>
                             </div>
                             <div class="col-6">
@@ -163,6 +164,8 @@
                                             <option value="{{$city->id}}">{{ $city->nama }}</option>
                                         @endforeach --}}
                                     </select>
+                                    <input type="hidden" id="is_bongkar" name="is_bongkar" value="">
+
                                     <input type="hidden" id="tujuan_id" name="tujuan_id" value="">
                                     <input type="hidden" id="nama_tujuan" name="nama_tujuan" value="">
                                     <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="">
@@ -179,6 +182,9 @@
                                     <input type="hidden" id="kargo" name="kargo" value="">
 
                                     <input type="hidden" id="biayaDetail" name="biayaDetail">
+                                    <input type="hidden" id="biayaTambahTarif" name="biayaTambahTarif">
+
+                                    
                                 
                                 </div>
                                 {{-- <div class="row">
@@ -220,17 +226,19 @@
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="ekor_id" name="ekor_id" value="">
+                                    <input type="hidden" id="karoseri" name="karoseri" value="">
+
                                 </div>
                                 <div class="form-group">
                                     <label for="select_driver">Driver<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='id_driver' name="id_driver">
+                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver">
                                         <option value="">Pilih Driver</option>
 
                                         @foreach ($dataDriver as $drvr)
                                             <option value="{{$drvr->id}}">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="driver_id" name="driver_id" value="">
+                                    <input type="hidden" id="driver_nama" name="driver_nama" value="">
                                 </div>
                             </div>
                          
@@ -256,6 +264,7 @@
         $('#garisOutbond').hide();
         $('#select_customer').attr('disabled',true).val('').trigger('change');
         $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
+        $('#is_bongkar').val('Y');
         
         $('body').on('click','#inbound',function()
 		{
@@ -267,6 +276,8 @@
             $('#garisOutbond').hide();
             $('#select_booking').val('').trigger('change');
             $('#tanggal_berangkat').val('');
+        $('#is_bongkar').val('Y');
+
 
             $('#select_customer').attr('disabled',true).val('').trigger('change');
             $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
@@ -286,12 +297,17 @@
             $('#tally').val('');
             $('#kargo').val('');
                         $('#biayaDetail').val('');
+                        $('#biayaTambahTarif').val('');
+
+                        
 
 
 		});
          $('body').on('click','#outbond',function()
 		{
             // $(this).animate({ "color": "red" }, 1500);
+            $('#select_booking').val('').trigger('change');
+
             $('#inboundData').hide();
             $('#garisInbound').hide();
             $('#outbondData').show();
@@ -301,6 +317,7 @@
             
             $('#select_jo_detail').val('').trigger('change');
             $('#select_jo').val('').trigger('change');
+            $('#is_bongkar').val('');
 
               $('#tujuan_id').val('');
             $('#nama_tujuan').val('');
@@ -317,6 +334,9 @@
             $('#tally').val('');
             $('#kargo').val('');
                         $('#biayaDetail').val('');
+                        $('#biayaTambahTarif').val('');
+
+            $('#tanggal_berangkat').val('');
 
 
 		});
@@ -324,6 +344,8 @@
 		{
             var selectedValue = $(this).val();
             var splitValue = selectedValue.split('-');
+            // console.log(splitValue);
+
             var idCustomer=splitValue[1];
             var idTujuan=splitValue[2];
 
@@ -370,7 +392,7 @@
                     {
                         response.forEach(joDetail => {
                             const option = document.createElement('option');
-                            option.value = joDetail.id+"-"+joDetail.id_grup_tujuan;
+                            option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer;
                             option.textContent = joDetail.no_kontainer ;
                             // if (selected_marketing == marketing.id) {
                             //     option.selected = true;
@@ -395,6 +417,8 @@
             var splitValue = selectedValue.split('-');
             var idJoDetail=splitValue[0];
             var idTujuan=splitValue[1];
+            var no_kontainer=splitValue[2];
+
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
 
 		});
@@ -423,6 +447,8 @@
             $('#tally').val('');
             $('#kargo').val('');
             $('#biayaDetail').val('');
+                        $('#biayaTambahTarif').val('');
+
             // $('#tujuan_id').val(e.params.data.id);
             // $('#nama_tujuan').val(e.params.data.nama_tujuan);
             // $('#alamat_tujuan').val(e.params.data.alamat_tujuan);
@@ -539,6 +565,8 @@
 
             var myjson;
             var array_detail_biaya = [];
+            var array_tambahan_tarif = [];
+
             // console.log(idTujuan);
             //
             // customer_id
@@ -578,6 +606,10 @@
                         $('#tally').val('');
                         $('#kargo').val('');
                         $('#biayaDetail').val('');
+                        $('#biayaTambahTarif').val('');
+
+                        array_detail_biaya = []
+                        array_tambahan_tarif = [];
 
                     }
                     else
@@ -600,9 +632,7 @@
                         //ltl
                         $('#harga_per_kg').val(response.dataTujuan.harga_per_kg);
                         $('#min_muatan').val(response.dataTujuan.min_muatan);
-                        $('#seal_pje').val(response.dataTujuan.seal_pje);
-                        $('#plastik').val(response.dataTujuan.plastik);
-                        $('#tally').val(response.dataTujuan.tally);
+                     
                         $('#kargo').val(response.dataTujuan.kargo);
 
                          // console.log( response.dataTujuanBiaya);
@@ -615,11 +645,49 @@
                                 };
                             array_detail_biaya.push(obj);
                         }
-                        console.log(array_detail_biaya);
                         
                         // var obj=JSON.parse(myjson);
                         // array_detail_biaya.push(obj);
+                        if(response.dataTujuan.seal_pje)
+                        {
+                            
+                            var objSeal = {
+                                       deskripsi: 'SEAL PJE',
+                                       biaya: response.dataTujuan.seal_pje,
+                                   };
+                               array_tambahan_tarif.push(objSeal);
+                        }
+
+                        if(response.dataTujuan.plastik)
+                        {
+                            
+                            var objpLASTIK = {
+                                       deskripsi: 'PLASTIK',
+                                       biaya: response.dataTujuan.plastik,
+                                   };
+                               array_tambahan_tarif.push(objpLASTIK);
+                        }
+
+                        if(response.dataTujuan.tally)
+                        {
+                            
+                            var objtally = {
+                                       deskripsi: 'TALLY',
+                                       biaya: response.dataTujuan.tally,
+                                   };
+                               array_tambahan_tarif.push(objtally);
+                        }
+
+                   
+
+                        $('#seal_pje').val(response.dataTujuan.seal_pje);
+                        $('#plastik').val(response.dataTujuan.plastik);
+                        $('#tally').val(response.dataTujuan.tally);
+
                         $('#biayaDetail').val(JSON.stringify(array_detail_biaya));
+                        $('#biayaTambahTarif').val(JSON.stringify(array_tambahan_tarif));
+
+                        console.log(array_detail_biaya);
 
                     }
 
@@ -658,6 +726,17 @@
                 $('#select_chassis').attr('disabled',false); 
 
             $('#select_chassis').val(idChassis).trigger('change');
+            $('#ekor_id').val(idChassis);
+		});
+        $('body').on('change','#select_driver',function()
+		{
+            var selectedValue = $(this).val();
+            var split = selectedValue.split("-");
+
+            var idKendaraan = split[0];
+            var idChassis = split[1];
+            var nopol = split[2];
+            $('#driver_nama').val(idChassis);
 		});
    
         $('#tgl_booking').datepicker({

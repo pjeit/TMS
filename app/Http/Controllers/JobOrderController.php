@@ -145,7 +145,7 @@ class JobOrderController extends Controller
                         $JOD->tipe_kontainer = $detail['tipe'];
                         $JOD->stripping = $detail['stripping'];
                       
-                        $JOD->status = "MENUNGGU PEMBAYARAN";
+                        $JOD->status = "BELUM DOORING";
                         $JOD->created_by = $user;
                         $JOD->created_at = now();
                         $JOD->is_aktif = 'Y';
