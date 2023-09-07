@@ -28,7 +28,7 @@
                               <th>Pengirim (Customer)</th>
                               <th>Pelayaran (Supplier)</th>
                               <th>Status</th>
-                              <th>Aksi</th>
+                              <th></th>
                             </tr>
                           </thead>
                         <tbody>
@@ -42,7 +42,7 @@
                                     <td>                                    
                                         <!-- Default dropleft button -->
                                         <div class="btn-group dropleft">
-                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="fa fa-list"></i>
                                             </button>
                                             <div class="dropdown-menu">
@@ -57,8 +57,6 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        
-                                       
                                        
                                     </td>
                                 </tr>

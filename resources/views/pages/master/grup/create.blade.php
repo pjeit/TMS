@@ -43,7 +43,7 @@
                                 <input required type="text" name="nama_grup" class="form-control" value="{{old('nama_grup','')}}" >
                             </div>
                             <div class="form-group col-md-6 col-sm-12">
-                                <label for="">Total Max Kredit</label>
+                                <label for="">Total Max Kredit<span class="text-red">*</span></label>
                                 <div class="input-group ">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
@@ -69,7 +69,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">+62</span>
                                     </div>
-                                    <input required type="text" maxlength="12" name="telp1" class="form-control numaja " value="{{old('telp1','')}}" id='telp1' >
+                                    <input required type="text" maxlength="14" name="telp1" class="form-control numaja " value="{{old('telp1','')}}" id='telp1' >
                                 </div>
                             </div>      
                             <div class="form-group col-6">
@@ -78,7 +78,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">+62</span>
                                     </div>
-                                    <input  type="text" maxlength="12" name="telp2" class="form-control numaja " value="{{old('telp2','')}}" id='telp2' >
+                                    <input  type="text" maxlength="14" name="telp2" class="form-control numaja " value="{{old('telp2','')}}" id='telp2' >
                                 </div>
                             </div>               
                         </div>    
@@ -94,6 +94,7 @@
     </form>
 </div>
 
+{{-- sweet save --}}
 <script>
     $(document).ready(function() {
         $('#post').submit(function(event) {
@@ -156,12 +157,33 @@
 
 <script>
     $(document).ready(function() {
-      // Listen for input events on all input fields
-      $('input[type="text"]').on('input', function() {
-        var inputValue = $(this).val();
-        var uppercaseValue = inputValue.toUpperCase();
-        $(this).val(uppercaseValue);
-      });
+        $('input[type="email"]').on('input', function() {
+            var inputValue = $(this).val();
+            var uppercaseValue = inputValue.toUpperCase();
+            $(this).val(uppercaseValue);
+        });
+
+        $("#telp1").on("change", function() {
+            var inputValue = $(this).val();
+            if (inputValue.startsWith("08")) {
+                inputValue = "8" + inputValue.substring(2);
+                $(this).val(inputValue);
+            }else if(inputValue.startsWith("628")){
+                inputValue = "8" + inputValue.substring(3);
+                $(this).val(inputValue);
+            }
+        });
+        $("#telp2").on("change", function() {
+            var inputValue = $(this).val();
+            if (inputValue.startsWith("08")) {
+                inputValue = "8" + inputValue.substring(2);
+                $(this).val(inputValue);
+            }else if(inputValue.startsWith("628")){
+                inputValue = "8" + inputValue.substring(3);
+                $(this).val(inputValue);
+            }
+        });
+
   
     });
 </script>

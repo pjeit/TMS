@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Grup;
 use App\Models\GrupMember;
+use App\Models\M_Kota;
 use App\Models\Marketing;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -26,9 +27,14 @@ class MarketingController extends Controller
                         ->leftJoin('role as r', 'gm.role_id', '=', 'r.id')
                         ->select('gm.*', 'g.nama_grup as nama_grup', 'r.nama as nama_role')
                         ->where('gm.is_aktif', '=', "Y")
-                        ->paginate(5);
-                        // ->get();
-        
+                        ->get();
+     
+        $title = 'Delete data!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+
         return view('pages.master.marketing.index',[
             'judul' => "Marketing Grup",
             'data' => $data,
@@ -44,12 +50,13 @@ class MarketingController extends Controller
     {
         $grup = Grup::where('is_aktif', 'Y')->get();
         $role = Role::where('is_aktif', 'Y')->get();
-        // dd($role[2]->id);
+        $kota = M_Kota::orderBy('nama', 'ASC')->get();
 
         return view('pages.master.marketing.create',[
             'judul' => "Marketing Grup",
             'grup' => $grup,
             'role' => $role,
+            'kota' => $kota,
         ]);
     }
 
