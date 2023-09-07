@@ -21,14 +21,14 @@
                     </a> 
                 </div>
                 <div class="card-body">
-                    <table id="myTable" class="table table-bordered table-striped">
+                    <table id="myTable" class="table table-bordered table-striped table-hover" width="100%">
                         <thead>
                             <tr>
                               <th>Nama Grup</th>
                               <th>Nama PIC</th>
                               <th>Total Kredit</th>
                               <th>Total Max Kredit</th>
-                              <th>Aksi</th>
+                              <th ></th>
                             </tr>
                           </thead>
                         <tbody>
@@ -39,13 +39,19 @@
                                 <td>{{ number_format($item->total_kredit,0,",",".") }}</td>
                                 <td>{{ number_format($item->total_max_kredit,0,",",".") }}</td>
                                 <td>                                    
-                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('grup.edit',[$item->id])}}">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>   
-
-                                    <a href="{{ route('grup.destroy', $item->id) }}" class="btn btn-danger radiusSendiri" data-confirm-delete="true"><i class="fas fa-trash"></i> Hapus</a>
-                                    
-
+                                    <div class="btn-group dropleft">
+                                        <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-list"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a href="{{route('grup.edit',[$item->id])}}" class="dropdown-item ">
+                                                <span class="fas fa-edit mr-3"></span> Edit
+                                            </a>
+                                            <a href="{{ route('grup.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                <span class="fas fa-trash mr-3"></span> Delete
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                                 
                             </tr>
@@ -63,7 +69,8 @@
 <script type="text/javascript">
     $(function () {
       var table = $('#myTable').DataTable({
-        responsive: true,
+        // responsive: true,
+        scrollX: true
       });
     });
 </script>
