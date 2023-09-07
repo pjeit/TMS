@@ -131,15 +131,16 @@ class SewaController extends Controller
     }
     public function getTujuanBiaya($id)
     {
+        //TUjuan kan ada id
         $Tujuan = DB::table('grup_tujuan as gt')
             ->select('gt.*')
             ->where('gt.id', '=',  $id)
             ->where('gt.is_aktif', '=', "Y")
             ->first();
-        
+        //na biaya ini berdasarkan id tujuannya misa id tujuan 1 punya biaya 1 2 3 dengan id tujuan 1
         $TujuanBiaya = DB::table('grup_tujuan_biaya as gtb')
             ->select('gtb.*')
-            ->where('gtb.grup_tujuan_id', '=',  $id)
+            ->where('gtb.grup_tujuan_id', '=',  $Tujuan->id)
             ->where('gtb.is_aktif', '=', "Y")
             ->get();
 
@@ -185,47 +186,131 @@ class SewaController extends Controller
             $data = $request->collect();
             // encode ubah array jadi json
             //decode ubah json jadi array
+            // dd();
             // dd(json_decode($data['biayaDetail'], true));
        
             //====== end logic otomatis nik ======
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
             // var_dump($data['status_pegawai']);die;
+            $dataBook=$data['select_booking']?explode("-",$data['select_booking']):null;
+            // dd($dataBook[0]);
+
             $idSewa=DB::table('sewa')
                 ->insertGetId(array(
-                    
-                    // end data status Karyawan
+                    'id_booking'=>$dataBook?$dataBook[0]:null, //id booking dr front end di split di combobox
+                    'id_jo'=>$data['select_jo']?$data['select_jo']:null,
+                    'id_jo_detail'=>$data['select_jo_detail']?$data['select_jo_detail']:null,
+                    'status'=>'MENUNGGU PERJALANAN',
+                    'tanggal_status'=>now(),
+                    'tanggal_berangkat'=>date_format($tgl_berangkat, 'Y-m-d'),
+                    'id_customer'=>$data['customer_id']/*?$data['']:null*/,
+                    'idGrup_tujuan'=>$data['tujuan_id']/*?$data['']:null*/,
+                    'nama_tujuan'=>$data['nama_tujuan']/*?$data['']:null*/,
+                    'alamat_tujuan'=>$data['alamat_tujuan']/*?$data['']:null*/,
+                    'jumlah_muatan'=>0,
+                    'kargo'=>$data['kargo'],
+                    'DO'=>null,
+                    'RO'=>null,
+                    'IER'=>null,
+                    'is_bongkar'=>$data['is_bongkar']=='Y'?'Y':'N',
+                    'total_tarif'=>$data['jenis_tujuan']=="LTL"?$data['harga_per_kg'] * $data['min_muatan']:$data['tarif'],
+                    'total_uang_jalan'=>$data['uang_jalan'],
+                    'total_komisi'=>$data['komisi']?$data['komisi']:null,
+                    'id_kendaraan'=>$data['kendaraan_id']?$data['kendaraan_id']:null,
+                    'no_pol'=>$data['kendaraan_nopol']?$data['kendaraan_nopol']:null,
+                    'id_chassis'=>$data['ekor_id']?$data['ekor_id']:null,
+                    // 'karoseri_chassis'=>$data['']?$data['']:null,
+                    'id_karyawan'=>$data['select_driver']?$data['select_driver']:null,
+                    // 'nama_supir'=>$data['']?$data['']:null,
+                    'catatan'=>$data['catatan']?$data['catatan']:null,
+                    'is_kembali'=>'N',
+                    'tanggal_kembali'=>null,
+                    'no_kontainer'=>$data['no_kontainer']?$data['no_kontainer']:null,
+                    'no_surat_jalan'=>null,
+                    'no_segel'=>null,
+                    'no_segel_pje'=>null,
+                    'foto_kontainer'=>null,
+                    'foto_surat_jalan'=>null,
+                    'foto_segel_1'=>null,
+                    'foto_segel_2'=>null,
+                    'foto_segel_pje'=>null,
+                    'total_reimburse_dipisahkan'=>null,
+                    'total_reimburse_tidak_dipisahkan'=>null,
+                    'total_reimburse_aktual'=>null,
+                    'alasan_hapus'=>null,
+                    'is_aktif'=>'Y',
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $user,
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
-                    'is_aktif' => "Y",
                 )
             ); 
+
+            // dd($idSewa['id_jo']);
             
-            $arrayBiaya = json_decode($data['biayaDetail'], true);
-            foreach ($arrayBiaya as $key => $item) {
-                DB::table('karayawan_identitas')
-                    ->insert(array(
-                    'id_sewa'=>$idSewa,
-                    'deskripsi' => $item['deskripsi'] ,
-                    'biaya' => $item['biaya'],
-                    'catatan' => $item['catatan'],
-                    'created_at'=>VariableHelper::TanggalFormat(), 
-                    'created_by'=> $user,
-                    'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> $user,
-                    'is_aktif' => "Y",
-                    )
-                ); 
-        
+            if($idSewa)
+            {
+                if($data['select_booking'])
+                {
+                    DB::table('booking')
+                        ->where('id', explode("-",$data['select_booking'][0]))
+                        ->update([
+                            'updated_at' => VariableHelper::TanggalFormat(),
+                            'updated_by' => $user,
+                            'is_aktif' => "N",
+                        ]);
+                }
+    
+                if($data['select_jo'] &&$data['select_jo_detail'])
+                {
+                    // DB::table('job_order')
+                    //     ->where('id', $data['select_jo'])
+                    //     ->update([
+                    //         'status'=>'masih gatau',
+                    //         'updated_at' => VariableHelper::TanggalFormat(),
+                    //         'updated_by' => $user,
+                    //     ]);
+    
+                    DB::table('job_order_detail')
+                        ->where('id', $data['select_jo_detail'])
+                        ->update([
+                            'id_kendaraan'=>$data['kendaraan_id']?$data['kendaraan_id']:null,
+                            'nopol_kendaraan'=>$data['kendaraan_nopol']?$data['kendaraan_nopol']:null,
+                            'tgl_dooring'=>date_format($tgl_berangkat, 'Y-m-d'),
+                            'status'=>'DALAM PERJALANAN',
+                            'updated_at' => VariableHelper::TanggalFormat(),
+                            'updated_by' => $user,
+                        ]);
+                    
+                }
+                
+                $arrayBiaya = json_decode($data['biayaDetail'], true);
+                // $biayaTambahTarif = json_decode($data['biayaTambahTarif'], true);
+                //perhitungan kredit sama grup nya belum buat kredit sekarang, sama trip supir, update jo kalo ada, update booking kalo ada
+                foreach ($arrayBiaya as /*$key =>*/ $item) {
+                    DB::table('sewa_biaya')
+                        ->insert(array(
+                        'id_sewa'=>$idSewa,
+                        'deskripsi' => $item['deskripsi'] ,
+                        'biaya' => $item['biaya'],
+                        'catatan' => $item['catatan']?$item['catatan']:null,
+                        'is_aktif' => "Y",
+                        'created_at'=>VariableHelper::TanggalFormat(), 
+                        'created_by'=> $user,
+                        'updated_at'=> VariableHelper::TanggalFormat(),
+                        'updated_by'=> $user,
+                        )
+                    ); 
+            
+                }
+
             }
-          
             // var_dump($data['gaji']);
             // var_dump( response()->json(['message' => 'Berhasil menambahkan data karyawan', 'id' => $idKaryawan]));
 
-            return response()->json(['message' => 'Berhasil menambahkan data karyawan', 'id' => $idSewa]);
+            // return response()->json(['message' => 'Berhasil menambahkan data karyawan', 'id' => $idSewa]);
 
-            // return redirect()->route('karyawan.index')->with('status','Success!!');
+            return redirect()->route('truck_order.index')->with('status','Berhasil menambahkan data Sewa');
         } catch (ValidationException $e) {
             
                 return response()->json(['errorsCatch' => $e->errors()], 422);
