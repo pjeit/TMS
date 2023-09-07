@@ -310,7 +310,7 @@ class SewaController extends Controller
 
             // return response()->json(['message' => 'Berhasil menambahkan data karyawan', 'id' => $idSewa]);
 
-            return redirect()->route('truck_order.index')->with('status','Success!!');
+            return redirect()->route('truck_order.index')->with('status','Berhasil menambahkan data Sewa');
         } catch (ValidationException $e) {
             
                 return response()->json(['errorsCatch' => $e->errors()], 422);
