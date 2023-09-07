@@ -270,11 +270,11 @@
             language:'en',
             // endDate: "0d"
         });
-        $('#outbondData').hide();
-        $('#garisOutbond').hide();
-        $('#select_customer').attr('disabled',true).val('').trigger('change');
-        $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
-        $('#is_bongkar').val('Y');
+        $('#inboundData').hide();
+        $('#garisInbound').hide();
+        // $('#select_customer').attr('disabled',true).val('').trigger('change');
+        // $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
+        $('#is_bongkar').val('');
         
         $('body').on('click','#inbound',function()
 		{
@@ -287,7 +287,8 @@
             $('#select_booking').val('').trigger('change');
             $('#tanggal_berangkat').val('');
         $('#is_bongkar').val('Y');
-
+ $('#select_jo_detail').val('').trigger('change');
+            $('#select_jo').val('').trigger('change');
 
             $('#select_customer').attr('disabled',true).val('').trigger('change');
             $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
