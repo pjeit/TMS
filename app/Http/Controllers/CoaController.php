@@ -23,10 +23,11 @@ class CoaController extends Controller
             // ->paginate(10);
             ->select('coa.*')
             ->where('coa.is_aktif', '=', "Y")
-            ->paginate(10);
+            // ->paginate(10);
+            ->get();
 
 
-        $title = 'Delete data!';
+       $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";

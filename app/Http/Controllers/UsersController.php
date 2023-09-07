@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class UsersController extends Controller
 {
@@ -19,14 +20,20 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $dataUser = DB::table(DB::raw("(SELECT user.id, user.username as 'username', role.nama as 'role', karyawan.nama_panggilan, m_kota.nama as 'kota'
+        $dataUser = DB::table(DB::raw("(SELECT user.id, user.username as 'username', role.nama as 'role', karyawan.nama_panggilan, cabang_pje.nama as 'kota'
                                 FROM user
                                 LEFT JOIN karyawan ON user.karyawan_id = karyawan.id
-                                LEFT JOIN m_kota ON karyawan.m_kota_id = m_kota.id
+                                LEFT JOIN cabang_pje ON karyawan.cabang_id = cabang_pje.id
                                 LEFT JOIN role ON user.role_id = role.id
                                 WHERE user.is_aktif = 'Y' OR (user.is_aktif = 'Y' AND user.karyawan_id IS NULL)) AS data"))
                 ->select('data.*') // Select all columns from the subquery
                 ->paginate(10);
+            
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         //   $dataUser = DB::table('user')
         //     ->select('user.id','role.nama as role','karyawan.nama_panggilan')
         //     // ->select('user.id','user.username','role.nama as role','karyawan.nama_panggilan','m_kota.nama as kota')
@@ -258,7 +265,7 @@ class UsersController extends Controller
         //
         $useras = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         try{
-            DB::table('role')
+            DB::table('user')
             ->where('id', $user['id'])
             ->update(array(
                 'is_aktif' => "N",

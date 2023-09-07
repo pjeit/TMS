@@ -83,6 +83,7 @@ class PaymentSDTController extends Controller
             ->select('jodb.*', 'jod.no_kontainer')
             ->leftJoin('job_order_detail as jod', 'jod.id', '=', 'jodb.id_jo_detail')
             ->where('jodb.is_aktif', '=', "Y")
+            ->where('jodb.status_bayar', 'like', "%MENUNGGU PEMBAYARAN%") //TIMOTHY EDIT INI
             ->where('jod.is_aktif', '=', "Y")
             ->where('jod.id_jo', "$id")
             ->get();
