@@ -42,6 +42,7 @@
     @endif
     <form action="{{ route('truck_order.store') }}" method="POST" >
     @csrf
+    <button type="submit">wet</button>
         <div class="row">
             <div class="col">
                 <div class="card radiusSendiri card-outline card-primary">
@@ -177,7 +178,7 @@
                                     <input type="hidden" id="tally" name="tally" value="">
                                     <input type="hidden" id="kargo" name="kargo" value="">
 
-
+                                    <input type="hidden" id="biayaDetail" name="biayaDetail">
                                 
                                 </div>
                                 {{-- <div class="row">
@@ -284,6 +285,7 @@
             $('#plastik').val('');
             $('#tally').val('');
             $('#kargo').val('');
+                        $('#biayaDetail').val('');
 
 
 		});
@@ -299,6 +301,22 @@
             
             $('#select_jo_detail').val('').trigger('change');
             $('#select_jo').val('').trigger('change');
+
+              $('#tujuan_id').val('');
+            $('#nama_tujuan').val('');
+            $('#alamat_tujuan').val('');
+            $('#tarif').val('');
+            $('#uang_jalan').val('');
+            $('#komisi').val('');
+            $('#jenis_tujuan').val('');
+            //ltl
+            $('#harga_per_kg').val('');
+            $('#min_muatan').val('');
+            $('#seal_pje').val('');
+            $('#plastik').val('');
+            $('#tally').val('');
+            $('#kargo').val('');
+                        $('#biayaDetail').val('');
 
 
 		});
@@ -390,7 +408,21 @@
             var selectBooking = $('#select_booking').val();
             var splitValue = selectBooking.split('-');
             var idTujuan=splitValue[2];
-
+            $('#tujuan_id').val('');
+            $('#nama_tujuan').val('');
+            $('#alamat_tujuan').val('');
+            $('#tarif').val('');
+            $('#uang_jalan').val('');
+            $('#komisi').val('');
+            $('#jenis_tujuan').val('');
+            //ltl
+            $('#harga_per_kg').val('');
+            $('#min_muatan').val('');
+            $('#seal_pje').val('');
+            $('#plastik').val('');
+            $('#tally').val('');
+            $('#kargo').val('');
+            $('#biayaDetail').val('');
             // $('#tujuan_id').val(e.params.data.id);
             // $('#nama_tujuan').val(e.params.data.nama_tujuan);
             // $('#alamat_tujuan').val(e.params.data.alamat_tujuan);
@@ -504,6 +536,9 @@
             var selectBooking = $('#select_booking').val();
             var splitValue = selectBooking.split('-');
             var idTujuan=splitValue[2];
+
+            var myjson;
+            var array_detail_biaya = [];
             // console.log(idTujuan);
             //
             // customer_id
@@ -542,12 +577,22 @@
                         $('#plastik').val('');
                         $('#tally').val('');
                         $('#kargo').val('');
+                        $('#biayaDetail').val('');
+
                     }
                     else
                     {
                         $('#tujuan_id').val(response.dataTujuan.id);
+                       
+
+                        // JSON.stringify(array_detail_biaya)
+
                         $('#nama_tujuan').val(response.dataTujuan.nama_tujuan);
                         $('#alamat_tujuan').val(response.dataTujuan.alamat);
+                        //   if(response.dataTujuan.jenis_tujuan =="LTL")
+                        // {
+                        //      $('#tarif').val(response.dataTujuan.min_muatan*response.dataTujuan.harga_per_kg );
+                        // }
                         $('#tarif').val(response.dataTujuan.tarif);
                         $('#uang_jalan').val(response.dataTujuan.uang_jalan);
                         $('#komisi').val(response.dataTujuan.komisi);
@@ -559,6 +604,22 @@
                         $('#plastik').val(response.dataTujuan.plastik);
                         $('#tally').val(response.dataTujuan.tally);
                         $('#kargo').val(response.dataTujuan.kargo);
+
+                         // console.log( response.dataTujuanBiaya);
+                        var dataBiaya = response.dataTujuanBiaya;
+                        for (var i in dataBiaya) {
+                                var obj = {
+                                    deskripsi: dataBiaya[i].deskripsi,
+                                    biaya: dataBiaya[i].biaya,
+                                    catatan: dataBiaya[i].catatan,
+                                };
+                            array_detail_biaya.push(obj);
+                        }
+                        console.log(array_detail_biaya);
+                        
+                        // var obj=JSON.parse(myjson);
+                        // array_detail_biaya.push(obj);
+                        $('#biayaDetail').val(JSON.stringify(array_detail_biaya));
 
                     }
 

@@ -182,11 +182,12 @@ class SewaController extends Controller
            
 
             $data = $request->collect();
+            // encode ubah array jadi json
+            //decode ubah json jadi array
+            // dd(json_decode($data['biayaDetail'], true));
        
             //====== end logic otomatis nik ======
-            $tgl_berangkat = date_create_from_format('d-M-Y', $data['tgl_berangkat']);
-            $telp1= $data['telp1'];
-         
+            $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
             // var_dump($data['status_pegawai']);die;
             $idSewa=DB::table('sewa')
                 ->insertGetId(array(
@@ -200,13 +201,13 @@ class SewaController extends Controller
                 )
             ); 
             
-            $arrayDokumen = json_decode($data['identitas'], true);
-            foreach ($arrayDokumen as $key => $item) {
+            $arrayBiaya = json_decode($data['biayaDetail'], true);
+            foreach ($arrayBiaya as $key => $item) {
                 DB::table('karayawan_identitas')
                     ->insert(array(
-                    'karyawan_id'=>$idSewa,
-                    'm_jenis_identitas_id' => $item['m_jenis_identitas_id'] ,
-                    'nomor' => $item['nomor'],
+                    'id_sewa'=>$idSewa,
+                    'deskripsi' => $item['deskripsi'] ,
+                    'biaya' => $item['biaya'],
                     'catatan' => $item['catatan'],
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $user,
