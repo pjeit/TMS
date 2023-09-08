@@ -27,7 +27,7 @@ class KaryawanController extends Controller
     {
          $dataKaryawan = DB::table('karyawan')
             ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','role.nama as posisi')
-            ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
+            ->leftJoin('role', 'karyawan.role_id', '=', 'role.id')
             ->where('karyawan.is_aktif', '=', "Y")
             ->where('karyawan.is_keluar', '=', "N")
             // ->paginate(10);
@@ -88,7 +88,7 @@ class KaryawanController extends Controller
     {
         $data = DB::table('karyawan')
             ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','role.nama as posisi')
-            ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
+            ->leftJoin('role', 'karyawan.role_id', '=', 'role.id')
             ->where('karyawan.is_aktif', '=', "Y")
             ->where('karyawan.is_keluar', '=', "N")
             ->get();
@@ -290,7 +290,7 @@ class KaryawanController extends Controller
                     'tgl_gabung'=>date_format($tanggal_gabung, 'Y-m-d'),
                     'tgl_mulai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_kontrak, 'Y-m-d'):null,
                     'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
-                    'posisi_id'=>$data['posisi'], // ini itu idrole
+                    'role_id'=>$data['role'],
                     'cabang_id'=>$data['cabang_kantor'],
                     'saldo_cuti'=>$data['sisa_cuti'],
 
@@ -603,7 +603,7 @@ class KaryawanController extends Controller
                     'tgl_gabung'=>date_format($tanggal_gabung, 'Y-m-d'),
                     'tgl_mulai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_kontrak, 'Y-m-d'):null,
                     'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
-                    'posisi_id'=>$data['posisi'], // ini itu idrole
+                    'role_id'=>$data['role'],
                     'cabang_id'=>$data['cabang_kantor'],
                     'saldo_cuti'=>$data['sisa_cuti'],
 

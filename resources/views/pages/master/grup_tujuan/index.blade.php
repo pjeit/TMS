@@ -59,11 +59,7 @@
     
 </div>
 <script type="text/javascript">
-    $(document).ready(function() {
-        $('#datatable').dataTable({
-            scrollX: true
-        });
-    } );
+    
 </script>
 <script>
     var sessionMessage = "{{ session()->has('message') ? session('message') : '' }}";

@@ -32,7 +32,7 @@ class Karyawan extends Model
       'rek_nama',
       'bank',
       'tgl_gabung',
-      'posisi_id',
+      'role_id',
       'gaji',
       'is_keluar',
       'tgl_keluar',

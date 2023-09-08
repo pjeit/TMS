@@ -115,6 +115,7 @@
       $(this).find('.dropdown-menu').removeClass('active');
     });
 </script>
+
 <script>
       
     $(function() {
@@ -241,6 +242,7 @@
   
 </script>
 
+{{-- masking no telp --}}
 <script>
    $("#telp1").on("change", function() {
         var inputValue = $(this).val();
@@ -262,7 +264,7 @@
             $(this).val(inputValue);
         }
     });
-    $("#nomor_kontak_darurat").on("change", function() {
+   $("#nomor_kontak_darurat").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
             inputValue = "8" + inputValue.substring(2);
@@ -272,6 +274,18 @@
             $(this).val(inputValue);
         }
     });
+</script>
+
+{{-- masking datatable --}}
+<script>
+  $(document).ready(function() {
+      $('#datatable').dataTable({
+          scrollX: true
+      });
+  });
+  var datatable = document.getElementById('datatable');
+  // Atur properti CSS width menjadi 100%
+  datatable.style.width = '100%';
 </script>
 
 @section('js')

@@ -82,7 +82,7 @@
                                             <tr class="">
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Nama Tujuan</th>
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Jenis</th>
-                                                <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Total Tarif</th>
+                                                <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Tarif</th>
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Uang Jalan</th>
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center; width: 110px;">Komisi</th>
                                                 <th style="">Catatan</th>
@@ -101,8 +101,8 @@
                                                             <input style="margin: auto; display: block;" type="text" name="data[tujuan][{{$key}}][jenis_tujuan]" id="jenis_tujuan_{{$key}}" value="{{$item->jenis_tujuan}}" class="form-control" readonly>
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input type="hidden" name="data[tujuan][{{$key}}][tarif]" id="tarif_{{$key}}" value="{{ number_format($item->tarif) }}" class="form-control numaja uang tarif" readonly/>
-                                                            <input type="text" id="total_tarif_{{$key}}" value="{{number_format($item->tarif+$item->seal_pje+$item->tally+$item->plastik)}}" class="form-control numaja uang tarif" readonly placeholder="total tarif"/>
+                                                            <input type="text" name="data[tujuan][{{$key}}][tarif]" id="tarif_{{$key}}" value="{{ number_format($item->tarif) }}" class="form-control numaja uang tarif" readonly/>
+                                                            {{-- <input type="text" id="total_tarif_{{$key}}" value="{{number_format($item->tarif+$item->seal_pje+$item->tally+$item->plastik)}}" class="form-control numaja uang tarif" readonly placeholder="tarif"/> --}}
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
                                                             <input style="" type="text" name="data[tujuan][{{$key}}][uang_jalan]" id="uang_jalan_{{$key}}" value="{{ number_format($item->uang_jalan) }}" class="form-control numaja uang uangJalan" readonly/>
@@ -303,15 +303,15 @@
 
                                 </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-12 col-sm-12">
+                            {{-- <div class="form-group col-lg-4 col-md-12 col-sm-12">
                                 <label for="uang_jalan">Total Tarif</label>
                                 <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Rp</span>
-                                </div>
-                                <input type="text" name="total_tarif" class="form-control numaja uang" id="total_tarif" placeholder="" readonly> 
-                                </div>
-                            </div>
+                                </div> --}}
+                                <input type="hidden" name="total_tarif" class="form-control numaja uang" id="total_tarif" placeholder="" readonly> 
+                                {{-- </div>
+                            </div> --}}
                     </div>
                     <div class='row'>
                         <div class="table-responsive p-0 mx-3">
@@ -821,10 +821,10 @@
                                         <input type="hidden" name="biaya_id${index}" id="biaya_id${index}" value="${item.id}">
                                     </td>
                                     <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                        <input style="" type="text" id="biaya${index}" value="${item.biaya.toLocaleString()}" class="form-control numaja uang hitungBiaya" />
+                                        <input type="text" id="biaya${index}" value="${item.biaya.toLocaleString()}" class="form-control numaja uang hitungBiaya" />
                                     </td>
                                     <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                        <input style="" type="text" id="catatan_biaya${index}" value="${item.catatan}" class="form-control"/>
+                                        <input type="text" id="catatan_biaya${index}" value="${item.catatan}" class="form-control"/>
                                     </td>
                                     <td><button type="button" name="del_biaya" id="${index}" class="btn btn-danger btn_remove_biaya"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
                                 </tr>
@@ -839,6 +839,11 @@
 
             $('.select2').select2();
             totalTarif();
+            $('input[type="text"]').on("input", function () {
+                var inputValue = $(this).val();
+                var uppercaseValue = inputValue.toUpperCase();
+                $(this).val(uppercaseValue);
+            });
             $('#modal_detail').modal('show');
         });
 

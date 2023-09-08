@@ -58,49 +58,33 @@
                     </div>
                     <div class="card-body" >
                         <div class="row">
-                            <div class="col-6">
-
-                                <div class="form-group">
-                                    <label for="inputName">Nomor Polisi</label>
-                                    <input type="text" id="inputName" class="form-control" value="{{$dataKendaraan[0]->no_polisi}}" readonly>
-                                </div>
+                            <div class="form-group col-sm-12 col-md-3 col-lg-3">
+                                <label for="inputName">Nomor Polisi</label>
+                                <input type="text" id="inputName" class="form-control" value="{{$dataKendaraan[0]->no_polisi}}" readonly>
                             </div>
-                            <div class="col-6">
-                                
-                                <div class="form-group">
-                                    <label for="inputClientCompany">Nomor Mesin</label>
-                                    <input type="text" id="inputClientCompany" class="form-control" value="{{$dataKendaraan[0]->no_mesin}}" readonly>
-                                </div>
+                            <div class="form-group col-sm-12 col-md-3 col-lg-3">
+                                <label for="inputProjectLeader">Tahun Pembuatan</label>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->tahun_pembuatan}}" readonly>
+                            </div>
+                          
+                            
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="inputProjectLeader">Merk</label>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->merk_model}}" readonly>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
-
-                                <div class="form-group">
-                                    <label for="inputProjectLeader">Merk</label>
-                                    <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->merk_model}}" readonly>
-                                </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="inputClientCompany">Nomor Mesin</label>
+                                <input type="text" id="inputClientCompany" class="form-control" value="{{$dataKendaraan[0]->no_mesin}}" readonly>
                             </div>
-
-                            <div class="col-6">
-
-                                <div class="form-group">
-                                    <label for="inputProjectLeader">Nomor Rangka</label>
-                                    <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->no_rangka}}" readonly>
-                                </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="inputProjectLeader">Nomor Rangka</label>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->no_rangka}}" readonly>
                             </div>
-
-                        </div>
-                        <div class="form-group">
-                            <label for="inputProjectLeader">Tahun Pembuatan</label>
-                            <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->tahun_pembuatan}}" readonly>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputProjectLeader">Nomor Polisi</label>
-                            <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->no_polisi}}" readonly>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
                             <label for="chassisKendaraan">Ekor Kendaraan</label>
                                @if($dataPaired=='[]')
                                         <input type="hidden" name='idPairedNya[]' value="">
@@ -110,7 +94,6 @@
                                             <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
                                             @endforeach
                                         </select>
-                                        
                                 @else
                                     @foreach ($dataPaired as $dataP)
                                 
@@ -126,7 +109,15 @@
                                     @endforeach
                                 @endif
                         </div>
-                        
+                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                            <label for="chassisKendaraan">Driver</label>
+                            <select class="form-control selectpicker" name="driver" id="driver" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <option value="">--Pilih Driver--</option>
+                                @foreach($dataDriver as $driver)
+                                    <option value="{{$driver->id}}" {{($driver->id == $data->driver_id)? 'selected':'';}}>{{$driver->nama}} </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
 
