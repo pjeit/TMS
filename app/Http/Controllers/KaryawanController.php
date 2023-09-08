@@ -30,8 +30,15 @@ class KaryawanController extends Controller
             ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
             ->where('karyawan.is_aktif', '=', "Y")
             ->where('karyawan.is_keluar', '=', "N")
-            ->paginate(10);
+            // ->paginate(10);
+            ->get();
 
+            $title = 'Data akan dihapus!';
+            $text = "Apakah Anda yakin?";
+            $confirmButtonText = 'Ya';
+            $cancelButtonText = "Batal";
+            confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+            
             return view('pages.master.karyawan.indexx',[
             'judul'=>"Karyawan",
             'dataKaryawan' => $dataKaryawan,

@@ -41,14 +41,14 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="myTable" class="table table-bordered table-striped">
+                    <table id="myTable" class="table table-bordered table-striped" width="100%">
                         <thead>
                             <tr>
                               <th>Nama Kas / Bank </th>
                               <th>No. Akun</th>
                               <th>Tipe</th>
                               <th>Rekening Bank</th>
-                              <th>Handle</th>
+                              <th></th>
                             </tr>
                           </thead>
                         <tbody>
@@ -104,7 +104,10 @@
 <script type="text/javascript">
     $(function () {
       var table = $('#myTable').DataTable({
-        responsive: true,
+        // responsive: true,
+        scrollX: true
+
+
       });
     });
 </script>

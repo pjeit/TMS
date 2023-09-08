@@ -60,7 +60,7 @@
                         </form>
                     </div>
                     <div id="data">
-                        <table id="example1" class="table table-bordered table-striped">
+                        <table id="myTable" class="table table-bordered table-striped" width="100%">
                             <thead>
                                 <tr>
                                 <th>Nama</th>
@@ -127,7 +127,15 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(function () {
+      var table = $('#myTable').DataTable({
+        // responsive: true,
+        scrollX: true
 
+      });
+    });
+</script>
  <script type="text/javascript">
 var currentUrl = window.location.href;
 var baseUrl = currentUrl.split('=');
