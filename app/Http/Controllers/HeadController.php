@@ -29,6 +29,12 @@ class HeadController extends Controller
             ->where('a.is_aktif', '=', "Y")
             ->select('a.*', 'b.nama_lengkap','c.nama as cabangPje')
             ->get();
+            
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
             return view('pages.master.head.index',[
             'judul'=>"Head",
