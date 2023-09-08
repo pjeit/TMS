@@ -29,6 +29,12 @@ class ChassisController extends Controller
             ->leftJoin('m_model_chassis as b', 'a.model_id', '=', 'b.id')
             ->where('a.is_aktif', '=', "Y")
             ->get();
+
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
             
         return view('pages.master.chassis.index',[
                 'judul' => "Chassis",

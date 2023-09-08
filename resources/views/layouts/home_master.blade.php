@@ -129,7 +129,8 @@
           @endif
 
           @yield('content')
-
+          @include('sweetalert::alert')
+          
         </section>
         <!-- /.content -->
       </div>

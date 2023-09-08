@@ -115,6 +115,7 @@
       $(this).find('.dropdown-menu').removeClass('active');
     });
 </script>
+
 <script>
       
     $(function() {
@@ -241,6 +242,7 @@
   
 </script>
 
+{{-- masking no telp --}}
 <script>
    $("#telp1").on("change", function() {
         var inputValue = $(this).val();
@@ -262,6 +264,15 @@
             $(this).val(inputValue);
         }
     });
+</script>
+
+{{-- masking datatable --}}
+<script>
+  $(document).ready(function() {
+      $('#datatable').dataTable({
+          scrollX: true
+      });
+  });
 </script>
 
 @section('js')

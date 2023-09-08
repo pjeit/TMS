@@ -24,7 +24,7 @@ class RoleController extends Controller
             ->where('is_aktif', '=', "Y")
             // ->paginate(10);
             ->get();
-         $title = 'Data akan dihapus!';
+        $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
