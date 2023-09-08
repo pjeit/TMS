@@ -116,7 +116,7 @@
                                 <div class='col-lg-2 col-md-4 col-sm-12'>
                                     <div class="form-group">
                                         <label for="jumlah_anak">Jumlah Anak</label>
-                                        <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',0)}}" min="0" max="3">
+                                        <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',0)}}" min="0">
                                     </div>
                                 </div>
                                 <div class='col-lg-5 col-md-8 col-sm-12'>
