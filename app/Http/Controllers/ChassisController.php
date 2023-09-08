@@ -145,6 +145,10 @@ class ChassisController extends Controller
         $data = Chassis::where('is_aktif', 'Y')->findOrFail($id);
         $dokumen = ChassisDokumen::where('chassis_id', $id)->where('is_aktif', 'Y')->get();
         $model_chassis = M_ModelChassis::orderBy('id', 'ASC')->get();
+         $cabang = DB::table('cabang_pje')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
         $cabang = DB::table('cabang_pje')
             ->select('*')
             ->where('is_aktif', '=', "Y")
@@ -156,6 +160,8 @@ class ChassisController extends Controller
             'cabang' => $cabang,
             'dokumen' => $dokumen,
             'model_chassis' => $model_chassis,
+            'cabang' => $cabang,
+
         ]);
     }
 
