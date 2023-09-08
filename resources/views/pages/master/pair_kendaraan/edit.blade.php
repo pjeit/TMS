@@ -84,104 +84,116 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                            <label for="chassisKendaraan">Ekor Kendaraan</label>
-                               @if($dataPaired=='[]')
-                                    <input type="hidden" name='idPairedNya[]' value="">
-                                    <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                        <option value="">--Pilih Chasis--</option>
-                                        @foreach($dataChassis as $data)
-                                        <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                        @endforeach
-                                    </select>
-                                @else
-                                    @foreach ($dataPaired as $dataP)
-                                        <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
-                                        <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="chassisKendaraan">Ekor Kendaraan</label>
+                                   @if($dataPaired=='[]')
+                                        <input type="hidden" name='idPairedNya[]' value="">
                                         <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                             <option value="">--Pilih Chasis--</option>
                                             @foreach($dataChassis as $data)
-                                                <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                                            <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
                                             @endforeach
                                         </select>
-                                    @endforeach
+                                    @else
+                                        @foreach ($dataPaired as $dataP)
+                                            <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
+                                            <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
+                                            <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                <option value="">--Pilih Chasis--</option>
+                                                @foreach($dataChassis as $data)
+                                                    <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                                                @endforeach
+                                            </select>
+                                        @endforeach
+                                    @endif
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="chassisKendaraan">Driver</label>
+                                @if($dataPaired=='[]')
+                                    <select class="form-control selectpicker" name="driver" id="driver" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                        <option value="">--Pilih Driver--</option>
+                                        @foreach($dataDriver as $driver)
+                                            <option value="{{$driver->id}}" >{{$driver->nama_lengkap}} </option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <select class="form-control selectpicker" name="driver" id="driver" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                        <option value="">--Pilih Driver--</option>
+                                        @foreach($dataDriver as $driver)
+                                            <option value="{{$driver->id}}" {{($driver->id == $dataPaired[0]->driver_id)? 'selected':'';}}>{{$driver->nama_lengkap}} </option>
+                                        @endforeach
+                                    </select>
                                 @endif
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                            <label for="chassisKendaraan">Driver</label>
-                            <select class="form-control selectpicker" name="driver" id="driver" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                <option value="">--Pilih Driver--</option>
-                                @foreach($dataDriver as $driver)
-                                    <option value="{{$driver->id}}" {{($driver->id == $dataKendaraan[0]->driver_id)? 'selected':'';}}>{{$driver->nama_panggilan}} </option>
-                                @endforeach
-                            </select>
+
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-{{-- 
-             <div class="col-6">
-                 <div class="card radiusSendiri" >
-                     <div class="card-header">
-                         <tr>
-                             <td >
-                                 <a href="javascript:;" class="btn btn-secondary radiusSendiri" id="addmore"><i class="fa fa-fw fa-plus-circle"></i>Tambah Chassis</a>
-                             </td>
-                         </tr>
-                     </div>
-                     <div class="card-body" style="max-height: 300px; overflow-y: scroll;">
-                         <input type="hidden" name="action" value="saveAddMore">
-                         <table class="table" id="sortable">
-                             <thead>
-                                 <tr>
-                                     <th width="250">Model Chassis</th>
-                                     <th width="20" class="text-center">Aksi</th>
-                                 </tr>
-                             </thead>
-                                 <tbody id="tb"> 
-                                    @if($dataPaired=='[]')
-                                        <tr>
-                                            <td>
-                                                <input type="hidden" name='idPairedNya[]' value="">
-                                                <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                    <option value="">--Pilih Chasis--</option>
-                                                    @foreach($dataChassis as $data)
-                                                    <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                                    @endforeach
-                                                </select>
+            {{-- 
+                <div class="col-6">
+                    <div class="card radiusSendiri" >
+                        <div class="card-header">
+                            <tr>
+                                <td >
+                                    <a href="javascript:;" class="btn btn-secondary radiusSendiri" id="addmore"><i class="fa fa-fw fa-plus-circle"></i>Tambah Chassis</a>
+                                </td>
+                            </tr>
+                        </div>
+                        <div class="card-body" style="max-height: 300px; overflow-y: scroll;">
+                            <input type="hidden" name="action" value="saveAddMore">
+                            <table class="table" id="sortable">
+                                <thead>
+                                    <tr>
+                                        <th width="250">Model Chassis</th>
+                                        <th width="20" class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                    <tbody id="tb"> 
+                                        @if($dataPaired=='[]')
+                                            <tr>
+                                                <td>
+                                                    <input type="hidden" name='idPairedNya[]' value="">
+                                                    <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                        <option value="">--Pilih Chasis--</option>
+                                                        @foreach($dataChassis as $data)
+                                                        <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        @else
+                                            @foreach ($dataPaired as $dataP)
+                                            <tr>
+                                                <td>
+                                                    <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
+                                                    <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
+                                                    <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                        <option value="">--Pilih Chasis--</option>
+                                                        @foreach($dataChassis as $data)
+                                                            <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                            <td align="center" class="text-danger">
+                                                    <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data chassis ini?')){ $(this).closest('tr').hide(); $(this).closest('tr').find('input[name^=\'isAktif\']').val('N');}" class="btn btn-danger radiusSendiri">
+                                                        <i class="fa fa-fw fa-trash-alt"></i>
+                                                    </button>
                                             </td>
-                                        </tr>
-                                    @else
-                                        @foreach ($dataPaired as $dataP)
-                                        <tr>
-                                            <td>
-                                                <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
-                                                <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
-                                                <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                    <option value="">--Pilih Chasis--</option>
-                                                    @foreach($dataChassis as $data)
-                                                        <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </td>
-                                        <td align="center" class="text-danger">
-                                                <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" onclick="if(confirm('Anda yakin ingin Menghapus data chassis ini?')){ $(this).closest('tr').hide(); $(this).closest('tr').find('input[name^=\'isAktif\']').val('N');}" class="btn btn-danger radiusSendiri">
-                                                    <i class="fa fa-fw fa-trash-alt"></i>
-                                                </button>
-                                        </td>
-                                        </tr>
-                                        @endforeach
-                                    @endif
-                                 </tbody>
-                                 <tfoot>
-                                 
-                                 </tfoot>
-                         </table>
-                     </div>
-                 </div>
-                
-            </div> --}}
+                                            </tr>
+                                            @endforeach
+                                        @endif
+                                    </tbody>
+                                    <tfoot>
+                                    
+                                    </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div> 
+            --}}
         </div>
     </form>
 </div>

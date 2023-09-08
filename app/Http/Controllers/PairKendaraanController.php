@@ -109,7 +109,7 @@ class PairKendaraanController extends Controller
                 ->where('role_id', '5') // 5=driver 
                 ->where('is_aktif', '=','Y') 
                 ->get();
-        // dd($dataPaired);
+
         return view('pages.master.pair_kendaraan.edit', [
             'judul' => "Pair Truck",
             'dataPair' => $dataPair,
@@ -129,19 +129,11 @@ class PairKendaraanController extends Controller
      */
     public function update(Request $request, $idKendaraan)
     {
-        //
-         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; 
 
         try {
-            $pesanKustom = [
-                'chasis.*.required' => 'Chasis harus diisi!',
-            ];
-            
-            $request->validate([
-                'chasis.*' => 'required',
-      
-            ], $pesanKustom);
             $data = $request->collect();
+            var_dump($data); die;
             if(!empty($data['idPairedNya']))
             {
                 for ($i = 0; $i < count($data['idPairedNya']); $i++) {
