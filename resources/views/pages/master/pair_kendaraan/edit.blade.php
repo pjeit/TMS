@@ -34,7 +34,7 @@
         @endforeach
 
     @endif
-    <form action="{{ route('pair_kendaraan.update', [$dataKendaraan[0]->id]) }}" method="POST" id="formPair">
+    <form action="{{ route('pair_kendaraan.update', [$dataKendaraan->id]) }}" method="POST" id="formPair">
         @csrf
         @method('PUT')
         {{-- <div class="card radiusSendiri">
@@ -60,61 +60,87 @@
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-3 col-lg-3">
                                 <label for="inputName">Nomor Polisi</label>
-                                <input type="text" id="inputName" class="form-control" value="{{$dataKendaraan[0]->no_polisi}}" readonly>
+                                <input type="text" id="inputName" class="form-control" value="{{$dataKendaraan->no_polisi}}" readonly>
                             </div>
                             <div class="form-group col-sm-12 col-md-3 col-lg-3">
                                 <label for="inputProjectLeader">Tahun Pembuatan</label>
-                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->tahun_pembuatan}}" readonly>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan->tahun_pembuatan}}" readonly>
                             </div>
                           
                             
                             <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                 <label for="inputProjectLeader">Merk</label>
-                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->merk_model}}" readonly>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan->merk_model}}" readonly>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                 <label for="inputClientCompany">Nomor Mesin</label>
-                                <input type="text" id="inputClientCompany" class="form-control" value="{{$dataKendaraan[0]->no_mesin}}" readonly>
+                                <input type="text" id="inputClientCompany" class="form-control" value="{{$dataKendaraan->no_mesin}}" readonly>
                             </div>
                             <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                 <label for="inputProjectLeader">Nomor Rangka</label>
-                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan[0]->no_rangka}}" readonly>
+                                <input type="text" id="inputProjectLeader" class="form-control" value="{{$dataKendaraan->no_rangka}}" readonly>
                             </div>
                         </div>
 
-                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                            <label for="chassisKendaraan">Ekor Kendaraan</label>
-                               @if($dataPaired=='[]')
-                                    <input type="hidden" name='idPairedNya[]' value="">
-                                    <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                        <option value="">--Pilih Chasis--</option>
-                                        @foreach($dataChassis as $data)
-                                        <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                        <div class="row">
+        
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                    <label for="chassisKendaraan">Ekor Kendaraan</label>
+                                    @if($dataPaired==null)
+                                            <input type="hidden" name='idPairedNya' value="">
+                                            <select class="form-control selectpicker" name="chasis" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                <option value="">--Pilih Chasis--</option>
+                                                @foreach($dataChassis as $data)
+                                                <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                                                @endforeach
+                                            </select>
+                                        @else
+                                            {{-- @foreach ($dataPaired as $dataP) --}}
+                                                <input type="hidden" name='idPairedNya' value="{{$dataPaired->id}}">
+                                                <input type="hidden" name='idDriver' value="{{$dataPaired->driver_id}}">
+                                                <input type="hidden" name='idCabang' value="{{$dataPaired->cabang_id}}">
+                                                <input type="hidden" name='idChassis' value="{{$dataPaired->chassis_id}}">
+                                                {{-- <input type="hidden" name='isAktif' value="{{$dataPaired->is_aktif}}"> --}}
+                                                <select class="form-control selectpicker" name="chasis" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                    <option value="">--Pilih Chasis--</option>
+                                                    <option value="{{$dataPaired->chassis_id}}" selected>{{$dataPaired->kode}} - {{$dataPaired->karoseri}}</option>
+                                                    @foreach($dataChassis as $data)
+                                                        <option value="{{$data->id}}" {{($dataPaired->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                                                    @endforeach
+                                                </select>
+                                            {{-- @endforeach --}}
+                                        @endif
+                                </div>
+                                <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                    <label for="chassisKendaraan">Driver</label>
+                                   
+
+                                    <select class="form-control selectpicker" name="driver" id="driver" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                        <option value="">--Pilih Driver--</option>
+                                        @foreach($dataDriver as $driver)
+                                            @if($dataPaired==null)
+                                                <option value="{{$driver->id}}" {{($dataKendaraan->driver_id == $driver->id  )? 'selected':'';}}>{{$driver->nama_panggilan}} </option>
+                                            @else
+                                                <option value="{{$driver->id}}" {{($dataPaired->driver_id == $driver->id )? 'selected':'';}}>{{$driver->nama_panggilan}} </option>
+                                            @endif
                                         @endforeach
                                     </select>
-                                @else
-                                    @foreach ($dataPaired as $dataP)
-                                        <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
-                                        <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
-                                        <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                            <option value="">--Pilih Chasis--</option>
-                                            @foreach($dataChassis as $data)
-                                                <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                            @endforeach
-                                        </select>
-                                    @endforeach
-                                @endif
-                        </div>
-                        <div class="form-group col-sm-12 col-md-6 col-lg-6">
-                            <label for="chassisKendaraan">Driver</label>
-                            <select class="form-control selectpicker" name="driver" id="driver" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                <option value="">--Pilih Driver--</option>
-                                @foreach($dataDriver as $driver)
-                                    <option value="{{$driver->id}}" {{($driver->id == $dataKendaraan[0]->driver_id)? 'selected':'';}}>{{$driver->nama_panggilan}} </option>
-                                @endforeach
-                            </select>
+                                </div>
+                                 <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                    <label for="chassisKendaraan">Cabang</label>
+                                        @if($dataPaired==null)
+                                        <input type="hidden" name="cabang" id="cabang" class="form-control" value="{{($dataKendaraan->cabang_id == $dataCabang->id)?$dataCabang->id:'';}}" readonly>
+                                        <input type="text"  class="form-control" value="{{($dataKendaraan->cabang_id == $dataCabang->id)?$dataCabang->nama:'';}}" readonly>
+
+                                        @else
+                                        <input type="hidden" name="cabang" id="cabang" class="form-control" value="{{($dataPaired->cabang_id == $dataCabang->id)? $dataCabang->id:''; }}" readonly>
+                                        <input type="text" class="form-control" value="{{($dataPaired->cabang_id == $dataCabang->id)? $dataCabang->nama:''; }}" readonly>
+
+                                        @endif
+                                </div>
+
                         </div>
                     </div>
                 </div>

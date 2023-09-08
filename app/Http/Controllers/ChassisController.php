@@ -25,8 +25,9 @@ class ChassisController extends Controller
     public function index()
     {
         $data = DB::table('chassis as a')
-            ->select('a.*', 'b.nama as nama_model')
+            ->select('a.*', 'b.nama as nama_model','c.nama as cabangPje')
             ->leftJoin('m_model_chassis as b', 'a.model_id', '=', 'b.id')
+            ->leftJoin('cabang_pje as c', 'a.cabang_id', '=', 'c.id')
             ->where('a.is_aktif', '=', "Y")
             ->get();
 
@@ -90,6 +91,7 @@ class ChassisController extends Controller
             $chassis->model_id = $request->model_id;
             $chassis->taun_buat = $request->taun_buat;
             $chassis->cabang_id = $request->cabang;
+            $chassis->is_dipakai = "N";
             // $chassis->kepemilikan = $request->kepemilikan;
             $chassis->created_at = date("Y-m-d h:i:s");
             $chassis->created_by = $user;
@@ -182,6 +184,7 @@ class ChassisController extends Controller
             $request->validate([
                 'kode' => 'required',
             ], $pesanKustom);
+            // var_dump($request->collect());die;
             
             $user = Auth::user()->id;
             $chassis = Chassis::where('is_aktif', 'Y')->findOrFail($chassis->id);

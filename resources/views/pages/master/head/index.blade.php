@@ -31,6 +31,7 @@
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                              <th>Cabang</th>
                               <th>No Polisi</th>
                               <th>No. Mesin & Rangka</th>
                               <th>Merk & Model</th>
@@ -43,6 +44,8 @@
                             @if($data != null)
                                 @foreach($data as $item)
                                 <tr>
+                                    <td>{{$item->cabangPje}}</td>
+
                                     <td>{{$item->no_polisi}}</td>
                                     <!-- ganti kolom no_kendaraan menjadi no_mesin di DB tabel kendaraan -->
                                     <td>{{$item->no_mesin}} - {{$item->no_rangka}} </td>  
