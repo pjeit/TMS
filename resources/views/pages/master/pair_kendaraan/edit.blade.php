@@ -87,16 +87,15 @@
                         <div class="form-group col-sm-12 col-md-6 col-lg-6">
                             <label for="chassisKendaraan">Ekor Kendaraan</label>
                                @if($dataPaired=='[]')
-                                        <input type="hidden" name='idPairedNya[]' value="">
-                                        <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                            <option value="">--Pilih Chasis--</option>
-                                            @foreach($dataChassis as $data)
-                                            <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
-                                            @endforeach
-                                        </select>
+                                    <input type="hidden" name='idPairedNya[]' value="">
+                                    <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                        <option value="">--Pilih Chasis--</option>
+                                        @foreach($dataChassis as $data)
+                                        <option value="{{$data->id}}">{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
+                                        @endforeach
+                                    </select>
                                 @else
                                     @foreach ($dataPaired as $dataP)
-                                
                                         <input type="hidden" name='idPairedNya[]' value="{{$dataP->id}}">
                                         <input type="hidden" name='isAktif[]' value="{{$dataP->is_aktif}}">
                                         <select class="form-control selectpicker" name="chasis[]" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
@@ -105,7 +104,6 @@
                                                 <option value="{{$data->id}}" {{($dataP->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>
                                             @endforeach
                                         </select>
-                                    
                                     @endforeach
                                 @endif
                         </div>
@@ -114,7 +112,7 @@
                             <select class="form-control selectpicker" name="driver" id="driver" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                 <option value="">--Pilih Driver--</option>
                                 @foreach($dataDriver as $driver)
-                                    <option value="{{$driver->id}}" {{($driver->id == $dataKendaraan[0]->driver_id)? 'selected':'';}}>{{$driver->nama_panggilan}} </option>
+                                    <option value="{{$driver->id}}" {{($driver->id == $dataPaired->driver_id)? 'selected':'';}}>{{$driver->nama_lengkap}} </option>
                                 @endforeach
                             </select>
                         </div>

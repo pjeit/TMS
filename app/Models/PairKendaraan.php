@@ -13,6 +13,7 @@ class PairKendaraan extends Model
     protected $fillable=[
         'id',
         'kendaraan_id',
+        'driver_id',
         'chassis_id',
         'created_at',
         'created_by',

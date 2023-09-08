@@ -82,7 +82,6 @@ class PairKendaraanController extends Controller
      */
     public function edit($id)
     {
-        //
         $dataPair = DB::table('kendaraan AS k')
                 ->select('k.*','pk.*','c.*','m.*' )
                 ->leftJoin('pair_kendaraan_chassis AS pk', 'k.id', '=', 'pk.kendaraan_id')
@@ -100,22 +99,17 @@ class PairKendaraanController extends Controller
                 ->select('chassis.*','m_model_chassis.nama as namaModel')
                 ->join('m_model_chassis','chassis.model_id','m_model_chassis.id')
                 ->where('chassis.is_aktif', '=','Y') 
-
                 ->get();
         $dataPaired = DB::table('pair_kendaraan_chassis')
                 ->select('pair_kendaraan_chassis.*')
-                 ->where('pair_kendaraan_chassis.kendaraan_id', $id) 
+                ->where('pair_kendaraan_chassis.kendaraan_id', $id) 
                 ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
                 ->get();
-
         $dataDriver = DB::table('karyawan')
-                ->select('karyawan.*')
-                 ->where('karyawan.role_id', 5) 
-                ->where('karyawan.is_aktif', '=','Y') 
+                ->where('role_id', '5') // 5=driver 
+                ->where('is_aktif', '=','Y') 
                 ->get();
-        // dd($dataKendaraan[0]->id);
         // dd($dataPaired);
-
         return view('pages.master.pair_kendaraan.edit', [
             'judul' => "Pair Truck",
             'dataPair' => $dataPair,
