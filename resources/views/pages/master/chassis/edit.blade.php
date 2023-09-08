@@ -39,7 +39,15 @@
                     <a href="{{ route('chassis.index') }}"class="btn btn-secondary radiusSendiri float-left"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
                     <button type="submit" class="btn btn-success radiusSendiri float-right"><i class="fa fa-fw fa-save"></i> Simpan</button>
                 </div>
-                <div class="card-body">
+                    <div class="card-body">
+                       <div class="form-group">
+                        <label for="">Cabang<span class="text-red">*</span></label>
+                        <select class="form-control select2" style="width: 100%;" id='cabang' name="cabang" required>
+                            @foreach ($cabang as $cbg)
+                                <option value="{{$cbg->id}}" {{$cbg->id==$data->cabang_id}}>{{ $cbg->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="">Kode*</label>
                         <input required type="text"  name="kode" class="form-control" value="{{ $data->kode }}" >                         
