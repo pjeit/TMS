@@ -112,7 +112,7 @@
                             <select class="form-control selectpicker" name="driver" id="driver" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                 <option value="">--Pilih Driver--</option>
                                 @foreach($dataDriver as $driver)
-                                    <option value="{{$driver->id}}" {{($driver->id == $dataPaired->driver_id)? 'selected':'';}}>{{$driver->nama_lengkap}} </option>
+                                    <option value="{{$driver->id}}" {{($driver->id == $dataKendaraan[0]->driver_id)? 'selected':'';}}>{{$driver->nama_panggilan}} </option>
                                 @endforeach
                             </select>
                         </div>
