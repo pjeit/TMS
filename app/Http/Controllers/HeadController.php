@@ -25,8 +25,9 @@ class HeadController extends Controller
     {
         $data = DB::table('kendaraan as a')
             ->leftJoin('karyawan as b', 'a.driver_id', '=', 'b.id')
+            ->leftJoin('cabang_pje as c', 'a.cabang_id', '=', 'c.id')
             ->where('a.is_aktif', '=', "Y")
-            ->select('a.*', 'b.nama_lengkap')
+            ->select('a.*', 'b.nama_lengkap','c.nama as cabangPje')
             ->get();
 
             return view('pages.master.head.index',[
@@ -52,7 +53,8 @@ class HeadController extends Controller
         $kategoriTruck = DB::table('kendaraan_kategori')
         ->where('kendaraan_kategori.is_aktif', '=', "Y")
         ->get();
-        $kota = DB::table('m_kota')
+        $kota = DB::table('cabang_pje')
+        ->where('cabang_pje.is_aktif', '=', "Y")
         ->get();
 
         return view('pages.master.head.create',[
@@ -86,7 +88,7 @@ class HeadController extends Controller
 
             $head = new Head();
             $head->id_kategori=$request->kategori;
-            $head->kota_id=$request->kota;
+            $head->cabang_id=$request->kota;
             $head->no_polisi = $request->no_polisi;
             $head->no_mesin = $request->no_mesin;
             $head->no_rangka = $request->no_rangka;
@@ -165,7 +167,8 @@ class HeadController extends Controller
        $kategoriTruck = DB::table('kendaraan_kategori')
         ->where('kendaraan_kategori.is_aktif', '=', "Y")
         ->get();
-         $kota = DB::table('m_kota')
+           $kota = DB::table('cabang_pje')
+        ->where('cabang_pje.is_aktif', '=', "Y")
         ->get();
         return view('pages.master.head.edit',[
             'judul' => "Head",
@@ -201,7 +204,7 @@ class HeadController extends Controller
 
             $edit_head = Head::where('is_aktif', 'Y')->findOrFail($head->id);
             $edit_head->id_kategori=$request->kategori;
-            $edit_head->kota_id=$request->kota;
+            $edit_head->cabang_id=$request->kota;
             $edit_head->no_polisi = $request->no_polisi;
             $edit_head->no_mesin = $request->no_mesin;
             $edit_head->no_rangka = $request->no_rangka;

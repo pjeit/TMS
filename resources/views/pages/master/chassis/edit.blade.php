@@ -44,7 +44,7 @@
                         <label for="">Cabang<span class="text-red">*</span></label>
                         <select class="form-control select2" style="width: 100%;" id='cabang' name="cabang" required>
                             @foreach ($cabang as $cbg)
-                                <option value="{{$cbg->id}}" {{$cbg->id==$data->cabang_id}}>{{ $cbg->nama }}</option>
+                                <option value="{{$cbg->id}}" {{$cbg->id==$data->cabang_id?'selected':''}}>{{ $cbg->nama }}</option>
                             @endforeach
                         </select>
                     </div>

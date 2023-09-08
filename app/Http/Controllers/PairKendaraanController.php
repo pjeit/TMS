@@ -31,14 +31,79 @@ class PairKendaraanController extends Controller
                     ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
                     ->where('k.is_aktif', '=', 'Y') 
                     ->where('k.id_kategori', '=', 1) 
+                    // ->where('k.cabang_id', '=', 2) 
                     ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                     ->get();
                     // ->get(10);
 
         // dd($dataPair);
+         $dataJenisFilter = DB::table('cabang_pje')
+            ->select('*')
+            ->where('cabang_pje.is_aktif', '=', "Y")
+            ->get();
         return view('pages.master.pair_kendaraan.index', [
             'judul' => "Pair Truck",
             'dataPair' => $dataPair,
+            'dataJenisFilter' => $dataJenisFilter
+
+        ]);
+    }
+
+     public function filterTruck(Request $request)
+    {
+        $jenisFilter = $request->input('jenisFilter');
+        // dd($jenisFilter);
+      
+        if($jenisFilter==null)
+        {
+              $dataPair = DB::table('kendaraan AS k')
+                    ->select('k.id', 'k.no_polisi', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+                    ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
+                        $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
+                    })
+                    ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+                    ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+                    ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
+                    ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+                    ->where('k.is_aktif', '=', 'Y') 
+                    ->where('k.id_kategori', '=', 1) 
+                    // ->where('k.cabang_id', '=',  $jenisFilter) 
+                    ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
+                    ->get();
+
+
+        }
+        else
+
+        {
+           $dataPair = DB::table('kendaraan AS k')
+                    ->select('k.id', 'k.no_polisi', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+                    ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
+                        $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
+                    })
+                    ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+                    ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+                    ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
+                    ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+                    ->where('k.is_aktif', '=', 'Y') 
+                    ->where('k.id_kategori', '=', 1) 
+                    ->where('k.cabang_id', '=',  $jenisFilter) 
+                    ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
+                    ->get();
+
+        }
+        $dataJenisFilter = DB::table('cabang_pje')
+            ->select('*')
+            ->where('cabang_pje.is_aktif', '=', "Y")
+            ->get();
+
+            // dd($dataJenisFilter);
+        // return response()->json(['datas' => $data]);
+
+        return view('pages.master.pair_kendaraan.index',[
+            'judul' => "Supplier",
+            'dataPair' => $dataPair,
+            'dataJenisFilter' => $dataJenisFilter
         ]);
     }
 
@@ -82,41 +147,61 @@ class PairKendaraanController extends Controller
      */
     public function edit($id)
     {
-        $dataPair = DB::table('kendaraan AS k')
-                ->select('k.*','pk.*','c.*','m.*' )
-                ->leftJoin('pair_kendaraan_chassis AS pk', 'k.id', '=', 'pk.kendaraan_id')
-                ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
-                ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
-                ->where('k.id', $id) 
-                ->where('pk.is_aktif', '=','Y') 
-                ->get();
+        // $dataPair = DB::table('kendaraan AS k')
+        //         ->select('k.*','pk.*','c.*','m.*' )
+        //         ->leftJoin('pair_kendaraan_chassis AS pk', 'k.id', '=', 'pk.kendaraan_id')
+        //         ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+        //         ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+        //         ->where('k.id', $id) 
+        //         ->where('pk.is_aktif', '=','Y') 
+        //         ->get();
         $dataKendaraan =  DB::table('kendaraan')
                 ->select('kendaraan.*')
                 ->where('kendaraan.is_aktif', '=','Y') 
                 ->where('kendaraan.id', $id) 
-                ->get();
+                ->first();
         $dataChassis = DB::table('chassis')
                 ->select('chassis.*','m_model_chassis.nama as namaModel')
                 ->join('m_model_chassis','chassis.model_id','m_model_chassis.id')
                 ->where('chassis.is_aktif', '=','Y') 
+                ->where('chassis.is_dipakai', '=','N') 
+                ->where('chassis.cabang_id', '=',$dataKendaraan->cabang_id) 
                 ->get();
+  
+        // $dataChassis = DB::table('chassis')
+        //               ->select('chassis.*', 'm_model_chassis.nama as namaModel')
+        //                 ->join('m_model_chassis', 'chassis.model_id', 'm_model_chassis.id')
+        //                 ->leftJoin('pair_kendaraan_chassis', function ($join) use ($id) {
+        //                     $join->on('chassis.id', '=', 'pair_kendaraan_chassis.chassis_id')
+        //                         ->where('pair_kendaraan_chassis.kendaraan_id', '=', $id)
+        //                         ->where('pair_kendaraan_chassis.is_aktif', '=', 'Y');
+        //                 })
+        //                 ->where('chassis.is_aktif', '=', 'Y')
+        //                 ->where('chassis.cabang_id', '=', $dataKendaraan->cabang_id)
+        //                 ->get();
         $dataPaired = DB::table('pair_kendaraan_chassis')
-                ->select('pair_kendaraan_chassis.*')
+                ->select('pair_kendaraan_chassis.*', 'c.kode as kode', 'c.karoseri as karoseri')
                 ->where('pair_kendaraan_chassis.kendaraan_id', $id) 
+                ->leftJoin('chassis as c', 'c.id', '=', 'pair_kendaraan_chassis.chassis_id')
                 ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
-                ->get();
+                ->first();
         $dataDriver = DB::table('karyawan')
                 ->where('role_id', '5') // 5=driver 
                 ->where('is_aktif', '=','Y') 
                 ->get();
-
+        $dataCabang = DB::table('cabang_pje')
+                ->where('is_aktif', '=','Y') 
+                ->where('id', '=',$dataKendaraan->cabang_id) 
+                ->first();
+        // dd($dataPaired);
         return view('pages.master.pair_kendaraan.edit', [
             'judul' => "Pair Truck",
-            'dataPair' => $dataPair,
+            // 'dataPair' => $dataPair,
             'dataKendaraan'=>$dataKendaraan,
             'dataChassis'=>$dataChassis,
             'dataPaired'=>$dataPaired,
             'dataDriver'=>$dataDriver,
+            'dataCabang'=>$dataCabang
         ]);
     }
 
@@ -129,63 +214,185 @@ class PairKendaraanController extends Controller
      */
     public function update(Request $request, $idKendaraan)
     {
-        $user = Auth::user()->id; 
-
+        //
+         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $dataKendaraan =  DB::table('kendaraan')
+                        ->select('kendaraan.*')
+                        ->where('kendaraan.is_aktif', '=','Y') 
+                        ->where('kendaraan.id', $idKendaraan) 
+                        ->first();
+        $dataPaired = DB::table('pair_kendaraan_chassis')
+                ->select('pair_kendaraan_chassis.*', 'c.kode as kode', 'c.karoseri as karoseri')
+                ->where('pair_kendaraan_chassis.kendaraan_id', $idKendaraan) 
+                ->leftJoin('chassis as c', 'c.id', '=', 'pair_kendaraan_chassis.chassis_id')
+                ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
+                ->first();
+        $dataChassis = DB::table('chassis')
+                ->select('chassis.*')
+                ->where('chassis.is_aktif', '=','Y') 
+                ->where('chassis.cabang_id', '=',$dataKendaraan->cabang_id) 
+                ->where('chassis.id', '=',$dataPaired->chassis_id) 
+                ->first();
+        
         try {
+            $pesanKustom = [
+                'driver.required' => 'Driver harus di pilih!',
+            ];
+            
+            $request->validate([
+                'driver' => 'required',
+      
+            ], $pesanKustom);
             $data = $request->collect();
-            var_dump($data); die;
-            if(!empty($data['idPairedNya']))
+            // var_dump($data['idPairedNya']);die;
+            if($data['idPairedNya'])
             {
-                for ($i = 0; $i < count($data['idPairedNya']); $i++) {
-                    // semisal id pairednya 
-                    //  "idPairedNya" => array:3 [▼
-                    //     0 => "4"
-                    //     1 => "5"
-                    //     2 => "6"
-                    //     ] taruh [$i] supaya sesuai array
-                    if($data['idPairedNya'][$i])
-                    {
-                        if($data['isAktif'][$i])
-                        {
-                                DB::table('pair_kendaraan_chassis')
-                                ->where('id', $data['idPairedNya'][$i])
-                                ->where('kendaraan_id', $idKendaraan)
-                                ->update(array(
-                                        'chassis_id' => $data['chasis'][$i],
-                                        'updated_at'=> VariableHelper::TanggalFormat(),
-                                        'updated_by'=> $user,
-                                        'is_aktif'=>$data['isAktif'][$i]
-    
-                                    )
-                                );
-                        }
+                //  var_dump('masuk if idpaired');die;
+
+                if($data['chasis']==null/*[$i]*/)
+                {
+                //    var_dump($data);die;
                         DB::table('pair_kendaraan_chassis')
-                        ->where('id', $data['idPairedNya'][$i])
+                        ->where('id', $data['idPairedNya']/*[$i]*/)
                         ->where('kendaraan_id', $idKendaraan)
                         ->update(array(
-                                'chassis_id' => $data['chasis'][$i],
+                                'updated_at'=> VariableHelper::TanggalFormat(),
+                                'updated_by'=> $user,
+                                'is_aktif'=>'N'/*[$i]*/
+
+                            )
+                        );
+                        DB::table('chassis')
+                        ->where('id', $data['idChassis']/*[$i]*/)
+                        // ->where('kendaraan_id', $idKendaraan)
+                        ->update(array(
+                                'is_dipakai' => 'N'/*[$i]*/,
+                                'updated_at'=> VariableHelper::TanggalFormat(),
+                                'updated_by'=> $user,
+                            )
+                        );
+                        if($dataKendaraan->driver_id != $data['driver'])
+                        {
+                            DB::table('kendaraan')
+                            ->where('id', $dataKendaraan->id/*[$i]*/)
+                            // ->where('kendaraan_id', $idKendaraan)
+                            ->update(array(
+                                    'driver_id' => $data['driver']/*[$i]*/,
+                                    'updated_at'=> VariableHelper::TanggalFormat(),
+                                    'updated_by'=> $user,
+                                )
+                            );
+
+                        }
+                     
+                }
+                else
+                {
+                    if($data['chasis'] != $data['idChassis'])
+                    {
+                    DB::table('chassis')
+                        ->where('id', $data['idChassis']/*[$i]*/)
+                        // ->where('kendaraan_id', $idKendaraan)
+                        ->update(array(
+                                'is_dipakai' => 'N'/*[$i]*/,
                                 'updated_at'=> VariableHelper::TanggalFormat(),
                                 'updated_by'=> $user,
                             )
                         );
                     }
-                    else
+
+                    if($data['chasis'] == $data['idChassis'])
                     {
-                        DB::table('pair_kendaraan_chassis')->insert(
-                        array(
-                            'kendaraan_id' => $idKendaraan,
-                            'chassis_id' => $data['chasis'][$i],
-                            'created_at'=> VariableHelper::TanggalFormat(),
-                            'created_by'=> $user,
+                        DB::table('chassis')
+                            ->where('id', $data['idChassis']/*[$i]*/)
+                            // ->where('kendaraan_id', $idKendaraan)
+                            ->update(array(
+                                    'is_dipakai' => 'Y'/*[$i]*/,
+                                    'updated_at'=> VariableHelper::TanggalFormat(),
+                                    'updated_by'=> $user,
+                                )
+                            );
+                    }
+
+                    DB::table('chassis')
+                            ->where('id', $data['chasis']/*[$i]*/)
+                            // ->where('kendaraan_id', $idKendaraan)
+                            ->update(array(
+                                    'is_dipakai' => 'Y'/*[$i]*/,
+                                    'updated_at'=> VariableHelper::TanggalFormat(),
+                                    'updated_by'=> $user,
+                                )
+                            );
+
+                    DB::table('pair_kendaraan_chassis')
+                    ->where('id', $data['idPairedNya']/*[$i]*/)
+                    ->where('kendaraan_id', $idKendaraan)
+                    ->update(array(
+                            'driver_id' => $data['driver']/*[$i]*/,
+                            'cabang_id' => $data['cabang']/*[$i]*/,
+                            'chassis_id' => $data['chasis']/*[$i]*/,
                             'updated_at'=> VariableHelper::TanggalFormat(),
                             'updated_by'=> $user,
-                            'is_aktif'=>'Y'
+                            // 'is_aktif'=>$data['isAktif']/*[$i]*/
+
                         )
                     );
+                    if($dataKendaraan->driver_id != $data['driver'])
+                    {
+                        DB::table('kendaraan')
+                        ->where('id', $dataKendaraan->id/*[$i]*/)
+                        ->update(array(
+                                'driver_id' => $data['driver']/*[$i]*/,
+                                'updated_at'=> VariableHelper::TanggalFormat(),
+                                'updated_by'=> $user,
+                            )
+                        );
+
                     }
-                    // $cobaPrint.=$data['idPairedNya'][$i];
                 }
-                
+            }
+            else
+            {
+            // var_dump('masuk else luar');die;
+
+
+                DB::table('pair_kendaraan_chassis')->insert(
+                    array(
+                        'kendaraan_id' => $idKendaraan,
+                        'driver_id' => $data['driver']/*[$i]*/,
+                        'cabang_id' => $data['cabang']/*[$i]*/,
+                        'chassis_id' => $data['chasis']/*[$i]*/,
+                        'created_at'=> VariableHelper::TanggalFormat(),
+                        'created_by'=> $user,
+                        'updated_at'=> VariableHelper::TanggalFormat(),
+                        'updated_by'=> $user,
+                        'is_aktif'=>'Y'
+                    )
+                );
+                 DB::table('chassis')
+                    ->where('id', $data['chasis']/*[$i]*/)
+                    // ->where('kendaraan_id', $idKendaraan)
+                    ->update(array(
+                            'is_dipakai' => 'Y'/*[$i]*/,
+                            'updated_at'=> VariableHelper::TanggalFormat(),
+                            'updated_by'=> $user,
+                        )
+                    );
+              
+                // if($dataChassis->id == $data['chasis'])
+                // {
+                //     DB::table('chassis')
+                //     ->where('id', $data['chasis']/*[$i]*/)
+                //     // ->where('kendaraan_id', $idKendaraan)
+                //     ->update(array(
+                //             'is_dipakai' => 'Y'/*[$i]*/,
+                //             'updated_at'=> VariableHelper::TanggalFormat(),
+                //             'updated_by'=> $user,
+                //         )
+                //     );
+
+                // }
+
             }
      
 
