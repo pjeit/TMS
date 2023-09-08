@@ -106,7 +106,8 @@ class KaryawanController extends Controller
         $dataRole = DB::table('role')
             ->where('role.is_aktif', '=', "Y")
             ->get();
-        $dataKota = DB::table('m_kota')
+        $dataKota = DB::table('cabang_pje')
+            ->where('cabang_pje.is_aktif', '=', "Y")
             ->get();
         $dataPtkp = DB::table('ptkp')
             ->where('ptkp.is_aktif', '=', "Y")
@@ -214,7 +215,7 @@ class KaryawanController extends Controller
                 $newNik = $year . '0001';
             }
             //====== end logic otomatis nik ======
-            $tanggal_lahir = date_create_from_format('d-M-Y', $data['tanggal_lahir']);
+            $tanggal_lahir = $data['tanggal_lahir']?date_create_from_format('d-M-Y', $data['tanggal_lahir']):null;
             $tanggal_kontrak = date_create_from_format('d-M-Y', $data['tanggal_kontrak']);
             $tanggal_gabung = date_create_from_format('d-M-Y', $data['tanggal_gabung']);
             $tanggal_selesai_kontrak = date_create_from_format('d-M-Y', $data['tanggal_selesai_kontrak']);
@@ -246,6 +247,7 @@ class KaryawanController extends Controller
                 $telpDarurat = (string) "+" . $telpDarurat;
             }
             // var_dump($data['status_pegawai']);die;
+            
             $idKaryawan=DB::table('karyawan')
                 ->insertGetId(array(
                     // data pribadi
@@ -257,7 +259,7 @@ class KaryawanController extends Controller
                     'status_menikah'=>$data['status_menikah'],
                     'jumlah_anak'=>$data['jumlah_anak']?$data['jumlah_anak']:0,
                     'tempat_lahir'=>strtoupper($data['tempat_lahir']),
-                    'tanggal_lahir'=>date_format($tanggal_lahir, 'Y-m-d'),
+                    'tanggal_lahir'=>$data['tanggal_lahir']?date_format($tanggal_lahir, 'Y-m-d'):null,
                     'agama'=>$data['agama'],
                     // end data pribadi
 
@@ -289,7 +291,7 @@ class KaryawanController extends Controller
                     'tgl_mulai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_kontrak, 'Y-m-d'):null,
                     'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
                     'posisi_id'=>$data['posisi'], // ini itu idrole
-                    'm_kota_id'=>$data['cabang_kantor'],
+                    'cabang_id'=>$data['cabang_kantor'],
                     'saldo_cuti'=>$data['sisa_cuti'],
 
                     'gaji'=>($data['gaji'])?str_replace(',', '',$data['gaji']):null,
@@ -395,7 +397,8 @@ class KaryawanController extends Controller
         $dataRole = DB::table('role')
             ->where('role.is_aktif', '=', "Y")
             ->get();
-        $dataKota = DB::table('m_kota')
+         $dataKota = DB::table('cabang_pje')
+            ->where('cabang_pje.is_aktif', '=', "Y")
             ->get();
         $dataPtkp = DB::table('ptkp')
             ->where('ptkp.is_aktif', '=', "Y")
@@ -519,7 +522,7 @@ class KaryawanController extends Controller
             //     $newNik = $year . '0001';
             // }
             //====== end logic otomatis nik ======
-            $tanggal_lahir = date_create_from_format('d-M-Y', $data['tanggal_lahir']);
+            $tanggal_lahir = $data['tanggal_lahir']?date_create_from_format('d-M-Y', $data['tanggal_lahir']):null;
             $tanggal_kontrak = date_create_from_format('d-M-Y', $data['tanggal_kontrak']);
             $tanggal_gabung = date_create_from_format('d-M-Y', $data['tanggal_gabung']);
             $tanggal_selesai_kontrak = date_create_from_format('d-M-Y', $data['tanggal_selesai_kontrak']);
@@ -569,7 +572,7 @@ class KaryawanController extends Controller
                     'status_menikah'=>$data['status_menikah'],
                     'jumlah_anak'=>$data['jumlah_anak']?$data['jumlah_anak']:0,
                     'tempat_lahir'=>strtoupper($data['tempat_lahir']),
-                    'tanggal_lahir'=>date_format($tanggal_lahir, 'Y-m-d'),
+                    'tanggal_lahir'=>$data['tanggal_lahir']?date_format($tanggal_lahir, 'Y-m-d'):null,
                     'agama'=>$data['agama'],
                     // end data pribadi
 
@@ -601,7 +604,7 @@ class KaryawanController extends Controller
                     'tgl_mulai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_kontrak, 'Y-m-d'):null,
                     'tgl_selesai_kontrak'=>($data['status_pegawai'] == 'Kontrak'||$data['status_pegawai'] == 'Magang')?date_format($tanggal_selesai_kontrak, 'Y-m-d'):null,
                     'posisi_id'=>$data['posisi'], // ini itu idrole
-                    'm_kota_id'=>$data['cabang_kantor'],
+                    'cabang_id'=>$data['cabang_kantor'],
                     'saldo_cuti'=>$data['sisa_cuti'],
 
                     'gaji'=>($data['gaji'])?str_replace(',', '',$data['gaji']):null,

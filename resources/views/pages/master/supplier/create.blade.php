@@ -34,7 +34,7 @@
         @endforeach
 
     @endif
-    <form action="{{ route('supplier.store') }}" method="POST" >
+    <form action="{{ route('supplier.store') }}" method="POST" id="post">
     @csrf
     <div class="row">
         {{-- <div class="col-12 ">
@@ -94,7 +94,7 @@
                                 <span class="input-group-text" id="basic-addon1">+62</i>
                                 </span>
                                 </div>
-                                <input type="text" class="form-control numaja" name="telp"  value="{{old('telp','')}}" >
+                                <input type="text" class="form-control numaja" name="telp" id="telp1"  value="{{old('telp','')}}" >
                             </div>
                         </div>
     
@@ -146,23 +146,15 @@
                     <h5 class="card-title"><b>Informasi Rekening</b></h5>
                 </div>
                 <div class="card-body">
-                    <div class="form-group">
-                        <label for="tipe">Status kawin</label>
-                        <br>
-                        <div class="icheck-primary d-inline">
-                            <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah',)? 'checked' :'' }}>
-                            <label class="form-check-label" for="belumNikah">Belum Menikah</label>
-                        </div>
-                        <div class="icheck-primary d-inline">
-                            <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah',)? 'checked' :'' }}>
-                            <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
-                        </div>
-                    </div>
-                    <div id="bank">
                         <div class="row col-12">
                             <div class="form-group col-6">
-                                <label for="">No. Rekening</label>
-                                <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek','')}}" >                         
+                                <label for="tanggal_keluar">No. Rekening <span style="opacity: 40%">(Harap dicentang apabila virtual account)</span></label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><input type="checkbox" id="cekVirtual" name="cekVirtual" value="N"></span>
+                                    </div>
+                                     <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek','')}}" > 
+                                </div>
                             </div>
                      
                             <div class="form-group col-6">
@@ -181,31 +173,7 @@
                                 <input required type="text" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
                             </div>
                         </div>
-                    </div>
-                     <div id="virtual">
-                        <div class="row col-12">
-                            <div class="form-group col-6">
-                                <label for="">No. Rekening</label>
-                                <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek','')}}" >                         
-                            </div>
-                     
-                            <div class="form-group col-6">
-                                <label for="">Atas Nama</label>
-                                <input required type="text" name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
-                            </div>
-                        </div>
-                        <div class="row col-12">
-                            <div class="form-group col-6">
-                                <label for="">Bank</label>
-                                <input required type="text" name="bank" class="form-control" value="{{old('bank','')}}" >                         
-                            </div>
-                     
-                            <div class="form-group col-6">
-                                <label for="">Cabang</label>
-                                <input required type="text" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
      
             </div>
@@ -215,68 +183,139 @@
     </form>
 
 </div>
-
-<script type="text/javascript">
-$(document).ready(function(){
-    // Flag to track form changes
-    var formChanged = false;
-
-    // Listen for changes in form fields
-    $('input, select').on('change', function() {
-        formChanged = true;
-    });
-
-    // Listen for form submission
-    $('#filterForm').submit(function() {
-        // Reset form changed flag on submission
-        formChanged = false;
-    });
-
-    // Listen for beforeunload event
-    $(window).on('beforeunload', function() {
-        if (formChanged) {
-            return 'You have unsaved changes. Are you sure you want to leave?';
-        }
-    });
-    
-    $(document).on('click', 'a', function(event) {
-        if (formChanged) {
+<script>
+    $(document).ready(function() {
+        $('#post').submit(function(event) {
             event.preventDefault();
             Swal.fire({
-                title: 'Anda memiliki perubahan yang belum disimpan',
-                text: 'Anda Yakin?',
+                title: 'Apakah Anda yakin data sudah benar?',
+                text: "Periksa kembali data anda",
                 icon: 'warning',
                 showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
                 confirmButtonText: 'Ya',
-                cancelButtonText: 'Tidak'
+                reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    window.onbeforeunload = null;
-                    window.location.href = $(this).attr('href');
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Disimpan'
+                    })
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 1000); // 2000 milliseconds = 2 seconds
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
                 }
-            });
-        }
+            })
+        });
     });
-     $(window).on('popstate', function(event) {
-        if (formChanged) {
-            Swal.fire({
-                title: 'Anda memiliki perubahan yang belum disimpan',
-                text: 'Anda Yakin?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya',
-                cancelButtonText: 'Tidak'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.onbeforeunload = null;
-                    history.back(); // Go back in history
-                } else {
-                    // Prevent navigating back if the user chooses not to
-                    history.pushState(null, null, window.location.href);
-                }
-            });
-        }
-    });
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+    // // Flag to track form changes
+    // var formChanged = false;
+
+    // // Listen for changes in form fields
+    // $('input, select').on('change', function() {
+    //     formChanged = true;
+    // });
+
+    // // Listen for form submission
+    // $('#filterForm').submit(function() {
+    //     // Reset form changed flag on submission
+    //     formChanged = false;
+    // });
+
+    // // Listen for beforeunload event
+    // $(window).on('beforeunload', function() {
+    //     if (formChanged) {
+    //         return 'You have unsaved changes. Are you sure you want to leave?';
+    //     }
+    // });
+    
+    // $(document).on('click', 'a', function(event) {
+    //     if (formChanged) {
+    //         event.preventDefault();
+    //         Swal.fire({
+    //             title: 'Anda memiliki perubahan yang belum disimpan',
+    //             text: 'Anda Yakin?',
+    //             icon: 'warning',
+    //             showCancelButton: true,
+    //             confirmButtonText: 'Ya',
+    //             cancelButtonText: 'Tidak'
+    //         }).then((result) => {
+    //             if (result.isConfirmed) {
+    //                 window.onbeforeunload = null;
+    //                 window.location.href = $(this).attr('href');
+    //             }
+    //         });
+    //     }
+    // });
+    //  $(window).on('popstate', function(event) {
+    //     if (formChanged) {
+    //         Swal.fire({
+    //             title: 'Anda memiliki perubahan yang belum disimpan',
+    //             text: 'Anda Yakin?',
+    //             icon: 'warning',
+    //             showCancelButton: true,
+    //             confirmButtonText: 'Ya',
+    //             cancelButtonText: 'Tidak'
+    //         }).then((result) => {
+    //             if (result.isConfirmed) {
+    //                 window.onbeforeunload = null;
+    //                 history.back(); // Go back in history
+    //             } else {
+    //                 // Prevent navigating back if the user chooses not to
+    //                 history.pushState(null, null, window.location.href);
+    //             }
+    //         });
+    //     }
+    // });
+    
+    $('#cekVirtual').click(function(){
+            if($(this).is(":checked")){
+              
+                $('#cekVirtual').val('Y');
+                
+                // console.log("Checkbox is checked.");
+            }else if($(this).is(":not(:checked)")){
+                $('#cekVirtual').val('N');
+        
+                // console.log("Checkbox is unchecked.");
+            }
+        });
    $('#cekPPH').click(function(){
             if($(this).is(":checked")){
                 $('#pph').attr('readonly',false);

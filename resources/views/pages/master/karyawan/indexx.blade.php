@@ -9,9 +9,9 @@
 <li class="breadcrumb-item">Master</li>
 <li class="breadcrumb-item"><a href="{{route('karyawan.index')}}">Karyawan</a></li>
 @endsection
-@include('sweetalert::alert')
 
 @section('content')
+@include('sweetalert::alert')
 
 <!-- <div class="container-fluid">
         <h2 class="text-center display-4">Cari Nama COA</h2>
@@ -88,39 +88,13 @@
                                 </td>
                                                    
                                 
-                                <!-- Modal -->
-                                {{-- <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                 <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
-                                            </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
-
-                                            <form action="{{route('karyawan.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button action="{{route('karyawan.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div> --}}
+                               
                             </tr>
                             @endforeach
                         </tbody>
                         
                     </table>
-                    <div class="float-right">
-            {{-- {{ $dataKaryawan->links('pagination::bootstrap-4') }} --}}
-
-                    </div>
+                  
 
                 </div>
                 <!-- /.card-body -->

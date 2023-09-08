@@ -34,7 +34,7 @@
         @endforeach
 
     @endif
-    <form action="{{ route('supplier.update', [$data->id]) }}" method="POST" >
+    <form action="{{ route('supplier.update', [$data->id]) }}" method="POST" id="post">
     @csrf
     @method('PUT')
     <div class="row">
@@ -150,9 +150,18 @@
                 </div>
                 <div class="card-body">
                     <div class="row col-12">
-                        <div class="form-group col-6">
+                        {{-- <div class="form-group col-6">
                             <label for="">No. Rekening</label>
                             <input required type="text" name="no_rek" class="form-control" value="{{ $data->no_rek }}" >                         
+                        </div> --}}
+                        <div class="form-group col-6">
+                                <label for="tanggal_keluar">No. Rekening <span style="opacity: 40%">(Harap dicentang apabila virtual account)</span></label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><input type="checkbox" id="cekVirtual" name="cekVirtual" value="{{$data->is_virtual_acc}}"{{$data->is_virtual_acc=='Y'?'checked':''}}></span>
+                                    </div>
+                                     <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek',$data->no_rek)}}" > 
+                                </div>
                         </div>
                  
                         <div class="form-group col-6">
@@ -183,7 +192,65 @@
     </form>
 
 </div>
+<script>
+    $(document).ready(function() {
+        $('#post').submit(function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
 
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Disimpan'
+                    })
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 1000); // 2000 milliseconds = 2 seconds
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
+    });
+</script>
 <script type="text/javascript">
 $(document).ready(function(){
      if($('#cekPPH').is(":checked")){

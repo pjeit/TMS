@@ -118,7 +118,7 @@
                             <div class="col-lg-3 col-md-12">
                                 <div class="form-group">
                                     <label for="jumlah_anak">Jumlah Anak</label>
-                                    <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',0)}}" min="0" max="3">
+                                    <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',0)}}" min="0">
                                 </div>
                             </div>
                             <div class="col-lg-5 col-md-12">
@@ -246,7 +246,7 @@
                                     <label for="telp">Telp 1<span style='color:red'>*</span></label>
                                     <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <span class="input-group-text">+62</span>
                                     </div>
                                     <input type="text" class="form-control numaja" id="telp1" name="telp1"  placeholder="" value="{{old('telp1','')}}">
                                     </div>
@@ -258,7 +258,7 @@
                                     <label for="telp">Telp 2</label>
                                     <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <span class="input-group-text">+62</span>
                                     </div>
                                     <input type="text" class="form-control numaja" id="telp2" name="telp2"  placeholder="" value="{{old('telp2','')}}">
                                     </div>
@@ -325,7 +325,7 @@
                                     <label for="nomor_kontak_darurat">Nomor Telepon<span style='color:red'>*</span></label>
                                     <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <span class="input-group-text">+62</span>
                                     </div>
                                     <input type="text" class="form-control numaja" id="nomor_kontak_darurat" name="nomor_kontak_darurat"  placeholder="" value="{{old('nomor_kontak_darurat','')}}">
                                     </div>
@@ -623,6 +623,9 @@
 </div>
 
 {{-- end modal --}}
+<script>
+ 
+</script>
 <script type="text/javascript">
     $("#foto").change(function() {
         readURL(this);
@@ -821,7 +824,7 @@
             else if (jumlahAnak === 2 && statusMenikah === "0"||jumlahAnak === 2 && statusMenikah === "2") {
                 ptkpValue = dataPtkp[2].id;
             } 
-            else if (jumlahAnak === 3 && statusMenikah === "0"||jumlahAnak === 3 && statusMenikah === "2") {
+            else if (jumlahAnak >= 3 && statusMenikah === "0"||jumlahAnak >= 3 && statusMenikah === "2") {
                 ptkpValue = dataPtkp[3].id;
             } 
             else if (jumlahAnak === 0 && statusMenikah === "1") {
@@ -833,7 +836,7 @@
             else if (jumlahAnak === 2 && statusMenikah === "1") {
                 ptkpValue = dataPtkp[6].id;
             } 
-            else if (jumlahAnak === 3 && statusMenikah === "1") {
+            else if (jumlahAnak >= 3 && statusMenikah === "1") {
                 ptkpValue = dataPtkp[7].id;
             } 
             // Set nilai pada select ptkp
@@ -896,9 +899,63 @@
                 processData:false,
                 success: function(response) {
                     if (response.hasOwnProperty('id')) {
-                        toastr.success(response.message);
+                        // toastr.success(response.message);
 
-                        window.location.href = '{{ route("karyawan.index") }}';
+                        event.preventDefault();
+                        Swal.fire({
+                            title: 'Apakah Anda yakin data sudah benar?',
+                            text: "Periksa kembali data anda",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            cancelButtonColor: '#d33',
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonText: 'Batal',
+                            confirmButtonText: 'Ya',
+                            reverseButtons: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                  window.location.href = '{{ route("karyawan.index") }}';
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    timer: 2500,
+                                    showConfirmButton: false,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Data Disimpan'
+                                })
+
+                                setTimeout(() => {
+                                    this.submit();
+                                }, 1000); // 2000 milliseconds = 2 seconds
+                            }else{
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    timer: 2500,
+                                    showConfirmButton: false,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+
+                                Toast.fire({
+                                    icon: 'warning',
+                                    title: 'Batal Disimpan'
+                                })
+                                event.preventDefault();
+                            }
+                        })
+
                     } else {
                         toastr.error(response.message);
                     }

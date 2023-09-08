@@ -39,7 +39,7 @@
         @endforeach
 
     @endif
-    <form action="{{ route('role.update',[$role->id]) }}" method="POST" >
+    <form action="{{ route('role.update',[$role->id]) }}" method="POST" id="post">
     @csrf
     @method('PUT')
         <div class="row">
@@ -79,10 +79,62 @@
 </script>
 
 <script>
-    
-</script>
+    $(document).ready(function() {
+        $('#post').submit(function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
 
-<script>
-   
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Disimpan'
+                    })
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 1000); // 2000 milliseconds = 2 seconds
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
+    });
 </script>
 @endsection

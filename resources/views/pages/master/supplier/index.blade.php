@@ -14,6 +14,8 @@
 @endsection
 
 @section('content')
+@include('sweetalert::alert')
+
 <br>
 <style>
    
@@ -47,51 +49,77 @@
                             </div>
                         </form>
                     </div> --}}
-                    <div class="form-group">
+                    <div class="form-group w-25">
                         <form id="filterForm" action="{{ route('filterSupplier.cari')}}" method="get">
                             <label>Filter Supplier</label>
-                                <select class="form-control selectpicker" name="jenisFilter" id="jenisFilter" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
-                                    <option value="">--Pilih Jenis Supplier--</option>
+                             <select class="form-control select2" style="width: 100%;" id='jenisFilter' name="jenisFilter">
+                                <option value="">ALL</option>
+        
+                                @foreach($dataJenisFilter as $dat)
+                                        <option value="{{$dat->id}}" id="">{{$dat->nama}}</option>
+                                @endforeach
+                                <input type="hidden" id="SimpenId">
+                                
+                            </select>
+                                {{-- <select class="form-control select2" name="jenisFilter" id="jenisFilter" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
                                     @foreach($dataJenisFilter as $dat)
                                         <option value="{{$dat->id}}" id="">{{$dat->nama}}</option>
                                     @endforeach
+                                    <option value="">ALL</option>
+
                                 </select>
-                                <input type="hidden" id="SimpenId">
+                                <input type="hidden" id="SimpenId"> --}}
                         </form>
                     </div>
                     <div id="data">
                         <table id="myTable" class="table table-bordered table-striped" width="100%">
                             <thead>
                                 <tr>
+                                <th>Jenis Supplier</th>
                                 <th>Nama</th>
                                 <th>Alamat</th>
                                 <th>Telp</th>
-                                <th>Catatan</th>
-                                <th>Jenis Supplier</th>
                                 <th>Lokasi Supplier</th>
+                                <th>Catatan</th>
                                 <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($data as $item)
                                 <tr>
+                                    <td>{{ $item->jenis }}</td>
                                     <td>{{ $item->nama }}</td>
                                     <td>{{ $item->alamat }}</td>  
                                     <td>{{ $item->telp }}</td>  
-                                    <td>{{ $item->catatan }}</td>
-                                    <td>{{ $item->jenis }}</td>
                                     <td>{{ $item->kota }}</td>
+                                    <td>{{ $item->catatan }}</td>
                                     <td>                                    
-                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('supplier.edit',[$item->id])}}">
+                                        {{-- <a class="btn btn-default bg-info radiusSendiri" href="{{route('supplier.edit',[$item->id])}}">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>   
                                                 <!-- Button trigger modal -->
                                         <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
                                                 <i class="fas fa-trash"></i> Hapus
-                                        </button>          
+                                        </button>   
+                                         --}}
+                                        <div class="btn-group dropleft">
+                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a href="{{route('supplier.edit',[$item->id])}}" class="dropdown-item">
+                                                    <span class="fas fa-edit mr-3"></span> Edit
+                                                </a>
+                                                
+                                                <a href="{{ route('supplier.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                    <span class="fas fa-trash mr-3"></span> Delete
+                                                </a>
+                                                
+                                            </div>
+                                        </div>   
                                         
                                     </td>
-                                    <!-- Modal -->
+                                    {{-- <!-- Modal -->
                                     <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -114,12 +142,12 @@
                                         </div>
                                         </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    {{ $data->links('pagination::bootstrap-4') }}
+                    {{-- {{ $data->links('pagination::bootstrap-4') }} --}}
                     </div>
 
                 </div>
@@ -140,6 +168,8 @@
 var currentUrl = window.location.href;
 var baseUrl = currentUrl.split('=');
 var idUrl = parseFloat(baseUrl[1]);
+// $('#jenisFilter').val(idUrl).selectpicker("refresh");
+
  $(document).ready(function() {
     var id =localStorage.getItem("SimpenId");
     console.log(id);

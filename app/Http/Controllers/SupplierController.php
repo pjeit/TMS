@@ -25,12 +25,20 @@ class SupplierController extends Controller
             ->join('m_kota', 'supplier.kota_id', '=', 'm_kota.id')
             ->where('supplier.is_aktif', '=', "Y")
             ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
-            ->paginate(10);
+            // ->paginate(10);
+            ->get();
+
         $dataJenisFilter = DB::table('jenis_supplier')
             ->select('*')
             ->where('jenis_supplier.is_aktif', '=', "Y")
             ->orderBy('nama')
             ->get();
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+
 
             // dd($dataJenisFilter);
 
@@ -44,7 +52,11 @@ class SupplierController extends Controller
     {
         $jenisFilter = $request->input('jenisFilter');
         // dd($jenisFilter);
-
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         if($jenisFilter==null)
         {
               $data = DB::table('supplier')
@@ -53,8 +65,8 @@ class SupplierController extends Controller
             ->join('m_kota', 'supplier.kota_id', '=', 'm_kota.id')
             ->where('supplier.is_aktif', '=', "Y")
             ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
-            ->paginate(10);
-            // ->get();
+            // ->paginate(10);
+            ->get();
 
 
         }
@@ -68,8 +80,8 @@ class SupplierController extends Controller
             ->where('supplier.is_aktif', '=', "Y")
             ->where('jenis_supplier.id', '=',  $jenisFilter )
             ->groupBy('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama','m_kota.nama')
-            ->paginate(10);
-            // ->get();
+            // ->paginate(10);
+            ->get();
 
         }
 
@@ -122,6 +134,7 @@ class SupplierController extends Controller
             $request->validate([
                 'nama' => 'required',
             ], $pesanKustom);
+            // dd($request->collect());
     
             $supplier = new Supplier();
             $supplier->jenis_supplier_id = $request->jenis_supplier_id;
@@ -141,9 +154,7 @@ class SupplierController extends Controller
             $supplier->email = $request->email;
             $supplier->npwp = $request->npwp;
             $supplier->no_rek = $request->no_rek;
-            $supplier->no_virtual_account = $request->no_virtual_account;
-            $supplier->bank_virtual_account = $request->bank_virtual_account;
-            $supplier->nama_virtual_account = $request->nama_virtual_account;
+            $supplier->is_virtual_acc = $request->cekVirtual?'Y':'N';
             $supplier->rek_nama = $request->rek_nama;
             $supplier->bank = $request->bank;
             $supplier->cabang = $request->cabang;
@@ -233,6 +244,7 @@ class SupplierController extends Controller
                     'email' => $data['email'],
                     'npwp' => $data['npwp'],
                     'no_rek' => $data['no_rek'],
+                    'is_virtual_acc' => $data['cekVirtual']?'Y':'N',
                     'rek_nama' => $data['rek_nama'],
                     'bank' => $data['bank'],
                     'cabang' => $data['cabang'],
