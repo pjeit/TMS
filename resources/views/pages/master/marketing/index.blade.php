@@ -11,7 +11,7 @@
 @endsection
 
 @section('content')
-@include('sweetalert::alert')
+
 <style>
    
 </style>
@@ -25,7 +25,7 @@
                     </a> 
                 </div>
                 <div class="card-body">
-                    <table id="myTable" class="table table-bordered table-striped table-hover">
+                    <table id="myTable" class="table table-bordered table-striped table-hover" width="100%">
                         <thead>
                             <tr>
                               <th>Nama</th>
@@ -39,7 +39,7 @@
                                 @foreach($data as $item)
                                 <tr>
                                     <td>{{ $item->nama }}</td>
-                                    <td>{{ $item->nama_grup }}</td>  
+                                    <td>{{ $item->nama_grup }} {{ $item->grup_id }}</td>  
                                     <td>{{ $item->nama_role }}</td>  
                                     <td>                                    
                                         <div class="btn-group dropleft">
@@ -69,9 +69,10 @@
 </div>
 <script type="text/javascript">
     $(function () {
-      var table = $('#myTable').DataTable({
-        responsive: true,
-      });
+        var table = $('#myTable').DataTable({
+            // responsive: true,
+            scrollX: true
+        });
     });
 </script>
 @endsection

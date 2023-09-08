@@ -64,16 +64,16 @@
                         </div>
                  
                         <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">No Rekening</label>
-                            <input type="text" name="no_rek" maxlength="20" class="form-control " value="{{old('no_rek','')}}" >                         
+                            <label for="">No Rekening<span class="text-red">*</span></label>
+                            <input type="text" name="no_rek" maxlength="20" class="form-control " value="{{old('no_rek','')}}" required>                         
                         </div>
                         <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Atas Nama Rekening</label>
-                            <input type="text" name="atas_nama" maxlength="30" class="form-control " value="{{old('atas_nama','')}}" >                         
+                            <label for="">Atas Nama Rekening<span class="text-red">*</span></label>
+                            <input type="text" name="atas_nama" maxlength="30" class="form-control " value="{{old('atas_nama','')}}" required>                         
                         </div>
                         <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Nama Bank</label>
-                            <input type="text" name="bank" maxlength="15" class="form-control " value="{{old('bank','')}}" >                         
+                            <label for="">Nama Bank<span class="text-red">*</span></label>
+                            <input type="text" name="bank" maxlength="15" class="form-control " value="{{old('bank','')}}" required>                         
                         </div>
                         <div class="form-group  col-12 col-md-6 col-sm-12">
                             <label for="">Cabang Bank</label>
@@ -86,7 +86,7 @@
                               <div class="input-group-prepend">
                                 <span class="input-group-text">+62</span>
                               </div>
-                              <input type="text" name="telp1" class="form-control numaja" maxlength="14" id="telp1" placeholder="" value="">    
+                              <input type="text" name="telp1" class="form-control numaja" maxlength="14" id="telp1" placeholder="" value="" required>    
                             </div>
                         </div>
                     </div>
