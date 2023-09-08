@@ -9,6 +9,8 @@
 <li class="breadcrumb-item">Master</li>
 <li class="breadcrumb-item"><a href="{{route('role.index')}}">Role</a></li>
 @endsection
+@include('sweetalert::alert')
+
 @section('content')
 <!-- <div class="container-fluid">
         <h2 class="text-center display-4">Cari Nama COA</h2>
@@ -39,11 +41,11 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="myTable" class="table table-bordered table-striped" width="100%">
                         <thead>
                             <tr>
                               <th>Nama</th>
-                              <th>Handle</th>
+                              <th></th>
                             </tr>
                           </thead>
                         <tbody>
@@ -51,49 +53,33 @@
                              <tr>
                                 <td>{{$d->nama}}</td>
                                
-                                <td>                                    
-                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('role.edit',[$d->id])}}">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>   
-                                            <!-- Button trigger modal -->
-                                    <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
-                                               <i class="fas fa-trash"></i> Hapus
-                                    </button>          
+                                <td>       
+                                     <div class="btn-group dropleft">
+                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-list"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a href="{{route('role.edit',[$d->id])}}" class="dropdown-item">
+                                                <span class="fas fa-edit mr-3"></span> Edit
+                                            </a>
+                                            
+                                            <a href="{{ route('role.destroy', $d->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                <span class="fas fa-trash mr-3"></span> Delete
+                                            </a>
+                                            
+                                        </div>
+                                    </div>                             
                                     
                                 </td>
                                                    
                                 
-                                <!-- Modal -->
-                                <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                        <div class="modal-body">
-                                          <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
-                                        </div>
-                                       <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
-
-                                            <form action="{{route('role.destroy',[$d->id])}}" method="POST" class="btn btn-responsive">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button action="{{route('role.destroy',[$d->id])}}" class="btn btn-primary">Ya</button>
-                                            </form>
-                                       </div>
-                                    </div>
-                                    </div>
-                                </div>
+                            
                             </tr>
                             @endforeach
                         </tbody>
                        
                     </table>
-{{ $dataRole->links('pagination::bootstrap-4') }}
+{{-- {{ $dataRole->links('pagination::bootstrap-4') }} --}}
 
                 </div>
                 <!-- /.card-body -->
@@ -105,7 +91,14 @@
 
     <!-- /.row -->
 </div>
-
+<script type="text/javascript">
+    $(function () {
+      var table = $('#myTable').DataTable({
+        // responsive: true,
+        scrollX: true
+      });
+    });
+</script>
 @endsection
 
 

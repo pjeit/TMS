@@ -22,7 +22,13 @@ class RoleController extends Controller
          $dataRole = DB::table('role')
             ->select('*')
             ->where('is_aktif', '=', "Y")
-            ->paginate(10);
+            // ->paginate(10);
+            ->get();
+         $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
             return view('pages.master.role.index',[
             'judul'=>"Role",

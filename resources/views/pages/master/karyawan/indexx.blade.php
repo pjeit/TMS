@@ -39,7 +39,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="karyawanTable" class="table table-bordered table-striped">
+                    <table id="myTable" class="table table-bordered table-striped" width="100%">
                         <thead>
                             <tr>
                               <th>Nama Panggilan</th>
@@ -47,7 +47,7 @@
                               <th>Alamat</th>
                               <th>Telp</th>
                               <th>Posisi</th>
-                              <th>Handle</th>
+                              <th></th>
                             </tr>
                           </thead>
                         <tbody>
@@ -101,7 +101,7 @@
                         
                     </table>
                     <div class="float-right">
-            {{ $dataKaryawan->links('pagination::bootstrap-4') }}
+            {{-- {{ $dataKaryawan->links('pagination::bootstrap-4') }} --}}
 
                     </div>
 
@@ -114,7 +114,15 @@
     </div>
     <!-- /.row -->
 </div>
+<script type="text/javascript">
+    $(function () {
+      var table = $('#myTable').DataTable({
+        // responsive: true,
+        scrollX: true
 
+      });
+    });
+</script>
 @endsection
 
 

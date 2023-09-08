@@ -22,8 +22,14 @@ class KasBankController extends Controller
          $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
-            ->paginate(10);
+            // ->paginate(10);
+            ->get();
 
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
             return view('pages.master.kas_bank.index',[
             'judul'=>"Kas Bank",
             'dataKas' => $dataKas,
