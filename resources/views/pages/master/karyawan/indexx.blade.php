@@ -9,7 +9,10 @@
 <li class="breadcrumb-item">Master</li>
 <li class="breadcrumb-item"><a href="{{route('karyawan.index')}}">Karyawan</a></li>
 @endsection
+@include('sweetalert::alert')
+
 @section('content')
+
 <!-- <div class="container-fluid">
         <h2 class="text-center display-4">Cari Nama COA</h2>
         <div class="row">
@@ -60,19 +63,33 @@
                                 <td>{{$d->posisi}}</td>  
                       
                                 <td>                                    
-                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('karyawan.edit',[$d->id])}}">
+                                    {{-- <a class="btn btn-default bg-info radiusSendiri" href="{{route('karyawan.edit',[$d->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                             <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
                                                <i class="fas fa-trash"></i> Hapus
-                                    </button>          
-                                    
+                                    </button>           --}}
+                                    <div class="btn-group dropleft">
+                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-list"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a href="{{route('karyawan.edit',[$d->id])}}" class="dropdown-item">
+                                                <span class="fas fa-edit mr-3"></span> Edit
+                                            </a>
+                                            
+                                            <a href="{{ route('karyawan.destroy', $d->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                <span class="fas fa-trash mr-3"></span> Delete
+                                            </a>
+                                            
+                                        </div>
+                                    </div>
                                 </td>
                                                    
                                 
                                 <!-- Modal -->
-                                <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                {{-- <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
@@ -94,7 +111,7 @@
                                             </form>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </tr>
                             @endforeach
                         </tbody>

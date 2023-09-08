@@ -141,7 +141,6 @@ var currentUrl = window.location.href;
 var baseUrl = currentUrl.split('=');
 var idUrl = parseFloat(baseUrl[1]);
  $(document).ready(function() {
-    // Get the value of jenisFilter from the URL
     var id =localStorage.getItem("SimpenId");
     console.log(id);
     if (!isNaN(idUrl) &&idUrl==id) {
