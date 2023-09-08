@@ -28,8 +28,8 @@ class MarketingController extends Controller
                         ->select('gm.*', 'g.nama_grup as nama_grup', 'r.nama as nama_role')
                         ->where('gm.is_aktif', '=', "Y")
                         ->get();
-     
-        $title = 'Delete data!';
+        
+        $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
@@ -94,9 +94,8 @@ class MarketingController extends Controller
             $new_customer->bank = $request->bank;
             $new_customer->cabang = $request->cabang;
             $telp1 = isset($request->telp1) ? (substr($request->telp1, 0, 2) === "08" ? "8" . substr($request->telp1, 2) : $request->telp1) : '';
-            $telp2 = isset($request->telp2) ? (substr($request->telp2, 0, 2) === "08" ? "8" . substr($request->telp2, 2) : $request->telp2) : '';
             $new_customer->telp1 = $telp1;
-            $new_customer->telp2 = $telp2;
+            $new_customer->kota_id = $request->kota_id;
             $new_customer->created_by = $user;
             $new_customer->created_at = now();
             $new_customer->is_aktif = 'Y';
@@ -130,12 +129,14 @@ class MarketingController extends Controller
         $grup = Grup::where('is_aktif', 'Y')->get();
         $role = Role::where('is_aktif', 'Y')->get();
         $data = $marketing;
+        $kota = M_Kota::orderBy('nama', 'ASC')->get();
 
         return view('pages.master.marketing.edit',[
             'judul' => "Marketing Grup",
             'data' => $data,
             'grup' => $grup,
-            'role' => $role,
+            'role' => $role,            
+            'kota' => $kota,
         ]);
     }
 
@@ -173,9 +174,8 @@ class MarketingController extends Controller
             $marketing->bank = $request->bank;
             $marketing->cabang = $request->cabang;
             $telp1 = isset($request->telp1) ? (substr($request->telp1, 0, 2) === "08" ? "8" . substr($request->telp1, 2) : $request->telp1) : '';
-            $telp2 = isset($request->telp2) ? (substr($request->telp2, 0, 2) === "08" ? "8" . substr($request->telp2, 2) : $request->telp2) : '';
             $marketing->telp1 = $telp1;
-            $marketing->telp2 = $telp2;
+            $marketing->kota_id = $request->kota_id;
             $marketing->updated_by = $user;
             $marketing->updated_at = now();
             $marketing->is_aktif = 'Y';

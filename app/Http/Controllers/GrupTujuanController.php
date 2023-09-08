@@ -25,8 +25,12 @@ class GrupTujuanController extends Controller
     public function index()
     {
         $data = Grup::where('is_aktif', 'Y')->get();
-        // ->get();
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
 
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         return view('pages.master.grup_tujuan.index',[
                 'judul' => "Grup Tujuan",
                 'data' => $data,
@@ -135,9 +139,6 @@ class GrupTujuanController extends Controller
             $data = $request->post();
             $user = Auth::user()->id;
 
-            // var_dump($data['data']); die;
-            // dd($data);
-
             // delete data dulu
             if($data['data']['deleted_tujuan'] != null){
                 $del = explode(',', $data['data']['deleted_tujuan']);
@@ -174,7 +175,6 @@ class GrupTujuanController extends Controller
                     $harga_per_kg = ($value['harga_per_kg_hidden'] != '')? floatval(str_replace(',', '', $value['harga_per_kg_hidden'])):0;
 
                     $edit_tujuan = GrupTujuan::where('is_aktif', 'Y')->findOrFail($value['id_tujuan']);
-                    var_dump($value['id_tujuan']);
 
                     if($edit_tujuan){
                         // $edit_tujuan->grup_id = $value['grup_hidden'];
@@ -291,7 +291,7 @@ class GrupTujuanController extends Controller
      */
     public function destroy($id)
     {
-        //
+       // ga ada yg di hapus
     }
 
     // public function printDetail($grup)

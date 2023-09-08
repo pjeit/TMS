@@ -24,16 +24,16 @@
                     <table id="myTable" class="table table-bordered table-striped table-hover" width="100%">
                         <thead>
                             <tr>
-                              <th>Nama Grup</th>
-                              <th>Nama PIC</th>
-                              <th>Total Kredit</th>
-                              <th>Total Max Kredit</th>
-                              <th ></th>
+                                <th>Nama Grup</th>
+                                <th>Nama PIC</th>
+                                <th>Total Kredit</th>
+                                <th>Total Max Kredit</th>
+                                <th ></th>
                             </tr>
-                          </thead>
+                            </thead>
                         <tbody>
                             @foreach($data as $item)
-                             <tr>
+                                <tr>
                                 <td>{{ $item->nama_grup }}</td>
                                 <td>{{ $item->nama_pic }}</td>
                                 <td>{{ number_format($item->total_kredit,0,",",".") }}</td>
@@ -53,7 +53,6 @@
                                         </div>
                                     </div>
                                 </td>
-                                
                             </tr>
                             @endforeach
                         </tbody>

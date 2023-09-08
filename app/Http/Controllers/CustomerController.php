@@ -19,7 +19,12 @@ class CustomerController extends Controller
     public function index()
     {
         $data = Customer::where('is_aktif', 'Y')->paginate(5);
-
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+        
         return view('pages.master.customer.index',[
             'judul' => "Customer",
             'data' => $data,

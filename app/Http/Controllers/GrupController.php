@@ -26,7 +26,7 @@ class GrupController extends Controller
             ->where('is_aktif', '=', "Y")
             ->get();
 
-        $title = 'Delete data!';
+        $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
