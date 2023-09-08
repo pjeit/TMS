@@ -220,26 +220,75 @@ $(document).ready(function(e){
             // var url = $(this).attr('data-action');
 
             e.preventDefault();
-            $.ajax({
-                method: 'POST',
-                url: url,
-                data: formData,
-                dataType: 'JSON',
-                contentType: false,
-                cache: false,
-                processData:false,
-                success: function(response) {
-                    if (response.hasOwnProperty('id')) {
-                        toastr.success('Sukses!');
-                        window.location.href = '{{ route("chassis.index") }}';
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    toastr.error('Terjadi kesalahan saat mengirim data.');
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: formData,
+                        dataType: 'JSON',
+                        contentType: false,
+                        cache: false,
+                        processData:false,
+                        success: function(response) {
+                            if (response.hasOwnProperty('id')) {
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    timer: 2500,
+                                    showConfirmButton: false,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Data Disimpan'
+                                })
+
+                                window.location.href = '{{ route("chassis.index") }}';
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            toastr.error('Terjadi kesalahan saat mengirim data.');
+                        }
+                    });
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
                 }
-            });
+            })
+            
         });
     });
    

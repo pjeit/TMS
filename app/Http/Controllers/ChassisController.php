@@ -14,6 +14,7 @@ use Mockery\Undefined;
 use Symfony\Component\VarDumper\VarDumper;
 use Illuminate\Support\Facades\Auth;
 
+
 class ChassisController extends Controller
 {
     /**
@@ -23,19 +24,20 @@ class ChassisController extends Controller
      */
     public function index()
     {
-
         $data = DB::table('chassis as a')
             ->select('a.*', 'b.nama as nama_model')
             ->leftJoin('m_model_chassis as b', 'a.model_id', '=', 'b.id')
             ->where('a.is_aktif', '=', "Y")
             ->get();
 
+       
+
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
-            
+    
         return view('pages.master.chassis.index',[
                 'judul' => "Chassis",
                 'data' => $data,
@@ -50,9 +52,14 @@ class ChassisController extends Controller
     public function create()
     {
         $model_chassis = M_ModelChassis::orderBy('id', 'ASC')->get();
-
+        $cabang = DB::table('cabang_pje')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
+            
         return view('pages.master.chassis.create',[
             'judul' => "Chassis",
+            'cabang' => $cabang,
             'model_chassis' => $model_chassis,
         ]);
     }
@@ -81,7 +88,8 @@ class ChassisController extends Controller
             $chassis->kode = $request->kode;
             $chassis->karoseri = $request->karoseri;
             $chassis->model_id = $request->model_id;
-            $chassis->taun_buat=$request->taun_buat;
+            $chassis->taun_buat = $request->taun_buat;
+            $chassis->cabang_id = $request->cabang;
             // $chassis->kepemilikan = $request->kepemilikan;
             $chassis->created_at = date("Y-m-d h:i:s");
             $chassis->created_by = $user;
@@ -137,10 +145,15 @@ class ChassisController extends Controller
         $data = Chassis::where('is_aktif', 'Y')->findOrFail($id);
         $dokumen = ChassisDokumen::where('chassis_id', $id)->where('is_aktif', 'Y')->get();
         $model_chassis = M_ModelChassis::orderBy('id', 'ASC')->get();
-
+        $cabang = DB::table('cabang_pje')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
+            
         return view('pages.master.chassis.edit',[
             'judul' => "Chassis",
             'data' => $data,
+            'cabang' => $cabang,
             'dokumen' => $dokumen,
             'model_chassis' => $model_chassis,
         ]);
@@ -169,8 +182,8 @@ class ChassisController extends Controller
             $chassis->kode = $request->kode;
             $chassis->karoseri = $request->karoseri;
             $chassis->model_id = $request->model_id;
-            $chassis->taun_buat=$request->taun_buat;
-            // $chassis->kepemilikan = $request->kepemilikan;
+            $chassis->taun_buat = $request->taun_buat;
+            $chassis->cabang_id = $request->cabang;
             $chassis->updated_at = now(); // Menggunakan now() untuk waktu saat ini
             $chassis->updated_by = $user;
             $chassis->save();

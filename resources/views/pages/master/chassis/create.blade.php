@@ -42,23 +42,32 @@
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="">Kode*</label>
+                        <label for="">Cabang<span class="text-red">*</span></label>
+                        <select class="form-control select2" style="width: 100%;" id='cabang' name="cabang" required>
+                            @foreach ($cabang as $cbg)
+                                <option value="{{$cbg->id}}">{{ $cbg->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="">Kode<span class="text-red">*</span> </label>
                         <input required type="text"  name="kode" class="form-control" value="{{old('kode','')}}" >                         
                     </div>
                   
                     <div class="form-group">
-                        <label for="">Karoseri</label>
+                        <label for="">Karoseri<span class="text-red">*</span></label>
                         <input required type="text"  name="karoseri" class="form-control" value="{{old('karoseri','')}}" >                         
                     </div>
 
                     <div class="form-group">
-                        <label for="">Tahun Buat</label>
-                        <input required type="text"  name="taun_buat" class="form-control" value="{{old('taun_buat','')}}" >                         
+                        <label for="">Tahun Buat<span class="text-red">*</span></label>
+                        <input required type="text" maxlength="4"  name="taun_buat" class="form-control" value="{{old('taun_buat','')}}" >                         
                     </div>
 
                     <div class="form-group">
-                        <label for="">Model</label>
-                        <select class="form-control select2" style="width: 100%;" id='model_id' name="model_id">
+                        <label for="">Model<span class="text-red">*</span></label>
+                        <select class="form-control select2" style="width: 100%;" id='model_id' name="model_id" required>
                             @foreach ($model_chassis as $model)
                                 <option value="{{$model->id}}">{{ $model->nama }}</option>
                             @endforeach
@@ -205,26 +214,78 @@ $(document).ready(function(e){
             var url = $(this).attr('data-action');
 
             e.preventDefault();
-            $.ajax({
-                method: 'POST',
-                url: url,
-                data: formData,
-                dataType: 'JSON',
-                contentType: false,
-                cache: false,
-                processData:false,
-                success: function(response) {
-                    if (response.hasOwnProperty('id')) {
-                        toastr.success('Sukses!');
-                        window.location.href = '{{ route("chassis.index") }}';
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    toastr.error('Terjadi kesalahan saat mengirim data.');
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        method: 'POST',
+                        url: url,
+                        data: formData,
+                        dataType: 'JSON',
+                        contentType: false,
+                        cache: false,
+                        processData:false,
+                        success: function(response) {
+                            if (response.hasOwnProperty('id')) {
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top-end',
+                                    timer: 2500,
+                                    showConfirmButton: false,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+
+                                Toast.fire({
+                                    icon: 'success',
+                                    title: 'Data Disimpan'
+                                })
+
+                                window.location.href = '{{ route("chassis.index") }}';
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            toastr.error('Terjadi kesalahan saat mengirim data.');
+                        }
+                    });
+                    
+                   
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
                 }
-            });
+            })
+           
         });
     });
    

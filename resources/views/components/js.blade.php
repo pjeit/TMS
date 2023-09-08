@@ -264,6 +264,16 @@
             $(this).val(inputValue);
         }
     });
+   $("#nomor_kontak_darurat").on("change", function() {
+        var inputValue = $(this).val();
+        if (inputValue.startsWith("08")) {
+            inputValue = "8" + inputValue.substring(2);
+            $(this).val(inputValue);
+        }else if(inputValue.startsWith("628")){
+            inputValue = "8" + inputValue.substring(3);
+            $(this).val(inputValue);
+        }
+    });
 </script>
 
 {{-- masking datatable --}}
@@ -273,6 +283,9 @@
           scrollX: true
       });
   });
+  var datatable = document.getElementById('datatable');
+  // Atur properti CSS width menjadi 100%
+  datatable.style.width = '100%';
 </script>
 
 @section('js')

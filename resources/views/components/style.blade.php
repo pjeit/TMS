@@ -60,7 +60,6 @@
     .btn-rounded{
       border-radius: 10rem;
     }
-  
 </style>
 
 {{-- custom css bootstrap dropdown --}}

@@ -31,10 +31,8 @@ class PairKendaraanController extends Controller
                     ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
                     ->where('k.is_aktif', '=', 'Y') 
                     ->where('k.id_kategori', '=', 1) 
-                    // ->orWhere('k.id_kategori', '=', 2) 
-
                     ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','kt.nama')
-                    ->paginate(10);
+                    ->get();
                     // ->get(10);
 
         // dd($dataPair);
@@ -108,6 +106,12 @@ class PairKendaraanController extends Controller
                  ->where('pair_kendaraan_chassis.kendaraan_id', $id) 
                 ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
                 ->get();
+
+        $dataDriver = DB::table('pair_kendaraan_chassis')
+                ->select('pair_kendaraan_chassis.*')
+                 ->where('pair_kendaraan_chassis.kendaraan_id', $id) 
+                ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
+                ->get();
         // dd($dataKendaraan[0]->id);
         // dd($dataPaired);
 
@@ -116,7 +120,8 @@ class PairKendaraanController extends Controller
             'dataPair' => $dataPair,
             'dataKendaraan'=>$dataKendaraan,
             'dataChassis'=>$dataChassis,
-            'dataPaired'=>$dataPaired
+            'dataPaired'=>$dataPaired,
+            'dataDriver'=>$dataDriver,
         ]);
     }
 

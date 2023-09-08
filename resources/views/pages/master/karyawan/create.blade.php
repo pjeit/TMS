@@ -20,15 +20,9 @@
    
 </style>
 
-<div class="container">
-        @if ($errors->any())
-    {{-- <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div> --}}
+<div class="container-fluid">
+    @if ($errors->any())
+    
         @foreach ($errors->all() as $error)
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ $error }}
@@ -54,6 +48,7 @@
                 <div class="step3" data-target="#test-l-3">
                      <button type="button" class="btn btn-outline-secondary radiusSendiri"><b>Kontak Darurat</b></button>
                 </div>
+                
                 <div class="line"></div>
                 
                 <div class="step4" data-target="#test-l-3">
@@ -98,104 +93,110 @@
                                 <label class="custom-file-label" for="foto" style="text-align: left">Pilih Foto</label>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <div class='row'>
-                                <div class='col-lg-3 col-md-12'>
-                                    <label for="nik">NPK <span style="opacity: 40%">(Nomor Pokok Karyawan)</span></label>
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
+                                    <label for="nik" class=".d-sm-none .d-md-none .d-lg-block">NPK <span style="opacity: 40%">(Nomor Pokok Karyawan)</span></label>
                                     <input type="text" class="form-control" id="nik" name="nik" placeholder="Otomatis" readonly value="{{old('nik','')}}">    
                                 </div>
-                                <div class='col-lg-9 col-md-12'>
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
                                     <label for="nik">Nama Panggilan<span style='color:red'>*</span></label>
                                     <input  ="text" name="nama_panggilan" class="form-control" id="panggilan" placeholder="" value="{{old('nama_panggilan','')}}">    
                                 </div>
+                                <div class='col-lg-6 col-md-12 col-sm-12'>
+                                    <label for="nama">Nama Lengkap<span style='color:red'>*</span></label>
+                                    <input  ="text" name="nama_lengkap" class="form-control" id="nama" placeholder="Nama sesuai KTP" value="{{old('nama_lengkap','')}}"> 
+                                </div>
                             </div>
                         </div>
+               
                         <div class="form-group">
-                            <label for="nama">Nama Lengkap<span style='color:red'>*</span></label>
-                            <input  ="text" name="nama_lengkap" class="form-control" id="nama" placeholder="Nama sesuai KTP" value="{{old('nama_lengkap','')}}"> 
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-12">
-                                <div class="form-group">
-                                    <label for="jumlah_anak">Jumlah Anak</label>
-                                    <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',0)}}" min="0" max="3">
-                                </div>
-                            </div>
-                            <div class="col-lg-5 col-md-12">
-                                  <div class="form-group">
-                                    <label for="tipe">Status kawin</label>
-                                    <br>
-                                    <div class="icheck-primary d-inline">
-                                        <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah','')? 'checked' :'' }} checked>
-                                        <label class="form-check-label" for="belumNikah">Belum Menikah</label>
-                                    </div>
-                                    <div class="icheck-primary d-inline ml-3">
-                                        <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah','')? 'checked' :'' }}>
-                                        <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
-                                    </div>
-                                    <div class="icheck-primary d-inline ml-3">
-                                        <input id="cerai" type="radio" name="status_menikah" value="2" {{'2'== old('status_menikah','')? 'checked' :'' }}>
-                                        <label class="form-check-label" for="cerai">Cerai</label><br>
-                                    </div>
-                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-12">
-                                <div class="form-group">
-                                    <label for="tipe">Jenis Kelamin</label>
-                                    <br>
-                                    <div class="icheck-primary d-inline">
-                                        <input id="laki" type="radio" name="jenis_kelamin" value="L" {{'L' == old('jenis_kelamin','')? 'checked' :'' }} checked>
-                                        <label class="form-check-label" for="laki">Laki-laki</label>
-                                    </div>
-                                    <div class="icheck-primary d-inline ml-3">
-                                        <input id="perempuan" type="radio" name="jenis_kelamin" value="P" {{'P'== old('jenis_kelamin','')? 'checked' :'' }}>
-                                        <label class="form-check-label" for="perempuan">Perempuan</label><br>
+                            <div class="row">
+                                <div class='col-lg-2 col-md-4 col-sm-12'>
+                                    <div class="form-group">
+                                        <label for="jumlah_anak">Jumlah Anak</label>
+                                        <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',0)}}" min="0" max="3">
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>PTKP</label>
-                            <select  class="form-control selectpicker" name="ptkp" id="ptkp" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
-                                <option value="">--Pilih PTKP--</option>
-                                @foreach($dataPtkp as $data)
-                                    <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-12">
-                                <div class="form-group">
-                                        <label for="tempat_lahir">Tempat Lahir</label>
-                                        <input type="text" name="tempat_lahir" class="form-control" id="tempat_lahir" placeholder="" value="{{old('tempat_lahir','')}}">
-                                </div>
-                            </div>
-                            <div class="col-lg-9 col-md-12">
-                                <div class="form-group">
-                                    <label for="tanggal_lahir">Tanggal Lahir</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                <div class='col-lg-5 col-md-8 col-sm-12'>
+                                    <div class="form-group">
+                                        <label for="tipe">Status kawin</label>
+                                        <br>
+                                        <div class="icheck-primary d-inline">
+                                            <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah','')? 'checked' :'' }} checked>
+                                            <label class="form-check-label" for="belumNikah">Belum Menikah</label>
                                         </div>
-                                        <input type="text" name="tanggal_lahir" autocomplete="off" class="date form-control" id="tanggal_lahir" placeholder="dd-M-yyyy" value="{{old('tanggal_lahir','')}}">     
+                                        <div class="icheck-primary d-inline ml-3">
+                                            <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah','')? 'checked' :'' }}>
+                                            <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
+                                        </div>
+                                        <div class="icheck-primary d-inline ml-3">
+                                            <input id="cerai" type="radio" name="status_menikah" value="2" {{'2'== old('status_menikah','')? 'checked' :'' }}>
+                                            <label class="form-check-label" for="cerai">Cerai</label><br>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
+                                    <div class="form-group">
+                                        <label for="tipe">Jenis Kelamin</label>
+                                        <br>
+                                        <div class="icheck-primary d-inline">
+                                            <input id="laki" type="radio" name="jenis_kelamin" value="L" {{'L' == old('jenis_kelamin','')? 'checked' :'' }} checked>
+                                            <label class="form-check-label" for="laki">Laki-laki</label>
+                                        </div>
+                                        <div class="icheck-primary d-inline ml-3">
+                                            <input id="perempuan" type="radio" name="jenis_kelamin" value="P" {{'P'== old('jenis_kelamin','')? 'checked' :'' }}>
+                                            <label class="form-check-label" for="perempuan">Perempuan</label><br>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-lg-2 col-md-6 col-sm-12'>
+                                    <label>Agama</label>
+                                    <select class="form-control selectpicker" name="agama" id="agama" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
+                                    @foreach($dataAgama as $data)
+                                            <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="row">
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
+                                    <label>PTKP</label>
+                                    <select  class="form-control selectpicker" name="ptkp" id="ptkp" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
+                                        <option value="">--Pilih PTKP--</option>
+                                        @foreach($dataPtkp as $data)
+                                            <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
+                                    <div class="form-group">
+                                        <label for="tanggal_lahir">Tanggal Lahir</label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="text" name="tanggal_lahir" autocomplete="off" class="date form-control" id="tanggal_lahir" placeholder="dd-M-yyyy" value="{{old('tanggal_lahir','')}}">     
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-lg-6 col-md-12 col-sm-12'>
+                                    <div class="form-group">
+                                            <label for="tempat_lahir">Tempat Lahir</label>
+                                            <input type="text" name="tempat_lahir" class="form-control" id="tempat_lahir" placeholder="" value="{{old('tempat_lahir','')}}">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
                       
-                      
-                        <div class="form-group">
-                            <label>Agama</label>
-                            <select class="form-control selectpicker" name="agama" id="agama" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
-                               @foreach($dataAgama as $data)
-                                    <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <a href="{{ route('karyawan.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
+                        <br>
+                        <a href="{{ route('karyawan.index') }}" class="btn btn-secondary radiusSendiri"><strong><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Kembali</strong></a>
 
-                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
+                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right radiusSendiri"><strong>Next <span class="fa fa-arrow-circle-right"></span></strong></button>
                     </div>
                 </div>
                 {{-- ============End Data pribadi============ --}}
@@ -208,29 +209,30 @@
                     </div>  
                     <div class="card-body">
                          <div class="row">
-                            <div class="col-lg col-md-12">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
                                  <div class="form-group">
                                     <label for="alamat">Alamat Tinggal Sekarang</label>
                                     <input type="text" name="alamat_sekarang" class="form-control" id="alamat" placeholder="" value="{{old('alamat_sekarang','')}}">
                                 </div>
                             </div>
 
-                            <div class="col-lg col-md-12">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label for="kota">Kota Tinggal Sekarang</label>
                                     <input type="text" name="kota_sekarang" class="form-control" id="kota" placeholder="" value="{{old('kota_sekarang','')}}">
                                 </div>
                             </div>
                         </div>
+
                          <div class="row">
-                            <div class="col-lg col-md-12">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label for="alamat">Alamat Sesuai KTP</label>
                                     <input type="text" name="alamat_ktp" class="form-control" id="alamat" placeholder="" value="{{old('alamat_ktp','')}}">
                                 </div>
                             </div>
 
-                            <div class="col-lg col-md-12">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label for="kota">Kota Sesuai KTP</label>
                                     <input type="text" name="kota_ktp" class="form-control" id="kota" placeholder="" value="{{old('kota_ktp','')}}">
@@ -241,64 +243,68 @@
                      
                      
                         <div class="row">
-                            <div class="col-lg col-md-12">
+                            <div class="col-sm-12 col-md-6 col-lg-4">
                                  <div class="form-group">
                                     <label for="telp">Telp 1<span style='color:red'>*</span></label>
                                     <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <span class="input-group-text"><strong>+62</strong></span>
                                     </div>
                                     <input type="text" class="form-control numaja" id="telp1" name="telp1"  placeholder="" value="{{old('telp1','')}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-lg col-md-12">
+                            <div class="col-sm-12 col-md-6 col-lg-4">
                                 <div class="form-group">
                                     <label for="telp">Telp 2</label>
                                     <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <span class="input-group-text"><strong>+62</strong></span>
                                     </div>
                                     <input type="text" class="form-control numaja" id="telp2" name="telp2"  placeholder="" value="{{old('telp2','')}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
                                     </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                <label for="alamat">Email</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    </div>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="" value="">
                                 </div>
                             </div>
                         </div>
                        
-                        <div class="form-group">
-                            <label for="alamat">Email</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                </div>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="" value="">
-                            </div>
-                        </div>
-                         <div class="form-group">
-                            <label for="no_rekening">No. Rekening</label>
-                            <input type="text" name="no_rekening" class="form-control numaja" id="no_rekening" placeholder="" value="">
-                        </div>
-                        <div class="form-group">
-                            <label for="atas_nama">Atas Nama</label>
-                            <input type="text" name="atas_nama" class="form-control" id="atas_nama" placeholder="" value="">
-                        </div>
                         <div class="row">
-                            <div class="col-lg col-md-12">
-                                <div class="form-group">
-                                    <label for="nama_bank">Nama Bank</label>
-                                    <input type="text" name="nama_bank" class="form-control" id="nama_bank" placeholder="" value="">
-                                </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="no_rekening">No. Rekening</label>
+                                <input type="text" name="no_rekening" class="form-control numaja" id="no_rekening" placeholder="" value="">
                             </div>
-                            <div class="col-lg col-md-12">
-                                <div class="form-group">
-                                    <label for="cabang">Cabang</label>
-                                    <input type="text" name="cabang_bank" class="form-control" id="cabang" placeholder="" value="">
-                                </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="atas_nama">Atas Nama</label>
+                                <input type="text" name="atas_nama" class="form-control" id="atas_nama" placeholder="" value="">
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="nama_bank">Nama Bank</label>
+                                <input type="text" name="nama_bank" class="form-control" id="nama_bank" placeholder="" value="">
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="cabang">Cabang Bank</label>
+                                <input type="text" name="cabang_bank" class="form-control" id="cabang" placeholder="" value="">
                             </div>
                         </div>
-                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
-                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
+                
+                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left radiusSendiri"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> <strong>Back</strong></button>
+                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right radiusSendiri"><strong> Next <spa <span class="fa fa-arrow-circle-right"></span></strong></button>
 
                     </div>
                            
@@ -313,30 +319,35 @@
                     </div>  
                     <div class="card-body">
                         <div id="parentDarurat">
-                                <div class="form-group">
+                            <div class="row">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                     <label for="nama_kontak_darurat">Nama</label>
                                     <input type="text" name="nama_kontak_darurat" class="form-control" placeholder="" value="">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                     <label for="hubungan_kontak_darurat">Hubungan</label>
                                     <input type="text" name="hubungan_kontak_darurat" class="form-control" placeholder="" value="">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                     <label for="nomor_kontak_darurat">Nomor Telepon<span style='color:red'>*</span></label>
                                     <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                        <span class="input-group-text"><strong>+62</strong></span>
                                     </div>
                                     <input type="text" class="form-control numaja" id="nomor_kontak_darurat" name="nomor_kontak_darurat"  placeholder="" value="{{old('nomor_kontak_darurat','')}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                     <label for="alamat_kontak_darurat">Alamat</label>
                                     <input type="text" name="alamat_kontak_darurat" class="form-control" placeholder="" value="">
                                 </div>
 
-                                <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
-                                <button type="button" id="nextDariDarurat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
+                            </div>
+                            <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left radiusSendiri"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> <strong>Back</strong></button>
+                            <button type="button" id="nextDariDarurat" class="btn btn-success float-right radiusSendiri"><strong> Next <spa <span class="fa fa-arrow-circle-right"></span></strong></button>
                         </div>     
                     </div>           
                 </div>
@@ -348,81 +359,106 @@
                         <h5 class="card-title">Status Karyawan</h5>
                     </div>  
                     <div class="card-body">
-                         <div class="form-group">
-                            <label for="tipe">Tipe Karyawan</label>
-                            <br>
-                            <div class="icheck-primary d-inline">
-                                <input id="Kontrak" type="radio" name="status_pegawai" value="Kontrak" {{'Kontrak' == old('status_pegawai','')? 'checked' :'' }} checked>
-                                <label class="form-check-label" for="Kontrak">Kontrak</label>
-                            </div>
-                            <div class="icheck-primary d-inline ml-3">
-                                <input id="Tetap" type="radio" name="status_pegawai" value="Tetap" {{'Tetap'== old('status_pegawai','')? 'checked' :'' }}>
-                                <label class="form-check-label" for="Tetap">Tetap</label>
-                            </div>
-                            <div class="icheck-primary d-inline ml-3">
-                                <input id="Magang" type="radio" name="status_pegawai" value="Magang" {{'Magang' == old('status_pegawai','')? 'checked' :'' }}>
-                                <label class="form-check-label" for="Magang">Magang</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="tanggal_gabung">Tanggal Bergabung</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="tipe">Tipe Karyawan</label>
+                                <br>
+                                <div class="icheck-primary d-inline">
+                                    <input id="Kontrak" type="radio" name="status_pegawai" value="Kontrak" {{'Kontrak' == old('status_pegawai','')? 'checked' :'' }} checked>
+                                    <label class="form-check-label" for="Kontrak">Kontrak</label>
                                 </div>
-                                <input type="text" name="tanggal_gabung" autocomplete="off" class="date form-control" id="tanggal_gabung" placeholder="dd-M-yyyy" value="{{old('tgl_gabung','')}}">     
+                                <div class="icheck-primary d-inline ml-4">
+                                    <input id="Tetap" type="radio" name="status_pegawai" value="Tetap" {{'Tetap'== old('status_pegawai','')? 'checked' :'' }}>
+                                    <label class="form-check-label" for="Tetap">Tetap</label>
+                                </div>
+                                <div class="icheck-primary d-inline ml-4">
+                                    <input id="Magang" type="radio" name="status_pegawai" value="Magang" {{'Magang' == old('status_pegawai','')? 'checked' :'' }}>
+                                    <label class="form-check-label" for="Magang">Magang</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="tanggal_gabung">Tanggal Bergabung</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                    <input type="text" name="tanggal_gabung" autocomplete="off" class="date form-control" id="tanggal_gabung" placeholder="dd-M-yyyy" value="{{old('tgl_gabung','')}}">     
+                                </div>
                             </div>
                         </div>
                      
-                        <div class="form-group" id="tglKontrakMulai">
-                            <label for="tanggal_kontrak">Tanggal Mulai</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6" id="tglKontrakMulai">
+                                <label for="tanggal_kontrak">Tanggal Mulai</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                    <input type="text" name="tanggal_kontrak" autocomplete="off" class="date form-control" id="tanggal_kontrak" placeholder="dd-M-yyyy" value="{{old('tgl_mulai_kontrak','')}}">     
                                 </div>
-                                <input type="text" name="tanggal_kontrak" autocomplete="off" class="date form-control" id="tanggal_kontrak" placeholder="dd-M-yyyy" value="{{old('tgl_mulai_kontrak','')}}">     
                             </div>
-                        </div>
-                        <div class="form-group" id="tglKontrakSelesai">
-                            <label for="tanggal_selesai_kontrak">Tanggal Selesai</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                            
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6"  id="tglKontrakSelesai">
+                                <label for="tanggal_selesai_kontrak">Tanggal Selesai</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                    <input type="text" name="tanggal_selesai_kontrak" autocomplete="off" class="date form-control" id="tanggal_selesai_kontrak" placeholder="dd-M-yyyy" value="{{old('tgl_selesai_kontrak','')}}">     
                                 </div>
-                                <input type="text" name="tanggal_selesai_kontrak" autocomplete="off" class="date form-control" id="tanggal_selesai_kontrak" placeholder="dd-M-yyyy" value="{{old('tgl_selesai_kontrak','')}}">     
                             </div>
                         </div>
                     
-                        <div class="form-group">
-                            <label>Posisi<span style='color:red'>*</span></label>
-                            <select class="form-control selectpicker" name="posisi" id="posisi" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih posisi">
-                                <option value="">--Pilih Posisi--</option>
-                                @foreach($dataRole as $data)
-                                    <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                                @endforeach
-                            </select>
+                        <div class="row">
+
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                <label>Role<span style='color:red'>*</span></label>
+                                <select class="form-control selectpicker" name="role" id="role" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Role">
+                                    <option value="">--Pilih Role--</option>
+                                    @foreach($dataRole as $data)
+                                        <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                <label>Cabang Kantor<span style='color:red'>*</span></label>
+                                <select class="form-control selectpicker" name="cabang_kantor" id="cabang_kantor" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih cabang kantor">
+                                    <option value="">--Pilih Cabang Kantor--</option>
+                                    @foreach($dataKota as $data)
+                                        <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                <label for="sisa_cuti">Sisa Cuti</label>
+                                <input type="number" name="sisa_cuti" class="form-control" placeholder="" value="" min="0" max="24">
+                            </div>
                         </div>
                     
-                        <div class="form-group">
-                            <label>Cabang Kantor<span style='color:red'>*</span></label>
-                            <select class="form-control selectpicker" name="cabang_kantor" id="cabang_kantor" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih cabang kantor">
-                                <option value="">--Pilih Cabang Kantor--</option>
-                                @foreach($dataKota as $data)
-                                    <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="sisa_cuti">Sisa Cuti</label>
-                            <input type="number" name="sisa_cuti" class="form-control" placeholder="" value="" min="0" max="24">
-                        </div>
-                        <div class="form-group">
-                            <label for="gaji">Gaji</label>
-                            <div class="input-group mb-0">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Rp</span>
+                        <div class="row">
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="gaji">Gaji</label>
+                                <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Rp</span>
+                                </div>
+                                <input type="text" name="gaji" class="form-control numaja uang" id="gaji" placeholder="" value="" readonly>
+                                </div>
                             </div>
-                            <input type="text" name="gaji" class="form-control numaja uang" id="gaji" placeholder="" value="" readonly>
+
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="tanggal_keluar">Tanggal Keluar</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><input type="checkbox" id="check_is_keluar" name="is_keluar"></span>
+                                    </div>
+                                    <input type="hidden" id="is_keluar" name='is_keluar' value="">
+                                    <input type="text" autocomplete="off" name="tanggal_keluar" class="form-control" id="tanggal_keluar" placeholder="dd-M-yyyy"  readonly>
+                                </div>
                             </div>
                         </div>
                         {{-- <div class="form-group">
@@ -436,20 +472,11 @@
                                 <input type="hidden" id="tanggalDibuat" name="tanggal_keluar">
                             </div>
                         </div> --}}
-                        <div class="form-group">
-                            <label for="tanggal_keluar">Tanggal Keluar</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><input type="checkbox" id="check_is_keluar" name="is_keluar"></span>
-                                </div>
-                                <input type="hidden" id="is_keluar" name='is_keluar' value="">
-                                <input type="text" autocomplete="off" name="tanggal_keluar" class="form-control" id="tanggal_keluar" placeholder="dd-M-yyyy"  readonly>
-                            </div>
-                        </div>
+                        
                         
 
-                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
-                        <button type="submit" class="btn btn-success float-right radiusSendiri" id="btnSimpan"><strong>Simpan</strong></button>
+                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left radiusSendiri"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> <strong>Back</strong></button>
+                        <button type="submit" class="btn btn-success float-right radiusSendiri" id="btnSimpan"><strong><span class="fa fa-save"></span> Simpan</strong></button>
                         
                         {{-- <button type="button" id="btnCobaBuatData" class="btn btn-outline-success float-right"><strong>coba</strong></button> --}}
 
@@ -516,113 +543,113 @@
         </div>
     </div>
 
-{{-- modal --}}
+    {{-- modal --}}
 
-<div class="modal fade" id="confirm_dialog_detail">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content bg-warning">
-        <div class="modal-header">
-          <h5 class="modal-title">Apakah anda yakin akan menghapus data ini?</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
+        <div class="modal fade" id="confirm_dialog_detail">
+            <div class="modal-dialog modal-sm">
+            <div class="modal-content bg-warning">
+                <div class="modal-header">
+                <h5 class="modal-title">Apakah anda yakin akan menghapus data ini?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-footer">
+                    <form id='form_delete_detail'>
+                        <input type='hidden' id='identitas_id' name='identitas_id'>
+                        <input type='hidden' id='id_tombol'>
+                    </form>
+                <button type="button" class="btn btn-outline-dark" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-outline-dark" onclick='delete_datadetail()'>Yes</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
         </div>
-        <div class="modal-footer">
-            <form id='form_delete_detail'>
-                <input type='hidden' id='identitas_id' name='identitas_id'>
-                <input type='hidden' id='id_tombol'>
-            </form>
-          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">No</button>
-          <button type="button" class="btn btn-outline-dark" onclick='delete_datadetail()'>Yes</button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
 
-<div class="modal fade" id="identitas_dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Identitas</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="modal-body">
-            <form id='form_add_detail'>
-                <input type="hidden" name="key" id="key">
-                {{-- <input type="hidden" name="identitas_id" id="identitas_id">     --}}
-                 <div class="form-group">
-                    <label>Jenis Dokumen<span style='color:red'>*</span></label>
-                    <select class="form-control selectpicker" name="jenis" id="jenis" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
-                        <option value="">--Pilih Jenis Dokumen--</option>
-                        @foreach($dataJenis as $data)
-                            <option value="{{$data->id}}-{{$data->nama}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                        @endforeach
-                    </select>
+        <div class="modal fade" id="identitas_dialog">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title">Identitas</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
                 </div>
-                {{-- <div class="form-group">
-                    <label for="jenis">Jenis<span style='color:red'>*</span></label>
-                    <input type="text" name="jenis" class="form-control" id="jenis" placeholder=""> 
-                </div> --}}
-                <div class="form-group">
-                    <label for="nomor">Nomor<span style='color:red'>*</span></label>
-                    <input type="text" name="nomor" class="form-control" id="nomor" placeholder=""> 
+                <div class="modal-body">
+                    <form id='form_add_detail'>
+                        <input type="hidden" name="key" id="key">
+                        {{-- <input type="hidden" name="identitas_id" id="identitas_id">     --}}
+                        <div class="form-group">
+                            <label>Jenis Dokumen<span style='color:red'>*</span></label>
+                            <select class="form-control selectpicker" name="jenis" id="jenis" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
+                                <option value="">--Pilih Jenis Dokumen--</option>
+                                @foreach($dataJenis as $data)
+                                    <option value="{{$data->id}}-{{$data->nama}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        {{-- <div class="form-group">
+                            <label for="jenis">Jenis<span style='color:red'>*</span></label>
+                            <input type="text" name="jenis" class="form-control" id="jenis" placeholder=""> 
+                        </div> --}}
+                        <div class="form-group">
+                            <label for="nomor">Nomor<span style='color:red'>*</span></label>
+                            <input type="text" name="nomor" class="form-control" id="nomor" placeholder=""> 
+                        </div>
+                        <div class="form-group">
+                            <label for="catatan">Catatan</label>
+                            <input type="text" name="catatan" class="form-control" id="catatan" placeholder=""> 
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="catatan">Catatan</label>
-                    <input type="text" name="catatan" class="form-control" id="catatan" placeholder=""> 
+                <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
+                <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_detail()'><strong>Tambah</strong> </button>
                 </div>
-            </form>
+            </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
-          <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_detail()'><strong>Tambah</strong> </button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
 
-<div class="modal fade" id="komponen_dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Komponen Gaji</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="modal-body">
-            <form id='form_add_komponen'>
-                <input type="hidden" name="key" id="key">
-                <input type="hidden" name="komponen_id" id="komponen_id">  
-                <div class="form-group">
-                    <label for="nama_komponen">Komponen<span style='color:red'>*</span></label>
-                    <input type="text" name="nama_komponen" class="form-control" id="nama_komponen" placeholder=""> 
+        <div class="modal fade" id="komponen_dialog">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title">Komponen Gaji</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
                 </div>
-                <div class="form-group">
-                    <label for="gaji">Nominal</label>
-                    <div class="input-group mb-0">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text">Rp</span>
-                      </div>
-                      <input type="text" name="nominal" class="form-control numaja uang" id="nominal" placeholder=""> 
-                    </div>
+                <div class="modal-body">
+                    <form id='form_add_komponen'>
+                        <input type="hidden" name="key" id="key">
+                        <input type="hidden" name="komponen_id" id="komponen_id">  
+                        <div class="form-group">
+                            <label for="nama_komponen">Komponen<span style='color:red'>*</span></label>
+                            <input type="text" name="nama_komponen" class="form-control" id="nama_komponen" placeholder=""> 
+                        </div>
+                        <div class="form-group">
+                            <label for="gaji">Nominal</label>
+                            <div class="input-group mb-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Rp</span>
+                            </div>
+                            <input type="text" name="nominal" class="form-control numaja uang" id="nominal" placeholder=""> 
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
+                <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_komponen()'><strong>Tambah</strong> </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-danger radiusSendiri" style='width:85px' data-dismiss="modal"><strong>Batal</strong> </button>
-          <button type="button" class="btn btn-sm btn-success radiusSendiri" style='width:85px' onclick='save_komponen()'><strong>Tambah</strong> </button>
-        </div>
-      </div>
-      <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
 
-{{-- end modal --}}
+    {{-- end modal --}}
 <script type="text/javascript">
     $("#foto").change(function() {
         readURL(this);
@@ -1040,11 +1067,11 @@
     $('#showKomponen').show();
 
      });
-    // <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-right"><strong>Back</strong></button>
-    // <button type="button" id="nextDariAlamat" class="btn btn-success float-right"><strong>Next</strong></button>
-    // <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-right"><strong>Back</strong></button>
-    // <button type="button" id="nextDariDarurat" class="btn btn-success float-right"><strong>Next</strong></button>
-    // <button type="button" id="BackDariStatus" class="btn btn-outline-success float-right"><strong>Back</strong></button>
+    // <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-right"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> <strong>Back</strong></button>
+    // <button type="button" id="nextDariAlamat" class="btn btn-success float-right"><strong> Next <spa <span class="fa fa-arrow-circle-right"></span></strong></button>
+    // <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-right"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> <strong>Back</strong></button>
+    // <button type="button" id="nextDariDarurat" class="btn btn-success float-right"><strong> Next <spa <span class="fa fa-arrow-circle-right"></span></strong></button>
+    // <button type="button" id="BackDariStatus" class="btn btn-outline-success float-right"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> <strong>Back</strong></button>
      $('#nextDariPribadi').click(function() {
         $('.step1 button').removeClass('btn-secondary').addClass('btn-outline-secondary');
         $('.step2 button').removeClass('btn-outline-secondary').addClass('btn-secondary');
