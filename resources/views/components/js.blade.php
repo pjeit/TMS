@@ -241,6 +241,28 @@
   
 </script>
 
+<script>
+   $("#telp1").on("change", function() {
+        var inputValue = $(this).val();
+        if (inputValue.startsWith("08")) {
+            inputValue = "8" + inputValue.substring(2);
+            $(this).val(inputValue);
+        }else if(inputValue.startsWith("628")){
+            inputValue = "8" + inputValue.substring(3);
+            $(this).val(inputValue);
+        }
+    });
+   $("#telp2").on("change", function() {
+        var inputValue = $(this).val();
+        if (inputValue.startsWith("08")) {
+            inputValue = "8" + inputValue.substring(2);
+            $(this).val(inputValue);
+        }else if(inputValue.startsWith("628")){
+            inputValue = "8" + inputValue.substring(3);
+            $(this).val(inputValue);
+        }
+    });
+</script>
 
 @section('js')
 @show
