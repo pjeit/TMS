@@ -21,17 +21,17 @@ class PairKendaraanController extends Controller
     {
         //
          $dataPair = DB::table('kendaraan AS k')
-                    ->select('k.id', 'k.no_polisi', 'kkm.nama as kategoriKendaraan','kt.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+                    ->select('k.id', 'k.no_polisi', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
                     ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
                         $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
                     })
                     ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
                     ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
-                    ->leftJoin('m_kota AS kt', 'k.kota_id', '=', 'kt.id')
+                    ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
                     ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
                     ->where('k.is_aktif', '=', 'Y') 
                     ->where('k.id_kategori', '=', 1) 
-                    ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','kt.nama')
+                    ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                     ->get();
                     // ->get(10);
 
@@ -88,6 +88,7 @@ class PairKendaraanController extends Controller
                 ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
                 ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
                 ->where('k.id', $id) 
+                ->where('pk.is_aktif', '=','Y') 
                 ->get();
         $dataKendaraan =  DB::table('kendaraan')
                 ->select('kendaraan.*')
