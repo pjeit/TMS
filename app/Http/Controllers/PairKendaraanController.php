@@ -216,11 +216,11 @@ class PairKendaraanController extends Controller
     {
         //
          $user = Auth::user()->id; 
-        $dataKendaraan =  DB::table('kendaraan')
-                        ->select('kendaraan.*')
-                        ->where('kendaraan.is_aktif', '=','Y') 
-                        ->where('kendaraan.id', $idKendaraan) 
-                        ->first();
+        // $dataKendaraan =  DB::table('kendaraan')
+        //                 ->select('kendaraan.*')
+        //                 ->where('kendaraan.is_aktif', '=','Y') 
+        //                 ->where('kendaraan.id', $idKendaraan) 
+        //                 ->first();
         
         try {
             $pesanKustom = [
@@ -259,10 +259,10 @@ class PairKendaraanController extends Controller
                                 'updated_by'=> $user,
                             )
                         );
-                        if($dataKendaraan->driver_id != $data['driver'])
+                        if($data['idDriver'] != $data['driver'])
                         {
                             DB::table('kendaraan')
-                            ->where('id', $dataKendaraan->id/*[$i]*/)
+                            ->where('id', $idKendaraan/*[$i]*/)
                             // ->where('kendaraan_id', $idKendaraan)
                             ->update(array(
                                     'driver_id' => $data['driver']/*[$i]*/,
@@ -322,10 +322,10 @@ class PairKendaraanController extends Controller
                         )
                     );
              
-                    if($dataKendaraan->driver_id != $data['driver'])
+                    if($data['idDriver']  != $data['driver'])
                     {
                         DB::table('kendaraan')
-                        ->where('id', $dataKendaraan->id/*[$i]*/)
+                        ->where('id', $idKendaraan/*[$i]*/)
                         ->update(array(
                                 'driver_id' => $data['driver']/*[$i]*/,
                                 'updated_at'=> VariableHelper::TanggalFormat(),

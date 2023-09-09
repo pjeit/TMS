@@ -176,6 +176,13 @@ class HeadController extends Controller
            $kota = DB::table('cabang_pje')
         ->where('cabang_pje.is_aktif', '=', "Y")
         ->get();
+        $dataPaired = DB::table('pair_kendaraan_chassis')
+                ->select('pair_kendaraan_chassis.*')
+                ->where('pair_kendaraan_chassis.kendaraan_id', $head->id) 
+                ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
+                ->first();
+        // dd( $dataPaired->driver_id); die;
+                
         return view('pages.master.head.edit',[
             'judul' => "Head",
             'data' => $data,
@@ -223,6 +230,30 @@ class HeadController extends Controller
             // $edit_head->kepemilikan = $request->kepemilikan;
             $edit_head->updated_at = now();
             $edit_head->updated_by = $user;
+
+        $dataPaired = DB::table('pair_kendaraan_chassis')
+                ->select('pair_kendaraan_chassis.*')
+                ->where('pair_kendaraan_chassis.kendaraan_id', $head->id) 
+                ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
+                ->first();
+
+            if($request->driver_id)
+            {
+
+                if( $dataPaired!=null)
+                {
+        
+                    DB::table('pair_kendaraan_chassis')
+                        ->where('pair_kendaraan_chassis.kendaraan_id', $head->id/*[$i]*/)
+                        ->where('pair_kendaraan_chassis.is_aktif', 'Y')
+                        ->update(array(
+                                'driver_id' => $request->driver_id/*[$i]*/,
+                                'updated_at'=> now(),
+                                'updated_by'=> $user,
+                            )
+                        );
+                }
+            }
             if($edit_head->save()){
                 $docs = json_decode($request->post()['dokumen']);
                 if( $docs != '[]'){
