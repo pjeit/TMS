@@ -119,7 +119,8 @@
     $( document ).ready(function() {
         $(".kendaraan, .chassis, .kendaraan_all, .chassis_all").prop('checked', true);
 
-        $("#cabang_asal").on("change", function(e){
+        $(document).on('change', '#cabang_asal', function (event) {
+
             $("#kendaraan_all").prop('checked', $(this).prop('checked'));
             $("#chassis_all").prop('checked', $(this).prop('checked'));
 
@@ -193,10 +194,7 @@
     $(document).on('click', '.chassis', function (event) {
         $("#chassis_all").prop('checked', false);
     });
-    $(document).on('change', '#cabang_asal', function (event) {
-        $("#kendaraan_all").prop('checked', $(this).prop('checked'));
-        $("#chassis_all").prop('checked', $(this).prop('checked'));
-    });
+       
     $("#chassis_all").click(function () {
         $(".chassis").prop('checked', $(this).prop('checked'));
     });
