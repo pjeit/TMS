@@ -280,7 +280,8 @@
 <script>
   $(document).ready(function() {
       $('#datatable').dataTable({
-          scrollX: true
+          scrollX: true,
+          "aaSorting": []
       });
   });
   var datatable = document.getElementById('datatable');

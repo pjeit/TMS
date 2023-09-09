@@ -51,25 +51,22 @@
                 <table id="datatable" class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
+                            <th>Cabang</th>
                             <th>Jenis Kendaraan</th>
                             <th>Nopol</th>
-                            <th>Cabang</th>
                         </tr>
                     </thead>
                     <tbody id="hasil">
                         @isset($dataKendaraan)
                             @foreach ($dataKendaraan as $item)
                                 <tr>
+                                    <td>{{$item->cabang}}</td>
                                     <td>{{$item->kategori}}</td>
                                     <td>{{$item->no_polisi}}</td>
-                                    <td>{{$item->cabang}}</td>
                                 </tr>
                             @endforeach
-                            
                         @endisset
-                         {{-- <tr id="loading-spinner" style="display: none;">
-                            <td colspan="6"><i class="fas fa-spinner fa-spin"></i> Harap tunggu data sedang di proses...</td>
-                        </tr> --}}
+                      
                     </tbody>
                 </table>
                </section>

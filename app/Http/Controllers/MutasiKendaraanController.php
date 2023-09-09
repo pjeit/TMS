@@ -29,6 +29,9 @@ class MutasiKendaraanController extends Controller
             ->select("k.*", 'kk.nama as kategori', 'cb.nama as cabang')
             ->leftJoin('kendaraan_kategori as kk','kk.id', '=', "k.id_kategori")
             ->leftJoin('cabang_pje as cb','cb.id', '=', "k.cabang_id")
+            ->orderBy('cb.nama', 'DESC')
+            ->orderBy('kk.nama', 'ASC')
+            ->orderBy('k.no_polisi', 'ASC')
             ->get();
         
         return view('pages.master.mutasi_kendaraan.index',[

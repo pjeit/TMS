@@ -71,15 +71,15 @@
                             <thead>
                                 <tr>
                                     <th scope="col" width='50'>#</th>
-                                    <th scope="col" width='180' class="text-center"><input class="kendaraan_all" type="checkbox" id="kendaraan_all"> Centang Semua</th>
+                                    <th scope="col" width='180' class="text-center"><input class="kendaraan_all" type="checkbox" id="kendaraan_all"> </th>
                                     <th scope="col" width='100'>Jenis</th>
                                     <th scope="col" width='150'>Nopol</th>
                                     <th scope="col">Chasis</th>
-                                    <th scope="col" width='180' class="text-center"><input class="chassis_all" type="checkbox" id="chassis_all"> Centang Semua</th>
+                                    <th scope="col" width='180' class="text-center"><input class="chassis_all" type="checkbox" id="chassis_all"> </th>
                                 </tr>
                             </thead>
                             <tbody id='hasil'>
-                                @isset($dataKendaraan)
+                                {{-- @isset($dataKendaraan)
                                     @foreach ($dataKendaraan as $key => $item)
                                         <tr>
                                             <th scope="row">{{$key+1}}</th>
@@ -100,7 +100,7 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                @endisset
+                                @endisset --}}
                             </tbody>
                         </table>
                     </div>
@@ -120,6 +120,9 @@
         $(".kendaraan, .chassis, .kendaraan_all, .chassis_all").prop('checked', true);
 
         $("#cabang_asal").on("change", function(e){
+            $("#kendaraan_all").prop('checked', $(this).prop('checked'));
+            $("#chassis_all").prop('checked', $(this).prop('checked'));
+
             // $("#loading-spinner").show();
             var id = this.value;
             showTable(id);
@@ -183,6 +186,16 @@
 
     $("#kendaraan_all").click(function () {
         $(".kendaraan").prop('checked', $(this).prop('checked'));
+    });
+    $(document).on('click', '.kendaraan', function (event) {
+        $("#kendaraan_all").prop('checked', false);
+    });
+    $(document).on('click', '.chassis', function (event) {
+        $("#chassis_all").prop('checked', false);
+    });
+    $(document).on('change', '#cabang_asal', function (event) {
+        $("#kendaraan_all").prop('checked', $(this).prop('checked'));
+        $("#chassis_all").prop('checked', $(this).prop('checked'));
     });
     $("#chassis_all").click(function () {
         $(".chassis").prop('checked', $(this).prop('checked'));
