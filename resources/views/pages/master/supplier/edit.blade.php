@@ -159,6 +159,8 @@
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><input type="checkbox" id="cekVirtual" name="cekVirtual" value="{{$data->is_virtual_acc}}"{{$data->is_virtual_acc=='Y'?'checked':''}}></span>
+                                        <input type="hidden" id="hiddenVirtual" name="hiddenVirtual" value="{{$data->is_virtual_acc}}"></span>
+
                                     </div>
                                      <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek',$data->no_rek)}}" > 
                                 </div>
@@ -253,15 +255,18 @@
 </script>
 <script type="text/javascript">
 $(document).ready(function(){
-     if($('#cekPPH').is(":checked")){
-                $('#pph').attr('readonly',false);
-             
+     $('#cekVirtual').click(function(){
+            if($(this).is(":checked")){
+              
+                $('#hiddenVirtual').val('Y');
+                
                 // console.log("Checkbox is checked.");
-            }else if($('#cekPPH').is(":not(:checked)")){
-                // $('#pph').val(2.0);
-                $('#pph').attr('readonly',true);
+            }else if($(this).is(":not(:checked)")){
+                $('#hiddenVirtual').val('N');
+        
                 // console.log("Checkbox is unchecked.");
             }
+        });
    $('#cekPPH').click(function(){
             if($(this).is(":checked")){
                 $('#pph').attr('readonly',false);

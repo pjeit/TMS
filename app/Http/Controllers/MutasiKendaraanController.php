@@ -6,6 +6,7 @@ use App\Models\CabangPJE;
 use App\Models\Chassis;
 use App\Models\Head;
 use App\Models\MutasiKendaraan;
+use App\Models\PairKendaraan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -18,26 +19,134 @@ class MutasiKendaraanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function indexOld()
+    {
+        $dataKendaraan = DB::table('kendaraan AS k')
+            ->select('k.id', 'k.no_polisi', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+            ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
+                $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
+            })
+            ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+            ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+            ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
+            ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+            ->where('k.is_aktif', '=', 'Y') 
+            ->orderBy('cp.nama', 'DESC')
+            ->orderBy('kkm.nama', 'ASC')
+            ->orderBy('k.no_polisi', 'ASC')
+            ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
+            ->get();
+        
+        $dataJenisFilter = DB::table('cabang_pje')
+            ->where('is_aktif', '=', "Y")
+            ->get();
+        return view('pages.master.mutasi_kendaraan.index',[
+            'judul' => "Mutasi Kendaraan",
+            'dataKendaraan' => $dataKendaraan,
+            'dataJenisFilter' => $dataJenisFilter
+
+        ]);
+    }
+
     public function index()
     {
-        $data = DB::table('cabang_pje')
+        $dataKendaraan = DB::table('mutasi_kendaraan AS mk')
+            ->select('mk.*')
+            // , 'k.no_polisi','ca.nama as cabangAsal','cb.nama as cabangTujuan', 
+            //     DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+            // ->leftJoin('kendaraan as k', function($join) {
+            //     $join->on('k.id', '=', 'mk.asset_id')->where('k.is_aktif', '=', 'Y');
+            // })
+            // ->leftJoin('chassis as c', function($join) {
+            //     $join->on('c.id', '=', 'mk.asset_id')->where('c.is_aktif', '=', 'Y');
+            // })
+            // ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+            // ->leftJoin('cabang_pje AS ca', 'mk.cabang_lama', '=', 'ca.id')
+            // ->leftJoin('cabang_pje AS cb', 'mk.cabang_baru', '=', 'cb.id')
+            ->where('mk.is_aktif', 'Y') 
+            // ->orderBy('ca.nama', 'DESC')
+            // ->orderBy('k.no_polisi', 'ASC')
+            ->get();
+        dd($dataKendaraan); 
+        $dataJenisFilter = DB::table('cabang_pje')
+            ->where('is_aktif', '=', "Y")
+            ->get();
+        return view('pages.master.mutasi_kendaraan.index',[
+            'judul' => "Mutasi Kendaraan",
+            'dataKendaraan' => $dataKendaraan,
+            'dataJenisFilter' => $dataJenisFilter
+
+        ]);
+    }
+
+      public function filterMutasi(Request $request)
+    {
+        $jenisFilter = $request->input('jenisFilter');
+        // dd($jenisFilter);
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+        if($jenisFilter==null)
+        {
+              $dataKendaraan =  DB::table('kendaraan AS k')
+                    ->select('k.id', 'k.no_polisi', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+                    ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
+                        $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
+                    })
+                    ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+                    ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+                    ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
+                    ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+                    ->where('k.is_aktif', '=', 'Y') 
+                    // ->where('k.id_kategori', '=', 1) 
+                    // ->where('k.cabang_id', '=', 2) 
+                    // ->where('k.cabang_id', '=',  $jenisFilter) 
+                     ->orderBy('cp.nama', 'DESC')
+                    ->orderBy('kkm.nama', 'ASC')
+                    ->orderBy('k.no_polisi', 'ASC')
+                    ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
+                    ->get();
+
+
+        }
+        else
+
+        {
+            $dataKendaraan =  DB::table('kendaraan AS k')
+                    ->select('k.id', 'k.no_polisi', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+                    ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
+                        $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
+                    })
+                    ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+                    ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+                    ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
+                    ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+                    ->where('k.is_aktif', '=', 'Y') 
+                    // ->where('k.id_kategori', '=', 1) 
+                    // ->where('k.cabang_id', '=', 2) 
+                    ->where('k.cabang_id', '=',  $jenisFilter) 
+                     ->orderBy('cp.nama', 'DESC')
+                    ->orderBy('kkm.nama', 'ASC')
+                    ->orderBy('k.no_polisi', 'ASC')
+                    ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
+                    ->get();
+
+        }
+
+       
+        $dataJenisFilter = DB::table('cabang_pje')
             ->where('is_aktif', '=', "Y")
             ->get();
 
-        $dataKendaraan = DB::table('kendaraan as k')
-            ->where('k.is_aktif', '=', "Y")
-            ->select("k.*", 'kk.nama as kategori', 'cb.nama as cabang')
-            ->leftJoin('kendaraan_kategori as kk','kk.id', '=', "k.id_kategori")
-            ->leftJoin('cabang_pje as cb','cb.id', '=', "k.cabang_id")
-            ->orderBy('cb.nama', 'DESC')
-            ->orderBy('kk.nama', 'ASC')
-            ->orderBy('k.no_polisi', 'ASC')
-            ->get();
-        
+            // dd($dataJenisFilter);
+        // return response()->json(['datas' => $data]);
+
         return view('pages.master.mutasi_kendaraan.index',[
             'judul' => "Mutasi Kendaraan",
-            'data' => $data,
             'dataKendaraan' => $dataKendaraan,
+            'dataJenisFilter' => $dataJenisFilter
         ]);
     }
 
@@ -79,31 +188,113 @@ class MutasiKendaraanController extends Controller
         $user = Auth::user()->id;
         try {
             foreach ($data['data'] as $key => $value) {
-                if(isset($value['centang_kendaraan'])){
+                if(isset($value['centang_kendaraan']) && isset($value['centang_chassis'])){
+                    // kendaraan + chassis pindah
+                    $pair = PairKendaraan::where('is_aktif', 'Y')->where('kendaraan_id', $value['kendaraan'])->first();
+                    if($pair){
+                        $pair->cabang_id = $data['cabang_tujuan'];
+                        $pair->updated_by = $user;
+                        $pair->updated_at = now();
+                        $pair->save();
+                    }
+
                     $mut = new MutasiKendaraan();
                     $mut->asset_id = $value['kendaraan'];
-                    $mut->cabang_id = $data['cabang_tujuan'];
+                    $mut->cabang_lama = $data['cabang_asal'];
+                    $mut->cabang_baru = $data['cabang_tujuan'];
                     $mut->jenis = 'KENDARAAN';
                     $mut->catatan = $data['catatan'];
                     $mut->created_by = $user;
                     $mut->created_at = now();
                     $mut->is_aktif = 'Y';
                     if($mut->save()){
-                        $kendaraan = Head::where('is_aktif', 'Y')->find($value['kendaraan']);
-                        $kendaraan->cabang_id = $data['cabang_tujuan'];
-                        $kendaraan->updated_by = $user;
-                        $kendaraan->updated_at = now();
-                        $kendaraan->save();
+                        $kendaraan = Head::where('is_aktif', 'Y')->where('id', $value['kendaraan'])->first();
+                        if($kendaraan){
+                            $kendaraan->cabang_id = $data['cabang_tujuan'];
+                            $kendaraan->driver_id = NULL;
+                            $kendaraan->updated_by = $user;
+                            $kendaraan->updated_at = now();
+                            $kendaraan->save();
+                        }
+
+                        $chassis = Chassis::where('is_aktif', 'Y')->where('id', $value['chassis'])->first();
+                        if($chassis){
+                            $chassis->cabang_id = $data['cabang_tujuan'];
+                            $chassis->updated_by = $user;
+                            $chassis->updated_at = now();
+                            $chassis->save();
+                        }
+                    }
+                }else if(isset($value['centang_kendaraan']) && !isset($value['centang_chassis'])){
+                    // kalau cuma kendaraan aja 
+                    $pair = PairKendaraan::where('is_aktif', 'Y')->where('kendaraan_id', $value['kendaraan'])->first();
+                    if($pair){
+                        $pair->updated_by = $user;
+                        $pair->updated_at = now();
+                        $pair->is_aktif = 'N';
+                        $pair->save();
+                    }
+
+                    $mut = new MutasiKendaraan();
+                    $mut->asset_id = $value['kendaraan'];
+                    $mut->cabang_lama = $data['cabang_asal'];
+                    $mut->cabang_baru = $data['cabang_tujuan'];
+                    $mut->jenis = 'KENDARAAN';
+                    $mut->catatan = $data['catatan'];
+                    $mut->created_by = $user;
+                    $mut->created_at = now();
+                    $mut->is_aktif = 'Y';
+                    if($mut->save()){
+                        $kendaraan = Head::where('is_aktif', 'Y')->where('id', $value['kendaraan'])->first();
+                        if($kendaraan){
+                            $kendaraan->cabang_id = $data['cabang_tujuan'];
+                            $kendaraan->driver_id = NULL;
+                            $kendaraan->updated_by = $user;
+                            $kendaraan->updated_at = now();
+                            $kendaraan->save();
+                        }
+
+                        if(isset($value['chassis'])){
+                            $chassis = Chassis::where('is_aktif', 'Y')->where('id', $value['chassis'])->first();
+                            if($chassis){
+                                $chassis->is_dipakai = 'N';
+                                $chassis->updated_by = $user;
+                                $chassis->updated_at = now();
+                                $chassis->save();
+                            }
+                        }
+                    }
+                }else if(!isset($value['centang_kendaraan']) && isset($value['centang_chassis'])){
+                    // kalau cuma chassis aja
+                    $pair = PairKendaraan::where('is_aktif', 'Y')->where('chassis_id', $value['chassis'])->first();
+                    if($pair){
+                        $pair->is_aktif = 'N';
+                        $pair->updated_by = $user;
+                        $pair->updated_at = now();
+                        $pair->save();
+                    }
+                    
+                    $mut = new MutasiKendaraan();
+                    $mut->asset_id = $value['chassis'];
+                    $mut->cabang_lama = $data['cabang_asal'];
+                    $mut->cabang_baru = $data['cabang_tujuan'];
+                    $mut->jenis = 'CHASSIS';
+                    $mut->catatan = $data['catatan'];
+                    $mut->created_by = $user;
+                    $mut->created_at = now();
+                    $mut->is_aktif = 'Y';
+                    if($mut->save()){
+                        $chassis = Chassis::where('is_aktif', 'Y')->where('id',$value['chassis'])->first();
+                        if($chassis){
+                            $chassis->cabang_id = $data['cabang_tujuan'];
+                            $chassis->is_dipakai = 'N';
+                            $chassis->updated_by = $user;
+                            $chassis->updated_at = now();
+                            $chassis->save();
+                        }
                     }
                 }
-
-                if(isset($value['centang_chassis'])){
-                    $chassis = Chassis::where('is_aktif', 'Y')->find($value['chassis']);
-                    $chassis->cabang_id = $data['cabang_tujuan'];
-                    $chassis->updated_by = $user;
-                    $chassis->updated_at = now();
-                    $chassis->save();
-                }
+                
              }
             return redirect()->route('mutasi_kendaraan.index')->with('status','Success!!');
         } catch (ValidationException $e) {
@@ -159,18 +350,33 @@ class MutasiKendaraanController extends Controller
     public function get_data($id){
         try {
             $dataKendaraan = DB::table('kendaraan as k')
+                ->select("k.*", 'kk.nama as kategori', 'cb.nama as cabang', 'pk.chassis_id as chassis_id', 'c.kode as kode', 'c.karoseri as karoseri')
                 ->where('k.is_aktif', '=', "Y")
                 ->where('k.cabang_id', '=', $id)
-                ->select("k.*", 'kk.nama as kategori', 'cb.nama as cabang', 'pk.chassis_id as chassis_id', 'c.kode as kode', 'c.karoseri as karoseri')
                 ->leftJoin('kendaraan_kategori as kk','kk.id', '=', "k.id_kategori")
                 ->leftJoin('cabang_pje as cb','cb.id', '=', "k.cabang_id")
-                ->leftJoin('pair_kendaraan_chassis as pk', 'pk.kendaraan_id', '=', "k.id")
+                ->leftJoin('pair_kendaraan_chassis as pk', function ($join) {
+                    $join->on('pk.kendaraan_id', '=', "k.id")
+                    ->where('pk.is_aktif', 'Y');
+                })
                 ->leftJoin('chassis as c', 'c.id', '=', "pk.chassis_id")
                 ->orderBy('k.id_kategori', 'ASC')
+                ->orderByRaw('ISNULL(c.kode), c.kode ASC')
                 ->orderBy('k.no_polisi', 'ASC')
                 ->get();
 
-            return response()->json(["result" => "success",'data' => $dataKendaraan], 200);
+            $dataChassis = DB::table('chassis as c')
+                ->leftJoin('m_model_chassis as mc','mc.id', '=', "c.model_id")
+                ->select('c.*', 'mc.nama as model')
+                ->where('c.is_aktif', "Y")
+                ->where('c.cabang_id', $id)
+                ->where('c.is_dipakai', 'N')
+                ->orderBy('c.kode', 'ASC')
+                ->orderBy('c.karoseri', 'ASC')
+                ->get();
+            // var_dump($dataKendaraan); die;
+                    
+            return response()->json(["result" => "success",'dataKendaraan' => $dataKendaraan, 'dataChassis' => $dataChassis], 200);
         } catch (\Throwable $th) {
             return response()->json(["result" => "error",'message' => $th->getMessage()], 500);
         }

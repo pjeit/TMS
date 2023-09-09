@@ -9,7 +9,10 @@
 <li class="breadcrumb-item">Master</li>
 <li class="breadcrumb-item"><a href="{{route('karyawan.index')}}">Karyawan</a></li>
 @endsection
+
 @section('content')
+@include('sweetalert::alert')
+
 <!-- <div class="container-fluid">
         <h2 class="text-center display-4">Cari Nama COA</h2>
         <div class="row">
@@ -33,28 +36,66 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('karyawan.create')}}" class="btn btn-primary radiusSendiri btn-responsive float-left">
+                    <a href="{{route('karyawan.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
                     </a> 
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="karyawanTable" class="table table-bordered table-striped">
-                        <thead >
+                    <table id="datatable" class="table table-bordered table-striped" width="100%">
+                        <thead>
                             <tr>
-                              <th>Nama Panggilan</th>
-                              <th>Tempat Lahir</th>
-                              <th>Alamat</th>
-                              <th>Telp1</th>
-                              <th>Posisi</th>
-                              <th>Handle</th>
+                                <th>Cabang</th>
+                                <th>Role</th>
+                                <th>Nama Panggilan</th>
+                                <th>Telp</th>
+                                <th>Alamat</th>
+                                <th></th>
                             </tr>
-                        </thead>
-                        <tbody style="width:100%">
-                           
+                          </thead>
+                        <tbody>
+                            @foreach($dataKaryawan as $d)
+                             <tr>
+                                 <td>{{$d->cabang}}</td>  
+                                 <td>{{$d->posisi}}</td>  
+                                 <td>{{$d->nama_panggilan}}</td>
+                                 <td>{{$d->telp1}}</td>  
+                                 <td>{{$d->alamat_domisili}}</td>  
+                      
+                                <td>                                    
+                                    {{-- <a class="btn btn-default bg-info radiusSendiri" href="{{route('karyawan.edit',[$d->id])}}">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>   
+                                            <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
+                                               <i class="fas fa-trash"></i> Hapus
+                                    </button>           --}}
+                                    <div class="btn-group dropleft">
+                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-list"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a href="{{route('karyawan.edit',[$d->id])}}" class="dropdown-item">
+                                                <span class="fas fa-edit mr-3"></span> Edit
+                                            </a>
+                                            
+                                            <a href="{{ route('karyawan.destroy', $d->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                <span class="fas fa-trash mr-3"></span> Delete
+                                            </a>
+                                            
+                                        </div>
+                                    </div>
+                                </td>
+                                                   
+                                
+                               
+                            </tr>
+                            @endforeach
                         </tbody>
                         
                     </table>
+                  
+
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -64,75 +105,11 @@
     </div>
     <!-- /.row -->
 </div>
-{{-- 
-<div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-        <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
-        </div>
-    <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: -1.75rem">Tidak</button>
-
-            <form action="{{route('head.destroy',[$item->id])}}" method="POST" class="btn btn-responsive">
-                @csrf
-                @method('DELETE')
-                <button action="{{route('head.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
-            </form>
-    </div>
-    </div>
-    </div>
-</div> --}}
-
-
 <script type="text/javascript">
     $(function () {
-      var table = $('#karyawanTable').DataTable({
-          processing: true,
-          serverSide: true,
-          ajax: "{{ route('karyawan.index') }}",
-          columns: [
-                { data: 'nama_panggilan', name: 'nama_panggilan' },
-                { data: 'tempat_lahir', name: 'tempat_lahir' },
-                { data: 'alamat_domisili', name: 'alamat_domisili' },
-                { data: 'telp1', name: 'telp1' },
-                { data: 'posisi', name: 'posisi' },
-                {data: 'action', name: 'action', orderable: false, searchable: false},
-            ]
-      });
+     
     });
 </script>
-<script>
-   $(document).ready(function() {
-      
-
-        $('#karyawanTable').on('click', '.delete-button', function() {
-            var karyawanId = $(this).data('id');
-            if (confirm("Apakah anda yakin ingin menghapus data? "+ karyawanId)) {
-                // $.ajax({
-                //     url: '/karyawan/' + karyawanId,
-                //     type: 'DELETE',
-                //     data: {
-                //         "_token": "{{ csrf_token() }}"
-                //     },
-                //     success: function(response) {
-                //         // Refresh DataTable after successful deletion
-                //         $('#karyawanTable').DataTable().ajax.reload();
-                //     }
-                // });
-            }
-        });
-   });
- 
-
-</script>
-
 @endsection
 
 

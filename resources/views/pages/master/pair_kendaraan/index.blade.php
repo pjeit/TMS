@@ -53,20 +53,20 @@
                     <table id="datatable" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
-                              <th>No Polisi Kendaraan</th>
-                              <th>Chassis Kendaraan</th>
+                              <th>Cabang</th>
                               <th>Kategori Kendaraan</th>
-                              <th>Letak Kendaraan</th>
+                              <th>No Polisi</th>
+                              <th>Chassis</th>
                               <th>Aksi</th>
                             </tr>
                           </thead>
                         <tbody>
                             @foreach($dataPair as $item)
                              <tr>
+                                <td>{{ $item->namaKota }}</td>  
+                                <td>{{ $item->kategoriKendaraan }}</td>  
                                 <td>{{ $item->no_polisi }}</td>
                                 <td>{{ $item->chassis_model }}</td>  
-                                <td>{{ $item->kategoriKendaraan }}</td>  
-                                <td>{{ $item->namaKota }}</td>  
                                 <td>                                    
                                     <a class="btn btn-default bg-info radiusSendiri" href="{{route('pair_kendaraan.edit',[$item->id])}}">
                                         <i class="far nav-icon fa fa-truck">+</i> Pairing Chassis

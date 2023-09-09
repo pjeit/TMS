@@ -73,6 +73,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('pembayaran_sdt/load_data', 'App\Http\Controllers\PaymentSDTController@load_data')->name('pembayaran_sdt.load_data');
         Route::resource('pembayaran_sdt', 'App\Http\Controllers\PaymentSDTController');
 
+        Route::get('/mutasi_kendaraan/filter', [App\Http\Controllers\MutasiKendaraanController::class, 'filterMutasi'])->name('filterMutasi.cari');
+
         Route::get('mutasi_kendaraan/get_data/{id}', 'App\Http\Controllers\MutasiKendaraanController@get_data')->name('mutasi_kendaraan.get_data');
         Route::resource('mutasi_kendaraan', 'App\Http\Controllers\MutasiKendaraanController');
 

@@ -24,6 +24,7 @@
                         <thead>
                             <tr>
                                 <th>Grup</th>
+                                <th>Total Tujuan</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -31,6 +32,7 @@
                             @foreach($data as $item)
                             <tr>
                                 <td>{{ $item->nama_grup }}</td>
+                                <td>{{ $item->total_tujuan }}</td>
                                 <td style="text-align: center">                                    
                                     {{-- <div class="btn-group dropleft">
                                         <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -40,7 +42,7 @@
                                         </div>
                                     </div> --}}
                                     
-                                    <a class="btn btn-primary radiusSendiri" href="{{route('grup_tujuan.edit',[$item->id])}}">
+                                    <a class="btn btn-secondary radiusSendiri" href="{{route('grup_tujuan.edit',[$item->id])}}">
                                         <span class="fas fa-edit "></span> Edit
                                     </a>   
                                     

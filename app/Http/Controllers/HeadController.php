@@ -236,6 +236,7 @@ class HeadController extends Controller
                 ->where('pair_kendaraan_chassis.kendaraan_id', $head->id) 
                 ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
                 ->first();
+        // var_dump($request->driver_id);die;
 
             if($request->driver_id)
             {
@@ -248,6 +249,23 @@ class HeadController extends Controller
                         ->where('pair_kendaraan_chassis.is_aktif', 'Y')
                         ->update(array(
                                 'driver_id' => $request->driver_id/*[$i]*/,
+                                'updated_at'=> now(),
+                                'updated_by'=> $user,
+                            )
+                        );
+                }
+            }
+            if($request->driver_id==null)
+            {
+
+                if( $dataPaired!=null)
+                {
+        
+                    DB::table('pair_kendaraan_chassis')
+                        ->where('pair_kendaraan_chassis.kendaraan_id', $head->id/*[$i]*/)
+                        ->where('pair_kendaraan_chassis.is_aktif', 'Y')
+                        ->update(array(
+                                'driver_id' => null/*[$i]*/,
                                 'updated_at'=> now(),
                                 'updated_by'=> $user,
                             )

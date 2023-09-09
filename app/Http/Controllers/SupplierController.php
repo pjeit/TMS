@@ -154,7 +154,7 @@ class SupplierController extends Controller
             $supplier->email = $request->email;
             $supplier->npwp = $request->npwp;
             $supplier->no_rek = $request->no_rek;
-            $supplier->is_virtual_acc = $request->cekVirtual?'Y':'N';
+            $supplier->is_virtual_acc = $request->hiddenVirtual;
             $supplier->rek_nama = $request->rek_nama;
             $supplier->bank = $request->bank;
             $supplier->cabang = $request->cabang;
@@ -244,7 +244,7 @@ class SupplierController extends Controller
                     'email' => $data['email'],
                     'npwp' => $data['npwp'],
                     'no_rek' => $data['no_rek'],
-                    'is_virtual_acc' => $data['cekVirtual']?'Y':'N',
+                    'is_virtual_acc' => $data['hiddenVirtual'],
                     'rek_nama' => $data['rek_nama'],
                     'bank' => $data['bank'],
                     'cabang' => $data['cabang'],

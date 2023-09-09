@@ -31,6 +31,9 @@ class PairKendaraanController extends Controller
                     ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
                     ->where('k.is_aktif', '=', 'Y') 
                     ->where('k.id_kategori', '=', 1) 
+                     ->orderBy('cp.nama', 'DESC')
+                    ->orderBy('kkm.nama', 'ASC')
+                    ->orderBy('k.no_polisi', 'ASC')
                     // ->where('k.cabang_id', '=', 2) 
                     ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                     ->get();
@@ -67,6 +70,9 @@ class PairKendaraanController extends Controller
                     ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
                     ->where('k.is_aktif', '=', 'Y') 
                     ->where('k.id_kategori', '=', 1) 
+                     ->orderBy('cp.nama', 'DESC')
+                    ->orderBy('kkm.nama', 'ASC')
+                    ->orderBy('k.no_polisi', 'ASC')
                     // ->where('k.cabang_id', '=',  $jenisFilter) 
                     ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                     ->get();
@@ -88,6 +94,9 @@ class PairKendaraanController extends Controller
                     ->where('k.is_aktif', '=', 'Y') 
                     ->where('k.id_kategori', '=', 1) 
                     ->where('k.cabang_id', '=',  $jenisFilter) 
+                     ->orderBy('cp.nama', 'DESC')
+                    ->orderBy('kkm.nama', 'ASC')
+                    ->orderBy('k.no_polisi', 'ASC')
                     ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                     ->get();
 
@@ -223,14 +232,13 @@ class PairKendaraanController extends Controller
         //                 ->first();
         
         try {
-            $pesanKustom = [
-                'driver.required' => 'Driver harus di pilih!',
-            ];
+            // $pesanKustom = [
+            //     'driver.required' => 'Driver harus di pilih!',
+            // ];
             
-            $request->validate([
-                'driver' => 'required',
-      
-            ], $pesanKustom);
+            // $request->validate([
+            //     'driver' => 'required',
+            // ], $pesanKustom);
             $data = $request->collect();
             // var_dump($data['idPairedNya']);die;
             if($data['idPairedNya'])
@@ -367,6 +375,19 @@ class PairKendaraanController extends Controller
                             'updated_by'=> $user,
                         )
                     );
+
+                if( $data['driver'])
+                    {
+                        DB::table('kendaraan')
+                        ->where('id', $idKendaraan/*[$i]*/)
+                        ->update(array(
+                                'driver_id' => $data['driver']/*[$i]*/,
+                                'updated_at'=> VariableHelper::TanggalFormat(),
+                                'updated_by'=> $user,
+                            )
+                        );
+
+                    }
               
                 // if($dataChassis->id == $data['chasis'])
                 // {

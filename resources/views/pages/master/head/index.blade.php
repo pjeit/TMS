@@ -12,10 +12,8 @@
     <li class="breadcrumb-item">Master</li>
     <li class="breadcrumb-item"><a href="{{route('head.index')}}">Head</a></li>
 @endsection
-@include('sweetalert::alert')
 
 @section('content')
-<br>
 <style>
    
 </style>
@@ -29,7 +27,7 @@
                     </a> 
                 </div>
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="myTable" class="table table-bordered table-striped" width="100%">
                         <thead>
                             <tr>
                               <th>Cabang</th>
@@ -117,7 +115,13 @@
         </div>
     </div>
 </div>
-
+<script type="text/javascript">
+    $(function () {
+      var table = $('#myTable').DataTable({
+        scrollX: true,
+      });
+    });
+</script>
 
 <script>
 

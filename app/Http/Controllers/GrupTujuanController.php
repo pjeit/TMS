@@ -24,7 +24,13 @@ class GrupTujuanController extends Controller
      */
     public function index()
     {
-        $data = Grup::where('is_aktif', 'Y')->get();
+        $data = Grup::select('grup.*', DB::raw('SUM(CASE WHEN grup_tujuan.is_aktif = "Y" THEN 1 ELSE 0 END) AS total_tujuan'))
+            ->leftJoin('grup_tujuan', 'grup_tujuan.grup_id', '=', 'grup.id')
+            ->where('grup.is_aktif', 'Y')
+            ->groupBy('grup.id', 'grup.nama_grup', /* other columns you need */)
+            ->orderBy('nama_grup', 'ASC')
+            ->get();
+    
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';

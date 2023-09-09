@@ -26,11 +26,15 @@ class KaryawanController extends Controller
     public function index()
     {
          $dataKaryawan = DB::table('karyawan')
-            ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','role.nama as posisi')
+            ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir', 'karyawan.alamat_domisili',
+                    'karyawan.telp1','role.nama as posisi', 'cb.nama as cabang')
             ->leftJoin('role', 'karyawan.role_id', '=', 'role.id')
+            ->leftJoin('cabang_pje as cb', 'cb.id', '=', 'karyawan.cabang_id')
             ->where('karyawan.is_aktif', '=', "Y")
             ->where('karyawan.is_keluar', '=', "N")
-            // ->paginate(10);
+            ->orderBy('cb.nama', 'ASC')
+            ->orderBy('role.nama', 'ASC')
+            ->orderBy('karyawan.nama_panggilan', 'ASC')
             ->get();
 
             $title = 'Data akan dihapus!';
@@ -39,49 +43,49 @@ class KaryawanController extends Controller
             $cancelButtonText = "Batal";
             confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
             
-            return view('pages.master.karyawan.indexx',[
+            return view('pages.master.karyawan.index',[
             'judul'=>"Karyawan",
             'dataKaryawan' => $dataKaryawan,
         ]);
     }
 
     // public function index(Request $request)
-    // {
-    //     if ($request->ajax()) {
-    //         $data = DB::table('karyawan')
-    //                 ->select('karyawan.id','karyawan.nama_panggilan as nama_panggilan',
-    //                     'karyawan.tempat_lahir as tempat_lahir','karyawan.alamat_domisili as alamat_domisili',
-    //                     'karyawan.telp1 as telp1','role.nama as posisi')
-    //                 ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
-    //                 ->where('karyawan.is_aktif', '=', "Y")
-    //                 ->where('karyawan.is_keluar', '=', "N")
-    //                 ->get();
+        // {
+        //     if ($request->ajax()) {
+        //         $data = DB::table('karyawan')
+        //                 ->select('karyawan.id','karyawan.nama_panggilan as nama_panggilan',
+        //                     'karyawan.tempat_lahir as tempat_lahir','karyawan.alamat_domisili as alamat_domisili',
+        //                     'karyawan.telp1 as telp1','role.nama as posisi')
+        //                 ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
+        //                 ->where('karyawan.is_aktif', '=', "Y")
+        //                 ->where('karyawan.is_keluar', '=', "N")
+        //                 ->get();
 
-    //         return Datatables::of($data)->addIndexColumn() //bukan error ga bisa
-    //             ->addColumn('action', function($row){
-    //                 $btn = '
-    //                     <a class="btn btn-default bg-info radiusSendiri" href="karyawan/'.$row->id.'/edit">
-    //                         <i class="fas fa-edit"></i> Edit
-    //                     </a>   
-    //                     <button type="button" class="btn btn-danger delete-button radiusSendiri" data-toggle="modal" data-target="#modalHapus">
-    //                             <i class="fas fa-trash"></i> Hapus
-    //                     </button>   
-    //                     ';
-    //                 return $btn; 
-    //             })
-    //             ->rawColumns(['action'])
-    //             ->make(true);
-    //     }
-    //     $dataKaryawan = DB::table('karyawan')
-    //             ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','role.nama as posisi')
-    //             ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
-    //             ->where('karyawan.is_aktif', '=', "Y")
-    //             ->where('karyawan.is_keluar', '=', "N")
-    //             ->get();
-    //     return view('pages.master.karyawan.index',[
-    //         'judul'=>"Karyawan",
-    //         'dataKaryawan'=> $dataKaryawan,
-    //     ]);
+        //         return Datatables::of($data)->addIndexColumn() //bukan error ga bisa
+        //             ->addColumn('action', function($row){
+        //                 $btn = '
+        //                     <a class="btn btn-default bg-info radiusSendiri" href="karyawan/'.$row->id.'/edit">
+        //                         <i class="fas fa-edit"></i> Edit
+        //                     </a>   
+        //                     <button type="button" class="btn btn-danger delete-button radiusSendiri" data-toggle="modal" data-target="#modalHapus">
+        //                             <i class="fas fa-trash"></i> Hapus
+        //                     </button>   
+        //                     ';
+        //                 return $btn; 
+        //             })
+        //             ->rawColumns(['action'])
+        //             ->make(true);
+        //     }
+        //     $dataKaryawan = DB::table('karyawan')
+        //             ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','role.nama as posisi')
+        //             ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
+        //             ->where('karyawan.is_aktif', '=', "Y")
+        //             ->where('karyawan.is_keluar', '=', "N")
+        //             ->get();
+        //     return view('pages.master.karyawan.index',[
+        //         'judul'=>"Karyawan",
+        //         'dataKaryawan'=> $dataKaryawan,
+        //     ]);
     // }
 
     public function getData()
@@ -143,7 +147,7 @@ class KaryawanController extends Controller
             $pesanKustom = [
              
                 'tanggal_gabung.required' => 'Tanggal gabung Karyawan harap diisi!',
-                'posisi.required' => 'Posisi karyawan harap diisi!',
+                'role.required' => 'Posisi karyawan harap diisi!',
                 'telp1.required' =>'Nomor telpon 1 harap diisi ',
                 'nama_lengkap.required' => 'Nama lengkap karyawan harap diisi!',
                 'nama_panggilan.required' => 'Nama panggilan karyawan harap diisi!',
@@ -154,7 +158,7 @@ class KaryawanController extends Controller
             $request->validate([
                 // 'telp1' =>'required|in:1,2',  // buat radio button
                 'tanggal_gabung' => 'required',
-                'posisi' => 'required',
+                'role' => 'required',
                 'telp1' =>'required',
                 'nama_lengkap' => 'required',
                 'nama_panggilan' => 'required',
@@ -191,7 +195,7 @@ class KaryawanController extends Controller
             if ($request->hasFile('foto') && $data['nama_panggilan'] != null) {
                 $fotoKaryawan = $request->file('foto');
                 $ekstensiGambar = $fotoKaryawan->getClientOriginalExtension();
-                $nama_gambar = 'karyawan_' . $data['nama_panggilan'] . '_' . time() . '.' . $ekstensiGambar. '.webp';
+                $nama_gambar = 'karyawan_' . $data['nama_panggilan'] . '_' . time() . '.' . $ekstensiGambar;
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoKaryawan);
@@ -426,7 +430,7 @@ class KaryawanController extends Controller
         //             ->where('karayawan_identitas.id', '!=', 47)
         //             ->first();
         // dd($dataKaryawanIdentitasHapus);
-                     
+                    //  dd($karyawan->foto);
 
         return view('pages.master.karyawan.edit',[
             'judul'=>"Karyawan",
@@ -455,13 +459,14 @@ class KaryawanController extends Controller
         //
           //
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+               $fotoPathDariDB = $karyawan->foto;
         
         try {
 
             $pesanKustom = [
              
                 'tanggal_gabung.required' => 'Tanggal gabung Karyawan harap diisi!',
-                'posisi.required' => 'Posisi karyawan harap diisi!',
+                'role.required' => 'Posisi karyawan harap diisi!',
                 'telp1.required' =>'Nomor telpon 1 harap diisi ',
                 'nama_lengkap.required' => 'Nama lengkap karyawan harap diisi!',
                 'nama_panggilan.required' => 'Nama panggilan karyawan harap diisi!',
@@ -472,7 +477,7 @@ class KaryawanController extends Controller
             $request->validate([
                 // 'telp1' =>'required|in:1,2',  // buat radio button
                 'tanggal_gabung' => 'required',
-                'posisi' => 'required',
+                'role' => 'required',
                 'telp1' =>'required',
                 'nama_lengkap' => 'required',
                 'nama_panggilan' => 'required',
@@ -482,21 +487,29 @@ class KaryawanController extends Controller
            
 
             $data = $request->collect();
-            $fotoPathDariDB = $karyawan->foto;
+            // if($karyawan->foto!=null)
+            // {
+
+            // if ($karyawan->foto) {
+            //     $fotoPathDariDB = $karyawan->foto;
+            // }
+            // }
 
             $path = "";
 
             if ($request->hasFile('foto') && $data['nama_panggilan'] != null) {
                 // Unlink (delete) the existing image file
-                if (!empty($fotoPathDariDB)) {
-                    if (file_exists(public_path($fotoPathDariDB))) {
-                        unlink(public_path($fotoPathDariDB));
+              
+
+                    if (!empty($fotoPathDariDB)) {
+                        if (file_exists(public_path($fotoPathDariDB))) {
+                            unlink(public_path($fotoPathDariDB));
+                        }
                     }
-                }
 
                  $fotoKaryawan = $request->file('foto');
                 $ekstensiGambar = $fotoKaryawan->getClientOriginalExtension();
-                $nama_gambar = 'karyawan_' . $data['nama_panggilan'] . '_' . time() . '.' . $ekstensiGambar. '.webp';
+                $nama_gambar = 'karyawan_' . $data['nama_panggilan'] . '_' . time() . '.' . $ekstensiGambar;
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoKaryawan);
@@ -728,10 +741,10 @@ class KaryawanController extends Controller
         } catch (ValidationException $e) {
             // cancel input db
             DB::rollBack();
-            
+            $path='';
             if ( public_path($path)!== $fotoPathDariDB) {
                 // Delete the image using the Storage facade
-                if (file_exists(public_path($path))) {
+                if (file_exists(public_path($path))&& is_file(public_path($path))) {
                         unlink(public_path($path));
                     }
             }

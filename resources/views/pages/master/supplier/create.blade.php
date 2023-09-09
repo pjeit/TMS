@@ -152,6 +152,8 @@
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><input type="checkbox" id="cekVirtual" name="cekVirtual" value="N"></span>
+                                        <input type="hidden" id="hiddenVirtual" name="hiddenVirtual" value="N"></span>
+
                                     </div>
                                      <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek','')}}" > 
                                 </div>
@@ -304,14 +306,14 @@ $(document).ready(function(){
     //     }
     // });
     
-    $('#cekVirtual').click(function(){
+     $('#cekVirtual').click(function(){
             if($(this).is(":checked")){
               
-                $('#cekVirtual').val('Y');
+                $('#hiddenVirtual').val('Y');
                 
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
-                $('#cekVirtual').val('N');
+                $('#hiddenVirtual').val('N');
         
                 // console.log("Checkbox is unchecked.");
             }

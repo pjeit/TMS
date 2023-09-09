@@ -85,6 +85,7 @@
                         <div class="form-group col-sm-12 col-md-4 col-lg-4">
                             <label for="">Driver (Optional)</label>
                             <select class="form-control select2" style="width: 100%;" id='driver_id' name="driver_id">
+                                <option value="">-- PILIH DRIVER --</option>
                                 @foreach ($drivers as $driver)
                                     <option value="{{$driver->id}}" {{($driver->id == $data->driver_id)? 'selected':'';}}>{{$driver->nama_lengkap}}</option>
                                 @endforeach
@@ -96,11 +97,11 @@
                             <label for="">No. Mesin</label>
                             <input required type="text" name="no_mesin" class="form-control" value="{{$data->no_mesin}}" >
                         </div>           
-                        <div class="form-group col-sm-12 col-md-5 col-lg-5">
+                        <div class="form-group col-sm-12 col-md-5 col-lg-4">
                             <label for="">No. Rangka</label>
                             <input required type="text"name="no_rangka" class="form-control" value="{{$data->no_rangka}}" >
                         </div>           
-                        <div class="form-group col-sm-12 col-md-2 col-lg-2">
+                        <div class="form-group col-sm-12 col-md-2 col-lg-3">
                             <label for="">Merk & Model</label>
                             <input required type="text" name="merk_model" class="form-control" value="{{$data->merk_model}}" >
                         </div>     

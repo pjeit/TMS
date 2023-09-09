@@ -15,20 +15,12 @@
 @endsection
 
 @section('content')
-<br>
 <style>
    
 </style>
 
-<div class="container">
-        @if ($errors->any())
-    {{-- <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div> --}}
+<div class="container-fluid">
+    @if ($errors->any())
         @foreach ($errors->all() as $error)
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ $error }}
@@ -102,100 +94,106 @@
                         </div>
                         <div class="form-group">
                             <div class='row'>
-                                <div class='col-lg-3 col-md-12'>
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
                                     <label for="nik">NPK <span style="opacity: 40%">(Nomor Pokok Karyawan)</span></label>
                                     <input type="text" class="form-control" id="nik" name="nik" placeholder="Otomatis" readonly value="{{old('nik',$karyawan->nik)}}">    
                                 </div>
-                                <div class='col-lg-9 col-md-12'>
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
                                     <label for="nik">Nama Panggilan<span style='color:red'>*</span></label>
                                     <input  ="text" name="nama_panggilan" class="form-control" id="panggilan" placeholder="" value="{{old('nama_panggilan',$karyawan->nama_panggilan)}}">    
                                 </div>
+                                <div class='col-lg-6 col-md-6 col-sm-12'>
+                                    <label for="nama">Nama Lengkap<span style='color:red'>*</span></label>
+                                    <input  ="text" name="nama_lengkap" class="form-control" id="nama" placeholder="Nama sesuai KTP" value="{{old('nama_lengkap',$karyawan->nama_lengkap)}}"> 
+                                </div>
                             </div>
                         </div>
+
                         <div class="form-group">
-                            <label for="nama">Nama Lengkap<span style='color:red'>*</span></label>
-                            <input  ="text" name="nama_lengkap" class="form-control" id="nama" placeholder="Nama sesuai KTP" value="{{old('nama_lengkap',$karyawan->nama_lengkap)}}"> 
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-12">
-                                <div class="form-group">
-                                    <label for="jumlah_anak">Jumlah Anak</label>
-                                    <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',$karyawan->jumlah_anak)}}" min="0" max="3">
-                                </div>
-                            </div>
-                            <div class="col-lg-5 col-md-12">
-                                  <div class="form-group">
-                                    <label for="tipe">Status kawin</label>
-                                    <br>
-                                    <div class="icheck-primary d-inline">
-                                        <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
-                                        <label class="form-check-label" for="belumNikah">Belum Menikah</label>
-                                    </div>
-                                    <div class="icheck-primary d-inline">
-                                        <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
-                                        <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
-                                    </div>
-                                    <div class="icheck-primary d-inline">
-                                        <input id="cerai" type="radio" name="status_menikah" value="2" {{'2'== old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
-                                        <label class="form-check-label" for="cerai">Cerai</label><br>
-                                    </div>
-                                 </div>
-                            </div>
-                            <div class="col-lg-4 col-md-12">
-                                <div class="form-group">
-                                    <label for="tipe">Jenis Kelamin</label>
-                                    <br>
-                                    <div class="icheck-primary d-inline">
-                                        <input id="laki" type="radio" name="jenis_kelamin" value="L" {{'L' == old('jenis_kelamin',$karyawan->jenis_kelamin)? 'checked' :'' }} checked>
-                                        <label class="form-check-label" for="laki">Laki-laki</label>
-                                    </div>
-                                    <div class="icheck-primary d-inline">
-                                        <input id="perempuan" type="radio" name="jenis_kelamin" value="P" {{'P'== old('jenis_kelamin',$karyawan->jenis_kelamin)? 'checked' :'' }}>
-                                        <label class="form-check-label" for="perempuan">Perempuan</label><br>
+                            <div class="row">
+                                <div class='col-lg-2 col-md-4 col-sm-12'>
+                                    <div class="form-group">
+                                        <label for="jumlah_anak">Jumlah Anak</label>
+                                        <input type="number" class="form-control " name="jumlah_anak" id="jumlah_anak" value="{{old('jumlah_anak',$karyawan->jumlah_anak)}}" min="0" max="3">
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>PTKP</label>
-                            <select class="form-control selectpicker" name="ptkp" id="ptkp" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
-                                <option value="">--Pilih PTKP--</option>
-                                 @foreach($dataPtkp as $data)
-                                    <option value="{{$data->id}}"{{$karyawan->ptkp_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3 col-md-12">
-                                <div class="form-group">
-                                        <label for="tempat_lahir">Tempat Lahir</label>
-                                        <input type="text" name="tempat_lahir" class="form-control" id="tempat_lahir" placeholder="" value="{{old('tempat_lahir',$karyawan->tempat_lahir)}}">
-                                </div>
-                            </div>
-                            <div class="col-lg-9 col-md-12">
-                                <div class="form-group">
-                                    <label for="tanggal_lahir">Tanggal Lahir</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                <div class='col-lg-5 col-md-8 col-sm-12'>
+                                    <div class="form-group">
+                                        <label for="tipe">Status kawin</label>
+                                        <br>
+                                        <div class="icheck-primary d-inline">
+                                            <input id="belumNikah" type="radio" name="status_menikah" value="0" {{'0' == old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
+                                            <label class="form-check-label" for="belumNikah">Belum Menikah</label>
                                         </div>
-                                        <input type="text" name="tanggal_lahir" autocomplete="off" class="date form-control" id="tanggal_lahir" placeholder="dd-M-yyyy" value="{{old('tanggal_lahir',\Carbon\Carbon::parse($karyawan->tanggal_lahir)->format('d-M-Y')) }}">     
+                                        <div class="icheck-primary d-inline">
+                                            <input id="sudahNikah" type="radio" name="status_menikah" value="1" {{'1'== old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
+                                            <label class="form-check-label" for="sudahNikah">Sudah Menikah</label>
+                                        </div>
+                                        <div class="icheck-primary d-inline">
+                                            <input id="cerai" type="radio" name="status_menikah" value="2" {{'2'== old('status_menikah',$karyawan->status_menikah)? 'checked' :'' }}>
+                                            <label class="form-check-label" for="cerai">Cerai</label><br>
+                                        </div>
+                                     </div>
+                                </div>
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
+                                    <div class="form-group">
+                                        <label for="tipe">Jenis Kelamin</label>
+                                        <br>
+                                        <div class="icheck-primary d-inline">
+                                            <input id="laki" type="radio" name="jenis_kelamin" value="L" {{'L' == old('jenis_kelamin',$karyawan->jenis_kelamin)? 'checked' :'' }} checked>
+                                            <label class="form-check-label" for="laki">Laki-laki</label>
+                                        </div>
+                                        <div class="icheck-primary d-inline">
+                                            <input id="perempuan" type="radio" name="jenis_kelamin" value="P" {{'P'== old('jenis_kelamin',$karyawan->jenis_kelamin)? 'checked' :'' }}>
+                                            <label class="form-check-label" for="perempuan">Perempuan</label><br>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-lg-2 col-md-6 col-sm-12'>
+                                    <div class="form-group">
+                                        <label>Agama</label>
+                                        <select class="form-control selectpicker" name="agama" id="agama" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
+                                           @foreach($dataAgama as $data)
+                                                <option value="{{$data->id}}"{{$karyawan->agama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
-                      
-                      
+
                         <div class="form-group">
-                            <label>Agama</label>
-                            <select class="form-control selectpicker" name="agama" id="agama" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
-                               @foreach($dataAgama as $data)
-                                    <option value="{{$data->id}}"{{$karyawan->agama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                                @endforeach
-                            </select>
+                            <div class="row">
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
+                                    <label>PTKP</label>
+                                    <select class="form-control selectpicker" name="ptkp" id="ptkp" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
+                                        <option value="">--Pilih PTKP--</option>
+                                        @foreach($dataPtkp as $data)
+                                            <option value="{{$data->id}}"{{$karyawan->ptkp_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class='col-lg-3 col-md-6 col-sm-12'>
+                                    <div class="form-group">
+                                        <label for="tanggal_lahir">Tanggal Lahir</label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="text" name="tanggal_lahir" autocomplete="off" class="date form-control" id="tanggal_lahir" placeholder="dd-M-yyyy" value="{{old('tanggal_lahir',\Carbon\Carbon::parse($karyawan->tanggal_lahir)->format('d-M-Y')) }}">     
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col-lg-6 col-md-6 col-sm-12'>
+                                    <div class="form-group">
+                                            <label for="tempat_lahir">Tempat Lahir</label>
+                                            <input type="text" name="tempat_lahir" class="form-control" id="tempat_lahir" placeholder="" value="{{old('tempat_lahir',$karyawan->tempat_lahir)}}">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
+                       <br>
+                        <button type="button" id="nextDariPribadi" class="btn btn-success float-right radiusSendiri"><strong>Next <span class="fa fa-arrow-circle-right"></span></strong></button>
                         <a href="{{ route('karyawan.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
 
                     </div>
@@ -210,97 +208,103 @@
                     </div>  
                     <div class="card-body">
                          <div class="row">
-                            <div class="col-lg col-md-12">
-                                 <div class="form-group">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div class="form-group">
                                     <label for="alamat">Alamat Tinggal Sekarang</label>
                                     <input type="text" name="alamat_sekarang" class="form-control" id="alamat" placeholder="" value="{{old('alamat_sekarang',$karyawan->alamat_domisili)}}">
                                 </div>
                             </div>
 
-                            <div class="col-lg col-md-12">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label for="kota">Kota Tinggal Sekarang</label>
                                     <input type="text" name="kota_sekarang" class="form-control" id="kota" placeholder="" value="{{old('kota_sekarang',$karyawan->kota_domisili)}}">
                                 </div>
                             </div>
                         </div>
-                         <div class="row">
-                            <div class="col-lg col-md-12">
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label for="alamat">Alamat Sesuai KTP</label>
                                     <input type="text" name="alamat_ktp" class="form-control" id="alamat" placeholder="" value="{{old('alamat_ktp',$karyawan->alamat_ktp)}}">
                                 </div>
                             </div>
 
-                            <div class="col-lg col-md-12">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
                                 <div class="form-group">
                                     <label for="kota">Kota Sesuai KTP</label>
                                     <input type="text" name="kota_ktp" class="form-control" id="kota" placeholder="" value="{{old('kota_ktp',$karyawan->kota_ktp)}}">
                                 </div>
                             </div>
                         </div>
-                       
-                     
                      
                         <div class="row">
-                            <div class="col-lg col-md-12">
-                                 <div class="form-group">
+                            <div class="col-sm-12 col-md-6 col-lg-4">
+                                <div class="form-group">
                                     <label for="telp">Telp 1<span style='color:red'>*</span></label>
                                     <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
+                                        <span class="input-group-text"><strong>+62</strong></span>
                                     </div>
                                     <input type="text" class="form-control numaja" id="telp1" name="telp1"  placeholder="" value="{{old('telp1',$karyawan->telp1)}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-lg col-md-12">
+                            <div class="col-sm-12 col-md-6 col-lg-4">
                                 <div class="form-group">
                                     <label for="telp">Telp 2</label>
                                     <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
+                                        <span class="input-group-text"><strong>+62</strong></span>
                                     </div>
                                     <input type="text" class="form-control numaja" id="telp2" name="telp2"  placeholder="" value="{{old('telp2',$karyawan->telp2)}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
                                     </div>
                                 </div>
+                            </div>
+                            
+                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                <div class="form-group">
+                                    <label for="alamat">Email</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                        </div>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="" value="{{old('email',$karyawan->email)}}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="no_rekening">No. Rekening</label>
+                                <input type="text" name="no_rekening" class="form-control numaja" id="no_rekening" placeholder="" value="{{old('norek',$karyawan->norek)}}">
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="atas_nama">Atas Nama</label>
+                                <input type="text" name="atas_nama" class="form-control" id="atas_nama" placeholder="" value="{{old('rek_nama',$karyawan->rek_nama)}}">
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="nama_bank">Nama Bank</label>
+                                <input type="text" name="nama_bank" class="form-control" id="nama_bank" placeholder="" value="{{old('bank',$karyawan->bank)}}">
+                            </div>
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="cabang">Cabang</label>
+                                <input type="text" name="cabang_bank" class="form-control" id="cabang" placeholder="" value="{{old('cabang_bank',$karyawan->cabang_bank)}}">
                             </div>
                         </div>
                        
-                        <div class="form-group">
-                            <label for="alamat">Email</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                </div>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="" value="{{old('email',$karyawan->email)}}">
-                            </div>
-                        </div>
-                         <div class="form-group">
-                            <label for="no_rekening">No. Rekening</label>
-                            <input type="text" name="no_rekening" class="form-control numaja" id="no_rekening" placeholder="" value="{{old('norek',$karyawan->norek)}}">
-                        </div>
-                        <div class="form-group">
-                            <label for="atas_nama">Atas Nama</label>
-                            <input type="text" name="atas_nama" class="form-control" id="atas_nama" placeholder="" value="{{old('rek_nama',$karyawan->rek_nama)}}">
-                        </div>
-                        <div class="row">
-                            <div class="col-lg col-md-12">
-                                <div class="form-group">
-                                    <label for="nama_bank">Nama Bank</label>
-                                    <input type="text" name="nama_bank" class="form-control" id="nama_bank" placeholder="" value="{{old('bank',$karyawan->bank)}}">
-                                </div>
-                            </div>
-                            <div class="col-lg col-md-12">
-                                <div class="form-group">
-                                    <label for="cabang">Cabang</label>
-                                    <input type="text" name="cabang_bank" class="form-control" id="cabang" placeholder="" value="{{old('cabang_bank',$karyawan->cabang_bank)}}">
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
-                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
+                         
+                        <button type="button" id="BackDariAlamat" class="btn btn-outline-success float-left radiusSendiri"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> <strong>Back</strong></button>
+                        <button type="button" id="nextDariAlamat" class="btn btn-success float-right radiusSendiri"><strong> Next <spa <span class="fa fa-arrow-circle-right"></span></strong></button>
 
                     </div>
                            
@@ -315,32 +319,36 @@
                     </div>  
                     <div class="card-body">
                         <div id="parentDarurat">
-                                <div class="form-group">
+                            <div class="row">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                     <label for="nama_kontak_darurat">Nama</label>
                                     <input type="text" name="nama_kontak_darurat" class="form-control" placeholder="" value="{{old('nama_kontak_darurat',$karyawan->nama_kontak_darurat)}}">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                     <label for="hubungan_kontak_darurat">Hubungan</label>
                                     <input type="text" name="hubungan_kontak_darurat" class="form-control" placeholder="" value="{{old('hubungan_kontak_darurat',$karyawan->hubungan_kontak_darurat)}}">
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                     <label for="nomor_kontak_darurat">Nomor Telepon<span style='color:red'>*</span></label>
                                     <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">+62</span>
+                                        <span class="input-group-text"><b>+62</b></span>
                                     </div>
-                                    {{-- numaja itu js buat nganu number doang --}}
                                     <input type="text" class="form-control numaja" id="nomor_kontak_darurat" name="nomor_kontak_darurat"  placeholder="" value="{{old('nomor_kontak_darurat',$karyawan->nomor_kontak_darurat)}}">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                    </div>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group col-sm-12 col-md-6 col-lg-6">
                                     <label for="alamat_kontak_darurat">Alamat</label>
                                     <input type="text" name="alamat_kontak_darurat" class="form-control" placeholder="" value="{{old('alamat_kontak_darurat',$karyawan->alamat_kontak_darurat)}}">
                                 </div>
+                            </div>
 
-                                <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
-                                <button type="button" id="nextDariDarurat" class="btn btn-success float-right radiusSendiri"><strong>Next</strong></button>
-                        </div>     
+                            <button type="button" id="BackDariDarurat" class="btn btn-outline-success float-left radiusSendiri"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> <strong>Back</strong></button>
+                            <button type="button" id="nextDariDarurat" class="btn btn-success float-right radiusSendiri"><strong> Next <spa <span class="fa fa-arrow-circle-right"></span></strong></button>
+                         </div>     
                     </div>           
                 </div>
                 {{-- ============End Kontak Darurat============ --}}
@@ -351,110 +359,107 @@
                         <h5 class="card-title">Status Karyawan</h5>
                     </div>  
                     <div class="card-body">
-                         <div class="form-group">
-                            <label for="tipe">Tipe Karyawan</label>
-                            <br>
-                            <div class="icheck-primary d-inline">
-                                <input id="Kontrak" type="radio" name="status_pegawai" value="Kontrak" {{'Kontrak' == old('status_pegawai',$karyawan->status_pegawai)? 'checked' :'' }}>
-                                <label class="form-check-label" for="Kontrak">Kontrak</label>
-                            </div>
-                            <div class="icheck-primary d-inline ml-3">
-                                <input id="Tetap" type="radio" name="status_pegawai" value="Tetap" {{'Tetap'== old('status_pegawai',$karyawan->status_pegawai)? 'checked' :'' }}>
-                                <label class="form-check-label" for="Tetap">Tetap</label>
-                            </div>
-                            <div class="icheck-primary d-inline ml-3">
-                                <input id="Magang" type="radio" name="status_pegawai" value="Magang" {{'Magang' == old('status_pegawai',$karyawan->status_pegawai)? 'checked' :'' }}>
-                                <label class="form-check-label" for="Magang">Magang</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="tipe">Tipe Karyawan</label>
+                               <br>
+                               <div class="icheck-primary d-inline">
+                                   <input id="Kontrak" type="radio" name="status_pegawai" value="Kontrak" {{'Kontrak' == old('status_pegawai',$karyawan->status_pegawai)? 'checked' :'' }}>
+                                   <label class="form-check-label" for="Kontrak">Kontrak</label>
+                               </div>
+                               <div class="icheck-primary d-inline ml-4">
+                                   <input id="Tetap" type="radio" name="status_pegawai" value="Tetap" {{'Tetap'== old('status_pegawai',$karyawan->status_pegawai)? 'checked' :'' }}>
+                                   <label class="form-check-label" for="Tetap">Tetap</label>
+                               </div>
+                               <div class="icheck-primary d-inline ml-4">
+                                   <input id="Magang" type="radio" name="status_pegawai" value="Magang" {{'Magang' == old('status_pegawai',$karyawan->status_pegawai)? 'checked' :'' }}>
+                                   <label class="form-check-label" for="Magang">Magang</label>
+                               </div>
+                           </div>
+
+                           <div class="form-group col-sm-12 col-md-6 col-lg-6">
                             <label for="tanggal_gabung">Tanggal Bergabung</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                </div>
-                                <input type="text" name="tanggal_gabung" autocomplete="off" class="date form-control" id="tanggal_gabung" placeholder="dd-M-yyyy" value="{{old('tgl_gabung',\Carbon\Carbon::parse($karyawan->tgl_gabung)->format('d-M-Y')) }}">     
-                            </div>
+                               <div class="input-group mb-0">
+                                   <div class="input-group-prepend">
+                                       <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                   </div>
+                                   <input type="text" name="tanggal_gabung" autocomplete="off" class="date form-control" id="tanggal_gabung" placeholder="dd-M-yyyy" value="{{old('tgl_gabung',\Carbon\Carbon::parse($karyawan->tgl_gabung)->format('d-M-Y')) }}">     
+                               </div>
+                           </div>
+                           <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="tanggal_kontrak">Tanggal Mulai</label>
+                                <div class="input-group mb-0">
+                                   <div class="input-group-prepend">
+                                       <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                   </div>
+                                                                                                                                                                       
+                                   <input type="text" name="tanggal_kontrak" autocomplete="off" class="date form-control" id="tanggal_kontrak" placeholder="dd-M-yyyy" value="{{old('tgl_mulai_kontrak',\Carbon\Carbon::parse($karyawan->tgl_mulai_kontrak)->format('d-M-Y'))}}">     
+                               </div>
+                           </div>
+                           <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="tanggal_selesai_kontrak">Tanggal Selesai</label>
+                                <div class="input-group mb-0">
+                                   <div class="input-group-prepend">
+                                       <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                   </div>
+                                   <input type="text" name="tanggal_selesai_kontrak" autocomplete="off" class="date form-control" id="tanggal_selesai_kontrak" placeholder="dd-M-yyyy" value="{{old('tgl_selesai_kontrak',\Carbon\Carbon::parse($karyawan->tgl_selesai_kontrak)->format('d-M-Y')) }}">     
+                               </div>
+                           </div>
                         </div>
                      
-                        <div class="form-group" id="tglKontrakMulai">
-                            <label for="tanggal_kontrak">Tanggal Mulai</label>
-                            <div class="input-group mb-0">
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                <label>Role<span style='color:red'>*</span></label>
+                                <select class="form-control selectpicker" name="role" id="role" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
+                                    <option value="">--Pilih Posisi--</option>
+                                    @foreach($dataRole as $data)
+                                        <option value="{{$data->id}}"{{$karyawan->posisi_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                <label>Cabang Kantor<span style='color:red'>*</span></label>
+                                <select class="form-control selectpicker" name="cabang_kantor" id="cabang_kantor" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
+                                    <option value="">--Pilih Cabang Kantor--</option>
+                                    @foreach($dataKota as $data)
+                                        <option value="{{$data->id}}"{{$karyawan->m_kota_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                <label for="sisa_cuti">Sisa Cuti</label>
+                                <input type="number" name="sisa_cuti" class="form-control" placeholder="" value="{{old('saldo_cuti',$karyawan->saldo_cuti)}}" >
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="gaji">Gaji</label>
+                                <div class="input-group mb-0">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    <span class="input-group-text">Rp</span>
                                 </div>
-                                                                                                                                                                    
-                                <input type="text" name="tanggal_kontrak" autocomplete="off" class="date form-control" id="tanggal_kontrak" placeholder="dd-M-yyyy" value="{{old('tgl_mulai_kontrak',\Carbon\Carbon::parse($karyawan->tgl_mulai_kontrak)->format('d-M-Y'))}}">     
-                            </div>
-                        </div>
-                        <div class="form-group" id="tglKontrakSelesai">
-                            <label for="tanggal_selesai_kontrak">Tanggal Selesai</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                <input type="text" name="gaji" class="form-control numaja uang" id="gaji" placeholder="" value="{{old('gaji',number_format($karyawan->gaji))}}" readonly>
                                 </div>
-                                <input type="text" name="tanggal_selesai_kontrak" autocomplete="off" class="date form-control" id="tanggal_selesai_kontrak" placeholder="dd-M-yyyy" value="{{old('tgl_selesai_kontrak',\Carbon\Carbon::parse($karyawan->tgl_selesai_kontrak)->format('d-M-Y')) }}">     
                             </div>
-                        </div>
-                    
-                        <div class="form-group">
-                            <label>Posisi<span style='color:red'>*</span></label>
-                            <select class="form-control selectpicker" name="posisi" id="posisi" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
-                                <option value="">--Pilih Posisi--</option>
-                                @foreach($dataRole as $data)
-                                    <option value="{{$data->id}}"{{$karyawan->posisi_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    
-                        <div class="form-group">
-                            <label>Cabang Kantor<span style='color:red'>*</span></label>
-                            <select class="form-control selectpicker" name="cabang_kantor" id="cabang_kantor" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
-                                <option value="">--Pilih Cabang Kantor--</option>
-                                @foreach($dataKota as $data)
-                                    <option value="{{$data->id}}"{{$karyawan->m_kota_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="sisa_cuti">Sisa Cuti</label>
-                            <input type="number" name="sisa_cuti" class="form-control" placeholder="" value="{{old('saldo_cuti',$karyawan->saldo_cuti)}}" >
-                        </div>
-                        <div class="form-group">
-                            <label for="gaji">Gaji</label>
-                            <div class="input-group mb-0">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Rp</span>
-                            </div>
-                            <input type="text" name="gaji" class="form-control numaja uang" id="gaji" placeholder="" value="{{old('gaji',number_format($karyawan->gaji))}}" readonly>
-                            </div>
-                        </div>
-                        {{-- <div class="form-group">
-                            <label for="tanggalLahir">Tanggal Keluar</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><input type="checkbox" id="check_is_keluar" ></span>
+                           
+                            <div class="form-group col-sm-12 col-md-6 col-lg-6">
+                                <label for="tanggal_keluar">Tanggal Keluar</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><input type="checkbox" id="check_is_keluar" name="is_keluar" {{$karyawan->is_keluar == "Y"? 'selected' :'' }}></span>
+                                    </div>
+                                    <input type="hidden" id="is_keluar" name='is_keluar' value="{{old('is_keluar',$karyawan->is_keluar)}}">
+                                    <input type="text" autocomplete="off" name="tanggal_keluar" class="form-control" id="tanggal_keluar" placeholder="dd-M-yyyy" {{$karyawan->is_keluar == "N"? 'readonly' :'' }} >
                                 </div>
-                                <input type="hidden" id="is_keluar" name='is_keluar' value="">
-                                <input type="text" autocomplete="off" class="form-control" id="tanggalDibuatDisplay" placeholder="DD-MM-YYYY" value="{{old('tanggal_lahir','')}}" readonly>
-                                <input type="hidden" id="tanggalDibuat" name="tanggal_keluar">
-                            </div>
-                        </div> --}}
-                        <div class="form-group">
-                            <label for="tanggal_keluar">Tanggal Keluar</label>
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><input type="checkbox" id="check_is_keluar" name="is_keluar" {{$karyawan->is_keluar == "Y"? 'selected' :'' }}></span>
-                                </div>
-                                <input type="hidden" id="is_keluar" name='is_keluar' value="{{old('is_keluar',$karyawan->is_keluar)}}">
-                                <input type="text" autocomplete="off" name="tanggal_keluar" class="form-control" id="tanggal_keluar" placeholder="dd-M-yyyy" {{$karyawan->is_keluar == "N"? 'readonly' :'' }} >
                             </div>
                         </div>
                         
 
-                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left radiusSendiri"><strong>Back</strong></button>
-                        <button type="submit" class="btn btn-success float-right radiusSendiri" id="btnSimpan"><strong>Simpan</strong></button>
-                        
+                        <button type="button" id="BackDariStatus" class="btn btn-outline-success float-left radiusSendiri"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> <strong>Back</strong></button>
+                        <button type="submit" class="btn btn-success float-right radiusSendiri" id="btnSimpan"><strong><span class="fa fa-save"></span> Simpan</strong></button>
+                           
                         {{-- <button type="button" id="btnCobaBuatData" class="btn btn-outline-success float-right"><strong>coba</strong></button> --}}
 
 
@@ -467,7 +472,7 @@
                 <div class='row' id="showKomponen">
                             {{-- ============komponen identitas============ --}}
                             <div class="col-lg-6 col-md-6 col-12">
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="open_detail('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; IDENTITAS</b></button>
+                                <button type="button" class="btn btn-sm btn-secondary radiusSendiri" onclick="open_detail('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; IDENTITAS</b></button>
                                 <div class="row" style='margin-top:5px;'>
                                     <div class='col-12 table-responsive'>
                                         <table class="table table-hover table-bordered table-striped text-nowrap" id='table_identitas'>
@@ -517,7 +522,7 @@
 
                             {{-- ============komponen gaji============ --}}
                             <div class="col-lg-6 col-md-6 col-12" style="padding-left:6px;">
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="open_komponen('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; KOMPONEN GAJI</b></button>
+                                <button type="button" class="btn btn-sm btn-secondary radiusSendiri" onclick="open_komponen('')"><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; KOMPONEN GAJI</b></button>
                                 <div class="row" style='margin-top:5px;'>
                                     <div class='col-12 table-responsive'>
                                         <table class="table table-hover table-bordered table-striped text-nowrap" id='table_komponen'>

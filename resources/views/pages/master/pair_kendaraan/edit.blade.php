@@ -89,7 +89,7 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                     <label for="chassisKendaraan">Ekor Kendaraan</label>
                                     @if($dataPaired==null)
-                                            <label for="">idPairedNya kalo null</label>
+                                            <!-- <label for="">idPairedNya kalo null</label> -->
                                             <input type="hidden" name='idPairedNya' value="">
                                             <select class="form-control selectpicker" name="chasis" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                                 <option value="">--Pilih Chasis--</option>
@@ -110,7 +110,7 @@
                                                 <input type="hidden" name='idChassis' value="{{$dataPaired->chassis_id}}">
                                                 {{-- <input type="hidden" name='isAktif' value="{{$dataPaired->is_aktif}}"> --}}
                                                 <select class="form-control selectpicker" name="chasis" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                    <option value="">--Pilih Chasis--</option>
+                                                    <option value="">LEPAS EKOR</option>
                                                     <option value="{{$dataPaired->chassis_id}}" selected>{{$dataPaired->kode}} - {{$dataPaired->karoseri}}</option>
                                                     @foreach($dataChassis as $data)
                                                         <option value="{{$data->id}}" {{($dataPaired->chassis_id == $data->id)? 'selected':'';}}>{{$data->kode}} - {{$data->karoseri}} - {{$data->namaModel}}</option>

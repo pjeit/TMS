@@ -18,7 +18,7 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $data = Customer::where('is_aktif', 'Y')->paginate(5);
+        $data = Customer::where('is_aktif', 'Y')->get();
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';

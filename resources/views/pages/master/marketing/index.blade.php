@@ -28,18 +28,18 @@
                     <table id="myTable" class="table table-bordered table-striped table-hover" width="100%">
                         <thead>
                             <tr>
-                              <th>Nama</th>
-                              <th>Grup</th>
-                              <th>Role</th>
-                              <th><div class="btn-group"></div></th>
+                                <th>Grup</th>
+                                <th>Nama</th>
+                                <th>Role</th>
+                                <th><div class="btn-group"></div></th>
                             </tr>
                           </thead>
                         <tbody>
                             <?php if(!empty($data)){ ?>
                                 @foreach($data as $item)
                                 <tr>
+                                    <td>{{ $item->nama_grup }}</td>  
                                     <td>{{ $item->nama }}</td>
-                                    <td>{{ $item->nama_grup }} {{ $item->grup_id }}</td>  
                                     <td>{{ $item->nama_role }}</td>  
                                     <td>                                    
                                         <div class="btn-group dropleft">

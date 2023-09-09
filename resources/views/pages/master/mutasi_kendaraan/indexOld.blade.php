@@ -37,6 +37,7 @@
                             <label>Filter Cabang</label>
                              <select class="form-control select2" style="width: 100%;" id='jenisFilter' name="jenisFilter">
                                 <option value="">ALL</option>
+        
                                 @foreach($dataJenisFilter as $dat)
                                         <option value="{{$dat->id}}" id="">{{$dat->nama}}</option>
                                 @endforeach
@@ -49,8 +50,7 @@
                 <table id="datatable" class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
-                            <th>Cabang Asal</th>
-                            <th>Cabang Tujuan</th>
+                            <th>Cabang</th>
                             <th>Kategori Kendaraan</th>
                             <th>Nopol</th>
                             <th>Ekor</th>
@@ -60,11 +60,11 @@
                         @isset($dataKendaraan)
                             @foreach ($dataKendaraan as $item)
                                 <tr>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
+                                    <td>{{$item->namaKota}}</td>
+                                    <td>{{$item->kategoriKendaraan}}</td>
+                                    <td>{{$item->no_polisi}}</td>
+                                    <td>{{$item->chassis_model}}</td>
+
                                 </tr>
                             @endforeach
                         @endisset

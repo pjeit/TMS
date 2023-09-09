@@ -27,7 +27,7 @@
         @endforeach
 
     @endif
-    <form action="{{ route('mutasi_kendaraan.store') }}" method="POST" >
+    <form action="{{ route('mutasi_kendaraan.store') }}" method="POST" id='post' >
     @csrf
   
     <div class="row">
@@ -45,7 +45,7 @@
                     <div class='row'>
                         <div class="form-group col-sm-12 col-md-3 col-lg-3">
                             <label for="">Cabang Asal</label>
-                            <select class="form-control select2" style="width: 100%;" id='cabang_asal' name="cabang_asal">
+                            <select class="form-control select2" style="width: 100%;" id='cabang_asal' name="cabang_asal" required>
                                 <option value="">-- Pilih Cabang --</option>
                                 @foreach ($cabang as $city)
                                     <option value="{{$city->id}}">{{ $city->nama }}</option>
@@ -54,7 +54,7 @@
                         </div>  
                         <div class="form-group col-sm-12 col-md-3 col-lg-3">
                             <label for="">Cabang Tujuan</label>
-                            <select class="form-control select2" style="width: 100%;" id='cabang_tujuan' name="cabang_tujuan">
+                            <select class="form-control select2" style="width: 100%;" id='cabang_tujuan' name="cabang_tujuan" required>
                                 <option value="">-- Pilih Cabang --</option>
                                 @foreach ($cabang as $city)
                                     <option value="{{$city->id}}">{{ $city->nama }}</option>
@@ -114,15 +114,82 @@
     </form>
 
 </div>
+{{-- sweet save --}}
+<script>
+    $(document).ready(function() {
+        $('#post').submit(function(event) {
+            if($('#cabang_asal').val() == $('#cabang_tujuan').val()){
+                Swal.fire(
+                    'Terjadi kesalahan',
+                    'Cabang asal dan cabang tujuan tidak boleh sama',
+                    'warning'
+                )
+                event.preventDefault();
+                return false;
+            }
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
 
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Disimpan'
+                    })
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 1000); // 2000 milliseconds = 2 seconds
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
+    });
+</script>
 <script>
     $( document ).ready(function() {
-        $(".kendaraan, .chassis, .kendaraan_all, .chassis_all").prop('checked', true);
+        // $(".kendaraan, .chassis, .kendaraan_all, .chassis_all").prop('checked', true);
 
         $(document).on('change', '#cabang_asal', function (event) {
-
-            $("#kendaraan_all").prop('checked', $(this).prop('checked'));
-            $("#chassis_all").prop('checked', $(this).prop('checked'));
+            // $('#kendaraan_all').prop('checked', true);
+            // $('#chassis_all').prop('checked', true);
 
             // $("#loading-spinner").show();
             var id = this.value;
@@ -139,18 +206,20 @@
                     processData:false,
                     success: function(response) {
                         // $("#loading-spinner").hide();
-                        var data = response.data;
+                        var data = response.dataKendaraan;
+                        var nomor = 0;
                         $("#tbd").html(" ");
-                        console.log('data '+data);
+
                         for (var i = 0; i < data.length; i++) {
                             var j=i+1;
+                            var nomor = i+1;
                             var row = $("<tr scope='row'></tr>");
                             row.append(`
-                                    <th scope="row">`+ j +`</th>
+                                    <th scope="row">${j}</th>
                                     <td>
                                         <div class="form-check text-center">
-                                            <input class="form-check-input kendaraan_${i} kendaraan" name="data[${i}][centang_kendaraan]" type="checkbox" checked id="kendaraan_${i}">
-                                            <input type="text" name="data[${i}][kendaraan]" value="${data[i].id}">
+                                            <input class="form-check-input kendaraan_${i} kendaraan" name="data[${i}][centang_kendaraan]" type="checkbox"  id="kendaraan_${i}">
+                                            <input type="hidden" name="data[${i}][kendaraan]" value="${data[i].id}">
                                         </div>
                                     </td>
                                     <td>${data[i].kategori}</td>
@@ -159,12 +228,37 @@
                                     <td>
                                         ${data[i].chassis_id != null ? `
                                             <div class="form-check text-center">
-                                                <input class="form-check-input chassis_${i} chassis" name="data[${i}][centang_chassis]" type="checkbox" checked id="chassis_${i}">
-                                                <input type="text" name="data[${i}][chassis]" value="${data[i].chassis_id}">
+                                                <input class="form-check-input chassis_${i} chassis" name="data[${i}][centang_chassis]" type="checkbox"  id="chassis_${i}">
+                                                <input type="hidden" name="data[${i}][chassis]" value="${data[i].chassis_id}">
                                             </div>
                                         ` : ''}
                                     </td>
                             `); 
+                            
+                            $("#hasil").append(row);
+                        }
+                        // chassis 
+                        var dc = response.dataChassis;
+                        $("#tbd").html(" ");
+                            for (var i = 0; i < dc.length; i++) {
+                            var j=i+1;
+                            var nomor = nomor+1;
+
+                            var row = $("<tr scope='row'></tr>");
+                            row.append(`
+                                    <th scope="row">${nomor}</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>${dc[i].kode ?? ''} - ${dc[i].karoseri ?? ''}</td>
+                                    <td>
+                                        ${dc[i].id != null ? `
+                                            <div class="form-check text-center">
+                                                <input class="form-check-input chassis_${nomor-1} chassis" name="data[${nomor-1}][centang_chassis]" type="checkbox"  id="chassis_${nomor-1}">
+                                                <input type="hidden" name="data[${nomor-1}][chassis]" value="${dc[i].id}">
+                                            </div>
+                                        ` : ''}
+                                    </td>                            `); 
                             
                             $("#hasil").append(row);
                         }
@@ -188,15 +282,15 @@
     $("#kendaraan_all").click(function () {
         $(".kendaraan").prop('checked', $(this).prop('checked'));
     });
+    $("#chassis_all").click(function () {
+        $(".chassis").prop('checked', $(this).prop('checked'));
+    });
+
     $(document).on('click', '.kendaraan', function (event) {
         $("#kendaraan_all").prop('checked', false);
     });
     $(document).on('click', '.chassis', function (event) {
         $("#chassis_all").prop('checked', false);
-    });
-       
-    $("#chassis_all").click(function () {
-        $(".chassis").prop('checked', $(this).prop('checked'));
     });
 </script>
 @endsection

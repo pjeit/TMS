@@ -150,7 +150,7 @@
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
                     <p style="font-weight: 500;" >
-                      Master Grup
+                      Master Group
                       <i class="right fas fa-angle-left"></i>
                     </p>
                   </a>
@@ -159,7 +159,7 @@
                       <a href="{{route('grup.index')}}" class="nav-link {{request()->is('grup') ||  request()->is('grup/create') || request()->is('grup/*/edit') ? ' active' : '' }} " style="font-weight: 500;">
                       <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
                         <p>
-                          Grup
+                          Group
                         </p>
                       </a>
                     </li>
@@ -168,7 +168,7 @@
                       <a href="{{route('marketing.index')}}" style="font-weight: 500;" class="nav-link {{ request()->is('marketing*')? ' active' : '' }} ">
                       <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
                         <p>
-                          Marketing Grup
+                           Group Marketing
                         </p>
                       </a>
                     </li>
@@ -177,7 +177,7 @@
                       <a href="{{route('grup_tujuan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('grup_tujuan') ||   request()->is('grup_tujuan/*/edit') ? ' active' : '' }}">
                       <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
                         <p>
-                          Grup Tujuan
+                          Group Destination
                         </p>
                       </a>
                     </li>
@@ -204,7 +204,7 @@
                   <a href="#" class="nav-link">
                     <i class="far nav-icon fa fa-truck"></i>
                     <p style="font-weight: 500;" >
-                      Master Truck
+                        Master Truck
                       <i class="right fas fa-angle-left"></i>
                     </p>
                   </a>
@@ -213,7 +213,7 @@
                       <a href="{{route('head.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
                       <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                         <p>
-                          Truck
+                          Truck 
                         </p>
                       </a>
                     </li>
@@ -221,7 +221,7 @@
                       <a href="{{route('chassis.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('chassis*') ? ' active' : '' }} ">
                       <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                         <p>
-                          Ekor Truck
+                           Truck Chassis
                         </p>
                       </a>
                     </li> 
@@ -229,7 +229,7 @@
                       <a href="{{route('pair_kendaraan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pair_kendaraan*') ? ' active' : '' }}">
                       <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
                         <p>
-                          Pairing Truck
+                           Truck Pairing
                         </p>
                       </a>
                     </li>
@@ -237,7 +237,7 @@
                       <a href="{{route('mutasi_kendaraan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('mutasi_kendaraan*') ? ' active' : '' }}">
                       <i class="far nav-icon fa fa-undo" style="font-size: 15px;"></i>
                         <p>
-                          Mutasi Kendaraan
+                          Vehicle Mutation
                         </p>
                       </a>
                     </li>
@@ -257,7 +257,7 @@
                   <a href="{{route('karyawan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('karyawan*') ? ' active' : '' }} ">
                   <i class="far nav-icon fa fa-id-card" style="font-size: 15px;"></i>
                     <p>
-                      Karyawan
+                      Employees
                     </p>
                   </a>
                 </li>
@@ -298,7 +298,7 @@
                   <a href="{{route('pengaturan_keuangan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pengaturan_keuangan*') ? ' active' : '' }} ">
                   <i class="far nav-icon fa fa-cog"></i>
                     <p style="font-size: 15px;">
-                      pengaturan
+                      Settings  
                     </p>
                   </a> 
                 </li> 
@@ -426,7 +426,7 @@
                 <a href="{{route('pembayaran_jo.index')}}" class="nav-link {{request()->url() === route('pembayaran_jo.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
-                    Pembayaran JO
+                     JO Payment
                   </p>
                 </a>
               </li>
@@ -436,7 +436,7 @@
                 <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{request()->url() === route('pembayaran_sdt.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
-                    Pembayaran S/D/T
+                     S/D/T Payment
                   </p>
                 </a>
               </li>
@@ -446,7 +446,7 @@
           <li class="nav-item">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-dollar-sign"></i>
-              <p>LAPORAN FINANCE
+              <p>FINANCE REPORT
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -456,7 +456,7 @@
                 <a href="{{route('laporan_kas.index')}}" class="nav-link {{request()->url() === route('laporan_kas.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
-                    Laporan Kas
+                     Kas Report
                   </p>
                 </a>
               </li>
@@ -465,7 +465,7 @@
                 <a href="{{route('laporan_bank.index')}}" class="nav-link {{request()->url() === route('laporan_bank.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
-                    Laporan Bank
+                     Bank Report
                   </p>
                 </a>
               </li>

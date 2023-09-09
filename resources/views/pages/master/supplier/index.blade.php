@@ -81,7 +81,7 @@
                                 <th>Telp</th>
                                 <th>Lokasi Supplier</th>
                                 <th>Catatan</th>
-                                <th>Aksi</th>
+                                <th></th>
                                 </tr>
                             </thead>
                             <tbody>

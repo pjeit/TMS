@@ -24,6 +24,8 @@ class GrupController extends Controller
     {
         $data = DB::table('grup')
             ->where('is_aktif', '=', "Y")
+            ->orderBy('nama_grup', 'ASC')
+            ->orderBy('nama_pic', 'ASC')
             ->get();
 
         $title = 'Data akan dihapus!';
