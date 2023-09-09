@@ -195,6 +195,7 @@
 
                 <li class="nav-item {{ request()->is('head*')||
                               request()->is('pair_kendaraan*')||
+                              request()->is('mutasi_kendaraan*')||
                               request()->is('chassis*')
                               ? 'menu-is-opening menu-open' : '' }}">
                   <a href="#" class="nav-link">
@@ -229,16 +230,20 @@
                         </p>
                       </a>
                     </li>
+                    <li class="nav-item">
+                      <a href="{{route('mutasi_kendaraan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('mutasi_kendaraan*') ? ' active' : '' }}">
+                      <i class="far nav-icon fa fa-undo" style="font-size: 15px;"></i>
+                        <p>
+                          Mutasi Kendaraan
+                        </p>
+                      </a>
+                    </li>
                   </ul>
                 </li>
-                
-                
-
-               
         
                 <li class="nav-item">
                   <a href="{{route('supplier.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('supplier*') ? ' active' : '' }} ">
-                  <i class="far nav-icon fa fa-building" style="font-size: 15px;"></i>
+                    <i class="far nav-icon fa fa-building" style="font-size: 15px;"></i>
                     <p>
                       Supplier
                     </p>
