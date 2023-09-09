@@ -12,6 +12,7 @@
     <li class="breadcrumb-item">Master</li>
     <li class="breadcrumb-item"><a href="{{route('head.index')}}">Head</a></li>
 @endsection
+@include('sweetalert::alert')
 
 @section('content')
 <br>
@@ -53,12 +54,28 @@
                                     <td>{{$item->tahun_pembuatan}} - {{$item->warna}} </td>  
                                     <td>{{ $item->nama_lengkap }}</td>
                                     <td>                                    
-                                        <a class="btn btn-default bg-info radiusSendiri" href="{{route('head.edit',[$item->id])}}">
+                                        {{-- <a class="btn btn-default bg-info radiusSendiri" href="{{route('head.edit',[$item->id])}}">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>   
                                         <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
                                                 <i class="fas fa-trash"></i> Hapus
-                                        </button>          
+                                        </button>      --}}
+                                        
+                                        <div class="btn-group dropleft">
+                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a href="{{route('head.edit',[$item->id])}}" class="dropdown-item">
+                                                    <span class="fas fa-edit mr-3"></span> Edit
+                                                </a>
+                                                
+                                                <a href="{{ route('head.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                    <span class="fas fa-trash mr-3"></span> Delete
+                                                </a>
+                                                
+                                            </div>
+                                        </div>
                                         
                                     </td>
                                                     

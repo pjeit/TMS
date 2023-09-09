@@ -215,24 +215,12 @@ class PairKendaraanController extends Controller
     public function update(Request $request, $idKendaraan)
     {
         //
-         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+         $user = Auth::user()->id; 
         $dataKendaraan =  DB::table('kendaraan')
                         ->select('kendaraan.*')
                         ->where('kendaraan.is_aktif', '=','Y') 
                         ->where('kendaraan.id', $idKendaraan) 
                         ->first();
-        $dataPaired = DB::table('pair_kendaraan_chassis')
-                ->select('pair_kendaraan_chassis.*', 'c.kode as kode', 'c.karoseri as karoseri')
-                ->where('pair_kendaraan_chassis.kendaraan_id', $idKendaraan) 
-                ->leftJoin('chassis as c', 'c.id', '=', 'pair_kendaraan_chassis.chassis_id')
-                ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
-                ->first();
-        $dataChassis = DB::table('chassis')
-                ->select('chassis.*')
-                ->where('chassis.is_aktif', '=','Y') 
-                ->where('chassis.cabang_id', '=',$dataKendaraan->cabang_id) 
-                ->where('chassis.id', '=',$dataPaired->chassis_id) 
-                ->first();
         
         try {
             $pesanKustom = [
@@ -290,21 +278,17 @@ class PairKendaraanController extends Controller
                 {
                     if($data['chasis'] != $data['idChassis'])
                     {
-                    DB::table('chassis')
-                        ->where('id', $data['idChassis']/*[$i]*/)
-                        // ->where('kendaraan_id', $idKendaraan)
-                        ->update(array(
-                                'is_dipakai' => 'N'/*[$i]*/,
-                                'updated_at'=> VariableHelper::TanggalFormat(),
-                                'updated_by'=> $user,
-                            )
-                        );
-                    }
-
-                    if($data['chasis'] == $data['idChassis'])
-                    {
                         DB::table('chassis')
                             ->where('id', $data['idChassis']/*[$i]*/)
+                            // ->where('kendaraan_id', $idKendaraan)
+                            ->update(array(
+                                    'is_dipakai' => 'N'/*[$i]*/,
+                                    'updated_at'=> VariableHelper::TanggalFormat(),
+                                    'updated_by'=> $user,
+                                )
+                            );
+                         DB::table('chassis')
+                            ->where('id', $data['chasis']/*[$i]*/)
                             // ->where('kendaraan_id', $idKendaraan)
                             ->update(array(
                                     'is_dipakai' => 'Y'/*[$i]*/,
@@ -337,6 +321,7 @@ class PairKendaraanController extends Controller
 
                         )
                     );
+             
                     if($dataKendaraan->driver_id != $data['driver'])
                     {
                         DB::table('kendaraan')
@@ -354,7 +339,11 @@ class PairKendaraanController extends Controller
             else
             {
             // var_dump('masuk else luar');die;
+             if($data['chasis']==null/*[$i]*/)
+                {
+                    return response()->json(['errorPertamaChassis' => 'harap isi chassis apabila pertama kali pairing'], 422);
 
+                }
 
                 DB::table('pair_kendaraan_chassis')->insert(
                     array(

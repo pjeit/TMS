@@ -89,6 +89,7 @@
                                 <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                     <label for="chassisKendaraan">Ekor Kendaraan</label>
                                     @if($dataPaired==null)
+                                            <label for="">idPairedNya kalo null</label>
                                             <input type="hidden" name='idPairedNya' value="">
                                             <select class="form-control selectpicker" name="chasis" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                                 <option value="">--Pilih Chasis--</option>
@@ -98,9 +99,14 @@
                                             </select>
                                         @else
                                             {{-- @foreach ($dataPaired as $dataP) --}}
-                                                <input type="hidden" name='idPairedNya' value="{{$dataPaired->id}}">
+                                            
+                                                {{-- <p for="">idPairedNya kalo ga null</p>  --}}
+                                                <input type="hidden" name='idPairedNya' value="{{$dataPaired->id}}"> 
+                                                {{-- <p for="">idDriver</p>  --}}
                                                 <input type="hidden" name='idDriver' value="{{$dataPaired->driver_id}}">
+                                                {{-- <p for="">idCabang</p>  --}}
                                                 <input type="hidden" name='idCabang' value="{{$dataPaired->cabang_id}}">
+                                                {{-- <p for="">idChassis</p>  --}}
                                                 <input type="hidden" name='idChassis' value="{{$dataPaired->chassis_id}}">
                                                 {{-- <input type="hidden" name='isAktif' value="{{$dataPaired->is_aktif}}"> --}}
                                                 <select class="form-control selectpicker" name="chasis" id="chasis" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
@@ -131,11 +137,11 @@
                                  <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                     <label for="chassisKendaraan">Cabang</label>
                                         @if($dataPaired==null)
-                                        <input type="hidden" name="cabang" id="cabang" class="form-control" value="{{($dataKendaraan->cabang_id == $dataCabang->id)?$dataCabang->id:'';}}" readonly>
+                                        <input type="hidden" name="cabang" id="cabang" class="form-control" value="{{($dataKendaraan->cabang_id == $dataCabang->id)?$dataCabang->id:'';}}" >
                                         <input type="text"  class="form-control" value="{{($dataKendaraan->cabang_id == $dataCabang->id)?$dataCabang->nama:'';}}" readonly>
 
                                         @else
-                                        <input type="hidden" name="cabang" id="cabang" class="form-control" value="{{($dataPaired->cabang_id == $dataCabang->id)? $dataCabang->id:''; }}" readonly>
+                                        <input type="hidden" name="cabang" id="cabang" class="form-control" value="{{($dataPaired->cabang_id == $dataCabang->id)? $dataCabang->id:''; }}" >
                                         <input type="text" class="form-control" value="{{($dataPaired->cabang_id == $dataCabang->id)? $dataCabang->nama:''; }}" readonly>
 
                                         @endif
@@ -248,6 +254,11 @@ $(document).ready(function(){
                         }
 
                     } 
+                     else if (xhr.responseJSON && xhr.responseJSON.errorPertamaChassis) {
+                        var pesanError = xhr.responseJSON.errorPertamaChassis;
+                        toastr.error(pesanError);
+
+                    }
                     else if (xhr.responseJSON && xhr.responseJSON.errorServer) {
                         var pesanError = xhr.responseJSON.errorServer;
                         console.table(pesanError);
