@@ -106,6 +106,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('users', 'App\Http\Controllers\UsersController');
     
         Route::resource('marketing', 'App\Http\Controllers\MarketingController');
+        Route::get('/pair_kendaraan/filter', [App\Http\Controllers\PairKendaraanController::class, 'filterTruck'])->name('pair_kendaraan.cari');
+
         Route::resource('pair_kendaraan', 'App\Http\Controllers\PairKendaraanController');
 
         Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');

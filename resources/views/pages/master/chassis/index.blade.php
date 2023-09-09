@@ -27,6 +27,7 @@
                     <table id="datatable" class="table table-bordered table-striped table-hover" width="100%">
                         <thead>
                             <tr>
+                              <th>Cabang</th>
                               <th>Kode</th>
                               <th>Karoseri</th>
                               <th>Model</th>
@@ -36,6 +37,7 @@
                         <tbody>
                             @foreach($data as $item)
                              <tr>
+                                <td>{{ $item->cabangPje }}</td>
                                 <td>{{ $item->kode }}</td>
                                 <td>{{ $item->karoseri }}</td>  
                                 <td>{{ $item->nama_model }}</td>
