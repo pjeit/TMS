@@ -49,11 +49,14 @@ class MutasiKendaraanController extends Controller
         ]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $cabang_tujuan = $request->input('cabang_tujuan');
+        $cabang_asal = $request->input('cabang_asal');
+
         $dataKendaraan = DB::table('mutasi_kendaraan AS mk')
             ->select('mk.*','ca.nama as cabangAsal','cb.nama as cabangBaru', 'k.id_kategori', 
-                'k.no_polisi', DB::raw('CONCAT(c.kode, " - ", c.karoseri) AS chassis'),'kk.nama as kategori')
+                'k.no_polisi', DB::raw('CONCAT(c.kode, " - ", c.karoseri) AS chassis'),'kk.nama as kategori', 'mk.catatan', 'mk.created_at')
             ->leftJoin('kendaraan as k', function($join) {
                 $join->on('k.id', '=', 'mk.kendaraan_id')->where('k.is_aktif', '=', 'Y');
             })
@@ -63,30 +66,39 @@ class MutasiKendaraanController extends Controller
             ->leftJoin('kendaraan_kategori as kk', function($join) {
                 $join->on('kk.id', '=', 'k.id_kategori')->where('kk.is_aktif', '=', 'Y');
             })
+            ->where(function ($query) use($cabang_tujuan, $cabang_asal){
+                if(isset($cabang_asal) && isset($cabang_tujuan)){
+                    $query->where('cabang_lama', $cabang_asal)
+                          ->Where('cabang_baru', $cabang_tujuan);
+                }else if(isset($cabang_asal) && !isset($cabang_tujuan)){
+                    $query->where('cabang_lama', $cabang_asal);
+                }else if(!isset($cabang_asal) && isset($cabang_tujuan)){
+                    $query->Where('cabang_baru', $cabang_tujuan);
+                }
+            })
             ->leftJoin('cabang_pje AS ca', 'mk.cabang_lama', '=', 'ca.id')
             ->leftJoin('cabang_pje AS cb', 'mk.cabang_baru', '=', 'cb.id')
             ->where('mk.is_aktif', 'Y') 
             ->get();
+
         $dataJenisFilter = DB::table('cabang_pje')
             ->where('is_aktif', '=', "Y")
             ->get();
+
+        $request = $request->all();
+
         return view('pages.master.mutasi_kendaraan.index',[
             'judul' => "Mutasi Kendaraan",
             'dataKendaraan' => $dataKendaraan,
-            'dataJenisFilter' => $dataJenisFilter
-
+            'dataJenisFilter' => $dataJenisFilter,
+            'request'=> $request, 
         ]);
     }
 
       public function filterMutasi(Request $request)
     {
         $jenisFilter = $request->input('jenisFilter');
-        // dd($jenisFilter);
-        $title = 'Data akan dihapus!';
-        $text = "Apakah Anda yakin?";
-        $confirmButtonText = 'Ya';
-        $cancelButtonText = "Batal";
-        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+       
         if($jenisFilter==null)
         {
               $dataKendaraan =  DB::table('kendaraan AS k')
@@ -376,7 +388,6 @@ class MutasiKendaraanController extends Controller
                 ->orderBy('c.kode', 'ASC')
                 ->orderBy('c.karoseri', 'ASC')
                 ->get();
-            // var_dump($dataKendaraan); die;
                     
             return response()->json(["result" => "success",'dataKendaraan' => $dataKendaraan, 'dataChassis' => $dataChassis], 200);
         } catch (\Throwable $th) {
