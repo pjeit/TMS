@@ -60,11 +60,11 @@
                         @isset($dataKendaraan)
                             @foreach ($dataKendaraan as $item)
                                 <tr>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
+                                    <td>{{$item->cabangAsal}}</td>
+                                    <td>{{$item->cabangBaru}}</td>
+                                    <td>{{$item->kategori}}</td>
+                                    <td>{{$item->no_polisi}}</td>
+                                    <td>{{$item->chassis}}</td>
                                 </tr>
                             @endforeach
                         @endisset
@@ -76,7 +76,7 @@
         {{-- </div> --}}
     </div>
 </div>
- <script type="text/javascript">
+<script type="text/javascript">
 var currentUrl = window.location.href;
 var baseUrl = currentUrl.split('=');
 var idUrl = parseFloat(baseUrl[1]);

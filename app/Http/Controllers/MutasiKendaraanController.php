@@ -40,6 +40,7 @@ class MutasiKendaraanController extends Controller
         $dataJenisFilter = DB::table('cabang_pje')
             ->where('is_aktif', '=', "Y")
             ->get();
+            
         return view('pages.master.mutasi_kendaraan.index',[
             'judul' => "Mutasi Kendaraan",
             'dataKendaraan' => $dataKendaraan,
@@ -51,23 +52,21 @@ class MutasiKendaraanController extends Controller
     public function index()
     {
         $dataKendaraan = DB::table('mutasi_kendaraan AS mk')
-            ->select('mk.*')
-            // , 'k.no_polisi','ca.nama as cabangAsal','cb.nama as cabangTujuan', 
-            //     DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
-            // ->leftJoin('kendaraan as k', function($join) {
-            //     $join->on('k.id', '=', 'mk.asset_id')->where('k.is_aktif', '=', 'Y');
-            // })
-            // ->leftJoin('chassis as c', function($join) {
-            //     $join->on('c.id', '=', 'mk.asset_id')->where('c.is_aktif', '=', 'Y');
-            // })
-            // ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
-            // ->leftJoin('cabang_pje AS ca', 'mk.cabang_lama', '=', 'ca.id')
-            // ->leftJoin('cabang_pje AS cb', 'mk.cabang_baru', '=', 'cb.id')
+            ->select('mk.*','ca.nama as cabangAsal','cb.nama as cabangBaru', 'k.id_kategori', 
+                'k.no_polisi', DB::raw('CONCAT(c.kode, " - ", c.karoseri) AS chassis'),'kk.nama as kategori')
+            ->leftJoin('kendaraan as k', function($join) {
+                $join->on('k.id', '=', 'mk.kendaraan_id')->where('k.is_aktif', '=', 'Y');
+            })
+            ->leftJoin('chassis as c', function($join) {
+                $join->on('c.id', '=', 'mk.chassis_id')->where('c.is_aktif', '=', 'Y');
+            })
+            ->leftJoin('kendaraan_kategori as kk', function($join) {
+                $join->on('kk.id', '=', 'k.id_kategori')->where('kk.is_aktif', '=', 'Y');
+            })
+            ->leftJoin('cabang_pje AS ca', 'mk.cabang_lama', '=', 'ca.id')
+            ->leftJoin('cabang_pje AS cb', 'mk.cabang_baru', '=', 'cb.id')
             ->where('mk.is_aktif', 'Y') 
-            // ->orderBy('ca.nama', 'DESC')
-            // ->orderBy('k.no_polisi', 'ASC')
             ->get();
-        dd($dataKendaraan); 
         $dataJenisFilter = DB::table('cabang_pje')
             ->where('is_aktif', '=', "Y")
             ->get();
@@ -199,7 +198,8 @@ class MutasiKendaraanController extends Controller
                     }
 
                     $mut = new MutasiKendaraan();
-                    $mut->asset_id = $value['kendaraan'];
+                    $mut->kendaraan_id = isset($value['kendaraan'])? $value['kendaraan']:NULL;
+                    $mut->chassis_id = isset($value['chassis'])? $value['chassis']:NULL;
                     $mut->cabang_lama = $data['cabang_asal'];
                     $mut->cabang_baru = $data['cabang_tujuan'];
                     $mut->jenis = 'KENDARAAN';
@@ -236,7 +236,8 @@ class MutasiKendaraanController extends Controller
                     }
 
                     $mut = new MutasiKendaraan();
-                    $mut->asset_id = $value['kendaraan'];
+                    $mut->kendaraan_id = isset($value['kendaraan'])? $value['kendaraan']:NULL;
+                    $mut->chassis_id = isset($value['chassis'])? $value['chassis']:NULL;
                     $mut->cabang_lama = $data['cabang_asal'];
                     $mut->cabang_baru = $data['cabang_tujuan'];
                     $mut->jenis = 'KENDARAAN';
@@ -275,7 +276,8 @@ class MutasiKendaraanController extends Controller
                     }
                     
                     $mut = new MutasiKendaraan();
-                    $mut->asset_id = $value['chassis'];
+                    $mut->kendaraan_id = isset($value['kendaraan'])? $value['kendaraan']:NULL;
+                    $mut->chassis_id = isset($value['chassis'])? $value['chassis']:NULL;
                     $mut->cabang_lama = $data['cabang_asal'];
                     $mut->cabang_baru = $data['cabang_tujuan'];
                     $mut->jenis = 'CHASSIS';
