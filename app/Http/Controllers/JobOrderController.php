@@ -345,7 +345,7 @@ class JobOrderController extends Controller
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
             ->where('supplier.id', '=', $JobOrder->id_supplier)
-            ->get();
+            ->first();
         $dataCustomer = DB::table('customer')
             ->select('*')
             ->where('customer.is_aktif', '=', "Y")
@@ -356,7 +356,7 @@ class JobOrderController extends Controller
             ->select('*')
             ->where('jaminan.is_aktif', '=', "Y")
             ->where('jaminan.id_job_order', '=', $JobOrder->id)
-            ->get();
+            ->first();
         // var_dump(( isset($dataJaminan) ? 'xx':'zzz')); die;
         // $totalThc =  DB::table('job_order_detail_biaya')
         //     ->where('id_jo', $JobOrder->id)

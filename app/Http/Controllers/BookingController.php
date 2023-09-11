@@ -86,7 +86,7 @@ class BookingController extends Controller
             // $booking->tgl_berangkat =date_format($tgl_berangkat, 'Y-m-d');
             $booking->id_customer =$request->id_customer;
             $booking->id_grup_tujuan =$request->id_tujuan;
-            $booking->no_kontainer =$request->no_kontainer;
+            // $booking->no_kontainer =$request->no_kontainer;
             $booking->catatan =$request->catatan;
             $booking->created_at = date("Y-m-d h:i:s");
             $booking->created_by = $user; // manual
@@ -158,7 +158,7 @@ class BookingController extends Controller
                         'tgl_booking' => date_create_from_format('d-M-Y', $request->tgl_booking),
                         'id_customer' => $data['id_customer'],
                         'id_grup_tujuan' => $data['id_tujuan'],
-                        'no_kontainer' => $data['no_kontainer'],
+                        // 'no_kontainer' => $data['no_kontainer'],
                         'catatan' => $data['catatan'],
                         'updated_at'=> now(),
                         'updated_by'=> $user,

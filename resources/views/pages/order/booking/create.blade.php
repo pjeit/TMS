@@ -39,12 +39,12 @@
                 </div>
                 <div class="card-body">
                     <div class='row'>
-                        <div class="form-group col-12 col-md-4 col-lg-4">
+                        <div class="form-group col-12 col-md-3 col-lg-3">
                             <label>No Booking </label>
                             <input type="text" name="no_booking" id="no_booking" class="form-control" readonly placeholder="Otomatis">    
                             <input type="hidden" name="kode_cust" id="kode_cust" class="form-control" readonly placeholder="">    
                         </div>
-                        <div class="form-group col-12 col-md-4 col-lg-4">
+                        <div class="form-group col-12 col-md-3 col-lg-3">
                             <label>Tgl Booking</label>
                             <div class="input-group mb-0 ">
                                 <div class="input-group-prepend">
@@ -53,10 +53,19 @@
                                 <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" >
                             </div>
                         </div>
-                        <div class="form-group col-12 col-md-4 col-lg-4">
+                           <div class="form-group col-12 col-md-6 col-lg-6">
+                            <label>Customer <span class="text-red">*</span></label>
+                            <select class="form-control select2" style="width: 100%;" id='id_customer' name="id_customer" required>
+                                <option value="0">&nbsp;</option>
+                                @foreach ($customers as $item)
+                                    <option value="{{$item->id}}">{{ $item['kode'] }} - {{ $item['nama'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        {{-- <div class="form-group col-12 col-md-4 col-lg-4">
                             <label>No Kontainer </label>
                             <input type="text" name="no_kontainer" id="no_kontainer" class="form-control" >    
-                        </div>
+                        </div> --}}
                        
                         {{-- <div class="form-group col-12 col-md-4 col-lg-4">
                             <div class="form-group">
@@ -71,26 +80,18 @@
                         </div> --}}
                     </div> 
                     <div class='row'>
-                        <div class="form-group col-12 col-md-6 col-lg-6">
-                            <label>Customer <span class="text-red">*</span></label>
-                            <select class="form-control select2" style="width: 100%;" id='id_customer' name="id_customer" required>
-                                <option value="0">&nbsp;</option>
-                                @foreach ($customers as $item)
-                                    <option value="{{$item->id}}">{{ $item['kode'] }} - {{ $item['nama'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                     
                         
-                        <div class="form-group col-12 col-md-6 col-lg-6">
-                            <label>Tujuan <span class="text-red">*</span></label>
-                            <select id="id_tujuan" name="id_tujuan" style="width: 100%" class="select2"></select>
-                        </div>
-                      
                         <div class="form-group col-12 col-md-6 col-lg-6">
                             <label>Catatan </label>
                             <textarea name="catatan" id="catatan" class="form-control" cols="30" rows="3"></textarea>
                             {{-- <input type="text" name="catatan" id="catatan" class="form-control" >     --}}
                         </div>
+                        <div class="form-group col-12 col-md-6 col-lg-6">
+                            <label>Tujuan <span class="text-red">*</span></label>
+                            <select id="id_tujuan" name="id_tujuan" style="width: 100%" class="select2"></select>
+                        </div>
+                      
                     </div> 
                 </div>
             </div>

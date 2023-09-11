@@ -60,7 +60,7 @@
 </head>
 <body>
     <div class="kontener">
-         <h2 class="text">BILLING JO</h2>
+         <h2 class="text" style="text-align: center">BILLING JO</h2>
     </div>
      <table class="border-table">
         <thead>
@@ -86,11 +86,9 @@
                 <td class="align-left text">Pelayaran</td>
                 <td>:</td>
                 <td class="aligh-right">
-                    @foreach ($dataSupplier as $ds)
-                        @if($JobOrder->id_supplier == $ds->id)
-                            {{$ds->nama}}
+                        @if($JobOrder->id_supplier == $dataSupplier->id)
+                            {{$dataSupplier->nama}}
                         @endif
-                    @endforeach
                 </td>
             </tr>
             <tr>
@@ -168,7 +166,7 @@
         </tfoot>
     </table> --}}
 
-    <h3 class="text">Biaya pelayaran</h3>
+    <h3 class="text" style="text-align: center">Biaya pelayaran</h3>
       <table class="border-table td-atas"  id="sortable" >
             <thead>
                 {{-- <tr>
@@ -216,51 +214,55 @@
             <tfoot>
             </tfoot>
       </table>
-    @if(strlen($dataJaminan) > 5)
-        
         @php
             $total = 0;
         @endphp
-        <h3 class="text" style="margin-top: 1rem;">Biaya Jaminan</h3>
-    
-        <table class="border-table td-atas" id="sortable" >
-            <thead>
-                {{-- <tr>
-                    <th colspan="2">Biaya Sebelum Dooring</th>
-                </tr> --}}
-            </thead>
-            <tbody > 
-                @foreach ($dataJaminan as $dJ)
-                    @if($JobOrder->id == $dJ->id_job_order)
-                    <tr>
-                        <td>nominal</td>
-                        <td>:</td>
-                        <?php $nominal = $dJ->nominal ?>
-                        <?php $total = $dJ->nominal+$TotalBiayaRev ?>
-                        <td class="aligh-right">Rp. {{number_format($dJ->nominal,2) }}</td>
-    
-                    </tr>
-                    <tr>
-                        <td>Tanggal Bayar</td>
-                        <td>:</td>
-                        <td class="aligh-right">{{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
-                    </tr>
-                    @endif
-                @endforeach
-                
-            </tbody>
-            <tfoot>
-            </tfoot>
-        </table>
-        <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
-            @foreach ($dataSupplier as $ds)
-                @if($JobOrder->id_supplier == $ds->id)
-                    <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$ds->bank}} </b><br> 
-                    atas nama : <b>{{$ds->rek_nama}} </b><br>
-                    dengan nomor rekening : <b><u>{{$ds->no_rek}}</u></b></p>
-                @endif
-            @endforeach
-    @endif
+        @if($dataJaminan)
+        
+            <h3 class="text" style="margin-top: 1rem;text-align: center;" >Biaya Jaminan</h3>
+        
+            <table class="border-table td-atas" id="sortable" >
+                <thead>
+                    {{-- <tr>
+                        <th colspan="2">Biaya Sebelum Dooring</th>
+                    </tr> --}}
+                </thead>
+                <tbody > 
+                        @if($JobOrder->id == $dataJaminan->id_job_order)
+                        <tr>
+                            <td>nominal</td>
+                            <td>:</td>
+                            @php $total = $dataJaminan->nominal+$TotalBiayaRev @endphp
+                            <td class="aligh-right">Rp. {{number_format($dataJaminan->nominal,2) }}</td>
+        
+                        </tr>
+                        <tr>
+                            <td>Tanggal Bayar</td>
+                            <td>:</td>
+                            <td class="aligh-right">{{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
+                        </tr>
+                        @endif
+                    
+                </tbody>
+                <tfoot>
+                </tfoot>
+            </table>
+             <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
+               
+        @else
+             @php $total = $TotalBiayaRev @endphp
+              <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
+              
+
+        
+        @endif
+        @if($JobOrder->id_supplier == $dataSupplier->id)
+            <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$dataSupplier->bank}} </b><br> 
+            atas nama : <b>{{$dataSupplier->rek_nama}} </b><br>
+            dengan nomor {{$dataSupplier->is_virtual_acc == "Y"?'virtual account':'rekening'}} : <b><u>{{$dataSupplier->no_rek}}</u></b></p>
+        @endif
+
+       
     
       
         {{-- <div style="display: flex; justify-content: space-between;">

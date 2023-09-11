@@ -39,11 +39,11 @@
                     </div>
                     <div class="card-body">
                         <div class='row'>
-                            <div class="form-group col-12 col-md-4 col-lg-4">
+                            <div class="form-group col-12 col-md-3 col-lg-3">
                                 <label>No Booking </label>
                                 <input type="text" name="no_booking" id="no_booking" class="form-control" readonly value="{{old('no_booking',$booking->no_booking) }}">    
                             </div>
-                            <div class="form-group col-12 col-md-4 col-lg-4">
+                            <div class="form-group col-12 col-md-3 col-lg-3">
                                 <label>Tgl Booking</label>
                                 <div class="input-group mb-0 ">
                                     <div class="input-group-prepend">
@@ -52,10 +52,19 @@
                                     <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" readonly value="{{old('tgl_booking',\Carbon\Carbon::parse($booking->tgl_booking)->format('d-M-Y')) }}">
                                 </div>
                             </div>
-                            <div class="form-group col-12 col-md-4 col-lg-4">
+                            <div class="form-group col-12 col-md-6 col-lg-6">
+                                <label>Customer <span class="text-red">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id='id_customer' name="id_customer" required>
+                                    <option value="0">&nbsp;</option>
+                                    @foreach ($customers as $item)
+                                        <option value="{{$item->id}}" {{$booking->id_customer == $item->id? 'selected' :'' }}>{{ $item['kode'] }} - {{ $item['nama'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            {{-- <div class="form-group col-12 col-md-4 col-lg-4">
                                 <label>No Kontainer </label>
                                 <input type="text" name="no_kontainer" id="no_kontainer" class="form-control" value="{{old('no_booking',$booking->no_kontainer) }}">    
-                            </div>
+                            </div> --}}
                             {{-- <div class="form-group col-12 col-md-4 col-lg-4">
                                 <div class="form-group">
                                     <label>Tgl Berangkat <span class="text-red">*</span></label>
@@ -69,20 +78,6 @@
                             </div> --}}
                         </div> 
                         <div class='row'>
-                            <div class="form-group col-12 col-md-6 col-lg-6">
-                                <label>Customer <span class="text-red">*</span></label>
-                                <select class="form-control select2" style="width: 100%;" id='id_customer' name="id_customer" required>
-                                    <option value="0">&nbsp;</option>
-                                    @foreach ($customers as $item)
-                                        <option value="{{$item->id}}" {{$booking->id_customer == $item->id? 'selected' :'' }}>{{ $item['kode'] }} - {{ $item['nama'] }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            
-                            <div class="form-group col-12 col-md-6 col-lg-6">
-                                <label>Tujuan <span class="text-red">*</span></label>
-                                <select id="id_tujuan" name="id_tujuan" style="width: 100%" class="select2"></select>
-                            </div>
                             
                             <div class="form-group col-12 col-md-6 col-lg-6">
                                 <label>Catatan </label>
@@ -90,6 +85,12 @@
                                 {{-- <input type="text" name="catatan" id="catatan" class="form-control" value="{{old('no_booking',$booking->catatan) }}">     --}}
 
                             </div>
+                            
+                            <div class="form-group col-12 col-md-6 col-lg-6">
+                                <label>Tujuan <span class="text-red">*</span></label>
+                                <select id="id_tujuan" name="id_tujuan" style="width: 100%" class="select2"></select>
+                            </div>
+                            
                         </div> 
                     </div>
                 </div>
