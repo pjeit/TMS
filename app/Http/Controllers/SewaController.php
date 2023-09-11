@@ -58,7 +58,7 @@ class SewaController extends Controller
         $dataDriver = DB::table('karyawan')
             ->select('*')
             ->where('karyawan.is_aktif', "Y")
-            ->where('karyawan.posisi_id', 5)
+            ->where('karyawan.role_id', 5)
             ->orderBy('nama_lengkap')
             ->get();
         $dataBooking = DB::table('booking as b')
@@ -75,13 +75,13 @@ class SewaController extends Controller
         // dd($dataBooking);
 
         $dataKendaraan = DB::table('kendaraan AS k')
-                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi', 'kkm.nama as kategoriKendaraan','kt.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
                 ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
                     $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
                 })
                 ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
                 ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
-                ->leftJoin('m_kota AS kt', 'k.kota_id', '=', 'kt.id')
+                ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
                 ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
                     ->where(function ($query) {
                         $query->where('k.is_aktif', '=', 'Y')
@@ -93,7 +93,7 @@ class SewaController extends Controller
                         $innerQuery->where('k.id_kategori', '!=', 1);
                     });
                 })
-                ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','kt.nama')
+                ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                 ->get();
             return view('pages.order.truck_order.create',[
                 'judul'=>"Trucking Order",
