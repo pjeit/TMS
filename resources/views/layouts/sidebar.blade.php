@@ -298,7 +298,7 @@
                   <a href="{{route('pengaturan_keuangan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pengaturan_keuangan*') ? ' active' : '' }} ">
                   <i class="far nav-icon fa fa-cog"></i>
                     <p style="font-size: 15px;">
-                      pengaturan
+                      Pengaturan
                     </p>
                   </a> 
                 </li> 

@@ -413,7 +413,7 @@
                                 <select class="form-control selectpicker" name="role" id="role" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
                                     <option value="">--Pilih Posisi--</option>
                                     @foreach($dataRole as $data)
-                                        <option value="{{$data->id}}"{{$karyawan->posisi_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                        <option value="{{$data->id}}"{{$karyawan->role_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -423,7 +423,7 @@
                                 <select class="form-control selectpicker" name="cabang_kantor" id="cabang_kantor" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
                                     <option value="">--Pilih Cabang Kantor--</option>
                                     @foreach($dataKota as $data)
-                                        <option value="{{$data->id}}"{{$karyawan->m_kota_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                        <option value="{{$data->id}}"{{$karyawan->cabang_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
                                     @endforeach
                                 </select>
                             </div>

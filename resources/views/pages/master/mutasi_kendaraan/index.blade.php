@@ -32,39 +32,58 @@
             
             <div class="card-body">
                <section class="col-lg-12" id="show_report">
-                <div class="form-group w-25">
-                        <form id="filterForm" action="{{ route('filterMutasi.cari')}}" method="get">
-                            <label>Filter Cabang</label>
-                             <select class="form-control select2" style="width: 100%;" id='jenisFilter' name="jenisFilter">
-                                <option value="">ALL</option>
+                <form action="{{ url('mutasi_kendaraan')}}" method="get">
+                    <div class="row">
+                        <div class="form-group col-lg-3 col-md-4 col-sm-4">
+                            <label>Cabang Asal</label>
+                            <select class="form-control select2" style="width: 100%;" id='cabang_asal' name="cabang_asal">
+                                <option value="">SEMUA DATA</option>
                                 @foreach($dataJenisFilter as $dat)
-                                        <option value="{{$dat->id}}" id="">{{$dat->nama}}</option>
+                                        <option value="{{$dat->id}}" {{ isset($request['cabang_asal'])? $request['cabang_asal'] == $dat->id ? 'selected':'' :'' }} >{{$dat->nama}}</option>
                                 @endforeach
                                 <input type="hidden" id="SimpenId">
-                                
                             </select>
-                           
-                        </form>
+                        </div>
+                        <div class="form-group col-lg-3 col-md-4 col-sm-4">
+                            <label>Cabang Tujuan</label>
+                            <select class="form-control select2" style="width: 100%;" id='cabang_tujuan' name="cabang_tujuan">
+                                <option value="">SEMUA DATA</option>
+                                @foreach($dataJenisFilter as $dat)
+                                        <option value="{{$dat->id}}" {{ isset($request['cabang_tujuan'])? $request['cabang_tujuan'] == $dat->id ? 'selected':'' :'' }} >{{$dat->nama}}</option>
+                                @endforeach
+                                <input type="hidden" id="SimpenId">
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-2 col-md-2 col-sm-4">
+                            <label class="d-none d-sm-block">&nbsp;</label>
+                            <button class="btn btn-secondary form-control radiusSendiri"><span class="fa fa-search"></span> Filter</button>
+                        </div>
                     </div>
+                </form>
+                
                 <table id="datatable" class="table table-bordered table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Cabang Asal</th>
                             <th>Cabang Tujuan</th>
                             <th>Kategori Kendaraan</th>
-                            <th>Nopol</th>
-                            <th>Ekor</th>
+                            <th>No. Polisi</th>
+                            <th>Chassis</th>
+                            <th>Tgl Mutasi</th>
+                            <th>Catatan</th>
                         </tr>
                     </thead>
                     <tbody id="hasil">
                         @isset($dataKendaraan)
                             @foreach ($dataKendaraan as $item)
                                 <tr>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
-                                    <td>{{$item->id}}</td>
+                                    <td>{{$item->cabangAsal}}</td>
+                                    <td>{{$item->cabangBaru}}</td>
+                                    <td>{{$item->kategori}}</td>
+                                    <td>{{$item->no_polisi}}</td>
+                                    <td>{{$item->chassis}}</td>
+                                    <td>{{date("d-M-Y", strtotime($item->created_at))}}</td>
+                                    <td>{{$item->catatan}}</td>
                                 </tr>
                             @endforeach
                         @endisset
@@ -76,26 +95,7 @@
         {{-- </div> --}}
     </div>
 </div>
- <script type="text/javascript">
-var currentUrl = window.location.href;
-var baseUrl = currentUrl.split('=');
-var idUrl = parseFloat(baseUrl[1]);
-// $('#jenisFilter').val(idUrl).selectpicker("refresh");
 
- $(document).ready(function() {
-    var id =localStorage.getItem("SimpenId");
-    console.log(id);
-    if (!isNaN(idUrl) &&idUrl==id) {
-        $(`#jenisFilter option[value="${idUrl}"]`).prop('selected', true);
-    }
-    $('#jenisFilter').change(function (e) {
-      localStorage.setItem("SimpenId", $(this).val());
-      e.preventDefault();
-      
-        $('#filterForm').submit();
-    });
- });
-</script>  
 <script>
     $(document).ready(function() {
         // var formElement = document.querySelector("#form_report");

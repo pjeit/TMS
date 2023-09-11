@@ -32,7 +32,7 @@
                             @foreach($data as $item)
                             <tr>
                                 <td>{{ $item->nama_grup }}</td>
-                                <td>{{ $item->total_tujuan }}</td>
+                                <td>{{ $item->total_tujuan == 0 ? '-':$item->total_tujuan .' Tujuan' }}</td>
                                 <td style="text-align: center">                                    
                                     {{-- <div class="btn-group dropleft">
                                         <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
