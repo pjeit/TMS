@@ -106,12 +106,12 @@
                                         <h6 class="my-0">Biaya Jaminan</h6>
                                         {{-- <small class="text-muted">total</small> --}}
                                         </div>
-                                        <span class="text-muted">Rp. {{number_format($dataJaminan[0]->nominal,2)}}</span>
+                                        <span class="text-muted">Rp. {{number_format($dataJaminan->nominal,2)}}</span>
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between">
                                         <span>Total (IDR)</span>
                                         <input type="hidden" name="total_sblm_dooring" value="{{$TotalBiayaRev}}">
-                                        <strong>Rp. {{number_format($TotalBiayaRev+$dataJaminan[0]->nominal,2)}}</strong>
+                                        <strong>Rp. {{number_format($TotalBiayaRev+$dataJaminan->nominal,2)}}</strong>
                                     </li>
                                 </ul>
                                 <div class="input-group">
@@ -182,7 +182,7 @@
                                     </tr>
                                     <tr>
                                         <th>Total Jaminan</th>
-                                        <th>Rp. {{number_format($dataJaminan[0]->nominal,2)}}</th>
+                                        <th>Rp. {{number_format($dataJaminan->nominal,2)}}</th>
                                     </tr>
                                 </tbody>
                                 <tfoot>

@@ -357,7 +357,7 @@ class JobOrderController extends Controller
             ->where('jaminan.is_aktif', '=', "Y")
             ->where('jaminan.id_job_order', '=', $JobOrder->id)
             ->get();
-
+        // var_dump(( isset($dataJaminan) ? 'xx':'zzz')); die;
         // $totalThc =  DB::table('job_order_detail_biaya')
         //     ->where('id_jo', $JobOrder->id)
         //     ->where('keterangan', 'LIKE', '%THC%')

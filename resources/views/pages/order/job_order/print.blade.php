@@ -13,15 +13,15 @@
 
     <title>Document</title>
     <style type="text/css">
-   .table-bawah{
-    float: left;
-      font-family: Arial, sans-serif;
-      font-size: 20px;
-   }
-    .border-table{
-        width: 100%; /* Optional: Set table width */    
-        border: 1px solid #00000; /* Border around the table */
-    }
+        .table-bawah{
+            float: left;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
+        }
+        .border-table{
+            width: 100%; /* Optional: Set table width */    
+            border: 1px solid #00000; /* Border around the table */
+        }
         /* .kontener{
             display: flex;
             justify-content: space-between;
@@ -37,26 +37,23 @@
             margin-bottom: 200px; 
         }
         .text{
-              text-transform: uppercase;
-              font-family: Arial, sans-serif;
-              font-size: 20px;
+            text-transform: uppercase;
+            font-family: Arial, sans-serif;
+            font-size: 20px;
 
               
         }
         .text-kecil{
-        
-              font-family: Arial, sans-serif;
-              font-size: 20px;
-
+            font-family: Arial, sans-serif;
+            font-size: 20px;
         }
         .p-50{
             padding-left: 50px;
         }
         .td-atas{
             text-transform: uppercase;
-              font-family: Arial, sans-serif;
-              font-size: 20px;
-
+            font-family: Arial, sans-serif;
+            font-size: 20px;
         }
        
     </style>
@@ -219,64 +216,67 @@
             <tfoot>
             </tfoot>
       </table>
+    @if(strlen($dataJaminan) > 5)
+        
+        @php
+            $total = 0;
+        @endphp
+        <h3 class="text" style="margin-top: 1rem;">Biaya Jaminan</h3>
     
-    <h3 class="text" style="margin-top: 1rem;">Biaya Jaminan</h3>
-
-         <table class="border-table td-atas" id="sortable" >
+        <table class="border-table td-atas" id="sortable" >
             <thead>
                 {{-- <tr>
                     <th colspan="2">Biaya Sebelum Dooring</th>
                 </tr> --}}
             </thead>
             <tbody > 
-            @foreach ($dataJaminan as $dJ)
-                @if($JobOrder->id == $dJ->id_job_order)
-                <tr>
-                    <td>nominal</td>
-                    <td>:</td>
-                    <?php $nominal = $dJ->nominal ?>
-                    <?php $total = $dJ->nominal+$TotalBiayaRev ?>
-                    <td class="aligh-right">Rp. {{number_format($dJ->nominal,2) }}</td>
-
-                </tr>
-                <tr>
-                    <td>Tanggal Bayar</td>
-                    <td>:</td>
-                    <td class="aligh-right">{{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
-                </tr>
-                @endif
-            @endforeach
-             
+                @foreach ($dataJaminan as $dJ)
+                    @if($JobOrder->id == $dJ->id_job_order)
+                    <tr>
+                        <td>nominal</td>
+                        <td>:</td>
+                        <?php $nominal = $dJ->nominal ?>
+                        <?php $total = $dJ->nominal+$TotalBiayaRev ?>
+                        <td class="aligh-right">Rp. {{number_format($dJ->nominal,2) }}</td>
+    
+                    </tr>
+                    <tr>
+                        <td>Tanggal Bayar</td>
+                        <td>:</td>
+                        <td class="aligh-right">{{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
+                    </tr>
+                    @endif
+                @endforeach
+                
             </tbody>
             <tfoot>
             </tfoot>
-      </table>
-      <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
-          @foreach ($dataSupplier as $ds)
-            @if($JobOrder->id_supplier == $ds->id)
-
-         <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$ds->bank}} </b><br> 
-            atas nama : <b>{{$ds->rek_nama}} </b><br>
-            dengan nomor rekening : <b><u>{{$ds->no_rek}}</u></b></p>
-
-               
-            @endif
-        @endforeach
+        </table>
+        <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
+            @foreach ($dataSupplier as $ds)
+                @if($JobOrder->id_supplier == $ds->id)
+                    <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$ds->bank}} </b><br> 
+                    atas nama : <b>{{$ds->rek_nama}} </b><br>
+                    dengan nomor rekening : <b><u>{{$ds->no_rek}}</u></b></p>
+                @endif
+            @endforeach
+    @endif
+    
       
-  {{-- <div style="display: flex; justify-content: space-between;">
-    <div style="flex-basis: 49%;">
-        <p style="text-align: left;">Finance,</p>
-        <br/>
-        <p style="text-align: left;">(.........................)</p>
-    </div>
+        {{-- <div style="display: flex; justify-content: space-between;">
+            <div style="flex-basis: 49%;">
+                <p style="text-align: left;">Finance,</p>
+                <br/>
+                <p style="text-align: left;">(.........................)</p>
+            </div>
 
-    <div style="flex-basis: 49%;">
-        <p style="text-align: right;">keterangan,</p>
-        <br/>
-        <br/>
-        <p style="text-align: right;">(.........................)</p>
-    </div>
-</div> --}}
+            <div style="flex-basis: 49%;">
+                <p style="text-align: right;">keterangan,</p>
+                <br/>
+                <br/>
+                <p style="text-align: right;">(.........................)</p>
+            </div>
+        </div> --}}
 <br/>
 <table class="table-bawah" >
       <thead>

@@ -693,10 +693,13 @@
                     var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
                     parentTd.find('.THC').val(strippingVal == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
                     parentTd.find('.LOLO').val(strippingVal == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
-                }else{
+                }else if(selectedValue == '20'){
                     var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
                     parentTd.find('.THC').val(strippingVal == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
                     parentTd.find('.LOLO').val(strippingVal == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
+                }else{
+                    parentTd.find('.THC').val(0);
+                    parentTd.find('.LOLO').val(0);
                 }
 
                 parentTd.find('.APBS').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);

@@ -96,7 +96,8 @@ class PaymentJobController extends Controller
             ->select('*')
             ->where('jaminan.is_aktif', '=', "Y")
             ->where('jaminan.id_job_order', '=', $pembayaran_jo->id)
-            ->get();
+            ->first();
+            dd($dataJaminan?$dataJaminan:0);
         $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
@@ -175,12 +176,12 @@ class PaymentJobController extends Controller
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->where('kas_bank.id', '=', $data['pembayaran'])
-            ->get();
+            ->first();
             $dataJaminan = DB::table('jaminan')
             ->select('*')
             ->where('jaminan.is_aktif', '=', "Y")
             ->where('jaminan.id_job_order', '=', $pembayaran_jo->id)
-            ->get();
+            ->first();
             // dd($pembayaran_jo->total_biaya_sebelum_dooring);
             // dd($dataJaminan[0]->nominal);
             // dd($data_saldo_kas_sekarang[0]->saldo_awal = $data_saldo_kas_sekarang[0]->saldo_awal - ($pembayaran_jo->total_biaya_sebelum_dooring+$dataJaminan[0]->nominal));
@@ -194,7 +195,7 @@ class PaymentJobController extends Controller
                     'is_aktif' => "Y",
                 )
             );
-            $perhitunganSaldo = $data_saldo_kas_sekarang[0]->saldo_sekarang - ($data['total_sblm_dooring']+$dataJaminan[0]->nominal);
+            $perhitunganSaldo = $data_saldo_kas_sekarang->saldo_sekarang - ($data['total_sblm_dooring']+$dataJaminan->nominal);
             // dd( $perhitunganSaldo );
             DB::table('kas_bank')
             ->where('id', $data['pembayaran'])
@@ -219,12 +220,12 @@ class PaymentJobController extends Controller
             ->select('*')
             ->where('coa.is_aktif', '=', "Y")
             ->where('coa.no_akun', '=', 1205)
-            ->get();
+            ->first();
             $coaPelayaran = DB::table('coa')
             ->select('*')
             ->where('coa.is_aktif', '=', "Y")
             ->where('coa.no_akun', '=', 5003)
-            ->get();
+            ->first();
             // dd( $coaJaminan[0]->no_akun );
             // id_kas_bank,1
             //tanggal,2
@@ -244,7 +245,7 @@ class PaymentJobController extends Controller
                 now(),//tanggal
                 0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                 $data['total_sblm_dooring'], //uang keluar (kredit)
-                $coaPelayaran[0]->no_akun, //kode coa
+                $coaPelayaran->no_akun, //kode coa
                 'biaya_pelayaran',
                 'UANG KELUAR - BIAYA PELAYARAN - JO', //keterangan_transaksi
                 $pembayaran_jo->no_jo,//keterangan_kode_transaksi
@@ -261,8 +262,8 @@ class PaymentJobController extends Controller
                 $data['pembayaran'],// id kas_bank dr form
                 now(),//tanggal
                 0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                $dataJaminan[0]->nominal, //uang keluar (kredit)
-                $coaJaminan[0]->no_akun, //kode coa
+                $dataJaminan->nominal, //uang keluar (kredit)
+                $coaJaminan->no_akun, //kode coa
                 'uang_jaminan',
                 'UANG KELUAR - UANG JAMINAN - JO', //keterangan_transaksi
                 $pembayaran_jo->no_jo,//keterangan_kode_transaksi
