@@ -36,7 +36,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="form-group col-12 col-md-6 col-sm-12">
-                            <label for="">Grup</label>
+                            <label for="">Grup<span class="text-red">*</span></label>
                             <select class="form-control select2" style="width: 100%;" id='grup_id' name="grup_id" required>
                                 <option value="0">&nbsp;</option>
                                 @foreach ($grup as $item)
@@ -46,7 +46,7 @@
                         </div>   
     
                         <div class="form-group col-12 col-md-6 col-sm-12">
-                            <label for="">Nama Marketing</label>
+                            <label for="">Nama Marketing<span class="text-red">*</span></label>
                             <input  type="text" required name="nama" class="form-control" value="{{$data->nama}}" >                         
                         </div>
 
@@ -61,15 +61,15 @@
                         </div>
 
                         <div class="form-group col-12 col-md-6 col-sm-12">
-                            <label for="">No Rekening</label>
+                            <label for="">No Rekening<span class="text-red">*</span></label>
                             <input type="text" name="no_rek" maxlength="20" class="form-control " value="{{$data->no_rek}}" required>                         
                         </div>
                         <div class="form-group col-12 col-md-6 col-sm-12">
-                            <label for="">Atas Nama Rekening</label>
+                            <label for="">Atas Nama Rekening<span class="text-red">*</span></label>
                             <input  type="text" required name="atas_nama" maxlength="30" class="form-control" value="{{$data->atas_nama}}" >                         
                         </div>
                         <div class="form-group col-12 col-md-6 col-sm-12">
-                            <label for="">Nama Bank</label>
+                            <label for="">Nama Bank<span class="text-red">*</span></label>
                             <input type="text" name="bank" maxlength="15" class="form-control " value="{{$data->bank}}" required>                         
                         </div>
                         <div class="form-group col-12 col-md-6 col-sm-12">
@@ -77,7 +77,7 @@
                             <input  type="text" name="cabang" maxlength="25" class="form-control" value="{{$data->cabang}}" >                         
                         </div>
                         <div class="form-group col-12 col-md-6 col-sm-12">
-                            <label for="telp_1">Telp</label>
+                            <label for="telp_1">Telp<span class="text-red">*</span></label>
                             <div class="input-group mb-0">
                               <div class="input-group-prepend">
                             <span class="input-group-text">+62</span>

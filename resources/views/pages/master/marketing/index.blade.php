@@ -31,6 +31,7 @@
                                 <th>Grup</th>
                                 <th>Nama</th>
                                 <th>Role</th>
+                                <th>No Telp</th>
                                 <th><div class="btn-group"></div></th>
                             </tr>
                           </thead>
@@ -41,6 +42,7 @@
                                     <td>{{ $item->nama_grup }}</td>  
                                     <td>{{ $item->nama }}</td>
                                     <td>{{ $item->nama_role }}</td>  
+                                    <td>0{{ $item->telp1 }}</td>  
                                     <td>                                    
                                         <div class="btn-group dropleft">
                                             <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

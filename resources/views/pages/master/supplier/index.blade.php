@@ -90,7 +90,7 @@
                                     <td>{{ $item->jenis }}</td>
                                     <td>{{ $item->nama }}</td>
                                     <td>{{ $item->alamat }}</td>  
-                                    <td>{{ $item->telp }}</td>  
+                                    <td>0{{ $item->telp }}</td>  
                                     <td>{{ $item->kota }}</td>
                                     <td>{{ $item->catatan }}</td>
                                     <td>                                    

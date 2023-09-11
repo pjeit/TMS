@@ -17,13 +17,6 @@
 <div class="container-fluid">
   
     @if ($errors->any())
-    {{-- <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div> --}}
         @foreach ($errors->all() as $error)
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ $error }}
@@ -89,10 +82,10 @@
                             <label for="">Telp</label>
                             <div class="input-group ">
                                 <div class="input-group-prepend">
-                                  <span class="input-group-text" id="basic-addon1"><i class="fa fa-phone" aria-hidden="true"></i>
+                                  <span class="input-group-text" id="basic-addon1"><strong>+62</strong></i>
                                   </span>
                                 </div>
-                                <input type="text" class="form-control" name="telp"  value="{{ $data->telp }}" >
+                                <input type="text" class="form-control numaja" name="telp" id='telp1' value="{{ $data->telp }}" >
                             </div>
                         </div>
     

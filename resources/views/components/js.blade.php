@@ -252,6 +252,9 @@
         }else if(inputValue.startsWith("628")){
             inputValue = "8" + inputValue.substring(3);
             $(this).val(inputValue);
+        }else if(inputValue.startsWith("+628")){
+            inputValue = "8" + inputValue.substring(4);
+            $(this).val(inputValue);
         }
     });
    $("#telp2").on("change", function() {
@@ -262,6 +265,9 @@
         }else if(inputValue.startsWith("628")){
             inputValue = "8" + inputValue.substring(3);
             $(this).val(inputValue);
+        }else if(inputValue.startsWith("+628")){
+            inputValue = "8" + inputValue.substring(4);
+            $(this).val(inputValue);
         }
     });
    $("#nomor_kontak_darurat").on("change", function() {
@@ -271,6 +277,9 @@
             $(this).val(inputValue);
         }else if(inputValue.startsWith("628")){
             inputValue = "8" + inputValue.substring(3);
+            $(this).val(inputValue);
+        }else if(inputValue.startsWith("+628")){
+            inputValue = "8" + inputValue.substring(4);
             $(this).val(inputValue);
         }
     });

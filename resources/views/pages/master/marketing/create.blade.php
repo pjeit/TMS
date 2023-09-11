@@ -81,7 +81,7 @@
                         </div>
 
                         <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="telp_1">Telp</label>
+                            <label for="telp_1">Telp<span class="text-red">*</span></label>
                             <div class="input-group mb-0">
                               <div class="input-group-prepend">
                                 <span class="input-group-text">+62</span>
