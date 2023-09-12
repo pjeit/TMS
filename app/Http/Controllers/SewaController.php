@@ -112,6 +112,7 @@ class SewaController extends Controller
             ->where('jod.id_jo', '=', $id)
             ->where('status' ,'like','%BELUM DOORING%')
             ->where('jod.is_aktif', '=', "Y")
+            ->whereNotNull('jod.id_grup_tujuan' )
             ->get();
         return response()->json($datajODetail);
         

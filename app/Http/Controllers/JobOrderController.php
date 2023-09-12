@@ -441,11 +441,13 @@ class JobOrderController extends Controller
             'isPhpEnabled' => true, // Enable inline PHP execution
             'defaultFont' => 'sans-serif',
              'dpi' => 180, // Set a high DPI for better resolution
+            //  'isRemoteEnabled', true
+             'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
         ]);
         // langsung download
         // return $pdf->download('fileCoba.pdf'); 
         // preview dulu
-        return $pdf->stream('fileCoba.pdf'); 
+        return $pdf->stream($JobOrder->no_jo.'.pdf'); 
 
         //  return view('pages.order.job_order.print',[
         //     'judul'=>"Job Order",
