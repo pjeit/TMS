@@ -31,7 +31,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                 </div>
-                                                <input type="text" name="tanggal_awal" autocomplete="off" class="date form-control" id="tanggal_awal" placeholder="dd-M-yyyy" value="{{ $request['tanggal_awal'] ?? '' }}">     
+                                                <input type="text" name="tanggal_awal" autocomplete="off" class="date form-control" id="tanggal_awal" placeholder="dd-M-yyyy" value="{{ isset($request['tanggal_awal'])? $request['tanggal_awal'] ?? '':date("d-M-Y") }}">     
                                             </div>
                                         </div>
                                     </div>
@@ -42,7 +42,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                 </div>
-                                                <input type="text" name="tanggal_akhir" autocomplete="off" class="date  form-control" id="tanggal_akhir" placeholder="dd-M-yyyy" value="{{ $request['tanggal_akhir'] ?? '' }}">     
+                                                <input type="text" name="tanggal_akhir" autocomplete="off" class="date  form-control" id="tanggal_akhir" placeholder="dd-M-yyyy" value="{{ isset($request['tanggal_akhir'])? $request['tanggal_akhir'] ?? '':date("d-M-Y") }}">     
                                             </div>
                                         </div>
                                     </div>
@@ -59,8 +59,8 @@
                                     <div class="col-4">
                                         <label for="">&nbsp;</label>
                                         <div class="d-flex justify-content-start" style="gap: 5px;">
-                                                <button type="submit" class="btn btn-primary radiusSendiri " onclick=""><i class="fas fa-search"></i> <b> Tampilkan Data</b></button>
-                                                <button type="button" class="btn btn-success radiusSendiri " onclick=""><i class="fas fa-file-excel"></i> <b> Export Excel</b></button>
+                                            <button type="submit" class="btn btn-primary radiusSendiri " onclick=""><i class="fas fa-search"></i> <b> Tampilkan Data</b></button>
+                                            <button type="button" class="btn btn-success radiusSendiri " onclick=""><i class="fas fa-file-excel"></i> <b> Export Excel</b></button>
                                         </div>
 
                                      
@@ -105,9 +105,14 @@
                                     @endphp
                                 <tr>
                                     {{-- <td>{{$key}}</td> --}}
-                                    <td>{{date('d-M-Y', strtotime($item->tanggal)) }}</td>
+                                    {{-- <td>{{date('d-M-Y', strtotime($item->tanggal)) }}</td> --}}
+                                    <td>{{ $item->keterangan_transaksi == 'Saldo Awal'? '':date('d-M-Y', strtotime($item->tanggal)) }}</td>
                                     <td>{{$item->jenis_deskripsi}}</td>
-                                    <td>{{$item->keterangan_transaksi}}</td>
+                                    @if ($item->keterangan_transaksi == 'Saldo Awal')
+                                        <td><b>{{$item->keterangan_transaksi}}</b></td>                                    
+                                    @else
+                                        <td>{{$item->keterangan_transaksi}}</td>
+                                    @endif
                                     <td>{{number_format($item->debit, 2)}}</td>
                                     <td>{{number_format($item->kredit, 2)}}</td>
                                     <td>{{number_format($item->total, 2)}}</td>

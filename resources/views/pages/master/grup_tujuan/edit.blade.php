@@ -68,10 +68,6 @@
                         <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
                     </div> --}}
                     <div class="card-body" >
-                    {{-- <div class="card-body" style="overflow-y: scroll; max-height:675px;"> --}}
-                        {{-- <button type="button" class="btn btn-sm btn-primary mx-4 my-3" onclick="open_detail('') "><i class='fas fa-plus-circle'></i><b style="font-size:16px">&nbsp; DAFTAR TUJUAN & TARIF</b></button> --}}
-
-
                         <input type="hidden" id="deleted_tujuan" name="data[deleted_tujuan]" placeholder="deleted_tujuan">
                         <input type="hidden" id="deleted_biaya" name="data[deleted_biaya]" placeholder="deleted_biaya">
           
@@ -138,10 +134,6 @@
                                         </tbody>
                                     </table>
                                 </form>
-                        </div>
-
-                        <div class="form-group">
-                            
                         </div>
                     </div>
                 </div>
