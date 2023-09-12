@@ -66,6 +66,7 @@
                         <div class="form-group col-4">
                             <label for="">Kota</label>
                             <select class="form-control select2" style="width: 100%;" id='kota_id' name="kota_id">
+                                <option value="">── PILIH KOTA ──</option>
                                 @foreach ($kota as $city)
                                     <option value="{{$city->id}}" <?= ($city->id==$data->kota_id)? 'selected':''; ?> >{{ $city->nama }}</option>
                                 @endforeach

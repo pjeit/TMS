@@ -177,7 +177,7 @@
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-6">
                                 <label for="nama_tujuan">Nama Tujuan <span style="color:red;">*</span></label>
-                                <input required type="text" class="form-control" maxlength="20" name="nama_tujuan" id="nama_tujuan" placeholder="Singkatan 20 Karakter"> 
+                                <input required type="text" class="form-control" maxlength="30" name="nama_tujuan" id="nama_tujuan" placeholder="Singkatan 20 Karakter"> 
                             </div>
                 
                             <div class="form-group col-lg-6 col-md-6 col-6">
