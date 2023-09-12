@@ -60,6 +60,11 @@
     .btn-rounded{
       border-radius: 10rem;
     }
+    .table_wrapper{
+       display: block;
+       overflow-x: auto;
+       white-space: nowrap;
+   }
 </style>
 
 {{-- custom css bootstrap dropdown --}}

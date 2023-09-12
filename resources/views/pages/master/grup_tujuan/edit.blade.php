@@ -262,8 +262,21 @@
                                 <input type="text" name="kargo_pje" class="form-control" id="kargo_pje" placeholder=""> 
                             </div>
                           
-                             <div class="form-group col-lg-4 col-md-6 col-sm-6">
-                                <label for="komisi">Seal PJE</label>
+                             <div class="form-group col-lg-3 col-md-6 col-sm-6">
+                                <label for="">Seal Pelayaran</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp.</span>
+                                    </div>
+                                    <input type="text" name="seal_pelayaran" class="form-control numaja uang" id="seal_pelayaran" placeholder="" readonly> 
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><input type="checkbox" id="check_is_seal_pelayaran" name="is_seal_pelayaran"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <div class="form-group col-lg-3 col-md-6 col-sm-6">
+                                <label for="">Seal PJE</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp.</span>
@@ -276,8 +289,8 @@
                             </div>
                               
       
-                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
-                                <label for="komisi">Tally</label>
+                            <div class="form-group col-lg-3 col-md-6 col-sm-6">
+                                <label for="">Tally</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp.</span>
@@ -290,8 +303,8 @@
 
                                 </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
-                                <label for="komisi">Plastik</label>
+                            <div class="form-group col-lg-3 col-md-6 col-sm-6">
+                                <label for="">Plastik</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp.</span>
@@ -447,6 +460,7 @@
          var master = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
             var uang = {
                 'seal_pje': master.seal_pje,
+                'seal_pelayaran': master.seal_pelayaran,
                 'tally': master.tally,
                 'plastik': master.plastik,
             };
@@ -459,6 +473,19 @@
             }else if($(this).is(":not(:checked)")){
                 $('#seal_pje').val('');
                 $('#seal_pje').attr('readonly',true);
+                // console.log("Checkbox is unchecked.");
+            }
+            totalTarif();
+        });
+       
+        $('#check_is_seal_pelayaran').click(function(){
+            if($(this).is(":checked")){
+                $('#seal_pelayaran').val(uang['seal_pelayaran'].toLocaleString());
+                // $('#seal_pje').attr('readonly',false);
+                // console.log("Checkbox is checked.");
+            }else if($(this).is(":not(:checked)")){
+                $('#seal_pelayaran').val('');
+                $('#seal_pelayaran').attr('readonly',true);
                 // console.log("Checkbox is unchecked.");
             }
             totalTarif();

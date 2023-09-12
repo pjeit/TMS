@@ -107,9 +107,10 @@ class PengaturanKeuanganController extends Controller
         $update->klaim_supir = $data['klaim_supir'];
         $update->batas_pemutihan = $data['batas_pemutihan'];
         $update->hutang_karyawan = $data['hutang_karyawan'];
-        $update->seal_pje = $data['seal_pje'];
-        $update->tally = $data['tally'];
-        $update->plastik = $data['plastik'];
+        $update->seal_pje = floatval(str_replace(',', '', $data['seal_pje']));
+        $update->seal_pelayaran = floatval(str_replace(',', '', $data['seal_pelayaran']));
+        $update->tally = floatval(str_replace(',', '', $data['tally']));
+        $update->plastik = floatval(str_replace(',', '', $data['plastik']));
         $update->updated_at = date("Y-m-d h:i:s");
         $update->updated_by = $user;
 
