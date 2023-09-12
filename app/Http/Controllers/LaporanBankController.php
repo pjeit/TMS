@@ -17,7 +17,7 @@ class LaporanBankController extends Controller
      */
     public function index(Request $request)
     {
-           $tanggal_awal   = $request->input('tanggal_awal');
+        $tanggal_awal   = $request->input('tanggal_awal');
         $tanggal_akhir  = $request->input('tanggal_akhir');
         $tipe           = $request->input('tipe');
 
@@ -44,7 +44,7 @@ class LaporanBankController extends Controller
                 ) as total,
                 if(@subtotal >= 0, abs(@subtotal), 0) as subtotal_debit,
                 if(@subtotal >= 0, 0, abs(@subtotal)) as subtotal_kredit,
-                @kas_bank_id := d.id_kas_bank as xx, d.id_kas_bank as id_kas_bank,
+                @kas_bank_id := d.id_kas_bank, d.id_kas_bank as id_kas_bank,
                 case
                   when d.jenis = 'saldo_awal' then
                     'Saldo Awal'
@@ -64,14 +64,14 @@ class LaporanBankController extends Controller
                     'Pindah Dana'
                   when d.jenis = 'lainnya' then
                     'Lainnya'
-                when d.jenis = 'biaya_admin' then
-                    'Biaya_admin'
-                when d.jenis = 'uang_klaim_supir' then
-                    'Klaim Supir'
-                  end jenis_deskripsi
+                  when d.jenis = 'biaya_admin' then
+                      'Biaya_admin'
+                  when d.jenis = 'uang_klaim_supir' then
+                      'Klaim Supir'
+                end jenis_deskripsi
                 FROM (
                     SELECT 
-                    id, id_kas_bank, CAST('$tgl_awal' AS DATE) AS tanggal, NULL AS jenis, 
+                    id, id_kas_bank, CAST(DATE_ADD('$tgl_akhir', interval 1 day) AS DATE) AS tanggal, NULL AS jenis, 
                     'Saldo Awal' AS keterangan_transaksi, NULL AS kode_coa, 
                     IF(SUM(debit) - SUM(kredit) >= 0, ABS(SUM(debit) - SUM(kredit)), 0) AS debit,
                     IF(SUM(debit) - SUM(kredit) >= 0, 0, ABS(SUM(debit) - SUM(kredit))) AS kredit,keterangan_kode_transaksi
@@ -90,7 +90,7 @@ class LaporanBankController extends Controller
                     AND is_aktif = 'Y'
                     --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                 ) AS d 
-                ORDER BY cast(tanggal as datetime),id     
+                ORDER BY cast(tanggal as datetime) desc,id     
             ");
 
             $kas = DB::table('kas_bank')->where('id', "$tipe")->first();

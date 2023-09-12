@@ -347,7 +347,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('job_order.index')}}" class="nav-link {{request()->url() === route('job_order.index')? ' active' : '' }} " style="font-weight: 500;">
+                <a href="{{route('job_order.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('job_order*') ? 'active' : ''  }}">
                 <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Job Order
@@ -390,7 +390,7 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('booking.index')}}" class="nav-link {{request()->url() === route('booking.index')? ' active' : '' }} " style="font-weight: 500;">
+                <a href="{{route('booking.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('booking*') ? 'active' : ''  }}">
                 <i class="far fa-bookmark nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Booking
@@ -400,7 +400,7 @@
             </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('truck_order.index')}}" class="nav-link {{request()->url() === route('truck_order.index')? ' active' : '' }} " style="font-weight: 500;">
+                <a href="{{route('truck_order.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('truck_order*') ? 'active' : ''  }}">
                 <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                   <p>
                      Order
@@ -411,8 +411,9 @@
            
           </li>
          
-          <li class="nav-item {{ request()->is('pembayaran_jo*')||
-            request()->is('pembayaran_sdt*')
+          <li class="nav-item {{ 
+            request()->is('pembayaran_jo*') ||
+            request()->is('pembayaran_sdt*') 
             ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-dollar-sign"></i>
@@ -423,7 +424,7 @@
           
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('pembayaran_jo.index')}}" class="nav-link {{request()->url() === route('pembayaran_jo.index')? ' active' : '' }} " style="font-weight: 500;">
+                <a href="{{route('pembayaran_jo.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pembayaran_jo*') ? 'active' : ''  }}">
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Pembayaran JO
@@ -443,7 +444,8 @@
             </ul>
           </li>
 
-          <li class="nav-item">
+          <li class="nav-item {{ request()->is('laporan_kas*') ||
+              request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-dollar-sign"></i>
               <p>LAPORAN FINANCE

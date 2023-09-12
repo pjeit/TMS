@@ -44,7 +44,7 @@ class LaporanKasController extends Controller
                 ) as total,
                 if(@subtotal >= 0, abs(@subtotal), 0) as subtotal_debit,
                 if(@subtotal >= 0, 0, abs(@subtotal)) as subtotal_kredit,
-                @kas_bank_id := d.id_kas_bank as xx, d.id_kas_bank as id_kas_bank,
+                @kas_bank_id := d.id_kas_bank,
                 case
                   when d.jenis = 'saldo_awal' then
                     'Saldo Awal'
@@ -71,7 +71,7 @@ class LaporanKasController extends Controller
                   end jenis_deskripsi
                 FROM (
                     SELECT 
-                    id, id_kas_bank, CAST('$tgl_awal' AS DATE) AS tanggal, NULL AS jenis, 
+                    id, id_kas_bank, CAST(DATE_ADD('$tgl_akhir', interval 1 day) AS DATE) AS tanggal, NULL AS jenis, 
                     'Saldo Awal' AS keterangan_transaksi, NULL AS kode_coa, 
                     IF(SUM(debit) - SUM(kredit) >= 0, ABS(SUM(debit) - SUM(kredit)), 0) AS debit,
                     IF(SUM(debit) - SUM(kredit) >= 0, 0, ABS(SUM(debit) - SUM(kredit))) AS kredit,keterangan_kode_transaksi
@@ -90,7 +90,7 @@ class LaporanKasController extends Controller
                     AND is_aktif = 'Y'
                     --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                 ) AS d 
-                ORDER BY cast(tanggal as datetime),id     
+                ORDER BY cast(tanggal as datetime) DESC,id     
             ");
 
             $kas = DB::table('kas_bank')->where('id', 2)->first();
