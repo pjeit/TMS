@@ -42,16 +42,16 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="form-group col-sm-12 col-md-4 col-lg-4">
-                            <label for="">Kategori Kendaraan</label>
-                            <select class="form-control select2" style="width: 100%;" id='kategori' name="kategori">
+                            <label for="">Kategori Kendaraan <span class="text-red">*</span></label>
+                            <select class="form-control select2" style="width: 100%;" id='kategori' name="kategori" required>
                                 @foreach ($kategoriTruck as $k)
                                     <option value="{{$k->id}}">{{$k->nama}}</option>
                                 @endforeach
                             </select>
                         </div> 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4">
-                            <label for="">Letak Kendaraan</label>
-                            <select class="form-control select2" style="width: 100%;" id='kota' name="kota">
+                            <label for="">Letak Kendaraan <span class="text-red">*</span> </label>
+                            <select class="form-control select2" style="width: 100%;" id='kota' name="kota" required>
                                 @foreach ($kota as $k)
                                     <option value="{{$k->id}}">{{$k->nama}}</option>
                                 @endforeach
@@ -65,11 +65,11 @@
                     <div class="row">
                         <div class="form-group col-sm-12 col-md-4 col-lg-4">
                             <label for="">Tahun Pembuatan</label>
-                            <input required type="text" name="tahun_pembuatan" maxlength="4" class="form-control" value="{{old('tahun_pembuatan','')}}" >
+                            <input  type="text" name="tahun_pembuatan" maxlength="4" class="form-control" value="{{old('tahun_pembuatan','')}}" >
                         </div>          
                         <div class="form-group col-sm-12 col-md-4 col-lg-4">
                             <label for="">Warna</label>
-                            <input required type="text" name="warna" class="form-control" value="{{old('warna','')}}" >
+                            <input  type="text" name="warna" class="form-control" value="{{old('warna','')}}" >
                         </div>     
                         <div class="form-group col-sm-12 col-md-4 col-lg-4">
                             <label for="">Driver (Optional)</label>
@@ -85,16 +85,16 @@
                     <div class="row">
                     
                         <div class="form-group col-sm-12 col-md-4 col-lg-5">
-                            <label for="">No. Mesin</label>
+                            <label for="">No. Mesin <span class="text-red">*</span></label>
                             <input required type="text" maxlength="20" name="no_mesin" class="form-control" value="{{old('no_mesin','')}}" >
                         </div>    
                         <div class="form-group col-sm-12 col-md-4 col-lg-4">
-                            <label for="">No. Rangka</label>
+                            <label for="">No. Rangka <span class="text-red">*</span></label>
                             <input required type="text" maxlength="20" name="no_rangka" class="form-control" value="{{old('no_rangka','')}}" >
                         </div>           
                         <div class="form-group col-sm-12 col-md-4 col-lg-3">
                             <label for="">Merk & Model</label>
-                            <input required type="text" name="merk_model" class="form-control" value="{{old('merk_model','')}}" >
+                            <input  type="text" name="merk_model" class="form-control" value="{{old('merk_model','')}}" >
                         </div>    
                     </div>
                          

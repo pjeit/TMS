@@ -72,7 +72,7 @@
                         </form>
                     </div>
                     <div id="data">
-                        <table id="myTable" class="table table-bordered table-striped" width="100%">
+                        <table id="datatable" class="table table-bordered table-striped" >
                             <thead>
                                 <tr>
                                 <th>Jenis Supplier</th>
@@ -155,16 +155,8 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    $(function () {
-      var table = $('#myTable').DataTable({
-        // responsive: true,
-        scrollX: true
 
-      });
-    });
-</script>
- <script type="text/javascript">
+<script type="text/javascript">
 var currentUrl = window.location.href;
 var baseUrl = currentUrl.split('=');
 var idUrl = parseFloat(baseUrl[1]);

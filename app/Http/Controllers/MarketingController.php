@@ -83,11 +83,17 @@ class MarketingController extends Controller
 
             $user = Auth::user()->id;
         
+            // hardcode langsung id marketing
+            $role = 6;
+            $roleMarketing = Role::where('is_aktif', 'Y')->where('nama', 'Marketing')->first();
+            if(isset($roleMarketing)){
+                $role = $roleMarketing->id;
+            }
+
             $new_customer = new Marketing();
             $new_customer->grup_id = $request->grup_id;
-            // hardcode langsung id marketing
-            $role = Role::where('is_aktif', 'Y')->get();
-            $new_customer->role_id = $role[2]->id; // marketing
+
+            $new_customer->role_id = $role; // marketing
             $new_customer->nama = $request->nama;
             $new_customer->no_rek = $request->no_rek;
             $new_customer->atas_nama = $request->atas_nama;

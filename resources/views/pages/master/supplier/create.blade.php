@@ -62,8 +62,8 @@
                         </div>
     
                         <div class="form-group col-4">
-                            <label for="">Jenis Supplier</label>
-                            <select class="form-control select2" style="width: 100%;" id='jenis_supplier_id' name="jenis_supplier_id">
+                            <label for="">Jenis Supplier <span style="color: red">*</span></label>
+                            <select class="form-control select2" style="width: 100%;" id='jenis_supplier_id' name="jenis_supplier_id" required>
                                 @foreach ($jenis_supplier as $jenis)
                                     <option value="{{$jenis->id}}">{{ $jenis->nama }}</option>
                                 @endforeach
@@ -71,8 +71,9 @@
                         </div>   
     
                         <div class="form-group col-4">
-                            <label for="">Kota</label>
-                            <select class="form-control select2" style="width: 100%;" id='kota_id' name="kota_id">
+                            <label for="">Kota <span style="color: red">*</span></label>
+                            <select class="form-control select2"  id='kota_id' name="kota_id" required>
+                                <option value="">── PILIH KOTA ──</option>
                                 @foreach ($kota as $city)
                                     <option value="{{$city->id}}">{{ $city->nama }}</option>
                                 @endforeach
@@ -82,7 +83,7 @@
                    
                     <div class="row col-12">
                         <div class="form-group col-4">
-                            <label for="">Alamat</label>
+                            <label for="">Alamat <span style="color: red">*</span></label>
                             <input required type="text" name="alamat" class="form-control" value="{{old('alamat','')}}" >                         
                         </div>
     
@@ -115,7 +116,7 @@
                     <div class="row col-12">
                         <div class="form-group col-4">
                             <label for="">NPWP / KTP</label>
-                            <input required type="text" name="npwp" class="form-control" value="{{old('npwp','')}}" >                         
+                            <input  type="text" name="npwp" class="form-control" value="{{old('npwp','')}}" >                         
                         </div>
                         <div class="form-group col-4">
                             <label for="">Catatan</label>
@@ -148,7 +149,7 @@
                 <div class="card-body">
                         <div class="row col-12">
                             <div class="form-group col-6">
-                                <label for="tanggal_keluar">No. Rekening <span style="opacity: 40%">(Harap dicentang apabila virtual account)</span></label>
+                                <label for="tanggal_keluar">No. Rekening <span style="color: red">*</span> <span style="opacity: 40%">(Harap dicentang apabila virtual account)</span></label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><input type="checkbox" id="cekVirtual" name="cekVirtual" value="N"></span>
@@ -160,19 +161,19 @@
                             </div>
                      
                             <div class="form-group col-6">
-                                <label for="">Atas Nama</label>
+                                <label for="">Atas Nama <span style="color: red">*</span></label>
                                 <input required type="text" name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
                             </div>
                         </div>
                         <div class="row col-12">
                             <div class="form-group col-6">
-                                <label for="">Bank</label>
+                                <label for="">Bank <span style="color: red">*</span></label>
                                 <input required type="text" name="bank" class="form-control" value="{{old('bank','')}}" >                         
                             </div>
                      
                             <div class="form-group col-6">
                                 <label for="">Cabang</label>
-                                <input required type="text" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
+                                <input type="text" name="cabang" class="form-control" value="{{old('cabang','')}}" >                         
                             </div>
                         </div>
                     

@@ -65,7 +65,7 @@
                  
                         <div class="form-group  col-12 col-md-6 col-sm-12">
                             <label for="">No Rekening<span class="text-red">*</span></label>
-                            <input type="text" name="no_rek" maxlength="20" class="form-control " value="{{old('no_rek','')}}" required>                         
+                            <input type="text" name="no_rek" maxlength="20" class="form-control numaja" value="{{old('no_rek','')}}" required>                         
                         </div>
                         <div class="form-group  col-12 col-md-6 col-sm-12">
                             <label for="">Atas Nama Rekening<span class="text-red">*</span></label>
