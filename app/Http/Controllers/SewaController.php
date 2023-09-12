@@ -117,6 +117,23 @@ class SewaController extends Controller
         return response()->json($datajODetail);
         
     }
+    public function getDetailJOBiaya($id)
+    {
+        $datajODetail = DB::table('job_order_detail_biaya as jodb')
+            ->select('jodb.*')
+            ->Join('job_order_detail AS job', function($join) {
+                    $join->on('job.id', '=', 'jobd.id_jo_detail')
+                    ->where('jod.is_aktif', '=', 'Y')
+                    ->where('status' ,'like','%BELUM DOORING%')
+                    ->whereNotNull('jod.id_grup_tujuan');
+                })
+            ->where('jodb.id_jo_detail', '=', $id)
+            ->where('status_bayar' ,'like','%SELESAI PEMBAYARAN%')
+            ->where('jodb.is_aktif', '=', "Y")
+            ->get();
+        return response()->json($datajODetail);
+        
+    }
     public function getTujuanCust($id)
     {
         $cust = Customer::where('id', $id)->first();
