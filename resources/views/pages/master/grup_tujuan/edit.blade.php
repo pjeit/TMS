@@ -102,7 +102,6 @@
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
                                                             <input type="text" name="data[tujuan][{{$key}}][tarif]" id="tarif_{{$key}}" value="{{ number_format($item->tarif) }}" class="form-control numaja uang tarif" readonly/>
-                                                            {{-- <input type="text" id="total_tarif_{{$key}}" value="{{number_format($item->tarif+$item->seal_pje+$item->tally+$item->plastik)}}" class="form-control numaja uang tarif" readonly placeholder="tarif"/> --}}
                                                         </td>
                                                         <td style="padding: 5px; text-align: center; vertical-align: middle;">
                                                             <input style="" type="text" name="data[tujuan][{{$key}}][uang_jalan]" id="uang_jalan_{{$key}}" value="{{ number_format($item->uang_jalan) }}" class="form-control numaja uang uangJalan" readonly/>
@@ -126,10 +125,11 @@
                                                         <input type="hidden" name="data[tujuan][{{$key}}][marketing_hidden]" id="marketing_hidden_{{$key}}" value="{{$item->marketing_id}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][obj_biaya]" id="obj_biaya{{$key}}" value="{{$item->detail_uang_jalan}}">
                                                         {{-- timoth tambah --}}
-                                                        <input type="hidden" name="data[tujuan][{{$key}}][seal_hidden]" id="seal_pje_hidden_{{$key}}" value="{{$item->seal_pje?number_format($item->seal_pje):''}}"placeholder="">
-                                                        <input type="hidden" name="data[tujuan][{{$key}}][tally_hidden]" id="tally_hidden_{{$key}}" value="{{$item->tally?number_format($item->tally):''}}"placeholder="">
-                                                        <input type="hidden" name="data[tujuan][{{$key}}][plastik_hidden]" id="plastik_hidden_{{$key}}" value="{{$item->plastik?number_format($item->plastik):''}}"placeholder="">
-                                                        <input type="hidden" name="data[tujuan][{{$key}}][kargo_hidden]" id="kargo_hidden_{{$key}}" value="{{$item->kargo}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][seal_pelayaran_hidden]" id="seal_pelayaran_hidden_{{$key}}" value="{{isset($item->seal_pelayaran)? number_format($item->seal_pelayaran):''}}" >
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][seal_pje_hidden]" id="seal_pje_hidden_{{$key}}" value="{{isset($item->seal_pje)? number_format($item->seal_pje):''}}" >
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][tally_hidden]" id="tally_hidden_{{$key}}" value="{{isset($item->tally)? number_format($item->tally):''}}" >
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][plastik_hidden]" id="plastik_hidden_{{$key}}" value="{{isset($item->plastik)? number_format($item->plastik):''}}" >
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][kargo_hidden]" id="kargo_hidden_{{$key}}" value="{{isset($item->kargo)}}">
 
                                                         <td><button type="button" name="remove" id="{{$key}}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr> 
                                                     </tr>
@@ -177,7 +177,7 @@
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-6">
                                 <label for="nama_tujuan">Nama Tujuan <span style="color:red;">*</span></label>
-                                <input required type="text" class="form-control" maxlength="30" name="nama_tujuan" id="nama_tujuan" placeholder="Singkatan 20 Karakter"> 
+                                <input required type="text" class="form-control" maxlength="50" name="nama_tujuan" id="nama_tujuan" placeholder="Singkatan 20 Karakter"> 
                             </div>
                 
                             <div class="form-group col-lg-6 col-md-6 col-6">
@@ -468,7 +468,6 @@
         $('#check_is_seal_pje').click(function(){
             if($(this).is(":checked")){
                 $('#seal_pje').val(uang['seal_pje'].toLocaleString());
-                // $('#seal_pje').attr('readonly',false);
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
                 $('#seal_pje').val('');
@@ -481,7 +480,7 @@
         $('#check_is_seal_pelayaran').click(function(){
             if($(this).is(":checked")){
                 $('#seal_pelayaran').val(uang['seal_pelayaran'].toLocaleString());
-                // $('#seal_pje').attr('readonly',false);
+            
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
                 $('#seal_pelayaran').val('');
@@ -506,7 +505,7 @@
 
         $('#check_is_plastik').click(function(){
             if($(this).is(":checked")){
-                $('#plastik_pje').val(uang['tally'].toLocaleString());
+                $('#plastik_pje').val(uang['plastik'].toLocaleString());
                 // $('#plastik_pje').attr('readonly',false);
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
@@ -815,7 +814,10 @@
             if($('#seal_pje_hidden_'+key).val() != ''){
                 $('#seal_pje').val($('#seal_pje_hidden_'+key).val());
                 $('#check_is_seal_pje').prop('checked',true);
-                // $('#seal_pje').attr('readonly',false);
+            }
+            if($('#seal_pelayaran_hidden_'+key).val() != ''){
+                $('#seal_pelayaran').val($('#seal_pelayaran_hidden_'+key).val());
+                $('#check_is_seal_pelayaran').prop('checked',true);
             }
 
             if($('#tally_hidden_'+key).val() != ''){
@@ -883,8 +885,11 @@
             var t_tarif_input = $('#tarif').val();
             var t_tarif_parsed = parseFloat(t_tarif_input.replace(/,/g, '')) || 0;
 
-            var t_seal_input = $('#seal_pje').val();
-            var t_seal_parsed = parseFloat(t_seal_input.replace(/,/g, '')) || 0;
+            var t_seal_pje_input = $('#seal_pje').val();
+            var t_seal_pje_parsed = parseFloat(t_seal_pje_input.replace(/,/g, '')) || 0;
+
+            var t_seal_pelayaran_input = $('#seal_pelayaran').val();
+            var t_seal_pelayaran_parsed = parseFloat(t_seal_pelayaran_input.replace(/,/g, '')) || 0;
 
             var t_tally_input = $('#tally_pje').val();
             var t_tally_parsed = parseFloat(t_tally_input.replace(/,/g, '')) || 0;
@@ -892,7 +897,7 @@
             var t_plastik_input = $('#plastik_pje').val();
             var t_plastik_parsed = parseFloat(t_plastik_input.replace(/,/g, '')) || 0;
             
-            var t_total = t_tarif_parsed + t_seal_parsed + t_tally_parsed + t_plastik_parsed;
+            var t_total = t_tarif_parsed + t_seal_pje_parsed + t_tally_parsed + t_plastik_parsed + t_seal_pelayaran_input;
             var formattedTotal = t_total.toLocaleString(); // Format with commas
             $('#total_tarif').val(formattedTotal);
         }
@@ -972,6 +977,7 @@
                     $('#grup_hidden_'+key).val($('#grup').val());
                     $('#marketing_hidden_'+key).val($('#marketing').val());
                     $('#seal_pje_hidden_'+key).val($('#seal_pje').val());
+                    $('#seal_pelayaran_hidden_'+key).val($('#seal_pelayaran').val());
                     $('#tally_hidden_'+key).val($('#tally_pje').val());
                     $('#plastik_hidden_'+key).val($('#plastik_pje').val());
                     $('#kargo_hidden_'+key).val($('#kargo_pje').val());
@@ -1100,7 +1106,8 @@
                             <input value="${$('#min_muatan').val()}" name="data[tujuan][${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}" type="hidden" >
                             <input value="${$('#grup').val()}" name="data[tujuan][${i}][grup_hidden]" id="grup_hidden_${i}" type="hidden"  placeholder="">
                             <input value="${$('#marketing').val()}" name="data[tujuan][${i}][marketing_hidden]" id="marketing_hidden_${i}" type="hidden" placeholder="">
-                            <input value="${$('#seal_pje').val()}" type="hidden" name="data[tujuan][${i}][seal_hidden]" id="seal_pje_hidden_${i}" placeholder="">
+                            <input value="${$('#seal_pje').val()}" type="hidden" name="data[tujuan][${i}][seal_pje_hidden]" id="seal_pje_hidden_${i}" placeholder="">
+                            <input value="${$('#seal_pelayaran').val()}" type="hidden" name="data[tujuan][${i}][seal_pelayaran_hidden]" id="seal_pelayaran_hidden_${i}" placeholder="">
                             <input value="${$('#tally_pje').val()}" type="hidden" name="data[tujuan][${i}][tally_hidden]" id="tally_hidden_${i}" placeholder="">
                             <input value="${$('#plastik_pje').val()}" type="hidden" name="data[tujuan][${i}][plastik_hidden]" id="plastik_hidden_${i}" placeholder="">
                             <input value="${$('#kargo_pje').val()}" type="hidden" name="data[tujuan][${i}][kargo_hidden]" id="kargo_hidden_${i}" >
@@ -1143,6 +1150,7 @@
             $('#komisi').val('');
             $('#catatan').val('');
             $('#seal_pje').val('');
+            $('#seal_pelayaran').val('');
             $('#tally_pje').val('');
             $('#plastik_pje').val('');
             $('#total_tarif').val('');
@@ -1150,9 +1158,11 @@
             // $('#kargo_pje').prop("selected",false)
             $('#kargo_pje').val('').trigger('change');
             $('#check_is_seal_pje').prop('checked',false);
+            $('#check_is_seal_pelayaran').prop('checked',false);
             $('#check_is_tally').prop('checked',false);
             $('#check_is_plastik').prop('checked',false);
             $('#seal_pje').attr('readonly',true);
+            $('#seal_pelayaran').attr('readonly',true);
             $('#tally_pje').attr('readonly',true);
             $('#plastik_pje').attr('readonly',true);
 

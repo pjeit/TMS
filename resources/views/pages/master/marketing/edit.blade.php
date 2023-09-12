@@ -38,7 +38,7 @@
                         <div class="form-group col-12 col-md-6 col-sm-12">
                             <label for="">Grup<span class="text-red">*</span></label>
                             <select class="form-control select2" style="width: 100%;" id='grup_id' name="grup_id" required>
-                                <option value="0">&nbsp;</option>
+                                <option value="">── PILIH MARKETING ──</option>
                                 @foreach ($grup as $item)
                                     <option value="{{$item->id}}" <?= ($item->id == $data->grup_id)? 'selected':''; ?> >{{ $item['nama_grup'] }}</option>
                                 @endforeach
