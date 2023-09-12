@@ -57,7 +57,10 @@
     </style>
 </head>
 <body>
+    {{-- <img src="{{ asset('img/LOGO_PJE.jpg') }}" alt=""> --}}
     <div class="kontener">
+    <img src="{{ public_path("img/LOGO_PJE.jpg") }}" alt=""  width="100" height="100" style="filter: grayscale(100%)">
+
          <h2 class="text" style="text-align: center">BILLING JO</h2>
     </div>
      <table class="border-table">

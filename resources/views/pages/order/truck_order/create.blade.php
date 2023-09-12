@@ -97,7 +97,7 @@
                                         <option value="">Pilih No Booking</option>
                 
                                         @foreach ($dataBooking as $book)
-                                            <option value="{{$book->idBooking}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_berangkat)->format('d-M-Y')}}">{{ \Carbon\Carbon::parse($book->tgl_berangkat)->format('d-M-Y') }} / {{ $book->nama_tujuan }}  / {{ $book->kode }}</option>
+                                            <option value="{{$book->idBooking}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y')}}">{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y') }} / {{ $book->nama_tujuan }}  / {{ $book->kode }}</option>
                                         @endforeach
                                     </select>
                                 </div>  
