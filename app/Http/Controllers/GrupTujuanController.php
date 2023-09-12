@@ -8,6 +8,7 @@ use App\Models\GrupMember;
 use App\Models\GrupTujuan;
 use App\Models\GrupTujuanBiaya;
 use App\Models\Marketing;
+use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
@@ -45,7 +46,12 @@ class GrupTujuanController extends Controller
 
     public function getMarketing($groupId)
     {
-        $marketingList = Marketing::where('grup_id', $groupId)->where('role_id', 3)->get();
+        $role = 6;
+        $roleMarketing = Role::where('is_aktif', 'Y')->where('nama', 'Marketing')->first();
+        if(isset($roleMarketing)){
+            $role = $roleMarketing->id;
+        }
+        $marketingList = Marketing::where('grup_id', $groupId)->where('role_id', $role)->get();
         return response()->json($marketingList);
     }
 
@@ -110,6 +116,7 @@ class GrupTujuanController extends Controller
                 'tarif'=>$value->tarif,
                 'komisi'=>$value->komisi,
                 'catatan'=>$value->catatan,
+                'seal_pelayaran'=>$value->seal_pelayaran,
                 'seal_pje'=>$value->seal_pje,
                 'tally'=>$value->tally,
                 'plastik'=>$value->plastik,
@@ -144,16 +151,16 @@ class GrupTujuanController extends Controller
         try {
             $data = $request->post();
             $user = Auth::user()->id;
+            // dd($data); 
 
             // delete data dulu
             if($data['data']['deleted_tujuan'] != null){
                 $del = explode(',', $data['data']['deleted_tujuan']);
                 $delete_grup = GrupTujuan::whereIn('id', ($del))
-                ->update(
-                    [
-                        'is_aktif' => 'N',
-                        'updated_by' => $user,
-               ]);
+                ->update([
+                    'is_aktif' => 'N',
+                    'updated_by' => $user,
+                ]);
 
                $delete_biaya = GrupTujuanBiaya::whereIn('grup_id', $del)
                ->update([
@@ -174,14 +181,12 @@ class GrupTujuanController extends Controller
             foreach ($data['data']['tujuan'] as $key => $value) {
                 if($value['id_tujuan'] != 'undefined'){
                     // ini edit 
-
                     $tarif = ($value['tarif'] != '')? floatval(str_replace(',', '', $value['tarif'])):0;
                     $komisi = ($value['komisi'] != '')? floatval(str_replace(',', '', $value['komisi'])):0;
                     $uang_jalan = ($value['uang_jalan'] != '')? floatval(str_replace(',', '', $value['uang_jalan'])):0;
                     $harga_per_kg = ($value['harga_per_kg_hidden'] != '')? floatval(str_replace(',', '', $value['harga_per_kg_hidden'])):0;
 
                     $edit_tujuan = GrupTujuan::where('is_aktif', 'Y')->findOrFail($value['id_tujuan']);
-
                     if($edit_tujuan){
                         // $edit_tujuan->grup_id = $value['grup_hidden'];
                         $edit_tujuan->marketing_id = $value['marketing_hidden'];
@@ -194,46 +199,48 @@ class GrupTujuanController extends Controller
                         $edit_tujuan->tarif = $tarif;
                         $edit_tujuan->komisi = $komisi;
                         $edit_tujuan->catatan = $value['catatan'];
-                        $edit_tujuan->seal_pje = ($value['seal_hidden'] != '')? floatval(str_replace(',', '', $value['seal_hidden'])):null;
+                        $edit_tujuan->seal_pje = ($value['seal_pje_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pje_hidden'])):null;
+                        $edit_tujuan->seal_pelayaran = ($value['seal_pelayaran_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pelayaran_hidden'])):null;
                         $edit_tujuan->plastik = ($value['plastik_hidden'] != '')? floatval(str_replace(',', '', $value['plastik_hidden'])):null;
                         $edit_tujuan->tally = ($value['tally_hidden'] != '')? floatval(str_replace(',', '', $value['tally_hidden'])):null;
                         $edit_tujuan->kargo = $value['kargo_hidden'];
-
                         $edit_tujuan->updated_by = $user;
                         $edit_tujuan->updated_at = now();
-
-                        if($edit_tujuan->save()){
-                            if($value['obj_biaya'] != null){
-                                $data_biaya = json_decode($value['obj_biaya'], true);
+                        // var_dump($edit_tujuan);
+                        $edit_tujuan->save();
+                        // if(){
+                        //     if($value['obj_biaya'] != null){
+                        //         $data_biaya = json_decode($value['obj_biaya'], true);
                                 
-                                foreach ($data_biaya as $key => $item) {
-                                    $biaya_clean = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
-                                    // var_dump(  $item ); 
-                                    if (!empty($item['id'])) {
-                                        $biaya = GrupTujuanBiaya::where('is_aktif', 'Y')->findOrFail($item['id']);
-                                        if($biaya){
-                                            $biaya->updated_by = $user;
-                                            $biaya->updated_at = now();
-                                            $biaya->biaya = $biaya_clean;
-                                            $biaya->deskripsi = $item['deskripsi'];
-                                            $biaya->catatan = $item['catatan'];
-                                            $biaya->save();
-                                        }
-                                    }else{
-                                        $biaya = new GrupTujuanBiaya();
-                                        $biaya->grup_id = $value['grup_hidden'];
-                                        $biaya->grup_tujuan_id = $value['id_tujuan'];
-                                        $biaya->created_by = $user;
-                                        $biaya->created_at = now();
-                                        $biaya->biaya = $biaya_clean;
-                                        $biaya->deskripsi = $item['deskripsi'];
-                                        $biaya->catatan = $item['catatan'];
-                                        $biaya->save();
-                                    }
-                                }
-                            }
-                        }
+                        //         foreach ($data_biaya as $key => $item) {
+                        //             $biaya_clean = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
+                        //             // var_dump(  $item ); 
+                        //             if (!empty($item['id'])) {
+                        //                 $biaya = GrupTujuanBiaya::where('is_aktif', 'Y')->findOrFail($item['id']);
+                        //                 if($biaya){
+                        //                     $biaya->updated_by = $user;
+                        //                     $biaya->updated_at = now();
+                        //                     $biaya->biaya = $biaya_clean;
+                        //                     $biaya->deskripsi = $item['deskripsi'];
+                        //                     $biaya->catatan = $item['catatan'];
+                        //                     $biaya->save();
+                        //                 }
+                        //             }else{
+                        //                 $biaya = new GrupTujuanBiaya();
+                        //                 $biaya->grup_id = $value['grup_hidden'];
+                        //                 $biaya->grup_tujuan_id = $value['id_tujuan'];
+                        //                 $biaya->created_by = $user;
+                        //                 $biaya->created_at = now();
+                        //                 $biaya->biaya = $biaya_clean;
+                        //                 $biaya->deskripsi = $item['deskripsi'];
+                        //                 $biaya->catatan = $item['catatan'];
+                        //                 $biaya->save();
+                        //             }
+                        //         }
+                        //     }
+                        // }
                     }
+                    // die;
                 }else{
                      // ini create baru
 
@@ -254,9 +261,10 @@ class GrupTujuanController extends Controller
                     $new_tuj->tarif = $tarif;
                     $new_tuj->komisi = $komisi;
                     $new_tuj->catatan = $value['catatan'];
-                    $new_tuj->seal_pje = ($value['seal_hidden'] != '')? floatval(str_replace(',', '', $value['seal_hidden'])):null;
-                    $new_tuj->plastik = ($value['tally_hidden'] != '')? floatval(str_replace(',', '', $value['tally_hidden'])):null;
-                    $new_tuj->tally = ($value['plastik_hidden'] != '')? floatval(str_replace(',', '', $value['plastik_hidden'])):null;
+                    $new_tuj->seal_pje = ($value['seal_pje_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pje_hidden'])):null;
+                    $new_tuj->seal_pelayaran = ($value['seal_pelayaran_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pelayaran_hidden'])):null;
+                    $new_tuj->tally = ($value['tally_hidden'] != '')? floatval(str_replace(',', '', $value['tally_hidden'])):null;
+                    $new_tuj->plastik = ($value['plastik_hidden'] != '')? floatval(str_replace(',', '', $value['plastik_hidden'])):null;
                     $new_tuj->kargo = $value['kargo_hidden'];
                     $new_tuj->created_by = $user;
                     $new_tuj->created_at = now();
