@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -252,9 +250,6 @@
         @else
              @php $total = $TotalBiayaRev @endphp
               <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
-              
-
-        
         @endif
         @if($JobOrder->id_supplier == $dataSupplier->id)
             <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$dataSupplier->bank}} </b><br> 
@@ -296,10 +291,6 @@
             <br/>
             <br/>
             <br/>
-
-
-
-        
              <tr>
                 {{-- customer --}}
                 <td style="text-align: left; ">(.........................)</td> 
