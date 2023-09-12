@@ -67,6 +67,7 @@ class SewaController extends Controller
             ->Join('grup_tujuan AS gt', 'b.id_grup_tujuan', '=', 'gt.id')
             ->where('b.is_aktif', "Y")
             ->orderBy('tgl_booking')
+            ->whereNull('b.id_jo_detail')
             ->get();
         $dataChassis = DB::table('chassis as c')
             ->select('*')
@@ -121,12 +122,12 @@ class SewaController extends Controller
     {
         $datajODetail = DB::table('job_order_detail_biaya as jodb')
             ->select('jodb.*')
-            ->Join('job_order_detail AS job', function($join) {
-                    $join->on('job.id', '=', 'jobd.id_jo_detail')
-                    ->where('jod.is_aktif', '=', 'Y')
-                    ->where('status' ,'like','%BELUM DOORING%')
-                    ->whereNotNull('jod.id_grup_tujuan');
-                })
+            // ->Join('job_order_detail AS job', function($join) {
+            //         $join->on('job.id', '=', 'jodb.id_jo_detail')
+            //         ->where('job.is_aktif', '=', 'Y')
+            //         ->where('status' ,'like','%BELUM DOORING%')
+            //         ->whereNotNull('job.id_grup_tujuan');
+            //     })
             ->where('jodb.id_jo_detail', '=', $id)
             ->where('status_bayar' ,'like','%SELESAI PEMBAYARAN%')
             ->where('jodb.is_aktif', '=', "Y")

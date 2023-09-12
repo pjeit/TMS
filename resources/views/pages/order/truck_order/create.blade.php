@@ -193,9 +193,7 @@
 
                                     <input type="hidden" id="biayaDetail" name="biayaDetail">
                                     <input type="hidden" id="biayaTambahTarif" name="biayaTambahTarif">
-
-                                    
-                                
+                                    <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
                                 </div>
                                 {{-- <div class="row">
                                     <div class="col">
@@ -429,8 +427,65 @@
             var idJoDetail=splitValue[0];
             var idTujuan=splitValue[1];
             var no_kontainer=splitValue[2];
-
+            // /truck_order/getDetailJOBiaya/{id}
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
+
+            var baseUrl = "{{ asset('') }}";
+            // var myjson;
+            var array_tambahan_sdt = [];
+             $.ajax({
+                url: `${baseUrl}truck_order/getDetailJOBiaya/${idJoDetail}`, 
+                method: 'GET', 
+                success: function(response) {
+                    console.log(response);
+
+                    if(!response)
+                    {
+                      
+                        array_tambahan_sdt = [];
+
+                    }
+                    else
+                    {
+                      
+                         // console.log( response.dataTujuanBiaya);
+                        for (var i in response) {
+                            if(response[i].storage || response[i].storage!=0)
+                            {
+                                var objSTORAGE = {
+                                        deskripsi: 'STORAGE',
+                                        biaya: response[i].storage,
+                                    };
+                                array_tambahan_sdt.push(objSTORAGE);
+                            } 
+                            if(response[i].demurage||response[i].demurage!=0)
+                            {
+                                var objDEMURAGE = {
+                                        deskripsi: 'DEMURAGE',
+                                        biaya: response[i].demurage,
+                                    };
+                                array_tambahan_sdt.push(objDEMURAGE);
+                            } 
+                            if(response[i].detention||response[i].detention!=0)
+                            {
+                                var objDETENTION = {
+                                        deskripsi: 'DETENTION',
+                                        biaya: response[i].detention,
+                                    };
+                                array_tambahan_sdt.push(objDETENTION);
+                            } 
+                                
+                        }
+                        $('#biayaTambahSDT').val(JSON.stringify(array_tambahan_sdt));
+                        console.log(array_tambahan_sdt);
+
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+           
 
 		});
          $('body').on('change','#select_customer',function()
@@ -574,7 +629,7 @@
             var splitValue = selectBooking.split('-');
             var idTujuan=splitValue[2];
 
-            var myjson;
+            // var myjson;
             var array_detail_biaya = [];
             var array_tambahan_tarif = [];
 
@@ -699,6 +754,9 @@
                         $('#biayaTambahTarif').val(JSON.stringify(array_tambahan_tarif));
 
                         console.log(array_detail_biaya);
+
+                        console.log(array_tambahan_tarif);
+
 
                     }
 
