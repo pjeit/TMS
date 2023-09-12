@@ -80,10 +80,10 @@
                                  <div class="form-group">
                                     <label for="credit_customer">Credit Customer</label>
                                     <div class="progress">
-                                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="" aria-valuemin="100" aria-valuemax="100" name="credit_customer" id="credit_customer" style="width: 50%; color: black;"></div>
+                                        <div class="progress-bar " role="progressbar" aria-valuenow="" aria-valuemin="100" aria-valuemax="100" name="credit_customer" id="credit_customer" style=""></div>
                                     </div>
                                     <div class="d-flex justify-content-center mt-1">
-                                        <span class="rubik-w400-12">50%</span>
+                                        <span class="rubik-w400-12" id="persenanCredit"></span>
                                     </div>
                                     <input type="hidden" name="cred_now" id="cred_now" class="form-control" value="0">
                                     <input type="hidden" name="cred_val" id="cred_val" class="form-control" value="0">
@@ -107,7 +107,7 @@
                                         <select class="form-control select2" style="width: 100%;" id='select_jo' name="select_jo">
                                             <option value="">Pilih No JO</option>
                                             @foreach ($datajO as $jo)
-                                                <option value="{{$jo->id}}-{{$jo->id_customer}}">{{ $jo->no_jo }}</option>
+                                                <option value="{{$jo->id}}-{{$jo->id_customer}}">{{ $jo->no_bl }}</option>
                                             @endforeach
                                         </select>
                                     </div>  
@@ -160,7 +160,7 @@
                                         <option value="">Pilih Customer</option>
 
                                         @foreach ($dataCustomer as $cust)
-                                            <option value="{{$cust->id}}">{{ $cust->kode }}-{{ $cust->nama }}</option>
+                                            <option value="{{$cust->idCustomer}}">{{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="customer_id" name="customer_id" value="">
@@ -214,7 +214,7 @@
                                                 <option value="">Pilih Kendaraan</option>
  
                                                 @foreach ($dataKendaraan as $kendaraan)
-                                                    <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}">{{ $kendaraan->no_polisi }}</option>
+                                                    <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}-{{$kendaraan->driver_id}}">{{ $kendaraan->no_polisi }}</option>
                                                 @endforeach
                                             </select>
                                             <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
@@ -380,6 +380,10 @@
               $('#select_grup_tujuan').attr('disabled',false).val('').trigger('change');
             }
 		});
+        $('#select_jo_detail').attr('disabled',true);
+        var customerLoad = false;
+        console.log(customerLoad);
+
         $('body').on('change','#select_jo',function()
 		{
             var selectedValue = $(this).val();
@@ -394,20 +398,32 @@
                 url: `${baseUrl}truck_order/getJoDetail/${idJo}`, 
                 method: 'GET', 
                 success: function(response) {
-                    var jo_detail = $('#select_jo_detail');
-                    jo_detail.empty(); 
-                    jo_detail.append('<option value="">Pilih Kontainer</option>');
-                    if(selectedValue!="")
+                    if(response&&customerLoad)
                     {
-                        response.forEach(joDetail => {
-                            const option = document.createElement('option');
-                            option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer;
-                            option.textContent = joDetail.no_kontainer ;
-                            // if (selected_marketing == marketing.id) {
-                            //     option.selected = true;
-                            // }
-                             jo_detail.append(option);
-                        });
+                        var jo_detail = $('#select_jo_detail');
+                        jo_detail.attr('disabled',false);
+                        jo_detail.empty(); 
+                        jo_detail.append('<option value="">Pilih Kontainer</option>');
+                        if(selectedValue!="")
+                        {
+                            response.forEach(joDetail => {
+                                const option = document.createElement('option');
+                                option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer;
+                                option.textContent = joDetail.no_kontainer ;
+                                // if (selected_marketing == marketing.id) {
+                                //     option.selected = true;
+                                // }
+                                 jo_detail.append(option);
+                            });
+                        }
+
+                    }
+                    else
+                    {
+                           $('#select_jo_detail').empty(); 
+                        $('#select_jo_detail').append('<option value="">Pilih Kontainer</option>');
+                        $('#select_jo_detail').attr('disabled',true).val('').trigger('change');
+
                     }
                     // jo_detail.trigger('change');
         
@@ -424,6 +440,7 @@
 		{
             var selectedValue = $(this).val();
             var splitValue = selectedValue.split('-');
+            // console.log(splitValue[1]);
             var idJoDetail=splitValue[0];
             var idTujuan=splitValue[1];
             var no_kontainer=splitValue[2];
@@ -437,7 +454,7 @@
                 url: `${baseUrl}truck_order/getDetailJOBiaya/${idJoDetail}`, 
                 method: 'GET', 
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
 
                     if(!response)
                     {
@@ -515,97 +532,136 @@
             $('#biayaDetail').val('');
                         $('#biayaTambahTarif').val('');
 
-            // $('#tujuan_id').val(e.params.data.id);
-            // $('#nama_tujuan').val(e.params.data.nama_tujuan);
-            // $('#alamat_tujuan').val(e.params.data.alamat_tujuan);
-            // $('#tarif').val(e.params.data.tarif);
-            // $('#uang_jalan').val(e.params.data.uang_jalan);
-            // $('#komisi').val(e.params.data.komisi);
-			// $('#jenis_tujuan').val(e.params.data.jenis_tujuan);
-			// $('#harga_per_kg').val(e.params.data.harga_per_kg);
-			// $('#min_muatan').val(e.params.data.min_muatan);
-			// console.log($('#ekor_id').val());
-			// console.log($('#kendaraan_id').val());
-			// if($('#ekor_id').val() != '' && $('#kendaraan_id').val() != '')
-			// {
-			// 	let creds = $('#cred_val').val();
-			// 	let creds_max = $('#cred_val_max').val();
-			// 	creds = creds.replace(/,/g,'');
-			// 	creds_max = creds_max.replace(/,/g,'');
-			// 	let total_tarif;
-			// 	if($('#jenis_tujuan').val() == 'LCL')
-			// 	{
-			// 		console.log($('#jenis_tujuan').val());
-			// 		console.log($('#harga_per_kg').val());
-			// 		console.log($('#min_muatan').val());
-			// 		let harga_per_kg = $('#harga_per_kg').val();
-			// 		let min_muatan = $('#min_muatan').val();
-			// 		total_tarif = parseInt(min_muatan) * parseInt(harga_per_kg);
-					
-			// 	}
-			// 	else{
-			// 		total_tarif = $('#tarif').val();
-			// 	}
-			// 	//debug sini 2
-			// 	creds = parseInt(creds) + parseInt(total_tarif);
-			// 	let creds_now = (creds/creds_max) * 100;
-			// 	console.log(creds_now)
-			// 	creds_now = creds_now.toFixed(1);
-			// 	$('#cred_now').val(creds_now);
-			// 	const cred = document.getElementById('credit_customer');
-			// 	if(creds_now<80)
-			// 	{
-			// 		cred.innerHTML = creds_now+"%";
-			// 		cred.style.width = creds_now+"%";
-			// 		cred.style.backgroundColor = "#53de02";
-			// 		cred.style.color = "black";
-					
-			// 	}
-			// 	else if(creds_now >=80 && creds_now < 90)
-			// 	{
-			// 		cred.innerHTML = creds_now+"%";
-			// 		cred.style.width = creds_now+"%";
-			// 		cred.style.backgroundColor = "#deab02";
-			// 		cred.style.color = "black";
-			// 	}
-			// 	else if(creds_now>=90)
-			// 	{
-			// 		cred.innerHTML = creds_now+"%";
-			// 		cred.style.width = creds_now+"%";
-			// 		cred.style.backgroundColor = "#de0202";
-			// 		cred.style.color = "black";
-			// 	}
-			// 	else if(creds_now>100)
-			// 	{
-			// 		cred.innerHTML = creds_now+"%";
-			// 		cred.style.width = "100%";
-			// 		cred.style.backgroundColor = "#de0202";
-			// 		cred.style.color = "black";
-			// 	}
-			// }
         
+			
+            // let creds = $('#cred_val').val();
+            // let creds_max = $('#cred_val_max').val();
+            // creds = creds.replace(/,/g,'');
+            // creds_max = creds_max.replace(/,/g,'');
+            // //debug sini 2
+            // creds = parseInt(creds) + parseInt(total_tarif);
+            // creds/creds_max
+            // let creds_now = (250000/500000) * 100;
+            // // console.log(creds_now)
+            // creds_now = creds_now.toFixed(1);
+            // // $('#cred_now').val(creds_now);
+            // // persenanCredit
+            // const persen = document.getElementById('persenanCredit');
+
+            // const cred = document.getElementById('credit_customer');
+            // if(creds_now<80)
+            // {
+            //     persen.innerHTML = creds_now+"%";
+            //     cred.style.width = creds_now+"%";
+            //     cred.style.backgroundColor = "#53de02";
+            //     cred.style.color = "black";
+                
+            // }
+            // else if(creds_now >=80 && creds_now <= 90)
+            // {
+            //     persen.innerHTML = creds_now+"%";
+            //     cred.style.width = creds_now+"%";
+            //     cred.style.backgroundColor = "#deab02";
+            //     cred.style.color = "black";
+            // }
+            // else if(creds_now>=90)
+            // {
+            //     persen.innerHTML = creds_now+"%";
+            //     cred.style.width = creds_now+"%";
+            //     cred.style.backgroundColor = "#de0202";
+            //     cred.style.color = "black";
+            // }
+            // else if(creds_now>100)
+            // {
+            //     persen.innerHTML = creds_now+"%";
+            //     cred.style.width = "100%";
+            //     cred.style.backgroundColor = "#de0202";
+            //     cred.style.color = "black";
+            // }
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
                 method: 'GET', 
                 success: function(response) {
-                    var select_grup_tujuan = $('#select_grup_tujuan');
-                    select_grup_tujuan.empty(); 
-                    select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
-                    if(selectedValue!="")
+                    if(response)
                     {
-                        response.forEach(tujuan => {
-                            const option = document.createElement('option');
-                            option.value = tujuan.id;
-                            option.textContent = tujuan.nama_tujuan;
-                            if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
-                            {
-                                if (idTujuan == tujuan.id) {
-                                    option.selected = true;
-                                }
+                        customerLoad = true;
+                        console.log(customerLoad);
+                        console.log(response.dataKredit.kreditCustomer);
+                        console.log(response.dataKredit.maxGrup);
 
-                            }
-                             select_grup_tujuan.append(option);
-                        });
+                        // ==============================kredit=================
+                        
+                        // let creds = $('#cred_val').val();
+                        // let creds_max = $('#cred_val_max').val();
+                        // creds = creds.replace(/,/g,'');
+                        // creds_max = creds_max.replace(/,/g,'');
+                        // //debug sini 2
+                        // creds = parseInt(creds) + parseInt(total_tarif);
+           
+                        let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
+                        // console.log(creds_now)
+                        creds_now = creds_now.toFixed(1);
+                        // persenanCredit
+                        const persen = document.getElementById('persenanCredit');
+
+                        const cred = document.getElementById('credit_customer');
+                        if(creds_now<80)
+                        {
+                            persen.innerHTML = creds_now+"%";
+                            cred.style.width = creds_now+"%";
+                            cred.style.backgroundColor = "#53de02";
+                            cred.style.color = "black";
+                            
+                        }
+                        else if(creds_now >=80 && creds_now <= 90)
+                        {
+                            persen.innerHTML = creds_now+"%";
+                            cred.style.width = creds_now+"%";
+                            cred.style.backgroundColor = "#deab02";
+                            cred.style.color = "black";
+                        }
+                        else if(creds_now>=90)
+                        {
+                            persen.innerHTML = creds_now+"%";
+                            cred.style.width = creds_now+"%";
+                            cred.style.backgroundColor = "#de0202";
+                            cred.style.color = "black";
+                        }
+                        else if(creds_now>100)
+                        {
+                            persen.innerHTML = creds_now+"%";
+                            cred.style.width = "100%";
+                            cred.style.backgroundColor = "#de0202";
+                            cred.style.color = "black";
+                        }
+                        // ==============================kredit=================
+
+
+                        var select_grup_tujuan = $('#select_grup_tujuan');
+                        select_grup_tujuan.empty(); 
+                        select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
+                        if(selectedValue!="")
+                        {
+                            response.dataTujuan.forEach(tujuan => {
+                                const option = document.createElement('option');
+                                option.value = tujuan.id;
+                                option.textContent = tujuan.nama_tujuan;
+                                if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
+                                {
+                                    if (idTujuan == tujuan.id) {
+                                        option.selected = true;
+                                    }
+    
+                                }
+                                 select_grup_tujuan.append(option);
+                            });
+                        }
+
+                    }
+                    else
+                    {
+                        customerLoad = false;
+
                     }
                     // jo_detail.trigger('change');
         
@@ -650,7 +706,7 @@
             // tally
             // kargo
             $.ajax({
-                url: `${baseUrl}truck_order/getTujuanBiaya/${idTujuan?idTujuan:selectedValue}`, 
+                url: `${baseUrl}truck_order/getTujuanBiaya/${idTujuan??selectedValue}`, 
                 method: 'GET', 
                 success: function(response) {
                     // console.log(response.dataTujuan);
@@ -781,6 +837,8 @@
             var idKendaraan = split[0];
             var idChassis = split[1];
             var nopol = split[2];
+            var supir = split[3];
+
 
             console.log(idChassis);
             // kendaraan_id
@@ -788,14 +846,10 @@
             // select_chassis
             $('#kendaraan_id').val(idKendaraan);
             $('#kendaraan_nopol').val(nopol);
-            if(idChassis == '')
-            {
-                $('#select_chassis').attr('disabled',true); 
-            }
-                $('#select_chassis').attr('disabled',false); 
-
             $('#select_chassis').val(idChassis).trigger('change');
             $('#ekor_id').val(idChassis);
+            $('#select_driver').val(supir).trigger('change');
+
 		});
         $('body').on('change','#select_driver',function()
 		{

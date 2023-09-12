@@ -27,6 +27,7 @@ class SewaController extends Controller
          $dataSewa = DB::table('sewa as s')
             ->select('s.*')
             ->where('s.is_aktif', '=', "Y")
+            ->where('s.status','like','%MENUNGGU UANG JALAN%')
             ->get();
         
             return view('pages.order.truck_order.index',[
@@ -50,9 +51,16 @@ class SewaController extends Controller
             ->where('jo.status', 'like', "%DALAM PENGIRIMAN%")
             ->get();
         $dataCustomer = DB::table('customer')
-            ->select('*')
+            ->select('customer.id as idCustomer',
+            'customer.kode as kodeCustomer',
+            'customer.nama as namaCustomer',
+            'customer.kredit_sekarang as kreditCustomer',
+            'g.nama_grup as namaGrup',
+            'g.total_max_kredit as maxGrup'
+            )
+            ->Join('grup AS g', 'customer.grup_id', '=', 'g.id')
             ->where('customer.is_aktif', "Y")
-            ->orderBy('nama')
+            ->orderBy('customer.nama')
             ->get();
         // dd($datajO[0]->id);
         $dataDriver = DB::table('karyawan')
@@ -76,7 +84,7 @@ class SewaController extends Controller
         // dd($dataBooking);
 
         $dataKendaraan = DB::table('kendaraan AS k')
-                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
                 ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
                     $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
                 })
@@ -86,16 +94,18 @@ class SewaController extends Controller
                 ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
                     ->where(function ($query) {
                         $query->where('k.is_aktif', '=', 'Y')
-                            ->where(function ($innerQuery) {
-                                $innerQuery->where('k.id_kategori', '=', 1)
-                                    ->whereNotNull('c.id');
-                            })
+                            // ->where(function ($innerQuery) {
+                            //     $innerQuery->where('k.id_kategori', '=', 1)
+                            //         ->whereNotNull('c.id');
+                            // })
                     ->orWhere(function ($innerQuery) {
                         $innerQuery->where('k.id_kategori', '!=', 1);
                     });
                 })
                 ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                 ->get();
+            
+            // dd($dataKredit);
             return view('pages.order.truck_order.create',[
                 'judul'=>"Trucking Order",
                 'datajO'=>$datajO,
@@ -143,9 +153,23 @@ class SewaController extends Controller
             ->where('gt.grup_id', '=',  $cust->grup_id)
             ->where('gt.is_aktif', '=', "Y")
             ->get();
+        $dataKredit = DB::table('customer')
+            ->select('customer.id as idCustomer',
+            'customer.kode as kodeCustomer',
+            'customer.nama as namaCustomer',
+            'customer.kredit_sekarang as kreditCustomer',
+            'g.nama_grup as namaGrup',
+            'g.total_max_kredit as maxGrup'
+            )
+            ->Join('grup AS g', function($join) {
+                    $join->on('customer.grup_id', '=', 'g.id')->where('g.is_aktif', '=', 'Y');
+                })
+            ->where('customer.is_aktif', "Y")
+            ->where('customer.id', $cust->id)
+            ->first();
         
         // $Tujuan = GrupTujuan::where('grup_id', $cust->grup_id)->where('is_aktif', 'Y')->get();
-        return response()->json($Tujuan);
+        return response()->json(['dataTujuan' =>$Tujuan,'dataKredit' => $dataKredit]);
         
     }
     public function getTujuanBiaya($id)
@@ -205,21 +229,24 @@ class SewaController extends Controller
             $data = $request->collect();
             // encode ubah array jadi json
             //decode ubah json jadi array
-            // dd();
+            // dd($data);
             // dd(json_decode($data['biayaDetail'], true));
        
             //====== end logic otomatis nik ======
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
             // var_dump($data['status_pegawai']);die;
             $dataBook=$data['select_booking']?explode("-",$data['select_booking']):null;
-            // dd($dataBook[0]);
-
+            // dd($dataBook);
+        // dd(json_decode($data['biayaTambahSDT'], true));
+            // dd(json_decode($data['biayaTambahTarif'], true));
+                //   dd(json_decode($data['biayaDetail'], true));
             $idSewa=DB::table('sewa')
                 ->insertGetId(array(
                     'id_booking'=>$dataBook?$dataBook[0]:null, //id booking dr front end di split di combobox
                     'id_jo'=>$data['select_jo']?$data['select_jo']:null,
-                    'id_jo_detail'=>$data['select_jo_detail']?$data['select_jo_detail']:null,
-                    'status'=>'MENUNGGU PERJALANAN',
+                    'id_jo_detail'=>$data['select_jo_detail'] ?? null,
+                    'jenis_tujuan'=>$data['jenis_tujuan'],
+                    'status'=>'MENUNGGU UANG JALAN',
                     'tanggal_status'=>now(),
                     'tanggal_berangkat'=>date_format($tgl_berangkat, 'Y-m-d'),
                     'id_customer'=>$data['customer_id']/*?$data['']:null*/,
@@ -269,10 +296,10 @@ class SewaController extends Controller
             
             if($idSewa)
             {
-                if($data['select_booking'])
+                if( $dataBook)
                 {
                     DB::table('booking')
-                        ->where('id', explode("-",$data['select_booking'][0]))
+                        ->where('id', $dataBook[0])
                         ->update([
                             'updated_at' => VariableHelper::TanggalFormat(),
                             'updated_by' => $user,
@@ -280,7 +307,7 @@ class SewaController extends Controller
                         ]);
                 }
     
-                if($data['select_jo'] &&$data['select_jo_detail'])
+                if($data['select_jo'] && $data['select_jo_detail'])
                 {
                     // DB::table('job_order')
                     //     ->where('id', $data['select_jo'])
@@ -302,26 +329,70 @@ class SewaController extends Controller
                         ]);
                     
                 }
-                
+              
                 $arrayBiaya = json_decode($data['biayaDetail'], true);
-                // $biayaTambahTarif = json_decode($data['biayaTambahTarif'], true);
                 //perhitungan kredit sama grup nya belum buat kredit sekarang, sama trip supir, update jo kalo ada, update booking kalo ada
-                foreach ($arrayBiaya as /*$key =>*/ $item) {
-                    DB::table('sewa_biaya')
-                        ->insert(array(
-                        'id_sewa'=>$idSewa,
-                        'deskripsi' => $item['deskripsi'] ,
-                        'biaya' => $item['biaya'],
-                        'catatan' => $item['catatan']?$item['catatan']:null,
-                        'is_aktif' => "Y",
-                        'created_at'=>VariableHelper::TanggalFormat(), 
-                        'created_by'=> $user,
-                        'updated_at'=> VariableHelper::TanggalFormat(),
-                        'updated_by'=> $user,
-                        )
-                    ); 
-            
+                if( $arrayBiaya)
+                {
+                    foreach ($arrayBiaya as /*$key =>*/ $item) {
+                        DB::table('sewa_biaya')
+                            ->insert(array(
+                            'id_sewa'=>$idSewa,
+                            'deskripsi' => $item['deskripsi'] ,
+                            'biaya' => $item['biaya'],
+                            'catatan' => $item['catatan']?$item['catatan']:null,
+                            'is_aktif' => "Y",
+                            'created_at'=>VariableHelper::TanggalFormat(), 
+                            'created_by'=> $user,
+                            'updated_at'=> VariableHelper::TanggalFormat(),
+                            'updated_by'=> $user,
+                            )
+                        ); 
+                    }
                 }
+                // $biayaTambahTarif = json_decode($data['biayaTambahTarif'], true);
+                // if($biayaTambahTarif)
+                // {
+                //       foreach ($biayaTambahTarif as /*$key =>*/ $item) {
+                //         DB::table('sewa_operasional')
+                //             ->insert(array(
+                //             'id_sewa'=>$idSewa,
+                //             'deskripsi' => $item['deskripsi'] ,
+                //             'total_operasional' => $item['biaya'],
+                //             'is_ditagihkan' => null,
+                //             'is_dipisahkan' => null,
+                //             'catatan' => null,
+                //             'is_aktif' => "Y",
+                //             'created_at'=>VariableHelper::TanggalFormat(), 
+                //             'created_by'=> $user,
+                //             'updated_at'=> VariableHelper::TanggalFormat(),
+                //             'updated_by'=> $user,
+                //             )
+                //         ); 
+                
+                //     }
+                // }
+                // $biayaTambahSDT = json_decode($data['biayaTambahSDT'], true);
+                // if($biayaTambahSDT)
+                // {
+                //     foreach ($biayaTambahSDT as /*$key =>*/ $item) {
+                //       DB::table('sewa_operasional')
+                //           ->insert(array(
+                //           'id_sewa'=>$idSewa,
+                //           'deskripsi' => $item['deskripsi'] ,
+                //           'total_operasional' => $item['biaya'],
+                //           'is_ditagihkan' => null,
+                //           'is_dipisahkan' => null,
+                //           'catatan' => null,
+                //           'is_aktif' => "Y",
+                //           'created_at'=>VariableHelper::TanggalFormat(), 
+                //           'created_by'=> $user,
+                //           'updated_at'=> VariableHelper::TanggalFormat(),
+                //           'updated_by'=> $user,
+                //           )
+                //       ); 
+                //   }
+                // }
 
             }
             // var_dump($data['gaji']);
@@ -331,7 +402,8 @@ class SewaController extends Controller
 
             return redirect()->route('truck_order.index')->with('status','Berhasil menambahkan data Sewa');
         } catch (ValidationException $e) {
-            
+            // cancel input db
+            DB::rollBack();
                 return response()->json(['errorsCatch' => $e->errors()], 422);
         }
        catch (Exception $ex) {
