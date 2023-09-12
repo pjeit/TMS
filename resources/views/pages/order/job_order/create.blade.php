@@ -53,9 +53,9 @@
                                 <div class="form-group">
                                     <label for="">Pengirim<span class="text-red">*</span></label>
                                     <select class="form-control selectpicker" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                        <option value="">--Pilih Pengirim--</option>
+                                        <option value="">── Pilih Pengirim ──</option>
                                         @foreach ($dataCustomer as $cust)
-                                            <option value="{{$cust->id}}" kode="{{$cust->kode}}">{{ $cust->nama }}</option>
+                                            <option value="{{$cust->id}}" kode="{{$cust->kode}}">{{ $cust->nama }} </option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id='kode_cust' name='kode_cust' >
@@ -63,9 +63,9 @@
                             </div>
                             <div class="col-6" >
                                 <div class="form-group ">
-                                    <label for="">Pelayaran</label>
-                                    <select class="form-control selectpicker"  id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                        <option value="0">--Pilih Pelayaran--</option>
+                                    <label for="">Pelayaran<span class="text-red">*</span></label>
+                                    <select class="form-control selectpicker" id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                        <option value="">── Pilih Pelayaran ──</option>
                                         @foreach ($dataSupplier as $sup)
                                             <option value="{{$sup->id}}">{{ $sup->nama }}</option>
                                         @endforeach
@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="tgl_sandar">Tanggal Sandar</label>
+                                    <label for="tgl_sandar">Tanggal Sandar<span class="text-red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -97,7 +97,7 @@
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
                                     <select class="form-control selectpicker" name="pelabuhan_muat" id="pelabuhan_muat" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                        <option value="">--Pilih--</option>
+                                        <option value="">── Pilih ──</option>
                                         <option value="SURABAYA">SURABAYA</option>
                                         <option value="MEDAN">MEDAN</option>
                                         <option value="JAKARTA">JAKARTA</option>
@@ -120,7 +120,7 @@
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
                                     <select class="form-control selectpicker" name="pelabuhan_bongkar" id="pelabuhan_bongkar" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                        <option value="">--Pilih--</option>
+                                        <option value="">── Pilih ──</option>
                                         <option value="SURABAYA">SURABAYA</option>
                                         <option value="MEDAN">MEDAN</option>
                                         <option value="JAKARTA">JAKARTA</option>
@@ -152,7 +152,7 @@
                                         <th width="280">Seal</th>
                                         <th width="150">Tipe</th>
                                         <th width="150">Stripping</th>
-                                        <th width="150">Jenis</th>
+                                        <th width="150">Pick Up</th>
                                         <th width="350">Tujuan</th>
                                         <th width="200">Tgl Booking</th>
                                         <th width="20" class="text-center">Aksi</th>
@@ -289,67 +289,67 @@
 </div>
 
 
+{{-- sweet save --}}
 <script>
-</script>
-<script type="text/javascript">
     $(document).ready(function() {
+        $('#save').submit(function(event) {
+            event.preventDefault();
 
-        // logic save
-            $( document ).on( 'click', '#submitButton', function (event) {
+            var cekBookingTujuan = 1;
+            $("[tgl_booking_check]").each(function() {
+                var i = $(this).attr("tgl_booking_check");
+                var tujuanVal = $("#tujuan" + i).val();
+                var tglBookingVal = $("#tgl_booking" + i).val();
+
+                if (tujuanVal != "" || tglBookingVal != "") {
+                    console.log('tglBookingVal '+tglBookingVal);
+                    console.log('tujuanVal '+tujuanVal);
+                    if(tujuanVal == ""){
+                        cekBookingTujuan = 0;
+                    }
+                }
+            });
+            if(cekBookingTujuan == 0){
+                Swal.fire(
+                    'Terjadi kesalahan!',
+                    'Tujuan wajib diisi ketika ada tanggal booking!',
+                    'warning'
+                )
                 event.preventDefault();
-                // pop up confirmation
-                    Swal.fire({
-                        title: 'Apakah Anda yakin data sudah benar?',
-                        text: "Periksa kembali data anda",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        cancelButtonColor: '#d33',
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonText: 'Batal',
-                        confirmButtonText: 'Ya',
-                        reverseButtons: true
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            var cust = $('#customer').val();
-                            var nobl = $('#no_bl').val();
-                            var plmt = $('#pelabuhan_muat').val();
-                            var plbn = $('#pelabuhan_bongkar').val();
+                return false;
+            }
+            // pop up confirmation
+                Swal.fire({
+                    title: 'Apakah Anda yakin data sudah benar?',
+                    text: "Periksa kembali data anda",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonText: 'Batal',
+                    confirmButtonText: 'Ya',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var cust = $('#customer').val();
+                        var nobl = $('#no_bl').val();
+                        var plmt = $('#pelabuhan_muat').val();
+                        var plbn = $('#pelabuhan_bongkar').val();
 
-                            if( cust == ''|| nobl == ''|| plmt == ''|| plbn == '' ){
-                                Swal.fire(
-                                    'Data tidak lengkap!',
-                                    'Cek ulang data anda.',
-                                    'warning'
-                                )
-                                
-                                event.preventDefault();
-                                return false;
-                            }else{
-                                const Toast = Swal.mixin({
-                                    toast: true,
-                                    position: 'top-end',
-                                    timer: 2500,
-                                    showConfirmButton: false,
-                                    timerProgressBar: true,
-                                    didOpen: (toast) => {
-                                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                    }
-                                })
-    
-                                Toast.fire({
-                                    icon: 'success',
-                                    title: 'Data Disimpan'
-                                })
-    
-                                // form.submit();
-                                $("#save").submit();
-                            }
+                        if( cust == ''|| nobl == ''|| plmt == ''|| plbn == '' ){
+                            Swal.fire(
+                                'Data tidak lengkap!',
+                                'Cek ulang data anda.',
+                                'warning'
+                            )
+                            
+                            event.preventDefault();
+                            return false;
                         }else{
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: 'top-end',
-                                timer: 2500,
+                                timer: 800,
                                 showConfirmButton: false,
                                 timerProgressBar: true,
                                 didOpen: (toast) => {
@@ -359,17 +359,43 @@
                             })
 
                             Toast.fire({
-                                icon: 'warning',
-                                title: 'Batal Disimpan'
+                                icon: 'success',
+                                title: 'Data Disimpan'
                             })
-                            event.preventDefault();
-                            // return;
-                        }
-                    })
-                // pop up confirmation
-            });
-        //
 
+                            setTimeout(() => {
+                                this.submit();
+                            }, 1000); // 2000 milliseconds = 2 seconds
+                        }
+                    }else{
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Batal Disimpan'
+                        })
+                        event.preventDefault();
+                        // return;
+                    }
+                })
+            // pop up confirmation
+        });
+
+        
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
         // master harga tipe
             var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
             var harga20Ft = {
@@ -388,6 +414,8 @@
                 'apbs': dataKeuangan.apbs_40ft,
                 'cleaning': dataKeuangan.cleaning_40ft,
             };
+            // console.log('harga20Ft '+ JSON.stringify(harga20Ft));
+            // console.log('harga40Ft '+ JSON.stringify(harga40Ft));
         // end of master harga tipe
     
         // handling tanggal
@@ -429,15 +457,15 @@
                 method: 'GET',
                 success: function(response) { 
                     // get semua data dropdown dengan class ini trus di kosongin
-                    $('.form-control.selectpicker.tujuanC').empty().append('<option value="">--Pilih Tujuan--</option>');
+                    $('.form-control.selectpicker.tujuanC').empty().append('<option value="">── Pilih Tujuan ──</option>');
 
                     response.forEach(tujuan => {
                     var option = new Option(tujuan.nama_tujuan, tujuan.id);
                         $('.form-control.selectpicker.tujuanC').append('<option value="'+tujuan.id+'">'+tujuan.nama_tujuan+'</option>');
                     });
                     $('.form-control.selectpicker.tujuanC').selectpicker({
-                        noneSelectedText: "--Pilih Tujuan--"
                     });
+                    noneSelectedText: "── Pilih Tujuan ──"
                     $(".form-control.selectpicker.tujuanC").selectpicker("refresh");
                 },
                 error: function(xhr, status, error) {
@@ -531,45 +559,45 @@
                             </td>
                             <td>
                                 <select class="form-control selectpicker tipeKontainer" name="detail[${i}][tipe]" id="tipe${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value="">--Tipe--</option>
+                                    <option value="">── Tipe ──</option>
                                     <option value="20">20Ft</option>
                                     <option value="40">40Ft</option>
                                 </select>
-                                <input type="hidden" readonly class="THC" THC_${i} name="detail[${i}][biaya][THC]" value="">
-                                <input type="hidden" readonly class="LOLO" LOLO_${i} name="detail[${i}][biaya][LOLO]" value="">
-                                <input type="hidden" readonly class="APBS" APBS_${i} name="detail[${i}][biaya][APBS]" value="">
-                                <input type="hidden" readonly class="CLEANING" CLEANING_${i} name="detail[${i}][biaya][CLEANING]" value="">
+                                <input type="hidden" readonly id="h_thc${i}" class="THC" THC_${i} name="detail[${i}][biaya][THC]" value="">
+                                <input type="hidden" readonly id="h_lolo${i}" class="LOLO" LOLO_${i} name="detail[${i}][biaya][LOLO]" value="">
+                                <input type="hidden" readonly id="h_apbs${i}" class="APBS" APBS_${i} name="detail[${i}][biaya][APBS]" value="">
+                                <input type="hidden" readonly id="h_cleaning${i}" class="CLEANING" CLEANING_${i} name="detail[${i}][biaya][CLEANING]" value="">
                                 
                             </td>
                         
                             <td>
                                 <div class="form-group mb-0">
                                     <div class="icheck-primary">
-                                        <input id="thcLuar${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][stripping]" value="luar" checked>
+                                        <input id="thcLuar${i}" dataId="${i}" class="stripping" type="radio" name="detail[${i}][stripping]" value="luar" checked>
                                         <label class="form-check-label" for="thcLuar${i}">Luar</label>
                                     </div>
                                     <div class="icheck-primary mt-3">
-                                        <input id="thcDalam${i}" dataId="${i}" class="thcc" type="radio" name="detail[${i}][stripping]" value="dalam" >
+                                        <input id="thcDalam${i}" dataId="${i}" class="stripping" type="radio" name="detail[${i}][stripping]" value="dalam" >
                                         <label class="form-check-label" for="thcDalam${i}">Dalam</label><br>
                                     </div>
                                 </div>
                             </td>
                             <td>
                                 <select class="form-control selectpicker jenisPelayaran" name="detail[${i}][jenis]" id="jenis${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value="">--Jenis--</option>
+                                    <option value="">--Jenis ──</option>
                                     <option value="TTL">TTL</option>
                                     <option value="TPS">TPS</option>
                                     <option value="DEPO">DEPO</option>
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control selectpicker tujuanC" name="detail[${i}][tujuan]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value="">--Pilih Tujuan--</option>
+                                <select class="form-control selectpicker tujuanC" tujuan_check="${i}" name="detail[${i}][tujuan]" id="tujuan${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <option value="">── Pilih Tujuan ──</option>
                                     `+dataOption+`
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="detail[${i}][tgl_booking]" autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
+                                <input type="text"  name="detail[${i}][tgl_booking]" id="tgl_booking${i}" tgl_booking_check="${i}" autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="">     
                             </td>
                         
                             <td align="center" class="text-danger">
@@ -686,66 +714,40 @@
                 var selectedId = $(this).attr('id');
                 var id = selectedId.replace('tipe', ''); // Remove 'thc' from the beginning
 
-                var selectedValue = $(this).val();
-
-                var parentTd = $(this).closest('td');
-                if(selectedValue == '20'){
-                    var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
-                    parentTd.find('.THC').val(strippingVal == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
-                    parentTd.find('.LOLO').val(strippingVal == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
-                }else if(selectedValue == '20'){
-                    var strippingVal = $("input[name='detail[" + id + "][stripping]']:checked").val();
-                    parentTd.find('.THC').val(strippingVal == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
-                    parentTd.find('.LOLO').val(strippingVal == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
-                }else{
-                    parentTd.find('.THC').val(0);
-                    parentTd.find('.LOLO').val(0);
-                }
-
-                parentTd.find('.APBS').val(selectedValue == '20' ? harga20Ft.apbs : harga40Ft.apbs);
-                parentTd.find('.CLEANING').val(selectedValue == '20' ? harga20Ft.cleaning : harga40Ft.cleaning);
-                // parentTd.find('.hargaDocFee').val(dataKeuangan.doc_fee);
-                
-           
+                getThc(id);
                 uncheck();
                 // tiap ada perubahan di class tipekontainer, di akhir akan di hitung total harganya
                 calculateTotalHarga();
                 hitungTotal();
             });
 
-            $( document ).on( 'change', '.thcc', function (event) {
-                // var selectedValue = $("input[name='detail[" + i + "][stripping]']:checked").val();
-                var selectedId = $(this).attr('id');
-                // console.log('Selected ID:', selectedId);
-
-                var selectedValue = $(this).val();
-                // console.log('selectedValue '+selectedValue);
-
-                var dataId = $(this).attr('dataId');
-                // console.log("dataId: -"+dataId+"-");
+            function getThc(id){
+                var tipeKontainer = $('#tipe'+id).val();
+                var stripping = $("input[name='detail[" + id + "][stripping]']:checked").val();
                 
-                var tk = $(`#tipe${dataId}`).val();
-                // console.log('tk '+tk);
-                if(tk == '20'){
-                    const thc_change = document.querySelector(`input[THC_${dataId}]`);
-                    var valueThc = selectedValue == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam;
-                    thc_change.value = valueThc;
+                console.log('tipeKontainer '+ tipeKontainer);
+                console.log('stripping '+ stripping);
+                console.log('harga40Ft.thcLuar '+ harga40Ft.thcLuar);
 
-                    const lolo_change = document.querySelector(`input[LOLO_${dataId}]`);
-                    var valueLolo = selectedValue == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam;
-                    lolo_change.value = valueLolo;
+                if(tipeKontainer == '20'){
+                    $('#h_thc'+id).val(stripping == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
+                    $('#h_lolo'+id).val(stripping == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
+                }else if(tipeKontainer == '40'){
+                    $('#h_thc'+id).val(stripping == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
+                    $('#h_lolo'+id).val(stripping == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
                 }else{
-                    const thc_change = document.querySelector(`input[THC_${dataId}]`);
-                    var valueThc = selectedValue == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam;
-                    thc_change.value = valueThc;
-
-                    const lolo_change = document.querySelector(`input[LOLO_${dataId}]`);
-                    var valueLolo = selectedValue == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam;
-                    lolo_change.value = valueLolo;
-                    // document.querySelector(`input[THC_${dataId}]`).val(selectedValue == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
-                    // document.querySelector(`input[LOLO_${dataId}]`).val(selectedValue == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
+                    $('#h_thc'+id).val(0);
+                    $('#h_lolo'+id).val(0);
                 }
+                $('#h_apbs' + id).val(tipeKontainer === '20' || tipeKontainer === '40' ? (tipeKontainer === '20' ? harga20Ft.apbs : harga40Ft.apbs) : 0);
+                $('#h_cleaning' + id).val(tipeKontainer === '20' || tipeKontainer === '40' ? (tipeKontainer === '20' ? harga20Ft.cleaning : harga40Ft.cleaning) : 0);
+            }
 
+            $( document ).on( 'change', '.stripping', function (event) {
+                var dataId = $(this).attr('dataId');
+                var tk = $(`#tipe${dataId}`).val();
+
+                getThc(dataId);
                 uncheck();
                 calculateTotalHarga();
                 hitungTotal();
@@ -760,16 +762,15 @@
             });
 
             function hitungTotal(){
-                var total_thc = parseFloat(($('#thc_cekbox').prop('checked')) ? $('#total_thc').val() : 0);
-                var total_lolo = parseFloat(($('#lolo_cekbox').prop('checked')) ? $('#total_lolo').val() : 0);
-                var total_apbs = parseFloat(($('#apbs_cekbox').prop('checked')) ? $('#total_apbs').val() : 0);
-                var total_cleaning = parseFloat(($('#cleaning_cekbox').prop('checked')) ? $('#total_cleaning').val() : 0);
-                var DOC_FEE = parseFloat(($('#doc_fee_cekbox').prop('checked')) ? $('#DOC_FEE').val() : 0);
+                var total_thc = parseFloat(($('#thc_cekbox').prop('checked')) ? parseFloat($('#total_thc').val().replace(/,/g, '')) : 0);
+                var total_lolo = parseFloat(($('#lolo_cekbox').prop('checked')) ? parseFloat($('#total_lolo').val().replace(/,/g, '')) : 0);
+                var total_apbs = parseFloat(($('#apbs_cekbox').prop('checked')) ? parseFloat($('#total_apbs').val().replace(/,/g, '')) : 0);
+                var total_cleaning = parseFloat(($('#cleaning_cekbox').prop('checked')) ? parseFloat($('#total_cleaning').val().replace(/,/g, '')) : 0);
+                var DOC_FEE = parseFloat(($('#doc_fee_cekbox').prop('checked')) ? parseFloat($('#DOC_FEE').val().replace(/,/g, '')) : 0);
                 
-                console.log('total_thc '+ total_thc);
                 var total = parseFloat(total_thc + total_lolo + total_apbs + total_cleaning + DOC_FEE);
 
-                var total_sblm_dooring = $('#total_sblm_dooring').val(total);
+                var total_sblm_dooring = $('#total_sblm_dooring').val(total.toLocaleString());
             }
 
             function uncheck(){
@@ -804,33 +805,28 @@
                 $('#total_lolo').val(totalLOLO);
                 $('#total_apbs').val(totalAPBS);
                 $('#total_cleaning').val(totalCLEANING);
-                $('#DOC_FEE').val(dataKeuangan.doc_fee);
+                $('#DOC_FEE').val(dataKeuangan.doc_fee.toLocaleString());
                 
                 $('.THC').each(function() {
                     var value = parseFloat($(this).val()) || 0;
                     totalTHC += value;
-                    $('#total_thc').val(totalTHC);
+                    $('#total_thc').val(totalTHC.toLocaleString());
                 });
                 $('.LOLO').each(function() {
                     var value = parseFloat($(this).val()) || 0;
                     totalLOLO += value;
-                    $('#total_lolo').val(totalLOLO);
+                    $('#total_lolo').val(totalLOLO.toLocaleString());
                 });
                 $('.APBS').each(function() {
                     var value = parseFloat($(this).val()) || 0;
                     totalAPBS += value;
-                    $('#total_apbs').val(totalAPBS);
+                    $('#total_apbs').val(totalAPBS.toLocaleString());
                 });
                 $('.CLEANING').each(function() {
                     var value = parseFloat($(this).val()) || 0;
                     totalCLEANING += value;
-                    $('#total_cleaning').val(totalCLEANING);
+                    $('#total_cleaning').val(totalCLEANING.toLocaleString());
                 });
-                // $('.hargaDocFee').each(function() {
-                //     var value = parseFloat($(this).val()) || 0;
-                //     totalhargaDocFee += value;
-                //     $('#DOC_FEE').val(totalhargaDocFee);
-                // });
             }
         // end of logic hitung biaya
     });

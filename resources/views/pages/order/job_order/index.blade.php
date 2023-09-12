@@ -21,13 +21,15 @@
                     </a> 
                 </div>
                 <div class="card-body">
-                    <table id="datatb" class="table table-bordered table-striped">
+                    <table id="datatable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                               <th>Kode JO</th>
+                              <th>No BL</th>
                               <th>Pengirim (Customer)</th>
                               <th>Pelayaran (Supplier)</th>
                               <th>Status</th>
+                              {{-- <th>Tgl Buat</th> --}}
                               <th></th>
                             </tr>
                           </thead>
@@ -36,9 +38,11 @@
                                 @foreach($dataJO as $item)
                                 <tr>
                                     <td>{{ $item->no_jo }}</td>
+                                    <td>{{ $item->no_bl }}</td>
                                     <td>{{ $item->kode }} - {{ $item->nama_cust }}</td>
                                     <td>{{ $item->nama_supp }}</td>
                                     <td>{{ $item->status}}</td>
+                                    {{-- <td>{{date("d-M-Y", strtotime($item->created_at))}}</td> --}}
                                     <td>                                    
                                         <!-- Default dropleft button -->
                                         <div class="btn-group dropleft">
@@ -76,14 +80,7 @@
     
 </div>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#datatb').dataTable({
-            // responsive: true,
-            // scrollX: true
-        });
-    } );
-</script>
+
 <script>
  
 

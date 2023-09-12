@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
 use App\Models\JobOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,7 +32,9 @@ class JobOrderController extends Controller
             ->leftJoin('supplier as s', 's.id', '=', 'jo.id_supplier')
             ->select('jo.*', 'c.kode as kode', 'c.nama as nama_cust', 's.nama as nama_supp')
             ->where('jo.is_aktif', '=', "Y")
-            ->OrderBy('created_at', 'ASC')
+            ->OrderBy('c.nama', 'ASC')
+            ->OrderBy('jo.status', 'ASC')
+            ->OrderBy('jo.created_at', 'ASC')
             ->get();
         
             return view('pages.order.job_order.index',[
@@ -84,6 +87,9 @@ class JobOrderController extends Controller
         try {
             $user = Auth::user()->id;
             $data = $request->post();
+            $currentYear = Carbon::now()->format('y');
+            $currentMonth = Carbon::now()->format('m');
+            // dd($data);
 
             $kode = DB::table('customer')
                 ->select('kode')
@@ -112,11 +118,11 @@ class JobOrderController extends Controller
             $newJO->pelabuhan_bongkar = $data['pelabuhan_bongkar'];
             $newJO->no_bl = $data['no_bl'];
             $newJO->tgl_sandar = isset($data['tgl_sandar'])? date_create_from_format('d-M-Y', $data['tgl_sandar']):NULL; 
-            $newJO->thc =  isset($data['checkbox_THC'])? $data['total_thc']:0;
-            $newJO->lolo = isset($data['checkbox_LOLO'])? $data['total_lolo']:0;
-            $newJO->apbs = isset($data['checkbox_APBS'])? $data['total_apbs']:0;
-            $newJO->cleaning = isset($data['checkbox_CLEANING'])? $data['total_cleaning']:0;
-            $newJO->doc_fee = isset($data['checkbox_DOC_FEE'])? $data['DOC_FEE']:0;
+            $newJO->thc =  isset($data['checkbox_THC'])? floatval(str_replace(',', '', $data['total_thc'])):0;
+            $newJO->lolo = isset($data['checkbox_LOLO'])? floatval(str_replace(',', '', $data['total_lolo'])):0;
+            $newJO->apbs = isset($data['checkbox_APBS'])? floatval(str_replace(',', '', $data['total_apbs'])):0;
+            $newJO->cleaning = isset($data['checkbox_CLEANING'])? floatval(str_replace(',', '', $data['total_cleaning'])):0;
+            $newJO->doc_fee = isset($data['checkbox_DOC_FEE'])? floatval(str_replace(',', '', $data['DOC_FEE'])):0;
             $newJO->status = 'MENUNGGU PEMBAYARAN';
             $newJO->created_by = $user;
             $newJO->created_at = now();
@@ -138,22 +144,48 @@ class JobOrderController extends Controller
                         $JOD = new JobOrderDetail();
                         $JOD->id_jo = $newJO->id; // get id jo
                         $JOD->id_grup_tujuan = $detail['tujuan']; 
-                        $JOD->tgl_booking = isset($detail['tgl_booking'])? date_create_from_format('d-M-Y', $detail['tgl_booking']):NULL ; // get id jo
                         $JOD->no_kontainer = $detail['no_kontainer'];
                         $JOD->jenis = $detail['jenis']; 
                         $JOD->seal = $detail['seal'];
                         $JOD->tipe_kontainer = $detail['tipe'];
                         $JOD->stripping = $detail['stripping'];
-                      
                         $JOD->status = "BELUM DOORING";
                         $JOD->created_by = $user;
                         $JOD->created_at = now();
                         $JOD->is_aktif = 'Y';
-                        $JOD->save();
+                        if($JOD->save() && isset($detail['tgl_booking'])){
+                            if(isset($detail['tgl_booking'])){
+                                $booking = new Booking();
+                                $booking->tgl_booking = date_create_from_format('d-M-Y', $detail['tgl_booking']);
+                                $booking->id_grup_tujuan = $detail['tujuan'];
+                                $booking->no_kontainer = $detail['no_kontainer'];
+                                $booking->id_customer = $data['customer'];
+                                $booking->id_jo_detail = $JOD->id;
+                                // logic nomer booking
+                                    //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
+                                    //bisa juga substr(no_booking, 8,10)
+                                    $maxBooking = DB::table('booking')
+                                        ->selectRaw("ifnull(max(substr(no_booking, -3)), 0) + 1 as max_booking")
+                                        ->whereRaw("substr(no_booking, 1, length(no_booking) - 3) = concat(?, ?, ?)", [$data['kode_cust'],$currentYear, $currentMonth])
+                                        ->value('max_booking');
+                                    
+                                    // str pad itu nambain angka 0 ke sebelah kiri (str_pad_left, defaultnya ke kanan) misal maxbookint 4 jadinya 004
+                                    $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . str_pad($maxBooking, 3, '0', STR_PAD_LEFT);
+
+                                    if (is_null($maxBooking)) {
+                                        $newBookingNumber = $request->kode_cust . $currentYear . $currentMonth . '001';
+                                    }
+                                //
+                                $booking->no_booking = $newBookingNumber;
+                                $booking->created_by = $user;
+                                $booking->created_at = now();
+                                $booking->save();
+                            }
+                        }
                     }
                 }
 
-               
+
                 // create jaminan
                 if(isset($data['tgl_bayar_jaminan']) || isset($data['total_jaminan'])){
                     $jaminan = new Jaminan();
