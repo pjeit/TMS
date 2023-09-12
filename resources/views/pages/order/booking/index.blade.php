@@ -26,15 +26,15 @@
                     </a> 
                 </div>
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="datatable" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                               <th>No Booking</th>
-                              <th>Tgl Booking</th>
-                              <th>Tgl Berangkat</th>
+                              <th>Customer</th>
+                              <th>Tujuan</th>
                               {{-- <th>Tujuan</th> --}}
                               {{-- <th>Catatan</th> --}}
-                              <th>Aksi</th>
+                              <th></th>
                             </tr>
                           </thead>
                         <tbody>
@@ -42,8 +42,8 @@
                             @foreach($data as $item)
                              <tr>
                                 <td>{{ $item->no_booking }}</td>
-                                <td>{{ \Carbon\Carbon::parse($item->tgl_booking )->format('d-M-Y')}}</td>  
-                                <td>{{  \Carbon\Carbon::parse($item->tgl_berangkat)->format('d-M-Y')}}</td>  
+                                <td>{{ $item->namaCustomer }}</td>  
+                                <td>{{  $item->namaTujuan}}</td>  
                                 <td>                                    
                                     <a class="btn btn-default bg-info radiusSendiri" href="{{route('booking.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
@@ -81,7 +81,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $data->links('pagination::bootstrap-4') }}
+                    {{-- {{ $data->links('pagination::bootstrap-4') }} --}}
                 </div>
             </div>
         </div>

@@ -21,7 +21,14 @@ class BookingController extends Controller
      */
     public function index()
     {
-        $data = Booking::where('is_aktif', 'Y')->paginate(5);
+         $data =  DB::table('booking as b')
+            ->select('b.*','c.nama as namaCustomer','g.nama_tujuan as namaTujuan')
+            ->join('customer as c', 'c.id', '=', 'b.id_customer')
+            ->join('grup_tujuan as g', 'g.id', '=', 'b.id_grup_tujuan')
+            ->where('b.is_aktif', 'Y')
+            ->whereNull('b.id_jo_detail')
+            ->get();
+    
 
         return view('pages.order.booking.index',[
             'judul' => "Booking",
