@@ -98,8 +98,6 @@
                                 </div>           
                             </div>
                         </div>
-                  
-                        
                         <hr>
 
                         <div class="table-responsive p-0">

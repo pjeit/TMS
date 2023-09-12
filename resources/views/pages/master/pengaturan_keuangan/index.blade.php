@@ -144,31 +144,40 @@
                            
                             <div class="col-12">
                                 <div class="row">
-                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                    <div class="form-group col-sm-12 col-md-3 col-lg-3">
                                         <label>Seal PJE</label>
                                         <div class="input-group ">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input required type="text" name="seal_pje" class="form-control numaja uang" value="{{number_format($data->seal_pje)}}">
+                                            <input required type="text" name="seal_pje" id="seal_pje" class="form-control numaja uang" value="{{number_format($data->seal_pje)}}">
                                         </div>
                                     </div>
-                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                    <div class="form-group col-sm-12 col-md-3 col-lg-3">
+                                        <label>Seal Pelayaran</label>
+                                        <div class="input-group ">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input required type="text" name="seal_pelayaran" id="seal_pelayaran" class="form-control numaja uang" value="{{number_format($data->seal_pelayaran)}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-12 col-md-3 col-lg-3">
                                         <label>Tally</label>
                                         <div class="input-group ">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input required type="text" name="tally" class="form-control numaja uang" value="{{number_format($data->tally)}}">
+                                            <input required type="text" name="tally" id="tally" class="form-control numaja uang" value="{{number_format($data->tally)}}">
                                         </div>
                                     </div>
-                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                    <div class="form-group col-sm-12 col-md-3 col-lg-3">
                                         <label>Plastik</label>
                                         <div class="input-group ">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input required type="text" name="plastik" class="form-control numaja uang" value="{{number_format($data->plastik)}}">
+                                            <input required type="text" name="plastik" id="plastik" class="form-control numaja uang" value="{{number_format($data->plastik)}}">
                                         </div>
                                     </div>
                 

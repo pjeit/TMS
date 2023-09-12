@@ -583,8 +583,8 @@
                                 </div>
                             </td>
                             <td>
-                                <select class="form-control selectpicker jenisPelayaran" name="detail[${i}][jenis]" id="jenis${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value="">--Jenis ──</option>
+                                <select class="form-control selectpicker pick_up" name="detail[${i}][pick_up]" id="pick_up${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <option value="">── PICK UP ──</option>
                                     <option value="TTL">TTL</option>
                                     <option value="TPS">TPS</option>
                                     <option value="DEPO">DEPO</option>
