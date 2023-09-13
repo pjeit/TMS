@@ -156,7 +156,7 @@ class SewaDataHelper
     }
     public function getTujuanBiaya($id)
     {
-        //TUjuan kan ada id
+        //Tujuan kan ada id
         $Tujuan = DB::table('grup_tujuan as gt')
             ->select('gt.*')
             ->where('gt.id', '=',  $id)
@@ -171,6 +171,15 @@ class SewaDataHelper
 
         return response()->json(['dataTujuan' =>$Tujuan,'dataTujuanBiaya' => $TujuanBiaya]);
         
+    }
+    public function getDataBooking($id)
+    {
+        $booking = DB::table('booking as b')
+            ->select('b.*')
+            ->where('b.id_jo_detail', '=',  $id)
+            ->where('b.is_aktif', '=', "Y")
+            ->first();
+        return response()->json($booking);
     }
 
      

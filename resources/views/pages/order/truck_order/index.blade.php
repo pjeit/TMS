@@ -1,4 +1,3 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
@@ -7,14 +6,11 @@
     </div>
 @endif
 
-@section('pathjudul')
-
-@endsection
-
 @section('content')
-<br>
+@include('sweetalert::alert')
+<meta name="csrf-token" content="{{ csrf_token() }}" />
 <style>
-   
+ 
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -22,59 +18,48 @@
             <div class="card radiusSendiri">
                 <div class="card-header">
                     <a href="{{route('truck_order.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
-                        <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
+                        <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Order
                     </a> 
                 </div>
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="datatable" class="table table-bordered table-striped" width='100%'>
                         <thead>
                             <tr>
-                              <th>Aksi</th>
-                              <th>No. Polisi Kendaraan</th>
-                              <th>No. Sewa</th>
-                              <th>Tgl Berangkat</th>
-                              <th>Tujuan</th>
-                              <th>Driver</th>
+                                <th>No. Polisi Kendaraan</th>
+                                <th>No. Sewa</th>
+                                <th>Tgl Berangkat</th>
+                                <th>Tujuan</th>
+                                <th>Driver</th>
+                                <th>xx</th>
                             </tr>
-                          </thead>
+                        </thead>
                         <tbody>
-                        @if (isset($dataSewa))
-                            @foreach($dataSewa as $item)
-                             <tr>
-                                <td>                                    
-                                    <div class="dropdown custom-dropdown">
-                                        <a href="#" data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle" aria-haspopup="true" aria-expanded="false">
-                                            {{-- <span class="fa fa-bolt "></span> --}}
-                                        </a>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a href="" class="dropdown-item">
-                                                <span class="fas fa-edit mr-3"></span> Edit
-                                            </a>
-                                            {{-- <a href="" method="get" rel="noopener" target="_blank"  class="dropdown-item">
-                                                <span class="fas fa-print mr-3"></span> Photoshop PDF
-                                            </a> --}}
-                                            <a href="" class="dropdown-item" data-confirm-delete="true">
-                                                <span class="fas fa-trash mr-3"></span> Delete
-                                            </a>
-                                            
-                                        </div>
-                                    </div>
-                                </td>
-                                  {{-- <td>L 9990 KK</td>
-                                <td>2023/CUST/VII/004</td>
-                                <td>21-Jul-2023</td>
-                                <td>** PT. Multi Bintang - Bir Bintang 20 </td>
-                                <td>SUPIR GENSA (081123123123)</td> --}}
-
-                                <td>{{ $item->no_pol }}</td>
-                                <td>{{ $item->id_sewa }}</td>
-                                <td>{{ $item->tanggal_berangkat }}</td>
-                                <td>{{ $item->idGrup_tujuan }}</td>
-                                <td>{{ $item->id_karyawan }}</td>
-                            </tr>
-                               @endforeach
+                            @if (isset($dataSewa))
+                                @foreach($dataSewa as $item)
+                                    <tr>
+                                        <td>{{ $item->no_polisi }}</td>
+                                        <td>{{ $item->id_sewa }}</td>
+                                        <td>{{ $item->tanggal_berangkat }}</td>
+                                        <td>{{ $item->id_grup_tujuan }}</td>
+                                        <td>{{ $item->id_karyawan }}</td>
+                                        <td>                                    
+                                            <div class="btn-group dropleft">
+                                                <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-list"></i>
+                                                </button>
+                                                <div class="dropdown-menu">
+                                                    <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                        <span class="fas fa-edit mr-3"></span> Edit
+                                                    </a>
+                                                    <a href="{{ route('truck_order.destroy', $item->id_sewa) }}" class="dropdown-item" data-confirm-delete="true">
+                                                        <span class="fas fa-trash mr-3"></span> Delete
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             @endif
-
                         </tbody>
                     </table>
                 </div>
@@ -82,5 +67,7 @@
         </div>
     </div>
 </div>
-
+<script>
+ 
+</script>
 @endsection

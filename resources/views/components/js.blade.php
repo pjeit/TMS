@@ -293,7 +293,8 @@
           "aaSorting": []
       });
 
-      var datatable = document.getElementById('datatable');
+      var datatable = document.getElementById('dataablex');
+      
       if(datatable != null){
         // Atur properti CSS width menjadi 100%
         datatable.style.width = '100%';
