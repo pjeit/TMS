@@ -185,7 +185,6 @@ class JobOrderController extends Controller
                     }
                 }
 
-
                 // create jaminan
                 if(isset($data['tgl_bayar_jaminan']) || isset($data['total_jaminan'])){
                     $jaminan = new Jaminan();
@@ -203,7 +202,15 @@ class JobOrderController extends Controller
 
             }
         
-            return redirect()->route('job_order.index')->with('status','Success!!');
+            // return redirect()->route('job_order.index')->with('status','Success!!');
+            $id_print_jo = $newJO->id; // Replace with the actual value of the id
+            $statusMessage = 'Success!!';
+
+            return redirect()->route('job_order.index')
+                ->with('id_print_jo', $id_print_jo)
+                ->with('status', $statusMessage);
+
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
