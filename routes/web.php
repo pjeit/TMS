@@ -118,6 +118,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/truck_order/getTujuanCust/{id}', [App\Helper\SewaDataHelper::class, 'getTujuanCust'])->name('getTujuanCust.get');
         Route::get('/truck_order/getTujuanBiaya/{id}', [App\Helper\SewaDataHelper::class, 'getTujuanBiaya'])->name('getTujuanBiaya.get');
         Route::get('/truck_order/getDetailJOBiaya/{id}', [App\Helper\SewaDataHelper::class, 'getDetailJOBiaya'])->name('getDetailJOBiaya.get');
+        Route::get('/truck_order/getDataBooking/{id}', [App\Helper\SewaDataHelper::class, 'getDataBooking'])->name('getDataBooking.get');
 
         Route::resource('truck_order', 'App\Http\Controllers\SewaController');
 

@@ -1,4 +1,3 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
@@ -21,7 +20,7 @@
                     </a> 
                 </div>
                 <div class="card-body">
-                    <table id="datatable" class="table table-bordered table-striped">
+                    <table id="datatable" class="table table-bordered table-striped" width='100%'>
                         <thead>
                             <tr>
                               <th>Kode JO</th>
@@ -29,10 +28,9 @@
                               <th>Pengirim (Customer)</th>
                               <th>Pelayaran (Supplier)</th>
                               <th>Status</th>
-                              {{-- <th>Tgl Buat</th> --}}
                               <th></th>
                             </tr>
-                          </thead>
+                        </thead>
                         <tbody>
                             @if (isset($dataJO))
                                 @foreach($dataJO as $item)
@@ -89,8 +87,6 @@
 @endif
 
 <script>
- 
-
     var sessionMessage = "{{ session()->has('message') ? session('message') : '' }}";
     if (sessionMessage !== '') {
         toastr.success(sessionMessage);
