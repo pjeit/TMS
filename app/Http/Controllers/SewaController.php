@@ -43,8 +43,6 @@ class SewaController extends Controller
      */
     public function create()
     {
-        //
-      
         $datajO = DB::table('job_order as jo')
             ->select('jo.*')
             ->where('jo.is_aktif', '=', "Y")

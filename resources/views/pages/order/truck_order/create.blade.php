@@ -261,19 +261,17 @@
 
 <script>
     $(document).ready(function() {
-        var currentDate = new Date();
+        var today = new Date();
+        var tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
 
-        currentDate.setDate(currentDate.getDate() + 1);
-
-        var formattedDate = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
 
         $('#tanggal_berangkat').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
             language: 'en',
-            startDate: formattedDate 
-        });
+        }).datepicker("setDate", tomorrow);
 
         $('#inboundData').hide();
         $('#garisInbound').hide();
@@ -291,8 +289,8 @@
             $('#garisOutbond').hide();
             $('#select_booking').val('').trigger('change');
             $('#tanggal_berangkat').val('');
-        $('#is_bongkar').val('Y');
- $('#select_jo_detail').val('').trigger('change');
+            $('#is_bongkar').val('Y');
+            $('#select_jo_detail').val('').trigger('change');
             $('#select_jo').val('').trigger('change');
 
             $('#select_customer').attr('disabled',true).val('').trigger('change');
@@ -312,18 +310,13 @@
             $('#plastik').val('');
             $('#tally').val('');
             $('#kargo').val('');
-                        $('#biayaDetail').val('');
-                        $('#biayaTambahTarif').val('');
-
-                        
-
-
+            $('#biayaDetail').val('');
+            $('#biayaTambahTarif').val('');
 		});
          $('body').on('click','#outbond',function()
 		{
             // $(this).animate({ "color": "red" }, 1500);
             $('#select_booking').val('').trigger('change');
-
             $('#inboundData').hide();
             $('#garisInbound').hide();
             $('#outbondData').show();
@@ -335,7 +328,7 @@
             $('#select_jo').val('').trigger('change');
             $('#is_bongkar').val('');
 
-              $('#tujuan_id').val('');
+            $('#tujuan_id').val('');
             $('#nama_tujuan').val('');
             $('#alamat_tujuan').val('');
             $('#tarif').val('');
@@ -349,47 +342,36 @@
             $('#plastik').val('');
             $('#tally').val('');
             $('#kargo').val('');
-                        $('#biayaDetail').val('');
-                        $('#biayaTambahTarif').val('');
-
+            $('#biayaDetail').val('');
+            $('#biayaTambahTarif').val('');
             $('#tanggal_berangkat').val('');
-
-
 		});
+
         $('body').on('change','#select_booking',function()
 		{
             var selectedValue = $(this).val();
             var splitValue = selectedValue.split('-');
-            // console.log(splitValue);
-
             var idCustomer=splitValue[1];
             var idTujuan=splitValue[2];
-
             var tanggalBerangkat=splitValue[3];
             var bulanBerangkat=splitValue[4];
             var tahunBerangkat=splitValue[5];
-
             var gabungan = tanggalBerangkat+"-"+bulanBerangkat+"-"+tahunBerangkat
-
-
             // console.log(tanggalBerangkat+"-"+bulanBerangkat+"-"+tahunBerangkat);
-
             $('#select_customer').val(idCustomer).trigger('change');
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
-
             $('#select_customer').attr('disabled',true);
             $('#select_grup_tujuan').attr('disabled',true);
             $('#tanggal_berangkat').val(gabungan);
-
             if(selectedValue=="")
             {
               $('#select_customer').attr('disabled',false).val('').trigger('change');
               $('#select_grup_tujuan').attr('disabled',false).val('').trigger('change');
             }
 		});
+        
         $('#select_jo_detail').attr('disabled',true);
         var customerLoad = false;
-        console.log(customerLoad);
 
         $('body').on('change','#select_jo',function()
 		{
@@ -427,7 +409,7 @@
                     }
                     else
                     {
-                           $('#select_jo_detail').empty(); 
+                        $('#select_jo_detail').empty(); 
                         $('#select_jo_detail').append('<option value="">Pilih Kontainer</option>');
                         $('#select_jo_detail').attr('disabled',true).val('').trigger('change');
 
@@ -447,8 +429,8 @@
 		{
             var selectedValue = $(this).val();
             var splitValue = selectedValue.split('-');
-            // console.log(splitValue[1]);
             var idJoDetail=splitValue[0];
+            console.log('idJoDetail ' +idJoDetail);
             var idTujuan=splitValue[1];
             var no_kontainer=splitValue[2];
             // /truck_order/getDetailJOBiaya/{id}
@@ -457,22 +439,18 @@
             var baseUrl = "{{ asset('') }}";
             // var myjson;
             var array_tambahan_sdt = [];
-             $.ajax({
+
+            $.ajax({
                 url: `${baseUrl}truck_order/getDetailJOBiaya/${idJoDetail}`, 
                 method: 'GET', 
                 success: function(response) {
-                    // console.log(response);
-
+                    console.log('response '+response);
                     if(!response)
                     {
-                      
                         array_tambahan_sdt = [];
-
                     }
                     else
                     {
-                      
-                         // console.log( response.dataTujuanBiaya);
                         for (var i in response) {
                             if(response[i].storage || response[i].storage!=0)
                             {
@@ -501,7 +479,7 @@
                                 
                         }
                         $('#biayaTambahSDT').val(JSON.stringify(array_tambahan_sdt));
-                        console.log(array_tambahan_sdt);
+                        console.log('array_tambahan_sdt '+array_tambahan_sdt);
 
                     }
                 },
@@ -512,7 +490,8 @@
            
 
 		});
-         $('body').on('change','#select_customer',function()
+        
+        $('body').on('change','#select_customer',function()
 		{
             var selectedValue = $(this).val();
             $('#customer_id').val(selectedValue);
@@ -554,9 +533,9 @@
                     if(response)
                     {
                         customerLoad = true;
-                        console.log(customerLoad);
-                        console.log(response.dataKredit.kreditCustomer);
-                        console.log(response.dataKredit.maxGrup);
+                        // console.log(customerLoad);
+                        // console.log(response.dataKredit.kreditCustomer);
+                        // console.log(response.dataKredit.maxGrup);
 
                         // ==============================kredit=================
                         
@@ -568,7 +547,6 @@
                         // creds = parseInt(creds) + parseInt(total_tarif);
            
                         let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
-                        // console.log(creds_now)
                         creds_now = creds_now.toFixed(1);
                         // persenanCredit
                         const persen = document.getElementById('persenanCredit');
@@ -664,7 +642,6 @@
             var array_detail_biaya = [];
             var array_tambahan_tarif = [];
 
-            // console.log(idTujuan);
             //
             // customer_id
             // tujuan_id
@@ -784,9 +761,9 @@
                         $('#biayaDetail').val(JSON.stringify(array_detail_biaya));
                         $('#biayaTambahTarif').val(JSON.stringify(array_tambahan_tarif));
 
-                        console.log(array_detail_biaya);
+                        // console.log(array_detail_biaya);
 
-                        console.log(array_tambahan_tarif);
+                        // console.log(array_tambahan_tarif);
 
 
                     }
