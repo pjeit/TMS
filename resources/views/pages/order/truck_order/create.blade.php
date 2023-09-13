@@ -261,13 +261,20 @@
 
 <script>
     $(document).ready(function() {
+        var currentDate = new Date();
+
+        currentDate.setDate(currentDate.getDate() + 1);
+
+        var formattedDate = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
+
         $('#tanggal_berangkat').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
-            language:'en',
-            // endDate: "0d"
+            language: 'en',
+            startDate: formattedDate 
         });
+      
         $('#inboundData').hide();
         $('#garisInbound').hide();
         // $('#select_customer').attr('disabled',true).val('').trigger('change');
