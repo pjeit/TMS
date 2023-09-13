@@ -274,7 +274,7 @@
             language: 'en',
             startDate: formattedDate 
         });
-      
+
         $('#inboundData').hide();
         $('#garisInbound').hide();
         // $('#select_customer').attr('disabled',true).val('').trigger('change');
@@ -837,12 +837,6 @@
             $('#driver_nama').val(idChassis);
 		});
    
-        $('#tgl_booking').datepicker({
-            autoclose: true,
-            format: "dd-M-yyyy",
-            todayHighlight: true,
-            language:'en',
-        });
     });
    
 </script>
