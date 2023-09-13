@@ -121,6 +121,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/truck_order/getDataBooking/{id}', [App\Helper\SewaDataHelper::class, 'getDataBooking'])->name('getDataBooking.get');
 
         Route::resource('truck_order', 'App\Http\Controllers\SewaController');
+
+        Route::resource('pencairan_uang_jalan_ftl', 'App\Http\Controllers\PencairanUangJalanFtlController');
+
     });
 
     Route::middleware(['is_marketing'])->group(function () {
