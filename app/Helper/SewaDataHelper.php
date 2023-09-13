@@ -8,18 +8,20 @@ class SewaDataHelper
     //=================================index================================
     public static function DataSewa()
      {
-          // some logic to determine if the publisher is main
+        // some logic to determine if the publisher is main
         return DB::table('sewa as s')
-            ->select('s.*')
+            ->select('s.*', 'gt.nama_tujuan as nama_tujuan')
+            ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
-            ->where('s.status','like','%MENUNGGU UANG JALAN%')
+            ->where('s.status', 'MENUNGGU UANG JALAN')
             ->get();
      }
     //=================================create,edit??================================
     
     public static function DataJO()
      {
-          // some logic to determine if the publisher is main
+        // some logic to determine if the publisher is main
         return DB::table('job_order as jo')
             ->select('jo.*')
             ->where('jo.is_aktif', '=', "Y")
