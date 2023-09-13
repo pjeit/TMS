@@ -76,10 +76,17 @@
             </div>
         </div>
     </div>
-
-    
 </div>
+@if (session('id_print_jo'))
+<script>
+    window.open("/job_order/printJob/{{ session('id_print_jo') }}", "_blank");
 
+    // di set null biar ga open new tab terus2an 
+    setTimeout(function() {
+        sessionStorage.setItem('id_print_jo', null);
+    }, 1000); // Adjust the delay (in milliseconds) as needed
+</script>
+@endif
 
 <script>
  
