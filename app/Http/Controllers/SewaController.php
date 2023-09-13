@@ -94,14 +94,15 @@ class SewaController extends Controller
                 ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
                     ->where(function ($query) {
                         $query->where('k.is_aktif', '=', 'Y')
-                            // ->where(function ($innerQuery) {
-                            //     $innerQuery->where('k.id_kategori', '=', 1)
-                            //         ->whereNotNull('c.id');
-                            // })
+                            ->where(function ($innerQuery) {
+                                $innerQuery->where('k.id_kategori', '=', 1)
+                                    ->whereNotNull('c.id');
+                            })
                     ->orWhere(function ($innerQuery) {
                         $innerQuery->where('k.id_kategori', '!=', 1);
                     });
                 })
+                ->whereNotNull('k.driver_id')
                 ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                 ->get();
             
@@ -296,6 +297,40 @@ class SewaController extends Controller
             
             if($idSewa)
             {
+                $customer = DB::table('customer as c')
+                ->select('c.*')
+                ->where('c.id', '=', $data['customer_id'])
+                ->where('c.is_aktif', '=', "Y")
+                ->first();
+                $grup = DB::table('grup as g')
+                ->select('g.*')
+                ->where('g.id', '=', $customer->grup_id)
+                ->where('g.is_aktif', '=', "Y")
+                ->first();
+                if ($data['jenis_tujuan'] === "LTL") {
+                    $harga = (float)$data['harga_per_kg'] * $data['min_muatan'];
+                } else {
+                    $harga = (float)$data['tarif'];
+                }
+
+                DB::table('customer')
+                ->where('id', $data['customer_id'])
+                ->update([
+                    'kredit_sekarang'=> (float)$customer->kredit_sekarang+$harga,
+                    'updated_at' => VariableHelper::TanggalFormat(),
+                    'updated_by' => $user,
+                ]);
+
+                 DB::table('grup')
+                ->where('id', $customer->grup_id)
+                ->update([
+                    'total_kredit'=>(float)$grup->total_kredit+$harga,
+                    'updated_at' => VariableHelper::TanggalFormat(),
+                    'updated_by' => $user,
+                ]);
+                
+
+
                 if( $dataBook)
                 {
                     DB::table('booking')
@@ -331,7 +366,7 @@ class SewaController extends Controller
                 }
               
                 $arrayBiaya = json_decode($data['biayaDetail'], true);
-                //perhitungan kredit sama grup nya belum buat kredit sekarang, sama trip supir, update jo kalo ada, update booking kalo ada
+                // sama trip supir
                 if( $arrayBiaya)
                 {
                     foreach ($arrayBiaya as /*$key =>*/ $item) {

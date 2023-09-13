@@ -623,6 +623,12 @@
                     else
                     {
                         customerLoad = false;
+                            const persen = document.getElementById('persenanCredit');
+                            const cred = document.getElementById('credit_customer');
+                            persen.innerHTML = 0+"%";
+                            cred.style.width = 0+"%";
+                            cred.style.backgroundColor = "#53de02";
+                            cred.style.color = "black";
 
                     }
                     // jo_detail.trigger('change');
