@@ -432,6 +432,17 @@
                 </a>
               </li>
             </ul>
+            
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Pencairan UJ
+                  </p>
+                </a>
+              </li>
+            </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{request()->url() === route('pembayaran_sdt.index')? ' active' : '' }} " style="font-weight: 500;">
