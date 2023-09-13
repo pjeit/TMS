@@ -114,10 +114,10 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
         Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
-        Route::get('/truck_order/getJoDetail/{id}', [App\Http\Controllers\SewaController::class, 'getDetailJO'])->name('detailjo.get');
-        Route::get('/truck_order/getTujuanCust/{id}', [App\Http\Controllers\SewaController::class, 'getTujuanCust'])->name('getTujuanCust.get');
-        Route::get('/truck_order/getTujuanBiaya/{id}', [App\Http\Controllers\SewaController::class, 'getTujuanBiaya'])->name('getTujuanBiaya.get');
-        Route::get('/truck_order/getDetailJOBiaya/{id}', [App\Http\Controllers\SewaController::class, 'getDetailJOBiaya'])->name('getDetailJOBiaya.get');
+        Route::get('/truck_order/getJoDetail/{id}', [App\Helper\SewaDataHelper::class, 'getDetailJO'])->name('detailjo.get');
+        Route::get('/truck_order/getTujuanCust/{id}', [App\Helper\SewaDataHelper::class, 'getTujuanCust'])->name('getTujuanCust.get');
+        Route::get('/truck_order/getTujuanBiaya/{id}', [App\Helper\SewaDataHelper::class, 'getTujuanBiaya'])->name('getTujuanBiaya.get');
+        Route::get('/truck_order/getDetailJOBiaya/{id}', [App\Helper\SewaDataHelper::class, 'getDetailJOBiaya'])->name('getDetailJOBiaya.get');
 
         Route::resource('truck_order', 'App\Http\Controllers\SewaController');
     });
