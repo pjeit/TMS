@@ -430,7 +430,7 @@
             var selectedValue = $(this).val();
             var splitValue = selectedValue.split('-');
             var idJoDetail=splitValue[0];
-            console.log('idJoDetail ' +idJoDetail);
+            console.log('select_jo_detail ' +selectedValue);
             var idTujuan=splitValue[1];
             var no_kontainer=splitValue[2];
             // /truck_order/getDetailJOBiaya/{id}
@@ -490,7 +490,7 @@
            
 
 		});
-        
+
         $('body').on('change','#select_customer',function()
 		{
             var selectedValue = $(this).val();
