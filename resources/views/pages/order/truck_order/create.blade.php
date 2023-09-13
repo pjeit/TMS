@@ -539,45 +539,7 @@
             // creds = creds.replace(/,/g,'');
             // creds_max = creds_max.replace(/,/g,'');
             // //debug sini 2
-            // creds = parseInt(creds) + parseInt(total_tarif);
-            // creds/creds_max
-            // let creds_now = (250000/500000) * 100;
-            // // console.log(creds_now)
-            // creds_now = creds_now.toFixed(1);
-            // // $('#cred_now').val(creds_now);
-            // // persenanCredit
-            // const persen = document.getElementById('persenanCredit');
-
-            // const cred = document.getElementById('credit_customer');
-            // if(creds_now<80)
-            // {
-            //     persen.innerHTML = creds_now+"%";
-            //     cred.style.width = creds_now+"%";
-            //     cred.style.backgroundColor = "#53de02";
-            //     cred.style.color = "black";
-                
-            // }
-            // else if(creds_now >=80 && creds_now <= 90)
-            // {
-            //     persen.innerHTML = creds_now+"%";
-            //     cred.style.width = creds_now+"%";
-            //     cred.style.backgroundColor = "#deab02";
-            //     cred.style.color = "black";
-            // }
-            // else if(creds_now>=90)
-            // {
-            //     persen.innerHTML = creds_now+"%";
-            //     cred.style.width = creds_now+"%";
-            //     cred.style.backgroundColor = "#de0202";
-            //     cred.style.color = "black";
-            // }
-            // else if(creds_now>100)
-            // {
-            //     persen.innerHTML = creds_now+"%";
-            //     cred.style.width = "100%";
-            //     cred.style.backgroundColor = "#de0202";
-            //     cred.style.color = "black";
-            // }
+           
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
                 method: 'GET', 
