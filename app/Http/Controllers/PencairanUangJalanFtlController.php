@@ -29,7 +29,8 @@ class PencairanUangJalanFtlController extends Controller
                         ->where('s.is_aktif', '=', 'Y')
                         ->where('s.jenis_tujuan', 'like', '%FTL%')
                         ->where('s.status', 'like', "%MENUNGGU UANG JALAN%")
-                        ->groupBy('c.id')
+                        // ->groupBy('c.id')
+                        ->orderBy('c.id','ASC')
                         ->get();
             //   dd($sewa);
                 return view('pages.finance.pembayaran_uang_jalan.index',[
