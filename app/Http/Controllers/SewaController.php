@@ -62,19 +62,39 @@ class SewaController extends Controller
         try {
             $data = $request->collect();
             // dd($data);
-       
+            
+            $romawi = VariableHelper::bulanKeRomawi(date("m"));
+
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
-            $dataBook = $data['select_booking']? explode("-",$data['select_booking']):null;
+            $booking_id = $data['booking_id']; 
+
+            $lastNoSewa = Sewa::where('is_aktif', 'Y')
+                        ->where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
+                        ->orderBy('no_sewa', 'DESC')
+                        ->first();
+            if(isset($lastNoSewa)){
+                $last3Chars = substr($lastNoSewa['no_sewa'], -3);
+                // Convert it to an integer and increment by 1
+                $last3CharsInt = (int)$last3Chars + 1;
+                // Format the result with leading zeros (assuming a maximum of 3 digits)
+                $newValue = sprintf("%03d", $last3CharsInt);
+                // Replace the original last 3 characters with the new value
+                $newString = preg_replace('/\d{3}$/', $newValue, $lastNoSewa['no_sewa']);
+            }
+
+            $no_sewa = isset($lastNoSewa) ? $newString : date("Y").'/CUST/'.$romawi.'/'.'001';
+
             
             $sewa = new Sewa();
-            $sewa->id_booking = $dataBook? $dataBook[0]:null;
-            $sewa->id_jo = $data['select_jo']?? null;
-            $sewa->id_jo_detail = $data['select_jo_detail']?? null;
+            $sewa->no_sewa = $no_sewa;
+            $sewa->id_booking = $booking_id;
+            $sewa->id_jo = $data['id_jo'];
+            $sewa->id_jo_detail = $data['id_jo_detail'];
+            $sewa->id_customer = $data['customer_id'];
+            $sewa->id_grup_tujuan = $data['tujuan_id'];
             $sewa->jenis_tujuan = $data['jenis_tujuan'];
             $sewa->status = 'MENUNGGU UANG JALAN';
             $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
-            $sewa->id_customer = $data['customer_id'];
-            $sewa->id_grup_tujuan = $data['tujuan_id'];
             $sewa->nama_tujuan = $data['nama_tujuan'];
             $sewa->alamat_tujuan = $data['alamat_tujuan'];
             $sewa->kargo = $data['kargo'];
@@ -92,12 +112,10 @@ class SewaController extends Controller
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
             $sewa->created_by = $user;
             $sewa->created_at = now();
-            $sewa->updated_by = $user;
-            $sewa->updated_at = now();
             $sewa->is_aktif = 'Y';
+            
+            if($sewa->save()){
 
-            if($sewa->save())
-            {
                 $customer = DB::table('customer as c')
                     ->select('c.*')
                     ->where('c.id', '=', $data['customer_id'])
@@ -115,50 +133,51 @@ class SewaController extends Controller
                     $harga = (float)$data['tarif'];
                 }
 
-                DB::table('customer')
-                    ->where('id', $data['customer_id'])
-                    ->update([
-                        'kredit_sekarang'=> (float)$customer->kredit_sekarang+$harga,
-                        'updated_at' => VariableHelper::TanggalFormat(),
-                        'updated_by' => $user,
-                ]);
-
-                DB::table('grup')
-                    ->where('id', $customer->grup_id)
-                    ->update([
-                        'total_kredit'=>(float)$grup->total_kredit+$harga,
-                        'updated_at' => VariableHelper::TanggalFormat(),
-                        'updated_by' => $user,
-                ]);
-                
-                if($dataBook){
-                    DB::table('booking')
-                        ->where('id', $dataBook[0])
+                // update kredit grup + customer
+                    DB::table('customer')
+                        ->where('id', $data['customer_id'])
                         ->update([
-                            'updated_at' => VariableHelper::TanggalFormat(),
+                            'kredit_sekarang' => (float)$customer->kredit_sekarang+$harga,
+                            'updated_at' => now(),
                             'updated_by' => $user,
+                    ]);
+
+                    DB::table('grup')
+                        ->where('id', $customer->grup_id)
+                        ->update([
+                            'total_kredit' => (float)$grup->total_kredit+$harga,
+                            'updated_at' => now(),
+                            'updated_by' => $user,
+                    ]);
+                ///
+                
+                if(isset($booking_id)){
+                    DB::table('booking')
+                        ->where('id', $booking_id)
+                        ->update([
                             'is_sewa' => "Y", // berarti sudah masuk sewa
+                            'updated_at' => now(),
+                            'updated_by' => $user,
                     ]);
                 }
     
-                if($data['select_jo'] && $data['select_jo_detail'])
+                if(isset($data['select_jo']) && isset($data['id_jo_detail']))
                 {
                     // DB::table('job_order')
                     //     ->where('id', $data['select_jo'])
                     //     ->update([
                     //         'status'=>'masih gatau',
-                    //         'updated_at' => VariableHelper::TanggalFormat(),
+                    //         'updated_at' => now(),
                     //         'updated_by' => $user,
                     //     ]);
-    
                     DB::table('job_order_detail')
-                        ->where('id', $data['select_jo_detail'])
+                        ->where('id', $data['id_jo_detail'])
                         ->update([
                             'id_kendaraan' => $data['kendaraan_id']? $data['kendaraan_id']:null,
                             'nopol_kendaraan' => $data['no_polisi']? $data['no_polisi']:null,
                             'tgl_dooring' => date_format($tgl_berangkat, 'Y-m-d'),
                             'status'=> 'DALAM PERJALANAN',
-                            'updated_at' => VariableHelper::TanggalFormat(),
+                            'updated_at' => now(),
                             'updated_by' => $user,
                         ]);
                     
@@ -167,7 +186,7 @@ class SewaController extends Controller
                 $arrayBiaya = json_decode($data['biayaDetail'], true);
                 
                 // sama trip supir
-                if( $arrayBiaya)
+                if( isset($arrayBiaya))
                 {
                     foreach ($arrayBiaya as /*$key =>*/ $item) {
                         DB::table('sewa_biaya')
@@ -177,9 +196,9 @@ class SewaController extends Controller
                             'biaya' => $item['biaya'],
                             'catatan' => $item['catatan']?$item['catatan']:null,
                             'is_aktif' => "Y",
-                            'created_at' => VariableHelper::TanggalFormat(), 
+                            'created_at' => now(), 
                             'created_by' => $user,
-                            'updated_at' => VariableHelper::TanggalFormat(),
+                            'updated_at' => now(),
                             'updated_by' => $user,
                             )
                         ); 
@@ -199,9 +218,9 @@ class SewaController extends Controller
                     //             'is_dipisahkan' => null,
                     //             'catatan' => null,
                     //             'is_aktif' => "Y",
-                    //             'created_at'=>VariableHelper::TanggalFormat(), 
+                    //             'created_at'=>now(), 
                     //             'created_by'=> $user,
-                    //             'updated_at'=> VariableHelper::TanggalFormat(),
+                    //             'updated_at'=> now(),
                     //             'updated_by'=> $user,
                     //             )
                     //         ); 
@@ -221,9 +240,9 @@ class SewaController extends Controller
                     //           'is_dipisahkan' => null,
                     //           'catatan' => null,
                     //           'is_aktif' => "Y",
-                    //           'created_at'=>VariableHelper::TanggalFormat(), 
+                    //           'created_at'=>now(), 
                     //           'created_by'=> $user,
-                    //           'updated_at'=> VariableHelper::TanggalFormat(),
+                    //           'updated_at'=> now(),
                     //           'updated_by'=> $user,
                     //           )
                     //       ); 

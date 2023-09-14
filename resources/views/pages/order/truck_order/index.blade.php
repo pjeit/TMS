@@ -39,10 +39,10 @@
                                 @foreach($dataSewa as $item)
                                     <tr>
                                         <td>{{ $item->no_polisi }}</td>
-                                        <td>{{ $item->id_sewa }}</td>
+                                        <td>{{ $item->no_sewa }}</td>
                                         <td>{{date("d-M-Y", strtotime($item->tanggal_berangkat))}}</td>
                                         <td>{{ $item->nama_tujuan }}</td>
-                                        <td>{{ $item->id_karyawan }}</td>
+                                        <td>{{ $item->nama_lengkap }}</td>
                                         <td>{{ $item->status }}</td>
                                         <td>                                    
                                             <div class="btn-group dropleft">
