@@ -32,14 +32,19 @@
       @csrf
         <div class="row m-2">
         
-            <div class="col-6">
+            <div class="col">
                 <div class="card radiusSendiri">
                     <div class="card-header">
                         <a href="{{ route('pencairan_uang_jalan_ftl.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                        <button type="submit" class="btn btn-success radiusSendiri"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
                     </div>
                     <div class="card-body" >
+                        <div class="d-flex" style="gap: 20px">
                             <div class="row">
+                                 {{-- <div class="form-group col-12">
+                                    Data Sewa
+                                 <hr>
+
+                                </div> --}}
                                 <div class="form-group col-12">
                                     <label for="tanggal_pencairan">Tanggal Pencairan<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
@@ -89,90 +94,99 @@
                                     <input type="text" id="tujuan" name="tujuan" class="form-control" value="" readonly>                         
                                 </div>  
                             </div>
-                        <hr>
+                            <div class="row">
+                                {{-- <div class="form-group col-12">
+                                    Data Kendaraan
+                                 <hr>
+
+                                </div> --}}
+                                <div class="form-group col-5">
+                                    <label for="no_akun">Kendaraan</label>
+                                    <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="" readonly>                         
+                                </div>  
+
+                                <div class="form-group col-7">
+                                    <label for="no_akun">Driver</label>
+                                    <input type="text" id="driver" name="driver" class="form-control" value="" readonly>     
+                                    <input type="hidden" name="id_karyawan" id="id_karyawan">                    
+                                </div> 
+
+                        
+
+                                <div class="form-group col-7">
+                                    <label for="total_hutang">Total Hutang</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-5">
+                                    <label for="potong_hutang">Potong Hutang</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numajaMinDesimal" value="" >                         
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label for="no_akun">Catatan</label>
+                                    <input type="text" id="catatan" name="catatan" class="form-control" value="" >                         
+                                </div> 
+
+                                <div class="form-group col-6">
+                                    <label for="uang_jalan">Uang Jalan</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="uang_jalan" name="uang_jalan" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-6">
+                                    <label for="total_diterima">Total Diterima</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-12">
+                                    <label for="">PILIH PEMBAYARAN</label>      
+                                    <div class="d-flex" style="gap: 10px;">
+                                        <select class="form-control select2" style="width: 100%;" id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                            <option value="">--PILIH KAS--</option>
+                                            @foreach ($dataKas as $kas)
+                                                <option value="{{$kas->id}}">{{ $kas->nama }}</option>
+                                            @endforeach
+                                        </select>
+
+                                        <button type="submit" class="btn btn-success radiusSendiri"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
+                                    </div>  
+                                </div>  
+                            </div>
+                        </div>
                     </div>
                 </div> 
             </div>
-
+{{-- 
             <div class="col-6">
                 <div class="card radiusSendiri">
                     <div class="card-header">
                         Driver & Uang Jalan
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="form-group col-5">
-                                <label for="no_akun">Kendaraan</label>
-                                <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="" readonly>                         
-                            </div>  
-
-                            <div class="form-group col-7">
-                                <label for="no_akun">Driver</label>
-                                <input type="text" id="driver" name="driver" class="form-control" value="" readonly>                         
-                            </div> 
-
-                      
-
-                            <div class="form-group col-7">
-                                <label for="total_hutang">Total Hutang</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                </div>
-                            </div>
-
-                            <div class="form-group col-5">
-                                <label for="potong_hutang">Potong Hutang</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numajaMinDesimal" value="" >                         
-                                </div>
-                            </div>
-
-                            <div class="form-group col-12">
-                                <label for="no_akun">Catatan</label>
-                                <input type="text" id="catatan" name="catatan" class="form-control" value="" >                         
-                            </div> 
-
-                            <div class="form-group col-6">
-                                <label for="uang_jalan">Uang Jalan</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" maxlength="100" id="uang_jalan" name="uang_jalan" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                </div>
-                            </div>
-
-                            <div class="form-group col-6">
-                                <label for="total_diterima">Total Diterima</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                </div>
-                            </div>
-
-                            <div class="form-group col-12">
-                                <label for="">PILIH PEMBAYARAN</label>        
-                                <select class="form-control select2" style="width: 100%;" id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                    <option value="">--PILIH KAS--</option>
-                                    @foreach ($dataKas as $kas)
-                                        <option value="{{$kas->id}}">{{ $kas->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </div>  
-                        </div>
                            
                     </div>
                 </div>
-
-            </div>
+            </div> --}}
         
         </div>
  
@@ -213,6 +227,16 @@
                 $('#potong_hutang').val(addPeriodType(potong_hutang,','));
             }
         }
+        function ubahTanggal(dateString) {
+            var dateObject = new Date(dateString);
+            var day = dateObject.getDate();
+            var month = dateObject.toLocaleString('default', { month: 'short' });
+            var year = dateObject.getFullYear();
+
+            return day + '-' + month + '-' + year;
+        }
+
+
     $(document).ready(function() {
 
         // console.log($('#select_sewa').val());
@@ -253,9 +277,12 @@
                         var dataSewaDetail = response.sewaDetail;
                         var dataHutangKaryawan =  response.hutangKaryawan;
 
-                        $('#tanggal_berangkat').val(dataSewaDetail.tanggal_berangkat);
+
+                        $('#tanggal_berangkat').val( ubahTanggal(dataSewaDetail.tanggal_berangkat));
                         $('#customer').val(dataSewaDetail.nama_cust);
                         $('#tujuan').val(dataSewaDetail.nama_tujuan);
+                        $('#id_karyawan').val(dataSewaDetail.id_karyawan);
+
 
                         $('#kendaraan').val(dataSewaDetail.no_polisi);
                         $('#driver').val(dataSewaDetail.supir);
@@ -268,10 +295,10 @@
                         console.log(response);
 
                     }
-                    else
-                    {
+                    // else
+                    // {
 
-                    }
+                    // }
         
                 },
                 error: function(xhr, status, error) {
