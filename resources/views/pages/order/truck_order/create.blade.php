@@ -95,7 +95,6 @@
                                     <label for="">No.Booking</label>
                                     <select class="form-control select2" style="width: 100%;" id='select_booking' name="select_booking">
                                         <option value="">Pilih No Booking</option>
-                
                                         @foreach ($dataBooking as $book)
                                             <option value="{{$book->idBooking}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y')}}">{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y') }} / {{ $book->nama_tujuan }}  / {{ $book->kode }}</option>
                                         @endforeach
@@ -115,12 +114,8 @@
                                         <label for="">No. Kontainer</label>
                                         <select class="form-control select2" style="width: 100%;" id='select_jo_detail' name="select_jo_detail">
                                             <option value="">Pilih Kontainer</option>
-                    
-                                            {{-- @foreach ($kota as $city)
-                                                <option value="{{$city->id}}">{{ $city->nama }}</option>
-                                            @endforeach --}}
                                         </select>
-                                        <input type="hidden" name="no_kontainer" id="no_kontainer" value="">
+                                        <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
                                     </div> 
                                 </div>
                                 <div class="form-group">
@@ -163,7 +158,9 @@
                                             <option value="{{$cust->idCustomer}}">{{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="customer_id" name="customer_id" value="">
+                                    <input type="hidden" id="customer_id" name="customer_id" value="" placeholder="customer_id">
+                                    <input type="hidden" id="booking_id" name="booking_id" value="" placeholder="booking_id">
+                                    <input type="hidden" id="jenis_order" name="jenis_order" value="" placeholder="jenis_order">
                                 </div>
                                 <div class="form-group">
                                     <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
@@ -174,9 +171,10 @@
                                             <option value="{{$city->id}}">{{ $city->nama }}</option>
                                         @endforeach --}}
                                     </select>
-                                    <input type="hidden" id="jenis_order" name="jenis_order" value="">
 
-                                    <input type="hidden" id="tujuan_id" name="tujuan_id" value="">
+                                    <input type="hidden" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
+                                    <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="" placeholder="id_jo_detail">
+                                    <input type="hidden" name="id_jo" id="id_jo" value="" placeholder="id_jo">
                                     <input type="hidden" id="nama_tujuan" name="nama_tujuan" value="">
                                     <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="">
                                     <input type="hidden" id="tarif" name="tarif" value="">
@@ -317,7 +315,7 @@
             
             $('#select_jo_detail').val('').trigger('change');
             $('#select_jo').val('').trigger('change');
-            $('#jenis_order').val('');
+            $('#jenis_order').val('OUTBOND');
 
             $('#tujuan_id').val('');
             $('#nama_tujuan').val('');
@@ -342,6 +340,7 @@
 		{
             var selectedValue = $(this).val();
             var splitValue = selectedValue.split('-');
+            var booking_id=splitValue[0];
             var idCustomer=splitValue[1];
             var idTujuan=splitValue[2];
             var tanggalBerangkat=splitValue[3];
@@ -351,6 +350,7 @@
             // console.log(tanggalBerangkat+"-"+bulanBerangkat+"-"+tahunBerangkat);
             $('#select_customer').val(idCustomer).trigger('change');
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
+            $('#booking_id').val(booking_id).trigger('change');
             $('#select_customer').attr('disabled',true);
             $('#select_grup_tujuan').attr('disabled',true);
             // $('#tanggal_berangkat').val(gabungan);
@@ -362,6 +362,7 @@
 		});
         
         $('#select_jo_detail').attr('disabled',true);
+
         var customerLoad = false;
 
         $('body').on('change','#select_jo',function()
@@ -372,6 +373,7 @@
             var idCustomer=splitValue[1];
             $('#select_customer').val(idCustomer).trigger('change');
             $('#customer_id').val(idCustomer);
+            $('#id_jo').val(idJo);
 
             var baseUrl = "{{ asset('') }}";
             $.ajax({
@@ -389,6 +391,7 @@
                             response.forEach(joDetail => {
                                 const option = document.createElement('option');
                                 option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer;
+                                option.setAttribute('booking_id', joDetail.booking_id);
                                 option.textContent = joDetail.no_kontainer ;
                                 // if (selected_marketing == marketing.id) {
                                 //     option.selected = true;
@@ -424,7 +427,13 @@
             var idJoDetail=splitValue[0];
             var idTujuan=splitValue[1];
             var no_kontainer=splitValue[2];
+            
+            var selectedOption = $(this).find('option:selected');
+            var bookingId = selectedOption.attr('booking_id');            
+
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
+            $('#booking_id').val(bookingId);
+            $('#id_jo_detail').val(idJoDetail);
 
             var baseUrl = "{{ asset('') }}";
             // var myjson;
@@ -635,12 +644,11 @@
 
 		});
 
-        $('body').on('change','#select_grup_tujuan',function()
-		{
+        $('body').on('change','#select_grup_tujuan',function(){
             var selectedValue = $(this).val();
             var baseUrl = "{{ asset('') }}";
 
-               //hadle booking bug
+            //hadle booking bug
             var selectBooking = $('#select_booking').val();
             var splitValue = selectBooking.split('-');
             var idTujuan=splitValue[2];

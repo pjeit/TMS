@@ -10,8 +10,9 @@ class SewaDataHelper
      {
         // some logic to determine if the publisher is main
         return DB::table('sewa as s')
-            ->select('s.*', 'gt.nama_tujuan as nama_tujuan')
+            ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap')
             ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
             ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
             ->where('s.status', 'MENUNGGU UANG JALAN')
@@ -59,6 +60,7 @@ class SewaDataHelper
             ->Join('customer AS c', 'b.id_customer', '=', 'c.id')
             ->Join('grup_tujuan AS gt', 'b.id_grup_tujuan', '=', 'gt.id')
             ->where('b.is_aktif', "Y")
+            ->where('b.is_sewa', "N")
             ->orderBy('tgl_booking')
             ->whereNull('b.id_jo_detail')
             ->get();
@@ -100,10 +102,15 @@ class SewaDataHelper
     //=================================create,edit??================================
 
     // =========================================API=====================================
-    public function getDetailJO($id)
+    public function getJoDetail($id)
     {
         $datajODetail = DB::table('job_order_detail as jod')
-            ->select('jod.*')
+            ->select('jod.*', 'b.id as booking_id')
+            ->leftJoin('booking as b', function($join){
+                $join->on('jod.id', '=', 'b.id_jo_detail')
+                        ->where('b.is_sewa', 'N')
+                        ->where('b.is_aktif', "Y");
+            })
             ->where('jod.id_jo', '=', $id)
             ->where('status' ,'like','%BELUM DOORING%')
             ->where('jod.is_aktif', '=', "Y")
