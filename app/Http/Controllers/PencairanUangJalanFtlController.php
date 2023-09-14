@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sewa;
+use App\Http\Controllers\Throwable;
 use Illuminate\Http\Request;
-  use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use Carbon\Carbon;
@@ -19,24 +20,21 @@ class PencairanUangJalanFtlController extends Controller
      */
     public function index()
     {
-        //
-      
         $sewa = DB::table('sewa AS s')
-                        ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
-                        ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
-                        ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
-                        ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
-                        ->where('s.is_aktif', '=', 'Y')
-                        ->where('s.jenis_tujuan', 'like', '%FTL%')
-                        ->where('s.status', 'like', "%MENUNGGU UANG JALAN%")
-                        ->groupBy('c.id')
-                        ->get();
-            //   dd($sewa);
-                return view('pages.finance.pembayaran_uang_jalan.index',[
-                    'judul' => "Pencairan Uang Jalan",
-                    'sewa'=>$sewa,
-                    'dataJO' => null,
-                ]);
+                ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+                ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+                ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
+                ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
+                ->where('s.is_aktif', '=', 'Y')
+                ->where('s.jenis_tujuan', 'like', '%FTL%')
+                ->where('s.status', 'like', "%MENUNGGU UANG JALAN%")
+                ->groupBy('c.id')
+                ->get();
+                        
+        return view('pages.finance.pembayaran_uang_jalan.index',[
+            'judul' => "Pencairan Uang Jalan",
+            'sewa'=> $sewa,
+        ]);
     }
 
     /**
@@ -86,7 +84,31 @@ class PencairanUangJalanFtlController extends Controller
     }
     public function store(Request $request)
     {
-        //
+        $data = $request->post();
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        try {
+            // dump transaksi
+            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                array(
+                    $data['pembayaran'],// id kas_bank dr form
+                    now(),//tanggal
+                    0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                    $data['total_diterima'], //uang keluar (kredit)
+                    1016, //kode coa
+                    'UANG_JALAN',
+                    'UANG KELUAR - BAYAR UANG JALAN', //keterangan_transaksi
+                    $data['select_sewa'],//keterangan_kode_transaksi
+                    $user,//created_by
+                    now(),//created_at
+                    $user,//updated_by
+                    now(),//updated_at
+                    'Y'
+                ) 
+            );
+            dd($data);
+        } catch (ValidationException $error) {
+            //throw $th;
+        }
     }
 
     /**

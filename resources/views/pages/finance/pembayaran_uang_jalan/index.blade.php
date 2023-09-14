@@ -24,7 +24,7 @@
             </div>
             
             <div class="card-body">
-                    <table  class="table table-bordered table-striped">
+                    <table id="" class="table table-bordered table-striped" width=''>
                         <thead>
                             <tr>
                                 <th>No. Polisi</th>
