@@ -184,7 +184,27 @@ class SewaDataHelper
         return response()->json($booking);
     }
 
-     
-
+    //buat get data pembayaran uang jalan
+    public function getDatasewaDetail($id)
+    {
+        $sewaDetail = DB::table('sewa AS s')
+                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+                    ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+                    ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
+                    ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
+                    ->where('s.is_aktif', '=', 'Y')
+                    ->where('s.jenis_tujuan', 'like', '%FTL%')
+                    ->where('s.status', 'like', "%MENUNGGU UANG JALAN%")
+                    ->where('s.is_aktif', '=', 'Y')
+                    ->where('s.id_sewa', '=', $id)
+                    ->groupBy('c.id')
+                    ->first();
+        $hutangKaryawan = DB::table('karyawan_hutang AS k')
+                    ->select('k.*')
+                    ->where('k.is_aktif', '=', 'Y')
+                    ->where('k.id_karyawan', '=', $sewaDetail->id_karyawan)
+                    ->first();
+        return response()->json(['sewaDetail'=>$sewaDetail,'hutangKaryawan'=>$hutangKaryawan]);
+    }
 }
 ?>

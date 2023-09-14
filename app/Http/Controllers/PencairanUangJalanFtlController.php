@@ -27,6 +27,7 @@ class PencairanUangJalanFtlController extends Controller
                         ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                         ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                         ->where('s.is_aktif', '=', 'Y')
+                        ->where('s.jenis_tujuan', 'like', '%FTL%')
                         ->where('s.status', 'like', "%MENUNGGU UANG JALAN%")
                         ->groupBy('c.id')
                         ->get();
@@ -56,11 +57,32 @@ class PencairanUangJalanFtlController extends Controller
      */
     public function form(Request $request)
     {
-        //form
-         $id = $request->input('id');
+        $id_sewa_default = $request->input('id_sewa');
+        // dd($id_sewa_defaulth);
+        // session(['id_sewa' => $id_sewa]);
 
-        // Set the session variable
-        session(['your_session_variable' => $id]);
+        $sewa = DB::table('sewa AS s')
+                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+                    ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+                    ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
+                    ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
+                    ->where('s.is_aktif', '=', 'Y')
+                    ->where('s.jenis_tujuan', 'like', '%FTL%')
+                    ->where('s.status', 'like', "%MENUNGGU UANG JALAN%")
+                    ->where('s.is_aktif', '=', 'Y')
+                    ->groupBy('c.id')
+                    ->get();
+         $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
+
+        return view('pages.finance.pembayaran_uang_jalan.form',[
+                'judul' => "Pencairan Uang Jalan",
+                'sewa'=>$sewa,
+                'dataKas'=>$dataKas,
+                'id_sewa_defaulth'=>$id_sewa_default,
+            ]);
     }
     public function store(Request $request)
     {
