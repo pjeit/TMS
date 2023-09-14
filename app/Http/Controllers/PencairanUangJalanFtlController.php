@@ -24,7 +24,7 @@ class PencairanUangJalanFtlController extends Controller
         $sewa = DB::table('sewa AS s')
                         ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                         ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
-                        ->leftJoin('grup_tujuan AS gt', 's.idGrup_tujuan', '=', 'gt.id')
+                        ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                         ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                         ->where('s.is_aktif', '=', 'Y')
                         ->where('s.status', 'like', "%MENUNGGU UANG JALAN%")
@@ -54,6 +54,14 @@ class PencairanUangJalanFtlController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function form(Request $request)
+    {
+        //form
+         $id = $request->input('id');
+
+        // Set the session variable
+        session(['your_session_variable' => $id]);
+    }
     public function store(Request $request)
     {
         //

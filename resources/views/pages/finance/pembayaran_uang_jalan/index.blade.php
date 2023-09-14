@@ -52,15 +52,22 @@
                                 @endif
                                 <tr>
                                 
-                                    <td>{{ $item->no_pol}}</td>
+                                    <td>{{ $item->no_polisi}}</td>
                                     <td>{{ $item->no_sewa }}</td>
                                     <td>{{ $item->tanggal_berangkat }}</td>
                                     <td>{{ $item->nama_tujuan }}</td>
                                     <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
                                     <td>
-                                        <a class="btn btn-success radiusSendiri" href="{{route('pencairan_uang_jalan_ftl.edit',[$item->id_sewa])}}">
+                                        <form method="POST" action="{{ route('pencairan_uang_jalan_ftl.form') }}">
+                                            @csrf
+                                            <input type="hidden" name="id_sewa" value="{{ $item->id_sewa }}">
+                                            <button type="submit" class="btn btn-success radiusSendiri">
+                                                <i class="fas fa-credit-card"></i> Pencairan
+                                            </button>
+                                        </form>
+                                        {{-- <a class="btn btn-success radiusSendiri" href="{{route('pencairan_uang_jalan_ftl.edit',[$item->id_sewa])}}">
                                               <i class="fas fa-credit-card"></i> Pencairan
-                                        </a>  
+                                        </a>   --}}
                                         {{-- <a class="dropdown-item" href="{{ route('pencairan_uang_jalan_ftl.edit', [$item->id_sewa]) }}"><span class="fas fa-edit" style="width:24px"></span>Pencairan</a> --}}
                                     </td>
                                 </tr>

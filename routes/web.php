@@ -122,7 +122,11 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('truck_order', 'App\Http\Controllers\SewaController');
 
+        Route::post('/pencairan_uang_jalan_ftl/form', [App\Http\Controllers\PencairanUangJalanFtlController::class, 'form'])->name('pencairan_uang_jalan_ftl.form');
         Route::resource('pencairan_uang_jalan_ftl', 'App\Http\Controllers\PencairanUangJalanFtlController');
+
+        // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
+
 
     });
 
