@@ -210,7 +210,6 @@ class JobOrderController extends Controller
                 ->with('id_print_jo', $id_print_jo)
                 ->with('status', $statusMessage);
 
-
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
