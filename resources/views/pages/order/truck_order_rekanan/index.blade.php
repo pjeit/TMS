@@ -17,16 +17,9 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <a href="{{route('truck_order.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
-                            <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Order PJE
-                        </a> 
-    
-                         <a href="{{route('truck_order_rekanan.create')}}" class="btn btn-success btn-responsive float-left radiusSendiri">
-                            <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Order Rekanan
-                        </a> 
-
-                    </div>
+                    <a href="{{route('truck_order_rekanan.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                        <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Order
+                    </a> 
                 </div>
                 <div class="card-body">
                     <table id="datatable" class="table table-bordered table-striped" width='100%'>
