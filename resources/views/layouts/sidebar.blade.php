@@ -408,6 +408,17 @@
                 </a>
               </li>
             </ul>
+             {{-- <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('truck_order_rekanan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('truck_order*') ? 'active' : ''  }}">
+                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                     Order Rekanan
+                  </p>
+                </a>
+              </li>
+            </ul> --}}
+            
            
           </li>
          

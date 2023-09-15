@@ -10,7 +10,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
 use App\Helper\SewaDataHelper;
-class SewaController extends Controller
+class SewaRekananController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,10 +20,7 @@ class SewaController extends Controller
     public function index()
     {
         //
-        return view('pages.order.truck_order.index',[
-            'judul'=>"Trucking Order",
-            'dataSewa' => SewaDataHelper::DataSewa(),
-        ]);
+       
     }
 
     /**
@@ -33,17 +30,14 @@ class SewaController extends Controller
      */
     public function create()
     {
-        return view('pages.order.truck_order.create',[
-            'judul'=>"Trucking Order",
+        //
+         return view('pages.order.truck_order_rekanan.create',[
+            'judul'=>"Trucking Order Rekanan",
             'datajO'=>SewaDataHelper::DataJO(),
             'dataCustomer'=>SewaDataHelper::DataCustomer(),
-            'dataDriver'=>SewaDataHelper::DataDriver(),
-            'dataKendaraan'=>SewaDataHelper::DataKendaraan(),
             'dataBooking'=>SewaDataHelper::DataBooking(),
-            'dataChassis'=>SewaDataHelper::DataChassis()
         ]);
     }
-   
 
     /**
      * Store a newly created resource in storage.
@@ -53,7 +47,8 @@ class SewaController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user()->id; 
+        //
+         $user = Auth::user()->id; 
         
         try {
             $data = $request->collect();
@@ -89,7 +84,7 @@ class SewaController extends Controller
             $sewa->id_customer = $data['customer_id'];
             $sewa->id_grup_tujuan = $data['tujuan_id'];
             $sewa->jenis_tujuan = $data['jenis_tujuan'];
-            $sewa->status = 'MENUNGGU UANG JALAN';
+            $sewa->status = 'MENUNGGU OPERASIONAL';
             $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
             $sewa->nama_tujuan = $data['nama_tujuan'];
             $sewa->alamat_tujuan = $data['alamat_tujuan'];
@@ -98,11 +93,7 @@ class SewaController extends Controller
             $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
             $sewa->total_uang_jalan = $data['uang_jalan'];
             $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
-            $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
             $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
-            $sewa->id_chassis = $data['ekor_id']? $data['ekor_id']:null;
-            $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
-            $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
@@ -247,7 +238,7 @@ class SewaController extends Controller
                 ///
             }
 
-            return redirect()->route('truck_order.index')->with('status','Berhasil menambahkan data Sewa');
+            return redirect()->route('truck_order.index')->with('status','Berhasil menambahkan data Sewa Rekanan');
         } catch (ValidationException $e) {
             // cancel input db
             DB::rollBack();
