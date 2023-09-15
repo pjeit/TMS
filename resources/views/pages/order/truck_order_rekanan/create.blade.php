@@ -194,8 +194,20 @@
                                     <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
                                 </div>
                                 <div class="form-group">
-                                    <label for="no_polisi">No. pol rekanan</label>
-                                    <input type="text" maxlength="9" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value=""> 
+                                    <label for="no_polisi">No. polisi rekanan</label>
+                                    <input type="text" maxlength="11" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value=""> 
+                                </div>
+                                <div class="form-grou">
+                                    <label for="supplier">Supplier</label>
+
+                                    <select class="form-control select2" style="width: 100%;" id='supplier' name="supplier">
+                                        <option value="">Pilih Supplier</option>
+
+                                         @foreach ($supplier as $s)
+                                            <option value="{{$s->id}}">{{ $s->nama }}</option>
+                                        @endforeach 
+                                    </select>
+
                                 </div>
                                 {{-- <div class="row">
                                     <div class="col">

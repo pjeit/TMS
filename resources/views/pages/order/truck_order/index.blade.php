@@ -17,15 +17,10 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <a href="{{route('truck_order.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                    <div class="">
+                        <a href="{{route('truck_order.create')}}" class="btn btn-primary btn-responsive radiusSendiri">
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Order PJE
                         </a> 
-    
-                         <a href="{{route('truck_order_rekanan.create')}}" class="btn btn-success btn-responsive float-left radiusSendiri">
-                            <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Order Rekanan
-                        </a> 
-
                     </div>
                 </div>
                 <div class="card-body">
@@ -47,7 +42,7 @@
                                     <tr>
                                         <td>{{ $item->no_polisi }}</td>
                                         <td>{{ $item->no_sewa }}</td>
-                                        <td>{{date("d-M-Y", strtotime($item->tanggal_berangkat))}}</td>
+                                        <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                         <td>{{ $item->nama_tujuan }}</td>
                                         <td>{{ $item->nama_lengkap }}</td>
                                         <td>{{ $item->status }}</td>

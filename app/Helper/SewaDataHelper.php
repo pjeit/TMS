@@ -16,6 +16,7 @@ class SewaDataHelper
             ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
             ->where('s.status', 'MENUNGGU UANG JALAN')
+            ->orderBy('created_at', 'DESC')
             ->get();
      }
     //=================================create,edit??================================

@@ -20,6 +20,19 @@ class SewaRekananController extends Controller
     public function index()
     {
         //
+        $dataSewa = DB::table('sewa as s')
+        ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap')
+        ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+        ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+        ->where('gt.is_aktif', '=', "Y")
+        ->where('s.is_aktif', '=', "Y")
+        ->whereNotNull('s.id_supplier')
+        ->where('s.status', 'MENUNGGU OPERASIONAL')
+        ->get();
+        return view('pages.order.truck_order_rekanan.index',[
+            'judul'=>"Trucking Order Rekanan",
+            'dataSewa' =>  $dataSewa 
+        ]);
        
     }
 
@@ -31,11 +44,18 @@ class SewaRekananController extends Controller
     public function create()
     {
         //
+        $supplier = DB::table('supplier as s')
+        ->select('s.*')
+        ->where('s.is_aktif', '=', "Y")
+        ->where('s.jenis_supplier_id', '=', 6)
+        ->get();
          return view('pages.order.truck_order_rekanan.create',[
             'judul'=>"Trucking Order Rekanan",
             'datajO'=>SewaDataHelper::DataJO(),
             'dataCustomer'=>SewaDataHelper::DataCustomer(),
             'dataBooking'=>SewaDataHelper::DataBooking(),
+            'supplier'=>$supplier,
+
         ]);
     }
 
@@ -77,6 +97,7 @@ class SewaRekananController extends Controller
 
             
             $sewa = new Sewa();
+            $sewa->id_supplier = $data['supplier'];
             $sewa->no_sewa = $no_sewa;
             $sewa->id_booking = $booking_id;
             $sewa->id_jo = $data['id_jo'];
@@ -91,7 +112,7 @@ class SewaRekananController extends Controller
             $sewa->kargo = $data['kargo'];
             $sewa->jenis_order = $data['jenis_order']=='INBOUND'? 'INBOUND':'OUTBOND';
             $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
-            $sewa->total_uang_jalan = $data['uang_jalan'];
+            $sewa->total_uang_jalan =0;
             $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
             $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
@@ -160,8 +181,6 @@ class SewaRekananController extends Controller
                     DB::table('job_order_detail')
                         ->where('id', $data['id_jo_detail'])
                         ->update([
-                            'id_kendaraan' => $data['kendaraan_id']? $data['kendaraan_id']:null,
-                            'nopol_kendaraan' => $data['no_polisi']? $data['no_polisi']:null,
                             'tgl_dooring' => date_format($tgl_berangkat, 'Y-m-d'),
                             'status'=> 'DALAM PERJALANAN',
                             'updated_at' => now(),
@@ -175,13 +194,13 @@ class SewaRekananController extends Controller
                 // sama trip supir
                 if( isset($arrayBiaya))
                 {
-                    foreach ($arrayBiaya as /*$key =>*/ $item) {
+                    // foreach ($arrayBiaya as /*$key =>*/ $item) {
                         DB::table('sewa_biaya')
                             ->insert(array(
                             'id_sewa' => $sewa->id_sewa,
-                            'deskripsi' => $item['deskripsi'] ,
-                            'biaya' => $item['biaya'],
-                            'catatan' => $item['catatan']?$item['catatan']:null,
+                            'deskripsi' => 'UANG JALAN',
+                            'biaya' => $data['uang_jalan'],
+                            'catatan' => null,
                             'is_aktif' => "Y",
                             'created_at' => now(), 
                             'created_by' => $user,
@@ -189,7 +208,7 @@ class SewaRekananController extends Controller
                             'updated_by' => $user,
                             )
                         ); 
-                    }
+                    // }
                 }
                 ///
                     // $biayaTambahTarif = json_decode($data['biayaTambahTarif'], true);
@@ -238,7 +257,7 @@ class SewaRekananController extends Controller
                 ///
             }
 
-            return redirect()->route('truck_order.index')->with('status','Berhasil menambahkan data Sewa Rekanan');
+            return redirect()->route('truck_order_rekanan.index')->with('status','Berhasil menambahkan data Sewa Rekanan');
         } catch (ValidationException $e) {
             // cancel input db
             DB::rollBack();
@@ -272,9 +291,26 @@ class SewaRekananController extends Controller
      * @param  \App\Models\Sewa  $sewa
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sewa $sewa)
+    public function edit(Sewa $truck_order_rekanan)
     {
         //
+        $supplier = DB::table('supplier as s')
+        ->select('s.*')
+        ->where('s.is_aktif', '=', "Y")
+        ->where('s.jenis_supplier_id', '=', 6)
+        ->get();
+        $data_sewa = Sewa::where('is_aktif', 'Y')->whereNotNull('s.id_supplier') ->where('s.status', 'MENUNGGU OPERASIONAL')->findOrFail($truck_order_rekanan);
+        // dd($data_sewa);
+
+         return view('pages.order.truck_order_rekanan.edit',[
+            'judul'=>"Trucking Order Rekanan",
+            'datajO'=>SewaDataHelper::DataJO(),
+            'dataCustomer'=>SewaDataHelper::DataCustomer(),
+            'dataBooking'=>SewaDataHelper::DataBooking(),
+            'supplier'=>$supplier,
+            'data_sewa'=>$data_sewa
+
+        ]);
     }
 
     /**
@@ -284,9 +320,26 @@ class SewaRekananController extends Controller
      * @param  \App\Models\Sewa  $sewa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sewa $sewa)
+    public function update(Request $request, Sewa $truck_order_rekanan)
     {
         //
+        $data = $request->post();
+        $user = Auth::user()->id; 
+        try {
+            $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($truck_order_rekanan->id_sewa);
+            $sewa->id_supplier = $data['supplier'];
+            $sewa->no_polisi = $data['no_polisi'];
+            $sewa->updated_by = $user;
+            $sewa->updated_at = now();
+            $sewa->save();
+            
+            return redirect()->route('truck_order.index')->with('status','Berhasil merubah data Sewa');
+        } catch (ValidationException $e) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->back()->withErrors($e->getMessage())->withInput();
+
+        }
     }
 
     /**

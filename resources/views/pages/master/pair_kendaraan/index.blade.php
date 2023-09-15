@@ -30,7 +30,7 @@
                 <div class="card-body">
                       <div class="form-group w-25">
                         <form id="filterForm" action="{{ route('pair_kendaraan.cari')}}" method="get">
-                            <label>Filter Supplier</label>
+                            <label>Filter Cabang</label>
                              <select class="form-control select2" style="width: 100%;" id='jenisFilter' name="jenisFilter">
                                 <option value="">ALL</option>
         

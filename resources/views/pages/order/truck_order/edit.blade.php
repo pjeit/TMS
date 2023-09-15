@@ -43,7 +43,8 @@
         @endforeach
 
     @endif
-    <form action="{{ route('truck_order.store') }}" method="POST" >
+    <form action="{{ route('truck_order.update', ['truck_order' => $data]) }}" method="POST" >
+    @method('PUT')
     @csrf
     {{-- <div class="row">
         <div class="col">
@@ -62,18 +63,11 @@
                     <div class="card-body">
                          <div class="row mb-2">
                             <div class="col-6 text-center radiusSendiri " id="inbound" >
-                                {{-- <a href="" class="rubik-heading-2" style="text-decoration: none; color:black;">
-                                    Bongkar (INBOUND)
-                                </a> --}}
                                 <label class="p-1">BONGKAR (INBOUND)</label>
                                 <hr style="border: 0.5px solid #007bff; " id="garisInbound">
-
                             </div>
 
                             <div class="col-6 text-center radiusSendiri"id="outbound" >
-                                {{-- <a href="" class="" style="text-decoration: none; color:black;">
-                                    Muat (OUTBOND)
-                                </a> --}}
                                 <label class=" p-1">MUAT (OUTBOUND)</label>
                                 <hr style="border: 0.5px solid #007bff;" id="garisOutbound">
                             </div>
@@ -88,6 +82,7 @@
                                     <div class="d-flex justify-content-center mt-1">
                                         <span class="rubik-w400-12" id="persenanCredit"></span>
                                     </div>
+                                    <input type="hidden" name="sewa_id" id="sewa_id" class="form-control" value="{{$data['id_sewa']}}">
                                     <input type="hidden" name="cred_now" id="cred_now" class="form-control" value="0">
                                     <input type="hidden" name="cred_val" id="cred_val" class="form-control" value="0">
                                     <input type="hidden" name="cred_val_max" id="cred_val_max" class="form-control" value="0">
@@ -95,11 +90,11 @@
                             </div>
                             <div class="col-6">
                                 <div class="form-group" id="outboundData">
-                                    <label for="">No.Booking</label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_booking' name="select_booking">
+                                    <label for="">No. Booking</label>
+                                    <select class="form-control select2" style="width: 100%;" id='select_booking' name="select_booking" disabled>
                                         <option value="">Pilih No Booking</option>
                                         @foreach ($dataBooking as $book)
-                                            <option value="{{$book->idBooking}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y')}}">{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y') }} / {{ $book->nama_tujuan }}  / {{ $book->kode }}</option>
+                                            <option value="{{$book->idBooking}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y')}}" {{$book->idBooking==$data['id_booking']? 'selected':''}} >{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y') }} / {{ $book->nama_tujuan }} / {{ $book->kode }}</option>
                                         @endforeach
                                     </select>
                                 </div>  
@@ -116,24 +111,17 @@
                                     <div class="form-group">
                                         <label for="">No. Kontainer</label>
                                         <select class="form-control select2" style="width: 100%;" id='select_jo_detail' name="select_jo_detail" disabled>
-                                            <option value="{{$data->getJOD->id}}-{{$data->getJOD->id_grup_tujuan}}-{{$data->getJOD->no_kontainer}}" selected>{{$data->getJOD->no_kontainer}}</option>
+                                            @isset($data['id_jo_detail'])
+                                                <option value="{{$data->getJOD->id}}-{{$data->getJOD->id_grup_tujuan}}-{{$data->getJOD->no_kontainer}}" selected>{{$data->getJOD->no_kontainer}}</option>
+                                            @endisset
                                         </select>
                                         <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
                                     </div> 
                                 </div>
                                 <div class="form-group">
                                         <label for="no_sewa">No. Sewa</label>
-                                        <input type="text" class="form-control" id="no_sewa" placeholder="Otomatis" readonly="" value="">    
+                                        <input type="text" class="form-control" id="no_sewa" placeholder="Otomatis" readonly="" value="{{$data["no_sewa"]}}">    
                                         <input type="hidden" id="status" value="">
-                                        <!-- <div class='col-5 col-md-5 col-lg-5'>
-                                            <label for="status">Status</label>
-                                            <select onchange='ganti_status(this)' class="form-control" id="status" value="" disabled>
-                                                <option value='Open'>Open</option>
-                                                <option value='Approved'>Setuju</option>
-                                                <option value='Released' hidden>Perjalanan</option>
-                                                <option value='Finished' hidden>Selesai</option>
-                                            </select>
-                                        </div> -->
                                 </div>
                                 <div class="form-group">
                                     <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
@@ -147,7 +135,7 @@
                                 </div>
                                 <div class="form-group">
                                         <label for="catatan">Catatan</label>
-                                        <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value=""> 
+                                        <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="{{$data['catatan']}}"> 
                                     </div>
                             </div>
                             <div class="col-6">
@@ -156,8 +144,8 @@
                                     <label for="select_customer">Customer<span style="color:red">*</span></label>
                                     <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" disabled>
                                         <option value="">Pilih Customer</option>
-                                        @foreach ($dataCustomer as $cust)
-                                            <option value="{{$cust->idCustomer}}">{{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
+                                        @foreach ($dataCustomer as $cust)                                        
+                                            <option value="{{$cust->idCustomer}}" <?= $cust->idCustomer==$data['id_customer']? 'selected':''  ?> > {{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="customer_id" name="customer_id" value="" placeholder="customer_id">
@@ -167,7 +155,9 @@
                                 <div class="form-group">
                                     <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
                                     <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" disabled>
-                                        <option value="">{{$data->getJOD->nama_tujuan}}</option>
+                                        @isset($data['id_grup_tujuan'])
+                                            <option value="{{$data['id_grup_tujuan']}}">{{$data->getTujuan->nama_tujuan}}</option>
+                                        @endisset
                                     </select>
 
                                     <input type="hidden" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
@@ -191,33 +181,17 @@
                                     <input type="hidden" id="biayaTambahTarif" name="biayaTambahTarif">
                                     <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
                                 </div>
-                                {{-- <div class="row">
-                                    <div class="col">
-                                          <div class="form-group">
-                                            <label for="select_kategori_kendaraan">Kategori Kendaraan<span style="color:red">*</span></label>
-                                            <select class="form-control select2" style="width: 100%;" id='select_kategori_kendaraan' name="select_kategori_kendaraan">
-                                                <option value="">Pilih Kendaraan</option>
-
-                                         
-                                            </select>
-                                            <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col"> --}}
-                                          <div class="form-group">
-                                            <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                            <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
-                                                <option value="">Pilih Kendaraan</option>
-                                                @foreach ($dataKendaraan as $kendaraan)
-                                                    <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}-{{$kendaraan->driver_id}}"  {{$kendaraan->kendaraanId == $data['id_kendaraan']? 'selected':''}}>{{ $kendaraan->no_polisi }}</option>
-                                                @endforeach
-                                            </select>
-                                            <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
-                                            <input type="hidden" id="no_polisi" name="no_polisi" value="">
-                                        </div>
-                                    {{-- </div>
-
-                                </div> --}}
+                                    <div class="form-group">
+                                    <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
+                                    <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
+                                        <option value="">Pilih Kendaraan</option>
+                                        @foreach ($dataKendaraan as $kendaraan)
+                                            <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}-{{$kendaraan->driver_id}}"  {{$kendaraan->kendaraanId == $data['id_kendaraan']? 'selected':''}}>{{ $kendaraan->no_polisi }}</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
+                                    <input type="hidden" id="no_polisi" name="no_polisi" value="">
+                                </div>
                               
                                 <div class="form-group">
                                     <label for="select_ekor">Chassis<span style="color:red">*</span></label>
@@ -225,7 +199,7 @@
                                         <option value="">Pilih Chassis</option>
 
                                         @foreach ($dataChassis as $cha)
-                                            <option value="{{$cha->id}}">{{ $cha->kode }} - {{ $cha->karoseri }}</option>
+                                            <option value="{{$cha->id}}" {{$cha->id==$data['id_chassis']? 'selected':''}}>{{ $cha->kode }} - {{ $cha->karoseri }}</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="ekor_id" name="ekor_id" value="">
@@ -238,7 +212,7 @@
                                         <option value="">Pilih Driver</option>
 
                                         @foreach ($dataDriver as $drvr)
-                                            <option value="{{$drvr->id}}">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
+                                            <option value="{{$drvr->id}}" {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="driver_nama" name="driver_nama" value="">
@@ -286,7 +260,6 @@
             var bulanBerangkat=splitValue[4];
             var tahunBerangkat=splitValue[5];
             var gabungan = tanggalBerangkat+"-"+bulanBerangkat+"-"+tahunBerangkat
-            // console.log(tanggalBerangkat+"-"+bulanBerangkat+"-"+tahunBerangkat);
             $('#select_customer').val(idCustomer).trigger('change');
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
             $('#booking_id').val(booking_id).trigger('change');
@@ -303,9 +276,10 @@
         var customerLoad = false;
 
         // logic select jo jika ada
-        var selectedValue = $('#select_jo').val();
-        if(selectedValue != null){
-            var splitValue = selectedValue.split('-');
+        var selectedJO = $('#select_jo').val();
+        // console.log('splitValuex '+ selectedJO.length);
+        if(selectedJO > 0){
+            var splitValue = selectedJO.split('-');
             var idJo=splitValue[0];
             var idCustomer=splitValue[1];
             $('#select_customer').val(idCustomer).trigger('change');
@@ -323,7 +297,7 @@
                         jo_detail.attr('disabled',false);
                         jo_detail.empty(); 
                         jo_detail.append('<option value="">Pilih Kontainer</option>');
-                        if(selectedValue!="")
+                        if(selectedJO!="")
                         {
                             response.forEach(joDetail => {
                                 const option = document.createElement('option');
@@ -344,289 +318,45 @@
                 }
             });
         }
-
-        
-
-        $('body').on('change','#select_customer',function()
-		{
-            var selectedValue = $(this).val();
-            $('#customer_id').val(selectedValue);
-            var baseUrl = "{{ asset('') }}";
-
-            //hadle booking bug
-            var selectBooking = $('#select_booking').val();
-            var splitValue = selectBooking.split('-');
-            var idTujuan=splitValue[2];
+    
+        // logic ganti kendaraan
+            // var selectedKendaraan = $('#select_kendaraan').val();
+            // if(selectedKendaraan != null){
+            //     changeKendaraan(selectedKendaraan);
+            // }
+            setValKendaraan();
             
-            $('#tujuan_id').val('');
-            $('#nama_tujuan').val('');
-            $('#alamat_tujuan').val('');
-            $('#tarif').val('');
-            $('#uang_jalan').val('');
-            $('#komisi').val('');
-            $('#jenis_tujuan').val('');
-            //ltl
-            $('#harga_per_kg').val('');
-            $('#min_muatan').val('');
-            $('#seal_pje').val('');
-            $('#plastik').val('');
-            $('#tally').val('');
-            $('#kargo').val('');
-            $('#biayaDetail').val('');
-            $('#biayaTambahTarif').val('');
-
-        
-			
-            // let creds = $('#cred_val').val();
-            // let creds_max = $('#cred_val_max').val();
-            // creds = creds.replace(/,/g,'');
-            // creds_max = creds_max.replace(/,/g,'');
-            // //debug sini 2
-           
-            $.ajax({
-                url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
-                method: 'GET', 
-                success: function(response) {
-                    if(response)
-                    {
-                        customerLoad = true;
-                        // ==============================kredit=================
-                        let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
-                        creds_now = creds_now.toFixed(1);
-                        // persenanCredit
-                        const persen = document.getElementById('persenanCredit');
-
-                        const cred = document.getElementById('credit_customer');
-                        if(creds_now<80)
-                        {
-                            persen.innerHTML = creds_now+"%";
-                            cred.style.width = creds_now+"%";
-                            cred.style.backgroundColor = "#53de02";
-                            cred.style.color = "black";
-                            
-                        }
-                        else if(creds_now >=80 && creds_now <= 90)
-                        {
-                            persen.innerHTML = creds_now+"%";
-                            cred.style.width = creds_now+"%";
-                            cred.style.backgroundColor = "#deab02";
-                            cred.style.color = "black";
-                        }
-                        else if(creds_now>=90)
-                        {
-                            persen.innerHTML = creds_now+"%";
-                            cred.style.width = creds_now+"%";
-                            cred.style.backgroundColor = "#de0202";
-                            cred.style.color = "black";
-                        }
-                        else if(creds_now>100)
-                        {
-                            persen.innerHTML = creds_now+"%";
-                            cred.style.width = "100%";
-                            cred.style.backgroundColor = "#de0202";
-                            cred.style.color = "black";
-                        }
-                        // ==============================kredit=================
-
-
-                        var select_grup_tujuan = $('#select_grup_tujuan');
-                        select_grup_tujuan.empty(); 
-                        select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
-                        if(selectedValue!="")
-                        {
-                            response.dataTujuan.forEach(tujuan => {
-                                const option = document.createElement('option');
-                                option.value = tujuan.id;
-                                option.textContent = tujuan.nama_tujuan;
-                                if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
-                                {
-                                    if (idTujuan == tujuan.id) {
-                                        option.selected = true;
-                                    }
-                                }
-                                 select_grup_tujuan.append(option);
-                            });
-                        }
-
-                    }
-                    else
-                    {
-                        customerLoad = false;
-                            const persen = document.getElementById('persenanCredit');
-                            const cred = document.getElementById('credit_customer');
-                            persen.innerHTML = 0+"%";
-                            cred.style.width = 0+"%";
-                            cred.style.backgroundColor = "#53de02";
-                            cred.style.color = "black";
-
-                    }
-                    // jo_detail.trigger('change');
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
+            $('#select_kendaraan').on("select2:select", function(e) { 
+                var selectedKendaraan = $('#select_kendaraan').val();
+                changeKendaraan(selectedKendaraan);
             });
-		});
 
-        $('body').on('change','#select_grup_tujuan',function(){
-            var selectedValue = $(this).val();
-            var baseUrl = "{{ asset('') }}";
+            function changeKendaraan(selectedKendaraan){
+                var split = selectedKendaraan.split("-");
+                var idKendaraan = split[0];
+                var idChassis = split[1];
+                var nopol = split[2];
+                var supir = split[3];
+                console.log(split);
+                setValKendaraan();
+                
+                $('#select_chassis').val(idChassis).trigger('change');
+                $('#select_driver').val(supir).trigger('change');
+            }
+            function setValKendaraan(){
+                var selectedKendaraan = $('#select_kendaraan').val();
+                var split = selectedKendaraan.split("-");
+                var idKendaraan = split[0];
+                var idChassis = split[1];
+                var nopol = split[2];
+                var supir = split[3];
 
-            //hadle booking bug
-            var selectBooking = $('#select_booking').val();
-            var splitValue = selectBooking.split('-');
-            var idTujuan=splitValue[2];
+                $('#kendaraan_id').val(idKendaraan);
+                $('#no_polisi').val(nopol);
+                $('#ekor_id').val(idChassis);
+            }
+        //
 
-            // var myjson;
-            var array_detail_biaya = [];
-            var array_tambahan_tarif = [];
-
-            $.ajax({
-                url: `${baseUrl}truck_order/getTujuanBiaya/${idTujuan??selectedValue}`, 
-                method: 'GET', 
-                success: function(response) {
-                    // console.log(response.dataTujuan);
-
-                    if(!response.dataTujuan)
-                    {
-                        $('#tujuan_id').val('');
-                        $('#nama_tujuan').val('');
-                        $('#alamat_tujuan').val('');
-                        $('#tarif').val('');
-                        $('#uang_jalan').val('');
-                        $('#komisi').val('');
-                        $('#jenis_tujuan').val('');
-                        //ltl
-                        $('#harga_per_kg').val('');
-                        $('#min_muatan').val('');
-                        $('#seal_pje').val('');
-                        $('#plastik').val('');
-                        $('#tally').val('');
-                        $('#kargo').val('');
-                        $('#biayaDetail').val('');
-                        $('#biayaTambahTarif').val('');
-
-                        array_detail_biaya = []
-                        array_tambahan_tarif = [];
-
-                    }
-                    else
-                    {
-                        $('#tujuan_id').val(response.dataTujuan.id);
-                       
-
-                        // JSON.stringify(array_detail_biaya)
-
-                        $('#nama_tujuan').val(response.dataTujuan.nama_tujuan);
-                        $('#alamat_tujuan').val(response.dataTujuan.alamat);
-                        //   if(response.dataTujuan.jenis_tujuan =="LTL")
-                        // {
-                        //      $('#tarif').val(response.dataTujuan.min_muatan*response.dataTujuan.harga_per_kg );
-                        // }
-                        $('#tarif').val(response.dataTujuan.tarif);
-                        $('#uang_jalan').val(response.dataTujuan.uang_jalan);
-                        $('#komisi').val(response.dataTujuan.komisi);
-                        $('#jenis_tujuan').val(response.dataTujuan.jenis_tujuan);
-                        //ltl
-                        $('#harga_per_kg').val(response.dataTujuan.harga_per_kg);
-                        $('#min_muatan').val(response.dataTujuan.min_muatan);
-                     
-                        $('#kargo').val(response.dataTujuan.kargo);
-
-                         // console.log( response.dataTujuanBiaya);
-                        var dataBiaya = response.dataTujuanBiaya;
-                        for (var i in dataBiaya) {
-                                var obj = {
-                                    deskripsi: dataBiaya[i].deskripsi,
-                                    biaya: dataBiaya[i].biaya,
-                                    catatan: dataBiaya[i].catatan,
-                                };
-                            array_detail_biaya.push(obj);
-                        }
-                        
-                        // var obj=JSON.parse(myjson);
-                        // array_detail_biaya.push(obj);
-                        if(response.dataTujuan.seal_pje)
-                        {
-                            
-                            var objSeal = {
-                                       deskripsi: 'SEAL PJE',
-                                       biaya: response.dataTujuan.seal_pje,
-                                   };
-                               array_tambahan_tarif.push(objSeal);
-                        }
-
-                        if(response.dataTujuan.plastik)
-                        {
-                            
-                            var objpLASTIK = {
-                                       deskripsi: 'PLASTIK',
-                                       biaya: response.dataTujuan.plastik,
-                                   };
-                               array_tambahan_tarif.push(objpLASTIK);
-                        }
-
-                        if(response.dataTujuan.tally)
-                        {
-                            
-                            var objtally = {
-                                       deskripsi: 'TALLY',
-                                       biaya: response.dataTujuan.tally,
-                                   };
-                               array_tambahan_tarif.push(objtally);
-                        }
-
-                   
-
-                        $('#seal_pje').val(response.dataTujuan.seal_pje);
-                        $('#plastik').val(response.dataTujuan.plastik);
-                        $('#tally').val(response.dataTujuan.tally);
-
-                        $('#biayaDetail').val(JSON.stringify(array_detail_biaya));
-                        $('#biayaTambahTarif').val(JSON.stringify(array_tambahan_tarif));
-
-                        // console.log(array_detail_biaya);
-
-                        // console.log(array_tambahan_tarif);
-
-
-                    }
-
-         
-                    // jo_detail.trigger('change');
-        
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-           
-
-
-		});
-
-        $('body').on('change','#select_kendaraan',function()
-		{
-            var selectedValue = $(this).val();
-            var split = selectedValue.split("-");
-
-            var idKendaraan = split[0];
-            var idChassis = split[1];
-            var nopol = split[2];
-            var supir = split[3];
-
-
-            console.log(idChassis);
-            // kendaraan_id
-            // no_polisi
-            // select_chassis
-            $('#kendaraan_id').val(idKendaraan);
-            $('#no_polisi').val(nopol);
-            $('#select_chassis').val(idChassis).trigger('change');
-            $('#ekor_id').val(idChassis);
-            $('#select_driver').val(supir).trigger('change');
-
-		});
 
         $('body').on('change','#select_driver',function()
 		{

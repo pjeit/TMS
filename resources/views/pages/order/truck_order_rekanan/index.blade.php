@@ -29,7 +29,7 @@
                                 <th>No. Sewa</th>
                                 <th>Tgl Berangkat</th>
                                 <th>Tujuan</th>
-                                <th>Driver</th>
+                                <!-- <th>Driver</th> -->
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -42,7 +42,7 @@
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{date("d-M-Y", strtotime($item->tanggal_berangkat))}}</td>
                                         <td>{{ $item->nama_tujuan }}</td>
-                                        <td>{{ $item->nama_lengkap }}</td>
+                                        <!-- <td>{{ $item->nama_lengkap }}</td> -->
                                         <td>{{ $item->status }}</td>
                                         <td>                                    
                                             <div class="btn-group dropleft">

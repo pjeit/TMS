@@ -67,10 +67,9 @@ class Sewa extends Model
                      ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 'job_order_detail.id_grup_tujuan') // Assuming 'grup_tujuan' is the name of the relation in JobOrderDetail model
                      ->select('job_order_detail.*', 'gt.nama_tujuan');
     }
-    public function getJODTujuan(): HasOne
+    public function getTujuan(): HasOne
     {
-         return $this->hasOne(JobOrderDetail::class, 'id', 'id_jo_detail')->select('*');
+         return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan')
+                     ->select('*');
     }
- 
-
 }

@@ -138,6 +138,21 @@ class PencairanUangJalanFtlController extends Controller
             $sewa->updated_at = now();
             $sewa->save();
 
+            $saldo = DB::table('kas_bank')
+                ->select('*')
+                ->where('is_aktif', '=', "Y")
+                ->where('kas_bank.id', '=', $data['pembayaran'])
+                ->first();
+            $saldo_baru = $saldo->saldo_sekarang - (float)str_replace(',', '', $data['total_diterima']);
+            DB::table('kas_bank')
+                ->where('id', $data['pembayaran'])
+                ->update(array(
+                    'saldo_sekarang' => $saldo_baru,
+                    'updated_at'=> now(),
+                    'updated_by'=> $user,
+                )
+            );
+
             return redirect()->route('pencairan_uang_jalan_ftl.index')->with('status', "Pembayaran berhasil");
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();

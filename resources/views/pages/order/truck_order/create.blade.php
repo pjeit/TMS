@@ -346,6 +346,7 @@
 		{
             var selectedValue = $(this).val();
             var splitValue = selectedValue.split('-');
+            console.log('splitValue '+splitValue);
             var booking_id=splitValue[0];
             var idCustomer=splitValue[1];
             var idTujuan=splitValue[2];

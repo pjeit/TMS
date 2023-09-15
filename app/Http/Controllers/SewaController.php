@@ -232,17 +232,25 @@ class SewaController extends Controller
     public function edit(Sewa $sewa, $id)
     {
         $data_sewa = Sewa::where('is_aktif', 'Y')->findOrFail($id);
-        // dd($data_sewa);
+        $dataBooking = DB::table('booking as b')
+                ->select('*','b.id as idBooking')
+                ->Join('customer AS c', 'b.id_customer', '=', 'c.id')
+                ->Join('grup_tujuan AS gt', 'b.id_grup_tujuan', '=', 'gt.id')
+                ->where('b.is_aktif', "Y")
+                ->where('b.id', $data_sewa['id_booking'])
+                ->orderBy('tgl_booking')
+                ->whereNull('b.id_jo_detail')
+                ->get();
 
         return view('pages.order.truck_order.edit',[
-            'judul'=>"Trucking Order",
-            'data'=> $data_sewa,
-            'datajO'=>SewaDataHelper::DataJO(),
-            'dataCustomer'=>SewaDataHelper::DataCustomer(),
-            'dataDriver'=>SewaDataHelper::DataDriver(),
-            'dataKendaraan'=>SewaDataHelper::DataKendaraan(),
-            'dataBooking'=>SewaDataHelper::DataBooking(),
-            'dataChassis'=>SewaDataHelper::DataChassis()
+            'judul' => "Edit Trucking Order",
+            'data' => $data_sewa,
+            'datajO' => SewaDataHelper::DataJO(),
+            'dataCustomer' => SewaDataHelper::DataCustomer(),
+            'dataDriver' => SewaDataHelper::DataDriver(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataBooking' => $dataBooking,
+            'dataChassis' => SewaDataHelper::DataChassis()
         ]);
     }
 
@@ -253,9 +261,28 @@ class SewaController extends Controller
      * @param  \App\Models\Sewa  $sewa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sewa $sewa)
+    public function update(Request $request)
     {
-        //
+        $data = $request->post();
+        $user = Auth::user()->id; 
+        // dd($data);
+        try {
+            $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['sewa_id']);
+            $sewa->id_karyawan = $data['select_driver'];
+            $sewa->id_kendaraan = $data['kendaraan_id'];
+            $sewa->id_chassis = $data['ekor_id'];
+            $sewa->no_polisi = $data['no_polisi'];
+            $sewa->updated_by = $user;
+            $sewa->updated_at = now();
+            $sewa->save();
+            
+            return redirect()->route('truck_order.index')->with('status','Berhasil merubah data Sewa');
+        } catch (ValidationException $e) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->back()->withErrors($e->getMessage())->withInput();
+
+        }
     }
 
     /**
