@@ -36,7 +36,7 @@
                               <th>Merk & Model</th>
                               <th>Tahun & Warna</th>
                               <th>Driver</th>
-                              <th>Aksi</th>
+                              <th></th>
                             </tr>
                           </thead>
                         <tbody>

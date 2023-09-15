@@ -88,7 +88,7 @@
                                     <div class="input-group-prepend">
                                     <span class="input-group-text">Rp.</span>
                                     </div>
-                                    <input type="text" name="kredit_sekarang" class="form-control numaja uang" id="kredit_sekarang" placeholder="" value="{{$data->kredit_sekarang}}" readonly>    
+                                    <input type="text" name="kredit_sekarang" class="form-control numaja uang" id="kredit_sekarang" placeholder="" value="{{number_format($data->kredit_sekarang,2 )}}" readonly>    
                                 </div>
                             </div>
                             <div class='col-sm-12 col-md-3 col-lg-3'>

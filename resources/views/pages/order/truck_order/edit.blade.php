@@ -15,16 +15,19 @@
 
 @section('content')
 <style>
-    #inbound,#outbond {
+    #inbound {
         cursor: pointer;
     }
-     #inbound:hover,#outbond:hover {
-        background-color: #e0efff;
+    #outbound {
+        cursor: pointer;
+    }
+     #inbound:hover,#outbound:hover {
+        background-color: rgb(196, 223, 255);
         /* border-block-end: 1px solid #007bff; */
-
         /* border-block-start: 1px solid #007bff; */
-
-
+    }
+    .aktif {
+        background-color: #e0efff;
     }
 </style>
 <div class="container-fluid">
@@ -58,7 +61,7 @@
                     </div>
                     <div class="card-body">
                          <div class="row mb-2">
-                            <div class="col-6 text-center radiusSendiri" id="inbound">
+                            <div class="col-6 text-center radiusSendiri " id="inbound" >
                                 {{-- <a href="" class="rubik-heading-2" style="text-decoration: none; color:black;">
                                     Bongkar (INBOUND)
                                 </a> --}}
@@ -67,12 +70,12 @@
 
                             </div>
 
-                            <div class="col-6 text-center radiusSendiri"id="outbond">
+                            <div class="col-6 text-center radiusSendiri"id="outbound" >
                                 {{-- <a href="" class="" style="text-decoration: none; color:black;">
                                     Muat (OUTBOND)
                                 </a> --}}
                                 <label class=" p-1">MUAT (OUTBOND)</label>
-                                <hr style="border: 0.5px solid #007bff;" id="garisOutbond">
+                                <hr style="border: 0.5px solid #007bff;" id="garisOutbound">
                             </div>
                         </div>
                         <div class="row">
@@ -91,17 +94,16 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="form-group" id="outbondData">
+                                <div class="form-group" id="outboundData">
                                     <label for="">No.Booking</label>
                                     <select class="form-control select2" style="width: 100%;" id='select_booking' name="select_booking">
                                         <option value="">Pilih No Booking</option>
-                
                                         @foreach ($dataBooking as $book)
                                             <option value="{{$book->idBooking}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y')}}">{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y') }} / {{ $book->nama_tujuan }}  / {{ $book->kode }}</option>
                                         @endforeach
                                     </select>
                                 </div>  
-                                <div id="inboundData">
+                                <div class="form-group" id="inboundData">
                                     <div class="form-group">
                                         <label for="">No. Job Order</label>
                                         <select class="form-control select2" style="width: 100%;" id='select_jo' name="select_jo">
@@ -115,12 +117,8 @@
                                         <label for="">No. Kontainer</label>
                                         <select class="form-control select2" style="width: 100%;" id='select_jo_detail' name="select_jo_detail">
                                             <option value="">Pilih Kontainer</option>
-                    
-                                            {{-- @foreach ($kota as $city)
-                                                <option value="{{$city->id}}">{{ $city->nama }}</option>
-                                            @endforeach --}}
                                         </select>
-                                        <input type="hidden" name="no_kontainer" id="no_kontainer" value="">
+                                        <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
                                     </div> 
                                 </div>
                                 <div class="form-group">
@@ -163,7 +161,9 @@
                                             <option value="{{$cust->idCustomer}}">{{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="customer_id" name="customer_id" value="">
+                                    <input type="hidden" id="customer_id" name="customer_id" value="" placeholder="customer_id">
+                                    <input type="hidden" id="booking_id" name="booking_id" value="" placeholder="booking_id">
+                                    <input type="text" id="jenis_order" name="jenis_order" value="{{$data['jenis_order']}}" placeholder="jenis_order">
                                 </div>
                                 <div class="form-group">
                                     <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
@@ -174,9 +174,10 @@
                                             <option value="{{$city->id}}">{{ $city->nama }}</option>
                                         @endforeach --}}
                                     </select>
-                                    <input type="hidden" id="jenis_order" name="jenis_order" value="">
 
-                                    <input type="hidden" id="tujuan_id" name="tujuan_id" value="">
+                                    <input type="hidden" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
+                                    <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="" placeholder="id_jo_detail">
+                                    <input type="hidden" name="id_jo" id="id_jo" value="" placeholder="id_jo">
                                     <input type="hidden" id="nama_tujuan" name="nama_tujuan" value="">
                                     <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="">
                                     <input type="hidden" id="tarif" name="tarif" value="">
@@ -265,18 +266,33 @@
       
         // $('#select_customer').attr('disabled',true).val('').trigger('change');
         // $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
-        $('#inboundData').hide();
-        $('#garisInbound').hide();
-        $('#jenis_order').val('');
+        var jenis = $('#jenis_order').val();
+        if(jenis == 'INBOUND'){
+            $("#inbound").addClass("aktif");
+            $("#outbound").removeClass("aktif");
+            $('#inboundData').show();
+            $('#garisInbound').show();
+            $('#outboundData').hide();
+            $('#garisOutbound').hide();
+        } else {
+        $("#inbound").removeClass("aktif");
+        $("#outbound").addClass("aktif");
+
+            $('#inboundData').hide();
+            $('#garisInbound').hide();
+            $('#outboundData').show();
+            $('#garisOutbound').show();
+        }
         
-        $('body').on('click','#inbound',function()
+        $('body').on('click','#inboundx',function()
 		{
-            // console.log('pencet');
+            $("#inbound").addClass("aktif");
+            $("#outbound").removeClass("aktif");
             $('#inboundData').show();
             $('#garisInbound').show();
 
-            $('#outbondData').hide();
-            $('#garisOutbond').hide();
+            $('#outboundData').hide();
+            $('#garisOutbound').hide();
             $('#select_booking').val('').trigger('change');
             getDate();
             $('#jenis_order').val('INBOUND');
@@ -304,20 +320,22 @@
             $('#biayaTambahTarif').val('');
 		});
 
-        $('body').on('click','#outbond',function()
+        $('body').on('click','#outboundx',function()
 		{
             // $(this).animate({ "color": "red" }, 1500);
+            $("#outbound").addClass("aktif");
+            $("#inbound").removeClass("aktif");
             $('#select_booking').val('').trigger('change');
             $('#inboundData').hide();
             $('#garisInbound').hide();
-            $('#outbondData').show();
-            $('#garisOutbond').show();
+            $('#outboundData').show();
+            $('#garisOutbound').show();
             $('#select_customer').attr('disabled',false).val('').trigger('change');
             $('#select_grup_tujuan').attr('disabled',false).val('').trigger('change');
             
             $('#select_jo_detail').val('').trigger('change');
             $('#select_jo').val('').trigger('change');
-            $('#jenis_order').val('');
+            $('#jenis_order').val('OUTBOND');
 
             $('#tujuan_id').val('');
             $('#nama_tujuan').val('');
@@ -342,6 +360,7 @@
 		{
             var selectedValue = $(this).val();
             var splitValue = selectedValue.split('-');
+            var booking_id=splitValue[0];
             var idCustomer=splitValue[1];
             var idTujuan=splitValue[2];
             var tanggalBerangkat=splitValue[3];
@@ -351,6 +370,7 @@
             // console.log(tanggalBerangkat+"-"+bulanBerangkat+"-"+tahunBerangkat);
             $('#select_customer').val(idCustomer).trigger('change');
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
+            $('#booking_id').val(booking_id).trigger('change');
             $('#select_customer').attr('disabled',true);
             $('#select_grup_tujuan').attr('disabled',true);
             // $('#tanggal_berangkat').val(gabungan);
@@ -362,6 +382,7 @@
 		});
         
         $('#select_jo_detail').attr('disabled',true);
+
         var customerLoad = false;
 
         $('body').on('change','#select_jo',function()
@@ -372,6 +393,7 @@
             var idCustomer=splitValue[1];
             $('#select_customer').val(idCustomer).trigger('change');
             $('#customer_id').val(idCustomer);
+            $('#id_jo').val(idJo);
 
             var baseUrl = "{{ asset('') }}";
             $.ajax({
@@ -389,6 +411,7 @@
                             response.forEach(joDetail => {
                                 const option = document.createElement('option');
                                 option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer;
+                                option.setAttribute('booking_id', joDetail.booking_id);
                                 option.textContent = joDetail.no_kontainer ;
                                 // if (selected_marketing == marketing.id) {
                                 //     option.selected = true;
@@ -412,9 +435,6 @@
                     console.error('Error:', error);
                 }
             });
-           
-
-
 		});
 
         $('body').on('change','#select_jo_detail',function()
@@ -424,77 +444,17 @@
             var idJoDetail=splitValue[0];
             var idTujuan=splitValue[1];
             var no_kontainer=splitValue[2];
+            
+            var selectedOption = $(this).find('option:selected');
+            var bookingId = selectedOption.attr('booking_id');            
+
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
+            $('#booking_id').val(bookingId);
+            $('#id_jo_detail').val(idJoDetail);
 
             var baseUrl = "{{ asset('') }}";
             // var myjson;
             var array_tambahan_sdt = [];
-
-            // $.ajax({
-            //     url: `${baseUrl}truck_order/getDetailJOBiaya/${idJoDetail}`, 
-            //     method: 'GET', 
-            //     success: function(response) {
-            //         if(!response)
-            //         {
-            //             array_tambahan_sdt = [];
-            //         }
-            //         else
-            //         {
-            //             for (var i in response) {
-            //                 if(response[i].storage || response[i].storage!=0)
-            //                 {
-            //                     var objSTORAGE = {
-            //                             deskripsi: 'STORAGE',
-            //                             biaya: response[i].storage,
-            //                         };
-            //                     array_tambahan_sdt.push(objSTORAGE);
-            //                 } 
-            //                 if(response[i].demurage||response[i].demurage!=0)
-            //                 {
-            //                     var objDEMURAGE = {
-            //                             deskripsi: 'DEMURAGE',
-            //                             biaya: response[i].demurage,
-            //                         };
-            //                     array_tambahan_sdt.push(objDEMURAGE);
-            //                 } 
-            //                 if(response[i].detention||response[i].detention!=0)
-            //                 {
-            //                     var objDETENTION = {
-            //                             deskripsi: 'DETENTION',
-            //                             biaya: response[i].detention,
-            //                         };
-            //                     array_tambahan_sdt.push(objDETENTION);
-            //                 } 
-                                
-            //             }
-            //             $('#biayaTambahSDT').val(JSON.stringify(array_tambahan_sdt));
-            //             console.log('array_tambahan_sdt '+array_tambahan_sdt);
-
-            //         }
-            //     },
-            //     error: function(xhr, status, error) {
-            //         console.error('Error:', error);
-            //     }
-            // });
-
-            // get data booking
-            // $.ajax({
-            //     url: `${baseUrl}truck_order/getDataBooking/${idJoDetail}`, 
-            //     method: 'GET', 
-            //     success: function(response) {
-            //         // console.log('response '+response.tgl_booking);
-            //         // console.log('today '+today);
-
-            //         // if(!response){
-            //         //     array_tambahan_sdt = [];
-            //         // }
-            //     },
-            //     error: function(xhr, status, error) {
-            //         console.error('Error:', error);
-            //     }
-            // });
-           
-
 		});
 
         $('body').on('change','#select_customer',function()
@@ -635,12 +595,11 @@
 
 		});
 
-        $('body').on('change','#select_grup_tujuan',function()
-		{
+        $('body').on('change','#select_grup_tujuan',function(){
             var selectedValue = $(this).val();
             var baseUrl = "{{ asset('') }}";
 
-               //hadle booking bug
+            //hadle booking bug
             var selectBooking = $('#select_booking').val();
             var splitValue = selectBooking.split('-');
             var idTujuan=splitValue[2];

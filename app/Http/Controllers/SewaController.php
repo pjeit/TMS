@@ -163,18 +163,9 @@ class SewaController extends Controller
     
                 if(isset($data['select_jo']) && isset($data['id_jo_detail']))
                 {
-                    // DB::table('job_order')
-                    //     ->where('id', $data['select_jo'])
-                    //     ->update([
-                    //         'status'=>'masih gatau',
-                    //         'updated_at' => now(),
-                    //         'updated_by' => $user,
-                    //     ]);
                     DB::table('job_order_detail')
                         ->where('id', $data['id_jo_detail'])
                         ->update([
-                            'id_kendaraan' => $data['kendaraan_id']? $data['kendaraan_id']:null,
-                            'nopol_kendaraan' => $data['no_polisi']? $data['no_polisi']:null,
                             'tgl_dooring' => date_format($tgl_berangkat, 'Y-m-d'),
                             'status'=> 'DALAM PERJALANAN',
                             'updated_at' => now(),
@@ -185,7 +176,6 @@ class SewaController extends Controller
               
                 $arrayBiaya = json_decode($data['biayaDetail'], true);
                 
-                // sama trip supir
                 if( isset($arrayBiaya))
                 {
                     foreach ($arrayBiaya as /*$key =>*/ $item) {
@@ -204,51 +194,9 @@ class SewaController extends Controller
                         ); 
                     }
                 }
-                ///
-                    // $biayaTambahTarif = json_decode($data['biayaTambahTarif'], true);
-                    // if($biayaTambahTarif)
-                    // {
-                    //       foreach ($biayaTambahTarif as /*$key =>*/ $item) {
-                    //         DB::table('sewa_operasional')
-                    //             ->insert(array(
-                    //             'id_sewa'=>$idSewa,
-                    //             'deskripsi' => $item['deskripsi'] ,
-                    //             'total_operasional' => $item['biaya'],
-                    //             'is_ditagihkan' => null,
-                    //             'is_dipisahkan' => null,
-                    //             'catatan' => null,
-                    //             'is_aktif' => "Y",
-                    //             'created_at'=>now(), 
-                    //             'created_by'=> $user,
-                    //             'updated_at'=> now(),
-                    //             'updated_by'=> $user,
-                    //             )
-                    //         ); 
-                    
-                    //     }
-                    // }
-                    // $biayaTambahSDT = json_decode($data['biayaTambahSDT'], true);
-                    // if($biayaTambahSDT)
-                    // {
-                    //     foreach ($biayaTambahSDT as /*$key =>*/ $item) {
-                    //       DB::table('sewa_operasional')
-                    //           ->insert(array(
-                    //           'id_sewa'=>$idSewa,
-                    //           'deskripsi' => $item['deskripsi'] ,
-                    //           'total_operasional' => $item['biaya'],
-                    //           'is_ditagihkan' => null,
-                    //           'is_dipisahkan' => null,
-                    //           'catatan' => null,
-                    //           'is_aktif' => "Y",
-                    //           'created_at'=>now(), 
-                    //           'created_by'=> $user,
-                    //           'updated_at'=> now(),
-                    //           'updated_by'=> $user,
-                    //           )
-                    //       ); 
-                    //   }
-                    // }
-                ///
+            
+                // EXECUTE TRIGGER BUAT INPUT KE TRIP SUPIR (CEK TRIGGER DI TABEL SEWA)
+                
             }
 
             return redirect()->route('truck_order.index')->with('status','Berhasil menambahkan data Sewa');
@@ -285,9 +233,21 @@ class SewaController extends Controller
      * @param  \App\Models\Sewa  $sewa
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sewa $sewa)
+    public function edit(Sewa $sewa, $id)
     {
-        //
+        $data_sewa = Sewa::where('is_aktif', 'Y')->findOrFail($id);
+        // dd($data_sewa);
+
+        return view('pages.order.truck_order.edit',[
+            'judul'=>"Trucking Order",
+            'data'=> $data_sewa,
+            'datajO'=>SewaDataHelper::DataJO(),
+            'dataCustomer'=>SewaDataHelper::DataCustomer(),
+            'dataDriver'=>SewaDataHelper::DataDriver(),
+            'dataKendaraan'=>SewaDataHelper::DataKendaraan(),
+            'dataBooking'=>SewaDataHelper::DataBooking(),
+            'dataChassis'=>SewaDataHelper::DataChassis()
+        ]);
     }
 
     /**

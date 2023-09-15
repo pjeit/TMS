@@ -18,13 +18,13 @@
     #inbound,#outbond {
         cursor: pointer;
     }
-     #inbound:hover,#outbond:hover {
-        background-color: #e0efff;
+    #inbound:hover,#outbond:hover {
+        background-color: rgb(196, 223, 255);
         /* border-block-end: 1px solid #007bff; */
-
         /* border-block-start: 1px solid #007bff; */
-
-
+    }
+    .aktif {
+        background-color: #e0efff;
     }
 </style>
 <div class="container-fluid">
@@ -265,11 +265,15 @@
         // $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
         $('#inboundData').hide();
         $('#garisInbound').hide();
+        $("#inbound").removeClass("aktif");
+        $("#outbond").addClass("aktif");
         $('#jenis_order').val('');
         
         $('body').on('click','#inbound',function()
 		{
             // console.log('pencet');
+            $("#inbound").addClass("aktif");
+            $("#outbond").removeClass("aktif");
             $('#inboundData').show();
             $('#garisInbound').show();
 
@@ -305,6 +309,8 @@
         $('body').on('click','#outbond',function()
 		{
             // $(this).animate({ "color": "red" }, 1500);
+            $("#inbound").removeClass("aktif");
+            $("#outbond").addClass("aktif");
             $('#select_booking').val('').trigger('change');
             $('#inboundData').hide();
             $('#garisInbound').hide();

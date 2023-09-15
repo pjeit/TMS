@@ -31,7 +31,7 @@
                               <th>Kode</th>
                               <th>Karoseri</th>
                               <th>Model</th>
-                              <th>Aksi</th>
+                              <th></th>
                             </tr>
                           </thead>
                         <tbody>

@@ -61,7 +61,7 @@
                     </div>
                 </form>
                 
-                <table id="datatable" class="table table-bordered table-striped table-hover">
+                <table id="datatable" class="table table-bordered table-striped table-hover" width='100%'>
                     <thead>
                         <tr>
                             <th>Cabang Asal</th>

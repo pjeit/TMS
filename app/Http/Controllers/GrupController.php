@@ -173,6 +173,7 @@ class GrupController extends Controller
                 $edit_grup = Grup::where('is_aktif', 'Y')->findOrFail($grup->id);
                 $edit_grup->nama_grup = $data['nama_grup'];
                 $edit_grup->nama_pic = $data['nama_pic'];
+                $edit_grup->total_max_kredit = floatval(str_replace(',', '', $data['total_max_kredit']));
                 $edit_grup->email = $data['email'];
                 if(isset($data['telp1'])){
                     if (substr($data['telp1'], 0, 2) === "08") {

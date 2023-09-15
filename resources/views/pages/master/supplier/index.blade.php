@@ -72,7 +72,7 @@
                         </form>
                     </div>
                     <div id="data">
-                        <table id="datatable" class="table table-bordered table-striped" >
+                        <table id="datatable" class="table table-bordered table-striped" width='100%'>
                             <thead>
                                 <tr>
                                 <th>Jenis Supplier</th>

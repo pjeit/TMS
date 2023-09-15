@@ -96,6 +96,7 @@
         var formElement = document.querySelector("#form_report");
         var formData = new FormData(formElement);
         $("#loading-spinner").show();
+        console.log('formData ');
         showTable(formData);
 
         $(document).on('click','#btnKu',function(e){

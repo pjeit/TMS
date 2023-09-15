@@ -50,14 +50,14 @@
                                 <input type="hidden" id="SimpenId"> --}}
                         </form>
                     </div>
-                    <table id="datatable" class="table table-bordered table-striped table-hover">
+                    <table id="datatable" class="table table-bordered table-striped table-hover" width='100%'>
                         <thead>
                             <tr>
                               <th>Cabang</th>
                               <th>Kategori Kendaraan</th>
                               <th>No Polisi</th>
                               <th>Chassis</th>
-                              <th>Aksi</th>
+                              <th></th>
                             </tr>
                           </thead>
                         <tbody>
