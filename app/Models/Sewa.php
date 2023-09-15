@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Sewa extends Model
 {
@@ -59,5 +60,17 @@ class Sewa extends Model
         'updated_at',
         'updated_by',
     ];
+
+    public function getJOD(): HasOne
+    {
+         return $this->hasOne(JobOrderDetail::class, 'id', 'id_jo_detail')
+                     ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 'job_order_detail.id_grup_tujuan') // Assuming 'grup_tujuan' is the name of the relation in JobOrderDetail model
+                     ->select('job_order_detail.*', 'gt.nama_tujuan');
+    }
+    public function getJODTujuan(): HasOne
+    {
+         return $this->hasOne(JobOrderDetail::class, 'id', 'id_jo_detail')->select('*');
+    }
+ 
 
 }

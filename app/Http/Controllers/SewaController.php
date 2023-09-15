@@ -98,7 +98,7 @@ class SewaController extends Controller
             $sewa->nama_tujuan = $data['nama_tujuan'];
             $sewa->alamat_tujuan = $data['alamat_tujuan'];
             $sewa->kargo = $data['kargo'];
-            $sewa->jenis_order = $data['jenis_order']=='INBOUND'? 'INBOUND':'OUTBOND';
+            $sewa->jenis_order = $data['jenis_order']=='INBOUND'? 'INBOUND':'OUTBOUND';
             $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
             $sewa->total_uang_jalan = $data['uang_jalan'];
             $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
