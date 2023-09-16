@@ -211,6 +211,74 @@
 
 <script>
     $(document).ready(function() {
+          var selectedValue = $('#select_customer').val();
+            var baseUrl = "{{ asset('') }}";
+            $.ajax({
+                url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
+                method: 'GET', 
+                success: function(response) {
+                    if(response)
+                    {
+                        customerLoad = true;
+                        // console.log(customerLoad);
+                        // console.log(response.dataKredit.kreditCustomer);
+                        // console.log(response.dataKredit.maxGrup);
+
+                        // ==============================kredit=================
+                        
+                        let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
+                        creds_now = creds_now.toFixed(1);
+                        // persenanCredit
+                        const persen = document.getElementById('persenanCredit');
+
+                        const cred = document.getElementById('credit_customer');
+                        if(creds_now<80)
+                        {
+                            persen.innerHTML = creds_now+"%";
+                            cred.style.width = creds_now+"%";
+                            cred.style.backgroundColor = "#53de02";
+                            cred.style.color = "black";
+                            
+                        }
+                        else if(creds_now >=80 && creds_now <= 90)
+                        {
+                            persen.innerHTML = creds_now+"%";
+                            cred.style.width = creds_now+"%";
+                            cred.style.backgroundColor = "#deab02";
+                            cred.style.color = "black";
+                        }
+                        else if(creds_now>=90)
+                        {
+                            persen.innerHTML = creds_now+"%";
+                            cred.style.width = creds_now+"%";
+                            cred.style.backgroundColor = "#de0202";
+                            cred.style.color = "black";
+                        }
+                        else if(creds_now>100)
+                        {
+                            persen.innerHTML = creds_now+"%";
+                            cred.style.width = "100%";
+                            cred.style.backgroundColor = "#de0202";
+                            cred.style.color = "black";
+                        }
+                        // ==============================kredit=================
+
+                    }else{
+                        customerLoad = false;
+                            const persen = document.getElementById('persenanCredit');
+                            const cred = document.getElementById('credit_customer');
+                            persen.innerHTML = 0+"%";
+                            cred.style.width = 0+"%";
+                            cred.style.backgroundColor = "#53de02";
+                            cred.style.color = "black";
+
+                    }
+        
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
         getDate();
         var jenis = $('#jenis_order').val();
 
