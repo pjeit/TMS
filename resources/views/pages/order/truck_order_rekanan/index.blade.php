@@ -50,12 +50,12 @@
                                                     <i class="fa fa-list"></i>
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                    <a href="{{route('truck_order_rekanan.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                         <span class="fas fa-edit mr-3"></span> Edit
                                                     </a>
-                                                    <a href="{{ route('truck_order.destroy', $item->id_sewa) }}" class="dropdown-item" data-confirm-delete="true">
+                                                    {{-- <a href="{{ route('truck_order.destroy', $item->id_sewa) }}" class="dropdown-item" data-confirm-delete="true">
                                                         <span class="fas fa-trash mr-3"></span> Delete
-                                                    </a>
+                                                    </a> --}}
                                                 </div>
                                             </div>
                                         </td>

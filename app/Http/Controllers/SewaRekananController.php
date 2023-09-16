@@ -117,7 +117,8 @@ class SewaRekananController extends Controller
             $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
-            $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
+            $sewa->no_kontainer = $data['kontainer']? $data['kontainer']:null;
+            $sewa->seal_pelayaran = $data['seal']? $data['seal']:null;
             $sewa->created_by = $user;
             $sewa->created_at = now();
             $sewa->is_aktif = 'Y';
@@ -299,8 +300,17 @@ class SewaRekananController extends Controller
         ->where('s.is_aktif', '=', "Y")
         ->where('s.jenis_supplier_id', '=', 6)
         ->get();
-        $data_sewa = Sewa::where('is_aktif', 'Y')->whereNotNull('s.id_supplier') ->where('s.status', 'MENUNGGU OPERASIONAL')->findOrFail($truck_order_rekanan);
+        $data_sewa = Sewa::where('is_aktif', 'Y')->whereNotNull('id_supplier') ->where('status', 'MENUNGGU OPERASIONAL')->findOrFail($truck_order_rekanan->id_sewa);
         // dd($data_sewa);
+        $dataBooking = DB::table('booking as b')
+                ->select('*','b.id as idBooking')
+                ->Join('customer AS c', 'b.id_customer', '=', 'c.id')
+                ->Join('grup_tujuan AS gt', 'b.id_grup_tujuan', '=', 'gt.id')
+                ->where('b.is_aktif', "Y")
+                ->where('b.id', $data_sewa['id_booking'])
+                ->orderBy('tgl_booking')
+                ->whereNull('b.id_jo_detail')
+                ->get();
 
          return view('pages.order.truck_order_rekanan.edit',[
             'judul'=>"Trucking Order Rekanan",
@@ -308,7 +318,8 @@ class SewaRekananController extends Controller
             'dataCustomer'=>SewaDataHelper::DataCustomer(),
             'dataBooking'=>SewaDataHelper::DataBooking(),
             'supplier'=>$supplier,
-            'data_sewa'=>$data_sewa
+            'data'=>$data_sewa,
+            'dataBooking' => $dataBooking,
 
         ]);
     }
@@ -333,7 +344,7 @@ class SewaRekananController extends Controller
             $sewa->updated_at = now();
             $sewa->save();
             
-            return redirect()->route('truck_order.index')->with('status','Berhasil merubah data Sewa');
+            return redirect()->route('truck_order_rekanan.index')->with('status','Berhasil merubah data sewa rekanan');
         } catch (ValidationException $e) {
             //throw $th;
             DB::rollBack();

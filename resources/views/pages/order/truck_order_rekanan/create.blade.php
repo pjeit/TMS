@@ -189,6 +189,10 @@
                                     <input type="hidden" id="tally" name="tally" value="">
                                     <input type="hidden" id="kargo" name="kargo" value="">
 
+                                    <input type="hidden" id="kontainer" name="kontainer" value="">
+                                    <input type="hidden" id="seal" name="seal" value="">
+
+
                                     <input type="hidden" id="biayaDetail" name="biayaDetail">
                                     <input type="hidden" id="biayaTambahTarif" name="biayaTambahTarif">
                                     <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
@@ -199,7 +203,6 @@
                                 </div>
                                 <div class="form-grou">
                                     <label for="supplier">Supplier</label>
-
                                     <select class="form-control select2" style="width: 100%;" id='supplier' name="supplier">
                                         <option value="">Pilih Supplier</option>
 
@@ -207,7 +210,6 @@
                                             <option value="{{$s->id}}">{{ $s->nama }}</option>
                                         @endforeach 
                                     </select>
-
                                 </div>
                                 {{-- <div class="row">
                                     <div class="col">
@@ -316,6 +318,10 @@
             $('#kargo').val('');
             $('#biayaDetail').val('');
             $('#biayaTambahTarif').val('');
+
+            $('#kontainer').val('');
+            $('#seal').val('');
+
 		});
 
         $('body').on('click','#outbond',function()
@@ -349,6 +355,8 @@
             $('#kargo').val('');
             $('#biayaDetail').val('');
             $('#biayaTambahTarif').val('');
+            $('#kontainer').val('');
+            $('#seal').val('');
             getDate();
 		});
 
@@ -406,7 +414,7 @@
                         {
                             response.forEach(joDetail => {
                                 const option = document.createElement('option');
-                                option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer;
+                                option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer+'-'+joDetail.seal;
                                 option.setAttribute('booking_id', joDetail.booking_id);
                                 option.textContent = joDetail.no_kontainer ;
                                 // if (selected_marketing == marketing.id) {
@@ -443,6 +451,8 @@
             var idJoDetail=splitValue[0];
             var idTujuan=splitValue[1];
             var no_kontainer=splitValue[2];
+            var seal=splitValue[3];
+
             
             var selectedOption = $(this).find('option:selected');
             var bookingId = selectedOption.attr('booking_id');            
@@ -450,6 +460,8 @@
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
             $('#booking_id').val(bookingId);
             $('#id_jo_detail').val(idJoDetail);
+            $('#kontainer').val(no_kontainer);
+            $('#seal').val(seal);
 
             var baseUrl = "{{ asset('') }}";
             // var myjson;
