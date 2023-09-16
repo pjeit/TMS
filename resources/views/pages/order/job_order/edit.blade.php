@@ -79,6 +79,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group ">
@@ -98,6 +99,7 @@
                                 </div>           
                             </div>
                         </div>
+                        
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -118,6 +120,7 @@
                                 </div>              
                             </div>
                         </div>  
+
                         <div class="table_wrapper">
                             <table id="tabelJO" class="tabelJO table table-striped hover" >
                                 <thead>
@@ -187,6 +190,7 @@
                                                             @endforeach
                                                         @endif
                                                     </select>
+                                                    <td>{{$item->getSewa->id}}</td>
                                                 </td>
                                                 <td >
                                                     <div class="input-group mb-0">

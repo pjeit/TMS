@@ -71,4 +71,6 @@ class JobOrder extends Model
    {
         return $this->hasOne(Customer::class, 'id', 'id_customer')->select('kode');
    }
+   
+   
 }

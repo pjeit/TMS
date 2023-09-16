@@ -347,17 +347,15 @@ class JobOrderController extends Controller
                 }
             }
             
-            if(isset($data['id_jaminan'])){
-                $jaminan = Jaminan::where('is_aktif', 'Y')->find($data['id_jaminan']);
-                $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
-                $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
-                $jaminan->catatan = $data['catatan'];
-                $jaminan->updated_by = $user;
-                $jaminan->updated_at = now();
-                $jaminan->save();
-            }
-
-        
+            // if(isset($data['id_jaminan'])){
+            //     $jaminan = Jaminan::where('is_aktif', 'Y')->find($data['id_jaminan']);
+            //     $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
+            //     $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
+            //     $jaminan->catatan = $data['catatan'];
+            //     $jaminan->updated_by = $user;
+            //     $jaminan->updated_at = now();
+            //     $jaminan->save();
+            // }
 
             return redirect()->route('job_order.index')->with('status','Success!!');
         } catch (ValidationException $e) {

@@ -90,6 +90,7 @@ class PencairanUangJalanFtlController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+
         try {
             // dump transaksi
             $dump = DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -97,7 +98,7 @@ class PencairanUangJalanFtlController extends Controller
                     $data['pembayaran'],// id kas_bank dr form
                     now(),//tanggal
                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                    $data['total_diterima'], //uang keluar (kredit)
+                    (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
                     1016, //kode coa
                     'uang_jalan',
                     'UANG KELUAR - PEMBAYARAN UANG JALAN', //keterangan_transaksi
@@ -143,7 +144,9 @@ class PencairanUangJalanFtlController extends Controller
                 ->where('is_aktif', '=', "Y")
                 ->where('kas_bank.id', '=', $data['pembayaran'])
                 ->first();
+
             $saldo_baru = $saldo->saldo_sekarang - (float)str_replace(',', '', $data['total_diterima']);
+            
             DB::table('kas_bank')
                 ->where('id', $data['pembayaran'])
                 ->update(array(

@@ -277,7 +277,7 @@
 
         // logic select jo jika ada
         var selectedJO = $('#select_jo').val();
-        // console.log('splitValuex '+ selectedJO.length);
+        
         if(selectedJO > 0){
             var splitValue = selectedJO.split('-');
             var idJo=splitValue[0];
@@ -356,6 +356,114 @@
                 $('#ekor_id').val(idChassis);
             }
         //
+
+        // $('body').on('change','#select_customer',function()
+		// {
+        //     var selectedValue = $(this).val();
+        //     $('#customer_id').val(selectedValue);
+        //     var baseUrl = "{{ asset('') }}";
+
+        //     //hadle booking bug
+        //     var selectBooking = $('#select_booking').val();
+        //     var splitValue = selectBooking.split('-');
+        //     var idTujuan=splitValue[2];
+            
+        //     $('#tujuan_id').val('');
+        //     $('#nama_tujuan').val('');
+        //     $('#alamat_tujuan').val('');
+        //     $('#tarif').val('');
+        //     $('#uang_jalan').val('');
+        //     $('#komisi').val('');
+        //     $('#jenis_tujuan').val('');
+        //     //ltl
+        //     $('#harga_per_kg').val('');
+        //     $('#min_muatan').val('');
+        //     $('#seal_pje').val('');
+        //     $('#plastik').val('');
+        //     $('#tally').val('');
+        //     $('#kargo').val('');
+        //     $('#biayaDetail').val('');
+        //     $('#biayaTambahTarif').val('');
+
+        
+			
+        //     // let creds = $('#cred_val').val();
+        //     // let creds_max = $('#cred_val_max').val();
+        //     // creds = creds.replace(/,/g,'');
+        //     // creds_max = creds_max.replace(/,/g,'');
+        //     // //debug sini 2
+        //     var selectedCustomer = $('#select_customer').val()
+        //     $.ajax({
+        //         url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
+        //         method: 'GET', 
+        //         success: function(response) {
+        //             if(response)
+        //             {
+        //                 customerLoad = true;
+        //                 // console.log(customerLoad);
+        //                 // console.log(response.dataKredit.kreditCustomer);
+        //                 // console.log(response.dataKredit.maxGrup);
+
+        //                 // ==============================kredit=================
+                        
+        //                 let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
+        //                 creds_now = creds_now.toFixed(1);
+        //                 // persenanCredit
+        //                 const persen = document.getElementById('persenanCredit');
+
+        //                 const cred = document.getElementById('credit_customer');
+        //                 if(creds_now<80)
+        //                 {
+        //                     persen.innerHTML = creds_now+"%";
+        //                     cred.style.width = creds_now+"%";
+        //                     cred.style.backgroundColor = "#53de02";
+        //                     cred.style.color = "black";
+                            
+        //                 }
+        //                 else if(creds_now >=80 && creds_now <= 90)
+        //                 {
+        //                     persen.innerHTML = creds_now+"%";
+        //                     cred.style.width = creds_now+"%";
+        //                     cred.style.backgroundColor = "#deab02";
+        //                     cred.style.color = "black";
+        //                 }
+        //                 else if(creds_now>=90)
+        //                 {
+        //                     persen.innerHTML = creds_now+"%";
+        //                     cred.style.width = creds_now+"%";
+        //                     cred.style.backgroundColor = "#de0202";
+        //                     cred.style.color = "black";
+        //                 }
+        //                 else if(creds_now>100)
+        //                 {
+        //                     persen.innerHTML = creds_now+"%";
+        //                     cred.style.width = "100%";
+        //                     cred.style.backgroundColor = "#de0202";
+        //                     cred.style.color = "black";
+        //                 }
+        //                 // ==============================kredit=================
+
+        //             }else{
+        //                 customerLoad = false;
+        //                     const persen = document.getElementById('persenanCredit');
+        //                     const cred = document.getElementById('credit_customer');
+        //                     persen.innerHTML = 0+"%";
+        //                     cred.style.width = 0+"%";
+        //                     cred.style.backgroundColor = "#53de02";
+        //                     cred.style.color = "black";
+
+        //             }
+        
+        //         },
+        //         error: function(xhr, status, error) {
+        //             console.error('Error:', error);
+        //         }
+        //     });
+           
+
+
+		// });
+
 
 
         $('body').on('change','#select_driver',function()

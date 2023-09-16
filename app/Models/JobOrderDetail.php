@@ -52,6 +52,11 @@ class JobOrderDetail extends Model
    
        return $relation ? $relation : null;
    }
+
+   public function getSewa(): HasOne
+   {
+        return $this->hasOne(Sewa::class, 'id_jo_detail', 'id')->select('*');
+   }
    
    
 }
