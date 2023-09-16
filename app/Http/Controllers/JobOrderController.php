@@ -89,7 +89,6 @@ class JobOrderController extends Controller
             $data = $request->post();
             $currentYear = Carbon::now()->format('y');
             $currentMonth = Carbon::now()->format('m');
-            // dd($data);
 
             $kode = DB::table('customer')
                 ->select('kode')
@@ -123,19 +122,18 @@ class JobOrderController extends Controller
             $newJO->apbs = isset($data['checkbox_APBS'])? floatval(str_replace(',', '', $data['total_apbs'])):0;
             $newJO->cleaning = isset($data['checkbox_CLEANING'])? floatval(str_replace(',', '', $data['total_cleaning'])):0;
             $newJO->doc_fee = isset($data['checkbox_DOC_FEE'])? floatval(str_replace(',', '', $data['DOC_FEE'])):0;
-            $newJO->status = 'MENUNGGU PEMBAYARAN';
             $newJO->created_by = $user;
             $newJO->created_at = now();
             $newJO->is_aktif = 'Y';
-            // $newJO->free_time = $data['free_time']; // hapus
-            // $newJO->tgl_plan_book = $data['tgl_plan_book']; // hapus
-            // $newJO->id_booking = $data['id_booking']; // kosong dulu
-            // $newJO->jo_expired = $data['jo_expired']; // kosongkan dulu
-            // $newJO->total_storage = $data['total_storage']; // kosongkan dulu
-            // $newJO->total_demurage = $data['total_demurage']; // kosongkan dulu
-            // $newJO->total_detention = $data['total_detention']; // kosongkan dulu
-            // $newJO->total_repair_washing = $data['total_repair_washing']; // kosongkan dulu
-            // $newJO->total_biaya_setelah_dooring = $data['total_biaya_setelah_dooring']; // kosongkan dulu
+       
+            if( $newJO->thc == 0 && $newJO->lolo == 0 && $newJO->apbs == 0 && 
+                    $newJO->cleaning == 0 && $newJO->doc_fee == 0 && 
+                    ($data['tgl_bayar_jaminan'] == null || $data['total_jaminan'] == null) ){
+
+                $newJO->status = 'DALAM PERJALANAN'; // MENUNGGU PEMBAYARAN, DALAM PERJALANAN
+            }else{
+                $newJO->status = 'MENUNGGU PEMBAYARAN'; // MENUNGGU PEMBAYARAN, DALAM PERJALANAN
+            }
 
             if($newJO->save()){
                 // create JO detail 
@@ -199,7 +197,6 @@ class JobOrderController extends Controller
                     $jaminan->is_aktif = 'Y';
                     $jaminan->save();
                 }
-
             }
         
             // return redirect()->route('job_order.index')->with('status','Success!!');
@@ -254,9 +251,12 @@ class JobOrderController extends Controller
             ->where('pengaturan_keuangan.is_aktif', '=', "Y")
             ->get();
         $detail = DB::table('job_order_detail as jod')
-            ->select('jod.*', 'b.id as id_booking', 'b.tgl_booking as tgl_booking')
+            ->select('jod.*', 'b.id as id_booking', 'b.tgl_booking as tgl_booking','s.id_sewa as sewa_id')
             ->leftJoin('booking as b', function($leftJoin){
                 $leftJoin->on('b.id_jo_detail', '=', "jod.id")->where('b.is_aktif',"Y");
+            })
+            ->leftJoin('sewa as s', function($leftJoin){
+                $leftJoin->on('s.id_jo_detail', '=', "jod.id")->where('s.is_aktif',"Y");
             })
             ->where('jod.id_jo', $jobOrder->id)
             ->where('jod.is_aktif', "Y")
@@ -510,7 +510,7 @@ class JobOrderController extends Controller
                             $query->where('jo.id_customer', '=', $pengirim);
                         }
                     })
-                    ->where('jo.status', 'like', "DALAM PENGIRIMAN")
+                    ->where('jo.status', 'like', "DALAM PERJALANAN")
                     ->groupBy('jod.id_jo','jod.id')
                     ->get();
 

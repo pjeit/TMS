@@ -174,7 +174,7 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <select class="form-control selectpicker pick_up" name="detail[{{$key}}][pick_up]" id="tipe{{$key}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" readonly >
+                                                    <select class="form-control selectpicker pick_up" name="detail[{{$key}}][pick_up]" id="tipe{{$key}}" {{isset($item->sewa_id)? 'disabled':''}} data-live-search="true" data-show-subtext="true" data-placement="bottom" readonly >
                                                         <option value="">── Pick Up ──</option>
                                                         <option value="TTL" <?= $item->pick_up == 'TTL' ? 'selected':''; ?> >TTL</option>
                                                         <option value="TPS" <?= $item->pick_up == 'TPS' ? 'selected':''; ?> >TPS</option>
@@ -182,7 +182,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select class="form-control selectpicker tujuanC" name="detail[{{$key}}][tujuan]" tujuan_check="{{$key}}"  id="tujuan{{$key}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                    <select class="form-control selectpicker tujuanC" name="detail[{{$key}}][tujuan]" tujuan_check="{{$key}}"  id="tujuan{{$key}}" {{isset($item->sewa_id)? 'disabled':''}} data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                                         <option value="">── Pilih Tujuan ──</option>
                                                         @if ($dataTujuan)
                                                             @foreach ($dataTujuan as $tuj)
@@ -190,14 +190,13 @@
                                                             @endforeach
                                                         @endif
                                                     </select>
-                                                    <td>{{$item->getSewa->id}}</td>
                                                 </td>
                                                 <td >
                                                     <div class="input-group mb-0">
                                                         <div class="input-group-prepend ">
                                                             <span class="input-group-text d-sm-none d-md-none d-lg-block"><i class="far fa-calendar-alt"></i></span>
                                                         </div>
-                                                        <input type="text" name="detail[{{$key}}][tgl_booking]" id='tgl_booking{{$key}}' tgl_booking_check="{{$key}}" autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{isset($item->tgl_booking)? \Carbon\Carbon::parse($item->tgl_booking)->format('d-M-Y'):NULL}}">     
+                                                        <input type="text" name="detail[{{$key}}][tgl_booking]" id='tgl_booking{{$key}}' tgl_booking_check="{{$key}}" {{isset($item->sewa_id)? 'disabled':''}} autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{isset($item->tgl_booking)? \Carbon\Carbon::parse($item->tgl_booking)->format('d-M-Y'):NULL}}">     
                                                     </div>
                                                 </td>
                                             </tr>
