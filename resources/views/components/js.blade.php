@@ -299,6 +299,7 @@
         // Atur properti CSS width menjadi 100%
         datatable.style.width = '100%';
       }
+
   });
 </script>
 

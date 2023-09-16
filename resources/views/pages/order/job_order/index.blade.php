@@ -9,7 +9,14 @@
 @section('content')
 @include('sweetalert::alert')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
-
+<style>
+    table .dropdown-menu {
+        position: fixed !important;
+        top: 45% !important;
+        left: 90% !important;
+        transform: translate(-90%, -45%) !important;
+    }
+</style>
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -41,13 +48,13 @@
                                     <td>{{ $item->nama_supp }}</td>
                                     <td>{{ $item->status}}</td>
                                     {{-- <td>{{date("d-M-Y", strtotime($item->created_at))}}</td> --}}
-                                    <td>                                    
+                                    <td >                                    
                                         <!-- Default dropleft button -->
                                         <div class="btn-group dropleft">
                                             <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="fa fa-list"></i>
                                             </button>
-                                            <div class="dropdown-menu">
+                                            <div class="dropdown-menu" >
                                                 <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
                                                     <span class="fas fa-edit mr-3"></span> Edit
                                                 </a>
@@ -91,5 +98,10 @@
     if (sessionMessage !== '') {
         toastr.success(sessionMessage);
     }
+
+    $( document ).ready(function() {
+        
+    });
+
 </script>
 @endsection

@@ -170,45 +170,46 @@ class PaymentJobController extends Controller
                 'pembayaran' => 'required',
             ], $pesanKustom);
             $data = $request->collect();
-            // dd($data['total_sblm_dooring']);die;
+
             // 'MENUNGGU PEMBAYARAN','DALAM PENGIRIMAN'
             $data_saldo_kas_sekarang = DB::table('kas_bank')
-            ->select('*')
-            ->where('is_aktif', '=', "Y")
-            ->where('kas_bank.id', '=', $data['pembayaran'])
-            ->first();
+                ->select('*')
+                ->where('is_aktif', '=', "Y")
+                ->where('kas_bank.id', '=', $data['pembayaran'])
+                ->first();
             $dataJaminan = DB::table('jaminan')
-            ->select('*')
-            ->where('jaminan.is_aktif', '=', "Y")
-            ->where('jaminan.id_job_order', '=', $pembayaran_jo->id)
-            ->first();
+                ->select('*')
+                ->where('jaminan.is_aktif', '=', "Y")
+                ->where('jaminan.id_job_order', '=', $pembayaran_jo->id)
+                ->first();
             $coaJaminan = DB::table('coa')
-            ->select('*')
-            ->where('coa.is_aktif', '=', "Y")
-            ->where('coa.no_akun', '=', 1205)
-            ->first();
+                ->select('*')
+                ->where('coa.is_aktif', '=', "Y")
+                ->where('coa.no_akun', '=', 1205)
+                ->first();
             $coaPelayaran = DB::table('coa')
-            ->select('*')
-            ->where('coa.is_aktif', '=', "Y")
-            ->where('coa.no_akun', '=', 5003)
-            ->first();
+                ->select('*')
+                ->where('coa.is_aktif', '=', "Y")
+                ->where('coa.no_akun', '=', 5003)
+                ->first();
+
             // dd($pembayaran_jo->total_biaya_sebelum_dooring);
             DB::table('job_order')
-            ->where('id', $pembayaran_jo['id'])
-            ->update(array(
-                //    'nama' => strtoupper($data['nama']),
-                    'status' => 'DALAM PENGIRIMAN',
-                    'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> $user,
-                    'is_aktif' => "Y",
-                )
-            );
-            if($dataJaminan)
-            {
-                 $perhitunganSaldo = $data_saldo_kas_sekarang->saldo_sekarang - ($data['total_sblm_dooring']+$dataJaminan->nominal);
+                ->where('id', $pembayaran_jo['id'])
+                ->update(array(
+                    //    'nama' => strtoupper($data['nama']),
+                        'status' => 'DALAM PENGIRIMAN',
+                        'updated_at'=> VariableHelper::TanggalFormat(),
+                        'updated_by'=> $user,
+                        'is_aktif' => "Y",
+                    )
+                );
 
+            if($dataJaminan){
+                $perhitunganSaldo = $data_saldo_kas_sekarang->saldo_sekarang - (($data['total_sblm_dooring']+$dataJaminan->nominal));
+            }else{
+                $perhitunganSaldo = $data_saldo_kas_sekarang->saldo_sekarang - ($data['total_sblm_dooring']);
             }
-            $perhitunganSaldo = $data_saldo_kas_sekarang->saldo_sekarang - ($data['total_sblm_dooring']);
 
             // dd( $perhitunganSaldo );
             DB::table('kas_bank')
