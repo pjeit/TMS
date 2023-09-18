@@ -26,11 +26,12 @@ class SewaDataHelper
      {
         // some logic to determine if the publisher is main
         return JobOrder::select('job_order.*')
-            ->leftJoin('job_order_detail as jod', 'jod.id_jo', '=', 'job_order.id')
+            ->leftJoin('job_order_detail as jod', 'job_order.id', '=', 'jod.id_jo')
             ->where('jod.status', 'BELUM DOORING')
             ->where('job_order.is_aktif', '=', "Y")
             ->with('getCustomer')
             ->with('getSupplier')
+            ->groupBy('job_order.id')
             ->get();
      }
 
