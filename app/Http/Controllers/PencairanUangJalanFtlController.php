@@ -138,7 +138,7 @@ class PencairanUangJalanFtlController extends Controller
 
             $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
             // dd($sewa);
-            $sewa->status = 'DALAM PERJALANAN';
+            $sewa->status = 'MENUNGGU OPERASIONAL';
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             $sewa->save();
