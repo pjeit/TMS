@@ -196,6 +196,16 @@
                                         @endforeach 
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="harga_jual">Harga Jual</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp.</span>
+                                        </div>
+                                        <input type="text" name="harga_jual" class="form-control numaja uang" id="harga_jual"  min="0" value="{{number_format($data->harga_jual,2) }}">
+                                    
+                                    </div>
+                                </div>
                             </div>
 
                            

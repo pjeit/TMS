@@ -77,7 +77,7 @@ class SewaRekananController extends Controller
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
 
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
-            $booking_id = $data['booking_id']; 
+            // $booking_id = $data['booking_id']; 
 
             $lastNoSewa = Sewa::where('is_aktif', 'Y')
                         ->where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
@@ -99,7 +99,7 @@ class SewaRekananController extends Controller
             $sewa = new Sewa();
             $sewa->id_supplier = $data['supplier'];
             $sewa->no_sewa = $no_sewa;
-            $sewa->id_booking = $booking_id;
+            $sewa->id_booking = $data['booking_id'];
             $sewa->id_jo = $data['id_jo'];
             $sewa->id_jo_detail = $data['id_jo_detail'];
             $sewa->id_customer = $data['customer_id'];
@@ -114,6 +114,7 @@ class SewaRekananController extends Controller
             $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
             $sewa->total_uang_jalan =$data['uang_jalan'];
             $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
+            $sewa->harga_jual =(float)str_replace(',', '', $data['harga_jual']);
             $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
@@ -344,6 +345,7 @@ class SewaRekananController extends Controller
             $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($truck_order_rekanan->id_sewa);
             $sewa->id_supplier = $data['supplier'];
             $sewa->no_polisi = $data['no_polisi'];
+            $sewa->harga_jual = (float)str_replace(',', '', $data['harga_jual']);
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             $sewa->save();
