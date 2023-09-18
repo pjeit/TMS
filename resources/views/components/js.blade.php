@@ -292,6 +292,10 @@
           scrollX: true,
           "aaSorting": []
       });
+      $('#dt').dataTable({
+          // scrollX: true,
+          "aaSorting": []
+      });
 
       var datatable = document.getElementById('dataablex');
       

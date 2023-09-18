@@ -379,8 +379,7 @@
           </li>
 
            <li class="nav-item {{ request()->is('booking*')||
-            request()->is('truck_order*')
-            ? 'menu-is-opening menu-open' : '' }}">
+            request()->is('truck_order*')? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               {{-- <i class="nav-icon fas fa-shipping-fast"></i> --}}
               <i class="nav-icon fas fa-solid fa-truck"></i>
@@ -400,7 +399,7 @@
             </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('truck_order.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('truck_order') ||  request()->is('truck_order/create') || request()->is('truck_order/*/truck_order') ? ' active' : '' }}">
+                <a href="{{route('truck_order.index')}}" style="font-weight: 500;" class="nav-link {{ request()->is('truck_order') ||  request()->is('truck_order/create') || request()->is('truck_order/*/edit') ? ' active' : '' }}">
                 <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                   <p>
                      Order
@@ -418,8 +417,6 @@
                 </a>
               </li>
             </ul> 
-            
-           
           </li>
          
           <li class="nav-item {{ 

@@ -106,7 +106,7 @@
                                         <select class="form-control select2" style="width: 100%;" id='select_jo' name="select_jo">
                                             <option value="">Pilih No JO</option>
                                             @foreach ($datajO as $jo)
-                                                <option value="{{$jo->id}}-{{$jo->id_customer}}">{{ $jo->no_bl }}</option>
+                                                <option value="{{$jo->id}}-{{$jo->id_customer}}">{{ $jo->no_bl }} / {{ $jo->getCustomer->kode }} / {{ $jo->getSupplier->nama }}</option>
                                             @endforeach
                                         </select>
                                     </div>  
@@ -541,8 +541,6 @@
             $('#biayaDetail').val('');
             $('#biayaTambahTarif').val('');
 
-        
-			
             // let creds = $('#cred_val').val();
             // let creds_max = $('#cred_val_max').val();
             // creds = creds.replace(/,/g,'');

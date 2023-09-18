@@ -26,7 +26,12 @@ class JobOrderController extends Controller
      */
     public function index()
     {
-        //
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+    
         $dataJO = DB::table('job_order as jo')
             ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
             ->leftJoin('supplier as s', 's.id', '=', 'jo.id_supplier')

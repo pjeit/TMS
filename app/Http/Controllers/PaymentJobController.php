@@ -198,7 +198,7 @@ class PaymentJobController extends Controller
                 ->where('id', $pembayaran_jo['id'])
                 ->update(array(
                     //    'nama' => strtoupper($data['nama']),
-                        'status' => 'DALAM PENGIRIMAN',
+                        'status' => 'DALAM PERJALANAN',
                         'updated_at'=> VariableHelper::TanggalFormat(),
                         'updated_by'=> $user,
                         'is_aktif' => "Y",

@@ -194,7 +194,7 @@ class StorageDemurageController extends Controller
                     })
                     ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
                     ->where('jo.is_aktif', '=', 'Y')
-                        ->where('jo.status', 'like', "DALAM PENGIRIMAN")
+                        ->where('jo.status', 'like', "DALAM PERJALANAN")
                     ->groupBy('jod.id_jo','jod.id')
                     ->get();
             return response()->json(["result" => "success",'data' => $dataJO], 200);

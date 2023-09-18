@@ -2,6 +2,7 @@
 namespace App\Helper;
 use Illuminate\Support\Facades\DB;
 use App\Models\Customer;
+use App\Models\JobOrder;
 
 class SewaDataHelper
 {
@@ -24,12 +25,15 @@ class SewaDataHelper
     public static function DataJO()
      {
         // some logic to determine if the publisher is main
-        return DB::table('job_order as jo')
-            ->select('jo.*')
-            ->where('jo.is_aktif', '=', "Y")
-            ->where('jo.status', 'like', "%DALAM PENGIRIMAN%")
+        return JobOrder::select('job_order.*')
+            ->leftJoin('job_order_detail as jod', 'jod.id_jo', '=', 'job_order.id')
+            ->where('jod.status', 'BELUM DOORING')
+            ->where('job_order.is_aktif', '=', "Y")
+            ->with('getCustomer')
+            ->with('getSupplier')
             ->get();
      }
+
      public static function DataCustomer()
      {
         return  DB::table('customer')
