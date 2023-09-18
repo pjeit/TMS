@@ -201,7 +201,7 @@
                                     <label for="no_polisi">No. polisi rekanan</label>
                                     <input type="text" maxlength="11" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value=""> 
                                 </div>
-                                <div class="form-grou">
+                                <div class="form-group">
                                     <label for="supplier">Supplier</label>
                                     <select class="form-control select2" style="width: 100%;" id='supplier' name="supplier">
                                         <option value="">Pilih Supplier</option>
@@ -210,6 +210,17 @@
                                             <option value="{{$s->id}}">{{ $s->nama }}</option>
                                         @endforeach 
                                     </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="harga_jual">Harga Jual</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp.</span>
+                                        </div>
+                                        <input type="text" name="harga_jual" class="form-control numaja uang" id="harga_jual"  min="0">
+                                    
+                                    </div>
                                 </div>
                                 {{-- <div class="row">
                                     <div class="col">

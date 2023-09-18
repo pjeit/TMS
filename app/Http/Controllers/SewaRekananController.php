@@ -72,7 +72,7 @@ class SewaRekananController extends Controller
         
         try {
             $data = $request->collect();
-            // dd($data);
+            // dd((float)str_replace(',', '', $data['harga_jual']));
             
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
 
@@ -112,13 +112,14 @@ class SewaRekananController extends Controller
             $sewa->kargo = $data['kargo'];
             $sewa->jenis_order = $data['jenis_order']=='INBOUND'? 'INBOUND':'OUTBOND';
             $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
-            $sewa->total_uang_jalan =0;
+            $sewa->total_uang_jalan =$data['uang_jalan'];
             $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
             $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['kontainer']? $data['kontainer']:null;
             $sewa->seal_pelayaran = $data['seal']? $data['seal']:null;
+            $sewa->harga_jual = (float)str_replace(',', '', $data['harga_jual']);
             $sewa->created_by = $user;
             $sewa->created_at = now();
             $sewa->is_aktif = 'Y';
@@ -195,13 +196,16 @@ class SewaRekananController extends Controller
                 // sama trip supir
                 if( isset($arrayBiaya))
                 {
-                    // foreach ($arrayBiaya as /*$key =>*/ $item) {
+                    foreach ($arrayBiaya as /*$key =>*/ $item) {
                         DB::table('sewa_biaya')
                             ->insert(array(
                             'id_sewa' => $sewa->id_sewa,
-                            'deskripsi' => 'UANG JALAN',
-                            'biaya' => $data['uang_jalan'],
-                            'catatan' => null,
+                            // 'deskripsi' => 'UANG JALAN',
+                            // 'biaya' => $data['uang_jalan'],
+                            // 'catatan' => null,
+                            'deskripsi' => $item['deskripsi'] ,
+                            'biaya' => $item['biaya'],
+                            'catatan' => $item['catatan']?$item['catatan']:null,
                             'is_aktif' => "Y",
                             'created_at' => now(), 
                             'created_by' => $user,
@@ -209,7 +213,7 @@ class SewaRekananController extends Controller
                             'updated_by' => $user,
                             )
                         ); 
-                    // }
+                    }
                 }
                 ///
                     // $biayaTambahTarif = json_decode($data['biayaTambahTarif'], true);
