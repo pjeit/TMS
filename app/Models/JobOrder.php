@@ -52,25 +52,31 @@ class JobOrder extends Model
     //         return $idTuj;
     //    }
 
-   public function getGrupId(): HasOne
-   {
-        return $this->hasOne(Customer::class, 'id', 'id_customer')->select('grup_id');
-   }
+     public function getGrupId()
+     {
+          return $this->hasOne(Customer::class, 'id', 'id_customer');
+     }
 
-   public function getCustomer(): HasOne
-   {
-        return $this->hasOne(Customer::class, 'id', 'id_customer')->select('kode', 'nama');
-   }
+     public function getCustomer()
+     {
+          return $this->hasOne(Customer::class, 'id', 'id_customer');
+     }
 
-   public function getSupplier(): HasOne
-   {
-        return $this->hasOne(Supplier::class, 'id', 'id_supplier')->select('nama');
-   }
-   
-   public function getKodeCustomer(): HasOne
-   {
-        return $this->hasOne(Customer::class, 'id', 'id_customer')->select('kode');
-   }
-   
-   
+     public function getSupplier()
+     {
+          return $this->hasOne(Supplier::class, 'id', 'id_supplier');
+     }
+     
+     public function getKodeCustomer()
+     {
+          return $this->hasOne(Customer::class, 'id', 'id_customer');
+     }
+     
+     public function hasSewa()
+     {
+          return $this->hasOne(Sewa::class, 'id', 'id_customer');
+     }
+
+
+
 }

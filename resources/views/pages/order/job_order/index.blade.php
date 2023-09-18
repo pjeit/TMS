@@ -27,7 +27,7 @@
                     </a> 
                 </div>
                 <div class="card-body">
-                    <table id="datatable" class="table table-bordered table-striped" width='100%'>
+                    <table id="datatablex" class="table table-bordered table-striped" width='100%'>
                         <thead>
                             <tr>
                               <th>Kode JO</th>

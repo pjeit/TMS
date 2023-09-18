@@ -204,7 +204,7 @@ class PaymentSDTController extends Controller
                     })
                     ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
                     ->where('jo.is_aktif', '=', 'Y')
-                    ->where('jo.status', 'like', "DALAM PENGIRIMAN")
+                    ->where('jo.status', "DALAM PERJALANAN")
                     ->when(isset($pengirim), function($query) use ($pengirim){
                         return $query->where('id_customer', $pengirim);
                     })
@@ -222,7 +222,7 @@ class PaymentSDTController extends Controller
                 JOIN job_order_detail AS jod ON jo.id = jod.id_jo
                 LEFT JOIN job_order_detail_biaya AS jodb ON jodb.id_jo_detail = jod.id AND jodb.is_aktif = 'Y' AND jodb.status_bayar = 'MENUNGGU PEMBAYARAN'
                 LEFT JOIN grup_tujuan AS gt ON jod.id_grup_tujuan = gt.id
-                WHERE jo.is_aktif = 'Y' AND jo.status LIKE 'DALAM PENGIRIMAN'
+                WHERE jo.is_aktif = 'Y' AND jo.status = 'DALAM PERJALANAN'
                 GROUP BY jod.id_jo, jod.id
             ");
 
