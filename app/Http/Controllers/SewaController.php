@@ -19,7 +19,12 @@ class SewaController extends Controller
      */
     public function index()
     {
-        //
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+    
         return view('pages.order.truck_order.index',[
             'judul'=>"Trucking Order",
             'dataSewa' => SewaDataHelper::DataSewa(),
@@ -62,7 +67,7 @@ class SewaController extends Controller
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
 
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
-            $booking_id = $data['booking_id']; 
+            $booking_id = isset($data['booking_id'])? $data['booking_id']:null; 
 
             $lastNoSewa = Sewa::where('is_aktif', 'Y')
                         ->where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
@@ -293,6 +298,6 @@ class SewaController extends Controller
      */
     public function destroy(Sewa $sewa)
     {
-        //
+        var_dump('xxx'); die;
     }
 }
