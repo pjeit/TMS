@@ -27,16 +27,16 @@
                                 <div class="row" >
                                     <div class="col-4">
                                         <div class="form-group">
-                                            <label for="">Pengirim</label>
+                                            <label for="">ITEM</label>
                                             <select class="form-control selectpicker" name="pengirim" id="pengirim" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                                 <option value="">­­— SEMUA DATA —</option>
-                                                @foreach ($customer as $cust)
-                                                    <option value="{{$cust->id}}">{{$cust->nama}}</option>
-                                                @endforeach
+                                                <option value="TALLY">TALLY</option>
+                                                <option value="PLASTIK">PLASTIK</option>
+                                                <option value="SEAL">SEAL</option>
                                             </select>
                                         </div>
                                     </div>
-                                     <div class="col-4">
+                                    {{-- <div class="col-4">
                                         <div class="form-group">
                                             <label for="">Pelayaran</label>
                                             <select class="form-control selectpicker" name="pelayaran" id="pelayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
@@ -46,7 +46,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-4">
                                         <label for="">&nbsp;</label>
                                         <div class="d-flex justify-content-start col-12" style="gap: 5px;">

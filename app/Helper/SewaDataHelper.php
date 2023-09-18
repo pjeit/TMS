@@ -36,7 +36,7 @@ class SewaDataHelper
 
      public static function DataCustomer()
      {
-        return  DB::table('customer')
+        return DB::table('customer')
             ->select('customer.id as idCustomer',
             'customer.kode as kodeCustomer',
             'customer.nama as namaCustomer',

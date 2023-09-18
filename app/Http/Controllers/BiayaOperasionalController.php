@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
+ use Carbon\Carbon;
+use App\Helper\VariableHelper;
 
 class BiayaOperasionalController extends Controller
 {
@@ -13,7 +18,23 @@ class BiayaOperasionalController extends Controller
      */
     public function index()
     {
-        //
+        $data = DB::table('kendaraan as a')
+            ->leftJoin('karyawan as b', 'a.driver_id', '=', 'b.id')
+            ->leftJoin('cabang_pje as c', 'a.cabang_id', '=', 'c.id')
+            ->where('a.is_aktif', '=', "Y")
+            ->select('a.*', 'b.nama_lengkap','c.nama as cabangPje')
+            ->get();
+        
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+
+            return view('pages.finance.biaya_operasional.index',[
+            'judul' => "Biaya Operasional",
+            'data' => $data,
+        ]);
     }
 
     /**
