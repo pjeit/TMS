@@ -202,8 +202,8 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                @foreach ($dataOpreasional as $item)
-                                    <tr id="0">
+                                @foreach ($dataOpreasional as $key => $value)
+                                    <tr id="{{$key}}">
                                         <td>
                                             {{-- <div class="btn-group">
                                                 <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -215,30 +215,32 @@
                                             </div> --}}
                                             {{-- <input type="checkbox" class="checkitem" name="checkbox_seal" id="thc_cekbox"> --}}
                                             <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkboxPrimary_0" >
-                                                <label for="checkboxPrimary_0"></label>
+                                                <input type="checkbox" id="checkboxPrimary_{{$key}}" >
+                                                <label for="checkboxPrimary_{{$key}}"></label>
                                             </div>
                                             
                                         </td>
-                                        <td id="sewa_reimburse_id_0" hidden="">1161</td>
-                                        <td id="deskripsi_0">PLASTIK</td>
-                                        <td style=" white-space: nowrap; text-align:right;" id="total_reimburse_0">
-                                                <input type="text" name="nominal" id="nominal" value="50000" class="form-control uang numaja" readonly>
+                                        <td id="sewa_reimburse_id_{{$key}}" hidden="">
+                                            <input type="hidden" name="id_sewa_operasional[{{$key}}]" value="">
                                         </td>
-                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_0">
+                                        <td id="deskripsi_{{$key}}">PLASTIK</td>
+                                        <td style=" white-space: nowrap; text-align:right;" id="total_reimburse_{{$key}}">
+                                                <input type="text" name="nominal[{{$key}}]" id="nominal_{{$key}}" value="50000" class="form-control uang numaja" readonly>
+                                        </td>
+                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_{{$key}}">
                                             <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkTagih" >
-                                                <label for="checkTagih"></label>
+                                                <input type="checkbox" id="checkTagih_{{$key}}" >
+                                                <label for="checkTagih_{{$key}}"></label>
                                             </div>
                                         </td>
-                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_0">
+                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_{{$key}}">
                                             <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkPisah" >
-                                                <label for="checkPisah"></label>
+                                                <input type="checkbox" id="checkPisah_{{$key}}" >
+                                                <label for="checkPisah_{{$key}}"></label>
                                             </div>
                                         </td>
-                                        <td id="catatan_0">
-                                            <input type="text" name="nominal" id="nominal" value="" class="form-control">
+                                        <td id="catatan_{{$key}}">
+                                            <input type="text" name="nominal[{{$key}}]" id="nominal_{{$key}}" value="" class="form-control">
                                         </td>
                                     </tr>
                                 @endforeach
