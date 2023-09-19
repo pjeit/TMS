@@ -119,16 +119,16 @@
                     var data = response.data;
                         $("#hasil").html(" ");
 
-                        var nyimpenIdBapakJO = null;
+                        var JO = null;
                         for (var i = 0; i < data.length; i++) {
-                            if (data[i].id_jo !== nyimpenIdBapakJO) {
+                            if (data[i].id_jo !== JO) {
                                 var row = $("<tr></tr>");
                                 row.append("<td colspan='4' style='background: #efefef'>" + "No. JO : " + data[i].no_jo + "<br> No. BL : " + data[i].no_bl + "</td>");
                                 row.append(`<td style='background: #efefef'> <a class="btn btn-sm btn-primary radiusSendiri" href="{!! url('/pembayaran_sdt/${data[i].id_jo}/edit') !!}">
                                     <i class="fas fa-dollar-sign"> </i> <span class="fa fa-reply-all" ></span> 
                                     </a> </td>`)
                                 $("#hasil").append(row);
-                                nyimpenIdBapakJO = data[i].id_jo;
+                                JO = data[i].id_jo;
                             }
 
                             var row = $("<tr></tr>");
