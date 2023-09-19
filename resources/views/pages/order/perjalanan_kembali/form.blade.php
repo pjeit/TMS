@@ -245,7 +245,7 @@
                                            
                                         </td>
                                         <td id="sewa_reimburse_id_0" hidden="">1161</td>
-                                        <td id="deskripsi_0">SEAL</td>
+                                        <td id="deskripsi_0">PLASTIK</td>
                                         <td style=" white-space: nowrap; text-align:right;" id="total_reimburse_0">
                                              <input type="text" name="nominal" id="nominal" value="50000" class="form-control uang numaja" readonly>
                                         </td>
@@ -283,7 +283,7 @@
                                            
                                         </td>
                                         <td id="sewa_reimburse_id_0" hidden="">1161</td>
-                                        <td id="deskripsi_1">SEAL</td>
+                                        <td id="deskripsi_1">TALLY</td>
                                         <td style=" white-space: nowrap; text-align:right;" id="total_reimburse_0">
                                              <input type="text" name="nominal" id="nominal" value="50000" class="form-control uang numaja" readonly>
                                         </td>

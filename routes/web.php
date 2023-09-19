@@ -123,7 +123,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('truck_order', 'App\Http\Controllers\SewaController');
         Route::resource('truck_order_rekanan', 'App\Http\Controllers\SewaRekananController');
 
-        Route::post('biaya_operasional/load_data', 'App\Http\Controllers\BiayaOperasionalController@load_data')->name('biaya_operasional.load_data');
+        Route::get('biaya_operasional/load_data', 'App\Http\Controllers\BiayaOperasionalController@load_data')->name('biaya_operasional.load_data');
+        // Route::get('biaya_operasional/load_data/', [App\Http\Controllers\BiayaOperasionalController::class, 'index']);
+
         Route::resource('biaya_operasional', 'App\Http\Controllers\BiayaOperasionalController');
 
         Route::get('/pencairan_uang_jalan_ftl/getDatasewaDetail/{id}', [App\Helper\SewaDataHelper::class, 'getDatasewaDetail'])->name('getDatasewaDetail.get');

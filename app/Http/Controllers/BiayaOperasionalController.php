@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
 use App\Models\JobOrder;
 use App\Models\JobOrderDetail;
+use App\Models\SewaOperasional;
 
 class BiayaOperasionalController extends Controller
 {
@@ -63,7 +64,15 @@ class BiayaOperasionalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->post();
+        var_dump($data); die;
+
+        foreach ($data['data'][$data['item']] as $key => $value) {
+            $sewa_o = new SewaOperasional();
+            $sewa_o->id_sewa = $key;
+            $sewa_o->deskripsi = $data['item'];
+        }
+        die;
     }
 
     /**
@@ -111,10 +120,10 @@ class BiayaOperasionalController extends Controller
         //
     }
 
-    public function load_data(Request $request){
+    public function load_data(){
         try {
-            $data = $request->collect();
-            $item  = $data['item'];
+            // $data = $request->collect();
+            // $item  = $data['item'];
             $dataJO = JobOrder::from('job_order AS jo')
                     ->leftJoin('job_order_detail AS jod', function($join) {
                         $join->on('jo.id', '=', 'jod.id_jo')
@@ -134,11 +143,12 @@ class BiayaOperasionalController extends Controller
                             DB::raw('COALESCE(gt.tally, 0) as tally'), 
                             DB::raw('COALESCE(gt.plastik, 0) as plastik'))
                     ->orderBy('jo.id_customer', 'asc')
+                    ->orderBy('jod.id_jo', 'asc')
                     ->get();
 
             return response()->json(["result" => "success",'data' => $dataJO], 200);
         } catch (\Throwable $th) {
-            return response()->json(["result" => "error",'message' => $th->getMessage()], 500);
+            return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
         }
        
     }
