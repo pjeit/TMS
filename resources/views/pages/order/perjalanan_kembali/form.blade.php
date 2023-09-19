@@ -28,7 +28,7 @@
             </div>
         @endforeach
     @endif
-    <form action="{{ route('perjalanan_kembali.store',[$sewa->id_sewa]) }}" id="post_data" method="POST" >
+    <form action="{{ route('perjalanan_kembali.update',[$sewa->id_sewa]) }}" id="post_data" method="POST" >
       @csrf
 
         <div class="row m-2">
@@ -36,14 +36,14 @@
             <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
-                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         <a href="{{ route('perjalanan_kembali.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                        <span style="font-size:11pt;" class="badge bg-dark float-right m-2">{{$sewa->jenis_order}} ORDER</span>
+                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                        <span style="font-size:11pt;" class="badge bg-dark float-right m-2">{{$sewa->jenis_order}} ORDER {{$sewa->jenis_tujuan}}</span>
                     </div>
                     <div class="card-body" >
                         {{-- <div class="d-flex" style="gap: 20px;width:100%;"> --}}
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-6" style=" border-right: 1px solid rgb(172, 172, 172);">
                                    <div class="form-group ">
                                        <label for="tanggal_pencairan">Tanggal Berangkat<span style="color:red">*</span></label>
                                        <div class="input-group mb-0">
@@ -95,132 +95,95 @@
                                        
                                         <div class="form-group">
                                             <label for="no_akun">No. Kontainer</label>
-                                            <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" {{$sewa->no_kontainer?'readonly':''}} value="{{$sewa->no_kontainer}}" >                         
+                                            @if ($sewa->no_kontainer_jod)
+                                                <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$sewa->no_kontainer_jod}}" >                         
+                                            @else
+                                                <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" value="{{$sewa->no_kontainer}}" >                         
+
+                                            @endif
                                         </div> 
+                                       
                                         <div class="form-group">
                                             <label for="tanggal_pencairan">Tgl. Kembali Surat Jalan<span style="color:red">*</span></label>
                                             <div class="input-group mb-0">
                                                 <div class="input-group-prepend">
-                                                     <span class="input-group-text"><input type="checkbox" name="cekTglKembali" id="cekTglKembali"></span>
-                                                    
+                                                     <span class="input-group-text"><input {{$sewa->is_kembali=='N'?'':'checked'}} type="checkbox" name="check_is_kembali" id="check_is_kembali"></span>
                                                 </div>
-                                                <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="">
+                                                <input type="hidden" id="is_kembali" name='is_kembali' value="{{$sewa->is_kembali}}">
+                                                <input {{$sewa->is_kembali=='N'?'disabled':''}} type="text" autocomplete="off" name="tanggal_kembali" class="form-control date" id="tanggal_kembali" placeholder="dd-M-yyyy" value="{{$sewa->is_kembali=='Y'?\Carbon\Carbon::parse($sewa->tanggal_kembali)->format('d-M-Y'):''}}">
                                             </div>
                                         </div> 
         
                                         <div class="form-group">
                                             <label for="no_akun">No. Surat Jalan</label>
-                                            <input type="text" id="surat_jalan" name="surat_jalan" class="form-control" value="" >                         
+                                            <input type="text" id="surat_jalan" name="surat_jalan" class="form-control" value="{{$sewa->no_surat_jalan}}" >                         
                                         </div> 
                                         <input type="hidden" name="id_jo_detail_hidden" id="id_jo_detail_hidden" value="{{$sewa->id_jo_detail}}">
-        
                                         <input type="hidden" name="add_cost_hidden" id="add_cost_hidden">
+                                        <input type="hidden" id='jenis_tujuan' value='{{$sewa->jenis_tujuan}}'>
 
                                         
-                                        <div class="row">
+                                        <div class="row" name="div_segel" id="div_segel">
                                             <div class="form-group col-6">
-                                                <label for="no_akun">Seal</label>
-                                                <input type="text" id="seal" name="seal" class="form-control"value="" >                         
+                                                <label for="seal">Seal</label>
+                                                @if ($sewa->seal_pelayaran_jod)
+                                                    <input readonly type="text" id="seal" name="seal" class="form-control"value="{{$sewa->seal_pelayaran_jod}}" >
+                                                @else
+                                                    <input type="text" id="seal" name="seal" class="form-control"value="{{$sewa->seal_pelayaran}}" >
+                                                @endif
                                             </div> 
             
                                             <div class="form-group col-6">
-                                                <label for="tanggal_pencairan">Seal PJE<span style="color:red">*</span></label>
+                                                <label for="seal_pje">Seal PJE<span style="color:red">*</span></label>
                                                 <div class="input-group mb-0">
                                                     <div class="input-group-prepend">
-                                                            <span class="input-group-text"><input type="checkbox" name="cek_seal_pje" id="cek_seal_pje"></span>
+                                                            <span class="input-group-text"><input {{$sewa->seal_pje?'checked':''}}type="checkbox" name="cek_seal_pje" id="cek_seal_pje"></span>
                                                     </div>
-                                                    <input disabled type="text"  name="seal_pje" class="form-control" id="seal_pje" value="">
+                                                <input readonly {{$sewa->seal_pje?'':'readonly'}}type="text" name="seal_pje" class="form-control" id="seal_pje" value="{{$sewa->seal_pje}}">
                                                 </div>
                                             </div> 
+                                        </div>
+
+                                        <div class="row" name="lcl_selected" id="lcl_selected" >
+                                            <div class="col-4 col-md-12 col-lg-4">
+                                                <label for="muatan_ltl">Jumlah Muatan<span style="color:red;">*</span></label>
+                                                <div class="form-group">
+                                                    <div class="input-group mb-3">
+                                                        <input readonly type="text" class="form-control numajaCheckDesimal" name="muatan_ltl"
+                                                            id="muatan_ltl">
+                                                        <div class="input-group-append">
+                                                            <div class="input-group-text">Kg</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-8 col-md-12 col-lg-8">
+                                                <label for="total_harga_lcl">Total Harga</label>
+                                                <div class="form-group">
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">Rp.</span>
+                                                        </div>
+                                                        <input type="text" class="form-control numaja uang" name="total_harga_lcl"
+                                                            id="total_harga_lcl" readonly>
+                                                        <input type="hidden" id="min_muatan"
+                                                            value='{{isset($sewa->min_muatan)?$sewa->min_muatan:''}}'>
+                                                        <input type="hidden" id="harga_per_kg"
+                                                            value='{{isset($sewa->harga_per_kg)?$sewa->harga_per_kg:''}} '>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
     
                                       
                                    
                                </div>
                             </div>
-                            {{-- <div class="row">
-
-
-                            </div> --}}
-                        {{-- </div> --}}
+                          
                     </div>
                 </div> 
             </div>
-        {{-- <div class="col-12">
-                <div class="card radiusSendiri">
-                    <div class="card-header">
-                        <h3 class="card-title">Foto</h3>
-                    </div>
-                    <input type="hidden" name="default_foto_kontainer" id="default_foto_kontainer" value="">
-                    <input type="hidden" name="default_foto_surat_jalan" id="default_foto_surat_jalan" value="">
-                    <input type="hidden" name="default_foto_segel_pelayaran_1" id="default_foto_segel_pelayaran_1" value="">
-                    <input type="hidden" name="default_foto_segel_pelayaran_2" id="default_foto_segel_pelayaran_2" value="">
-                    <input type="hidden" name="default_foto_segel_pje" id="default_foto_segel_pje" value="">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col-lg-2 col-md-6 mx-auto" name="div_foto_kontainer" id="div_foto_kontainer">
-                                    <div class="form-group text-center">
-                                        <a href="#" class="pop">
-                                            <img src="{{asset('img/foto_default.jpg')}}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_kontainer">
-                                        </a>
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input form-control" id="foto_kontainer" name="foto_kontainer" accept="image/jpeg" value="" hidden="">
-                                            <label class="btn btn-primary" for="foto_kontainer" style="text-align: center">Pilih
-                                                Foto Kontainer</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-6 mx-auto" name="div_foto_surat_jalan" id="div_foto_surat_jalan">
-                                    <div class="form-group text-center">
-                                        <a href="#" class="pop">
-                                            <img src="{{asset('img/foto_default.jpg')}}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_surat_jalan">
-                                        </a>
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input form-control" id="foto_surat_jalan" name="foto_surat_jalan" accept="image/jpeg" value="" hidden="">
-                                            <label class="btn btn-primary" for="foto_surat_jalan" style="text-align: center">Pilih Foto Surat Jalan</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-6 mx-auto" name="div_foto_segel_pelayaran_1" id="div_foto_segel_pelayaran_1">
-                                    <div class="form-group text-center">
-                                        <a href="#" class="pop">
-                                            <img src="{{asset('img/foto_default.jpg')}}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_pelayaran_1">
-                                        </a>
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input form-control" id="foto_segel_pelayaran_1" name="foto_segel_pelayaran_1" accept="image/jpeg" value="" hidden="">
-                                            <label class="btn btn-primary" for="foto_segel_pelayaran_1" style="text-align: center">Pilih Foto Segel Pelayaran 1</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-6 mx-auto" name="div_foto_segel_pelayaran_2" id="div_foto_segel_pelayaran_2">
-                                    <div class="form-group text-center">
-                                        <a href="#" class="pop">
-                                            <img src="{{asset('img/foto_default.jpg')}}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_pelayaran_2">
-                                        </a>
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input form-control" id="foto_segel_pelayaran_2" name="foto_segel_pelayaran_2" accept="image/jpeg" value="" hidden="">
-                                            <label class="btn btn-primary" for="foto_segel_pelayaran_2" style="text-align: center">Pilih Foto Segel Pelayaran 2</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-12 mx-auto" name="div_foto_segel_pje" id="div_foto_segel_pje">
-                                    <div class="form-group text-center">
-                                        <a href="#" class="pop">
-                                            <img src="{{asset('img/foto_default.jpg')}}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_segel_pje">
-                                        </a>
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input form-control" id="foto_segel_pje" name="foto_segel_pje" accept="image/jpeg" value="" hidden="">
-                                            <label class="btn btn-primary" for="foto_segel_pje" style="text-align: center">Pilih
-                                                Foto Segel PJE</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>--}}
+   
             <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-body">
@@ -238,8 +201,8 @@
                                     <th>Catatan</th>
                                 </tr>
                               </thead>
-                              <tbody > 
-                                <tbody>
+                              <tbody>
+                                @foreach ($dataOpreasional as $item)
                                     <tr id="0">
                                         <td>
                                             {{-- <div class="btn-group">
@@ -252,15 +215,15 @@
                                             </div> --}}
                                             {{-- <input type="checkbox" class="checkitem" name="checkbox_seal" id="thc_cekbox"> --}}
                                             <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkboxPrimary1" >
-                                                <label for="checkboxPrimary1"></label>
+                                                <input type="checkbox" id="checkboxPrimary_0" >
+                                                <label for="checkboxPrimary_0"></label>
                                             </div>
-                                           
+                                            
                                         </td>
                                         <td id="sewa_reimburse_id_0" hidden="">1161</td>
                                         <td id="deskripsi_0">SEAL</td>
                                         <td style=" white-space: nowrap; text-align:right;" id="total_reimburse_0">
-                                             <input type="text" name="nominal" id="nominal" value="50000" class="form-control uang numaja" readonly>
+                                                <input type="text" name="nominal" id="nominal" value="50000" class="form-control uang numaja" readonly>
                                         </td>
                                         <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_0">
                                             <div class="icheck-primary d-inline">
@@ -275,49 +238,10 @@
                                             </div>
                                         </td>
                                         <td id="catatan_0">
-                                             <input type="text" name="nominal" id="nominal" value="" class="form-control">
+                                            <input type="text" name="nominal" id="nominal" value="" class="form-control">
                                         </td>
                                     </tr>
-                                      <tr id="1">
-                                        <td>
-                                            {{-- <div class="btn-group">
-                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                </button>
-                                                <ul class="dropdown-menu" style="">
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail(0)"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail(0)"><span class="fas fa-eraser" style="width:24px"></span>Hapus</a></li>
-                                                </ul>
-                                            </div> --}}
-                                            {{-- <input type="checkbox" class="checkitem" name="checkbox_seal" id="thc_cekbox"> --}}
-                                            <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkboxPrimary1" >
-                                                <label for="checkboxPrimary1"></label>
-                                            </div>
-                                           
-                                        </td>
-                                        <td id="sewa_reimburse_id_0" hidden="">1161</td>
-                                        <td id="deskripsi_1">SEAL</td>
-                                        <td style=" white-space: nowrap; text-align:right;" id="total_reimburse_0">
-                                             <input type="text" name="nominal" id="nominal" value="50000" class="form-control uang numaja" readonly>
-                                        </td>
-                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_0">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkTagih_1" >
-                                                <label for="checkTagih_1"></label>
-                                            </div>
-                                        </td>
-                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_0">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkPisah_1" >
-                                                <label for="checkPisah_1"></label>
-                                            </div>
-                                        </td>
-                                        <td id="catatan_0">
-                                             <input type="text" name="nominal" id="nominal" value="" class="form-control">
-                                        </td>
-                                    </tr>
-                            
-                                 
+                                @endforeach
                                 
                               </tbody>
                               <tfoot>
@@ -334,41 +258,7 @@
  
     </form>
 <script type="text/javascript">
-        // function hitung_total(){
-        //     if($('#uang_jalan').val()!=''){
-        //         var total_uang_jalan=removePeriod($('#uang_jalan').val(),',');
-        //     }else{
-        //         var total_uang_jalan=0;
-        //     }
-            
-        //     if($('#potong_hutang').val()!=''){
-        //         var potong_hutang=removePeriod($('#potong_hutang').val(),',');
-        //     }else{
-        //         var potong_hutang=0;
-        //     }
-            
-        //     var total_diterima=parseFloat(total_uang_jalan)-parseFloat(potong_hutang);
-        //     if(total_diterima!=0){
-        //         $('#total_diterima').val(addPeriodType(total_diterima,','));
-        //     }else{
-        //         $('#total_diterima').val('');
-        //     }
-        // }
-   
-        // function cek_potongan_hutang(){
-        //     if($('#total_hutang').val()!=''){
-        //         var total_hutang =removePeriod($('#total_hutang').val(),',');
-        //     }else{
-        //         var total_hutang =0;
-        //     }
-            
-        //     var potong_hutang = removePeriod($('#potong_hutang').val(),',');
-        //     if(parseFloat(potong_hutang)>parseFloat(total_hutang)){
-        //         $('#potong_hutang').val(addPeriodType(total_hutang,','));
-        //     }else{
-        //         $('#potong_hutang').val(addPeriodType(potong_hutang,','));
-        //     }
-        // }
+    
         function ubahTanggal(dateString) {
             var dateObject = new Date(dateString);
             var day = dateObject.getDate();
@@ -378,77 +268,119 @@
             return day + '-' + month + '-' + year;
         }
 
+        
+
 
     $(document).ready(function() {
-
         // console.log($('#select_sewa').val());
         
+        $('#tanggal_kembali').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language:'en',
+            endDate: "0d"
+        });
+        $('#muatan_ltl').keyup(function(e) {
+            let muatan = e.target.value;
+            const temp = muatan.split(".");
+            muatan = parseFloat(muatan);
+            if(temp.length > 1 ){
+                if(temp[1].length > 2){
+                    console.log(parseFloat(muatan.toFixed(2)));
+                    $('#muatan_ltl').val(muatan.toFixed(2));
+                }
+            }
+
+            let total_harga = hitung_total_harga_dari_muatan(muatan.toFixed(2));
+            $('#total_harga_lcl').val(total_harga);
+
+        });
+        if ($('#jenis_tujuan').val() != "LTL") {
+            $('#lcl_selected').css('display', 'none');
+            $('#div_segel').show();
+        } else {
+            $('#lcl_selected').css('display', '');
+            $('#div_segel').hide();
+            // $('#div_foto_segel_pelayaran_1').hide();
+            // $('#div_foto_segel_pelayaran_2').hide();
+            // $('#div_foto_segel_pje').hide();
+        }
+
         function getDate(){
             var today = new Date();
             // var tomorrow = new Date(today);
             // tomorrow.setDate(today.getDate()+1);
 
-            $('#tanggal_pencairan').datepicker({
+            //  $('#tanggal_kembali').datepicker({
+            //     autoclose: true,
+            //     format: "dd-M-yyyy",
+            //     todayHighlight: true,
+            //     language:'en',
+            //     endDate: "0d"
+            // });
+
+            $('#tanggal_kembali').datepicker({
                 autoclose: true,
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language: 'en',
                 startDate: today,
             }).datepicker("setDate", today);
-
-            $('#tanggal_pencatatan').datepicker({
-                autoclose: true,
-                format: "dd-M-yyyy",
-                todayHighlight: true,
-                language: 'en',
-                startDate: today,
-            }).datepicker("setDate", today);
-
-            
         }
-       
-        // function getDetailSewa(id){
-        //     var baseUrl = "{{ asset('') }}";
+        function get_date_now(){
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.toLocaleString('default', { month: 'short' })).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            today = dd + '-' + mm + '-' + yyyy;
+            return today;
+        }
+         $('#check_is_kembali').click(function() {
+            if ($(this).is(":checked")) {
 
-        //      $.ajax({
-        //         url: `${baseUrl}pencairan_uang_jalan_ftl/getDatasewaDetail/${id}`, 
-        //         method: 'GET', 
-        //         success: function(response) {
-        //             if(response)
-        //             {
-        //                 var dataSewaDetail = response.sewaDetail;
-        //                 var dataHutangKaryawan =  response.hutangKaryawan;
-
-
-        //                 $('#tanggal_berangkat').val( ubahTanggal(dataSewaDetail.tanggal_berangkat));
-        //                 $('#customer').val(dataSewaDetail.nama_cust);
-        //                 $('#tujuan').val(dataSewaDetail.nama_tujuan);
-        //                 $('#id_karyawan').val(dataSewaDetail.id_karyawan);
+                $('#is_kembali').val('Y');
+                $('#tanggal_kembali').attr('disabled', false);
+                $('#muatan_ltl').attr('readonly', false);
+                // getDate();
+                $('#tanggal_kembali').val(get_date_now());
 
 
-        //                 $('#kendaraan').val(dataSewaDetail.no_polisi);
-        //                 $('#driver').val(dataSewaDetail.supir);
-        //                 $('#total_hutang').val(addPeriodType(dataHutangKaryawan.total_hutang,','));
-        //                 $('#uang_jalan').val(addPeriodType(dataSewaDetail.total_uang_jalan,','));
+            } else if ($(this).is(":not(:checked)")) {
 
+                $('#is_kembali').val('N');
+                $('#muatan_ltl').attr('readonly', true);
+                $('#tanggal_kembali').attr('disabled', true);
+                $('#tanggal_kembali').val('');
+            }
+        });
 
-        //                 cek_potongan_hutang();
-        //                 hitung_total();
-        //                 console.log(response);
+        if ($('#check_is_kembali').is(":checked")) {
 
-        //             }
-        //             // else
-        //             // {
+            $('#is_kembali').val('Y');
+            $('#tanggal_kembali').attr('disabled', false);
+            $('#muatan_ltl').attr('readonly', false);
+            // getDate();
+            $('#tanggal_kembali').val(get_date_now());
 
-        //             // }
+        };
+
+        $('#cek_seal_pje').click(function() {
+            if ($(this).is(":checked")) {
+
+                $('#seal_pje').prop('readonly', false);
+          
+            } else if ($(this).is(":not(:checked)")) {
         
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error('Error:', error);
-        //         }
-        //     });
-        // }
-        // getDetailSewa($('#id_sewa_defaulth').val())
+                $('#seal_pje').prop('readonly', true);
+            }
+        });
+        if ($('#cek_seal_pje').is(":checked")) {
+
+            $('#seal_pje').prop('readonly', false);
+
+        };
+       
         var baseUrl = "{{ asset('') }}";
         var array_add_cost = [];
         $.ajax({
@@ -498,7 +430,7 @@
             }
         });
 
-        getDate();
+        // getDate();
         
 
         // hitung_total();
@@ -507,11 +439,7 @@
         //     allowClear: true,
         //     minimumInputLength:0
         // })
-        $('body').on('change','#select_sewa',function()
-		{
-            var selectedValue = $(this).val();
-            getDetailSewa(selectedValue);
-		});
+       
       
         $('#post_data').submit(function(event) {
             var kas = $('#pembayaran').val();
