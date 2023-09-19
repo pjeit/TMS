@@ -33,11 +33,12 @@
 
         <div class="row m-2">
         
-            <div class="col">
+            <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         <a href="{{ route('perjalanan_kembali.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                        <span style="font-size:11pt;" class="badge bg-dark float-right m-2">{{$sewa->jenis_order}} ORDER</span>
                     </div>
                     <div class="card-body" >
                         <div class="d-flex" style="gap: 20px">
@@ -102,6 +103,10 @@
                                     <input type="hidden" name="id_karyawan" id="id_karyawan">                    
                                 </div> 
                                 {{-- @endif --}}
+                                  <div class="form-group col-12">
+                                    <label for="no_akun">No. Kontainer</label>
+                                    <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" {{$sewa->no_kontainer?'readonly':''}} value="{{$sewa->no_kontainer}}" >                         
+                                </div> 
                                 <div class="form-group col-12">
                                     <label for="tanggal_pencairan">Tgl. Kembali Surat Jalan<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
@@ -113,10 +118,7 @@
                                     </div>
                                 </div> 
 
-                                <div class="form-group col-12">
-                                    <label for="no_akun">No. Kontainer</label>
-                                    <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" {{$sewa->no_kontainer?'readonly':''}} value="{{$sewa->no_kontainer}}" >                         
-                                </div> 
+                              
 
                                 <div class="form-group col-12">
                                     <label for="no_akun">No. Surat Jalan</label>
@@ -131,7 +133,7 @@
                     </div>
                 </div> 
             </div>
-            <div class="col-12">
+        {{-- <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
                         <h3 class="card-title">Foto</h3>
@@ -205,8 +207,117 @@
                         </div>
                     </div>
                 </div>
+            </div>--}}
+            <div class="col-12">
+                <div class="card radiusSendiri">
+                    <div class="card-body">
+                        <table class="table table-bordered card-outline card-primary " id="sortable" >
+                              <thead>
+                                  <tr>
+                                      <th colspan="6">COST/INAP</th>
+                                  </tr>
+                                <tr>
+                                    <th style="width: 30px;"></th>
+                                    <th >Deskripsi</th>
+                                    <th>Jumlah</th>
+                                    <th >Ditagihkan</th>
+                                    <th>Dipisahkan</th>
+                                    <th>Catatan</th>
+                                </tr>
+                              </thead>
+                              <tbody > 
+                                <tbody>
+                                    <tr id="0">
+                                        <td>
+                                            {{-- <div class="btn-group">
+                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                </button>
+                                                <ul class="dropdown-menu" style="">
+                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail(0)"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail(0)"><span class="fas fa-eraser" style="width:24px"></span>Hapus</a></li>
+                                                </ul>
+                                            </div> --}}
+                                            {{-- <input type="checkbox" class="checkitem" name="checkbox_seal" id="thc_cekbox"> --}}
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="checkboxPrimary1" >
+                                                <label for="checkboxPrimary1"></label>
+                                            </div>
+                                           
+                                        </td>
+                                        <td id="sewa_reimburse_id_0" hidden="">1161</td>
+                                        <td id="deskripsi_0">SEAL</td>
+                                        <td style=" white-space: nowrap; text-align:right;" id="total_reimburse_0">
+                                             <input type="text" name="nominal" id="nominal" value="50000" class="form-control uang numaja" readonly>
+                                        </td>
+                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_0">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="checkTagih" >
+                                                <label for="checkTagih"></label>
+                                            </div>
+                                        </td>
+                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_0">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="checkPisah" >
+                                                <label for="checkPisah"></label>
+                                            </div>
+                                        </td>
+                                        <td id="catatan_0">
+                                             <input type="text" name="nominal" id="nominal" value="" class="form-control">
+                                        </td>
+                                    </tr>
+                                      <tr id="1">
+                                        <td>
+                                            {{-- <div class="btn-group">
+                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                </button>
+                                                <ul class="dropdown-menu" style="">
+                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail(0)"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail(0)"><span class="fas fa-eraser" style="width:24px"></span>Hapus</a></li>
+                                                </ul>
+                                            </div> --}}
+                                            {{-- <input type="checkbox" class="checkitem" name="checkbox_seal" id="thc_cekbox"> --}}
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="checkboxPrimary1" >
+                                                <label for="checkboxPrimary1"></label>
+                                            </div>
+                                           
+                                        </td>
+                                        <td id="sewa_reimburse_id_0" hidden="">1161</td>
+                                        <td id="deskripsi_1">SEAL</td>
+                                        <td style=" white-space: nowrap; text-align:right;" id="total_reimburse_0">
+                                             <input type="text" name="nominal" id="nominal" value="50000" class="form-control uang numaja" readonly>
+                                        </td>
+                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_0">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="checkTagih_1" >
+                                                <label for="checkTagih_1"></label>
+                                            </div>
+                                        </td>
+                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_0">
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="checkPisah_1" >
+                                                <label for="checkPisah_1"></label>
+                                            </div>
+                                        </td>
+                                        <td id="catatan_0">
+                                             <input type="text" name="nominal" id="nominal" value="" class="form-control">
+                                        </td>
+                                    </tr>
+                            
+                                 
+                                
+                              </tbody>
+                              <tfoot>
+                              </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+                
             </div>
-        </div>
+           
+        </div> 
+         
  
     </form>
 <script type="text/javascript">
