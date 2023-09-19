@@ -44,23 +44,6 @@
                         {{-- <div class="d-flex" style="gap: 20px;width:100%;"> --}}
                             <div class="row">
                                 <div class="col-6">
-                                    {{-- <div class="form-group col-12">
-                                       Data Sewa
-                                    <hr>
-   
-                                   </div> --}}
-                                
-                                   {{-- <div class="form-group col-6">
-                                       <label for="tanggal_pencairan">Tanggal Pencatatan<span style="color:red">*</span></label>
-                                       <div class="input-group mb-0">
-                                           <div class="input-group-prepend">
-                                           <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                           </div>
-                                           <input disabled type="text" autocomplete="off" name="tanggal_pencatatan" class="form-control date" id="tanggal_pencatatan" placeholder="dd-M-yyyy" value="">
-                                       </div>
-                                   </div>     --}}
-                           
-   
                                    <div class="form-group ">
                                        <label for="tanggal_pencairan">Tanggal Berangkat<span style="color:red">*</span></label>
                                        <div class="input-group mb-0">
@@ -86,22 +69,6 @@
                                        <input type="text" id="catatan" name="catatan" class="form-control" value="{{$sewa->catatan}}" >                         
                                    </div> 
 
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label for="no_akun">Seal</label>
-                                            <input type="text" id="seal" name="seal" class="form-control"value="" >                         
-                                        </div> 
-        
-                                        <div class="form-group col-6">
-                                            <label for="tanggal_pencairan">Seal PJE<span style="color:red">*</span></label>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                        <span class="input-group-text"><input type="checkbox" name="cek_seal_pje" id="cek_seal_pje"></span>
-                                                </div>
-                                                <input disabled type="text"  name="seal_pje" class="form-control" id="seal_pje" value="">
-                                            </div>
-                                        </div> 
-                                    </div>
 
                                 </div>
                                 <div class="col-6">
@@ -148,6 +115,24 @@
                                         <input type="hidden" name="id_jo_detail_hidden" id="id_jo_detail_hidden" value="{{$sewa->id_jo_detail}}">
         
                                         <input type="hidden" name="add_cost_hidden" id="add_cost_hidden">
+
+                                        
+                                        <div class="row">
+                                            <div class="form-group col-6">
+                                                <label for="no_akun">Seal</label>
+                                                <input type="text" id="seal" name="seal" class="form-control"value="" >                         
+                                            </div> 
+            
+                                            <div class="form-group col-6">
+                                                <label for="tanggal_pencairan">Seal PJE<span style="color:red">*</span></label>
+                                                <div class="input-group mb-0">
+                                                    <div class="input-group-prepend">
+                                                            <span class="input-group-text"><input type="checkbox" name="cek_seal_pje" id="cek_seal_pje"></span>
+                                                    </div>
+                                                    <input disabled type="text"  name="seal_pje" class="form-control" id="seal_pje" value="">
+                                                </div>
+                                            </div> 
+                                        </div>
     
                                       
                                    
