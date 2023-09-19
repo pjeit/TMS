@@ -193,7 +193,7 @@
                                       <th colspan="6">COST/INAP</th>
                                   </tr>
                                 <tr>
-                                    <th style="width: 30px;"></th>
+                                    {{-- <th style="width: 30px;"></th> --}}
                                     <th >Deskripsi</th>
                                     <th>Jumlah</th>
                                     <th >Ditagihkan</th>
@@ -202,48 +202,43 @@
                                 </tr>
                               </thead>
                               <tbody>
-                                @foreach ($dataOpreasional as $key => $value)
-                                    <tr id="{{$key}}">
-                                        <td>
-                                            {{-- <div class="btn-group">
-                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                                </button>
-                                                <ul class="dropdown-menu" style="">
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="open_detail(0)"><span class="fas fa-edit" style="width:24px"></span>Ubah</a></li>
-                                                    <li><a class="dropdown-item" href="javascript:void(0)" onclick="delete_detail(0)"><span class="fas fa-eraser" style="width:24px"></span>Hapus</a></li>
-                                                </ul>
-                                            </div> --}}
-                                            {{-- <input type="checkbox" class="checkitem" name="checkbox_seal" id="thc_cekbox"> --}}
-                                            <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkboxPrimary_{{$key}}" >
-                                                <label for="checkboxPrimary_{{$key}}"></label>
-                                            </div>
-                                            
-                                        </td>
-                                        <td id="sewa_reimburse_id_{{$key}}" hidden="">
-                                            <input type="hidden" name="id_sewa_operasional[{{$key}}]" value="">
-                                        </td>
-                                        <td id="deskripsi_{{$key}}">PLASTIK</td>
-                                        <td style=" white-space: nowrap; text-align:right;" id="total_reimburse_{{$key}}">
-                                                <input type="text" name="nominal[{{$key}}]" id="nominal_{{$key}}" value="50000" class="form-control uang numaja" readonly>
-                                        </td>
-                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_{{$key}}">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkTagih_{{$key}}" >
-                                                <label for="checkTagih_{{$key}}"></label>
-                                            </div>
-                                        </td>
-                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_{{$key}}">
-                                            <div class="icheck-primary d-inline">
-                                                <input type="checkbox" id="checkPisah_{{$key}}" >
-                                                <label for="checkPisah_{{$key}}"></label>
-                                            </div>
-                                        </td>
-                                        <td id="catatan_{{$key}}">
-                                            <input type="text" name="nominal[{{$key}}]" id="nominal_{{$key}}" value="" class="form-control">
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                @if (isset($dataOpreasional))
+                                    @foreach ($dataOpreasional as $key => $value)
+                                        <tr id="{{$key}}">
+                                            {{-- <td>
+                                                <div class="icheck-primary d-inline">
+                                                    <input type="checkbox" id="checkboxPrimary_{{$key}}" >
+                                                    <label for="checkboxPrimary_{{$key}}"></label>
+                                                </div>
+                                                
+                                            </td> --}}
+                                            <td id="id_sewa_operasional_tabel_{{$key}}" hidden="">
+                                                <input type="hidden" id="id_sewa_operasional_data{{$key}}" name="id_sewa_operasional_data[{{$key}}]" value="{{$value->id}}">
+                                            </td>
+                                            <td id="deskripsi_tabel_{{$key}}">
+                                                    <input type="text" name="deskripsi_data[{{$key}}]" id="deskripsi_data{{$key}}" value="{{$value->deskripsi}}" class="form-control uang numaja" readonly>
+                                            </td>
+                                            <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$key}}">
+                                                    <input type="text" name="nominal_data[{{$key}}]" id="nominal_data{{$key}}" value="{{number_format($value->total_operasional,2) }}" class="form-control uang numaja" readonly>
+                                            </td>
+                                            <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$key}}">
+                                                <div class="icheck-primary d-inline">
+                                                    <input type="checkbox" id="checkTagih_data{{$key}}" name="ditagihkan_data[{{$key}}]" {{$value->is_ditagihkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_ditagihkan}}">
+                                                    <label for="checkTagih_{{$key}}"></label>
+                                                </div>
+                                            </td>
+                                            <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$key}}">
+                                                <div class="icheck-primary d-inline">
+                                                    <input type="checkbox" id="checkPisah_data{{$key}}" name="dipisahkan_data[{{$key}}]" {{$value->is_dipisahkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_dipisahkan}}">
+                                                    <label for="checkPisah_{{$key}}"></label>
+                                                </div>
+                                            </td>
+                                            <td id="catatan_tabel_{{$key}}">
+                                                <input type="text" name="catatan_data[{{$key}}]" id="catatan_data_{{$key}}" value="{{$value->catatan}}" class="form-control">
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                                 
                               </tbody>
                               <tfoot>
@@ -261,17 +256,18 @@
     </form>
 <script type="text/javascript">
     
-        function ubahTanggal(dateString) {
-            var dateObject = new Date(dateString);
-            var day = dateObject.getDate();
-            var month = dateObject.toLocaleString('default', { month: 'short' });
-            var year = dateObject.getFullYear();
+    function ubahTanggal(dateString) {
+        var dateObject = new Date(dateString);
+        var day = dateObject.getDate();
+        var month = dateObject.toLocaleString('default', { month: 'short' });
+        var year = dateObject.getFullYear();
 
-            return day + '-' + month + '-' + year;
-        }
-
+        return day + '-' + month + '-' + year;
+    }
         
-
+    function ubahCheckbox(checkbox) {
+        checkbox.value = checkbox.checked ? 'Y' : 'N';
+    }
 
     $(document).ready(function() {
         // console.log($('#select_sewa').val());
