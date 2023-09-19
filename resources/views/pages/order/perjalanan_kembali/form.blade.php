@@ -41,95 +41,108 @@
                         <span style="font-size:11pt;" class="badge bg-dark float-right m-2">{{$sewa->jenis_order}} ORDER</span>
                     </div>
                     <div class="card-body" >
-                        <div class="d-flex" style="gap: 20px">
+                        {{-- <div class="d-flex" style="gap: 20px;width:100%;"> --}}
                             <div class="row">
-                                 {{-- <div class="form-group col-12">
-                                    Data Sewa
-                                 <hr>
+                                <div class="col-6">
+                                   <div class="form-group ">
+                                       <label for="tanggal_pencairan">Tanggal Berangkat<span style="color:red">*</span></label>
+                                       <div class="input-group mb-0">
+                                           <div class="input-group-prepend">
+                                           <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                           </div>
+                                           <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse($sewa->tanggal_berangkat)->format('d-M-Y')}}">
+                                       </div>
+                                   </div>  
+   
+                                   <div class="form-group ">
+                                       <label for="no_akun">Customer</label>
+                                       <input type="text" id="customer" name="customer" class="form-control" value="{{$sewa->nama_cust}}" readonly>                         
+                                   </div>  
+   
+                                   <div class="form-group ">
+                                       <label for="no_akun">Tujuan</label>
+                                       <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$sewa->nama_tujuan}}" readonly>                         
+                                   </div>  
+   
+                                    <div class="form-group ">
+                                       <label for="no_akun">Catatan</label>
+                                       <input type="text" id="catatan" name="catatan" class="form-control" value="{{$sewa->catatan}}" >                         
+                                   </div> 
 
-                                </div> --}}
-                             
-                                {{-- <div class="form-group col-6">
-                                    <label for="tanggal_pencairan">Tanggal Pencatatan<span style="color:red">*</span></label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+
+                                </div>
+                                <div class="col-6">
+                                       <div class="row">
+                                           {{-- <div class="form-group col-12">
+                                               Data Kendaraan
+                                            <hr>
+           
+                                           </div> --}}
+                                           <div class="form-group col-6">
+                                               <label for="no_akun">Kendaraan</label>
+                                               <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="{{$sewa->no_polisi}}" readonly>                         
+                                           </div>  
+           
+                                           {{-- @if ($sewa->supir) --}}
+                                           <div class="form-group col-6">
+                                               <label for="no_akun">Driver</label>
+                                               <input type="text" id="driver" name="driver" class="form-control" value="{{$sewa->supir}} ({{$sewa->telpSupir}})" readonly>     
+                                               <input type="hidden" name="id_karyawan" id="id_karyawan">                    
+                                           </div> 
+                                           {{-- @endif --}}
+    
+                                       </div>
+                                       
+                                        <div class="form-group">
+                                            <label for="no_akun">No. Kontainer</label>
+                                            <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" {{$sewa->no_kontainer?'readonly':''}} value="{{$sewa->no_kontainer}}" >                         
+                                        </div> 
+                                        <div class="form-group">
+                                            <label for="tanggal_pencairan">Tgl. Kembali Surat Jalan<span style="color:red">*</span></label>
+                                            <div class="input-group mb-0">
+                                                <div class="input-group-prepend">
+                                                     <span class="input-group-text"><input type="checkbox" name="cekTglKembali" id="cekTglKembali"></span>
+                                                    
+                                                </div>
+                                                <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="">
+                                            </div>
+                                        </div> 
+        
+                                        <div class="form-group">
+                                            <label for="no_akun">No. Surat Jalan</label>
+                                            <input type="text" id="surat_jalan" name="surat_jalan" class="form-control" value="" >                         
+                                        </div> 
+                                        <input type="hidden" name="id_jo_detail_hidden" id="id_jo_detail_hidden" value="{{$sewa->id_jo_detail}}">
+        
+                                        <input type="hidden" name="add_cost_hidden" id="add_cost_hidden">
+
+                                        
+                                        <div class="row">
+                                            <div class="form-group col-6">
+                                                <label for="no_akun">Seal</label>
+                                                <input type="text" id="seal" name="seal" class="form-control"value="" >                         
+                                            </div> 
+            
+                                            <div class="form-group col-6">
+                                                <label for="tanggal_pencairan">Seal PJE<span style="color:red">*</span></label>
+                                                <div class="input-group mb-0">
+                                                    <div class="input-group-prepend">
+                                                            <span class="input-group-text"><input type="checkbox" name="cek_seal_pje" id="cek_seal_pje"></span>
+                                                    </div>
+                                                    <input disabled type="text"  name="seal_pje" class="form-control" id="seal_pje" value="">
+                                                </div>
+                                            </div> 
                                         </div>
-                                        <input disabled type="text" autocomplete="off" name="tanggal_pencatatan" class="form-control date" id="tanggal_pencatatan" placeholder="dd-M-yyyy" value="">
-                                    </div>
-                                </div>     --}}
-                        
-
-                                <div class="form-group col-12">
-                                    <label for="tanggal_pencairan">Tanggal Berangkat<span style="color:red">*</span></label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                        </div>
-                                        <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse($sewa->tanggal_berangkat)->format('d-M-Y')}}">
-                                    </div>
-                                </div>  
-
-                                <div class="form-group col-12">
-                                    <label for="no_akun">Customer</label>
-                                    <input type="text" id="customer" name="customer" class="form-control" value="{{$sewa->nama_cust}}" readonly>                         
-                                </div>  
-
-                                <div class="form-group col-12">
-                                    <label for="no_akun">Tujuan</label>
-                                    <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$sewa->nama_tujuan}}" readonly>                         
-                                </div>  
-
-                                 <div class="form-group col-12">
-                                    <label for="no_akun">Catatan</label>
-                                    <input type="text" id="catatan" name="catatan" class="form-control" value="{{$sewa->catatan}}" >                         
-                                </div> 
+    
+                                      
+                                   
+                               </div>
                             </div>
-                            <div class="row">
-                                {{-- <div class="form-group col-12">
-                                    Data Kendaraan
-                                 <hr>
+                            {{-- <div class="row">
 
-                                </div> --}}
-                                <div class="form-group col-6">
-                                    <label for="no_akun">Kendaraan</label>
-                                    <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="{{$sewa->no_polisi}}" readonly>                         
-                                </div>  
 
-                                {{-- @if ($sewa->supir) --}}
-                                <div class="form-group col-6">
-                                    <label for="no_akun">Driver</label>
-                                    <input type="text" id="driver" name="driver" class="form-control" value="{{$sewa->supir}} ({{$sewa->telpSupir}})" readonly>     
-                                    <input type="hidden" name="id_karyawan" id="id_karyawan">                    
-                                </div> 
-                                {{-- @endif --}}
-                                  <div class="form-group col-12">
-                                    <label for="no_akun">No. Kontainer</label>
-                                    <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" {{$sewa->no_kontainer?'readonly':''}} value="{{$sewa->no_kontainer}}" >                         
-                                </div> 
-                                <div class="form-group col-12">
-                                    <label for="tanggal_pencairan">Tgl. Kembali Surat Jalan<span style="color:red">*</span></label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                             <span class="input-group-text"><input type="checkbox" name="cekTglKembali" id="cekTglKembali"></span>
-                                            
-                                        </div>
-                                        <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="">
-                                    </div>
-                                </div> 
-
-                              
-
-                                <div class="form-group col-12">
-                                    <label for="no_akun">No. Surat Jalan</label>
-                                    <input type="text" id="surat_jalan" name="surat_jalan" class="form-control" value="" >                         
-                                </div> 
-                                <input type="hidden" name="id_jo_detail_hidden" id="id_jo_detail_hidden" value="{{$sewa->id_jo_detail}}">
-
-                                <input type="hidden" name="add_cost_hidden" id="add_cost_hidden">
-
-                            </div>
-                        </div>
+                            </div> --}}
+                        {{-- </div> --}}
                     </div>
                 </div> 
             </div>
