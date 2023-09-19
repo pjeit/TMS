@@ -30,6 +30,8 @@
     @endif
     <form action="{{ route('perjalanan_kembali.update',[$sewa->id_sewa]) }}" id="post_data" method="POST" >
       @csrf
+        @method('PUT')
+
 
         <div class="row m-2">
         
@@ -202,43 +204,50 @@
                                 </tr>
                               </thead>
                               <tbody>
+                                @php
+                                    $index=0;
+                                @endphp
                                 @if (isset($dataOpreasional))
                                     @foreach ($dataOpreasional as $key => $value)
-                                        <tr id="{{$key}}">
+                                     
+                                        <tr id="{{$index}}">
                                             {{-- <td>
                                                 <div class="icheck-primary d-inline">
-                                                    <input type="checkbox" id="checkboxPrimary_{{$key}}" >
-                                                    <label for="checkboxPrimary_{{$key}}"></label>
+                                                    <input type="checkbox" id="checkboxPrimary_{{$index}}" >
+                                                    <label for="checkboxPrimary_{{$index}}"></label>
                                                 </div>
                                                 
                                             </td> --}}
-                                            <td id="id_sewa_operasional_tabel_{{$key}}" hidden="">
-                                                <input type="hidden" id="id_sewa_operasional_data{{$key}}" name="id_sewa_operasional_data[{{$key}}]" value="{{$value->id}}">
+                                            <td id="id_sewa_operasional_tabel_{{$index}}" hidden="">
+                                                <input type="hidden" id="id_sewa_operasional_data_{{$index}}" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->id}}">
                                             </td>
-                                            <td id="deskripsi_tabel_{{$key}}">
-                                                    <input type="text" name="deskripsi_data[{{$key}}]" id="deskripsi_data{{$key}}" value="{{$value->deskripsi}}" class="form-control uang numaja" readonly>
+                                            <td id="deskripsi_tabel_{{$index}}">
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control uang numaja" readonly>
                                             </td>
-                                            <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$key}}">
-                                                    <input type="text" name="nominal_data[{{$key}}]" id="nominal_data{{$key}}" value="{{number_format($value->total_operasional,2) }}" class="form-control uang numaja" readonly>
+                                            <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional,2) }}" class="form-control uang numaja" readonly>
                                             </td>
-                                            <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$key}}">
+                                            <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}">
                                                 <div class="icheck-primary d-inline">
-                                                    <input type="checkbox" id="checkTagih_data_{{$key}}" name="ditagihkan_data[{{$key}}]" {{$value->is_ditagihkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_ditagihkan}}">
-                                                    <label for="checkTagih_data_{{$key}}"></label>
+                                                    <input type="checkbox" id="checkTagih_data_{{$index}}" name="data[{{$index}}][ditagihkan_data]" {{$value->is_ditagihkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_ditagihkan}}">
+                                                    <label for="checkTagih_data_{{$index}}"></label>
                                                     {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
                                                 </div>
                                             </td>
-                                            <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$key}}">
+                                            <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}">
                                                 <div class="icheck-primary d-inline">
-                                                    <input type="checkbox" id="checkPisah_data_{{$key}}" name="dipisahkan_data[{{$key}}]" {{$value->is_dipisahkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_dipisahkan}}">
-                                                    <label for="checkPisah_data_{{$key}}"></label>
+                                                    <input type="checkbox" id="checkPisah_data_{{$index}}" name="data[{{$index}}][dipisahkan_data]" {{$value->is_dipisahkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_dipisahkan}}">
+                                                    <label for="checkPisah_data_{{$index}}"></label>
                                                     {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
                                                 </div>
                                             </td>
-                                            <td id="catatan_tabel_{{$key}}">
-                                                <input type="text" name="catatan_data[{{$key}}]" id="catatan_data_{{$key}}" value="{{$value->catatan}}" class="form-control">
+                                            <td id="catatan_tabel_{{$index}}">
+                                                <input type="text" name="data[{{$index}}][catatan_data]" id="catatan_data_{{$index}}" value="{{$value->catatan}}" class="form-control">
                                             </td>
                                         </tr>
+                                        @php
+                                        $index+=1;
+                                         @endphp
                                     @endforeach
                                 @endif
                                 
@@ -389,7 +398,7 @@
             success: function(response) {
                 if(!response)
                 {
-                    array_tambahan_sdt = [];
+                    array_add_cost = [];
                 }
                 else
                 {
@@ -400,7 +409,7 @@
                                     deskripsi: 'STORAGE',
                                     biaya: response[i].storage,
                                 };
-                            array_tambahan_sdt.push(objSTORAGE);
+                            array_add_cost.push(objSTORAGE);
                         } 
                         if(response[i].demurage||response[i].demurage!=0)
                         {
@@ -408,7 +417,7 @@
                                     deskripsi: 'DEMURAGE',
                                     biaya: response[i].demurage,
                                 };
-                            array_tambahan_sdt.push(objDEMURAGE);
+                            array_add_cost.push(objDEMURAGE);
                         } 
                         if(response[i].detention||response[i].detention!=0)
                         {
@@ -416,7 +425,7 @@
                                     deskripsi: 'DETENTION',
                                     biaya: response[i].detention,
                                 };
-                            array_tambahan_sdt.push(objDETENTION);
+                            array_add_cost.push(objDETENTION);
                         } 
                             
                     }
@@ -442,15 +451,15 @@
        
       
         $('#post_data').submit(function(event) {
-            var kas = $('#pembayaran').val();
-            if (kas == '' || kas == null) {
-                event.preventDefault(); // Prevent form submission
-                Swal.fire({
-                    icon: 'error',
-                    text: 'KAS PEMBAYARAN WAJIB DIPILIH!',
-                })
-                return;
-            }
+            // var kas = $('#pembayaran').val();
+            // if (kas == '' || kas == null) {
+            //     event.preventDefault(); // Prevent form submission
+            //     Swal.fire({
+            //         icon: 'error',
+            //         text: 'KAS PEMBAYARAN WAJIB DIPILIH!',
+            //     })
+            //     return;
+            // }
             event.preventDefault();
 
             Swal.fire({

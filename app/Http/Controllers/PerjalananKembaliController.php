@@ -126,7 +126,7 @@ class PerjalananKembaliController extends Controller
         //
         $data = $request->post();
         $user = Auth::user()->id; 
-        // dd($data);
+        dd($data);
         try {
    
             $perjalanan_kembali->id_karyawan = $data['select_driver'];
