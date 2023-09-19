@@ -115,17 +115,6 @@ class BiayaOperasionalController extends Controller
         try {
             $data = $request->collect();
             $item  = $data['item'];
-            // $dataJO = JobOrder::from('job_order AS jo')
-            //         ->leftJoin('job_order_detail AS jod', function($leftJoin) {
-            //             $leftJoin->on('jo.id', '=', 'jod.id_jo')
-            //             ->where('jod.is_aktif',"Y")
-            //             ->select('jod.*');
-            //         })
-            //         // ->when(isset($item), function($query) use ($item){
-            //         //     return $query->where('id_customer', $item);
-            //         // })
-            //         ->groupBy('jod.id_jo','jod.id')
-            //         ->get();
             $dataJO = JobOrder::from('job_order AS jo')
                     ->leftJoin('job_order_detail AS jod', function($join) {
                         $join->on('jo.id', '=', 'jod.id_jo')

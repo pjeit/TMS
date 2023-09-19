@@ -136,13 +136,15 @@
                                 if(item == 'SEAL'){
                                     var colspan = 3;
                                     row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].no_bl} / ${data[i].customer} </b></td>`);
-                                    row.append(`<td style='background: #efefef' class='text-center'><input class='check_all${data[i].id_jo} check_item' type='checkbox' id='check_all${data[i].id_jo}'></td>`);
+                                    row.append(`<td style='background: #efefef' class='text-center'><input class='check_cust check_item check_all${data[i].id_jo} check_cust_${data[i].id_jo}' check='${data[i].id_jo}' id='check_all${data[i].id_jo}' type='checkbox'></td>`);
                                     row.append(`<td style='background: #efefef'></td>`);
-                                    row.append(`<td style='background: #efefef' class='text-center'><input class='check_all_pje${data[i].id_jo} check_all_pje check_pje' type='checkbox' id='check_all_pje${data[i].id_jo}'></td>`);
+                                    // row.append(`<td style='background: #efefef' class='text-center'><input class='check_all_pje${data[i].id_jo} check_all_pje check_pje' id='check_all_pje${data[i].id_jo}' type='checkbox'></td>`);
+                                    row.append(`<td style='background: #efefef' class='text-center'><input class='check_cust_pje check_item_pje check_all_pje${data[i].id_jo} check_cust_pje${data[i].id_jo}' check_pje='${data[i].id_jo}' id='check_all_pje${data[i].id_jo}' type='checkbox'></td>`);
+
                                 }else{
                                     var colspan = 3;
                                     row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].no_bl} / ${data[i].customer} </b></td>`);
-                                    row.append(`<td style='background: #efefef' class='text-center'><input class='check_item check_cust check_cust_${data[i].id_jo}' check='${data[i].id_jo}' type='checkbox' id='check_all${data[i].id_jo}'></td>`);
+                                    row.append(`<td style='background: #efefef' class='text-center'><input class='check_item check_cust check_cust_${data[i].id_jo}' check='${data[i].id_jo}' id='check_all${data[i].id_jo}' type='checkbox'></td>`);
                                 }
 
                                 $("#hasil").append(row);
@@ -153,15 +155,17 @@
                             row.append("<td>" + data[i].status_jod + "</td>");
                             if(item == 'PLASTIK'){
                                 row.append(`<td> ${data[i].plastik.toLocaleString()} <input type="hidden" id="plastik_${data[i].plastik}" value="${data[i].plastik}" /></td>`);
-                                row.append(`<td class='text-center'> <input class='check_item check_container' ${data[i].id_jo}='cek' id_jo="${data[i].id_jo}" type='checkbox' id='${data[i].id_jo}_${data[i].id_sewa}'> </td>`);
+                                row.append(`<td class='text-center'> <input class='check_item check_container' ${data[i].id_jo}='cek' id_jo="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> </td>`);
                             } else if(item == 'TALLY'){
                                 row.append(`<td> ${data[i].tally.toLocaleString()} <input type="hidden" id="tally_${data[i].tally}" value="${data[i].tally}" /></td>`);
-                                row.append(`<td class='text-center'> <input class='check_item check_container' ${data[i].id_jo}='cek' id_jo="${data[i].id_jo}" type='checkbox' id='${data[i].id_jo}_${data[i].id_sewa}'> </td>`);
+                                row.append(`<td class='text-center'> <input class='check_item check_container' ${data[i].id_jo}='cek' id_jo="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> </td>`);
                             } else if(item == 'SEAL'){
                                 row.append(`<td> ${data[i].seal_pelayaran.toLocaleString()} <input type="hidden" id="seal_pelayaran_${data[i].seal_pelayaran}" value="${data[i].seal_pelayaran}" /></td>`);
-                                row.append(`<td class='text-center'> <input class='check_item' type='checkbox' id='${data[i].id_jo}_${data[i].id_sewa}'> </td>`);
+                                row.append(`<td class='text-center'> <input class='check_item check_container' ${data[i].id_jo}='cek' id_jo="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> </td>`);
                                 row.append(`<td> ${data[i].seal_pje.toLocaleString()} <input type="hidden" id="seal_pje_${data[i].seal_pje}" value="${data[i].seal_pje}" /></td>`);
-                                row.append(`<td class='text-center'> <input class='check_pje' type='checkbox' id='${data[i].id_jo}_${data[i].id_sewa}'> </td>`);
+                                // row.append(`<td class='text-center'> <input class='check_pje' id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> </td>`);
+                                row.append(`<td class='text-center'> <input class='check_item_pje check_container_pje' pje_${data[i].id_jo}='cek' id_jo_pje="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> </td>`);
+
 
                             }
                             $("#hasil").append(row);
@@ -189,6 +193,10 @@
             $(document).on('change', '#check_all_pje', function() {  
                 $(".check_pje").prop('checked', $(this).prop('checked'));
             });
+
+            $(document).on('change', '#check_all_pje', function() {  
+                $(".check_item_pje").prop('checked', $(this).prop('checked'));
+            });
         // 
 
         // check per customer
@@ -196,6 +204,13 @@
                 var cust_id = $(this).attr('check');
                 var checkElement = $(`input[${cust_id}="cek"]`);
                 checkElement.prop('checked', $(this).prop('checked'));
+                $("#check_all").prop('checked', false);
+            });
+            $(document).on('change', '.check_cust_pje', function() {
+                var cust_id = $(this).attr('check_pje');
+                var checkElement = $(`input[pje_${cust_id}="cek"]`);
+                checkElement.prop('checked', $(this).prop('checked'));
+                $("#check_all_pje").prop('checked', false);
             });
         //
 
@@ -204,6 +219,11 @@
                 var id_jo = $(this).attr('id_jo');
                 $("#check_all").prop('checked', false);
                 $(`.check_cust_${id_jo}`).prop('checked', false);
+            });
+            $(document).on('click', '.check_container_pje', function (event) {
+                var id_jo = $(this).attr('id_jo_pje');
+                $("#check_all_pje").prop('checked', false);
+                $(`.check_cust_pje${id_jo}`).prop('checked', false);
             });
         //
     });

@@ -115,7 +115,7 @@
                                         <select class="form-control select2" style="width: 100%;" id='select_jo_detail' name="select_jo_detail">
                                             <option value="">Pilih Kontainer</option>
                                         </select>
-                                        <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
+                                        <input type="text" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
                                     </div> 
                                 </div>
                                 <div class="form-group">
@@ -184,7 +184,8 @@
                                     <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0">
                                     <input type="hidden" id="min_muatan" name="min_muatan" value="0">
 
-                                    <input type="hidden" id="seal_pje" name="seal_pje" value="">
+                                    <input type="hidden" id="seal" name="seal" value="">
+                                    <input type="hidden" id="seal_pelayaran" name="seal_pelayaran" value="">
                                     <input type="hidden" id="plastik" name="plastik" value="">
                                     <input type="hidden" id="tally" name="tally" value="">
                                     <input type="hidden" id="kargo" name="kargo" value="">
@@ -298,7 +299,7 @@
             //ltl
             $('#harga_per_kg').val('');
             $('#min_muatan').val('');
-            $('#seal_pje').val('');
+            $('#seal_pelayaran').val('');
             $('#plastik').val('');
             $('#tally').val('');
             $('#kargo').val('');
@@ -333,7 +334,7 @@
             //ltl
             $('#harga_per_kg').val('');
             $('#min_muatan').val('');
-            $('#seal_pje').val('');
+            $('#seal_pelayaran').val('');
             $('#plastik').val('');
             $('#tally').val('');
             $('#kargo').val('');
@@ -442,7 +443,7 @@
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
             $('#booking_id').val(bookingId);
             $('#id_jo_detail').val(idJoDetail);
-            $('#kontainer').val(no_kontainer);
+            $('#no_kontainer').val(no_kontainer);
             $('#seal').val(seal);
             var baseUrl = "{{ asset('') }}";
             // var myjson;
@@ -536,7 +537,7 @@
             //ltl
             $('#harga_per_kg').val('');
             $('#min_muatan').val('');
-            $('#seal_pje').val('');
+            $('#seal_pelayaran').val('');
             $('#plastik').val('');
             $('#tally').val('');
             $('#kargo').val('');
@@ -675,7 +676,7 @@
             // jenis_tujuan
             // harga_per_kg
             // min_muatan
-            // seal_pje
+            // seal_pelayaran
             // plastik
             // tally
             // kargo
@@ -697,7 +698,7 @@
                         //ltl
                         $('#harga_per_kg').val('');
                         $('#min_muatan').val('');
-                        $('#seal_pje').val('');
+                        $('#seal_pelayaran').val('');
                         $('#plastik').val('');
                         $('#tally').val('');
                         $('#kargo').val('');
@@ -744,12 +745,12 @@
                         
                         // var obj=JSON.parse(myjson);
                         // array_detail_biaya.push(obj);
-                        if(response.dataTujuan.seal_pje)
+                        if(response.dataTujuan.seal_pelayaran)
                         {
                             
                             var objSeal = {
                                        deskripsi: 'SEAL PJE',
-                                       biaya: response.dataTujuan.seal_pje,
+                                       biaya: response.dataTujuan.seal_pelayaran,
                                    };
                                array_tambahan_tarif.push(objSeal);
                         }
@@ -776,7 +777,7 @@
 
                    
 
-                        $('#seal_pje').val(response.dataTujuan.seal_pje);
+                        $('#seal_pelayaran').val(response.dataTujuan.seal_pelayaran);
                         $('#plastik').val(response.dataTujuan.plastik);
                         $('#tally').val(response.dataTujuan.tally);
 
