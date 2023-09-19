@@ -110,7 +110,8 @@ class SewaController extends Controller
             $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
-            $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
+            $sewa->no_kontainer = $data['kontainer']? $data['kontainer']:null;
+            $sewa->seal_pelayaran = $data['seal']? $data['seal']:null;
             $sewa->created_by = $user;
             $sewa->created_at = now();
             $sewa->is_aktif = 'Y';

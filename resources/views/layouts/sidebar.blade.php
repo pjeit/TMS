@@ -417,6 +417,18 @@
                 </a>
               </li>
             </ul> 
+
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('perjalanan_kembali.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('sewa_kembali') ||  request()->is('sewa_kembali/create') || request()->is('sewa_kembali/*/edit') ? ' active' : '' }}">
+                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                     Perjalanan Kembali 
+                  </p>
+                </a>
+              </li>
+            </ul> 
+            
           </li>
          
           <li class="nav-item {{ 

@@ -193,7 +193,6 @@ class PencairanUangJalanFtlController extends Controller
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                     ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
-                    ->where('s.is_aktif', '=', 'Y')
                     ->where('s.jenis_tujuan', 'like', '%FTL%')
                     ->where('s.status', 'like', "%MENUNGGU UANG JALAN%")
                     ->where('s.is_aktif', '=', 'Y')

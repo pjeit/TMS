@@ -101,12 +101,12 @@
                                  <hr>
 
                                 </div> --}}
-                                <div class="form-group col-5">
+                                <div class="form-group col-6">
                                     <label for="no_akun">Kendaraan</label>
                                     <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="" readonly>                         
                                 </div>  
 
-                                <div class="form-group col-7">
+                                <div class="form-group col-6">
                                     <label for="no_akun">Driver</label>
                                     <input type="text" id="driver" name="driver" class="form-control" value="" readonly>     
                                     <input type="hidden" name="id_karyawan" id="id_karyawan">                    
@@ -114,7 +114,7 @@
 
                         
 
-                                <div class="form-group col-7">
+                                <div class="form-group col-6">
                                     <label for="total_hutang">Total Hutang</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -124,7 +124,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-5">
+                                <div class="form-group col-6">
                                     <label for="potong_hutang">Potong Hutang</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">

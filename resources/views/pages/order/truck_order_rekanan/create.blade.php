@@ -292,9 +292,15 @@
       
         // $('#select_customer').attr('disabled',true).val('').trigger('change');
         // $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
-        $('#inboundData').hide();
+        // $('#inboundData').hide();
+        // $('#garisInbound').hide();
+        // $('#jenis_order').val('');
+
+         $('#inboundData').hide();
         $('#garisInbound').hide();
-        $('#jenis_order').val('');
+        $("#inbound").removeClass("aktif");
+        $("#outbond").addClass("aktif");
+        $('#jenis_order').val('OUTBOND');
         
         $('body').on('click','#inbound',function()
 		{
