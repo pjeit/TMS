@@ -223,14 +223,16 @@
                                             </td>
                                             <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$key}}">
                                                 <div class="icheck-primary d-inline">
-                                                    <input type="checkbox" id="checkTagih_data{{$key}}" name="ditagihkan_data[{{$key}}]" {{$value->is_ditagihkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_ditagihkan}}">
-                                                    <label for="checkTagih_{{$key}}"></label>
+                                                    <input type="checkbox" id="checkTagih_data_{{$key}}" name="ditagihkan_data[{{$key}}]" {{$value->is_ditagihkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_ditagihkan}}">
+                                                    <label for="checkTagih_data_{{$key}}"></label>
+                                                    {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
                                                 </div>
                                             </td>
                                             <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$key}}">
                                                 <div class="icheck-primary d-inline">
-                                                    <input type="checkbox" id="checkPisah_data{{$key}}" name="dipisahkan_data[{{$key}}]" {{$value->is_dipisahkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_dipisahkan}}">
-                                                    <label for="checkPisah_{{$key}}"></label>
+                                                    <input type="checkbox" id="checkPisah_data_{{$key}}" name="dipisahkan_data[{{$key}}]" {{$value->is_dipisahkan=='Y'?'checked':''}} onclick="ubahCheckbox(this)"  value="{{$value->is_dipisahkan}}">
+                                                    <label for="checkPisah_data_{{$key}}"></label>
+                                                    {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
                                                 </div>
                                             </td>
                                             <td id="catatan_tabel_{{$key}}">
