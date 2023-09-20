@@ -36,7 +36,7 @@
         <div class="row m-2">
         
             <div class="col-12">
-                <div class="card radiusSendiri">
+                <div class="card radiusSendiri ">
                     <div class="card-header">
                         <a href="{{ route('perjalanan_kembali.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
