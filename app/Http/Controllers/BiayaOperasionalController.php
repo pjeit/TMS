@@ -30,9 +30,10 @@ class BiayaOperasionalController extends Controller
             ->select('job_order_detail.*', 'gt.*')
             ->get();
 
-            // ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 'jod.id_grup_tujuan')
-            // ->where('gt.is_aktif', '=', "Y")?
-            // ->where('gt.tally', '<>', "0")
+        $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
         
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
@@ -40,9 +41,10 @@ class BiayaOperasionalController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
-            return view('pages.finance.biaya_operasional.index',[
+        return view('pages.finance.biaya_operasional.index',[
             'judul' => "Biaya Operasional",
             'data' => $data,
+            'dataKas' => $dataKas,
         ]);
     }
 
@@ -64,15 +66,53 @@ class BiayaOperasionalController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->post();
-        var_dump($data); die;
+        try {
+            $user = Auth::user()->id;
+            $data = $request->post();
+            $item = $data['item'];
+            // var_dump($data); die;
 
-        foreach ($data['data'][$data['item']] as $key => $value) {
-            $sewa_o = new SewaOperasional();
-            $sewa_o->id_sewa = $key;
-            $sewa_o->deskripsi = $data['item'];
+            foreach ($data['data'] as $key => $value) {
+                if($item == 'SEAL'){
+                    if(isset($value['item_pelayaran'])){
+                        $sewa_o = new SewaOperasional();
+                        $sewa_o->id_sewa = $key;
+                        $sewa_o->deskripsi = 'SEAL PELAYARAN';
+                        $sewa_o->total_operasional = $value['nominal_pelayaran'];
+                        $sewa_o->created_by = $user;
+                        $sewa_o->created_at = now();
+                        $sewa_o->is_aktif = 'Y';
+                        $sewa_o->save();
+                    }
+                    if(isset($value['item_pje'])){
+                        $sewa_o = new SewaOperasional();
+                        $sewa_o->id_sewa = $key;
+                        $sewa_o->deskripsi = 'SEAL PJE';
+                        $sewa_o->total_operasional = $value['nominal_pje'];
+                        $sewa_o->created_by = $user;
+                        $sewa_o->created_at = now();
+                        $sewa_o->is_aktif = 'Y';
+                        $sewa_o->save();
+                    }
+                }else{
+                    if(isset($value['item'])){
+                        $sewa_o = new SewaOperasional();
+                        $sewa_o->id_sewa = $key;
+                        $sewa_o->deskripsi = $item;
+                        $sewa_o->total_operasional = $value['nominal'];
+                        $sewa_o->created_by = $user;
+                        $sewa_o->created_at = now();
+                        $sewa_o->is_aktif = 'Y';
+                        $sewa_o->save();
+                    }
+                }
+            }
+            return redirect()->route('biaya_operasional.index')->with('status','Sukses!!');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         }
-        die;
+
+        
     }
 
     /**
@@ -120,10 +160,15 @@ class BiayaOperasionalController extends Controller
         //
     }
 
-    public function load_data(){
+    public function pencairan($id)
+    {
+        return view('pages.finance.biaya_operasional.pencairan',[
+            'judul' => "Pencairan Biaya Operasional",
+        ]);
+    }
+
+    public function load_dataOldNotUsed($item){
         try {
-            // $data = $request->collect();
-            // $item  = $data['item'];
             $dataJO = JobOrder::from('job_order AS jo')
                     ->leftJoin('job_order_detail AS jod', function($join) {
                         $join->on('jo.id', '=', 'jod.id_jo')
@@ -136,8 +181,26 @@ class BiayaOperasionalController extends Controller
                     })
                     ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
                     ->leftJoin('sewa as s', 's.id_jo_detail', '=', 'jod.id')
+                    ->when($item == 'SEAL', function ($query) use ($item) {
+                        $query->leftJoin('sewa_operasional as soplyrn', function ($join) {
+                            $join->on('s.id_sewa', '=', 'soplyrn.id_sewa')
+                                ->where('soplyrn.is_aktif', 'Y')
+                                ->whereIn('soplyrn.deskripsi', 'SEAL PELAYARAN');
+                        });
+                        $query->leftJoin('sewa_operasional as sopje', function ($join) {
+                            $join->on('s.id_sewa', '=', 'sopje.id_sewa')
+                                ->where('sopje.is_aktif', 'Y')
+                                ->whereIn('sopje.deskripsi', 'SEAL PJE');
+                        });
+                    }, function ($query) use ($item) {
+                        $query->leftJoin('sewa_operasional as so', function ($join) use ($item) {
+                            $join->on('s.id_sewa', '=', 'so.id_sewa')
+                                ->where('so.is_aktif', 'Y')
+                                ->where('so.deskripsi', $item);
+                        });
+                    })
                     ->select('jo.*', 'jod.*', 'gt.nama_tujuan as nama_tujuan','c.nama as customer', 'jod.status as status_jod',
-                            'gt.nama_tujuan', 's.id_sewa as id_sewa','jo.id as id_jo',
+                            'gt.nama_tujuan', 's.id_sewa as id_sewa','jo.id as id_jo','so.id as id_oprs','so.deskripsi as deskripsi_so',
                             DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), 
                             DB::raw('COALESCE(gt.seal_pje, 0) as seal_pje'), 
                             DB::raw('COALESCE(gt.tally, 0) as tally'), 
@@ -145,7 +208,45 @@ class BiayaOperasionalController extends Controller
                     ->orderBy('jo.id_customer', 'asc')
                     ->orderBy('jod.id_jo', 'asc')
                     ->get();
+                // var_dump($dataJO); die;
+            return response()->json(["result" => "success",'data' => $dataJO], 200);
+        } catch (\Throwable $th) {
+            return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
+        }
+       
+    }
 
+    public function load_data($item){
+        try {
+            $dataJO = JobOrder::from('job_order AS jo')
+                    ->leftJoin('job_order_detail AS jod', function($join) {
+                        $join->on('jo.id', '=', 'jod.id_jo')
+                            ->where('jod.is_aktif', 'Y')
+                            ->where('jod.status', 'DALAM PERJALANAN');
+                    })
+                    ->leftJoin('grup_tujuan AS gt', function($join) {
+                        $join->on('gt.id', '=', 'jod.id_grup_tujuan')
+                            ->where('gt.is_aktif', 'Y');
+                    })
+                    ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
+                    ->leftJoin('sewa as s', 's.id_jo_detail', '=', 'jod.id')
+                    ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+                    ->leftJoin('sewa_operasional as so', function ($join) use ($item) {
+                        $join->on('s.id_sewa', '=', 'so.id_sewa')
+                            ->where('so.is_aktif', 'Y')
+                            ->where('so.deskripsi', $item);
+                    })
+                    ->select('jo.*', 'jod.*', 'gt.nama_tujuan as nama_tujuan','c.nama as customer', 'jod.status as status_jod',
+                            'gt.nama_tujuan', 's.id_sewa as id_sewa','jo.id as id_jo','so.id as id_oprs',
+                            'so.deskripsi as deskripsi_so', 's.no_polisi as no_polisi', 'k.nama_panggilan as nama_panggilan',
+                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), 
+                            DB::raw('COALESCE(gt.seal_pje, 0) as seal_pje'), 
+                            DB::raw('COALESCE(gt.tally, 0) as tally'), 
+                            DB::raw('COALESCE(gt.plastik, 0) as plastik'))
+                    ->orderBy('jo.id_customer', 'asc')
+                    ->orderBy('jod.id_jo', 'asc')
+                    ->get();
+                // var_dump($dataJO); die;
             return response()->json(["result" => "success",'data' => $dataJO], 200);
         } catch (\Throwable $th) {
             return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);

@@ -32,29 +32,56 @@
             <div class="card-header ">
                 <div class="card-header" style="border: 2px solid #bbbbbb;">
                     <div class="row" >
-                        <div class="col-4">
+                        <div class="col-6">
                             <div class="form-group">
-                                <label for="">ITEM</label>
+                                <label for="">Jenis Biaya</label>
                                 <select class="form-control selectpicker" name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                     <option value="">­­— PILIH DATA —</option>
                                     <option value="TALLY">TALLY</option>
-                                    <option value="PLASTIK">PLASTIK</option>
-                                    <option value="SEAL">SEAL</option>
+                                    <option value="OPERASIONAL">OPERASIONAL</option>
+                                    <option value="TIMBANG">TIMBANG</option>
+                                    <option value="BURUH">BURUH</option>
                                 </select>
                             </div>
                         </div>
-        
-                        <div class="col-4">
-                            <label for="">&nbsp;</label>
-                            <div class="d-flex justify-content-start col-12" style="gap: 5px;">
-                                {{-- <button type="button" id="btnKu" class=" btn btn-primary radiusSendiri col-6" onclick=""><i class="fas fa-search"></i> <b> Filter</b></button> --}}
-                                <button type="submit" class=" btn btn-success radiusSendiri col-6" onclick=""><i class="fa fa-fw fa-save"></i> <b> Simpan</b></button>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success mt-4" ><span class="fas fa-save"></span> <b>Simpan</b></button>
                             </div>
                         </div>
-                    </div>
-                        
-                    <div class="form-group">
-                        {{-- <button type="button" class="btn btn-sm btn-success" onclick="download_report()"><i class="fas fa-file-excel"></i> Export to Excel</button> --}}
+                     
+                        {{-- <div class="col-9">
+                            <div class="row">
+                                <div class="col-6">
+                                    <ul class="list-group mb-3">
+                                        <label for="">Total</label>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Total (IDR)</span>
+                                             <input type="hidden" name="total_sblm_dooring" value="">
+                                                 <strong>Rp. 15,000,000.00</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="">Pilih Kas</label>
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                                    <option value="">--PILIH PEMBAYARAN--</option>
+                                                    @foreach ($dataKas as $data)
+                                                        <option value="{{$data->id}}">{{ $data->nama }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-3">
+                                                <button type="button" class="btn btn-success " id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -161,9 +188,10 @@
 		});
         
         function showTable(item){
+            console.log('item '+item);
             $.ajax({
                 method: 'GET',
-                url: `{{ url('biaya_operasional/load_data')}}`,
+                url: `biaya_operasional/load_data/${item}`,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,
@@ -176,80 +204,42 @@
                     $("th").remove();
                     $("thead tr").append("<th>###</th><th>Status Kontainer</th>");
               
-                    if(item == 'PLASTIK'){
-                        $("thead tr").append("<th>Plastik</th>");
-                        $("thead tr").append("<th class='text-center'><input class='check_all' type='checkbox' id='check_all'></th>");
-                    } else if(item == 'TALLY'){
+                    if(item == 'TALLY'){
                         $("thead tr").append("<th>Tally</th>");
                         $("thead tr").append("<th class='text-center'><input class='check_all' type='checkbox' id='check_all'></th>");
-                    } else if(item == 'SEAL'){
-                        $("thead tr").append("<th>Seal Pelayaran</th>");
-                        $("thead tr").append("<th class='text-center'><input class='check_all' type='checkbox' id='check_all'></th>");
-                        $("thead tr").append("<th>Seal PJE</th>");
-                        $("thead tr").append("<th class='text-center'><input class='check_all_pje' type='checkbox' id='check_all_pje'></th>");
-                    }
-                    $("#hasil").html(" ");
+                    } 
+                    $("#hasil").html("");
 
                     var dataJO = null;
                     for (var i = 0; i < data.length; i++) {
-                        if (data[i].id_jo !== dataJO) {
-                            var row = $("<tr></tr>");
-                            
-                            if(item == 'SEAL'){
+                        if(data[i].id_oprs == null || item == 'SEAL'){
+                            if (data[i].id_jo !== dataJO) {
+                                var row = $("<tr></tr>");
+                                
                                 var colspan = 3;
-                                row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].no_bl} / ${data[i].customer} </b></td>`);
-                                row.append(`<td style='background: #efefef' class='text-center'><input class='check_cust check_item check_all${data[i].id_jo} check_cust_${data[i].id_jo}' check='${data[i].id_jo}' id='check_all${data[i].id_jo}' type='checkbox'></td>`);
-                                row.append(`<td style='background: #efefef'></td>`);
-                                row.append(`<td style='background: #efefef' class='text-center'><input class='check_cust_pje check_item_pje check_all_pje${data[i].id_jo} check_cust_pje${data[i].id_jo}' check_pje='${data[i].id_jo}' id='check_all_pje${data[i].id_jo}' type='checkbox'></td>`);
-                            }else{
-                                var colspan = 3;
-                                row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].no_bl} / ${data[i].customer} </b></td>`);
-                                row.append(`<td style='background: #efefef' class='text-center'><input class='check_item check_cust check_cust_${data[i].id_jo}' check='${data[i].id_jo}' id='check_all${data[i].id_jo}' type='checkbox'></td>`);
+                                row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
+                                row.append(`<td style='background: #efefef' class='text-center'>
+                                                <input class='check_item check_cust check_cust_${data[i].id_jo}' check='${data[i].id_jo}' 
+                                                    id='check_all${data[i].id_jo}' type='checkbox'>
+                                            </td>`);
+    
+                                $("#hasil").append(row);
+                                dataJO = data[i].id_jo;
                             }
-
+                            var row = $("<tr></tr>");
+                            row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} </td>`);
+                            row.append(`<td> ${data[i].status_jod} </td>`);
+                            if(item == 'TALLY'){
+                                row.append(`<td> ${data[i].tally.toLocaleString()} 
+                                                <input type="hidden" value='${data[i].tally}' name='data[${data[i].id_sewa}][nominal]' /> 
+                                            </td>`);
+                                row.append(`<td class='text-center'> 
+                                                <input name="data[${data[i].id_sewa}][item]" class='check_item check_container' ${data[i].id_jo}='cek' 
+                                                    id_jo="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> 
+                                            </td>`);
+                            } 
                             $("#hasil").append(row);
-                            dataJO = data[i].id_jo;
                         }
-                        var row = $("<tr></tr>");
-                        row.append(`<td> ${data[i].no_kontainer} / ${data[i].nama_tujuan} </td>`);
-                        row.append(`<td> ${data[i].status_jod} </td>`);
-                        if(item == 'PLASTIK'){
-                            row.append(`<td> ${data[i].plastik.toLocaleString()} 
-                                            <input type="hidden" id="plastik_${data[i].plastik}" value="${data[i].plastik}" />
-                                        </td>`);
-                            row.append(`<td class='text-center'> 
-                                            <input type="hidden" value='${data[i].plastik}' name='data[PLASTIK][${data[i].id_sewa}]' /> 
-                                            <input name="data[PLASTIK][${data[i].id_sewa}]" class='check_item check_container' 
-                                            ${data[i].id_jo}='cek' id_jo="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> 
-                                        </td>`);
-                        } else if(item == 'TALLY'){
-                            row.append(`<td> ${data[i].tally.toLocaleString()} 
-                                            <input type="hidden" id="tally_${data[i].tally}" value="${data[i].tally}" />
-                                        </td>`);
-                            row.append(`<td class='text-center'> 
-                                            <input type="hidden" value='${data[i].tally}' name='data[TALLY][${data[i].id_sewa}]' /> 
-                                            <input name="data[TALLY][${data[i].id_sewa}]" class='check_item check_container' ${data[i].id_jo}='cek' 
-                                                id_jo="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> 
-                                        </td>`);
-                        } else if(item == 'SEAL'){
-                            row.append(`<td> ${data[i].seal_pelayaran.toLocaleString()} 
-                                            <input type="hidden" id="seal_pelayaran_${data[i].seal_pelayaran}" value="${data[i].seal_pelayaran}" />
-                                        </td>`);
-                            row.append(`<td class='text-center'> 
-                                            <input type="hidden" value='${data[i].seal_pelayaran}' name='data[SEAL_PELAYARAN][${data[i].id_sewa}]' /> 
-                                            <input name="data[SEAL_PELAYARAN][${data[i].id_sewa}]" class='check_item check_container' ${data[i].id_jo}='cek' 
-                                                id_jo="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> 
-                                        </td>`);
-                            row.append(`<td> ${data[i].seal_pje.toLocaleString()} 
-                                            <input type="hidden" id="seal_pje_${data[i].seal_pje}" value="${data[i].seal_pje}" />
-                                        </td>`);
-                            row.append(`<td class='text-center'> 
-                                            <input type="hidden" value='${data[i].seal_pje}' name='data[SEAL_PJE][${data[i].id_sewa}]' /> 
-                                            <input name="data[SEAL_PJE][${data[i].id_sewa}]" class='check_item_pje check_container_pje' 
-                                                pje_${data[i].id_jo}='cek' id_jo_pje="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> 
-                                        </td>`);
-                        }
-                        $("#hasil").append(row);
                     }
                 },error: function (xhr, status, error) {
                     $("#loading-spinner").hide();

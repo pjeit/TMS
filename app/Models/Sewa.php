@@ -69,7 +69,16 @@ class Sewa extends Model
     }
     public function getTujuan(): HasOne
     {
-         return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan')
-                     ->select('*');
+         return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan');
+    }
+    
+    public function getCustomer()
+    {
+         return $this->hasOne(Customer::class, 'id', 'id_customer');
+    }
+
+    public function getKaryawan()
+    {
+         return $this->hasOne(Karyawan::class, 'id', 'id_karyawan');
     }
 }

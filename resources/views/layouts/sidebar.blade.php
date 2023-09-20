@@ -377,7 +377,6 @@
             </ul> --}}
          
           </li>
-
            <li class="nav-item {{ request()->is('booking*')||
             request()->is('biaya_operasional*') ||
             request()->is('truck_order*')? 'menu-is-opening menu-open' : '' }}">
@@ -445,6 +444,7 @@
           <li class="nav-item {{ 
             request()->is('pembayaran_jo*') ||
             request()->is('pencairan_uang_jalan_ftl*') ||
+            request()->is('pencairan_operasional*') ||
             request()->is('pembayaran_sdt*') 
             ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
@@ -482,6 +482,16 @@
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Pencairan UJ
+                  </p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('pencairan_operasional.index')}}" class="nav-link {{request()->url() === route('pencairan_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Pencairan <small><strong>Operasional</strong></small>
                   </p>
                 </a>
               </li>

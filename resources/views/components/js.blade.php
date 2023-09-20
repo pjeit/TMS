@@ -91,6 +91,10 @@
 <script src="{{asset('assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
 <script src="{{asset('assets/plugins/bootstrap-datepicker/datepicker-locale/bootstrap-datepicker.id.min.js')}}"></script>
 
+{{-- multi row grouping datatable --}}
+<script src="https://cdn.datatables.net/rowgroup/1.4.0/js/dataTables.rowGroup.min.js"></script>
+
+
 
 {{-- end custom dropdown bootstrap --}}
 

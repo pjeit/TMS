@@ -36,4 +36,9 @@ class Customer extends Model
         'updated_by',
         'is_aktif',
     ];
+
+    public function getGrup()
+    {
+         return $this->hasOne(Grup::class, 'id', 'grup_id');
+    }
 }

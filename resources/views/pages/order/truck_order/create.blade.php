@@ -115,7 +115,7 @@
                                         <select class="form-control select2" style="width: 100%;" id='select_jo_detail' name="select_jo_detail">
                                             <option value="">Pilih Kontainer</option>
                                         </select>
-                                        <input type="text" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
+                                        <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
                                     </div> 
                                 </div>
                                 <div class="form-group">

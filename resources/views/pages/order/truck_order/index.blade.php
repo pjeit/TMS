@@ -27,6 +27,7 @@
                     <table id="dt" class="table table-bordered table-striped" width='100%'>
                         <thead>
                             <tr>
+                                <th>Customer</th>
                                 <th>No. Polisi Kendaraan</th>
                                 <th>No. Sewa</th>
                                 <th>Tgl Berangkat</th>
@@ -40,6 +41,7 @@
                             @if (isset($dataSewa))
                                 @foreach($dataSewa as $item)
                                     <tr>
+                                        <td>{{ $item->nama_customer }}</td>
                                         <td>{{ $item->no_polisi }}</td>
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>

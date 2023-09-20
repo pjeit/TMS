@@ -123,10 +123,11 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('truck_order', 'App\Http\Controllers\SewaController');
         Route::resource('truck_order_rekanan', 'App\Http\Controllers\SewaRekananController');
 
-        Route::get('biaya_operasional/load_data', 'App\Http\Controllers\BiayaOperasionalController@load_data')->name('biaya_operasional.load_data');
-        // Route::get('biaya_operasional/load_data/', [App\Http\Controllers\BiayaOperasionalController::class, 'index']);
-
+        Route::get('/biaya_operasional/load_data/{item}', 'App\Http\Controllers\BiayaOperasionalController@load_data')->name('biaya_operasional.load_data');
         Route::resource('biaya_operasional', 'App\Http\Controllers\BiayaOperasionalController');
+
+        Route::get('pencairan_operasional/pencairan/{id}', 'App\Http\Controllers\PencairanOperasionalController@pencairan')->name('pencairan_operasional.pencairan');
+        Route::resource('pencairan_operasional', 'App\Http\Controllers\PencairanOperasionalController');
 
         Route::get('/pencairan_uang_jalan_ftl/getDatasewaDetail/{id}', [App\Helper\SewaDataHelper::class, 'getDatasewaDetail'])->name('getDatasewaDetail.get');
         Route::post('/pencairan_uang_jalan_ftl/form', [App\Http\Controllers\PencairanUangJalanFtlController::class, 'form'])->name('pencairan_uang_jalan_ftl.form');

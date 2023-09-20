@@ -53,6 +53,9 @@
 {{-- datepicker ambil yang lama --}}
 <link rel="stylesheet" href="{{asset('assets/plugins/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')}}">
 
+{{-- multi row grouping datatable --}}
+<link rel="stylesheet" href="https://cdn.datatables.net/rowgroup/1.4.0/css/rowGroup.dataTables.min.css">
+
 <style>
     .radiusSendiri{
       border-radius: 15px;
