@@ -102,6 +102,7 @@ class PerjalananKembaliController extends Controller
         $dataOpreasional = DB::table('sewa_operasional AS so')
                     ->select('so.*')
                     ->where('so.is_aktif', '=', 'Y')
+                    ->where('so.status', 'like', '%SUDAH DICAIRKAN%')
                     ->where('so.id_sewa', '=', $perjalanan_kembali->id_sewa)
                     ->get();
         $datajODetail = DB::table('job_order_detail_biaya as jodb')
@@ -116,19 +117,84 @@ class PerjalananKembaliController extends Controller
             ->where('status_bayar' ,'like','%SELESAI PEMBAYARAN%')
             ->where('jodb.is_aktif', '=', "Y")
             ->get();
-        $TujuanBiaya = DB::table('grup_tujuan_biaya as gtb')
-            ->select('gtb.*')
-            ->where('gtb.grup_tujuan_id', '=',  $perjalanan_kembali->id_grup_tujuan)
-            ->where('gtb.is_aktif', '=', "Y")
+        // dd(  $datajODetail);
+        $array_inbound_outbond = [];
+
+        $array_inbound = [];
+        foreach ($datajODetail as $item) {
+            if ($item->storage || $item->storage != 0) {
+                $objSTORAGE = [
+                    'deskripsi' => 'STORAGE',
+                    'biaya' => $item->storage,
+                ];
+                array_push($array_inbound, $objSTORAGE);
+            }
+            if ($item->demurage || $item->demurage != 0) {
+                $objDEMURAGE = [
+                    'deskripsi' => 'DEMURAGE',
+                    'biaya' => $item->demurage,
+                ];
+                array_push($array_inbound, $objDEMURAGE);
+            }
+            if ($item->detention ||$item->detention != 0) {
+                $objDETENTION = [
+                    'deskripsi' => 'DETENTION',
+                    'biaya' =>$item->detention,
+                ];
+                array_push($array_inbound, $objDETENTION);
+            }
+        }
+
+         $Tujuan = DB::table('grup_tujuan as gt')
+            ->select('gt.*')
+            ->where('gt.id', '=',  $perjalanan_kembali->id_grup_tujuan)
+            ->where('gt.is_aktif', '=', "Y")
             ->get();
-        // dd($dataOpreasional);
+        $array_outbond = [];
+        foreach ($Tujuan as $item) {
+            if ($item->seal_pelayaran) {
+                $objSeal = [
+                    'deskripsi' => 'SEAL PELAYARAN',
+                    'biaya' => $item->seal_pelayaran,
+                ];
+                array_push($array_outbond, $objSeal);
+            }
+    
+            if ($item->seal_pje) {
+                $objSealPje = [
+                    'deskripsi' => 'SEAL PJE',
+                    'biaya' => $item->seal_pje,
+                ];
+                array_push($array_outbond, $objSealPje);
+            }
+    
+            if ($item->plastik) {
+                $objPlastik = [
+                    'deskripsi' => 'PLASTIK',
+                    'biaya' => $item->plastik,
+                ];
+                array_push($array_outbond, $objPlastik);
+            }
+    
+            if ($item->tally) {
+                $objTally = [
+                    'deskripsi' => 'TALLY',
+                    'biaya' => $item->tally,
+                ];
+                array_push($array_outbond, $objTally);
+            }
+            
+        }
+        // dd($array_biaya_sl);
+
+
 
         return view('pages.order.perjalanan_kembali.form',[
             'judul' => "Perjalanan Kembali",
             'sewa'=>$sewa,
             'dataOpreasional'=>$dataOpreasional,
-            'datajODetail'=>$datajODetail,
-            'TujuanBiaya'=>$TujuanBiaya
+            // 'datajODetail'=>$datajODetail,
+            // 'TujuanBiaya'=>$TujuanBiaya
         ]);
     }
 
