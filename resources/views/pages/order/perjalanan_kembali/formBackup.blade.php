@@ -254,7 +254,6 @@
                                     @endforeach
                                 @endif
                                 
-                                
                               </tbody>
                               <tfoot>
                               </tfoot>
