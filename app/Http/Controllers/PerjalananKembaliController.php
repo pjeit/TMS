@@ -104,13 +104,31 @@ class PerjalananKembaliController extends Controller
                     ->where('so.is_aktif', '=', 'Y')
                     ->where('so.id_sewa', '=', $perjalanan_kembali->id_sewa)
                     ->get();
-             
+        $datajODetail = DB::table('job_order_detail_biaya as jodb')
+            ->select('jodb.*')
+            // ->Join('job_order_detail AS job', function($join) {
+            //         $join->on('job.id', '=', 'jodb.id_jo_detail')
+            //         ->where('job.is_aktif', '=', 'Y')
+            //         ->where('status' ,'like','%BELUM DOORING%')
+            //         ->whereNotNull('job.id_grup_tujuan');
+            //     })
+            ->where('jodb.id_jo_detail', '=', $perjalanan_kembali->id_jo_detail)
+            ->where('status_bayar' ,'like','%SELESAI PEMBAYARAN%')
+            ->where('jodb.is_aktif', '=', "Y")
+            ->get();
+        $TujuanBiaya = DB::table('grup_tujuan_biaya as gtb')
+            ->select('gtb.*')
+            ->where('gtb.grup_tujuan_id', '=',  $perjalanan_kembali->id_grup_tujuan)
+            ->where('gtb.is_aktif', '=', "Y")
+            ->get();
         // dd($dataOpreasional);
 
         return view('pages.order.perjalanan_kembali.form',[
             'judul' => "Perjalanan Kembali",
             'sewa'=>$sewa,
-            'dataOpreasional'=>$dataOpreasional
+            'dataOpreasional'=>$dataOpreasional,
+            'datajODetail'=>$datajODetail,
+            'TujuanBiaya'=>$TujuanBiaya
         ]);
     }
 
