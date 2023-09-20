@@ -126,7 +126,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/biaya_operasional/load_data/{item}', 'App\Http\Controllers\BiayaOperasionalController@load_data')->name('biaya_operasional.load_data');
         Route::resource('biaya_operasional', 'App\Http\Controllers\BiayaOperasionalController');
 
-        Route::get('pencairan_operasional/pencairan/{id}', 'App\Http\Controllers\PencairanOperasionalController@pencairan')->name('pencairan_operasional.pencairan');
+        Route::get('pencairan_operasional/pencairan/{id}', 'App\Http\Controllers\PencairanOperasionalController@getDatasewaDetail')->name('pencairan_operasional.pencairan');
         Route::resource('pencairan_operasional', 'App\Http\Controllers\PencairanOperasionalController');
 
         Route::get('/pencairan_uang_jalan_ftl/getDatasewaDetail/{id}', [App\Helper\SewaDataHelper::class, 'getDatasewaDetail'])->name('getDatasewaDetail.get');

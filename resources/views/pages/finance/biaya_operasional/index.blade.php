@@ -13,10 +13,7 @@
 
 @section('content')
 <style>
-    tr.group,
-    tr.group:hover {
-        background-color: #ddd !important;
-    }
+  
 </style>
 <div class="container-fluid">
     {{-- <div class="radiusSendiri sticky-top " style="margin-bottom: -15px;">
@@ -89,12 +86,10 @@
             <div class="card-body">
                 <section class="col-lg-12" id="show_report">
 
-                <table class="table table-bordered table-hover">
+                <table id="biaya_operasional" class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>No. Kontainer</th>
-                            <th>Status Kontainer</th>
-                            <th style="width:30px"><div class="btn-group"></div></th>
+                            <th>Biaya Operasional</th>
                         </tr>
                     </thead>
                     <tbody id="hasil">
@@ -202,44 +197,147 @@
                     var data = response.data;
 
                     $("th").remove();
-                    $("thead tr").append("<th>###</th><th>Status Kontainer</th>");
+                    $("thead tr").append("<th>###</th><th>Tipe</th>");
+                    $("thead tr").append("<th>Jenis</th>");
               
                     if(item == 'TALLY'){
                         $("thead tr").append("<th>Tally</th>");
                         $("thead tr").append("<th class='text-center'><input class='check_all' type='checkbox' id='check_all'></th>");
-                    } 
+                    }else if(item == 'OPERASIONAL'){
+                        $("thead tr").append("<th>TPS</th>");
+                        $("thead tr").append("<th class='text-center'><input class='check_all_tps' type='checkbox' id='check_all_tps'></th>");
+                        $("thead tr").append("<th>TTL</th>");
+                        $("thead tr").append("<th class='text-center'><input class='check_all_ttl' type='checkbox' id='check_all_ttl'></th>");
+                        $("thead tr").append("<th>DEPO</th>");
+                        $("thead tr").append("<th class='text-center'><input class='check_all_depo' type='checkbox' id='check_all_depo'></th>");
+                    }else if(item == 'TIMBANG'){
+                        $("thead tr").append("<th>Timbang</th>");
+                        $("thead tr").append("<th class='text-center'><input class='check_all' type='checkbox' id='check_all'></th>");
+                    }else if(item == 'BURUH'){
+                        $("thead tr").append("<th>Buruh</th>");
+                        $("thead tr").append("<th class='text-center'><input class='check_all' type='checkbox' id='check_all'></th>");
+                    }
+                    
                     $("#hasil").html("");
 
-                    var dataJO = null;
+                    var dataCustomer = null;
                     for (var i = 0; i < data.length; i++) {
-                        if(data[i].id_oprs == null || item == 'SEAL'){
-                            if (data[i].id_jo !== dataJO) {
-                                var row = $("<tr></tr>");
-                                
-                                var colspan = 3;
+                        if (data[i].id_customer !== dataCustomer) {
+                            var row = $("<tr></tr>");
+                            var colspan = 4;
+                            if(item == 'TALLY'){
                                 row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
                                 row.append(`<td style='background: #efefef' class='text-center'>
-                                                <input class='check_item check_cust check_cust_${data[i].id_jo}' check='${data[i].id_jo}' 
-                                                    id='check_all${data[i].id_jo}' type='checkbox'>
+                                                <input class='check_item check_cust check_cust_${data[i].id_sewa}' check='${data[i].id_sewa}' 
+                                                    id='check_all${data[i].id_sewa}' type='checkbox'>
                                             </td>`);
-    
-                                $("#hasil").append(row);
-                                dataJO = data[i].id_jo;
+                            }else if(item == 'OPERASIONAL'){
+                                row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
+                                row.append(`<td style='background: #efefef' class='text-center'>
+                                                <input class='check_item check_cust check_cust_${data[i].id_sewa}' check='${data[i].id_sewa}' 
+                                                    id='check_all${data[i].id_sewa}' type='checkbox'>
+                                            </td>`);
+                                row.append(`<td style='background: #efefef'></td>`);
+                                row.append(`<td style='background: #efefef' class='text-center'>
+                                                <input class='check_item check_cust check_cust_${data[i].id_sewa}' check='${data[i].id_sewa}' 
+                                                    id='check_all${data[i].id_sewa}' type='checkbox'>
+                                            </td>`);
+                                row.append(`<td style='background: #efefef'></td>`);
+                                row.append(`<td style='background: #efefef' class='text-center'>
+                                                <input class='check_item check_cust check_cust_${data[i].id_sewa}' check='${data[i].id_sewa}' 
+                                                    id='check_all${data[i].id_sewa}' type='checkbox'>
+                                            </td>`);
+                            }else if(item == 'TIMBANG'){
+                                row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
+                                row.append(`<td style='background: #efefef' class='text-center'>
+                                                <input class='check_item check_cust check_tb_${data[i].id_sewa}' check='${data[i].id_sewa}' 
+                                                    id='check_all${data[i].id_sewa}' type='checkbox'>
+                                            </td>`);
+                            }else if(item == 'BURUH'){
+                                row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
+                                row.append(`<td style='background: #efefef' class='text-center'>
+                                                <input class='check_item check_cust check_tb_${data[i].id_sewa}' check='${data[i].id_sewa}' 
+                                                    id='check_all${data[i].id_sewa}' type='checkbox'>
+                                            </td>`);
                             }
-                            var row = $("<tr></tr>");
-                            row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} </td>`);
-                            row.append(`<td> ${data[i].status_jod} </td>`);
-                            if(item == 'TALLY'){
-                                row.append(`<td> ${data[i].tally.toLocaleString()} 
-                                                <input type="hidden" value='${data[i].tally}' name='data[${data[i].id_sewa}][nominal]' /> 
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <input name="data[${data[i].id_sewa}][item]" class='check_item check_container' ${data[i].id_jo}='cek' 
-                                                    id_jo="${data[i].id_jo}" id='${data[i].id_jo}_${data[i].id_sewa}' type='checkbox'> 
-                                            </td>`);
-                            } 
                             $("#hasil").append(row);
+                            dataCustomer = data[i].id_customer;
                         }
+                        var row = $("<tr class='hoverEffect'></tr>");
+
+                        row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} </td>`);
+                        row.append(`<td> ${data[i].tipe_kontainer}" </td>`);
+                        row.append(`<td><b> ${data[i].jenis_order} </b></td>`);
+
+                        if(data[i].jenis_order == 'INBOUND'){
+                            if(data[i].tipe_kontainer=='20'){
+                                var ttl = 0;
+                                var tps = 0;
+                                var depo = 15000;
+                            }else{
+                                var ttl = 0;
+                                var tps = 0;
+                                var depo = 25000;
+                            }
+                        }else{
+                            if(data[i].tipe_kontainer=='20'){
+                                var ttl = 15000;
+                                var tps = 15000;
+                                var depo = 15000;
+                            }else{
+                                var ttl = 25000;
+                                var tps = 25000;
+                                var depo = 25000;
+                            }
+                        }
+                        if(item == 'TALLY'){
+                            row.append(`<td> ${data[i].tally.toLocaleString()} 
+                                            <input type="hidden" value='${data[i].tally}' name='data[${data[i].id_sewa}][nominal]' /> 
+                                        </td>`);
+                            row.append(`<td class='text-center'> 
+                                            <input name="data[${data[i].id_sewa}][item]" class='check_item check_container' ${data[i].id_sewa}='cek' 
+                                                id_sewa="${data[i].id_sewa}" id='${data[i].id_sewa}_${data[i].id_sewa}' type='checkbox'> 
+                                        </td>`);
+                        } else if(item == 'OPERASIONAL'){
+                            row.append(`<td> ${tps.toLocaleString()}
+                                            <input type="hidden" value='${data[i].tally}' name='data[${data[i].id_sewa}][nominal]' /> 
+                                        </td>`);
+                            row.append(`<td class='text-center'> 
+                                            <input name="data[${data[i].id_sewa}][item]" class='check_item check_container' ${data[i].id_sewa}='cek' 
+                                                id_sewa="${data[i].id_sewa}" id='${data[i].id_sewa}_${data[i].id_sewa}' type='checkbox'> 
+                                        </td>`);
+                            row.append(`<td> ${ttl.toLocaleString()} 
+                                            <input type="hidden" value='${data[i].tally}' name='data[${data[i].id_sewa}][nominal]' /> 
+                                        </td>`);
+                            row.append(`<td class='text-center'> 
+                                            <input name="data[${data[i].id_sewa}][item]" class='check_item check_container' ${data[i].id_sewa}='cek' 
+                                                id_sewa="${data[i].id_sewa}" id='${data[i].id_sewa}_${data[i].id_sewa}' type='checkbox'> 
+                                        </td>`);
+                            row.append(`<td> ${depo.toLocaleString()}
+                                            <input type="hidden" value='${data[i].tally}' name='data[${data[i].id_sewa}][nominal]' /> 
+                                        </td>`);
+                            row.append(`<td class='text-center'> 
+                                            <input name="data[${data[i].id_sewa}][item]" class='check_item check_container' ${data[i].id_sewa}='cek' 
+                                                id_sewa="${data[i].id_sewa}" id='${data[i].id_sewa}_${data[i].id_sewa}' type='checkbox'> 
+                                        </td>`);
+                        } else if(item == 'TIMBANG'){
+                            row.append(`<td> 
+                                            <input type="text" class="form-control" name='data[${data[i].id_sewa}][nominal]' id='open_${data[i].id_sewa}' readonly/> 
+                                        </td>`);
+                            row.append(`<td class='text-center'> 
+                                            <input name="data[${data[i].id_sewa}][item]" class='check_item check_container' ${data[i].id_sewa}='cek' 
+                                                id_sewa="${data[i].id_sewa}" type='checkbox'> 
+                                        </td>`);
+                        } else if(item == 'BURUH'){
+                            row.append(`<td> 
+                                            <input type="text" class="form-control" name='data[${data[i].id_sewa}][nominal]' id='open_${data[i].id_sewa}' readonly/> 
+                                        </td>`);
+                            row.append(`<td class='text-center'> 
+                                            <input name="data[${data[i].id_sewa}][item]" class='check_item check_container' ${data[i].id_sewa}='cek' 
+                                                id_sewa="${data[i].id_sewa}" type='checkbox'> 
+                                        </td>`);
+                        }
+                        $("#hasil").append(row);
                     }
                 },error: function (xhr, status, error) {
                     $("#loading-spinner").hide();
@@ -280,22 +378,46 @@
                 var cust_id = $(this).attr('check_pje');
                 var checkElement = $(`input[pje_${cust_id}="cek"]`);
                 checkElement.prop('checked', $(this).prop('checked'));
+                
                 $("#check_all_pje").prop('checked', false);
             });
         //
 
         // uncheck all
+            function toggleReadonly(inputId) {
+                var inputElement = $('#open_' + inputId);
+                if (inputElement.attr('readonly')) {
+                    inputElement.removeAttr('readonly');
+                } else {
+                    inputElement.attr('readonly', 'readonly');
+                }
+            }
             $(document).on('click', '.check_container', function (event) {
-                var id_jo = $(this).attr('id_jo');
+                var id_sewa = $(this).attr('id_sewa');
                 $("#check_all").prop('checked', false);
-                $(`.check_cust_${id_jo}`).prop('checked', false);
+                $(`.check_cust_${id_sewa}`).prop('checked', false);
+                
+                toggleReadonly(id_sewa);
             });
             $(document).on('click', '.check_container_pje', function (event) {
-                var id_jo = $(this).attr('id_jo_pje');
+                var id_sewa = $(this).attr('id_sewa_pje');
                 $("#check_all_pje").prop('checked', false);
-                $(`.check_cust_pje${id_jo}`).prop('checked', false);
+                $(`.check_cust_pje${id_sewa}`).prop('checked', false);
             });
         //
+
+        $('#biaya_operasional tbody tr td').mouseover(function(){
+            var ro=$(this).closest('tr').index()
+            var col=$(this).index()
+            $(this).addClass('hov').siblings().removeClass('hov')
+            $('#Table2 tr:eq('+ro+')').find('td:eq('+col+')').addClass('hov').siblings().removeClass('hov')
+        });
+        $('#biaya_operasional tbody tr td').mouseleave(function(){
+            var ro=$(this).closest('tr').index()
+            var col=$(this).index()
+            $(this).removeClass('hov')
+            $('#Table2 tr:eq('+ro+')').find('td:eq('+col+')').removeClass('hov')
+        });
     });
 </script>
 @endsection

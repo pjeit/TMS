@@ -61,7 +61,9 @@ class PencairanOperasionalController extends Controller
             })
             ->where('c.grup_id', $id)
             ->where('sewa_operasional.is_aktif', "Y")
+            ->groupBy('sewa_operasional.deskripsi', 'sewa_operasional.id')
             ->get();
+            
         $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
             ->select('*')
             ->where('pengaturan_keuangan.is_aktif', '=', "Y")

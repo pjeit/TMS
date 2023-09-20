@@ -250,6 +250,7 @@ class JobOrderController extends Controller
         $dataCustomer = DB::table('customer')
             ->select('*')
             ->where('customer.is_aktif', '=', "Y")
+            ->orderBy('nama', 'asc')
             ->get();
         $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
             ->select('*')

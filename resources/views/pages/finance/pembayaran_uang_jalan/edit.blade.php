@@ -287,8 +287,19 @@
 
                         $('#kendaraan').val(dataSewaDetail.no_polisi);
                         $('#driver').val(dataSewaDetail.supir);
-                        $('#total_hutang').val(addPeriodType(dataHutangKaryawan.total_hutang,','));
-                        $('#uang_jalan').val(addPeriodType(dataSewaDetail.total_uang_jalan,','));
+                        var total_hutang = 0;
+                        if (dataHutangKaryawan !== null && dataHutangKaryawan.total_hutang !== null) {
+                            total_hutang = dataHutangKaryawan.total_hutang;
+                        } 
+                        var total_uang_jalan = 0;
+                        if (dataSewaDetail !== null && dataSewaDetail.total_uang_jalan !== null) {
+                            total_uang_jalan = dataSewaDetail.total_uang_jalan;
+                        } 
+                        if(total_hutang == 0){
+                            $('#potong_hutang').attr('readonly', 'readonly');
+                        }
+                        $('#total_hutang').val(addPeriodType(total_hutang,','));
+                        $('#uang_jalan').val(addPeriodType(total_uang_jalan,','));
 
 
                         cek_potongan_hutang();

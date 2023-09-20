@@ -134,55 +134,8 @@
                 </div>
                 <div class="card-body" >
                 <div class="d-flex justify-content-between" style="gap: 10px;">
-                    {{-- <table class="table table-bordered" >
-                        <thead>
-                            <tr>
-                                <th colspan="2" class="card-outline card-primary">BIAYA SEBELUM DOORING</th>
-                            </tr>
-                        </thead>
-                        <tbody > 
-                            <tr>
-                                <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox" id="thc_cekbox" <?= ($data['JO']['thc'] == 0) ? '':'checked'; ?> disabled></span> THC</th>
-                                <td name="">
-                                    <input type="text" name="total_thc" id="total_thc" class="form-control" value="{{number_format($data['JO']['thc'])}}" readonly >
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox" id="lolo_cekbox" <?= $data['JO']['lolo'] == 0 ? '':'checked'; ?> disabled></span> LOLO</th>
-                                <td name="">
-                                    <input type="text" name="total_lolo" id="total_lolo" class="form-control" value="{{number_format($data['JO']['lolo'])}}" readonly >
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox" id="apbs_cekbox" <?= ($data['JO']['apbs'] == 0) ? '':'checked'; ?> disabled></span> APBS</th>
-                                <td name="">
-                                    <input type="text" name="total_apbs" id="total_apbs" class="form-control" value="{{number_format($data['JO']['apbs'])}}" readonly >
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><span> <input type="checkbox" class="checkitem" name="cleaning_cekbox" id="cleaning_cekbox" <?=  ($data['JO']['cleaning'] == 0) ? '':'checked'; ?> disabled></span> CLEANING</th>
-                                <td name="">
-                                    <input type="text" name="total_cleaning" id="total_cleaning" class="form-control" value="{{number_format($data['JO']['cleaning'])}}" readonly >
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox" id="doc_fee_cekbox" <?= ($data['JO']['doc_fee'] == 0) ? '':'checked'; ?> disabled></span> DOC FEE</th>
-                                <td name="">
-                                    <input type="text" name="total_doc_fee" id="total_doc_fee" class="form-control" value="{{number_format($data['JO']['doc_fee'])}}" readonly >
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>SUB TOTAL</th>
-                                <td>
-                                    <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" class="form-control" value="<?= number_format($data['JO']['thc']+$data['JO']['lolo']+$data['JO']['apbs']+$data['JO']['cleaning']+$data['JO']['doc_fee'] ,2) ?>" readonly>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tfoot>
-                        </tfoot>
-                    </table> --}}
                     <div class="col-6">
-
+                        &nbsp;
                     </div>
 
                     <div class="col-6 card-outline card-primary">
