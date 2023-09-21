@@ -183,7 +183,6 @@
 		});
         
         function showTable(item){
-            console.log('item '+item);
             $.ajax({
                 method: 'GET',
                 url: `biaya_operasional/load_data/${item}`,
