@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sewa;
+use App\Models\SewaOperasional;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -240,18 +241,46 @@ class PerjalananKembaliController extends Controller
         //
         $data = $request->post();
         $user = Auth::user()->id; 
-        dd($data);
+    // dd(/*isset(*/$data['data_hardcode']/*[0]['masuk_db'])*/);
+        // dd(isset($data['data_hardcode']));
+
         try {
    
-            $perjalanan_kembali->catatan = $data['catatan'];
-            $perjalanan_kembali->tanggal_kembali = $data['tanggal_kembali'];
-            $perjalanan_kembali->no_surat_jalan = $data['surat_jalan'];
-            $perjalanan_kembali->seal_pelayaran = $data['seal'];
-            $perjalanan_kembali->seal_pje = $data['seal_pje'];
+            $perjalanan_kembali->catatan = isset($data['catatan'])? $data['catatan']:null;
+            $perjalanan_kembali->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
+            $perjalanan_kembali->no_surat_jalan = isset($data['surat_jalan'])? $data['surat_jalan']:null;
+            $perjalanan_kembali->seal_pelayaran = isset($data['seal'])? $data['seal']:null;
+            $perjalanan_kembali->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
+
+            if(isset($data['data_hardcode']))
+            {
+                foreach ($data['data_hardcode'] as $key => $value) {
+                    // dd(isset($value['masuk_db'][1]));
+
+                    if(isset($value['masuk_db'][$key]))
+                    {
+                        $SOP = new SewaOperasional();
+                        $SOP->id_sewa = $perjalanan_kembali->id_sewa; 
+                        $SOP->deskripsi = "BELUM DOORING";
+                        $SOP->total_operasional = "BELUM DOORING";
+                        $SOP->is_ditagihkan = "BELUM DOORING";
+                        $SOP->is_dipisahkan = "BELUM DOORING";
+                        $SOP->catatan = "BELUM DOORING";
+                        $SOP->status = "SUDAH DICAIRKAN";
+                        $SOP->created_by = $user;
+                        $SOP->created_at = now();
+                        $SOP->is_aktif = 'Y';
+
+                    }
+                    # code...
+                }
+            }
 
             $perjalanan_kembali->updated_by = $user;
             $perjalanan_kembali->updated_at = now();
             $perjalanan_kembali->save();
+
+
             
             return redirect()->route('perjalanan_kembali.index')->with('status','Berhasil menyimpan data!');
         } catch (ValidationException $e) {
