@@ -124,7 +124,7 @@
                                         <input type="hidden" name="add_cost_hidden" id="add_cost_hidden">
                                         <input type="hidden" id='jenis_tujuan' value='{{$sewa->jenis_tujuan}}'>
 
-                                        
+                                        @if ($sewa->jenis_order =="OUTBOND")
                                         <div class="row" name="div_segel" id="div_segel">
                                             <div class="form-group col-6">
                                                 <label for="seal">Seal</label>
@@ -145,6 +145,7 @@
                                                 </div>
                                             </div> 
                                         </div>
+                                        @endif
 
                                         <div class="row" name="lcl_selected" id="lcl_selected" >
                                             <div class="col-4 col-md-12 col-lg-4">
@@ -199,10 +200,15 @@
                                       <th colspan="7">BIAYA PERJALANAN</th>
                                   </tr>
                                 <tr>
-                                    <th style="width: 30px;"></th>
-                                    <th >Deskripsi</th>
+                                    <th style="width: 30px;">
+                                        <div class="icheck-success d-inline">
+                                            <input type="checkbox" id="checkboxSemua" class="centang_cekbox_semua" >
+                                            <label for="checkboxSemua"></label>
+                                        </div>
+                                    </th>
+                                    <th>Deskripsi</th>
                                     <th>Jumlah</th>
-                                    <th >Ditagihkan</th>
+                                    <th>Ditagihkan</th>
                                     <th>Dipisahkan</th>
                                     <th>Catatan</th>
                                     <th></th>
@@ -218,10 +224,9 @@
                                         <tr id="{{$index}}">
                                             <td>
                                                 <div class="icheck-success d-inline">
-                                                    <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" >
+                                                    <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N">
                                                     <label for="checkboxPrimary_{{$index}}"></label>
                                                 </div>
-                                                
                                             </td>
                                             <td id="id_sewa_operasional_tabel_{{$index}}" hidden="">
                                                 <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->id}}">
@@ -257,8 +262,106 @@
                                         $index+=1;
                                          @endphp
                                     @endforeach
-                                    <input type="hidden" id="maxIndex" value="{{ $index}}">
                                 @endif
+                                @if(isset($array_inbound))
+                                    @if ($sewa->jenis_order == "INBOUND")
+
+                                        @foreach ($array_inbound as $key => $value)
+                                            <tr id="{{$index}}">
+                                                <td >
+                                                    <div class="icheck-success d-inline">
+                                                        <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" >
+                                                        <label for="checkboxPrimary_{{$index}}"></label>
+                                                    </div>
+                                                    
+                                                </td>
+                                                <td id="id_sewa_operasional_tabel_{{$index}}" hidden="">
+                                                    <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="">
+                                                </td>
+                                                <td id="deskripsi_tabel_{{$index}}" >
+                                                        <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control uang numaja" readonly>
+                                                </td>
+                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                        <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya'],2) }}" class="form-control uang numaja" readonly>
+                                                </td>
+                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="data[{{$index}}][ditagihkan_data]"  >
+                                                        <label for="checkTagih_data_{{$index}}"></label>
+                                                        <input type="hidden" class="value_cek_tagih" name="data[{{$index}}][ditagihkan_data_value]"  value="">
+                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                                    </div>
+                                                </td>
+                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}" >
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="data[{{$index}}][dipisahkan_data]"   >
+                                                        <label for="checkPisah_data_{{$index}}"></label>
+                                                        <input type="hidden" class="value_cek_dipisahkan_data" name="data[{{$index}}][dipisahkan_data_value]"  value="">
+
+                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                                    </div>
+                                                </td>
+                                                <td id="catatan_tabel_{{$index}}">
+                                                    <input type="text" name="data[{{$index}}][catatan_data]" id="catatan_data_{{$index}}"   class="form-control catatan">
+                                                </td>
+                                            </tr>
+                                            @php
+                                            $index+=1;
+                                            @endphp
+                                        @endforeach
+                                        
+                                    @endif
+                                @endif
+                                 @if(isset($array_outbond))
+                                    @if ($sewa->jenis_order == "OUTBOND")
+
+                                        @foreach ($array_outbond as $key => $value)
+                                            <tr id="{{$index}}">
+                                                <td>
+                                                    <div class="icheck-success d-inline">
+                                                        <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" >
+                                                        <label for="checkboxPrimary_{{$index}}"></label>
+                                                    </div>
+                                                    
+                                                </td>
+                                                <td id="id_sewa_operasional_tabel_{{$index}}" hidden="">
+                                                    <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="">
+                                                </td>
+                                                <td id="deskripsi_tabel_{{$index}}" >
+                                                        <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control uang numaja" readonly>
+                                                </td>
+                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                        <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya'],2) }}" class="form-control uang numaja" readonly>
+                                                </td>
+                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="data[{{$index}}][ditagihkan_data]"  >
+                                                        <label for="checkTagih_data_{{$index}}"></label>
+                                                        <input type="hidden" class="value_cek_tagih" name="data[{{$index}}][ditagihkan_data_value]"  value="">
+                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                                    </div>
+                                                </td>
+                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}" >
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="data[{{$index}}][dipisahkan_data]"   >
+                                                        <label for="checkPisah_data_{{$index}}"></label>
+                                                        <input type="hidden" class="value_cek_dipisahkan_data" name="data[{{$index}}][dipisahkan_data_value]"  value="">
+
+                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                                    </div>
+                                                </td>
+                                                <td id="catatan_tabel_{{$index}}">
+                                                    <input type="text" name="data[{{$index}}][catatan_data]" id="catatan_data_{{$index}}"   class="form-control catatan">
+                                                </td>
+                                            </tr>
+                                            @php
+                                            $index+=1;
+                                            @endphp
+                                        @endforeach
+                                        
+                                    @endif
+                                @endif
+                                <input type="hidden" id="maxIndex" value="{{ $index}}">
                                 
                                 
                               </tbody>
@@ -303,9 +406,9 @@
        
        function cekCheckbox(){
         var centangCheckboxes = $('.centang_cekbox');
-        // for (var i = 0; i < centangCheckboxes.length; i++) {
-            // var checkbox = centangCheckboxes.eq(i);
-            var row = centangCheckboxes.closest('tr');
+        for (var i = 0; i < centangCheckboxes.length; i++) {
+            var checkbox = centangCheckboxes.eq(i);
+            var row = checkbox.closest('tr');
             var index = row.attr('id');
             var cekTagih = row.find('.cek_tagih');
             var cekPisah = row.find('.cek_pisah');
@@ -313,13 +416,13 @@
             var value_cek_dipisahkan_data = row.find('.value_cek_dipisahkan_data').val();
             var id_operasional = row.find('.id_operasional').val();
 
-            if (id_operasional) {
-                centangCheckboxes.prop('checked', true);
-            } else {
-                centangCheckboxes.prop('checked', false);
-            }
+            // if (id_operasional) {
+            //     checkbox.prop('checked', true);
+            // } else {
+            //     checkbox.prop('checked', false);
+            // }
 
-            if (centangCheckboxes.is(":checked")) {
+            if (checkbox.is(":checked")) {
                 row.find('.cek_tagih').prop('disabled', false);
                 if (value_cek_tagih == "Y") {
                     row.find('.cek_pisah').prop('disabled', false);
@@ -327,14 +430,52 @@
                     row.find('.cek_pisah').prop('disabled', true);
                 }
                 row.find('.catatan').prop('readonly', false);
-            } else if (!centangCheckboxes.is(":checked")) {
-                row.find('.cek_tagih').prop('checked', false);
+            } else if (!checkbox.is(":checked")) {
+                // row.find('.cek_tagih').prop('checked', false);
                 row.find('.cek_tagih').prop('disabled', true);
-                row.find('.cek_pisah').prop('checked', false);
+                // row.find('.cek_pisah').prop('checked', false);
                 row.find('.cek_pisah').prop('disabled', true);
                 row.find('.catatan').prop('readonly', true);
             }
-        // }
+        }
+
+       
+       }
+        function cekCheckboxBaru(){
+            var centangCheckboxes = $('.centang_cekbox');
+            for (var i = 0; i < centangCheckboxes.length; i++) {
+                var checkbox = centangCheckboxes.eq(i);
+                var row = checkbox.closest('tr');
+                var index = row.attr('id');
+                var cekTagih = row.find('.cek_tagih');
+                var cekPisah = row.find('.cek_pisah');
+                var value_cek_tagih = row.find('.value_cek_tagih').val();
+                var value_cek_dipisahkan_data = row.find('.value_cek_dipisahkan_data').val();
+
+                if (checkbox.is(":checked")) {
+                    row.find('.cek_tagih').prop('disabled', false);
+                    row.find('.deskripsi_lain').prop('readonly', false);
+                    row.find('.nominal_lain').prop('readonly', false);
+
+                    if (value_cek_tagih == "Y") {
+                        row.find('.cek_pisah').prop('disabled', false);
+                    } else {
+                        row.find('.cek_pisah').prop('disabled', true);
+                    }
+                    row.find('.catatan').prop('readonly', false);
+                } else if (!checkbox.is(":checked")) {
+                    // row.find('.cek_tagih').prop('checked', false);
+                    row.find('.cek_tagih').prop('disabled', true);
+                    // row.find('.cek_pisah').prop('checked', false);
+                    row.find('.cek_pisah').prop('disabled', true);
+                    row.find('.catatan').prop('readonly', true);
+
+                    row.find('.deskripsi_lain').prop('readonly', true);
+                row.find('.nominal_lain').prop('readonly', true);
+                    // deskripsi_lain.prop('readonly', false);
+                    // nominal_lain.prop('readonly', false);
+                }
+            }
 
        
        }
@@ -347,24 +488,39 @@
             var value_cek_dipisahkan_data = row.find('.value_cek_dipisahkan_data');
             var id_operasional = row.find('.id_operasional');
             // console.log(id_operasional.val());
+            var deskripsi_lain = row.find('.deskripsi_lain');
+            var nominal_lain = row.find('.nominal_lain');
+            // $('.centang_cekbox_semua').prop('checked', false);
+
 
             if ($(this).is(":checked")) {
+                $(this).val('Y');
+                row.find('.deskripsi_lain').prop('readonly', false);
+                row.find('.nominal_lain').prop('readonly', false);
 
+                if(row.find('.cek_tagih').is(":checked"))
+                {
+                    row.find('.cek_pisah').prop('disabled', false);
+                }
+                else
+                {
+                    row.find('.cek_pisah').prop('disabled', true);
+                }
                 row.find('.cek_tagih').prop('disabled', false);
-                row.find('.cek_pisah').prop('disabled', true);
                 row.find('.catatan').prop('readonly', false);
             
             } else if ($(this).is(":not(:checked)")) {  
-
-                row.find('.cek_tagih').prop('checked', false);
+                $(this).val('N')
+                // row.find('.cek_tagih').prop('checked', false);
                 row.find('.cek_tagih').prop('disabled', true);
-                row.find('.cek_pisah').prop('checked', false);
+                // row.find('.cek_pisah').prop('checked', false);
                 row.find('.cek_pisah').prop('disabled', true);
                 row.find('.catatan').prop('readonly', true);
-                value_cek_tagih.val('');
-                value_cek_dipisahkan_data.val('');
+                // value_cek_tagih.val('');
+                // value_cek_dipisahkan_data.val('');
                 // id_operasional.val('HAPUS');
-
+                 row.find('.deskripsi_lain').prop('readonly', true);
+                row.find('.nominal_lain').prop('readonly', true);
 
             }
               
@@ -583,10 +739,10 @@
                             <input type="hidden" id="id_sewa_operasional_data_${maxID}"  class="id_operasional" name="data[${maxID}][id_sewa_operasional_data]" value="">
                         </td>
                         <td id="deskripsi_tabel_${maxID}" >
-                                <input type="text" name="dataLain[${maxID}][deskripsi_data]" id="deskripsi_data_${maxID}" value="" class="form-control deskripsi">
+                                <input type="text" readonly name="dataLain[${maxID}][deskripsi_data]" id="deskripsi_data_${maxID}" value="" class="form-control deskripsi_lain">
                         </td>
                         <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_${maxID}">
-                                <input type="text" name="dataLain[${maxID}][nominal_data]" id="nominal_data_${maxID}" value="" class="form-control uang numaja">
+                                <input type="text" readonly name="dataLain[${maxID}][nominal_data]" id="nominal_data_${maxID}" value="" class="form-control uang numaja nominal_lain">
                         </td>
                         <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_${maxID}" >
                             <div class="icheck-primary d-inline">
@@ -613,12 +769,16 @@
             )
             maxID++;
             $('#maxIndex').val(maxID);
-            cekCheckbox();
+            cekCheckboxBaru();
 		});
-        $(document).on('input', '.deskripsi', function () {
+        $(document).on('input', '.deskripsi_lain', function () {
             $(this).val($(this).val().toUpperCase());
         });
-     
+
+       $(document).on('click', '.centang_cekbox_semua', function () {
+            $('.centang_cekbox').prop('checked', false).trigger('click');
+        });
+      
 
         $(document).on('click','.btnDelete',function(){
             var maxID = $('#maxIndex').val();
@@ -645,7 +805,7 @@
                 icon: 'success',
                 title: 'Data dihapus'
             })
-            cekCheckbox();
+            // cekCheckbox();
 
         });
        
