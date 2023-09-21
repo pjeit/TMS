@@ -42,7 +42,7 @@ class PencairanOperasionalController extends Controller
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
         return view('pages.finance.pencairan_operasional.index',[
-            'judul' => "Biaya Operasional",
+            'judul' => "Pencairan Operasional",
             'data' => $data,
         ]);
     }
@@ -73,7 +73,7 @@ class PencairanOperasionalController extends Controller
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
-
+        // dd($id); 
         return view('pages.finance.pencairan_operasional.pencairan',[
             'judul'=>"Pencairan Operasional || " . $grup->nama_grup,
             'dataKas' => $dataKas,
