@@ -99,13 +99,8 @@ class PerjalananKembaliController extends Controller
                     ->where('s.id_sewa', '=', $perjalanan_kembali->id_sewa)
                     ->groupBy('c.id')
                     ->first();
-        $dataOpreasional = DB::table('sewa_operasional AS so')
-                    ->select('so.*')
-                    ->where('so.is_aktif', '=', 'Y')
-                    ->where('so.status', 'like', '%SUDAH DICAIRKAN%')
-                    ->where('so.id_sewa', '=', $perjalanan_kembali->id_sewa)
-                    ->get();
-        $datajODetail = DB::table('job_order_detail_biaya as jodb')
+     
+        $datajODetailBiaya = DB::table('job_order_detail_biaya as jodb')
             ->select('jodb.*')
             // ->Join('job_order_detail AS job', function($join) {
             //         $join->on('job.id', '=', 'jodb.id_jo_detail')
@@ -117,9 +112,16 @@ class PerjalananKembaliController extends Controller
             ->where('status_bayar' ,'like','%SELESAI PEMBAYARAN%')
             ->where('jodb.is_aktif', '=', "Y")
             ->get();
+        $dataOpreasional = DB::table('sewa_operasional AS so')
+                    ->select('so.*')
+                    ->where('so.is_aktif', '=', 'Y')
+                    ->where('so.status', 'like', '%SUDAH DICAIRKAN%')
+                    ->where('so.id_sewa', '=', $perjalanan_kembali->id_sewa)
+                    ->get();
         // dd(  $dataOpreasional);
         $array_inbound = [];
-        foreach ($datajODetail as $item) {
+        foreach ($datajODetailBiaya as $item) {
+           
             if ($item->storage || $item->storage != 0) {
                 $objSTORAGE = [
                     'deskripsi' => 'STORAGE',
@@ -142,7 +144,18 @@ class PerjalananKembaliController extends Controller
                 array_push($array_inbound, $objDETENTION);
             }
         }
-        // dd(  $array_inbound[0]['deskripsi']);
+        foreach($dataOpreasional as $opersional)
+        {
+            foreach ($array_inbound as $key=> $dataInbound) {
+                # code...
+                if($opersional->deskripsi == $dataInbound['deskripsi'] && $opersional->total_operasional == $dataInbound['biaya'] )
+                {
+                    //hapus array kalau datanya sama 
+                    unset($array_inbound[$key]);
+                }
+            }
+        }
+        // dd(  $array_inbound);
 
 
          $Tujuan = DB::table('grup_tujuan as gt')
@@ -185,10 +198,25 @@ class PerjalananKembaliController extends Controller
             }
             
         }
-        // dd($array_biaya_sl);
-
-
-
+        foreach($dataOpreasional as $opersional)
+        {
+            foreach ($array_outbond as $key=> $dataOutbond) {
+                # code...
+                if($opersional->deskripsi == $dataOutbond['deskripsi'] && $opersional->total_operasional == $dataInbound['biaya'] )
+                {
+                    //hapus array kalau datanya sama 
+                    unset($array_outbond[$key]);
+                }
+            }
+        }
+        //sorting array berdasarkan deskripsi
+        usort($array_outbond, function ($a, $b) {
+            return strcmp($b['deskripsi'],$a['deskripsi']);
+        });
+        usort($array_inbound, function ($a, $b) {
+            return strcmp($b['deskripsi'],$a['deskripsi']);
+        });
+        // dd($array_inbound);
         return view('pages.order.perjalanan_kembali.form',[
             'judul' => "Perjalanan Kembali",
             'sewa'=>$sewa,
@@ -215,10 +243,12 @@ class PerjalananKembaliController extends Controller
         dd($data);
         try {
    
-            $perjalanan_kembali->id_karyawan = $data['select_driver'];
-            $perjalanan_kembali->id_kendaraan = $data['kendaraan_id'];
-            $perjalanan_kembali->id_chassis = $data['ekor_id'];
-            $perjalanan_kembali->no_polisi = $data['no_polisi'];
+            $perjalanan_kembali->catatan = $data['catatan'];
+            $perjalanan_kembali->tanggal_kembali = $data['tanggal_kembali'];
+            $perjalanan_kembali->no_surat_jalan = $data['surat_jalan'];
+            $perjalanan_kembali->seal_pelayaran = $data['seal'];
+            $perjalanan_kembali->seal_pje = $data['seal_pje'];
+
             $perjalanan_kembali->updated_by = $user;
             $perjalanan_kembali->updated_at = now();
             $perjalanan_kembali->save();
