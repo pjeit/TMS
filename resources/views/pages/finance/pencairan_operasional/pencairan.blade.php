@@ -80,18 +80,18 @@
                         <tbody id="tb">
                             @if ($data)
                                 @php
-                                $currentCustomer = null;
+                                    $currentCustomer = null;
                                 @endphp
                                 @foreach ($data as $key => $item)
                                     @php
-                                    $customerName = $item->getSewa->getCustomer->nama;
+                                        $customerName = $item->getSewa->getCustomer->nama;
                                     @endphp
                                     @if ($customerName != $currentCustomer)
                                         <tr class="group-row">
                                             <td colspan="7">{{ $customerName }}</td>
                                         </tr>
                                         @php
-                                        $currentCustomer = $customerName;
+                                            $currentCustomer = $customerName;
                                         @endphp
                                     @endif
                                     <tr id="row{{ $key }}">
