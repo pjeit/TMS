@@ -28,7 +28,7 @@
         </div>
     @endforeach
 @endif
-<form action="{{ route('pencairan_operasional.update', ['pencairan_operasional' => $data[0]->getSewa->id_customer ]) }}" id='save' method="POST" >
+<form action="{{ route('pencairan_operasional.update', ['pencairan_operasional' => $data->getSewa->id_customer ]) }}" id='save' method="POST" >
 @method('PUT')
 @csrf
 <div class="row m-2">

@@ -30,11 +30,11 @@
                         <tr>
                             <th>Group</th>
                             <th>Customer</th>
+                            <th>Tujuan</th>
                             <th>No. Polisi</th>
+                            <th>Driver</th>
                             <th>No. Sewa</th>
                             <th>Tanggal Berangkat</th>
-                            <th>Tujuan</th>
-                            <th>Driver</th>
                             <th style="width:30px"></th>
                         </tr>
                     </thead>
@@ -50,19 +50,17 @@
                                             <div class="col-4">
                                                 <a class="btn btn-success radiusSendiri float-right" href="{{route('pencairan_operasional.pencairan',[$item->getCustomer->grup_id])}}">
                                                     <i class="fas fa-credit-card mr-2"></i> <b>Pencairan</b>
-                                                </a>  
+                                                </a>
                                             </div>
                                         </div> 
                                     </td>
                                     <td><li>{{ $item->getCustomer->nama}}</li></td>
-                                    <td>{{ $item->no_polisi}}</td>
-                                    <td>{{ $item->no_sewa }}</td>
-                                    <td>{{ $item->tanggal_berangkat }}</td>
                                     <td>{{ $item->nama_tujuan }}</td>
+                                    <td>{{ $item->no_polisi}}</td>
                                     <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
-                                    <td>
-                                        
-                                    </td>
+                                    <td>{{ $item->no_sewa }}</td>
+                                    <td>{{date("d-M-Y", strtotime($item->tanggal_berangkat))}}</td>
+                                    <td></td>
                                 </tr>
                             @endforeach
                         @endif
