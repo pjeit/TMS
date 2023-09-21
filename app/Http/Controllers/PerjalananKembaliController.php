@@ -117,9 +117,7 @@ class PerjalananKembaliController extends Controller
             ->where('status_bayar' ,'like','%SELESAI PEMBAYARAN%')
             ->where('jodb.is_aktif', '=', "Y")
             ->get();
-        // dd(  $datajODetail);
-        $array_inbound_outbond = [];
-
+        // dd(  $dataOpreasional);
         $array_inbound = [];
         foreach ($datajODetail as $item) {
             if ($item->storage || $item->storage != 0) {
@@ -144,6 +142,8 @@ class PerjalananKembaliController extends Controller
                 array_push($array_inbound, $objDETENTION);
             }
         }
+        // dd(  $array_inbound[0]['deskripsi']);
+
 
          $Tujuan = DB::table('grup_tujuan as gt')
             ->select('gt.*')
@@ -193,6 +193,8 @@ class PerjalananKembaliController extends Controller
             'judul' => "Perjalanan Kembali",
             'sewa'=>$sewa,
             'dataOpreasional'=>$dataOpreasional,
+            'array_inbound'=>$array_inbound,
+            'array_outbond'=>$array_outbond
             // 'datajODetail'=>$datajODetail,
             // 'TujuanBiaya'=>$TujuanBiaya
         ]);
