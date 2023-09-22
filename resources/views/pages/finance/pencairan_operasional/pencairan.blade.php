@@ -28,7 +28,7 @@
         </div>
     @endforeach
 @endif
-<form action="{{ route('pencairan_operasional.update', ['pencairan_operasional' => $data->getSewa->id_customer ]) }}" id='save' method="POST" >
+<form action="{{ route('pencairan_operasional.update', ['pencairan_operasional' => $data[0]->getSewa->id_customer ]) }}" id='save' method="POST" >
 @method('PUT')
 @csrf
 <div class="row m-2">
@@ -87,7 +87,7 @@
                                         $customerName = $item->getSewa->getCustomer->nama;
                                     @endphp
                                     @if ($customerName != $currentCustomer)
-                                        <tr class="group-row">
+                                        <tr class="group-row bg-gray-light">
                                             <td colspan="7">{{ $customerName }}</td>
                                         </tr>
                                         @php
