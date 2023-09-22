@@ -252,8 +252,8 @@
                                             </td>
                                             @if($value->deskripsi =='INAP'|| $value->deskripsi == 'CLEANING/REPAIR')
                                                 <td id="deskripsi_tabel_{{$index}}" >
-                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control uang numaja deskripsi_hardcode" readonly>
-                                                    <span class="badge badge-success">Data Database</span>
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_hardcode" readonly>
+                                                    <span class="badge badge-success">Data Yang Tersimpan</span>
                                                
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
@@ -272,8 +272,8 @@
                                                 $value->deskripsi =='BURUH'
                                             )
                                                 <td id="deskripsi_tabel_{{$index}}" >
-                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control uang numaja deskripsi" readonly>
-                                                    <span class="badge badge-success">Data Database</span>
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi" readonly>
+                                                    <span class="badge badge-success">Data Yang Tersimpan</span>
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
@@ -294,8 +294,8 @@
                                                 $value->deskripsi != 'CLEANING/REPAIR'
                                             )
                                                 <td id="deskripsi_tabel_{{$index}}" >
-                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control uang numaja deskripsi_lain" >
-                                                    <span class="badge badge-success">Data Database</span>
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_lain" >
+                                                    <span class="badge badge-success">Data Yang Tersimpan</span>
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
@@ -476,7 +476,7 @@
                                         @foreach ($array_outbond as $key => $value)
                                             <tr id="{{$index}}">
                                                 <td>
-                                                    <div class="icheck-success d-inline">
+                                                    <div class="icheck-warning d-inline">
                                                         <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N" name="dataMaster[{{$index}}][masuk_db]">
                                                         <label for="checkboxPrimary_{{$index}}"></label>
                                                     </div>
@@ -487,6 +487,8 @@
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                         <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control uang numaja" readonly>
+                                                    <span class="badge badge-warning">Data Master</span>
+                                                
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                         <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya'],2) }}" class="form-control uang numaja" readonly>
@@ -903,7 +905,7 @@
                 `
                     <tr id="${maxID}">
                         <td>
-                            <div class="icheck-success d-inline">
+                            <div class="icheck-primary d-inline">
                                 <input type="checkbox" id="checkboxPrimary_${maxID}" class="centang_cekbox" value="N" name="dataLain[${maxID}][masuk_db]">
                                 <label for="checkboxPrimary_${maxID}"></label>
                             </div>
@@ -914,6 +916,8 @@
                         </td>
                         <td id="deskripsi_tabel_${maxID}" >
                                 <input type="text" readonly name="dataLain[${maxID}][deskripsi_data]" id="deskripsi_data_${maxID}" value="" class="form-control deskripsi_lain">
+                                <span class="badge badge-primary">Data Lain-lain</span>
+                        
                         </td>
                         <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_${maxID}">
                                 <input type="text" readonly name="dataLain[${maxID}][nominal_data]" id="nominal_data_${maxID}" value="" class="form-control uang numaja nominal_lain">
@@ -1002,15 +1006,120 @@
        
       
         $('#post_data').submit(function(event) {
-            // var kas = $('#pembayaran').val();
-            // if (kas == '' || kas == null) {
-            //     event.preventDefault(); // Prevent form submission
-            //     Swal.fire({
-            //         icon: 'error',
-            //         text: 'KAS PEMBAYARAN WAJIB DIPILIH!',
-            //     })
-            //     return;
-            // }
+            var deskripsi = $('.deskripsi_lain');
+            var nominal_lain = $('.nominal_lain');
+            var nominal_hardcode = $('.nominal_hardcode');
+
+            var flagDeskripsi = false;
+            var flagDeskripsiPrevent = false;
+
+            var flagNominal = false;
+            var flagNominalHardcode = false;
+
+
+            for (var i = 0; i < deskripsi.length; i++) {
+                var desTextbox = deskripsi.eq(i);
+                var row = desTextbox.closest('tr');
+                var index = row.attr('id');
+                var trimTextbox = desTextbox.val().trim();
+                var simpanData=row.find('.centang_cekbox').val();
+
+                if(simpanData=="Y")
+                {
+                    if (trimTextbox === '') {
+                        flagDeskripsi = true;
+                        break; 
+                    }
+                }
+            }
+
+            for (var i = 0; i < deskripsi.length; i++) {
+                var desTextbox = deskripsi.eq(i);
+                var row = desTextbox.closest('tr');
+                var index = row.attr('id');
+                var trimTextbox = desTextbox.val().trim();
+                var simpanData=row.find('.centang_cekbox').val();
+
+                if(simpanData=="Y")
+                {
+                    if (
+                        trimTextbox ==='STORAGE'||
+                        trimTextbox ==='DEMURAGE'||
+                        trimTextbox ==='DETENTION'||
+                        trimTextbox ==='SEAL'||
+                        trimTextbox ==='SEAL PJE'||
+                        trimTextbox ==='PLASTIK'||
+                        trimTextbox ==='TALLY'||
+                        trimTextbox ==='TIMBANGAN'||
+                        trimTextbox ==='BURUH'||
+                        trimTextbox ==='INAP'|| 
+                        trimTextbox === 'CLEANING/REPAIR'
+
+                    ) {
+                        flagDeskripsiPrevent = true;
+                        break; 
+                    }
+                }
+            }
+
+            for (var i = 0; i < nominal_lain.length; i++) {
+                var NominalTextbox = nominal_lain.eq(i);
+                var row = NominalTextbox.closest('tr');
+                var index = row.attr('id');
+                var trimNominal = NominalTextbox.val().trim();
+                var simpanData=row.find('.centang_cekbox').val();
+
+                if(simpanData=="Y")
+                {
+                    if (trimNominal === '') {
+                        flagNominal = true;
+                        break; 
+                    }
+                }
+            }
+
+            for (var i = 0; i < nominal_hardcode.length; i++) {
+                var NominalHardCodeTextbox = nominal_hardcode.eq(i);
+                var row = NominalHardCodeTextbox.closest('tr');
+                var index = row.attr('id');
+                var trimNominal = NominalHardCodeTextbox.val().trim();
+                var simpanData=row.find('.centang_cekbox').val();
+
+                if(simpanData=="Y")
+                {
+                    if (trimNominal === '') {
+                        flagNominalHardcode = true;
+                        break; 
+                    }
+                }
+            }
+
+            if (flagDeskripsi) {
+                event.preventDefault(); 
+                Swal.fire({
+                    icon: 'error',
+                    text: 'DESKRIPSI BIAYA WAJIB DIISI!',
+                });
+                return;
+            }
+            if (flagNominal||flagNominalHardcode) {
+                event.preventDefault(); 
+                Swal.fire({
+                    icon: 'error',
+                    text: 'NOMINAL BIAYA WAJIB DIISI!',
+                });
+                return;
+            }
+            if (flagDeskripsiPrevent) {
+                event.preventDefault(); 
+                Swal.fire({
+                    icon: 'error',
+                    title: 'BIAYA LAIN-LAIN TIDAK BOLEH SAMA!',
+                    text: 'Pilih Deskripsi Lain Selain Dari Data Template / Data Tersimpan / Data Master',
+                });
+                return;
+            }
+
             event.preventDefault();
 
             Swal.fire({

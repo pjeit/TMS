@@ -205,13 +205,13 @@ class PerjalananKembaliController extends Controller
                 array_push($array_outbond, $objPlastik);
             }
     
-            if ($item->tally) {
-                $objTally = [
-                    'deskripsi' => 'TALLY',
-                    'biaya' => $item->tally,
-                ];
-                array_push($array_outbond, $objTally);
-            }
+            // if ($item->tally) {
+            //     $objTally = [
+            //         'deskripsi' => 'TALLY',
+            //         'biaya' => $item->tally,
+            //     ];
+            //     array_push($array_outbond, $objTally);
+            // }
             
         }
         foreach($dataOpreasional as $opersional)
@@ -266,6 +266,7 @@ class PerjalananKembaliController extends Controller
             $perjalanan_kembali->no_surat_jalan = isset($data['surat_jalan'])? $data['surat_jalan']:null;
             $perjalanan_kembali->seal_pelayaran = isset($data['seal'])? $data['seal']:null;
             $perjalanan_kembali->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
+            $perjalanan_kembali->status = $data['is_kembali']=='Y'? 'KENDARAAN KEMBALI':'DALAM PERJALANAN';
             $perjalanan_kembali->updated_by = $user;
             $perjalanan_kembali->updated_at = now();
             $perjalanan_kembali->save();
