@@ -242,7 +242,7 @@ class PerjalananKembaliController extends Controller
         $data = $request->post();
         $user = Auth::user()->id; 
     // dd(/*isset(*/$data['data_hardcode']/*[0]['masuk_db'])*/);
-        // dd(isset($data['data_hardcode']));
+        // dd($data);
 
         try {
    
@@ -251,34 +251,113 @@ class PerjalananKembaliController extends Controller
             $perjalanan_kembali->no_surat_jalan = isset($data['surat_jalan'])? $data['surat_jalan']:null;
             $perjalanan_kembali->seal_pelayaran = isset($data['seal'])? $data['seal']:null;
             $perjalanan_kembali->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
-
+            $perjalanan_kembali->updated_by = $user;
+            $perjalanan_kembali->updated_at = now();
+            $perjalanan_kembali->save();
+            //ini kalo dicentang yang harcode di html
             if(isset($data['data_hardcode']))
             {
                 foreach ($data['data_hardcode'] as $key => $value) {
                     // dd(isset($value['masuk_db'][1]));
 
-                    if(isset($value['masuk_db'][$key]))
+                    if(isset($value['masuk_db']))
                     {
                         $SOP = new SewaOperasional();
                         $SOP->id_sewa = $perjalanan_kembali->id_sewa; 
-                        $SOP->deskripsi = "BELUM DOORING";
-                        $SOP->total_operasional = "BELUM DOORING";
-                        $SOP->is_ditagihkan = "BELUM DOORING";
-                        $SOP->is_dipisahkan = "BELUM DOORING";
-                        $SOP->catatan = "BELUM DOORING";
+                        $SOP->deskripsi = $value['deskripsi_data'];
+                        $SOP->total_operasional = (float)str_replace(',', '', $value['nominal_data']);
+                        $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
+                        $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
+                        $SOP->catatan = $value['catatan_data'];
+                        $SOP->status = "BELUM DICAIRKAN";
+                        $SOP->created_by = $user;
+                        $SOP->created_at = now();
+                        $SOP->is_aktif = 'Y';
+                        $SOP->save();
+                    }
+                    # code...
+                }
+            }
+            //ini kalo ada data di db
+            if(isset($data['data']))
+            {
+                foreach ($data['data'] as $key => $value) {
+                    // dd(isset($value['masuk_db'][1]));
+
+                    if(isset($value['masuk_db']))
+                    {
+                        
+
+                         DB::table('sewa_operasional')
+                            ->where('id_sewa', $perjalanan_kembali->id_sewa)
+                            ->where('id', $value['id_sewa_operasional_data'])
+                            ->update([
+                                'deskripsi' => $value['deskripsi_data'],
+                                'total_operasional' => (float)str_replace(',', '', $value['nominal_data']),
+                                'is_ditagihkan' => $value['ditagihkan_data_value'],
+                                'is_dipisahkan' => $value['dipisahkan_data_value'],
+                                'catatan' => $value['catatan_data'],
+                                'updated_at' => now(),
+                                'updated_by' => $user,
+                            ]);
+                      
+                    }
+                    # code...
+                }
+            }
+            //ini kalo dicentang data yang ambil dari db tujuan biaya/ jodetail biaya yang S/D/T
+            if(isset($data['dataMaster']))
+            {
+                
+                foreach ($data['dataMaster'] as $key => $value) {
+                    // dd(isset($value['masuk_db'][1]));
+
+                    if(isset($value['masuk_db']))
+                    {
+                       
+                        $SOP = new SewaOperasional();
+                        $SOP->id_sewa = $perjalanan_kembali->id_sewa; 
+                        $SOP->deskripsi = $value['deskripsi_data'];
+                        $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_data']);
+                        $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
+                        $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
+                        $SOP->catatan = $value['catatan_data'];
                         $SOP->status = "SUDAH DICAIRKAN";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
                         $SOP->is_aktif = 'Y';
+                        $SOP->save();
+                    }
+                    # code...
+                }
+            }
+            //ini kalo dicentang dan nambah data baru yang user ngetik sendiri
+            // dd($data);
+             if(isset($data['dataLain']))
+            {
+                foreach ($data['dataLain'] as $key => $value) {
+                    // dd(isset($value['masuk_db'][1]));
 
+                    if(isset($value['masuk_db']))
+                    {
+                        $SOP = new SewaOperasional();
+                        $SOP->id_sewa = $perjalanan_kembali->id_sewa; 
+                        $SOP->deskripsi = $value['deskripsi_data'];
+                        $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_data']);
+                        $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
+                        $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
+                        $SOP->catatan = $value['catatan_data'];
+                        $SOP->status = "SUDAH DICAIRKAN";
+                        $SOP->created_by = $user;
+                        $SOP->created_at = now();
+                        $SOP->is_aktif = 'Y';
+                        $SOP->save();
                     }
                     # code...
                 }
             }
 
-            $perjalanan_kembali->updated_by = $user;
-            $perjalanan_kembali->updated_at = now();
-            $perjalanan_kembali->save();
+           
 
 
             
