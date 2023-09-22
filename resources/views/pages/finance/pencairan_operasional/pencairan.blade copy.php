@@ -79,27 +79,36 @@
                         </thead>
                         <tbody id="tb">
                             @if ($data)
-                                @foreach ($data as $grups)
-                                    <tr class="group-row bg-gray-light">
-                                        <td colspan="7">{{ $grups->getSewa->getCustomer->nama }}</td>
-                                    </tr>
-                                    @foreach ($grups as $key => $item)
-                                        <tr id="row{{ $key }}">
-                                            <td>{{ $item->getSewa->getTujuan->nama_tujuan }}</td>
-                                            <td>{{ $item->getSewa->no_polisi }}</td>
-                                            <td>{{ $item->getSewa->getKaryawan->nama_panggilan }}</td>
-                                            <td>{{ $item->deskripsi }}</td>
-                                            <td width="200">
-                                                <input type="text" id="detail[{{ $key }}][total_operasional]" name="detail[{{ $key }}][total_operasional]" value="{{ number_format($item->total_operasional) }}" class="form-control" readonly>
-                                            </td>
-                                            <td width="200">
-                                                <input type="text" id="detail[{{ $key }}][total_dicairkan]" name="detail[{{ $key }}][total_dicairkan]" value="{{ $item->no_kontainer }}" class="form-control uang numaja">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="detail[{{ $key }}][catatan]" class="form-control">
-                                            </td>
+                                @php
+                                    $currentCustomer = null;
+                                @endphp
+                                @foreach ($data as $key => $item)
+                                    @php
+                                        $customerName = $item->getSewa->getCustomer->nama;
+                                    @endphp
+                                    @if ($customerName != $currentCustomer)
+                                        <tr class="group-row bg-gray-light">
+                                            <td colspan="7">{{ $customerName }}</td>
                                         </tr>
-                                    @endforeach
+                                        @php
+                                            $currentCustomer = $customerName;
+                                        @endphp
+                                    @endif
+                                    <tr id="row{{ $key }}">
+                                        <td>{{ $item->getSewa->getTujuan->nama_tujuan }}</td>
+                                        <td>{{ $item->getSewa->no_polisi }}</td>
+                                        <td>{{ $item->getSewa->getKaryawan->nama_panggilan }}</td>
+                                        <td>{{ $item->deskripsi }}</td>
+                                        <td width="200">
+                                            <input type="text" id="detail[{{ $key }}][total_operasional]" name="detail[{{ $key }}][total_operasional]" value="{{ number_format($item->total_operasional) }}" class="form-control" readonly>
+                                        </td>
+                                        <td width="200">
+                                            <input type="text" id="detail[{{ $key }}][total_dicairkan]" name="detail[{{ $key }}][total_dicairkan]" value="{{ $item->no_kontainer }}" class="form-control uang numaja">
+                                        </td>
+                                        <td>
+                                            <input type="text" name="detail[{{ $key }}][catatan]" class="form-control">
+                                        </td>
+                                    </tr>
                                 @endforeach
                             @endif
                         </tbody>

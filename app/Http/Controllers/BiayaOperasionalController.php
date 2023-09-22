@@ -55,7 +55,6 @@ class BiayaOperasionalController extends Controller
             $user = Auth::user()->id;
             $data = $request->post();
             $item = $data['item'];
-            // var_dump($data); die;
 
             foreach ($data['data'] as $key => $value) {
                 if(isset($value['item'])){
@@ -233,6 +232,7 @@ class BiayaOperasionalController extends Controller
                                 ->where('so.deskripsi', '=', $item);
                         }
                     })
+                    ->where('s.status', 'MENUNGGU OPERASIONAL')
                     ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')

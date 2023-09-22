@@ -45,7 +45,7 @@
                                     <td>
                                         <div class="row">
                                             <div class="col-8">
-                                                {{$item->getCustomer->getGrup->id}} {{ $item->getCustomer->getGrup->nama_grup}}
+                                                {{ $item->getCustomer->getGrup->nama_grup}}
                                             </div>
                                             <div class="col-4">
                                                 <a class="btn btn-success radiusSendiri float-right" href="{{route('pencairan_operasional.pencairan',[$item->getCustomer->getGrup->id])}}">
