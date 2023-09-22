@@ -119,7 +119,22 @@ class PerjalananKembaliController extends Controller
                     ->where('so.status', 'like', '%SUDAH DICAIRKAN%')
                     ->where('so.id_sewa', '=', $perjalanan_kembali->id_sewa)
                     ->get();
-        // dd(  $dataOpreasional);
+        // dd($dataOpreasional);
+        // dd(strpos($dataOpreasional, 'CLEANING/REPAIR'));
+
+        $flagCleaning=false;
+        foreach($dataOpreasional as $opersional)
+        {
+            
+            if( $opersional->deskripsi== 'CLEANING/REPAIR' )
+            {
+                //hapus array kalau datanya sama 
+                $flagCleaning = true;
+                break;
+            }
+        }
+        // dd($flagCleaning);
+
         $array_inbound = [];
         foreach ($datajODetailBiaya as $item) {
            
