@@ -115,6 +115,7 @@ class GrupTujuanController extends Controller
                 'uang_jalan'=>$value->uang_jalan,
                 'tarif'=>$value->tarif,
                 'komisi'=>$value->komisi,
+                'komisi_driver'=>$value->komisi_driver,
                 'catatan'=>$value->catatan,
                 'seal_pelayaran'=>$value->seal_pelayaran,
                 'seal_pje'=>$value->seal_pje,
@@ -183,6 +184,8 @@ class GrupTujuanController extends Controller
                     // ini edit 
                     $tarif = ($value['tarif'] != '')? floatval(str_replace(',', '', $value['tarif'])):0;
                     $komisi = ($value['komisi'] != '')? floatval(str_replace(',', '', $value['komisi'])):0;
+                    $komisi_driver_hidden = ($value['komisi_driver_hidden'] != '')? floatval(str_replace(',', '', $value['komisi_driver_hidden'])):0;
+
                     $uang_jalan = ($value['uang_jalan'] != '')? floatval(str_replace(',', '', $value['uang_jalan'])):0;
                     $harga_per_kg = ($value['harga_per_kg_hidden'] != '')? floatval(str_replace(',', '', $value['harga_per_kg_hidden'])):0;
 
@@ -198,6 +201,7 @@ class GrupTujuanController extends Controller
                         $edit_tujuan->uang_jalan = $uang_jalan;
                         $edit_tujuan->tarif = $tarif;
                         $edit_tujuan->komisi = $komisi;
+                        $edit_tujuan->komisi_driver = $komisi_driver_hidden;
                         $edit_tujuan->catatan = $value['catatan'];
                         $edit_tujuan->seal_pje = ($value['seal_pje_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pje_hidden'])):null;
                         $edit_tujuan->seal_pelayaran = ($value['seal_pelayaran_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pelayaran_hidden'])):null;

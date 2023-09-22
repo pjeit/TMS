@@ -114,7 +114,8 @@
                                                         <input type="hidden" name="data[tujuan][{{$key}}][id_tujuan]" id="id_tujuan_{{$key}}" value="{{$item->id}}" >
                                                         <input type="hidden" name="data[tujuan][{{$key}}][alamat_hidden]" id="alamat_hidden_{{$key}}" value="{{$item->alamat}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][uang_jalan_hidden]" id="uang_jalan_hidden_{{$key}}" value="{{$item->uang_jalan}}">
-                                                        <input type="hidden" name="data[tujuan][{{$key}}][komisi_hidden]" id="komisi_hidden_{{$key}}" value="{{$item->komisi}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][komisi_hidden]" id="komisi_hidden_{{$key}}" value="{{number_format($item->komisi)}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][komisi_driver_hidden]" id="komisi_driver_hidden_{{$key}}" value="{{number_format($item->komisi_driver)}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][harga_per_kg_hidden]" id="harga_per_kg_hidden_{{$key}}" value="{{number_format($item->harga_per_kg)}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][min_muatan_hidden]" id="min_muatan_hidden_{{$key}}" value="{{$item->min_muatan}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][grup_hidden]" id="grup_hidden_{{$key}}" value="{{$item->grup_id}}">
@@ -231,7 +232,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
+                            <div class="form-group col-lg-3 col-md-6 col-sm-6">
                                 <label for="uang_jalan">Uang Jalan Driver</label>
                                 <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -240,8 +241,8 @@
                                 <input type="text" name="uang_jalan" class="form-control numaja uang" id="uang_jalan" placeholder="" readonly> 
                                 </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
-                                <label for="komisi">Komisi</label>
+                            <div class="form-group col-lg-3 col-md-6 col-sm-6">
+                                <label for="komisi">Komisi Tujuan</label>
                                 <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Rp</span>
@@ -249,7 +250,16 @@
                                 <input type="text" name="komisi" class="form-control numaja uang" id="komisi" placeholder=""> 
                                 </div>
                             </div>
-                            <div class="form-group col-lg-4 col-md-6 col-sm-6">
+                            <div class="form-group col-lg-3 col-md-6 col-sm-6">
+                                <label for="komisi">Komisi Driver</label>
+                                <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Rp</span>
+                                </div>
+                                <input type="text" name="komisi_driver" class="form-control numaja uang" id="komisi_driver" placeholder=""> 
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-3 col-md-6 col-sm-6">
                                 <label for="">Kargo</label>
                                 <input type="text" name="kargo_pje" class="form-control" id="kargo_pje" placeholder=""> 
                             </div>
@@ -782,12 +792,14 @@
             if($('#komisi_'+key).val() != ''){
                 $('#komisi').val($('#komisi_'+key).val());
             }
+            if($('#komisi_driver_hidden_'+key).val() != ''){
+                $('#komisi_driver').val($('#komisi_driver_hidden_'+key).val());
+            }
+            
             if($('#alamat_hidden_'+key).val() != ''){
                 $('#alamat').val($('#alamat_hidden_'+key).val());
             }
-            if($('#alamat_hidden_'+key).val() != ''){
-                $('#uang_jalan').val($('#uang_jalan_'+key).val());
-            }
+           
             if($('#nama_tujuan_'+key).val() != ''){
                 $('#nama_tujuan').val($('#nama_tujuan_'+key).val());
             }
@@ -961,6 +973,7 @@
                     $('#nama_tujuan_'+key).val($('#nama_tujuan').val());
                     $('#uang_jalan_'+key).val(parseFloat($('#uang_jalan').val()));
                     $('#komisi_'+key).val($('#komisi').val());
+                    $('#komisi_driver_hidden_'+key).val($('#komisi_driver').val());
                     $('#catatan_'+key).val($('#catatan').val());
                     $('#alamat_hidden_'+key).val($('#alamat').val());
                     $('#jenis_tujuan_'+key).val(selJns);
@@ -1094,6 +1107,7 @@
                             <input value="${$('#alamat').val()}" name="data[tujuan][${i}][alamat_hidden]" id="alamat_hidden_${i}" type="hidden" >
                             <input value="${total_biaya}" name="data[tujuan][${i}][uang_jalan_hidden]" id="uang_jalan_hidden_${i}" type="hidden" >
                             <input value="${$('#komisi').val()}" name="data[tujuan][${i}][komisi_hidden]" id="komisi_hidden_${i}" type="hidden" >
+                            <input value="${$('#komisi_driver').val()}" type="hidden" name="data[tujuan][${i}][komisi_driver_hidden]" id="komisi_driver_hidden_${i}" >
                             <input value="${$('#harga_per_kg').val()}" name="data[tujuan][${i}][harga_per_kg_hidden]" id="harga_per_kg_hidden_${i}" type="hidden" >
                             <input value="${$('#min_muatan').val()}" name="data[tujuan][${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}" type="hidden" >
                             <input value="${$('#grup').val()}" name="data[tujuan][${i}][grup_hidden]" id="grup_hidden_${i}" type="hidden"  placeholder="">
@@ -1140,6 +1154,9 @@
             $('#tarif').val('');
             $('#uang_jalan').val('');
             $('#komisi').val('');
+            $('#komisi_driver').val('');
+
+
             $('#catatan').val('');
             $('#seal_pje').val('');
             $('#seal_pelayaran').val('');
