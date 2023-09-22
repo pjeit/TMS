@@ -25,7 +25,7 @@
             </div>
 
             <div class="card-body">
-                <table id="rowGroup" class="table table-bordered " width=''>
+                <table id="rowGroup" class="table table-bordered " width='100%'>
                     <thead>
                         <tr>
                             <th>Group</th>
@@ -35,7 +35,7 @@
                             <th>Driver</th>
                             <th>No. Sewa</th>
                             <th>Tanggal Berangkat</th>
-                            <th style="width:30px"></th>
+                            <th style="width:30px">###</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -85,8 +85,12 @@ $( document ).ready(function() {
             {
                 targets: [0, 1],
                 visible: false
+            },
+            {
+                "orderable": false,
+                "targets": 7
             }
-        ]
+        ],
     });
 });
 </script>

@@ -106,14 +106,28 @@
     $(document).ready(function() {
         $('#save').submit(function(event) {
             var item = $('#item').val();
-            if (item == '' || item == null) {
-                event.preventDefault(); // Prevent form submission
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Harap pilih item dahulu!',
-                })
-                return;
-            }
+            var isOk = 0;
+
+            // check apakah sudah ada yg dicentang?
+                var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(function(checkbox) {
+                    if (checkbox.checked) {
+                        isOk = 1;
+                    }
+                });
+            //
+
+            // validasi sebelum di submit
+                if (item == '' || item == null || isOk == 0) {
+                    event.preventDefault(); // Prevent form submission
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Harap pilih item dahulu!',
+                    })
+                    return;
+                }
+            //
+            event.preventDefault(); // Prevent form submission
 
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar ?',
@@ -183,136 +197,156 @@
 		});
         
         function showTable(item){
-            $.ajax({
-                method: 'GET',
-                url: `biaya_operasional/load_data/${item}`,
-                dataType: 'JSON',
-                contentType: false,
-                cache: false,
-                processData:false,
-                success: function(response) {
-                    $("#loading-spinner").hide();
-                    var item = $('#item').val();
-                    var data = response.data;
-
-                    $("th").remove();
-                    $("thead tr").append("<th>###</th><th>Tipe</th>");
-                    $("thead tr").append("<th>Jenis</th>");
-              
-                    if(item == 'TALLY'){
-                        $("thead tr").append("<th>Tally</th>");
-                        $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
-                    }else if(item == 'OPERASIONAL'){
-                        $("thead tr").append("<th>Pick Up</th>");
-                        $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
-                    }else if(item == 'TIMBANG'){
-                        $("thead tr").append("<th>Timbang</th>");
-                        $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
-                    }else if(item == 'BURUH'){
-                        $("thead tr").append("<th>Buruh</th>");
-                        $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
-                    }                    
-                    $("#hasil").html("");
-
-                    var dataCustomer = null;
-                    for (var i = 0; i <data.length; i++) {
-                        if(data[i].deskripsi_so != item ){
-                            if (data[i].id_customer !== dataCustomer) {
-                                var row = $("<tr></tr>");
-                                var colspan = 4;
-                                if(item == 'TALLY' || item == 'OPERASIONAL'){
-                                    row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
-                                    row.append(`<td style='background: #efefef' class='text-center'>
-                                                    <input class='check_item check_cust' cust_parent='${data[i].id_customer}' 
-                                                         type='checkbox'> 
+            if(item == ''){
+                var table = document.getElementById("biaya_operasional");
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Biaya Operasional</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hasil">
+                    </tbody>
+                `;
+            }else{
+                $.ajax({
+                    method: 'GET',
+                    url: `biaya_operasional/load_data/${item}`,
+                    dataType: 'JSON',
+                    contentType: false,
+                    cache: false,
+                    processData:false,
+                    success: function(response) {
+                        $("#loading-spinner").hide();
+                        var item = $('#item').val();
+                        var data = response.data;
+    
+                        $("th").remove();
+                        $("thead tr").append("<th>###</th><th>Tipe</th>");
+                        $("thead tr").append("<th>Jenis</th>");
+                        if(item == 'TALLY'){
+                            $("thead tr").append("<th>Tally</th>");
+                            $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
+                        }else if(item == 'OPERASIONAL'){
+                            $("thead tr").append("<th>Pick Up</th>");
+                            $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
+                        }else if(item == 'TIMBANG'){
+                            $("thead tr").append("<th>Timbang</th>");
+                            $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
+                        }else if(item == 'BURUH'){
+                            $("thead tr").append("<th>Buruh</th>");
+                            $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
+                        }                    
+                        $("#hasil").html("");
+    
+                        var dataCustomer = null;
+                        for (var i = 0; i <data.length; i++) {
+                            var start = data[i].deskripsi_so;
+                            if (item == 'OPERASIONAL') {
+                                item = item +' '+ data[i].pick_up; // start.substring(0, 11)
+                            }
+    
+                            if(start != item ){
+                                if (data[i].id_customer !== dataCustomer) {
+                                    var row = $("<tr></tr>");
+                                    var colspan = 4;
+                                    if(item == 'TALLY' || item.substring(0, 11) == 'OPERASIONAL'){
+                                        row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
+                                        row.append(`<td style='background: #efefef' class='text-center'>
+                                                        <input class='check_item check_cust' cust_parent='${data[i].id_customer}' 
+                                                            type='checkbox'> 
+                                                    </td>`);
+                                    }else if(item == 'TIMBANG'){
+                                        row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
+                                        row.append(`<td style='background: #efefef' class='text-center'>
+                                                        <input class='check_item check_cust check_tb_${data[i].id_sewa}' cust_parent='${data[i].id_customer}' 
+                                                            type='checkbox'> 
+                                                    </td>`);
+                                    }else if(item == 'BURUH'){
+                                        row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
+                                        row.append(`<td style='background: #efefef' class='text-center'>
+                                                        <input class='check_item check_cust check_tb_${data[i].id_sewa}' cust_parent='${data[i].id_customer}' 
+                                                            type='checkbox'> 
+                                                    </td>`);
+                                    }
+                                    $("#hasil").append(row);
+                                    dataCustomer = data[i].id_customer;
+                                }
+                                var row = $("<tr class='hoverEffect'></tr>");
+        
+                                row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} </td>`);
+                                row.append(`<td> ${data[i].tipe_kontainer}" ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                row.append(`<td><b> ${data[i].jenis_order} </b></td>`);
+        
+                                if(data[i].jenis_order == 'INBOUND'){
+                                    if(data[i].tipe_kontainer=='20'){
+                                        var pick_up_cost = 0;
+                                        if(data[i].pick_up == 'DEPO'){
+                                            var pick_up_cost = 15000;
+                                        }
+                                    }else{
+                                        var pick_up_cost = 0;
+                                        if(data[i].pick_up == 'DEPO'){
+                                            var pick_up_cost = 25000;
+                                        }
+                                    }
+                                }else{
+                                    if(data[i].tipe_kontainer=='20'){
+                                        var pick_up_cost = 15000;
+                                    }else{
+                                        var pick_up_cost = 25000;
+                                    }
+                                }
+                                if(item == 'TALLY'){
+                                    row.append(`<td> ${data[i].tally.toLocaleString()} 
+                                                    <input type="hidden" value='${data[i].tally}' name='data[${data[i].id_sewa}][nominal]' /> 
                                                 </td>`);
-                                }else if(item == 'TIMBANG'){
-                                    row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
-                                    row.append(`<td style='background: #efefef' class='text-center'>
-                                                    <input class='check_item check_cust check_tb_${data[i].id_sewa}' cust_parent='${data[i].id_customer}' 
-                                                         type='checkbox'> 
+                                    row.append(`<td class='text-center'> 
+                                                    <input class='check_item check_container'  
+                                                        id_sewa="${data[i].id_sewa}" cust_child='${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" type='checkbox'> 
                                                 </td>`);
-                                }else if(item == 'BURUH'){
-                                    row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
-                                    row.append(`<td style='background: #efefef' class='text-center'>
-                                                    <input class='check_item check_cust check_tb_${data[i].id_sewa}' cust_parent='${data[i].id_customer}' 
-                                                         type='checkbox'> 
+                                } else if(item.substring(0, 11) == ('OPERASIONAL')){
+                                    row.append(`<td> ${pick_up_cost.toLocaleString()} 
+                                                    <input type="hidden" value='${pick_up_cost}' name='data[${data[i].id_sewa}][nominal]' /> 
+                                                    <input type="hidden" value='${data[i].pick_up}' name='data[${data[i].id_sewa}][pick_up]' /> 
+                                                </td>`);
+                                    row.append(`<td class='text-center'> 
+                                                    <input class='check_item check_container'  
+                                                        id_sewa="${data[i].id_sewa}" cust_child='${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" type='checkbox'> 
+                                                </td>`);
+                                } else if(item == 'TIMBANG'){
+                                    row.append(`<td> 
+                                                    <input type="text" class="uang numaja form-control open_cust_${data[i].id_customer}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' readonly/> 
+                                                </td>`);
+                                    row.append(`<td class='text-center'> 
+                                                    <input class='check_item check_container'  
+                                                        id_sewa="${data[i].id_sewa}" cust_child='${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" type='checkbox'> 
+                                                </td>`);
+                                } else if(item == 'BURUH'){
+                                    row.append(`<td> 
+                                                    <input type="text" class="uang numaja form-control open_cust_${data[i].id_customer}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' readonly/> 
+                                                </td>`);
+                                    row.append(`<td class='text-center'> 
+                                                    <input class='check_item check_container'  
+                                                        id_sewa="${data[i].id_sewa}" cust_child='${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" type='checkbox'> 
                                                 </td>`);
                                 }
                                 $("#hasil").append(row);
-                                dataCustomer = data[i].id_customer;
                             }
-                            var row = $("<tr class='hoverEffect'></tr>");
-    
-                            row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} / ${data[i].id_oprs} / ${data[i].deskripsi_so} </td>`);
-                            row.append(`<td> ${data[i].tipe_kontainer}" </td>`);
-                            row.append(`<td><b> ${data[i].jenis_order} </b></td>`);
-    
-                            if(data[i].jenis_order == 'INBOUND'){
-                                if(data[i].tipe_kontainer=='20'){
-                                    var ttl = 0;
-                                    var tps = 0;
-                                    var depo = 15000;
-                                }else{
-                                    var ttl = 0;
-                                    var tps = 0;
-                                    var depo = 25000;
-                                }
-                            }else{
-                                if(data[i].tipe_kontainer=='20'){
-                                    var pick_up_cost = 15000;
-                                }else{
-                                    var pick_up_cost = 25000;
-                                }
-                            }
-                            if(item == 'TALLY'){
-                                row.append(`<td> ${data[i].tally.toLocaleString()} 
-                                                <input type="hidden" value='${data[i].tally}' name='data[${data[i].id_sewa}][nominal]' /> 
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <input class='check_item check_container'  
-                                                    id_sewa="${data[i].id_sewa}" cust_child='${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                            </td>`);
-                            } else if(item == 'OPERASIONAL'){
-                                row.append(`<td> ${data[i].tally.toLocaleString()} 
-                                                <input type="hidden" value='${data[i].tally}' name='data[${data[i].id_sewa}][nominal]' /> 
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <input class='check_item check_container'  
-                                                    id_sewa="${data[i].id_sewa}" cust_child='${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                            </td>`);
-                            } else if(item == 'TIMBANG'){
-                                row.append(`<td> 
-                                                <input type="text" class="uang numaja form-control open_cust_${data[i].id_customer}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' readonly/> 
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <input class='check_item check_container'  
-                                                    id_sewa="${data[i].id_sewa}" cust_child='${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                            </td>`);
-                            } else if(item == 'BURUH'){
-                                row.append(`<td> 
-                                                <input type="text" class="uang numaja form-control open_cust_${data[i].id_customer}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' readonly/> 
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <input class='check_item check_container'  
-                                                    id_sewa="${data[i].id_sewa}" cust_child='${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                            </td>`);
-                            }
-                            $("#hasil").append(row);
+                        }
+                    },error: function (xhr, status, error) {
+                        $("#loading-spinner").hide();
+                        if ( xhr.responseJSON.result == 'error') {
+                            console.log("Error:", xhr.responseJSON.message);
+                            console.log("XHR status:", status);
+                            console.log("Error:", error);
+                            console.log("Response:", xhr.responseJSON);
+                        } else {
+                            toastr.error("Terjadi kesalahan saat menerima data. " + error);
                         }
                     }
-                },error: function (xhr, status, error) {
-                    $("#loading-spinner").hide();
-                    if ( xhr.responseJSON.result == 'error') {
-                        console.log("Error:", xhr.responseJSON.message);
-                        console.log("XHR status:", status);
-                        console.log("Error:", error);
-                        console.log("Response:", xhr.responseJSON);
-                    } else {
-                        toastr.error("Terjadi kesalahan saat menerima data. " + error);
-                    }
-                }
-            });
+                });
+            }
         }
         
         // check all

@@ -58,30 +58,25 @@ class BiayaOperasionalController extends Controller
             // var_dump($data); die;
 
             foreach ($data['data'] as $key => $value) {
-                if($item == 'OPERASIONAL'){
-                    foreach($value as $i => $oprs){
-                        if(isset($oprs['item'])){
-                            $sewa_o = new SewaOperasional();
-                            $sewa_o->id_sewa = $key;
-                            $sewa_o->deskripsi = $oprs['jenis'];
-                            $sewa_o->total_operasional = $oprs['nominal'];
-                            $sewa_o->created_by = $user;
-                            $sewa_o->created_at = now();
-                            $sewa_o->is_aktif = 'Y';
-                            $sewa_o->save();
-                        }
-                    }
-                }else{
+                if(isset($value['item'])){
                     $sewa_o = new SewaOperasional();
                     $sewa_o->id_sewa = $key;
-                    $sewa_o->deskripsi = $item;
-                    $sewa_o->total_operasional = floatval(str_replace(',', '', $value['nominal']));
+    
+                    if($item == 'OPERASIONAL'){
+                        $sewa_o->deskripsi = $value['pick_up'] == 'null' ? 'OPERASIONAL DEPO':'OPERASIONAL '.$value['pick_up'];
+                        $sewa_o->total_operasional = $value['nominal'];
+                    }else{
+                        $sewa_o->deskripsi = $item;
+                        $sewa_o->total_operasional = floatval(str_replace(',', '', $value['nominal']));
+                    }
+    
                     $sewa_o->created_by = $user;
                     $sewa_o->created_at = now();
                     $sewa_o->is_aktif = 'Y';
                     $sewa_o->save();
                 }
             }
+
             return redirect()->route('biaya_operasional.index')->with('status','Sukses!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
@@ -228,19 +223,26 @@ class BiayaOperasionalController extends Controller
             // ->get();
             $data = DB::table('sewa AS s')
                     ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
-                        $join->on('s.id_sewa', '=', 'so.id_sewa')
-                            ->where('so.is_aktif', 'Y')
-                            ->where('so.deskripsi', '=', $item);
+                        if($item == 'OPERASIONAL'){
+                            $join->on('s.id_sewa', '=', 'so.id_sewa')
+                                ->where('so.is_aktif', 'Y')
+                                ->where('so.deskripsi', 'like', $item.'%');
+                        }else {
+                            $join->on('s.id_sewa', '=', 'so.id_sewa')
+                                ->where('so.is_aktif', 'Y')
+                                ->where('so.deskripsi', '=', $item);
+                        }
                     })
                     ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')
                     ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
+                    ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
                     ->select(
                         's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer',
                         's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
-                        'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs',
-                        'so.total_operasional AS so_total_oprs','k.nama_panggilan',
+                        'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 
+                        'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
                         DB::raw('COALESCE(gt.tally, 0) as tally'),
                         'gt.nama_tujuan',
                         'c.nama as customer',
