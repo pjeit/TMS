@@ -126,7 +126,7 @@
                                                         <input type="hidden" name="data[tujuan][{{$key}}][seal_pje_hidden]" id="seal_pje_hidden_{{$key}}" value="{{isset($item->seal_pje)? number_format($item->seal_pje):''}}" >
                                                         <input type="hidden" name="data[tujuan][{{$key}}][tally_hidden]" id="tally_hidden_{{$key}}" value="{{isset($item->tally)? number_format($item->tally):''}}" >
                                                         <input type="hidden" name="data[tujuan][{{$key}}][plastik_hidden]" id="plastik_hidden_{{$key}}" value="{{isset($item->plastik)? number_format($item->plastik):''}}" >
-                                                        <input type="hidden" name="data[tujuan][{{$key}}][kargo_hidden]" id="kargo_hidden_{{$key}}" value="{{isset($item->kargo)}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][kargo_hidden]" id="kargo_hidden_{{$key}}" value="{{ isset($item->kargo) ? $item->kargo : '' }}">
 
                                                         <td><button type="button" name="remove" id="{{$key}}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr> 
                                                     </tr>
@@ -966,7 +966,7 @@
                             return false;
                         }
                     }
-                     var kargoID = $('#kargo_pje').val();
+                    //  var kargoID = $('#kargo_pje').val();    
 
                     // simpan ke tampilan depan
                     $('#tarif_'+key).val($('#tarif').val());
@@ -1165,7 +1165,7 @@
             $('#total_tarif').val('');
             // $('#kargo_pje').empty();
             // $('#kargo_pje').prop("selected",false)
-            $('#kargo_pje').val('').trigger('change');
+            $('#kargo_pje').val('');
             $('#check_is_seal_pje').prop('checked',false);
             $('#check_is_seal_pelayaran').prop('checked',false);
             $('#check_is_tally').prop('checked',false);

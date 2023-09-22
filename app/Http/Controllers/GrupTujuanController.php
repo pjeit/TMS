@@ -130,7 +130,7 @@ class GrupTujuanController extends Controller
             ->select('*')
             ->where('pengaturan_keuangan.is_aktif', '=', "Y")
             ->get();
-        // dd($dataPengaturanKeuangan);
+        // dd($data['tujuan']);
 
         return view('pages.master.grup_tujuan.edit',[
             'judul' => "Grup",
@@ -252,6 +252,7 @@ class GrupTujuanController extends Controller
                     $komisi = ($value['komisi'] != '')? floatval(str_replace(',', '', $value['komisi'])):0;
                     $uang_jalan = ($value['uang_jalan'] != '')? floatval(str_replace(',', '', $value['uang_jalan'])):0;
                     $harga_per_kg = ($value['harga_per_kg_hidden'] != '')? floatval(str_replace(',', '', $value['harga_per_kg_hidden'])):0;
+                    $komisi_driver_hidden = ($value['komisi_driver_hidden'] != '')? floatval(str_replace(',', '', $value['komisi_driver_hidden'])):0;
 
                     $new_tuj = new GrupTujuan();
                     $new_tuj->grup_id = $value['grup_hidden'];
@@ -264,6 +265,7 @@ class GrupTujuanController extends Controller
                     $new_tuj->uang_jalan = $uang_jalan;
                     $new_tuj->tarif = $tarif;
                     $new_tuj->komisi = $komisi;
+                    $new_tuj->komisi_driver = $komisi_driver_hidden;
                     $new_tuj->catatan = $value['catatan'];
                     $new_tuj->seal_pje = ($value['seal_pje_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pje_hidden'])):null;
                     $new_tuj->seal_pelayaran = ($value['seal_pelayaran_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pelayaran_hidden'])):null;
