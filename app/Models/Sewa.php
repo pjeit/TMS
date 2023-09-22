@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Sewa extends Model
+class Sewa extends Eloquent
 {
     use HasFactory;
     protected $table = 'sewa';
@@ -81,4 +81,11 @@ class Sewa extends Model
     {
          return $this->hasOne(Karyawan::class, 'id', 'id_karyawan');
     }
+
+
+    // eloquent relation
+    public function sewaOperasional()
+    {
+        return $this->belongsTo(SewaOperasional::class);
+    }   
 }

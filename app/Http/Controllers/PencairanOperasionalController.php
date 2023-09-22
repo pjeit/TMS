@@ -31,10 +31,10 @@ class PencairanOperasionalController extends Controller
                 ->where('sewa.is_aktif', '=', 'Y')
                 ->where('sewa.jenis_tujuan', 'FTL')
                 ->whereNull('sewa.id_supplier')
-                ->where('sewa.status', "MENUNGGU UANG JALAN")
+                ->where('sewa.status', "MENUNGGU OPERASIONAL")
                 ->orderBy('c.id','ASC')
                 ->get();
-        
+                // ->groupBy('c.nama');
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
@@ -61,8 +61,12 @@ class PencairanOperasionalController extends Controller
             })
             ->where('c.grup_id', $id)
             ->where('sewa_operasional.is_aktif', "Y")
-            ->groupBy('sewa_operasional.deskripsi', 'sewa_operasional.id')
+            ->groupBy('sewa_operasional.deskripsi')
             ->get();
+        // $data = SewaOperasional::with('getSewa')->get();
+        $data = SewaOperasional::with('sewa.customer')->get();
+
+        dd($data);
             
         $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
             ->select('*')

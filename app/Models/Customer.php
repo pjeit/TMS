@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as Eloquent;
 
-class Customer extends Model
+class Customer extends Eloquent
 {
     use HasFactory;
     protected $table = 'customer';
@@ -40,5 +40,11 @@ class Customer extends Model
     public function getGrup()
     {
          return $this->hasOne(Grup::class, 'id', 'grup_id');
+    }
+
+    // eloquent
+    public function sewa()
+    {
+        return $this->belongsTo(Sewa::class);
     }
 }
