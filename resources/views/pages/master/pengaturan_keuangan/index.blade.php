@@ -134,7 +134,7 @@
                                     <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                         <label>Batas Pemutihan </label>
                                         <br>
-                                        <!-- <input type="number" class="form-control" name="batas_pemutihan" id="batas_pemutihan" value="<?= isset($data->batas_pemutihan) ? $data->batas_pemutihan:null; ?>"> -->
+                                        <!-- <input type="number" class="form-control uang numaja" name="batas_pemutihan" id="batas_pemutihan" value="<?= isset($data->batas_pemutihan) ? $data->batas_pemutihan:null; ?>"> -->
                                         <div class="col-sm-12">
                                             <input id="batas_pemutihan" type="text" name="batas_pemutihan" value="<?= ($data->batas_pemutihan)? $data->batas_pemutihan:0; ?>">
                                         </div>
@@ -206,7 +206,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="thc_20ft_luar" id="thc_20ft_luar" value="{{number_format($data->thc_20ft_luar)}}">
+                                                    <input type="text" class="form-control uang numaja" name="thc_20ft_luar" id="thc_20ft_luar" value="{{number_format($data->thc_20ft_luar)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -215,7 +215,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="thc_20ft_dalam" id="thc_20ft_dalam" value="{{number_format($data->thc_20ft_dalam)}}">
+                                                    <input type="text" class="form-control uang numaja" name="thc_20ft_dalam" id="thc_20ft_dalam" value="{{number_format($data->thc_20ft_dalam)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -224,7 +224,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="lolo_20ft_luar" id="lolo_20ft_luar" value="{{number_format($data->lolo_20ft_luar)}}">
+                                                    <input type="text" class="form-control uang numaja" name="lolo_20ft_luar" id="lolo_20ft_luar" value="{{number_format($data->lolo_20ft_luar)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -233,7 +233,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="lolo_20ft_dalam" id="lolo_20ft_dalam" value="{{number_format($data->lolo_20ft_dalam)}}">
+                                                    <input type="text" class="form-control uang numaja" name="lolo_20ft_dalam" id="lolo_20ft_dalam" value="{{number_format($data->lolo_20ft_dalam)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -242,7 +242,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="apbs_20ft" id="apbs_20ft" value="{{number_format($data->apbs_20ft)}}">
+                                                    <input type="text" class="form-control uang numaja" name="apbs_20ft" id="apbs_20ft" value="{{number_format($data->apbs_20ft)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -251,7 +251,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="cleaning_20ft" id="cleaning_20ft" value="{{number_format($data->cleaning_20ft)}}">
+                                                    <input type="text" class="form-control uang numaja" name="cleaning_20ft" id="cleaning_20ft" value="{{number_format($data->cleaning_20ft)}}">
                                                 </div>
                                             </div>
                                         </div>
@@ -276,7 +276,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="thc_40ft_luar" id="thc_40ft_luar" value="{{number_format($data->thc_40ft_luar)}}">
+                                                    <input type="text" class="form-control uang numaja" name="thc_40ft_luar" id="thc_40ft_luar" value="{{number_format($data->thc_40ft_luar)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -285,7 +285,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="thc_40ft_dalam" id="thc_40ft_dalam" value="{{number_format($data->thc_40ft_dalam)}}">
+                                                    <input type="text" class="form-control uang numaja" name="thc_40ft_dalam" id="thc_40ft_dalam" value="{{number_format($data->thc_40ft_dalam)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -294,7 +294,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="lolo_40ft_luar" id="lolo_40ft_luar" value="{{number_format($data->lolo_40ft_luar)}}">
+                                                    <input type="text" class="form-control uang numaja" name="lolo_40ft_luar" id="lolo_40ft_luar" value="{{number_format($data->lolo_40ft_luar)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -303,7 +303,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="lolo_40ft_dalam" id="lolo_40ft_dalam" value="{{number_format($data->lolo_40ft_dalam)}}">
+                                                    <input type="text" class="form-control uang numaja" name="lolo_40ft_dalam" id="lolo_40ft_dalam" value="{{number_format($data->lolo_40ft_dalam)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -312,7 +312,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="apbs_40ft" id="apbs_40ft" value="{{number_format($data->apbs_40ft)}}">
+                                                    <input type="text" class="form-control uang numaja" name="apbs_40ft" id="apbs_40ft" value="{{number_format($data->apbs_40ft)}}">
                                                 </div>
                                             </div>
                                             <div class="form-group col-6">
@@ -321,7 +321,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" class="form-control" name="cleaning_40ft" id="cleaning_40ft" value="{{number_format($data->cleaning_40ft)}}">
+                                                    <input type="text" class="form-control uang numaja" name="cleaning_40ft" id="cleaning_40ft" value="{{number_format($data->cleaning_40ft)}}">
                                                 </div>
                                             </div>
                                         </div>

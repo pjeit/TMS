@@ -87,7 +87,7 @@
                                         $customerName = $item->getSewa->getCustomer->nama;
                                     @endphp
                                     @if ($customerName != $currentCustomer)
-                                        <tr class="group-row bg-blue">
+                                        <tr class="group-row bg-gray-light">
                                             <td colspan="7">{{ $customerName }}</td>
                                         </tr>
                                         @php

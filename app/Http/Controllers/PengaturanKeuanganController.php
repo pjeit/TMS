@@ -95,8 +95,8 @@ class PengaturanKeuanganController extends Controller
     public function update(Request $request, $id)
     {
         $user=Auth::user()->id;
-
         $data = $request->collect();
+        // dd($data);
         $update = PengaturanKeuangan::where('id', $id)->first();
         $update->uang_jajan = $data['uang_jalan'];
         $update->reimburse = $data['reimburse'];
@@ -111,6 +111,19 @@ class PengaturanKeuanganController extends Controller
         $update->seal_pelayaran = floatval(str_replace(',', '', $data['seal_pelayaran']));
         $update->tally = floatval(str_replace(',', '', $data['tally']));
         $update->plastik = floatval(str_replace(',', '', $data['plastik']));
+        $update->doc_fee = floatval(str_replace(',', '', $data['doc_fee']));
+        $update->thc_20ft_luar = floatval(str_replace(',', '', $data['thc_20ft_luar']));
+        $update->thc_20ft_dalam = floatval(str_replace(',', '', $data['thc_20ft_dalam']));
+        $update->lolo_20ft_luar = floatval(str_replace(',', '', $data['lolo_20ft_luar']));
+        $update->lolo_20ft_dalam = floatval(str_replace(',', '', $data['lolo_20ft_dalam']));
+        $update->apbs_20ft = floatval(str_replace(',', '', $data['apbs_20ft']));
+        $update->cleaning_20ft = floatval(str_replace(',', '', $data['cleaning_20ft']));
+        $update->thc_40ft_luar = floatval(str_replace(',', '', $data['thc_40ft_luar']));
+        $update->thc_40ft_dalam = floatval(str_replace(',', '', $data['thc_40ft_dalam']));
+        $update->lolo_40ft_luar = floatval(str_replace(',', '', $data['lolo_40ft_luar']));
+        $update->lolo_40ft_dalam = floatval(str_replace(',', '', $data['lolo_40ft_dalam']));
+        $update->apbs_40ft = floatval(str_replace(',', '', $data['apbs_40ft']));
+        $update->cleaning_40ft = floatval(str_replace(',', '', $data['cleaning_40ft']));
         $update->updated_at = date("Y-m-d h:i:s");
         $update->updated_by = $user;
 
