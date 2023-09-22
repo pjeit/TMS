@@ -130,7 +130,7 @@
                                         <input type="hidden" name="add_cost_hidden" id="add_cost_hidden">
                                         <input type="hidden" id='jenis_tujuan' value='{{$sewa->jenis_tujuan}}'>
 
-                                        @if ($sewa->jenis_order =="OUTBOND")
+                                        @if ($sewa->jenis_order =="OUTBOUND")
                                         <div class="row" name="div_segel" id="div_segel">
                                             <div class="form-group col-6">
                                                 <label for="seal">Seal</label>
@@ -189,6 +189,13 @@
             <div class="col-12">
                 <div class="card radiusSendiri">
                     <div class="card-header">
+                                <span class="badge badge-success">Data Yang Tersimpan</span>
+                                <span class="badge badge-danger">Data Template</span>
+                                <span class="badge badge-primary">Data Lain-lain</span>
+                                <span class="badge badge-warning">Data S/D/T</span>
+                                <span class="badge badge-warning">Data Tujuan Biaya</span>
+
+
                         <button type="button" id="btnTmbh" class="btn btn-primary radiusSendiri float-right">Tambah Biaya <i class="fa fa-fw fa-plus"></i> </button></br>
                     </div>
 
@@ -264,7 +271,7 @@
                                                 $value->deskripsi =='STORAGE'||
                                                 $value->deskripsi =='DEMURAGE'||
                                                 $value->deskripsi =='DETENTION'||
-                                                $value->deskripsi =='SEAL'||
+                                                $value->deskripsi =='SEAL PELAYARAN'||
                                                 $value->deskripsi =='SEAL PJE'||
                                                 $value->deskripsi =='PLASTIK'||
                                                 $value->deskripsi =='TALLY'||
@@ -284,7 +291,7 @@
                                                  $value->deskripsi !='STORAGE'&&
                                                 $value->deskripsi !='DEMURAGE'&&
                                                 $value->deskripsi !='DETENTION'&&
-                                                $value->deskripsi !='SEAL'&&
+                                                $value->deskripsi !='SEAL PELAYARAN'&&
                                                 $value->deskripsi !='SEAL PJE'&&
                                                 $value->deskripsi !='PLASTIK'&&
                                                 $value->deskripsi !='TALLY'&&
@@ -329,7 +336,7 @@
                                          @endphp
                                     @endforeach
                                 @endif
-                                  @if  (!$flagCleaning)
+                                  @if  (!$flagCleaning && $sewa->jenis_order=="INBOUND")
                                             <tr id="{{ $index}}">
                                                 <td>
                                                     <div class="icheck-danger d-inline">
@@ -436,7 +443,7 @@
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                     <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control uang numaja" readonly>
-                                                    <span class="badge badge-warning">Data Master</span>
+                                                    <span class="badge badge-warning">Data S/D/T</span>
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
@@ -471,7 +478,7 @@
                                     @endif
                                 @endif
                                  @if(isset($array_outbond))
-                                    @if ($sewa->jenis_order == "OUTBOND")
+                                    @if ($sewa->jenis_order == "OUTBOUND")
 
                                         @foreach ($array_outbond as $key => $value)
                                             <tr id="{{$index}}">
@@ -487,7 +494,7 @@
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                         <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control uang numaja" readonly>
-                                                    <span class="badge badge-warning">Data Master</span>
+                                                    <span class="badge badge-warning">Data Tujuan Biaya</span>
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
@@ -1046,7 +1053,7 @@
                         trimTextbox ==='STORAGE'||
                         trimTextbox ==='DEMURAGE'||
                         trimTextbox ==='DETENTION'||
-                        trimTextbox ==='SEAL'||
+                        trimTextbox ==='SEAL PELAYARAN'||
                         trimTextbox ==='SEAL PJE'||
                         trimTextbox ==='PLASTIK'||
                         trimTextbox ==='TALLY'||
@@ -1115,7 +1122,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'BIAYA LAIN-LAIN TIDAK BOLEH SAMA!',
-                    text: 'Pilih Deskripsi Lain Selain Dari Data Template / Data Tersimpan / Data Master',
+                    text: 'Pilih Deskripsi Lain Selain Dari Data Template / Data Tersimpan / Data SDT / Data Tujuan Biaya / Data Yang Tersimpan',
                 });
                 return;
             }

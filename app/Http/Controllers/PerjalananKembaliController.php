@@ -122,17 +122,17 @@ class PerjalananKembaliController extends Controller
         // dd($dataOpreasional);
         // dd(strpos($dataOpreasional, 'CLEANING/REPAIR'));
 
-        $flagCleaning=false;
-        foreach($dataOpreasional as $opersional)
-        {
+        // $flagCleaning=false;
+        // foreach($dataOpreasional as $opersional)
+        // {
             
-            if( $opersional->deskripsi== 'CLEANING/REPAIR' )
-            {
-                //hapus array kalau datanya sama 
-                $flagCleaning = true;
-                break;
-            }
-        }
+        //     if( $opersional->deskripsi== 'CLEANING/REPAIR' )
+        //     {
+        //         //hapus array kalau datanya sama 
+        //         $flagCleaning = true;
+        //         break;
+        //     }
+        // }
         // dd($flagCleaning);
 
         $array_inbound = [];
@@ -218,7 +218,7 @@ class PerjalananKembaliController extends Controller
         {
             foreach ($array_outbond as $key=> $dataOutbond) {
                 # code...
-                if($opersional->deskripsi == $dataOutbond['deskripsi'] && $opersional->total_operasional == $dataInbound['biaya'] )
+                if($opersional->deskripsi == $dataOutbond['deskripsi'] && $opersional->total_operasional == $dataOutbond['biaya'] )
                 {
                     //hapus array kalau datanya sama 
                     unset($array_outbond[$key]);
@@ -232,7 +232,7 @@ class PerjalananKembaliController extends Controller
         usort($array_inbound, function ($a, $b) {
             return strcmp($b['deskripsi'],$a['deskripsi']);
         });
-        // dd($array_inbound);
+        // dd($array_outbond);
         return view('pages.order.perjalanan_kembali.form',[
             'judul' => "Perjalanan Kembali",
             'sewa'=>$sewa,
