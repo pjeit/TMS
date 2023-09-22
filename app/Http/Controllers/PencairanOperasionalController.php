@@ -29,9 +29,9 @@ class PencairanOperasionalController extends Controller
                 ->leftJoin('grup_tujuan AS gt', 'sewa.id_grup_tujuan', '=', 'gt.id')
                 ->leftJoin('karyawan AS k', 'sewa.id_karyawan', '=', 'k.id')
                 ->where('sewa.is_aktif', '=', 'Y')
-                ->where('sewa.jenis_tujuan', 'like', '%FTL%')
+                ->where('sewa.jenis_tujuan', 'FTL')
                 ->whereNull('sewa.id_supplier')
-                ->where('sewa.status', 'like', "%MENUNGGU UANG JALAN%")
+                ->where('sewa.status', "MENUNGGU UANG JALAN")
                 ->orderBy('c.id','ASC')
                 ->get();
         
@@ -63,7 +63,6 @@ class PencairanOperasionalController extends Controller
             ->where('sewa_operasional.is_aktif', "Y")
             ->groupBy('sewa_operasional.deskripsi', 'sewa_operasional.id')
             ->get();
-        // dd($data);
             
         $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
             ->select('*')
@@ -74,7 +73,8 @@ class PencairanOperasionalController extends Controller
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
-        // dd($id); 
+        // dd($data); 
+
         return view('pages.finance.pencairan_operasional.pencairan',[
             'judul'=>"Pencairan Operasional || " . $grup->nama_grup,
             'dataKas' => $dataKas,

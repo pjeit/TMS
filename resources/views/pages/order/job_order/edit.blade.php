@@ -648,8 +648,8 @@
                             <td>
                                 <select class="form-control selectpicker tipeKontainer" name="detail[${i}][tipe]" id="tipe${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                     <option value="">--Pilih Tipe--</option>
-                                    <option value="20">20Ft</option>
-                                    <option value="40">40Ft</option>
+                                    <option value="20">20"</option>
+                                    <option value="40">40"</option>
                                 </select>
                                 <input type="hidden" readonly class="hargaThc" hargaThc_${i} name="detail[${i}][hargaThc]" value="">
                                 <input type="hidden" readonly class="hargaLolo" hargaLolo_${i} name="detail[${i}][hargaLolo]" value="">

@@ -118,19 +118,27 @@
                                         <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
                                     </div> 
                                 </div>
-                                <div class="form-group">
+                                <div class="row">
+                                    <div class="form-group col-7">
                                         <label for="no_sewa">No. Sewa</label>
                                         <input type="text" class="form-control" id="no_sewa" placeholder="Otomatis" readonly="" value="">    
                                         <input type="hidden" id="status" value="">
-                                        <!-- <div class='col-5 col-md-5 col-lg-5'>
-                                            <label for="status">Status</label>
-                                            <select onchange='ganti_status(this)' class="form-control" id="status" value="" disabled>
-                                                <option value='Open'>Open</option>
-                                                <option value='Approved'>Setuju</option>
-                                                <option value='Released' hidden>Perjalanan</option>
-                                                <option value='Finished' hidden>Selesai</option>
+                                    </div>
+                                    <div class="form-group col-5">
+                                        <div class="form-group" id="inboundDataKontainer">
+                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                            <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
+                                        </div>
+                                        <div class="form-group" id="outbondDataKontainer">
+                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                            <select class="form-control selectpicker tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                <option value="">── Tipe ──</option>
+                                                <option value='20'>20"</option>
+                                                <option value='40'>40"</option>
                                             </select>
-                                        </div> -->
+                                        </div>
+                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
+                                    </div>                                    
                                 </div>
                                 <div class="form-group">
                                     <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
@@ -151,7 +159,7 @@
                                
                                 <div class="form-group">
                                     <label for="select_customer">Customer<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer">
+                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" required>
                                         <option value="">Pilih Customer</option>
 
                                         @foreach ($dataCustomer as $cust)
@@ -164,7 +172,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan">
+                                    <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" required>
                                         <option value="">Pilih Tujuan</option>
 
                                         {{-- @foreach ($kota as $city)
@@ -209,7 +217,7 @@
                                     <div class="col"> --}}
                                           <div class="form-group">
                                             <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                            <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
+                                            <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan" required>
                                                 <option value="">Pilih Kendaraan</option>
  
                                                 @foreach ($dataKendaraan as $kendaraan)
@@ -225,7 +233,7 @@
                               
                                 <div class="form-group">
                                     <label for="select_ekor">Chassis<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis">
+                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" required>
                                         <option value="">Pilih Chassis</option>
 
                                         @foreach ($dataChassis as $cha)
@@ -238,7 +246,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="select_driver">Driver<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver">
+                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required>
                                         <option value="">Pilih Driver</option>
 
                                         @foreach ($dataDriver as $drvr)
@@ -265,6 +273,8 @@
         // $('#select_customer').attr('disabled',true).val('').trigger('change');
         // $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
         $('#inboundData').hide();
+        $('#tipe_kontainer_in').val();
+        $('#inboundDataKontainer').hide();
         $('#garisInbound').hide();
         $("#inbound").removeClass("aktif");
         $("#outbond").addClass("aktif");
@@ -273,12 +283,16 @@
         $('body').on('click','#inbound',function()
 		{
             // console.log('pencet');
+            $('#tipe_kontainer').val();
+            $('#tipe_kontainer_in').val();
             $("#inbound").addClass("aktif");
             $("#outbond").removeClass("aktif");
             $('#inboundData').show();
+            $('#inboundDataKontainer').show();
             $('#garisInbound').show();
 
             $('#outbondData').hide();
+            $('#outbondDataKontainer').hide();
             $('#garisOutbond').hide();
             $('#select_booking').val('').trigger('change');
             getDate();
@@ -310,12 +324,15 @@
         $('body').on('click','#outbond',function()
 		{
             // $(this).animate({ "color": "red" }, 1500);
+            $('#tipe_kontainer').val();
             $("#inbound").removeClass("aktif");
             $("#outbond").addClass("aktif");
             $('#select_booking').val('').trigger('change');
             $('#inboundData').hide();
+            $('#inboundDataKontainer').hide();
             $('#garisInbound').hide();
             $('#outbondData').show();
+            $('#outbondDataKontainer').show();
             $('#garisOutbond').show();
             $('#select_customer').attr('disabled',false).val('').trigger('change');
             $('#select_grup_tujuan').attr('disabled',false).val('').trigger('change');
@@ -398,7 +415,7 @@
                         {
                             response.forEach(joDetail => {
                                 const option = document.createElement('option');
-                                option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer+'-'+joDetail.seal;
+                                option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer+'-'+joDetail.seal+"-"+joDetail.tipe_kontainer;
                                 option.setAttribute('booking_id', joDetail.booking_id);
                                 option.textContent = joDetail.no_kontainer ;
                                 // if (selected_marketing == marketing.id) {
@@ -428,6 +445,10 @@
 
 		});
 
+        $('body').on('change','#tipe_kontainer_out',function(){
+            $('#tipe_kontainer').val(this.value);
+        })
+
         $('body').on('change','#select_jo_detail',function()
 		{
             var selectedValue = $(this).val();
@@ -436,6 +457,7 @@
             var idTujuan=splitValue[1];
             var no_kontainer=splitValue[2];
             var seal=splitValue[3];
+            var tipe_kontainer=splitValue[4];
             
             var selectedOption = $(this).find('option:selected');
             var bookingId = selectedOption.attr('booking_id');            
@@ -445,6 +467,12 @@
             $('#id_jo_detail').val(idJoDetail);
             $('#no_kontainer').val(no_kontainer);
             $('#seal').val(seal);
+            var kontainer = '';
+            if(tipe_kontainer != undefined){
+                kontainer = tipe_kontainer + `"`;
+            }
+            $('#tipe_kontainer_in').val(kontainer);
+            $('#tipe_kontainer').val(tipe_kontainer);
             var baseUrl = "{{ asset('') }}";
             // var myjson;
             var array_tambahan_sdt = [];
