@@ -37,7 +37,7 @@
         
             <div class="col-12">
                 <div class="card radiusSendiri ">
-                    <div class="card-header">
+                    <div class="card-header ">
                         <a href="{{ route('perjalanan_kembali.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         <span style="font-size:11pt;" class="badge bg-dark float-right m-2">{{$sewa->jenis_order}} ORDER {{$sewa->jenis_tujuan}}</span>
@@ -97,14 +97,14 @@
                                        
                                         <div class="form-group">
                                             <label for="no_akun">No. Kontainer</label>
-                                            @if ($sewa->no_kontainer_jod)
+                                            @if ($sewa->no_kontainer_jod&&$sewa->jenis_order =="INBOUND")
                                                 <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$sewa->no_kontainer_jod}}" >                         
                                             @else
                                                 <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" value="{{$sewa->no_kontainer}}" >                         
 
                                             @endif
                                         </div> 
-                                         @if ($sewa->seal_pelayaran_jod)
+                                         @if ($sewa->seal_pelayaran_jod&&$sewa->jenis_order =="INBOUND")
                                             <div class="form-group ">
                                                 <label for="seal">Segel Kontainer</label>
                                                 <input readonly type="text" id="seal" name="seal" class="form-control"value="{{$sewa->seal_pelayaran_jod}}" >

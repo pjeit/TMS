@@ -267,6 +267,8 @@ class PerjalananKembaliController extends Controller
             $perjalanan_kembali->seal_pelayaran = isset($data['seal'])? $data['seal']:null;
             $perjalanan_kembali->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
             $perjalanan_kembali->status = $data['is_kembali']=='Y'? 'KENDARAAN KEMBALI':'DALAM PERJALANAN';
+            $perjalanan_kembali->is_kembali = $data['is_kembali'];
+
             $perjalanan_kembali->updated_by = $user;
             $perjalanan_kembali->updated_at = now();
             $perjalanan_kembali->save();
