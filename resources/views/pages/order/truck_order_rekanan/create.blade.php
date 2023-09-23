@@ -118,7 +118,29 @@
                                         <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
                                     </div> 
                                 </div>
-                                <div class="form-group">
+                                <div class="row">
+                                    <div class="form-group col-7">
+                                        <label for="no_sewa">No. Sewa</label>
+                                        <input type="text" class="form-control" id="no_sewa" placeholder="Otomatis" readonly="" value="">    
+                                        <input type="hidden" id="status" value="">
+                                    </div>
+                                    <div class="form-group col-5">
+                                        <div class="form-group" id="inboundDataKontainer">
+                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                            <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
+                                        </div>
+                                        <div class="form-group" id="outbondDataKontainer">
+                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                            <select class="form-control selectpicker tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                <option value="">── Tipe ──</option>
+                                                <option value='20'>20"</option>
+                                                <option value='40'>40"</option>
+                                            </select>
+                                        </div>
+                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
+                                    </div>                                    
+                                </div>
+                                {{-- <div class="form-group">
                                         <label for="no_sewa">No. Sewa</label>
                                         <input type="text" class="form-control" id="no_sewa" placeholder="Otomatis" readonly="" value="">    
                                         <input type="hidden" id="status" value="">
@@ -131,7 +153,7 @@
                                                 <option value='Finished' hidden>Selesai</option>
                                             </select>
                                         </div> -->
-                                </div>
+                                </div> --}}
                                 <div class="form-group">
                                     <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
@@ -297,6 +319,9 @@
         // $('#jenis_order').val('');
 
          $('#inboundData').hide();
+          $('#tipe_kontainer_in').val();
+        $('#inboundDataKontainer').hide();
+
         $('#garisInbound').hide();
         $("#inbound").removeClass("aktif");
         $("#outbond").addClass("aktif");
@@ -305,9 +330,13 @@
         $('body').on('click','#inbound',function()
 		{
             // console.log('pencet');
+            $('#inboundDataKontainer').show();
+            $('#outbondDataKontainer').hide();
+
             $('#inboundData').show();
             $('#garisInbound').show();
-
+             $('#tipe_kontainer').val();
+            $('#tipe_kontainer_in').val();
             $('#outbondData').hide();
             $('#garisOutbond').hide();
             $('#select_booking').val('').trigger('change');
@@ -344,6 +373,10 @@
         $('body').on('click','#outbond',function()
 		{
             // $(this).animate({ "color": "red" }, 1500);
+              $('#inboundDataKontainer').hide();
+            $('#outbondDataKontainer').show();
+            $('#tipe_kontainer').val();
+
             $('#select_booking').val('').trigger('change');
             $('#inboundData').hide();
             $('#garisInbound').hide();
@@ -431,7 +464,7 @@
                         {
                             response.forEach(joDetail => {
                                 const option = document.createElement('option');
-                                option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer+'-'+joDetail.seal;
+                                option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer+'-'+joDetail.seal+"-"+joDetail.tipe_kontainer;
                                 option.setAttribute('booking_id', joDetail.booking_id);
                                 option.textContent = joDetail.no_kontainer ;
                                 // if (selected_marketing == marketing.id) {
@@ -460,6 +493,9 @@
 
 
 		});
+           $('body').on('change','#tipe_kontainer_out',function(){
+            $('#tipe_kontainer').val(this.value);
+        })
 
         $('body').on('change','#select_jo_detail',function()
 		{
@@ -469,6 +505,7 @@
             var idTujuan=splitValue[1];
             var no_kontainer=splitValue[2];
             var seal=splitValue[3];
+            var tipe_kontainer=splitValue[4];
 
             
             var selectedOption = $(this).find('option:selected');
@@ -479,7 +516,12 @@
             $('#id_jo_detail').val(idJoDetail);
             $('#kontainer').val(no_kontainer);
             $('#seal').val(seal);
-
+            var kontainer = '';
+            if(tipe_kontainer != undefined){
+                kontainer = tipe_kontainer + `"`;
+            }
+            $('#tipe_kontainer_in').val(kontainer);
+            $('#tipe_kontainer').val(tipe_kontainer);
             var baseUrl = "{{ asset('') }}";
             // var myjson;
             var array_tambahan_sdt = [];
