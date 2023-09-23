@@ -28,26 +28,28 @@
         </div>
     @endforeach
 @endif
-<form action="{{ route('pencairan_operasional.update', ['pencairan_operasional' => $data[0]->getSewa->id_customer ]) }}" id='save' method="POST" >
+<form action="{{ route('pencairan_operasional.update', ['pencairan_operasional' => $customers[0]->grup_id ]) }}" id='save' method="POST" >
 @method('PUT')
 @csrf
 <div class="row m-2">
-    <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
+    {{-- <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
         <div class="card radiusSendiri" style="">
             <div class="card-header ">
                 <a href="{{ route('pencairan_operasional.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
         </div>
-    </div>
-        <div class="col-12">
+    </div> --}}
+    <div class="col-12">
         <div class="card radiusSendiri">
+            <div class="card-header ">
+                <a href="{{ route('pencairan_operasional.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+            </div>
             <div class="card-body">
                 <div class="row">
                     <div class="col-6" >
                         <div class="form-group" style="pointer-events: none;" >
                             <label for="">Grup </label>
-                            <input type="text" id="no_kontainer" class="form-control" value="{{$data[0]->getSewa->getCustomer->getGrup->nama_grup}}" readonly>
+                            <input type="text" id="no_kontainer" class="form-control" value="{{$customers[0]->getGrup->nama_grup}}" readonly>
                         </div>
                     </div>
                     <div class="col-6" >
@@ -57,7 +59,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                 </div>
-                                <input type="text" name="tgl_pencairan" autocomplete="off" class="date form-control" id="tgl_pencairan" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse(now())->format('d-M-Y') }}" disabled>     
+                                <input type="text" name="tgl_dicairkan" autocomplete="off" class="date form-control" id="tgl_dicairkan" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse(now())->format('d-M-Y') }}" readonly>     
                             </div>
                         </div>
                         
@@ -78,30 +80,63 @@
                             </tr>
                         </thead>
                         <tbody id="tb">
-                            @if ($data)
-                                @foreach ($data as $grups)
+                            <input type="hidden" id='t_tally' placeholder="t_tally">
+                            <input type="hidden" id='t_buruh' placeholder="t_buruh">
+                            <input type="hidden" id='t_timbang' placeholder="t_timbang">
+                            <input type="hidden" id='t_operasional' placeholder="t_operasional">
+                            <input type="hidden" id='t_total' placeholder="t_total">
+                            @if ($customers)
+                                @php
+                                    $tally = $operasional = $timbang = $buruh = 0;
+                                @endphp
+                                @foreach ($customers as $i => $cust)
                                     <tr class="group-row bg-gray-light">
-                                        <td colspan="7">{{ $grups->getSewa->getCustomer->nama }}</td>
+                                        <td colspan="7"><b>{{ $cust->nama }}</b></td>
                                     </tr>
-                                    @foreach ($grups as $key => $item)
-                                        <tr id="row{{ $key }}">
-                                            <td>{{ $item->getSewa->getTujuan->nama_tujuan }}</td>
-                                            <td>{{ $item->getSewa->no_polisi }}</td>
-                                            <td>{{ $item->getSewa->getKaryawan->nama_panggilan }}</td>
-                                            <td>{{ $item->deskripsi }}</td>
-                                            <td width="200">
-                                                <input type="text" id="detail[{{ $key }}][total_operasional]" name="detail[{{ $key }}][total_operasional]" value="{{ number_format($item->total_operasional) }}" class="form-control" readonly>
-                                            </td>
-                                            <td width="200">
-                                                <input type="text" id="detail[{{ $key }}][total_dicairkan]" name="detail[{{ $key }}][total_dicairkan]" value="{{ $item->no_kontainer }}" class="form-control uang numaja">
-                                            </td>
-                                            <td>
-                                                <input type="text" name="detail[{{ $key }}][catatan]" class="form-control">
-                                            </td>
-                                        </tr>
+                                    @foreach ($cust->sewa as $key => $sewa)
+                                        @foreach ($sewa->sewaOperasional as $item)
+                                            @if ($item->total_operasional != null || $item->total_operasional != 0)
+                                                @if ($item->status != 'SUDAH DICAIRKAN')
+                                                    <tr id="row{{ $item->id }}">
+                                                        @php
+                                                            $item->deskripsi
+                                                        @endphp
+                                                        <td>{{ $sewa->nama_tujuan }}</td>
+                                                        <td>{{ $sewa->no_polisi }}</td>
+                                                        <td>{{ $sewa->getKaryawan->nama_panggilan }}</td>
+                                                        <td>{{ $item->deskripsi }}</td>
+                                                        <td width="200">
+                                                            <input type="text" id="detail[{{ $item->id }}][total_operasional]" name="detail[{{ $item->id }}][total_operasional]" value="{{ number_format($item->total_operasional) }}" class="form-control" readonly>
+                                                            <input type="hidden" id="biaya_{{ $item->id }}" value="{{$item->total_operasional}}" class="form-control" readonly>
+                                                        </td>
+                                                        <td width="200">
+                                                            <input type="text" id="detail[{{ $item->id }}][total_dicairkan]" name="detail[{{ $item->id }}][total_dicairkan]" sewaOprs='{{$item->id}}' class="form-control sewa_oprs save_biaya_{{$item->id}} {{ substr($item->deskripsi, 0, 11) == 'OPERASIONAL'? substr($item->deskripsi, 0, 11):$item->deskripsi}} uang numaja">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" name="detail[{{ $item->id }}][catatan]" class="form-control" value="{{$item->catatan}}">
+                                                            <input type="hidden" name="detail[{{ $item->id }}][jenis]" class="form-control" value="{{$item->deskripsi}}">
+                                                        </td>
+                                                    </tr>
+                                                    @php
+                                                        if($item->deskripsi == 'TALLY'){
+                                                            $tally += $item->total_operasional; 
+                                                        }else if($item->deskripsi == 'TIMBANG'){
+                                                            $timbang += $item->total_operasional; 
+                                                        }else if($item->deskripsi == 'BURUH'){
+                                                            $buruh += $item->total_operasional; 
+                                                        }else if(substr($item->deskripsi, 0, 11) == 'OPERASIONAL'){
+                                                            $operasional += $item->total_operasional; 
+                                                        }
+                                                    @endphp
+                                                @endif
+                                            @endif
+                                        @endforeach
                                     @endforeach
                                 @endforeach
                             @endif
+                            @php
+                                $total = $tally + $operasional + $timbang + $buruh;
+                            @endphp
                         </tbody>
                     </table>
                     
@@ -111,75 +146,74 @@
     </div>
     
     <div class="col-12">
-            <div class="card radiusSendiri">
-                <div class="card-header">
-                    <h3 class="card-title mt-2"><b>KETERANGAN BIAYA</b></h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                        <!-- <button type="button" class="btn btn-tool" data-card-widget="remove">
-                            <i class="fas fa-times"></i>
-                        </button> -->
-                    </div>
+        <div class="card radiusSendiri">
+            <div class="card-header">
+                <h3 class="card-title mt-2"><b>KETERANGAN BIAYA</b></h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
                 </div>
-                <div class="card-body" >
+            </div>
+            <div class="card-body" >
                 <div class="d-flex justify-content-between" style="gap: 10px;">
                     <div class="col-6">
                         &nbsp;
                     </div>
-
                     <div class="col-6 card-outline card-primary">
                         <h4 class="d-flex justify-content-between align-items-center mt-2 mb-3">
                             <span class="text-primary">Total Biaya</span>
-                            {{-- <span class="badge bg-primary rounded-pill">3</span> --}}
                         </h4>
                         <ul class="list-group mb-3">
-                            <li class="list-group-item d-flex justify-content-between lh-sm">
-                                <div>
-                                <h6 class="my-0">Total Tally</h6>
-                                </div>
-                                <span class="text-muted">Rp. 15,000,000</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between lh-sm">
-                                <div>
-                                <h6 class="my-0">Total Operasional</h6>
-                                </div>
-                                <span class="text-muted">Rp. 20,000,000</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between lh-sm">
-                                <div>
-                                <h6 class="my-0">Total Buruh</h6>
-                                </div>
-                                <span class="text-muted">Rp. 1,500,000</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between lh-sm">
-                                <div>
-                                <h6 class="my-0">Total Timbang</h6>
-                                </div>
-                                <span class="text-muted">Rp. 5,000,000</span>
-                            </li>
+                            @if ($tally != 0)
+                                <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                        <h6 class="my-0">Total Tally</h6>
+                                    </div>
+                                    <span class="text-muted t_tally">Rp. 0</span>
+                                </li>
+                            @endif
+                            @if ($operasional != 0)
+                                <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                        <h6 class="my-0">Total Operasional</h6>
+                                    </div>
+                                    <span class="text-muted t_operasional">Rp. 0</span>
+                                </li>
+                            @endif
+                            @if ($buruh != 0)
+                                <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                        <h6 class="my-0">Total Buruh</h6>
+                                    </div>
+                                    <span class="text-muted t_buruh">Rp. 0</span>
+                                </li>
+                            @endif
+                            @if ($timbang != 0)
+                                <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <div>
+                                        <h6 class="my-0">Total Timbang</h6>
+                                    </div>
+                                    <span class="text-muted t_timbang">Rp. 0</span>
+                                </li>
+                            @endif
                             <li class="list-group-item d-flex justify-content-between">
-                                <span>Total (IDR)</span>
-                                 <input type="hidden" name="total_sblm_dooring" value="">
-                                    <strong>Rp. 35,000,000</strong>
+                                <span><b>GRAND TOTAL</b></span>
+                                <strong><span class="t_total">Rp. 0</span></strong>
                             </li>
                         </ul>
                         <div class="input-group ">
                             <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                <option value="">--PILIH PEMBAYARAN--</option>
-                                @foreach ($dataKas as $data)
-                                    <option value="{{$data->id}}">{{ $data->nama }}</option>
+                                <option value="">── PILIH PEMBAYARAN ──</option>
+                                @foreach ($dataKas as $kas)
+                                    <option value="{{$kas->id}}">{{ $kas->nama }}</option>
                                 @endforeach
                             </select>
-                            <button type="button" class="btn btn-success" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
-
-                            {{-- <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</a> --}}
-
+                            <button type="submit" class="btn btn-success" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
                         </div>
                     </div>
                 </div>
-                </div>
+            </div>
         </div>                 
     </div>
 </div>
@@ -313,9 +347,67 @@
                 'cleaning': dataKeuangan.cleaning_40ft,
                 'doc_fee': dataKeuangan.doc_fee_40ft,
             };
-            console.log('harga40Ft '+harga40Ft);
         // end of master harga tipe
 
+        // $(document).on('change', '.sewa_oprs', function(e) {
+        $(document).on('keyup', '.sewa_oprs', function(){
+
+            var idOprs = $(this).attr('sewaOprs');
+            var inputed = parseFloat(this.value.replace(',', ''));
+            var max = $('#biaya_'+idOprs).val();
+            
+            if (inputed > max) {
+                $('.save_biaya_'+idOprs).val(parseFloat(max).toLocaleString()); // Explicitly specify the locale
+            }
+
+            var tallyInputs = document.querySelectorAll('.TALLY');
+            var buruhInputs = document.querySelectorAll('.BURUH');
+            var timbangInputs = document.querySelectorAll('.TIMBANG');
+            var operasionalInputs = document.querySelectorAll('.OPERASIONAL');
+            var totaltally = totaloperasional = totaltimbang = totalburuh = 0;
+            
+            for (var i = 0; i < tallyInputs.length; i++) {
+                var inputTally = parseFloat(tallyInputs[i].value.replace(',', '')) || 0; // Convert to a number or use 0 if NaN
+                totaltally += inputTally;
+            }
+            for (var i = 0; i < buruhInputs.length; i++) {
+                var inputBuruh = parseFloat(buruhInputs[i].value.replace(',', '')) || 0; // Convert to a number or use 0 if NaN
+                totalburuh += inputBuruh;
+            }
+            for (var i = 0; i < timbangInputs.length; i++) {
+                var inputTimbang = parseFloat(timbangInputs[i].value.replace(',', '')) || 0; // Convert to a number or use 0 if NaN
+                totaltimbang += inputTimbang;
+            }
+            for (var i = 0; i < operasionalInputs.length; i++) {
+                var inputOperasional = parseFloat(operasionalInputs[i].value.replace(',', '')) || 0; // Convert to a number or use 0 if NaN
+                totaloperasional += inputOperasional;
+            }
+
+            var tallyElement = document.querySelector('.t_tally');
+            if(tallyElement != null){
+                tallyElement.textContent = "Rp. "+totaltally.toLocaleString(); 
+            } 
+            var buruhElement = document.querySelector('.t_buruh');
+            if(buruhElement != null){
+                buruhElement.textContent = "Rp. "+totalburuh.toLocaleString(); 
+            } 
+            var timbangElement = document.querySelector('.t_timbang');
+            if(timbangElement != null){
+                timbangElement.textContent = "Rp. "+totaltimbang.toLocaleString(); 
+            } 
+            var operasionalElement = document.querySelector('.t_operasional');
+            if(operasionalElement != null){
+                operasionalElement.textContent = "Rp. "+totaloperasional.toLocaleString(); 
+            } 
+            var totalElement = document.querySelector('.t_total');
+            totalElement.textContent = "Rp. "+(totaloperasional+totaltimbang+totalburuh+totaltally).toLocaleString(); 
+
+            $('#t_tally').val(totaltally);
+            $('#t_buruh').val(totalburuh);
+            $('#t_timbang').val(totaltimbang);
+            $('#t_operasional').val(totaloperasional);
+            $('#t_total').val((totaloperasional+totaltimbang+totalburuh+totaltally));
+        });
     });
 </script>
 

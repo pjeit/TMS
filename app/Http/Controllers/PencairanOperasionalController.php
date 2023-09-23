@@ -8,12 +8,14 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\Helper\VariableHelper;
+use App\Models\Customer;
 use App\Models\Grup;
 use App\Models\Jaminan;
 use App\Models\JobOrder;
 use App\Models\JobOrderDetail;
 use App\Models\Sewa;
 use App\Models\SewaOperasional;
+use App\Http\Controllers\Builder;
 
 class PencairanOperasionalController extends Controller
 {
@@ -63,10 +65,8 @@ class PencairanOperasionalController extends Controller
             ->where('sewa_operasional.is_aktif', "Y")
             ->groupBy('sewa_operasional.deskripsi')
             ->get();
-        // $data = SewaOperasional::with('getSewa')->get();
-        $data = SewaOperasional::with('sewa.customer')->get();
-
-        dd($data);
+            
+        $customers = Customer::where('grup_id', $id)->get();
             
         $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
             ->select('*')
@@ -77,12 +77,11 @@ class PencairanOperasionalController extends Controller
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
-        // dd($data); 
 
         return view('pages.finance.pencairan_operasional.pencairan',[
             'judul'=>"Pencairan Operasional || " . $grup->nama_grup,
             'dataKas' => $dataKas,
-            'data' => $data,
+            'customers' => $customers,
             'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
 
         ]);
@@ -106,7 +105,7 @@ class PencairanOperasionalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
@@ -140,7 +139,62 @@ class PencairanOperasionalController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = $request->post();
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        // dd($data);
+        
+        try {
+            foreach ($data['detail'] as $key => $value) {
+                if($value['total_dicairkan'] != null){
+                    $sewaOprs = SewaOperasional::where('is_aktif', 'Y')->find($key);
+                    $sewaOprs->total_dicairkan = floatval(str_replace(',', '', $value['total_dicairkan']));
+                    $sewaOprs->catatan = $value['catatan'];
+                    $sewaOprs->tgl_dicairkan = date_create_from_format('d-M-Y', $data['tgl_dicairkan']);
+                    $sewaOprs->status = 'SUDAH DICAIRKAN';
+                    $sewaOprs->updated_by = $user;
+                    $sewaOprs->updated_at = now();
+                    $sewaOprs->save();
+
+                    $saldo = DB::table('kas_bank')
+                        ->select('*')
+                        ->where('is_aktif', '=', "Y")
+                        ->where('kas_bank.id', '=', $data['pembayaran'])
+                        ->get();
+
+                    $saldo_baru = $saldo[0]->saldo_sekarang - ( floatval(str_replace(',', '', $value['total_dicairkan'])) );
+
+                    DB::table('kas_bank')
+                        ->where('id', $data['pembayaran'])
+                        ->update(array(
+                            'saldo_sekarang' => $saldo_baru,
+                            'updated_at'=> now(),
+                            'updated_by'=> $user,
+                        )
+                    );
+
+                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                    array(
+                        $data['pembayaran'],// id kas_bank dr form
+                        now(),//tanggal
+                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                        floatval(str_replace(',', '', $value['total_dicairkan'])), //uang keluar (kredit)
+                        1015, //kode coa
+                        'pencairan_operasional',
+                        'PENCAIRAN '.$value['jenis'], //keterangan_transaksi
+                        $key,//keterangan_kode_transaksi
+                        $user,//created_by
+                        now(),//created_at
+                        $user,//updated_by
+                        now(),//updated_at
+                        'Y'
+                    ) 
+                );
+                }
+            }
+            return redirect()->route('pencairan_operasional.index')->with('status', "Success!");
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
     }
 
     /**

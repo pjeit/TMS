@@ -202,7 +202,7 @@ class PencairanUangJalanFtlController extends Controller
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
-        // dd($sewa->total_uang_jalan);
+        // dd($sewa);
 
         return view('pages.finance.pembayaran_uang_jalan.edit',[
             'judul' => "Pencairan Uang Jalan",

@@ -251,7 +251,7 @@
                                     var row = $("<tr></tr>");
                                     var colspan = 4;
                                     if(item == 'TALLY' || item.substring(0, 11) == 'OPERASIONAL'){
-                                        row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].id_customer} ${data[i].customer} </b></td>`);
+                                        row.append(`<td colspan='${colspan}' style='background: #efefef'><b> ${data[i].customer} </b></td>`);
                                         row.append(`<td style='background: #efefef' class='text-center'>
                                                         <input class='check_item check_cust' cust_parent='${data[i].id_customer}' 
                                                             type='checkbox'> 
@@ -274,7 +274,7 @@
                                 }
                                 var row = $("<tr class='hoverEffect'></tr>");
         
-                                row.append(`<td> ${data[i].id_customer} ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} </td>`);
+                                row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} </td>`);
                                 row.append(`<td> ${data[i].tipe_kontainer}" ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
                                 row.append(`<td><b> ${data[i].jenis_order} </b></td>`);
         

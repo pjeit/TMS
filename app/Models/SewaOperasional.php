@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model as Eloquent;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
-class SewaOperasional extends Eloquent
+class SewaOperasional extends Model
 {
     use HasFactory;
     protected $table = 'sewa_operasional';
@@ -24,6 +25,6 @@ class SewaOperasional extends Eloquent
     // eloquent
     public function sewa()
     {
-        return $this->belongsTo('sewa');
+        return $this->belongsTo(Sewa::class, 'id_sewa', 'id_sewa');
     }
 }
