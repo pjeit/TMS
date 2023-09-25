@@ -41,15 +41,28 @@
                             <div class="row">
                                 <div class="col-6">
 
-                                    <div class="form-group">
-                                        <label for="tanggal_pencairan">Tanggal Invoice<span style="color:red">*</span></label>
-                                        <div class="input-group mb-0">
-                                            <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input disabled type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="">
+                                    <div class="row">
+                                        <div class="col-6">
+
+                                            <div class="form-group">
+                                                <label for="no_akun">No. Invoice</label>
+                                                <input type="text" id="customer" name="customer" class="form-control" value="" placeholder="otomatis" readonly>   
+                                            </div>  
                                         </div>
-                                    </div>  
+                                         <div class="col-6">
+                                            
+                                               <div class="form-group">
+                                                <label for="tanggal_pencairan">Tanggal Invoice<span style="color:red">*</span></label>
+                                                <div class="input-group mb-0">
+                                                    <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                    </div>
+                                                    <input disabled type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                   
                                     <div class="form-group">
                                         <label for="select_customer">No. Sewa<span style="color:red">*</span></label>
@@ -63,7 +76,7 @@
                                     </div>
     
                                     <div class="form-group">
-                                        <label for="tanggal_pencairan">Tanggal Berangkat<span style="color:red">*</span></label>
+                                        <label for="tanggal_pencairan">Jatuh Tempo<span style="color:red">*</span></label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -77,10 +90,7 @@
                                         <input type="text" id="customer" name="customer" class="form-control" value="" readonly>                         
                                     </div>  
     
-                                    <div class="form-group">
-                                        <label for="no_akun">Tujuan</label>
-                                        <input type="text" id="tujuan" name="tujuan" class="form-control" value="" readonly>                         
-                                    </div>  
+                                   
                                 </div>
                                  {{-- <div class="form-group col-12">
                                     Data Sewa
@@ -121,7 +131,7 @@
                                         <label for="total_diterima">Total Sisa Tagihan</label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text">Kg</span>
+                                                <span class="input-group-text">Rp</span>
                                             </div>
                                             <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                         </div>
