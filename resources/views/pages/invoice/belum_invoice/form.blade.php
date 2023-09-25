@@ -89,7 +89,7 @@
                                 </div> --}}
                                 <div class="col-6">
                                     <div class="form-group ">
-                                        <label for="total_hutang">Total Hutang</label>
+                                        <label for="total_hutang">Total Tagihan</label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
@@ -98,23 +98,30 @@
                                         </div>
                                     </div>
                                     <div class="form-group ">
-                                        <label for="potong_hutang">Potong Hutang</label>
+                                        <label for="potong_hutang">Total Dibayar</label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numajaMinDesimal" value="" >                         
+                                            <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                         </div>
                                     </div>
+                                
                                     <div class="form-group ">
-                                        <label for="no_akun">Catatan</label>
-                                        <input type="text" id="catatan" name="catatan" class="form-control" value="" >                         
-                                    </div> 
-                                    <div class="form-group ">
-                                        <label for="total_diterima">Total Diterima</label>
+                                        <label for="total_diterima">Total Jumlah Muatan</label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
-                                                <span class="input-group-text">Rp</span>
+                                                <span class="input-group-text">Kg</span>
+                                            </div>
+                                            <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group ">
+                                        <label for="total_diterima">Total Sisa Tagihan</label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Kg</span>
                                             </div>
                                             <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                         </div>
