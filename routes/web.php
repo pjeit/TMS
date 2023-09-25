@@ -135,6 +135,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('perjalanan_kembali', 'App\Http\Controllers\PerjalananKembaliController');
 
+        Route::resource('invoice', 'App\Http\Controllers\InvoiceController');
 
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
 

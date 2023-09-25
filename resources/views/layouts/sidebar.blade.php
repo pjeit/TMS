@@ -499,6 +499,28 @@
            
             
           </li>
+          <li class="nav-item {{ request()->is('invoice*')  ? 'menu-is-opening menu-open' : '' }}">
+            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+              <i class="fas nav-icon fa-solid fa-file-invoice"></i>
+              {{-- <i class=""></i> --}}
+              <p>INVOICE
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+          
+            <ul class="nav nav-treeview">
+
+              <li class="nav-item">
+                <a href="{{route('invoice.index')}}" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
+                  <p>
+                     Belum Invoice
+                  </p>
+                </a>
+              </li>
+           
+            </ul>
+          </li>
 
           <li class="nav-item {{ request()->is('laporan_kas*') ||
               request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">
