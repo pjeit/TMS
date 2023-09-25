@@ -187,39 +187,41 @@ class BiayaOperasionalController extends Controller
 
     public function load_data($item){
         try {
-            // $data = db::table('sewa as s')
-            //         ->leftJoin('job_order_detail AS jod', function($join) {
-            //             $join->on('s.id_jo_detail', '=', 'jod.id')
-            //                 ->where('jod.is_aktif', 'Y')
-            //                 ->where('jod.status', 'DALAM PERJALANAN');
-            //         })
-            //         ->leftJoin('grup_tujuan AS gt', function($join) {
-            //             $join->on('gt.id', '=', 's.id_grup_tujuan')
-            //                 ->where('gt.is_aktif', 'Y');
-            //         })
-            //         ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
-            //         ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
-            //         ->leftJoin('sewa_operasional as so', function ($join) use ($item) {
-            //             if($item == 'TALLY'){
-            //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
-            //                     ->where('so.is_aktif', 'Y')
-            //                     ->where('so.deskripsi', $item);
-            //             }else {
-            //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
-            //                 ->where('so.is_aktif', 'Y');
-            //             }
-            //         })
-            //         ->where('s.is_aktif', 'Y')
-            //         ->where('s.id_sewa', '<>', 'NULL')
-            //         ->select('jod.*', 'gt.nama_tujuan as nama_tujuan','c.nama as customer', 'jod.status as status_jod',
-            //                 's.id_sewa as id_sewa','s.id_jo as id_jo','so.id as id_oprs', 'c.id as id_customer',
-            //                 'so.deskripsi as deskripsi_so', 's.no_polisi as no_polisi', 'k.nama_panggilan as nama_panggilan',
-            //                 's.jenis_order as jenis_order','s.tipe_kontainer as tipe_kontainer',
-            //                 DB::raw('COALESCE(gt.tally, 0) as tally'), 
-            //                 )
-            //         ->orderBy('s.id_customer', 'asc')
-            //         ->orderBy('jod.id_jo', 'asc')
-            // ->get();
+            // query lama
+                // $data = db::table('sewa as s')
+                //         ->leftJoin('job_order_detail AS jod', function($join) {
+                //             $join->on('s.id_jo_detail', '=', 'jod.id')
+                //                 ->where('jod.is_aktif', 'Y')
+                //                 ->where('jod.status', 'DALAM PERJALANAN');
+                //         })
+                //         ->leftJoin('grup_tujuan AS gt', function($join) {
+                //             $join->on('gt.id', '=', 's.id_grup_tujuan')
+                //                 ->where('gt.is_aktif', 'Y');
+                //         })
+                //         ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
+                //         ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+                //         ->leftJoin('sewa_operasional as so', function ($join) use ($item) {
+                //             if($item == 'TALLY'){
+                //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
+                //                     ->where('so.is_aktif', 'Y')
+                //                     ->where('so.deskripsi', $item);
+                //             }else {
+                //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
+                //                 ->where('so.is_aktif', 'Y');
+                //             }
+                //         })
+                //         ->where('s.is_aktif', 'Y')
+                //         ->where('s.id_sewa', '<>', 'NULL')
+                //         ->select('jod.*', 'gt.nama_tujuan as nama_tujuan','c.nama as customer', 'jod.status as status_jod',
+                //                 's.id_sewa as id_sewa','s.id_jo as id_jo','so.id as id_oprs', 'c.id as id_customer',
+                //                 'so.deskripsi as deskripsi_so', 's.no_polisi as no_polisi', 'k.nama_panggilan as nama_panggilan',
+                //                 's.jenis_order as jenis_order','s.tipe_kontainer as tipe_kontainer',
+                //                 DB::raw('COALESCE(gt.tally, 0) as tally'), 
+                //                 )
+                //         ->orderBy('s.id_customer', 'asc')
+                //         ->orderBy('jod.id_jo', 'asc')
+                // ->get();
+            //
             $data = DB::table('sewa AS s')
                     ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
                         if($item == 'OPERASIONAL'){
@@ -239,16 +241,17 @@ class BiayaOperasionalController extends Controller
                     ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
                     ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
                     ->select(
-                        's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer',
+                        's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer', 'c.grup_id',
                         's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
                         'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 
                         'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
                         DB::raw('COALESCE(gt.tally, 0) as tally'),
                         'gt.nama_tujuan',
                         'c.nama as customer',
-                        'g.nama_grup as grup_nama'
+                        'g.nama_grup as nama_grup'
                     )
             ->get();
+            // var_dump($data); die;
 
             return response()->json(["result" => "success",'data' => $data], 200);
         } catch (\Throwable $th) {

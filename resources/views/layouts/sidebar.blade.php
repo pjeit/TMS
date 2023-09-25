@@ -533,7 +533,7 @@
 
           @if ($user_role == 1 || $user_role == 3)
             {{-- menu marketing --}}
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-key"></i>
                 <p>MARKETING
@@ -565,7 +565,7 @@
                   </a>
                 </li>
               </ul>
-            </li>
+            </li> --}}
           @endif
 
           @if ($user_role == 1 || $user_role == 4)
