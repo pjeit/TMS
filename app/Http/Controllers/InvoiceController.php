@@ -53,6 +53,10 @@ class InvoiceController extends Controller
     public function create()
     {
         //
+        
+        return view('pages.invoice.belum_invoice.form',[
+            'judul'=>"BELUM INVOICE",
+        ]);
     }
 
     /**
