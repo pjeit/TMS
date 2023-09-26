@@ -134,10 +134,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-12">
-                                    <label for="no_akun">Catatan</label>
-                                    <input type="text" id="catatan" name="catatan" class="form-control" value="" >                         
-                                </div> 
+                             
 
                                 <div class="form-group col-6">
                                     <label for="uang_jalan">Uang Jalan</label>
@@ -172,6 +169,10 @@
                                         <button type="submit" class="btn btn-success radiusSendiri"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
                                     </div>  
                                 </div>  
+                                   <div class="form-group col-12">
+                                    <label for="no_akun">Catatan</label>
+                                    <input type="text" id="catatan" name="catatan" class="form-control" value="" >                         
+                                </div> 
                             </div>
                         </div>
                     </div>

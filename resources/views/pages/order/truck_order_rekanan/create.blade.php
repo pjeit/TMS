@@ -40,7 +40,7 @@
         @endforeach
 
     @endif
-    <form action="{{ route('truck_order_rekanan.store') }}" method="POST" >
+    <form action="{{ route('truck_order_rekanan.store') }}" method="POST" id="post_data">
     @csrf
     {{-- <div class="row">
         <div class="col">
@@ -173,7 +173,7 @@
                                
                                 <div class="form-group">
                                     <label for="select_customer">Customer<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer">
+                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" required>
                                         <option value="">Pilih Customer</option>
 
                                         @foreach ($dataCustomer as $cust)
@@ -186,7 +186,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan">
+                                    <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" required>
                                         <option value="">Pilih Tujuan</option>
 
                                         {{-- @foreach ($kota as $city)
@@ -206,14 +206,11 @@
                                     <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0">
                                     <input type="hidden" id="min_muatan" name="min_muatan" value="0">
 
-                                    <input type="hidden" id="seal_pje" name="seal_pje" value="">
                                     <input type="hidden" id="plastik" name="plastik" value="">
                                     <input type="hidden" id="tally" name="tally" value="">
                                     <input type="hidden" id="kargo" name="kargo" value="">
 
                                     <input type="hidden" id="kontainer" name="kontainer" value="">
-                                    <input type="hidden" id="seal" name="seal" value="">
-
 
                                     <input type="hidden" id="biayaDetail" name="biayaDetail">
                                     <input type="hidden" id="biayaTambahTarif" name="biayaTambahTarif">
@@ -358,7 +355,6 @@
             //ltl
             $('#harga_per_kg').val('');
             $('#min_muatan').val('');
-            $('#seal_pje').val('');
             $('#plastik').val('');
             $('#tally').val('');
             $('#kargo').val('');
@@ -366,7 +362,6 @@
             $('#biayaTambahTarif').val('');
 
             $('#kontainer').val('');
-            $('#seal').val('');
 
 		});
 
@@ -399,14 +394,12 @@
             //ltl
             $('#harga_per_kg').val('');
             $('#min_muatan').val('');
-            $('#seal_pje').val('');
             $('#plastik').val('');
             $('#tally').val('');
             $('#kargo').val('');
             $('#biayaDetail').val('');
             $('#biayaTambahTarif').val('');
             $('#kontainer').val('');
-            $('#seal').val('');
             getDate();
 		});
 
@@ -515,7 +508,6 @@
             $('#booking_id').val(bookingId);
             $('#id_jo_detail').val(idJoDetail);
             $('#kontainer').val(no_kontainer);
-            $('#seal').val(seal);
             var kontainer = '';
             if(tipe_kontainer != undefined){
                 kontainer = tipe_kontainer + `"`;
@@ -614,7 +606,6 @@
             //ltl
             $('#harga_per_kg').val('');
             $('#min_muatan').val('');
-            $('#seal_pje').val('');
             $('#plastik').val('');
             $('#tally').val('');
             $('#kargo').val('');
@@ -777,7 +768,6 @@
                         //ltl
                         $('#harga_per_kg').val('');
                         $('#min_muatan').val('');
-                        $('#seal_pje').val('');
                         $('#plastik').val('');
                         $('#tally').val('');
                         $('#kargo').val('');
@@ -824,16 +814,6 @@
                         
                         // var obj=JSON.parse(myjson);
                         // array_detail_biaya.push(obj);
-                        if(response.dataTujuan.seal_pje)
-                        {
-                            
-                            var objSeal = {
-                                       deskripsi: 'SEAL PJE',
-                                       biaya: response.dataTujuan.seal_pje,
-                                   };
-                               array_tambahan_tarif.push(objSeal);
-                        }
-
                         if(response.dataTujuan.plastik)
                         {
                             
@@ -854,9 +834,6 @@
                                array_tambahan_tarif.push(objtally);
                         }
 
-                   
-
-                        $('#seal_pje').val(response.dataTujuan.seal_pje);
                         $('#plastik').val(response.dataTujuan.plastik);
                         $('#tally').val(response.dataTujuan.tally);
 
@@ -882,6 +859,129 @@
 
 
 		});
+        $('#post_data').submit(function(event) {
+            var no_polisi = $('#no_polisi').val();
+            var supplier = $('#supplier').val();
+            var harga_jual = $('#harga_jual').val();
+
+            if(no_polisi.trim()=='')
+            {
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Nomor Polisi Rekanan Harus diisi!'
+                    })
+                return;
+            }
+            if(supplier.trim()=='')
+            {
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Supplier Harus dipilih!'
+                    })
+                return;
+            }
+            if(harga_jual.trim()=='')
+            {
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Harga Jual Rekanan Harus Diisi!'
+                    })
+                return;
+            }
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar ?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Disimpan'
+                    })
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 800); // 2000 milliseconds = 2 seconds
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
 
         // $('body').on('change','#select_kendaraan',function()
 		// {

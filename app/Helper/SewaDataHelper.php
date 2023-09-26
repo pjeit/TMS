@@ -75,33 +75,44 @@ class SewaDataHelper
     public static function DataChassis()
      {
         return DB::table('chassis as c')
-            ->select('*')
+            ->select('c.*','c.id as idChassis','m.nama as modelChassis')
+            ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+            // ->where('m.id', '=', 2)
             ->where('c.is_aktif', "Y")
             ->get();
         ;
      }
-     // Your new helper method
+
      public static function DataKendaraan()
      {
         return DB::table('kendaraan AS k')
-                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota', DB::raw('GROUP_CONCAT(CONCAT(c.kode, " (", m.nama, ")") SEPARATOR ", ") AS chassis_model'))
+                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota')
+                // ini buat nge get pair kendaraan yang trailer
                 ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
                     $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
                 })
+                // get chassis
                 ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
-                ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+                // get model chasis yang 20/40 ft
+                ->leftJoin('m_model_chassis AS mc', 'c.model_id', '=', 'mc.id')
+                // get cabang jakarta/sby/...
                 ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
-                ->Join('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
-                    ->where(function ($query) {
-                        $query->where('k.is_aktif', '=', 'Y')
-                            ->where(function ($innerQuery) {
-                                $innerQuery->where('k.id_kategori', '=', 1)
-                                    ->whereNotNull('c.id');
-                            })
-                    ->orWhere(function ($innerQuery) {
-                        $innerQuery->where('k.id_kategori', '!=', 1);
-                    });
+                // terus get kategorinya
+                ->leftJoin('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+                //dikasih pengecekan
+                ->where(function ($query) {
+                        //kalau dia kategori 1 (trailer)
+                        $query->where(function ($innerQuery) {
+                            //syaratnya trailer ada cek tipe chassis trailer 20/40, kemudian pair nya gaboleh null (chassisnya)
+                            $innerQuery->where('k.id_kategori', '=', 1)
+                                    //    ->where('mc.id', '=', 1)
+                                       ->whereNotNull('pk.chassis_id');
+                        })
+                        ->orWhere(function ($query) {
+                            $query->where('k.id_kategori', '!=', 1);
+                        });
                 })
+                ->where('k.is_aktif', '=', 'Y')
                 ->whereNotNull('k.driver_id')
                 ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                 ->get(); 
@@ -220,5 +231,101 @@ class SewaDataHelper
                     ->first();
         return response()->json(['sewaDetail'=>$sewaDetail,'hutangKaryawan'=>$hutangKaryawan]);
     }
+
+     public static function getDataChassisByModel($model)
+     {
+        // $data='';
+        // if($model)
+        // {
+            $data=DB::table('chassis as c')
+            ->select('c.*','c.id as idChassis','m.nama as modelChassis')
+            ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+            ->where('m.nama', 'like', "%$model%")
+            ->where('c.is_aktif', "Y")
+            ->get();
+        // }
+        // else
+        // {
+        //     $data=DB::table('chassis as c')
+        //     ->select('c.*','c.id as idChassis','m.nama as modelChassis')
+        //     ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+        //     ->where('c.is_aktif', "Y")
+        //     ->get();
+        // }
+        return $data;
+     }
+     // Your new helper method
+     public static function getDataKendaraanByModel($model)
+     {
+        // $data='';
+        // if($model)
+        // {
+            $data= DB::table('kendaraan AS k')
+                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota')
+                // ini buat nge get pair kendaraan yang trailer
+                ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
+                    $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
+                })
+                // get chassis
+                ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+                // get model chasis yang 20/40 ft
+                ->leftJoin('m_model_chassis AS mc', 'c.model_id', '=', 'mc.id')
+                // get cabang jakarta/sby/...
+                ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
+                // terus get kategorinya
+                ->leftJoin('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+                //dikasih pengecekan
+                ->where(function ($query) use ($model){
+                        //kalau dia kategori 1 (trailer)
+                        $query->where(function ($innerQuery) use ($model) {
+                            //syaratnya trailer ada cek tipe chassis trailer 20/40, kemudian pair nya gaboleh null (chassisnya)
+                            $innerQuery->where('k.id_kategori', '=', 1)
+                                       ->where('mc.nama', 'like', "%$model%")
+                                       ->whereNotNull('pk.chassis_id');
+                        });
+                        // ->orWhere(function ($query) {
+                        //     $query->where('k.id_kategori', '!=', 1);
+                        // });
+                })
+                ->where('k.is_aktif', '=', 'Y')
+                ->whereNotNull('k.driver_id')
+                ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
+                ->get(); 
+        // }
+        // else
+        // {
+        //     $data=DB::table('kendaraan AS k')
+        //         ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota')
+        //         // ini buat nge get pair kendaraan yang trailer
+        //         ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
+        //             $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
+        //         })
+        //         // get chassis
+        //         ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+        //         // get model chasis yang 20/40 ft
+        //         ->leftJoin('m_model_chassis AS mc', 'c.model_id', '=', 'mc.id')
+        //         // get cabang jakarta/sby/...
+        //         ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
+        //         // terus get kategorinya
+        //         ->leftJoin('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+        //         //dikasih pengecekan
+        //         ->where(function ($query) {
+        //                 //kalau dia kategori 1 (trailer)
+        //                 $query->where(function ($innerQuery)  {
+        //                     //syaratnya trailer ada cek tipe chassis trailer 20/40, kemudian pair nya gaboleh null (chassisnya)
+        //                     $innerQuery->where('k.id_kategori', '=', 1)
+        //                                ->whereNotNull('pk.chassis_id');
+        //                 })
+        //                 ->orWhere(function ($query) {
+        //                     $query->where('k.id_kategori', '!=', 1);
+        //                 });
+        //         })
+        //         ->where('k.is_aktif', '=', 'Y')
+        //         ->whereNotNull('k.driver_id')
+        //         ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
+        //         ->get(); 
+        // }
+        return $data;
+     }
 }
 ?>

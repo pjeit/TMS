@@ -119,7 +119,6 @@ class SewaRekananController extends Controller
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['kontainer']? $data['kontainer']:null;
-            $sewa->seal_pelayaran = $data['seal']? $data['seal']:null;
             $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
             
             $sewa->harga_jual = (float)str_replace(',', '', $data['harga_jual']);

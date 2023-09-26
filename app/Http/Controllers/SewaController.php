@@ -87,7 +87,7 @@ class SewaController extends Controller
             
             $sewa = new Sewa();
             $sewa->no_sewa = $no_sewa;
-            $sewa->id_booking = $booking_id;
+            $sewa->id_booking = $data['booking_id'];
             $sewa->id_jo = $data['id_jo'];
             $sewa->id_jo_detail = $data['id_jo_detail'];
             $sewa->id_customer = $data['customer_id'];
@@ -104,14 +104,13 @@ class SewaController extends Controller
             $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
             $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
             $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
-            $sewa->id_chassis = $data['ekor_id']? $data['ekor_id']:null;
+            $sewa->id_chassis = $data['select_chassis']? $data['select_chassis']:null;
             $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
             $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
             $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
-            $sewa->seal_pelayaran = $data['seal_pelayaran']? $data['seal_pelayaran']:null;
             $sewa->created_by = $user;
             $sewa->created_at = now();
             $sewa->is_aktif = 'Y';
