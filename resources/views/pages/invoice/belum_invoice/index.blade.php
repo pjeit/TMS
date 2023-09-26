@@ -18,7 +18,7 @@
             <div class="card radiusSendiri">
                 <div class="card-header">
                     <div class="">
-                        <a href="{{route('truck_order.create')}}" class="btn btn-primary btn-responsive radiusSendiri">
+                        <a href="{{route('invoice.create')}}" class="btn btn-primary btn-responsive radiusSendiri">
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Buat Invoice
                         </a> 
                     </div>
@@ -35,22 +35,22 @@
                                 <th>Tujuan</th>
                                 <th>Driver</th>
                                 {{-- <th>Status</th> --}}
-                                <th></th>
+                                <th cla></th>
                             </tr>
                         </thead>
                         <tbody>
                             @if (isset($dataSewa))
                                 @foreach($dataSewa as $item)
                                     <tr>
-                                        <td>{{ $item->nama_grup }} </td>
-                                        <td>{{ $item->nama_cust }}</td>
+                                        <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
+                                        <td>{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
                                         <td>{{ $item->no_polisi }}</td>
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                         <td>{{ $item->nama_tujuan }}</td>
                                         <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
                                         {{-- <td>{{ $item->status }}</td> --}}
-                                        <td> <input type="checkbox" name="" id=""></td>
+                                        <td style="text-align: center;"> <input type="checkbox" name="" id="" class=""></td>
 
                                         {{-- <td>                                    
                                             <div class="btn-group dropleft">
@@ -95,7 +95,6 @@
             {
                 "orderable": false,
                 "targets": 5,
-                'colspan':6 
             }
         ],
     });
