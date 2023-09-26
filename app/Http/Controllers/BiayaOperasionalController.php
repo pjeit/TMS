@@ -28,8 +28,15 @@ class BiayaOperasionalController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
+        $dataKas = DB::table('kas_bank')
+        ->select('*')
+        ->where('is_aktif', '=', "Y")
+        ->get();
+
+
         return view('pages.finance.biaya_operasional.index',[
             'judul' => "Biaya Operasional",
+            'dataKas' => $dataKas,
         ]);
     }
 
@@ -55,26 +62,62 @@ class BiayaOperasionalController extends Controller
             $user = Auth::user()->id;
             $data = $request->post();
             $item = $data['item'];
+            $keterangan = '';
+            // dd($data);
 
             foreach ($data['data'] as $key => $value) {
-                if(isset($value['item'])){
+                if(isset($value['item']) && $value['dicairkan'] != null){
+                    $keterangan .= $value['keterangan']. ' # ';
+
                     $sewa_o = new SewaOperasional();
                     $sewa_o->id_sewa = $key;
-    
-                    if($item == 'OPERASIONAL'){
-                        $sewa_o->deskripsi = $value['pick_up'] == 'null' ? 'OPERASIONAL DEPO':'OPERASIONAL '.$value['pick_up'];
-                        $sewa_o->total_operasional = $value['nominal'];
-                    }else{
-                        $sewa_o->deskripsi = $item;
-                        $sewa_o->total_operasional = floatval(str_replace(',', '', $value['nominal']));
-                    }
-    
+                    $sewa_o->deskripsi = $item == 'OPERASIONAL' ? 'OPERASIONAL '.$value['pick_up']:$item;
+                    $sewa_o->catatan = $value['catatan'];
+                    $sewa_o->total_operasional = floatval(str_replace(',', '', $value['nominal']));
+                    $sewa_o->total_dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
                     $sewa_o->created_by = $user;
+                    $sewa_o->status = 'SUDAH DICAIRKAN';
                     $sewa_o->created_at = now();
+                    $sewa_o->tgl_dicairkan = now();
                     $sewa_o->is_aktif = 'Y';
                     $sewa_o->save();
                 }
             }
+
+            $saldo = DB::table('kas_bank')
+                        ->select('*')
+                        ->where('is_aktif', '=', "Y")
+                        ->where('kas_bank.id', '=', $data['pembayaran'])
+                        ->get();
+
+            $saldo_baru = $saldo[0]->saldo_sekarang - ( floatval(str_replace(',', '', $data['t_total'])) );
+
+            DB::table('kas_bank')
+                ->where('id', $data['pembayaran'])
+                ->update(array(
+                    'saldo_sekarang' => $saldo_baru,
+                    'updated_at'=> now(),
+                    'updated_by'=> $user,
+                )
+            );
+
+            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                array(
+                    $data['pembayaran'], // id kas_bank dr form
+                    now(), //tanggal
+                    0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                    floatval(str_replace(',', '', $data['t_total'])), //uang keluar (kredit)
+                    1015, //kode coa
+                    'pencairan_operasional',
+                    $keterangan, //keterangan_transaksi
+                    $key, //keterangan_kode_transaksi
+                    $user, //created_by
+                    now(), //created_at
+                    $user, //updated_by
+                    now(), //updated_at
+                    'Y'
+                ) 
+            );
 
             return redirect()->route('biaya_operasional.index')->with('status','Sukses!!');
         } catch (ValidationException $e) {
@@ -243,7 +286,7 @@ class BiayaOperasionalController extends Controller
                     ->select(
                         's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer', 'c.grup_id',
                         's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
-                        'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 
+                        'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 'so.total_dicairkan',
                         'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
                         DB::raw('COALESCE(gt.tally, 0) as tally'),
                         'gt.nama_tujuan',

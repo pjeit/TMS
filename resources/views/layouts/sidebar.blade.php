@@ -378,7 +378,7 @@
          
           </li>
            <li class="nav-item {{ request()->is('booking*')||
-            request()->is('biaya_operasional*') ||
+            request()->is('perjalanan_kembali*') ||
             request()->is('truck_order*')? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               {{-- <i class="nav-icon fas fa-shipping-fast"></i> --}}
@@ -417,20 +417,10 @@
                 </a>
               </li>
             </ul> 
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Biaya Operasional
-                  </p>
-                </a>
-              </li>
-            </ul>
 
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="{{route('perjalanan_kembali.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('sewa_kembali') ||  request()->is('sewa_kembali/create') || request()->is('sewa_kembali/*/edit') ? ' active' : '' }}">
+                <a href="{{route('perjalanan_kembali.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('perjalanan_kembali*') ? 'active' : ''  }}">
                 <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                   <p>
                      Perjalanan Kembali 
@@ -445,6 +435,7 @@
             request()->is('pembayaran_jo*') ||
             request()->is('pencairan_uang_jalan_ftl*') ||
             request()->is('pencairan_operasional*') ||
+            request()->is('biaya_operasional*') ||
             request()->is('pembayaran_sdt*') 
             ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
@@ -488,6 +479,16 @@
             </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Biaya Operasional
+                  </p>
+                </a>
+              </li>
+            </ul>
+            {{-- <ul class="nav nav-treeview">
+              <li class="nav-item">
                 <a href="{{route('pencairan_operasional.index')}}" class="nav-link {{request()->is('pencairan_operasional*') ? ' active' : '' }} " style="font-weight: 500;">
                 <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                   <p>
@@ -495,7 +496,7 @@
                   </p>
                 </a>
               </li>
-            </ul>
+            </ul> --}}
            
             
           </li>

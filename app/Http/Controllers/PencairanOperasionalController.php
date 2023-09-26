@@ -175,22 +175,22 @@ class PencairanOperasionalController extends Controller
                     );
 
                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                    array(
-                        $data['pembayaran'],// id kas_bank dr form
-                        now(),//tanggal
-                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                        floatval(str_replace(',', '', $value['total_dicairkan'])), //uang keluar (kredit)
-                        1015, //kode coa
-                        'pencairan_operasional',
-                        'PENCAIRAN '.$value['jenis'], //keterangan_transaksi
-                        $key,//keterangan_kode_transaksi
-                        $user,//created_by
-                        now(),//created_at
-                        $user,//updated_by
-                        now(),//updated_at
-                        'Y'
-                    ) 
-                );
+                        array(
+                            $data['pembayaran'],// id kas_bank dr form
+                            now(),//tanggal
+                            0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                            floatval(str_replace(',', '', $value['total_dicairkan'])), //uang keluar (kredit)
+                            1015, //kode coa
+                            'pencairan_operasional',
+                            'PENCAIRAN '.$value['jenis'], //keterangan_transaksi
+                            $key,//keterangan_kode_transaksi
+                            $user,//created_by
+                            now(),//created_at
+                            $user,//updated_by
+                            now(),//updated_at
+                            'Y'
+                        ) 
+                    );
                 }
             }
             return redirect()->route('pencairan_operasional.index')->with('status', "Success!");

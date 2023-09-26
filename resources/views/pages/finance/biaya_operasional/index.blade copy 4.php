@@ -28,50 +28,58 @@
             @csrf
             <div class="card-header ">
                 <div class="card-header" style="border: 2px solid #bbbbbb;">
-                    <ul class="list-inline">
-                        <div class="row">
-                            {{-- <li class="list-inline-item"> --}}
-                                <div class="col-sm-12 col-md-3 col-lg-3 bg-white pb-3">
-                                    <div class="form-group">
-                                        <label for="">Jenis Biaya</label>
-                                        <select class="form-control selectpicker" name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                            <option value="">­­— PILIH DATA —</option>
-                                            <option value="TALLY">TALLY</option>
-                                            <option value="OPERASIONAL">OPERASIONAL</option>
-                                            <option value="TIMBANG">TIMBANG</option>
-                                            <option value="BURUH">BURUH</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            {{-- </li> --}}
-                            {{-- <li class="list-inline-item"> --}}
-                                <div class="col-sm-12 col-md-4 col-lg-4 bg-white pb-3">
-                                    <ul class="list-group mt-4">
-                                        <li class="list-group-item d-flex justify-content-between lh-sm card-outline card-primary">
-                                            <div>
-                                                <span class="text-primary"><b>Grand Total</b></span>
-                                            </div>
-                                            <span class="text-bold t_total">Rp. 0</span>
-                                            <input type="hidden" id='t_total' name='t_total'>
+                    <div class="row" >
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label for="">Jenis Biaya</label>
+                                <select class="form-control selectpicker" name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <option value="">­­— PILIH DATA —</option>
+                                    <option value="TALLY">TALLY</option>
+                                    <option value="OPERASIONAL">OPERASIONAL</option>
+                                    <option value="TIMBANG">TIMBANG</option>
+                                    <option value="BURUH">BURUH</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success mt-4" ><span class="fas fa-save"></span> <b>Simpan</b></button>
+                            </div>
+                        </div>
+                     
+                        {{-- <div class="col-9">
+                            <div class="row">
+                                <div class="col-6">
+                                    <ul class="list-group mb-3">
+                                        <label for="">Total</label>
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <span>Total (IDR)</span>
+                                             <input type="hidden" name="total_sblm_dooring" value="">
+                                                 <strong>Rp. 15,000,000.00</strong>
                                         </li>
                                     </ul>
                                 </div>
-                            {{-- </li> --}}
-                            {{-- <li class="list-inline-item"> --}}
-                                <div class="col-sm-12 col-md-5 col-lg-5 bg-white pb-3">
-                                    <div class="input-group mt-4">
-                                        <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                            <option value="">── PILIH PEMBAYARAN ──</option>
-                                            @foreach ($dataKas as $kas)
-                                                <option value="{{$kas->id}}">{{ $kas->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                        <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="">Pilih Kas</label>
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                                    <option value="">--PILIH PEMBAYARAN--</option>
+                                                    @foreach ($dataKas as $data)
+                                                        <option value="{{$data->id}}">{{ $data->nama }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-3">
+                                                <button type="button" class="btn btn-success " id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            {{-- </li> --}}
-                        </div>
-                    </ul>
+                            </div>
+                        </div> --}}
+                    </div>
                 </div>
             </div>
         
@@ -215,68 +223,65 @@
                         var data = response.data;
     
                         $("th").remove();
-                        $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
-                        if(item == 'TIMBANG' || item == 'BURUH'){
-                            
-                        }else{
+                        $("thead tr").append(`<th>Grup<th> <th>Customer</th><th>Tipe</th>`);
+                        $("thead tr").append("<th>Jenis</th>");
+                        if(item == 'TALLY' || item == 'OPERASIONAL'){
                             $("thead tr").append("<th>Total</th>");
-                        }
-                        $("thead tr").append("<th>Dicairkan</th>");
-                        $("thead tr").append("<th>Catatan</th>");
-                        $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
+                            $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
+                        }else if(item == 'TIMBANG'){
+                            $("thead tr").append("<th>Timbang</th>");
+                            $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
+                        }else if(item == 'BURUH'){
+                            $("thead tr").append("<th>Buruh</th>");
+                            $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
+                        }                    
                         $("#hasil").html("");
-                        var ord = 7;
+    
                         var dataCustomer = null;
                         for (var i = 0; i <data.length; i++) {
-                            if(data[i].total_dicairkan == null){
                                 var start = data[i].deskripsi_so;
                                 var row = $("<tr class='hoverEffect'></tr>");
                                 row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input class='check_item check_grup' grup_parent='${data[i].grup_id}' type='checkbox'> </span> </div> </b></td>`);
                                 row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input class='check_item check_cust' grup_child='${data[i].grup_id}' cust_parent='${data[i].id_customer}' type='checkbox'> </span> </div> </b></td>`);
-                            
+                         
                                 row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} </td>`);
-                                row.append(`<td> ${data[i].tipe_kontainer}" <b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                row.append(`<td> ${data[i].tipe_kontainer}" ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                row.append(`<td><b> ${data[i].jenis_order} </b></td>`);
                                 var nominal = 0;
                                 if(data[i].jenis_order == 'INBOUND'){
                                     if(data[i].tipe_kontainer=='20'){
                                         if(data[i].pick_up == 'DEPO'){
-                                            nominal = 15000;
+                                            var pick_up_cost = 15000;
                                         }
                                     }else{
                                         if(data[i].pick_up == 'DEPO'){
-                                            nominal = 25000;
+                                            var pick_up_cost = 25000;
                                         }
                                     }
                                 }else{
                                     if(data[i].tipe_kontainer=='20'){
-                                        nominal = 15000;
+                                        var pick_up_cost = 15000;
                                     }else{
-                                        nominal = 25000;
+                                        var pick_up_cost = 25000;
                                     }
                                 }
                                 if(item == 'TALLY'){
                                     nominal = data[i].tally;       
                                 }
-                                if(item == 'TIMBANG' || item == 'BURUH'){
-                                    ord = 6;
+                                if(item == 'TALLY' || item == 'OPERASIONAL'){
+                                    row.append(`<td> ${nominal.toLocaleString()}
+                                                    <input type="hidden" class="uang numaja form-control" value="${nominal}" name='data[${data[i].id_sewa}][nominal]' readonly/> 
+                                                </td>`);
                                 }else{
-                                    row.append(`<td> ${nominal.toLocaleString()} </td>`);
+                                    row.append(`<td> 
+                                                    <input type="text" class="uang numaja form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' readonly/> 
+                                                </td>`);
                                 }
-                                var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+data[i].nama_panggilan;
-                                row.append(`<td> 
-                                                <input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${data[i].total_dicairkan}' readonly/> 
-                                                <input type="hidden" name="data[${data[i].id_sewa}][pickup]" value="${data[i].pick_up}" />
-                                                <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
-                                            </td>`);
                                 row.append(`<td class='text-center'> 
-                                                <input class="form-control open_cust_cttn_${data[i].id_customer} open_grup_cttn_${data[i].grup_id}" id='open_cttn_${data[i].id_sewa}' name='data[${data[i].id_sewa}][catatan]' sewaOprsCttn='${data[i].id_sewa}' type="text" readonly/> 
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <input class='check_item check_container' id_sewa="${data[i].id_sewa}" grup_child='${data[i].grup_id}' cust_child='${data[i].id_customer}'  name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                                <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${nominal}' class='form-control' readonly>
+                                                <input class='check_item check_container'  
+                                                    id_sewa="${data[i].id_sewa}" grup_child='${data[i].grup_id}' cust_child='${data[i].id_customer}'  name="data[${data[i].id_sewa}][item]" type='checkbox'> 
                                             </td>`);
                                 $("#hasil").append(row);
-                            }
                         }
                         new DataTable('#rowGroup', {
                             order: [
@@ -288,12 +293,12 @@
                             },
                             columnDefs: [
                                 {
-                                    targets: [0, 1], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
+                                    targets: [0, 1], // ini nge hide kolom grup sama customer
                                     visible: false
                                 },
                                 {
-                                    targets: [ord, ord-1],
-                                    orderable: false, // matiin sortir kolom centang
+                                    "orderable": false, // matiin sortir kolom centang
+                                    "targets": 6
                                 },
                             ],
                         });
@@ -313,18 +318,9 @@
         }
         
         // check all
-            // function toggleReadonlyAll() {
-            //     var isChecked = $('#check_all').prop('checked');
-            //     $('[id^="open_"]').prop('readonly', !isChecked);
-            // }
-            function toggleReadonlyAll(inputId) {
+            function toggleReadonlyAll() {
                 var isChecked = $('#check_all').prop('checked');
-                var readonlyValue = isChecked ? false : true; // Set to true when not checked (isChecked is false)
-                if(readonlyValue == true){
-                    $(`[id^="open_"]`).val('');
-                    hitung();
-                }
-                $('[id^="open_"]').prop('readonly', readonlyValue);
+                $('[id^="open_"]').prop('readonly', !isChecked);
             }
             $(document).on('change', '#check_all', function() {  
                 toggleReadonlyAll();
@@ -339,17 +335,10 @@
             function toggleReadonlyGrup(grup_id) {
                 var checkbox = $(`.check_grup[grup_parent="${grup_id}"]`);
                 var inputElements = $('.open_grup_' + grup_id);
-                var cttnElements = $('.open_grup_cttn_' + grup_id);
                 if (checkbox.prop('checked')) {
                     inputElements.prop('readonly', false);
-                    cttnElements.prop('readonly', false);
                 } else {
-                    inputElements.val('');
-                    cttnElements.val('');
                     inputElements.prop('readonly', true);
-                    cttnElements.prop('readonly', true);
-                    hitung();
-                    caps();
                 }
             }
             $(document).on('change', '.check_grup, .check_grup_tps, .check_grup_ttl, .check_grup_depo', function() {
@@ -369,16 +358,10 @@
             function toggleReadonlyCust(cust_id) {
                 var checkbox = $(`.check_cust[cust_parent="${cust_id}"]`);
                 var inputElements = $('.open_cust_' + cust_id);
-                var cttnElements = $('.open_cust_cttn_' + cust_id);
                 if (checkbox.prop('checked')) {
                     inputElements.prop('readonly', false);
-                    cttnElements.prop('readonly', false);
                 } else {
-                    inputElements.val('');
-                    cttnElements.val('');
-                    hitung();
                     inputElements.prop('readonly', true);
-                    cttnElements    .prop('readonly', true);
                 }
             }
             $(document).on('change', '.check_cust, .check_cust_tps, .check_cust_ttl, .check_cust_depo', function() {
@@ -397,21 +380,9 @@
         //
 
         // uncheck all
-            // function toggleReadonly(inputId) {
-            //     var isChecked = $(`input[id_sewa='${inputId}']`).prop('checked');
-            //     $(`#open_${inputId}`).prop('readonly', !isChecked);
-            // }
             function toggleReadonly(inputId) {
                 var isChecked = $(`input[id_sewa='${inputId}']`).prop('checked');
-                var readonlyValue = isChecked ? false : true; // Set to true when not checked (isChecked is false)
-                if(readonlyValue == true){
-                    $(`#open_${inputId}`).val('');
-                    $(`#open_cttn_${inputId}`).val('');
-                    hitung();
-                }
-                $(`#open_${inputId}`).prop('readonly', readonlyValue);
-                $(`#open_cttn_${inputId}`).prop('readonly', readonlyValue);
-                caps();
+                $(`#open_${inputId}`).prop('readonly', !isChecked);
             }
             $(document).on('click', '.check_container', function (event) {
                 $("#check_all").prop('checked', false);
@@ -419,47 +390,21 @@
                 var grup_id = $(this).attr('grup_child');
                 var cust_x = $(this).attr('cust_child');
                 var id_sewa = $(this).attr('id_sewa');
-                // $(`input[cust_parent="${cust_id}"]`).val();
                 $(`input[cust_parent="${cust_id}"]`).prop('checked', false);
                 $(`input[grup_parent="${grup_id}"]`).prop('checked', false);
 
                 toggleReadonly(id_sewa);
             });
+            
+            $(document).on('click', '.check_container_tps, .check_container_ttl, .check_container_depo', function (event) {
+                var opr = $(this).attr('opr');
+                var cust_id = $(this).attr('cust_child');
+                $(`#check_all_${opr}`).prop('checked', false);
+                $(`#check_all_${opr}`).prop('checked', false);
+                $(`.check_cust_${opr}_${cust_id}`).prop('checked', false);
+            });
         //
         
-        // 
-        $(document).on('keyup', '.dicairkan', function(){
-            var idOprs = $(this).attr('sewaOprs');
-            var inputed = parseFloat(this.value.replace(/,/g, ''));
-            var max = $('#biaya_'+idOprs).val();
-
-            if (inputed > max && item.value != 'TIMBANG' && item.value != 'BURUH') {
-                $('#open_'+idOprs).val(parseFloat(max).toLocaleString()); // Explicitly specify the locale
-            }
-            hitung();
-        });
-
-        function hitung(){
-            var totalCair = 0;
-
-            var dicairkan = document.querySelectorAll('.dicairkan');
-
-            for (var i = 0; i < dicairkan.length; i++) {
-                totalCair += parseFloat(dicairkan[i].value.replace(/,/g, '')) || 0; // Convert to a number or use 0 if NaN
-            }
-
-            var totalElement = document.querySelector('.t_total');
-            $('#t_total').val(totalCair);
-            totalElement.textContent = "Rp. "+(totalCair).toLocaleString(); 
-        }
-
-        function caps(){
-            $('input[type="text"]').on("input", function () {
-                var inputValue = $(this).val();
-                var uppercaseValue = inputValue.toUpperCase();
-                $(this).val(uppercaseValue);
-            });
-        }
     });
 </script>
 @endsection
