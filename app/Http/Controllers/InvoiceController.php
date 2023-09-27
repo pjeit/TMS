@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Sewa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -23,7 +24,7 @@ class InvoiceController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
-    $dataSewa =  DB::table('sewa AS s')
+        $dataSewa =  DB::table('sewa AS s')
                 ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                 ->leftJoin('grup AS g', 'c.grup_id', '=', 'g.id')
@@ -50,12 +51,16 @@ class InvoiceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
-        
+        $data = Sewa::whereIn('sewa.id_sewa', [45, 49])
+                ->where('sewa.status', 'KENDARAAN KEMBALI')
+                ->get();
+        // dd($data);
+                
         return view('pages.invoice.belum_invoice.form',[
             'judul'=>"BELUM INVOICE",
+            'data' => $data,
         ]);
     }
 

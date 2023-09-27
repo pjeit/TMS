@@ -500,6 +500,7 @@
            
             
           </li>
+
           <li class="nav-item {{ request()->is('invoice*')  ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="fas nav-icon fa-solid fa-file-invoice"></i>
@@ -516,6 +517,29 @@
                 <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                   <p>
                      Belum Invoice
+                  </p>
+                </a>
+              </li>
+           
+            </ul>
+          </li>
+     
+          <li class="nav-item {{ request()->is('rollback*')  ? 'menu-is-opening menu-open' : '' }}">
+            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+              <i class="fas nav-icon fa-solid fa fa-undo"></i>
+              {{-- <i class=""></i> --}}
+              <p>Rollback
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+          
+            <ul class="nav nav-treeview">
+
+              <li class="nav-item">
+                <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                     Job Order
                   </p>
                 </a>
               </li>
