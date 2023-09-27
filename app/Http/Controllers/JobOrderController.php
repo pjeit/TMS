@@ -377,7 +377,7 @@ class JobOrderController extends Controller
      */
     public function destroy(JobOrder $jobOrder)
     {
-        //
+        dd($jobOrder);
     }
 
     public function printJO(JobOrder $JobOrder)
@@ -533,9 +533,4 @@ class JobOrderController extends Controller
         //         // 'dataJODetail'=>$dataJODetail
         //     ]);
     }
-
-    
-    
-
-   
 }

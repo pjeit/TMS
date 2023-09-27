@@ -17,8 +17,7 @@ class Sewa extends Model
     public function getJOD(): HasOne
     {
          return $this->hasOne(JobOrderDetail::class, 'id', 'id_jo_detail')
-                     ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 'job_order_detail.id_grup_tujuan') // Assuming 'grup_tujuan' is the name of the relation in JobOrderDetail model
-                     ->select('job_order_detail.*', 'gt.nama_tujuan');
+                     ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 'job_order_detail.id_grup_tujuan'); // Assuming 'grup_tujuan' is the name of the relation in JobOrderDetail model
     }
     public function getTujuan(): HasOne
     {
