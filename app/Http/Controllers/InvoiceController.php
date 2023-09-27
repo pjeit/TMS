@@ -27,7 +27,7 @@ class InvoiceController extends Controller
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
         $dataSewa =  DB::table('sewa AS s')
-                ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+                ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','g.id as id_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                 ->leftJoin('grup AS g', 'c.grup_id', '=', 'g.id')
                 ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
@@ -56,9 +56,13 @@ class InvoiceController extends Controller
      public function setSewaID(Request $request)
     {
         $sewa = session()->get('sewa'); //buat ambil session
+        $cust = session()->get('cust'); //buat ambil session
+        $grup = session()->get('grup'); //buat ambil session
 
         $data= $request->collect();
         session()->put('sewa', $data['idSewa']);
+        session()->put('cust', $data['idCust']);
+        session()->put('grup', $data['idGrup']);
         return $sewa;
 
         
@@ -66,15 +70,23 @@ class InvoiceController extends Controller
     public function create(Request $request)
     {
         $sewa = session()->get('sewa'); //buat ambil session
-
+        $cust = session()->get('cust'); //buat ambil session
+        $grup = session()->get('grup'); //buat ambil session
+        dd($cust);
         $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
                 ->get();
-        // dd($data);
+
+        $dataSewa = Sewa::leftJoin('grup', 'id', 'id_grup_tujuan')
+                ->whereIn('sewa.id_customer', $sewa)
+                ->where('sewa.status', 'KENDARAAN KEMBALI')
+                ->get();
                 
         return view('pages.invoice.belum_invoice.form',[
             'judul'=>"BELUM INVOICE",
             'data' => $data,
+            'dataSewa' => $dataSewa,
+            'grup' => $grup[0],
         ]);
     }
 

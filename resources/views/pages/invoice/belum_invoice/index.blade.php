@@ -45,31 +45,17 @@
                             @if (isset($dataSewa))
                                 @foreach($dataSewa as $item)
                                     <tr>
-                                        <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
+                                        <td> {{ $item->id_grup }} {{ $item->id_customer }} {{ $item->id_sewa }} {{ $item->nama_grup }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
                                         <td>{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
                                         <td>{{ $item->no_polisi }}</td>
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                         <td>{{ $item->nama_tujuan }}</td>
-                                        <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
+                                        <td>{{ $item->supir }} ({{ $item->telpSupir }}) </td>
                                         {{-- <td>{{ $item->status }}</td> --}}
-                                        <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" id="" class="" value="{{$item->idSewanya}}"></td>
-
-                                        {{-- <td>                                    
-                                            <div class="btn-group dropleft">
-                                                <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-list"></i>
-                                                </button>
-                                                <div class="dropdown-menu">
-                                                    <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
-                                                        <span class="fas fa-edit mr-3"></span> Edit
-                                                    </a>
-                                                    <a href="{{ route('truck_order.destroy', $item->id_sewa) }}" class="dropdown-item" data-confirm-delete="true">
-                                                        <span class="fas fa-trash mr-3"></span> Delete
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </td> --}}
+                                        <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
+                                        <input type="hidden" name="idCust[]" placeholder="idCust">
+                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
                                     </tr>
                                 @endforeach
                             @endif
@@ -85,9 +71,13 @@
     
         $('body').on('click','#sewaAdd',function()
 		{
-             var selectedValues = [];
+            var selectedValues = [];
+            var custId = [];
+            var grupId = [];
             $("input[type='checkbox']:checked").each(function() {
                 selectedValues.push($(this).val());
+                custId.push($(this).attr('custId'));
+                grupId.push($(this).attr('grupId'));
             });
             var baseUrl = "{{ asset('') }}";
             $.ajax({
@@ -95,6 +85,8 @@
                 method: 'POST', 
                 data: { 
                     idSewa: selectedValues ,
+                    idCust: custId,
+                    idGrup: grupId,
                     _token: $('meta[name="csrf-token"]').attr('content'),
                 },
                 success: function(response) {
