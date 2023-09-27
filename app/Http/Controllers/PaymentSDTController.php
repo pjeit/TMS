@@ -120,6 +120,8 @@ class PaymentSDTController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        // dd(implode('-', $data['no_kontainer']));
+        // dd($data);
         try {
             $saldo = DB::table('kas_bank')
                 ->select('*')
@@ -131,6 +133,7 @@ class PaymentSDTController extends Controller
                 ->whereIn('id', $data['array_id'])
                 ->update(array(
                     'status_bayar' => 'SELESAI PEMBAYARAN',
+                    'catatan'=>$data['catatan'],
                     'updated_at'=> now(),
                     'updated_by'=> $user,
                     'is_aktif' => "Y",
@@ -155,8 +158,8 @@ class PaymentSDTController extends Controller
                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                     $data['total'], //uang keluar (kredit)
                     1013, //kode coa
-                    'uang_jaminan',
-                    'UANG KELUAR - BAYAR S/D/T', //keterangan_transaksi
+                    'uang_SDT',
+                    'UANG KELUAR # BAYAR S/D/T'.'# BL:'.$data['no_bl'].'# PENGIRIM:'.$data['pengiriman'].'# PELAYARAN:'.$data['pelayaran'].'# NO.KONTAINER:'.'('.implode('-', $data['no_kontainer']).')'.'# CATATAN :'.$data['catatan'], //keterangan_transaksi
                     $data['no_bl'],//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at

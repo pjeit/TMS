@@ -52,11 +52,11 @@
                                 </div>  
                                 <div class="form-group col-6">
                                     <label for="">Pengirim<span class="text-red">*</span></label>
-                                    <input type="text" class="form-control" value="{{$data['JO']->getCustomer->kode}} - {{$data['JO']->getCustomer->nama}}" readonly>
+                                    <input type="text" class="form-control" name="pengiriman"value="{{$data['JO']->getCustomer->kode}} - {{$data['JO']->getCustomer->nama}}" readonly>
                                 </div>
                                 <div class="form-group col-6">
                                     <label for="">Pelayaran</label>
-                                    <input type="text" class="form-control" value="{{$data['JO']->getSupplier->nama}}" readonly>
+                                    <input type="text" class="form-control" name="pelayaran"value="{{$data['JO']->getSupplier->nama}}" readonly>
                                 </div>
 
                             </div>
@@ -83,6 +83,8 @@
                                         @foreach ($data['biaya'] as $key => $item)
                                         <tr>
                                             <input type="hidden" name="array_id[{{$item->id}}]" value="{{$item->id}}">
+                                            <input type="hidden" name="no_kontainer[]" value="{{$item->no_kontainer}}">
+
                                             <th style="text-align: center;" scope="row">{{$key+1}}</th>
                                             <td style="text-align: center;">{{$item->no_kontainer}}</td>
                                             <td style="text-align: right;">{{ number_format($item->storage, 2) }}</td>
@@ -115,27 +117,33 @@
 
                         </div>
                         <div class="col-12">
-                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            {{-- <h4 class="d-flex justify-content-between align-items-center mb-3"> --}}
                                 {{-- <span class="badge bg-primary rounded-pill">3</span> --}}
-                            </h4>
+                            {{-- </h4> --}}
                             <ul class="list-group mb-3">
                                 <div class="list-group-item">
                                     <div class="row">
                                         <div class="col-2 mt-2">
-                                            <span class="text-primary "><strong>PILIH PEMBAYARAN</strong></span>
+                                            <p class="text-primary "><strong>PILIH PEMBAYARAN :</strong></p>
+                                            <label for=""></label>
+                                            <p class="text-primary "><strong>CATATAN :</strong></p>
                                         </div>
-                                        <div class="col-8">
-                                            
-                                            <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                                <option value="">--PILIH KAS--</option>
-                                                @foreach ($dataKas as $kas)
-                                                    <option value="{{$kas->id}}">{{ $kas->nama }}</option>
-                                                @endforeach
-                                            </select>
+                                        <div class="col-10">
+                                             <div class="input-group" style="gap: 5px;">
+                                                    <select class="form-control select2"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                                        <option value="">--PILIH KAS--</option>
+                                                        @foreach ($dataKas as $kas)
+                                                            <option value="{{$kas->id}}">{{ $kas->nama }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                <button type="submit" class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
+                                             </div>
+                                             <div class="form-group">
+                                                <label for="catatan"></label>
+                                                <input type="text" id="catatan" name="catatan" class="form-control" value="">                         
+                                            </div>  
                                         </div>
-                                        <div class="col-2">
-                                            <button type="submit" class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
-                                        </div>
+                                      
                                     </div>
                                 </div>
                             </ul>
