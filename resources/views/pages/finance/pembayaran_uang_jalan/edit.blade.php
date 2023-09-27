@@ -72,6 +72,7 @@
                                             <option  selected value="{{$sewa->id_sewa}}">{{ $sewa->supir }} / {{ $sewa->nama_tujuan }} - {{ $sewa->no_sewa }} ({{ \Carbon\Carbon::parse($sewa->tanggal_berangkat)->format('d-M-Y') }}) </option>
                                         {{-- @endforeach --}}
                                     </select>
+                                    <input type="hidden" value="{{$sewa->no_sewa}}" id="no_sewa" name="no_sewa">
                                     <input type="hidden" value="{{$sewa->id_sewa}}" id="id_sewa_defaulth" name="id_sewa_defaulth">
                                 </div>
 

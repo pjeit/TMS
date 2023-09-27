@@ -9,6 +9,8 @@ class UangJalanRiwayat extends Model
 {
     use HasFactory;
     protected $primaryKey='id';
+    protected $table = 'uang_jalan_riwayat';
+
     protected $fillable=[
         'id',
         'tanggal',
