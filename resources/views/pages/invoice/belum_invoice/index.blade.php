@@ -18,9 +18,12 @@
             <div class="card radiusSendiri">
                 <div class="card-header">
                     <div class="">
-                        <a href="{{route('invoice.create')}}" class="btn btn-primary btn-responsive radiusSendiri">
+                        <a href="{{route('invoice.create')}}" class="btn btn-primary btn-responsive radiusSendiri"  id="sewaAdd">
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Buat Invoice
                         </a> 
+                          <button type="button" class="btn btn-primary btn-responsive radiusSendiri" id="cobaSewa">
+                             <i class="fa fa-plus-circle" aria-hidden="true"> </i>Coba sewa
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -50,7 +53,7 @@
                                         <td>{{ $item->nama_tujuan }}</td>
                                         <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
                                         {{-- <td>{{ $item->status }}</td> --}}
-                                        <td style="text-align: center;"> <input type="checkbox" name="" id="" class=""></td>
+                                        <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" id="" class="" value="{{$item->idSewanya}}"></td>
 
                                         {{-- <td>                                    
                                             <div class="btn-group dropleft">
@@ -79,6 +82,33 @@
 </div>
 <script type="text/javascript">
  $(document).ready(function () {
+    
+        $('body').on('click','#sewaAdd',function()
+		{
+             var selectedValues = [];
+            $("input[type='checkbox']:checked").each(function() {
+                selectedValues.push($(this).val());
+            });
+            var baseUrl = "{{ asset('') }}";
+            $.ajax({
+                url: `${baseUrl}invoice/set_sewa_id`, 
+                method: 'POST', 
+                data: { 
+                    idSewa: selectedValues ,
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                },
+                success: function(response) {
+                    if(response)
+                    {
+                        console.log(response);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+           
+		})
      new DataTable('#tabelInvoice', {
         order: [
             [0, 'asc'],
