@@ -188,6 +188,22 @@
             }
 		});
         
+        // var textDicairkan = $('.dicairkan');
+
+        // for (let i = 0; i < textDicairkan.length; i++) {
+        //     var dicairkan = textDicairkan.eq(i);
+        //     var row = dicairkan.closest('tr');
+        // }
+
+        // timot nambah ini buat yang bug buruh sama timbang gak ke set
+        $(document).on('keyup', '.dicairkan', function() {  
+            var row = $(this).closest('tr');
+            var item = $('#item').val();
+            if(item == 'TIMBANG' || item == 'BURUH'){
+                // hidden biaya nominal di cet sama dengan nominal dicairkan
+                row.find('.hiddenNominal').val(row.find('.dicairkan').val())
+            }
+        });
         function showTable(item){
             if(item == ''){
                 var table = document.getElementById("rowGroup");
@@ -273,11 +289,12 @@
                                             </td>`);
                                 row.append(`<td class='text-center'> 
                                                 <input class='check_item check_container' id_sewa="${data[i].id_sewa}" grup_child='${data[i].grup_id}' cust_child='${data[i].id_customer}'  name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                                <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${nominal}' class='form-control' readonly>
+                                                <input type='hidden' class='hiddenNominal' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH') ? $('#open_' + data[i].id_sewa).val() : nominal}' class='form-control' readonly>
                                             </td>`);
                                 $("#hasil").append(row);
                             }
                         }
+                        
                         new DataTable('#rowGroup', {
                             order: [
                                 [0, 'asc'], // 0 = grup
@@ -311,6 +328,8 @@
                 });
             }
         }
+
+        
         
         // check all
             // function toggleReadonlyAll() {
