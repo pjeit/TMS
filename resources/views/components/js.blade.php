@@ -246,7 +246,7 @@
   
 </script>
 
-{{-- masking no telp --}}
+{{-- masking angka --}}
 <script>
   // masking uang 2 digit
   function moneyMask(x) {
@@ -273,6 +273,13 @@
     return day + "-" + monthName + "-" + year;
   }
 
+  function escapeComma(val){
+    return val.replace(/,/g, '');
+  }
+</script>
+
+{{-- masking no telp --}}
+<script>
    $("#telp1").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
