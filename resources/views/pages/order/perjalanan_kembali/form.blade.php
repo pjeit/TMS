@@ -275,7 +275,7 @@
                                                 $value->deskripsi =='SEAL PJE'||
                                                 $value->deskripsi =='PLASTIK'||
                                                 $value->deskripsi =='TALLY'||
-                                                $value->deskripsi =='TIMBANGAN'||
+                                                $value->deskripsi =='TIMBANG'||
                                                 $value->deskripsi =='BURUH'
                                             )
                                                 <td id="deskripsi_tabel_{{$index}}" >
@@ -295,7 +295,7 @@
                                                 $value->deskripsi !='SEAL PJE'&&
                                                 $value->deskripsi !='PLASTIK'&&
                                                 $value->deskripsi !='TALLY'&&
-                                                $value->deskripsi !='TIMBANGAN'&&
+                                                $value->deskripsi !='TIMBANG'&&
                                                 $value->deskripsi !='BURUH'&&
                                                 $value->deskripsi !='INAP'&& 
                                                 $value->deskripsi != 'CLEANING/REPAIR'
@@ -1057,7 +1057,7 @@
                         trimTextbox ==='SEAL PJE'||
                         trimTextbox ==='PLASTIK'||
                         trimTextbox ==='TALLY'||
-                        trimTextbox ==='TIMBANGAN'||
+                        trimTextbox ==='TIMBANG'||
                         trimTextbox ==='BURUH'||
                         trimTextbox ==='INAP'|| 
                         trimTextbox === 'CLEANING/REPAIR'
