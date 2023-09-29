@@ -40,7 +40,7 @@
             <div class="card radiusSendiri">
                 <div class="card-body" >
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
@@ -82,45 +82,86 @@
                             </div>  
                         </div>
 
-                        <div class="col-6">
-                            <div class="form-group ">
-                                <label for="total_hutang">Total Tagihan</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="row">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Total Tagihan</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_tagihan" name="total_tagihan" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                     </div>
-                                    <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                 </div>
-                            </div>
-                            <div class="form-group ">
-                                <label for="potong_hutang">Total Dibayar</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Total Dibayar</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                     </div>
-                                    <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                 </div>
                             </div>
                         
-                            <div class="form-group ">
-                                <label for="total_diterima">Total Jumlah Muatan</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Kg</span>
+                            <div class="row">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Total Jumlah Muatan</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Kg</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_jumlah_muatan" name="total_jumlah_muatan" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                     </div>
-                                    <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                </div>
+    
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Total Sisa</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_sisa" name="total_sisa" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <ul class="list-group">
+                                        <li class="list-group-item text-primary"><b>BILLING TO</b></li>
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <span><b>Grand Total</b></span>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <b><span id="grand_total_text">Rp. 0</span></b>
+                                                    <input type="hidden" name="grand_total" id="grand_total">
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-10">
+                                                    <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required>
+                                                        <option value="">── PILIH CUSTOMER ──</option>
+                                                        @foreach ($dataCust as $cust)
+                                                            <option value="{{ $cust->id }}"> {{ $cust->kode }} - {{ $cust->nama }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="col-2">
+                                                    <button type="button" class="btn btn-success">
+                                                        <i class="fa fa-credit-card"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                      </ul>
                                 </div>
                             </div>
 
-                            <div class="form-group ">
-                                <label for="total_diterima">Total Sisa</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -169,7 +210,7 @@
                             </td>
                             <td style="text-align:right" id="diskon_{{ $key }}"></td>
                             <td style="text-align:right" id="subtotal_{{ $key }}">{{ number_format($total_addcost+$item->total_tarif) }}
-                                <input type="hidden" class="subtotal_hidden_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" name='subtotal_hidden_{{ $key }}' id='subtotal_hidden_{{ $key }}' value="{{ $total_addcost+$item->total_tarif }}">
+                                <input type="hidden" class="subtotal subtotal_hidden_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" name='subtotal_hidden_{{ $key }}' id='subtotal_hidden_{{ $key }}' value="{{ $total_addcost+$item->total_tarif }}">
                             </td>
                             <td>
                                 {{ $item->catatan }}
@@ -221,9 +262,6 @@
                                         <label for="sewa">Sewa <span style="color:red;">*</span></label>
                                         <select name="addcost_sewa" class="select2" style="width: 100%" id="addcost_sewa" required>
                                         </select>
-                                        {{-- @foreach ($dataSewa as $sewa)
-                                            <option value="{{ $sewa->id_sewa }}">{{ $sewa->no_sewa }} - {{ $sewa->nama_tujuan }} {{ $sewa->tanggal_kembali != null ? '('.date("d-M-Y", strtotime($sewa->tanggal_berangkat)).')':'' }}</option>
-                                        @endforeach --}}
                                     </div>   
 
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -343,6 +381,7 @@
  
 <script type="text/javascript">
     $(document).ready(function() {
+        // set value default tgl invoice
         var today = new Date();
         $('#tanggal_invoice').datepicker({
             autoclose: true,
@@ -352,8 +391,9 @@
             startDate: today,
         }).datepicker("setDate", today);
 
-        // open detail
-        $(document).on('click', '.detail', function(){  
+        calculateGrandTotal(); // pas load awal langsung hitung grand total
+
+        $(document).on('click', '.detail', function(){ // open detail 
             clearData(); // execute clear data dulu tiap open modal
             $('#key').val(''); // key di clear dulu
             var button_id = $(this).attr("id"); // get value id
@@ -368,14 +408,40 @@
             $('#tarif').val( moneyMask($('#tarif_hidden_'+key).val()) ); 
             $('#addcost').val( moneyMask($('#addcost_hidden_'+key).val()) ); 
 
-            var dataSewa = <?= json_encode($dataSewa); ?>;
-            console.log('dataSewa', dataSewa);
+            var dataSewa = <?php echo $dataSewa; ?>;
+
+            dataSewa.forEach(function(item, index) {
+                var option = $('<option>');
+                option.text(item.no_sewa + ' - ' + item.nama_tujuan + ' - (' + dateMask(item.tanggal_berangkat) + ')');
+                option.val(item.id_sewa);
+                if (item.id_sewa == key) {
+                    option.prop('selected', true);
+                }
+                $('#addcost_sewa').append(option);
+            });
+
             showAddcostDetails(key);
-            
-            // console.log( $('#catatan').val() );
             hitung();
             $('#modal_detail').modal('show');
         });
+
+        $(document).on('keyup', '#diskon', function(){ // kalau diskon berubah, hitung total 
+            var id_sewa = $('#key').val();
+            hitung(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+        });
+
+        function calculateGrandTotal(){ // hitung grand total buat ditagihkan 
+            var grandTotal = 0; 
+            var grandTotalText = document.getElementById("grand_total_text");
+            var subtotals = document.querySelectorAll('.subtotal');
+            subtotals.forEach(function(subtotal) {
+                grandTotal += parseFloat(subtotal.value); // Convert the value to a number
+            });
+            if(grandTotal && grandTotal >= 0){
+                $('#grand_total').val(grandTotal);
+                grandTotalText.textContent = "Rp. " + moneyMask(grandTotal); // Change the text content of the span
+            }
+        }
 
         function showAddcostDetails(key){
             var details = $('#detail_addcost_'+key).val(); 
@@ -415,13 +481,7 @@
             }
         }
 
-        $(document).on('keyup', '#diskon', function(){
-            var id_sewa = $('#key').val();
-            hitung(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
-        });
-
-        function hitung(){
-            // hitung tarif + addcost - diskon
+        function hitung(){ // hitung tarif + addcost - diskon 
             var id_sewa = $('#key').val();
             var tarif = parseFloat($('#tarif').val().replace(/,/g, ''));
             var addcost = parseFloat($('#addcost').val().replace(/,/g, ''));
@@ -433,10 +493,11 @@
             } 
 
             var subtotal = tarif + addcost - diskon;
+            calculateGrandTotal();
             $('#subtotal').val(moneyMask(subtotal));
         }
 
-        function clearData(){
+        function clearData(){ // clear data sebelum buka modal 
             $('#tanggal_berangkat').val('');
             $('#nama_tujuan').val('');
             $('#no_kontainer').val('');
@@ -445,9 +506,8 @@
             $('#tarif').val('');
             $('#addcost').val('');
             $('#subtotal').val('');
-
+            $('#addcost_sewa').empty();
             $('#tabel_addcost tbody').empty(); // clear tabel detail addcost di dalam modal
-
         }
     });
 </script>

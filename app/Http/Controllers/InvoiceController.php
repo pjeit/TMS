@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Sewa;
 use Illuminate\Http\Request;
@@ -72,6 +73,7 @@ class InvoiceController extends Controller
         $sewa = session()->get('sewa'); //buat ambil session
         $cust = session()->get('cust'); //buat ambil session
         $grup = session()->get('grup'); //buat ambil session
+        // dd($grup);
         
         $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
@@ -84,10 +86,15 @@ class InvoiceController extends Controller
                 ->select('sewa.*')
                 ->get();
 
+        $dataCust = Customer::where('grup_id', $grup[0])
+                ->where('is_aktif', 'Y')
+                ->get();
+
         return view('pages.invoice.belum_invoice.form',[
             'judul'=>"BELUM INVOICE",
             'data' => $data,
             'dataSewa' => $dataSewa,
+            'dataCust' => $dataCust,
             'grup' => $grup[0],
         ]);
     }

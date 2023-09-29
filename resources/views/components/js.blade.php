@@ -248,9 +248,31 @@
 
 {{-- masking no telp --}}
 <script>
+  // masking uang 2 digit
   function moneyMask(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+
+  var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  // Create a function to format the date as "d-M-Y"
+  function dateMask(date) {
+    var inputDate = new Date(date);
+
+    var day = inputDate.getDate();
+    var monthIndex = inputDate.getMonth();
+    var year = inputDate.getFullYear();
+
+    // Get the abbreviated month name
+    var monthName = monthNames[monthIndex];
+
+    // Zero pad day if needed
+    if (day < 10) {
+      day = "0" + day;
+    }
+
+    return day + "-" + monthName + "-" + year;
+  }
+
    $("#telp1").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
