@@ -180,14 +180,15 @@
     $(document).ready(function() {
         $(document).on('change', '#item', function(e) {  
             var item = $('#item').val();
+            var totalElement = document.querySelector('.t_total');
+            totalElement.textContent = "Rp. 0"; 
             if(item != null){
                 showTable(item);
             }else{
                 var tbody = document.getElementById("hasil");
                 tbody.innerHTML = "";
             }
-		});
-        
+		});        
         // var textDicairkan = $('.dicairkan');
 
         // for (let i = 0; i < textDicairkan.length; i++) {
@@ -280,7 +281,7 @@
                                 }
                                 var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+data[i].nama_panggilan;
                                 row.append(`<td> 
-                                                <input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${data[i].total_dicairkan}' readonly/> 
+                                                <input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/> 
                                                 <input type="hidden" name="data[${data[i].id_sewa}][pickup]" value="${data[i].pick_up}" />
                                                 <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
                                             </td>`);
