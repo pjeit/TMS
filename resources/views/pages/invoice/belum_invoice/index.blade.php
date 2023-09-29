@@ -45,7 +45,7 @@
                             @if (isset($dataSewa))
                                 @foreach($dataSewa as $item)
                                     <tr>
-                                        <td> {{ $item->id_grup }} {{ $item->id_customer }} {{ $item->id_sewa }} {{ $item->nama_grup }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
+                                        <td> {{ $item->nama_grup }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
                                         <td>{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
                                         <td>{{ $item->no_polisi }}</td>
                                         <td>{{ $item->no_sewa }}</td>

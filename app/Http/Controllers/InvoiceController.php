@@ -72,16 +72,20 @@ class InvoiceController extends Controller
         $sewa = session()->get('sewa'); //buat ambil session
         $cust = session()->get('cust'); //buat ambil session
         $grup = session()->get('grup'); //buat ambil session
-        dd($cust);
+        
+        // dd($grup);
         $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
                 ->get();
 
-        $dataSewa = Sewa::leftJoin('grup', 'id', 'id_grup_tujuan')
-                ->whereIn('sewa.id_customer', $sewa)
+        $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
+                ->leftJoin('customer as c', 'c.id', 'id_customer')
+                ->where('c.grup_id', $grup[0])
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
+                ->select('sewa.*')
                 ->get();
-                
+        // dd($dataSewa);
+
         return view('pages.invoice.belum_invoice.form',[
             'judul'=>"BELUM INVOICE",
             'data' => $data,

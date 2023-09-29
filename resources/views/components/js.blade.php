@@ -248,6 +248,9 @@
 
 {{-- masking no telp --}}
 <script>
+  function moneyMask(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
    $("#telp1").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
