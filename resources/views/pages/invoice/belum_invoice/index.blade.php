@@ -73,23 +73,31 @@
         $('body').on('click','.grup_centang',function()
 		{
             var idGrupParent= $(this);
-            // var idCustParent= $('.customer_centang');
-
-            
             $('.grup_centang[type=checkbox]').each(function(idx) {
-                var id_grup_semua_cekbox = $(this);
+                var id_pergrup_semua_cekbox = $(this);
                 // var idGrupCheckboxes = $(`.grup_centang[id_grup='${idGrupParent.attr('id_grup')}']`);
                 // cek semua cekbox
-                if (id_grup_semua_cekbox.is(":checked")) {
+                if (id_pergrup_semua_cekbox.is(":checked")) {
                     // kalau id cekbox ga sama dengan yang di centang sekarang, hapus cheknya
-                    id_grup_semua_cekbox.not(idGrupParent).prop('checked', false);
+                    id_pergrup_semua_cekbox.not(idGrupParent).prop('checked', false);
                 }
-              
             });
              $('.customer_centang[type=checkbox]').each(function(idx) {
-                var id_cust_semua_cekbox = $(this);
-                if (id_cust_semua_cekbox.is(":checked")) {
-                    id_cust_semua_cekbox.not(idGrupParent).prop('checked', false);
+                var id_percust_semua = $(this);
+                if (id_percust_semua.is(":checked")) {
+                    id_percust_semua.not(idGrupParent).prop('checked', false);
+                }
+                if(id_percust_semua.attr('id_customer_grup')==idGrupParent.attr('id_grup'))
+                {
+                    if (idGrupParent.is(":checked")) {
+                        id_percust_semua.prop('checked', true);
+                    } else if (!idGrupParent.is(":checked")) {
+                        id_percust_semua.prop('checked', false);
+                    }
+                }
+                else
+                {
+                    id_percust_semua.prop('checked', false);
                 }
             });
             $('.sewa_centang[type=checkbox]').each(function(idx) {
@@ -104,13 +112,11 @@
 
                     }
                     // idGrupParent.prop('checked', true);
-
                 }
                 else
                 {
                     id_grup_sewa.prop('checked', false);
                     // idGrup.prop('checked', false);
-
                 }
             });
             
@@ -118,85 +124,102 @@
 
         $('body').on('click','.customer_centang',function()
 		{
+
+               
             var idCustParent= $(this);
-            console.log(idCustParent);
 
             $('.grup_centang[type=checkbox]').each(function(idx) {
                 var id_grup_semua_cekbox = $(this);
-                // var idGrupCheckboxes = $(`.grup_centang[id_grup='${idGrupParent.attr('id_grup')}']`);
                 // cek semua cekbox
-                if (id_grup_semua_cekbox.is(":checked")) {
-                    // kalau id cekbox ga sama dengan yang di centang sekarang, hapus cheknya
-                    id_grup_semua_cekbox.not(idCustParent).prop('checked', false);
+                if(id_grup_semua_cekbox.attr('id_grup')==idCustParent.attr('id_customer_grup'))
+                {
+                    if (id_grup_semua_cekbox.is(":checked")) {
+                            id_grup_semua_cekbox.prop('checked', true);
+    
+                        } else if (!id_grup_semua_cekbox.is(":checked")) {
+                            
+                            id_grup_semua_cekbox.prop('checked', false);
+                        }
                 }
-              
-            });
-            
-            $('.customer_centang[type=checkbox]').each(function(idx) {
-                var id_cust_semua_cekbox = $(this);
+                else
+                {
+                    if(id_grup_semua_cekbox.attr('id_grup')!=idCustParent.attr('id_customer_grup'))
+                    {
+                        
+                        id_grup_semua_cekbox.prop('checked', false);
+                        // idCustParent.prop('checked', false);
 
-                var row = id_cust_semua_cekbox.closest('tr'); 
-               
-                var idGrupCheckboxes = $(`.customer_centang[id_grup='${id_cust_semua_cekbox.attr('id_customer_grup')}']`);
-                // cek semua cekbox
-                // if (id_cust_semua_cekbox.attr('id_customer_grup')!=idGrupCheckboxes) {
-                    // kalau id cekbox ga sama dengan yang di centang sekarang, hapus cheknya
-                if (id_cust_semua_cekbox.is(":checked")) {
-                    id_cust_semua_cekbox.not(idCustParent).prop('checked', false);
+
+                    }
                 }
-
-                    // id_cust_semua_cekbox.prop('checked', false);
-
+                // if (id_grup_semua_cekbox.is(":checked")) {
+                //     // kalau id cekbox ga sama dengan yang di centang sekarang, hapus cheknya
+                //     id_grup_semua_cekbox.not(idCustParent).prop('checked', false);
                 // }
               
+              
             });
+            // var idCustCheckboxes = $(`.customer_centang[id_customer_grup='${idCustParent.attr('id_customer_grup')}']`);
+             $('.customer_centang[type=checkbox]').each(function(idx) {
+                var id_percust_semua = $(this);
+                
+                if(id_percust_semua.attr('id_customer_grup')==idCustParent.attr('id_customer_grup'))
+                {
+                    if(id_percust_semua.attr('custId')==idCustParent.attr('id_customer'))
+                    {
+                        if (idCustParent.is(":checked")) {
+                        id_percust_semua.prop('checked', true);
+                        } else if (!idCustParent.is(":checked")) {
+                            id_percust_semua.prop('checked', false);
+                        }
+                    }
+                    
+                }
+                else
+                {
+                        id_percust_semua.prop('checked', false);
+                    
+                }
+            });
+            
+            
             $('.sewa_centang[type=checkbox]').each(function(idx) {
                 var id_cust_sewa = $(this);
                 if(id_cust_sewa.attr('grupId')==idCustParent.attr('id_customer_grup'))
                 {
-                
-                    if (idCustParent.is(":checked")) {
-                        if(id_cust_sewa.attr('custId')==idCustParent.attr('id_customer'))
-                        {
-                         id_cust_sewa.prop('checked', true);
+                    if(id_cust_sewa.attr('custId')==idCustParent.attr('id_customer'))
+                    {
+                        if (idCustParent.is(":checked")) {
+                            id_cust_sewa.prop('checked', true);
+    
+                        } else if (!idCustParent.is(":checked")) {
+                            
+                            id_cust_sewa.prop('checked', false);
                         }
-                        else
-                        {
-                         id_cust_sewa.prop('checked', false);
-
-                        }
-
-                    } else if (!idCustParent.is(":checked")) {
-                        // if(id_cust_sewa.attr('custId')==idCustParent.attr('id_customer'))
-                        // {
-                        //   id_cust_sewa.prop('checked', true);
-                        // }
-                        // else
-                        // {
-                          id_cust_sewa.prop('checked', false);
-                        // }
-
                     }
-                    // idCustParent.prop('checked', true);
-
+                    // else
+                    // {
+                    //     id_cust_sewa.prop('checked', false);
+                    // }
                 }
                 else
                 {
-                    // if(id_cust_sewa.attr('grupId')==idCustParent.attr('id_customer_grup'))
+                    // if(id_cust_sewa.attr('custId')!=idCustParent.attr('id_customer'))
                     // {
-                    //     if (idCustParent.is(":checked")) {
-                    //         id_cust_sewa.prop('checked', true);
+                        
+                        id_cust_sewa.prop('checked', false);
+                        // if(id_cust_sewa.attr('grupId')!=idCustParent.attr('id_customer_grup'))
+                        // {
+                        //     idCustParent.prop('checked', false);
+                        // }
+                        
 
-                    //     } else if (!idCustParent.is(":checked")) {
-                    //         id_cust_sewa.prop('checked', false);
 
-                    //     }
                     // }
-                    id_cust_sewa.prop('checked', false);
+                    
 
                 }
             });
-            
         });
         $('body').on('click','#sewaAdd',function()
 		{
