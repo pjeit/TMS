@@ -85,6 +85,7 @@ class InvoiceController extends Controller
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
                 ->select('sewa.*')
                 ->get();
+        // dd($dataSewa);
 
         $dataCust = Customer::where('grup_id', $grup[0])
                 ->where('is_aktif', 'Y')
