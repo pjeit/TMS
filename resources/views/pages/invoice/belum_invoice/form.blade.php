@@ -164,7 +164,7 @@
                                     @endif
                                 @endforeach
                                 {{ number_format($total_addcost) }}
-                                <input type="hidden" name="detail_addcost_{{ $key }}" id="detail_addcost_{{ $key }}" value="{{ json_encode($item->sewaOperasional) }}" />
+                                <input type="hidden" name="detail_addcost_{{ $item->id_sewa }}" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
                                 <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" name='addcost_hidden_{{ $item->id_sewa }}' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
                             </td>
                             <td style="text-align:right" id="diskon_{{ $key }}"></td>
@@ -212,18 +212,18 @@
                 </div>
                 <div class="modal-body">
                     <form id='form_add_detail'>
-                        <input type="hidden" name="key" id="key">
-                        <input type="hidden" name="tujuan_id" id="tujuan_id">
+                        <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_sewa --}}
+                        
                         <div class='row'>
                             <div class="col-lg-6">
                                 <div class="row">
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="sewa">Sewa <span style="color:red;">*</span></label>
-                                        <select name="sewa" class="select2" style="width: 100%" id="sewa" required>
-                                            @foreach ($dataSewa as $sewa)
-                                                <option value="{{ $sewa->id_sewa }}">{{ $sewa->no_sewa }} - {{ $sewa->nama_tujuan }} {{ $sewa->tanggal_kembali != null ? '('.date("d-M-Y", strtotime($sewa->tanggal_berangkat)).')':'' }}</option>
-                                            @endforeach
+                                        <select name="addcost_sewa" class="select2" style="width: 100%" id="addcost_sewa" required>
                                         </select>
+                                        {{-- @foreach ($dataSewa as $sewa)
+                                            <option value="{{ $sewa->id_sewa }}">{{ $sewa->no_sewa }} - {{ $sewa->nama_tujuan }} {{ $sewa->tanggal_kembali != null ? '('.date("d-M-Y", strtotime($sewa->tanggal_berangkat)).')':'' }}</option>
+                                        @endforeach --}}
                                     </div>   
 
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -307,29 +307,32 @@
 
                         <div class='row'>
                             <div class="table-responsive p-0 mx-3">
-                                <form name="add_biaya_detail" id="add_biaya_detail">
-                                    <input type="hidden" id="deleted_biaya_temp" name="deleted_biaya_temp" placeholder="deleted_biaya_temp">
-                                    <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel_biaya">
+                                <form name="add_addcost_detail" id="add_addcost_detail">
+                                    <label for="">Detail Add Cost</label>
+                                    <input type="hidden" id="deleted_temp" name="deleted_temp" placeholder="deleted_temp">
+                                    <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel_addcost">
                                         <thead>
                                             <tr class="">
-                                                <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Deskripsi</th>
-                                                <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Biaya</th>
-                                                <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Catatan</th>
-                                                <th style="width:30px;"></th>
+                                                <th style="">Deskripsi</th>
+                                                <th style="">Jumlah</th>
+                                                <th style="">Ditagihkan</th>
+                                                <th style="">Dipisahkan</th>
+                                                <th style="">Catatan</th>
+                                                <th style="text-align: center; vertical-align: middle;">#</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-    
                                         </tbody>
                                     </table>
                                 </form>
                             </div>
                         </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">BATAL</button>
-                <button type="button" class="btn btn-sm btn-success save_detail" style='width:85px'>OK</button> 
+                    <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">BATAL</button>
+                    <button type="button" class="btn btn-sm btn-success save_detail" style='width:85px'>OK</button> 
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -364,25 +367,61 @@
             $('#catatan').val( $('#catatan_hidden_'+key).val() ); 
             $('#tarif').val( moneyMask($('#tarif_hidden_'+key).val()) ); 
             $('#addcost').val( moneyMask($('#addcost_hidden_'+key).val()) ); 
+
+            var dataSewa = <?= json_encode($dataSewa); ?>;
+            console.log('dataSewa', dataSewa);
+            showAddcostDetails(key);
             
             // console.log( $('#catatan').val() );
             hitung();
             $('#modal_detail').modal('show');
         });
 
+        function showAddcostDetails(key){
+            var details = $('#detail_addcost_'+key).val(); 
+            if (details && (details != null || cekBiaya != '')) { // cek apakah ada isi detail addcost
+                JSON.parse(details).forEach(function(item, index) {
+                    $('#tabel_addcost > tbody:last-child').append(
+                        `
+                            <tr id="row_addcost_${index}">
+                                <td>
+                                    ${item.deskripsi == null? '':item.deskripsi}
+                                    <input type="hidden" id="addcost_deskripsi_${index}" value="${item.deskripsi}" class="form-control" readonly />
+                                    <input type="hidden" name="sewa_operasional_id${index}" id="sewa_operasional_id${index}" value="${item.id}">
+                                </td>
+                                <td>
+                                    ${item.total_operasional == null? '':moneyMask(item.total_operasional)}
+                                    <input type="hidden" id="addcost_total_operasional_${index}" value="${item.total_operasional}" class="form-control numaja uang hitungBiaya" readonly />
+                                </td>
+                                <td>
+                                    ${item.is_ditagihkan == null? '':item.is_ditagihkan}
+                                    <input type="hidden" id="addcost_is_ditagihkan_${index}" value="${item.is_ditagihkan}" class="form-control" readonly />
+                                </td>
+                                <td>
+                                    ${item.is_dipisahkan == null? '':item.is_dipisahkan}
+                                    <input type="hidden" id="addcost_is_dipisahkan_${index}" value="${item.is_dipisahkan}" class="form-control" readonly />
+                                </td>
+                                <td>
+                                    ${item.catatan == null? '':item.catatan}
+                                    <input type="hidden" id="addcost_catatan_${index}" value="${item.catatan}" class="form-control w-auto" readonly />
+                                </td>
+                                <td style='text-align: center; vertical-align: middle;'>
+                                    <button type="button" disabled name="del_biaya" id="${index}" class="btn btn-danger btn_remove_biaya"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                </td>;  
+                            </tr>
+                        `
+                    );
+                });
+            }
+        }
+
         $(document).on('keyup', '#diskon', function(){
             var id_sewa = $('#key').val();
-            console.log(id_sewa);
-            // var inputed = parseFloat(this.value.replace(/,/g, ''));
-            // var max = $('#biaya_'+idOprs).val();
-
-            // if (inputed > max && item.value != 'TIMBANG' && item.value != 'BURUH') {
-            //     $('#open_'+idOprs).val(parseFloat(max).toLocaleString()); // Explicitly specify the locale
-            // }
-            hitung();
+            hitung(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
         });
 
         function hitung(){
+            // hitung tarif + addcost - diskon
             var id_sewa = $('#key').val();
             var tarif = parseFloat($('#tarif').val().replace(/,/g, ''));
             var addcost = parseFloat($('#addcost').val().replace(/,/g, ''));
@@ -390,9 +429,10 @@
 
             if (diskon > (tarif + addcost) ){
                 diskon = (tarif + addcost);
+                $('#diskon').val(diskon);
             } 
 
-            var subtotal = tarif+addcost - diskon;
+            var subtotal = tarif + addcost - diskon;
             $('#subtotal').val(moneyMask(subtotal));
         }
 
@@ -405,6 +445,9 @@
             $('#tarif').val('');
             $('#addcost').val('');
             $('#subtotal').val('');
+
+            $('#tabel_addcost tbody').empty(); // clear tabel detail addcost di dalam modal
+
         }
     });
 </script>

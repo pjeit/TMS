@@ -73,7 +73,6 @@ class InvoiceController extends Controller
         $cust = session()->get('cust'); //buat ambil session
         $grup = session()->get('grup'); //buat ambil session
         
-        // dd($grup);
         $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
                 ->get();
@@ -84,7 +83,6 @@ class InvoiceController extends Controller
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
                 ->select('sewa.*')
                 ->get();
-        // dd($dataSewa);
 
         return view('pages.invoice.belum_invoice.form',[
             'judul'=>"BELUM INVOICE",
