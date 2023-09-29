@@ -31,7 +31,7 @@ class PerjalananKembaliController extends Controller
                 ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
-                ->where('s.status', 'MENUNGGU OPERASIONAL')
+                ->where('s.status', 'DALAM PERJALANAN')
                 ->whereNull('s.id_supplier')
                 ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
@@ -92,7 +92,7 @@ class PerjalananKembaliController extends Controller
                     ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                     ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
                     // ->where('s.jenis_tujuan', 'like', '%FTL%')
-                    ->where('s.status', 'MENUNGGU OPERASIONAL')
+                    ->where('s.status', 'DALAM PERJALANAN')
                     ->whereNull('s.id_supplier')
                     ->whereNull('s.tanggal_kembali')
                     ->where('s.is_aktif', '=', 'Y')
@@ -286,7 +286,7 @@ class PerjalananKembaliController extends Controller
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
                         $SOP->catatan = $value['catatan_data'];
-                        $SOP->status = "BELUM DICAIRKAN";
+                        $SOP->status = "SUDAH DICAIRKAN";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
                         $SOP->is_aktif = 'Y';

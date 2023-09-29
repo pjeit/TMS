@@ -45,8 +45,8 @@
                             @if (isset($dataSewa))
                                 @foreach($dataSewa as $item)
                                     <tr>
-                                        <td> {{ $item->id_grup }} {{ $item->id_customer }} {{ $item->id_sewa }} {{ $item->nama_grup }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
-                                        <td>{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" name="" id=""></span> </td>
+                                        <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" name="" id="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td>{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" name="" id="customer_centang" id_customer="{{ $item->id_customer }}"></span> </td>
                                         <td>{{ $item->no_polisi }}</td>
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
@@ -69,6 +69,18 @@
 <script type="text/javascript">
  $(document).ready(function () {
     
+        $('#cekVirtual').click(function(){
+            if($(this).is(":checked")){
+              
+                $('#hiddenVirtual').val('Y');
+                
+                // console.log("Checkbox is checked.");
+            }else if($(this).is(":not(:checked)")){
+                $('#hiddenVirtual').val('N');
+        
+                // console.log("Checkbox is unchecked.");
+            }
+        });
         $('body').on('click','#sewaAdd',function()
 		{
             var selectedValues = [];
