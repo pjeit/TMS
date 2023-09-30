@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\Node\Stmt\Return_;
-
+use Illuminate\Support\Facades\Session;
 class InvoiceController extends Controller
 {
     /**
@@ -26,7 +26,8 @@ class InvoiceController extends Controller
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
-
+        // Session::flush();
+        Session::forget(['sewa', 'cust', 'grup']);
         $dataSewa =  DB::table('sewa AS s')
                 ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','g.id as id_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
@@ -73,6 +74,7 @@ class InvoiceController extends Controller
         $sewa = session()->get('sewa'); //buat ambil session
         $cust = session()->get('cust'); //buat ambil session
         $grup = session()->get('grup'); //buat ambil session
+        // dd($cust);
         
         $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
