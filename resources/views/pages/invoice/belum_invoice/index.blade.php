@@ -10,7 +10,7 @@
 @include('sweetalert::alert')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <style>
- 
+
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -30,7 +30,6 @@
                     <table id="tabelInvoice" class="table table-bordered table-striped" width='100%'>
                         <thead>
                             <tr>
-                                <th></th>
                                 <th>Grup</th>
                                 <th>Customer</th>
                                 <th>No. Polisi Kendaraan</th>
@@ -38,6 +37,7 @@
                                 <th>Tgl Berangkat</th>
                                 <th>Tujuan</th>
                                 <th>Driver</th>
+                                <th></th>
                                 {{-- <th>Status</th> --}}
                             </tr>
                         </thead>
@@ -45,18 +45,17 @@
                             @if (isset($dataSewa))
                                 @foreach($dataSewa as $item)
                                     <tr>
-                                        <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
-                                        <input type="hidden" name="idCust[]" placeholder="idCust">
-                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
-                                        <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" name="" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td>{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" name="" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td >{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 6px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td >{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 6px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
                                         <td>{{ $item->no_polisi }}</td>
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                         <td>{{ $item->nama_tujuan }}</td>
                                         <td>{{ $item->supir }} ({{ $item->telpSupir }}) </td>
                                         {{-- <td>{{ $item->status }}</td> --}}
-                                        
+                                        <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
+                                        <input type="hidden" name="idCust[]" placeholder="idCust">
+                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
                                     </tr>
                                 @endforeach
                             @endif
@@ -125,9 +124,7 @@
         $('body').on('click','.customer_centang',function()
 		{
 
-               
             var idCustParent= $(this);
-
             $('.grup_centang[type=checkbox]').each(function(idx) {
                 var id_grup_semua_cekbox = $(this);
                 // cek semua cekbox
@@ -165,7 +162,7 @@
                 
                 if(id_percust_semua.attr('id_customer_grup')==idCustParent.attr('id_customer_grup'))
                 {
-                    if(id_percust_semua.attr('custId')==idCustParent.attr('id_customer'))
+                    if(id_percust_semua.attr('id_customer')==idCustParent.attr('id_customer'))
                     {
                         if (idCustParent.is(":checked")) {
                         id_percust_semua.prop('checked', true);
@@ -221,12 +218,75 @@
                 }
             });
         });
+        $('body').on('click','.sewa_centang',function()
+		{
+            var sewa_cekbox= $(this);
+            $('.grup_centang[type=checkbox]').each(function(idx) {
+                var id_grup_semua_cekbox = $(this);
+                // cek semua cekbox
+                if(id_grup_semua_cekbox.attr('id_grup')==sewa_cekbox.attr('grupId'))
+                {
+                    if (id_grup_semua_cekbox.is(":checked")) {
+                            id_grup_semua_cekbox.prop('checked', false);
+                        } 
+                }
+                else
+                {
+                    if(id_grup_semua_cekbox.attr('id_grup')!=sewa_cekbox.attr('grupId'))
+                    {
+                        
+                        id_grup_semua_cekbox.prop('checked', false);
+                        // idCustParent.prop('checked', false);
+                    }
+                }
+            });
+             $('.customer_centang[type=checkbox]').each(function(idx) {
+                var id_percust_semua = $(this);
+                
+                if(id_percust_semua.attr('id_customer_grup')==sewa_cekbox.attr('grupId'))
+                {
+                    if(id_percust_semua.attr('id_customer')==sewa_cekbox.attr('custId'))
+                    {
+                        if (id_percust_semua.is(":checked")) {
+                        id_percust_semua.prop('checked', false);
+                        } 
+                    }
+                    
+                }
+                else
+                {
+                        id_percust_semua.prop('checked', false);
+                    
+                }
+            });
+            
+            
+            $('.sewa_centang[type=checkbox]').each(function(idx) {
+                var id_cust_sewa = $(this);
+                if(id_cust_sewa.attr('grupId')!=sewa_cekbox.attr('grupId'))
+                {
+                    if(id_cust_sewa.attr('custId')!=sewa_cekbox.attr('custId'))
+                    {
+                        if (id_cust_sewa.is(":checked")) {
+                            id_cust_sewa.prop('checked', false);
+    
+                        } 
+                        
+                    }
+                    // else
+                    // {
+                    //     id_cust_sewa.prop('checked', false);
+                    // }
+                }
+                
+            });
+        });
         $('body').on('click','#sewaAdd',function()
 		{
             var selectedValues = [];
             var custId = [];
             var grupId = [];
-            $("input[type='checkbox']:checked").each(function() {
+            $(".sewa_centang[type=checkbox]:checked").each(function() {
                 selectedValues.push($(this).val());
                 custId.push($(this).attr('custId'));
                 grupId.push($(this).attr('grupId'));
@@ -255,15 +315,15 @@
 		})
      new DataTable('#tabelInvoice', {
         order: [
-            [1, 'asc'],
-            [2, 'asc']
+            [0, 'asc'],
+            [1, 'asc']
         ],
         rowGroup: {
-            dataSrc: [1, 2]
+            dataSrc: [0, 1]
         },
         columnDefs: [
             {
-                targets: [1, 2],
+                targets: [0, 1],
                 visible: false
             },
             {
