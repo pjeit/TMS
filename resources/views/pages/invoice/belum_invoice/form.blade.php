@@ -206,14 +206,14 @@
                                 @endforeach
                                 {{ number_format($total_addcost) }}
                                 <input type="hidden" name="detail_addcost_{{ $item->id_sewa }}" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
-                                <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" name='addcost_hidden_{{ $item->id_sewa }}' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
+                                <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='addcost_hidden_{{ $item->id_sewa }}' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
                             </td>
                             <td style="text-align:right">
                                 <span id='diskon_text_{{ $item->id_sewa }}'></span>
                             </td>
                             <td style="text-align:right">
                                 <span id='subtotal_text_{{ $item->id_sewa }}'>{{ number_format($total_addcost+$item->total_tarif) }}</span>
-                                <input type="hidden" class="hitung_subtotal subtotal_hidden_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" name='subtotal_hidden_{{ $item->id_sewa }}' id='subtotal_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost+$item->total_tarif }}">
+                                <input type="hidden" class="hitung_subtotal subtotal_hidden_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='subtotal_hidden_{{ $item->id_sewa }}' id='subtotal_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost+$item->total_tarif }}">
                             </td>
                             <td>
                                 <span id="catatan_text_{{ $item->id_sewa }}">{{ $item->catatan }}</span>

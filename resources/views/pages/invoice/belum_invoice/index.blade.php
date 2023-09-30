@@ -10,19 +10,71 @@
 @include('sweetalert::alert')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <style>
+#button{
+  display:block;
+  margin:20px auto;
+  padding:10px 30px;
+  background-color:#eee;
+  border:solid #ccc 1px;
+  cursor: pointer;
+}
+#overlay{	
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height:100%;
+  /* display: none; */
+  background: rgba(0,0,0,0.6);
+}
+.cv-spinner {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
+.loader {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: block;
+  margin:15px auto;
+  position: relative;
+  background: #FFF;
+  box-shadow: -24px 0 #FFF, 24px 0 #FFF;
+  box-sizing: border-box;
+  animation: shadowPulse 2s linear infinite;
+}
+
+@keyframes shadowPulse {
+  33% {
+    background: #FFF;
+    box-shadow: -24px 0 #2631ff, 24px 0 #FFF;
+  }
+  66% {
+    background: #2631ff;
+    box-shadow: -24px 0 #FFF, 24px 0 #FFF;
+  }
+  100% {
+    background: #FFF;
+    box-shadow: -24px 0 #FFF, 24px 0 #2631ff;
+  }
+}
 
 </style>
+
 <div class="container-fluid">
+
     <div class="row">
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
                     <div class="">
-                        <a href="{{route('invoice.create')}}" class="btn btn-primary btn-responsive radiusSendiri"  id="sewaAdd">
+                        {{-- <a href="{{ route("invoice.create") }}" class="btn btn-primary btn-responsive radiusSendiri"  id="sewaAdd">
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Buat Invoice
-                        </a> 
-                          <button type="button" class="btn btn-primary btn-responsive radiusSendiri" id="cobaSewa">
-                             <i class="fa fa-plus-circle" aria-hidden="true"> </i>Coba sewa
+                        </a>  --}}
+                          <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="sewaAdd">
+                             <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
                         </button>
                     </div>
                 </div>
@@ -45,8 +97,8 @@
                             @if (isset($dataSewa))
                                 @foreach($dataSewa as $item)
                                     <tr>
-                                        <td >{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 6px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td >{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 6px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td >{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td >{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
                                         <td>{{ $item->no_polisi }}</td>
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
@@ -66,9 +118,22 @@
         </div>
     </div>
 </div>
+
+{{-- modal loading --}}
+<div class="modal" id="modal-loading" data-backdrop="static">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <div class="cv-spinner">
+            <span class="loader"></span>
+         </div>
+         <div>Harap Tunggu Sistem Sedang Memproses....</div>
+      </div>
+    </div>
+  </div>
+</div>
 <script type="text/javascript">
  $(document).ready(function () {
-    
         $('body').on('click','.grup_centang',function()
 		{
             var idGrupParent= $(this);
@@ -291,26 +356,66 @@
                 custId.push($(this).attr('custId'));
                 grupId.push($(this).attr('grupId'));
             });
-            var baseUrl = "{{ asset('') }}";
-            $.ajax({
-                url: `${baseUrl}invoice/set_sewa_id`, 
-                method: 'POST', 
-                data: { 
-                    idSewa: selectedValues ,
-                    idCust: custId,
-                    idGrup: grupId,
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                },
-                success: function(response) {
-                    if(response)
-                    {
-                        console.log(response);
+            console.log(selectedValues);
+            
+            if (selectedValues.length === 0) {
+                // event.preventDefault(); 
+                // Swal.fire({
+                //     icon: 'error',
+                //     text: 'Harap pilih sewa yang ingin dibuat invoice',
+                // });
+                // return;
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Harap pilih sewa yang ingin dibuat invoice!'
+                    })
+                    event.preventDefault();
+           
+            }
+            else
+            {
+                window.location.href = '{{ route("invoice.create") }}';
+                $('#modal-loading').modal('show');
+
+                var baseUrl = "{{ asset('') }}";
+                $.ajax({
+                    url: `${baseUrl}invoice/set_sewa_id`, 
+                    method: 'POST', 
+                    data: { 
+                        idSewa: selectedValues ,
+                        idCust: custId,
+                        idGrup: grupId,
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    success: function(response) {
+                        if(response)
+                        {
+                            // console.log(response);
+                            // window.location.href = '{{ route("invoice.create") }}';
+    
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
+                });
+            }
+            
+
+            
+            
            
 		})
      new DataTable('#tabelInvoice', {
