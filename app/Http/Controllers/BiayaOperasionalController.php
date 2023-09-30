@@ -63,7 +63,7 @@ class BiayaOperasionalController extends Controller
             $data = $request->post();
             $item = $data['item'];
             $keterangan = '';
-            // dd($data);
+            // dd($data['data']);
 
             foreach ($data['data'] as $key => $value) {
                 if(isset($value['item']) && $value['dicairkan'] != null){
@@ -277,7 +277,7 @@ class BiayaOperasionalController extends Controller
                                 ->where('so.deskripsi', '=', $item);
                         }
                     })
-                    ->where('s.status', 'MENUNGGU OPERASIONAL')
+                    ->where('s.status', 'DALAM PERJALANAN')
                     ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')

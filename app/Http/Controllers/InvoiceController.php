@@ -73,7 +73,6 @@ class InvoiceController extends Controller
         $sewa = session()->get('sewa'); //buat ambil session
         $cust = session()->get('cust'); //buat ambil session
         $grup = session()->get('grup'); //buat ambil session
-        // dd($grup);
         
         $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
@@ -85,7 +84,6 @@ class InvoiceController extends Controller
                 ->where('sewa.status', 'KENDARAAN KEMBALI')
                 ->select('sewa.*')
                 ->get();
-        // dd($dataSewa);
 
         $dataCust = Customer::where('grup_id', $grup[0])
                 ->where('is_aktif', 'Y')
@@ -97,6 +95,7 @@ class InvoiceController extends Controller
             'dataSewa' => $dataSewa,
             'dataCust' => $dataCust,
             'grup' => $grup[0],
+            'customer' => $cust[0],
         ]);
     }
 
@@ -108,7 +107,44 @@ class InvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user()->id;
+        $data = $request->post();
+        try {
+            // logic nomer booking
+                $kode = 'PJE/'.$data['kode_customer'].'/'.date("y").date("m");
+                $maxInvoice = DB::table('invoice')
+                    ->selectRaw("ifnull(max(substr(no_invoice, -3)), 0) + 1 as max_invoice")
+                    ->where('no_invoice', 'like', $kode.'%')
+                    ->orderBy('no_invoice', 'DESC')
+                    ->value('max_invoice');
+                    
+                $newInvoiceNumber = 'PJE/' . $data['kode_customer'] . '/' . date("y") . date("m") . str_pad($maxInvoice, 3, '0', STR_PAD_LEFT);
+
+                if (is_null($maxInvoice)) {
+                    $newInvoiceNumber = 'PJE/' . $data['kode_customer'] .'/'. date("y") . date("m") . '001';
+                }
+            //
+
+            $invoice = new Invoice();
+            $invoice->id_grup = $data['grup_id'];
+            $invoice->no_invoice = $newInvoiceNumber;
+            $invoice->tgl_invoice = date_create_from_format('d-M-Y', $data['tanggal_invoice']);
+            $invoice->total_tagihan = ($data['total_tagihan'] != '')? floatval(str_replace(',', '', $data['total_tagihan'])):0;
+            $invoice->total_sisa = ($data['total_sisa'] != '')? floatval(str_replace(',', '', $data['total_sisa'])):0;
+            $invoice->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
+            $invoice->catatan = $data['catatan_invoice'];
+            $invoice->status = 'MENUNGGU PEMBAYARAN INVOICE';
+            $invoice->billing_to = $data['billingTo'];
+            $invoice->created_by = $user;
+            $invoice->created_at = now();
+            $invoice->is_aktif = 'Y';
+            $invoice->save();
+            // dd($data);
+
+            return redirect()->route('invoice.index')->with('status','Success!!');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
     }
 
     /**

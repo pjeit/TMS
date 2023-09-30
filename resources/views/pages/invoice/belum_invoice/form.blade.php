@@ -23,21 +23,24 @@
         @endforeach
     @endif
 <section class="m-2">
-    <form action="{{ route('pencairan_uang_jalan_ftl.store') }}" id="post_data" method="POST" >
+    <form action="{{ route('invoice.store') }}" id="save" method="POST" >
         @csrf
         {{-- sticky header --}}
-        <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
+        {{-- <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
             <div class="card radiusSendiri" style="">
                 <div class="card-header ">
                     <a href="{{ route('invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                     <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-                    {{-- <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button>  --}}
+                    <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
                 </div>
             </div>
-        </div>
+        </div> --}}
         
         <div class="col-12">
             <div class="card radiusSendiri">
+                <div class="card-header ">
+                    <a href="{{ route('invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                </div>
                 <div class="card-body" >
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -55,15 +58,16 @@
                                             <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                             </div>
-                                            <input disabled type="text" autocomplete="off" name="tanggal_invoice" class="form-control date" id="tanggal_invoice" placeholder="dd-M-yyyy" value="">
+                                            <input readonly type="text" autocomplete="off" name="tanggal_invoice" class="form-control date" id="tanggal_invoice" placeholder="dd-M-yyyy" value="">
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="">Customer</label>
-                                <input type="text" id="customer" name="customer" class="form-control" value="{{ $data[0]->getCustomer->nama }}" readonly>                         
+                                <label for="">Grup</label>
+                                <input type="text" class="form-control" value="{{ $dataCust[0]->getGrup->nama_grup }}" readonly>                         
+                                <input type="hidden" id="grup_id" name="grup_id" class="form-control" value="{{ $dataCust[0]->grup_id }}" readonly>                         
                             </div>  
 
                             <div class="form-group">
@@ -136,8 +140,8 @@
                                                     <span><b>Grand Total</b></span>
                                                 </div>
                                                 <div class="col-lg-6 col-md-6 col-sm-12">
-                                                    <b><span id="grand_total_text">Rp. 0</span></b>
-                                                    <input type="hidden" name="grand_total" id="grand_total">
+                                                    <b><span id="total_tagihan_text">Rp. 0</span></b>
+                                                    {{-- <input type="hidden" name="total_tagihan" id="total_tagihan"> --}}
                                                 </div>
                                             </div>
                                         </li>
@@ -145,14 +149,15 @@
                                             <div class="row">
                                                 <div class="col-10">
                                                     <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required>
-                                                        <option value="">── PILIH CUSTOMER ──</option>
+                                                        <option value="">── BILLING TO ──</option>
                                                         @foreach ($dataCust as $cust)
-                                                            <option value="{{ $cust->id }}"> {{ $cust->kode }} - {{ $cust->nama }}</option>
+                                                            <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" {{ $cust->id == $customer? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
                                                         @endforeach
                                                     </select>
+                                                    <input type="hidden" name="kode_customer" id="kode_customer">
                                                 </div>
                                                 <div class="col-2">
-                                                    <button type="button" class="btn btn-success">
+                                                    <button type="submit" class="btn btn-success">
                                                         <i class="fa fa-credit-card"></i>
                                                     </button>
                                                 </div>
@@ -171,12 +176,13 @@
             <table class="table table-hover table-bordered table-striped " width='100%' id="table_invoice">
                 <thead>
                     <tr class="bg-white">
+                        <th>Customer</th>
                         <th>Tujuan</th>
                         <th>Sewa</th>
                         <th><small><b>Kontainer &amp; SJ</b></small></th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Jumlah Muatan</th>
+                        <th style="width:1px; white-space: nowrap; text-align:right">Muatan</th>
                         <th style="width:1px; white-space: nowrap; text-align:right">Tarif</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Add Cost/Inap</th>
+                        <th style="width:1px; white-space: nowrap; text-align:right">Add Cost</th>
                         <th style="width:1px; white-space: nowrap; text-align:right">Diskon</th>
                         <th style="width:1px; white-space: nowrap; text-align:right">Subtotal</th>
                         <th>Catatan</th>
@@ -187,6 +193,7 @@
                 @isset($data)
                     @foreach ($data as $key => $item)
                         <tr id="0">
+                            <td> {{ $item->getCustomer->nama }} </td>
                             <td> {{ $item->nama_tujuan }} </td>
                             <td> {{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }} <br> {{ $item->no_polisi }} ({{ $item->getKaryawan->nama_panggilan }}) </td>
                             <td> <span id="no_kontainer_text_{{ $item->id_sewa }}">{{ isset($item->id_jo_detail)? $item->getJOD->no_kontainer:'(OUTBOUND)' }}</span> <br> <span id='no_surat_jalan_text_{{ $item->id_sewa }}'>{{ $item->no_surat_jalan }}</span> </td>
@@ -205,25 +212,25 @@
                                     @endif
                                 @endforeach
                                 {{ number_format($total_addcost) }}
-                                <input type="hidden" name="detail_addcost_{{ $item->id_sewa }}" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
-                                <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" name='addcost_hidden_{{ $item->id_sewa }}' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
+                                <input type="hidden" name="detail[{{ $item->id_sewa }}][addcost_details]" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
+                                <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost]' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
                             </td>
                             <td style="text-align:right">
                                 <span id='diskon_text_{{ $item->id_sewa }}'></span>
                             </td>
                             <td style="text-align:right">
                                 <span id='subtotal_text_{{ $item->id_sewa }}'>{{ number_format($total_addcost+$item->total_tarif) }}</span>
-                                <input type="hidden" class="hitung_subtotal subtotal_hidden_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" name='subtotal_hidden_{{ $item->id_sewa }}' id='subtotal_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost+$item->total_tarif }}">
+                                <input type="hidden" class="hitung_subtotal subtotal_hidden_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][subtotal]' id='subtotal_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost+$item->total_tarif }}">
                             </td>
                             <td>
                                 <span id="catatan_text_{{ $item->id_sewa }}">{{ $item->catatan }}</span>
-                                <input type="hidden" name='nama_tujuan_hidden_{{ $item->id_sewa }}' id='nama_tujuan_hidden_{{ $item->id_sewa }}' value="{{ $item->nama_tujuan }}">
-                                <input type="hidden" name='tgl_berangkat_hidden_{{ $item->id_sewa }}' id='tgl_berangkat_hidden_{{ $item->id_sewa }}' value="{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}">
-                                <input type="hidden" name='no_kontainer_hidden_{{ $item->id_sewa }}' id='no_kontainer_hidden_{{ $item->id_sewa }}' value="{{ $item->no_kontainer }}">
-                                <input type="hidden" name='no_surat_jalan_hidden_{{ $item->id_sewa }}' id='no_surat_jalan_hidden_{{ $item->id_sewa }}' value="{{ $item->no_surat_jalan }}">
-                                <input type="hidden" name='tarif_hidden_{{ $item->id_sewa }}' id='tarif_hidden_{{ $item->id_sewa }}' value="{{ $item->total_tarif }}">
-                                <input type="hidden" name='catatan_hidden_{{ $item->id_sewa }}' id='catatan_hidden_{{ $item->id_sewa }}' value="{{ $item->catatan }}">
-                                <input type="hidden" name='diskon_hidden_{{ $item->id_sewa }}' id='diskon_hidden_{{ $item->id_sewa }}' >
+                                <input type="hidden" name='detail[{{ $item->id_sewa }}][nama_tujuan]' id='nama_tujuan_hidden_{{ $item->id_sewa }}' value="{{ $item->nama_tujuan }}">
+                                <input type="hidden" name='detail[{{ $item->id_sewa }}][tgl_berangkat]' id='tgl_berangkat_hidden_{{ $item->id_sewa }}' value="{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}">
+                                <input type="hidden" name='detail[{{ $item->id_sewa }}][no_kontainer]' id='no_kontainer_hidden_{{ $item->id_sewa }}' value="{{ $item->no_kontainer }}">
+                                <input type="hidden" name='detail[{{ $item->id_sewa }}][no_surat_jalan]' id='no_surat_jalan_hidden_{{ $item->id_sewa }}' value="{{ $item->no_surat_jalan }}">
+                                <input type="hidden" name='detail[{{ $item->id_sewa }}][tarif]' id='tarif_hidden_{{ $item->id_sewa }}' value="{{ $item->total_tarif }}">
+                                <input type="hidden" name='detail[{{ $item->id_sewa }}][catatan]' id='catatan_hidden_{{ $item->id_sewa }}' value="{{ $item->catatan }}">
+                                <input type="hidden" name='detail[{{ $item->id_sewa }}][diskon]' id='diskon_hidden_{{ $item->id_sewa }}' >
                             </td>
                             <td>
                                 <div class="btn-group dropleft">
@@ -264,7 +271,7 @@
                                 <div class="row">
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="sewa">Sewa <span style="color:red;">*</span></label>
-                                        <select name="addcost_sewa" class="select2" style="width: 100%" id="addcost_sewa" required>
+                                        <select class="select2" style="width: 100%" id="addcost_sewa">
                                         </select>
                                     </div>   
 
@@ -280,19 +287,19 @@
 
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="">Tujuan <span style="color:red;">*</span></label>
-                                        <input  type="text" class="form-control" name="nama_tujuan" id="nama_tujuan" readonly> 
+                                        <input  type="text" class="form-control" id="nama_tujuan" readonly> 
                                     </div>
                                 </div>
                                 
                                 <div class="row">
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                         <label for="">No. Kontainer</label>
-                                        <input  type="text" class="form-control" maxlength="50" name="no_kontainer" id="no_kontainer"> 
+                                        <input  type="text" class="form-control" maxlength="50" id="no_kontainer"> 
                                     </div>
     
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                         <label for="">No. Surat Jalan</label>
-                                        <input  type="text" class="form-control" maxlength="50" name="no_surat_jalan" id="no_surat_jalan"> 
+                                        <input  type="text" class="form-control" maxlength="50" id="no_surat_jalan"> 
                                     </div>
                                 </div>
                             </div>
@@ -341,7 +348,7 @@
                                     
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="">Catatan</label>
-                                        <input type="text" class="form-control" maxlength="255" name="catatan" id="catatan"> 
+                                        <input type="text" class="form-control" maxlength="255" id="catatan"> 
                                     </div>
                                 </div>
                             </div>
@@ -382,7 +389,73 @@
         </div>
     </form>
 </section>
- 
+
+{{-- logic save --}}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#save').submit(function(event) {
+            // set value kode_customer
+                var kodeValue = $('#billingTo option:selected').attr('kode');
+                $('#kode_customer').val(kodeValue);
+            //
+
+            event.preventDefault(); // Prevent form submission
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar ?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Disimpan'
+                    })
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 800); // 2000 milliseconds = 2 seconds
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
+    });
+</script>
+
 <script type="text/javascript">
     $(document).ready(function() {
         // set value default tgl invoice
@@ -474,13 +547,16 @@
 
         function calculateGrandTotal(){ // hitung grand total buat ditagihkan 
             var grandTotal = 0; 
-            var grandTotalText = document.getElementById("grand_total_text");
+            var grandTotalText = document.getElementById("total_tagihan_text");
             var subtotals = document.querySelectorAll('.hitung_subtotal');
             subtotals.forEach(function(subtotal) {
                 grandTotal += parseFloat(subtotal.value); // Convert the value to a number
             });
             if(grandTotal && grandTotal >= 0){
-                $('#grand_total').val(grandTotal);
+                $('#total_tagihan').val(moneyMask(grandTotal));
+                var total_dibayar = $('#total_dibayar').val() == 0 || $('#total_dibayar').val() == NULL? 0:$('#total_dibayar').val();
+                var total_sisa = grandTotal - parseFloat( total_dibayar );
+                $('#total_sisa').val( moneyMask(total_sisa) );
                 grandTotalText.textContent = "Rp. " + moneyMask(grandTotal); // Change the text content of the span
             }
         }

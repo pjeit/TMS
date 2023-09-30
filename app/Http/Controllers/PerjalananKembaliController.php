@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobOrderDetail;
 use App\Models\Sewa;
 use App\Models\SewaOperasional;
 use Illuminate\Http\Request;
@@ -255,22 +256,28 @@ class PerjalananKembaliController extends Controller
         //
         $data = $request->post();
         $user = Auth::user()->id; 
-    // dd(/*isset(*/$data['data_hardcode']/*[0]['masuk_db'])*/);
+        // dd(/*isset(*/$data['data_hardcode']/*[0]['masuk_db'])*/);
         // dd($data);
 
         try {
-   
             $perjalanan_kembali->catatan = isset($data['catatan'])? $data['catatan']:null;
             $perjalanan_kembali->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
             $perjalanan_kembali->no_surat_jalan = isset($data['surat_jalan'])? $data['surat_jalan']:null;
             $perjalanan_kembali->seal_pelayaran = isset($data['seal'])? $data['seal']:null;
             $perjalanan_kembali->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
-            $perjalanan_kembali->status = $data['is_kembali']=='Y'? 'KENDARAAN KEMBALI':'DALAM PERJALANAN';
+            $perjalanan_kembali->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'DALAM PERJALANAN';
             $perjalanan_kembali->is_kembali = $data['is_kembali'];
 
             $perjalanan_kembali->updated_by = $user;
             $perjalanan_kembali->updated_at = now();
-            $perjalanan_kembali->save();
+
+            if($perjalanan_kembali->save()){
+                $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($data['id_jo_detail_hidden']);
+                $JOD->status = 'MENUNGGU INVOICE';
+                $JOD->save();
+            }
+            
+
             //ini kalo dicentang yang harcode di html
             if(isset($data['data_hardcode']))
             {
@@ -303,8 +310,6 @@ class PerjalananKembaliController extends Controller
 
                     if(isset($value['masuk_db']))
                     {
-                        
-
                          DB::table('sewa_operasional')
                             ->where('id_sewa', $perjalanan_kembali->id_sewa)
                             ->where('id', $value['id_sewa_operasional_data'])
