@@ -257,7 +257,7 @@ class PerjalananKembaliController extends Controller
         $data = $request->post();
         $user = Auth::user()->id; 
         // dd(/*isset(*/$data['data_hardcode']/*[0]['masuk_db'])*/);
-        // dd($data);
+        // dd($perjalanan_kembali->jenis_order);
 
         try {
             $perjalanan_kembali->catatan = isset($data['catatan'])? $data['catatan']:null;
@@ -271,13 +271,13 @@ class PerjalananKembaliController extends Controller
             $perjalanan_kembali->updated_by = $user;
             $perjalanan_kembali->updated_at = now();
 
-            if($perjalanan_kembali->save()){
+            if($perjalanan_kembali->save()&&$perjalanan_kembali->jenis_order=='INBOUND'&&$data['is_kembali']=='Y'){
                 $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($data['id_jo_detail_hidden']);
                 $JOD->status = 'MENUNGGU INVOICE';
                 $JOD->save();
             }
             
-
+            
             //ini kalo dicentang yang harcode di html
             if(isset($data['data_hardcode']))
             {

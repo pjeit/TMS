@@ -105,7 +105,7 @@ class SewaRekananController extends Controller
             $sewa->id_customer = $data['customer_id'];
             $sewa->id_grup_tujuan = $data['tujuan_id'];
             $sewa->jenis_tujuan = $data['jenis_tujuan'];
-            $sewa->status = 'MENUNGGU OPERASIONAL';
+            $sewa->status = 'DALAM PERJALANAN';
             $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
             $sewa->nama_tujuan = $data['nama_tujuan'];
             $sewa->alamat_tujuan = $data['alamat_tujuan'];

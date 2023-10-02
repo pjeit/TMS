@@ -568,33 +568,36 @@
             var details = $('#detail_addcost_'+key).val(); 
             if (details && (details != null || cekBiaya != '')) { // cek apakah ada isi detail addcost
                 JSON.parse(details).forEach(function(item, index) {
-                    $('#tabel_addcost > tbody:last-child').append(
-                        `
-                            <tr id="row_addcost_${index}">
-                                <td>
-                                    ${item.deskripsi == null? '':item.deskripsi}
-                                    <input type="hidden" id="addcost_deskripsi_${index}" value="${item.deskripsi}" class="form-control" readonly />
-                                    <input type="hidden" name="sewa_operasional_id${index}" id="sewa_operasional_id${index}" value="${item.id}">
-                                </td>
-                                <td>
-                                    ${item.total_operasional == null? '':moneyMask(item.total_operasional)}
-                                    <input type="hidden" id="addcost_total_operasional_${index}" value="${item.total_operasional}" class="form-control numaja uang hitungBiaya" readonly />
-                                </td>
-                                <td>
-                                    ${item.is_ditagihkan == null? '':item.is_ditagihkan}
-                                    <input type="hidden" id="addcost_is_ditagihkan_${index}" value="${item.is_ditagihkan}" class="form-control" readonly />
-                                </td>
-                                <td>
-                                    ${item.is_dipisahkan == null? '':item.is_dipisahkan}
-                                    <input type="hidden" id="addcost_is_dipisahkan_${index}" value="${item.is_dipisahkan}" class="form-control" readonly />
-                                </td>
-                                <td>
-                                    ${item.catatan == null? '':item.catatan}
-                                    <input type="hidden" id="addcost_catatan_${index}" value="${item.catatan}" class="form-control w-auto" readonly />
-                                </td>
-                            </tr>
-                        `
-                    );
+                    if(item.is_aktif=="Y")
+                    {
+                        $('#tabel_addcost > tbody:last-child').append(
+                            `
+                                <tr id="row_addcost_${index}">
+                                    <td>
+                                        ${item.deskripsi == null? '':item.deskripsi} 
+                                        <input type="hidden" id="addcost_deskripsi_${index}" value="${item.deskripsi}" class="form-control" readonly />
+                                        <input type="hidden" name="sewa_operasional_id${index}" id="sewa_operasional_id${index}" value="${item.id}">
+                                    </td>
+                                    <td>
+                                        ${item.total_operasional == null? '':moneyMask(item.total_operasional)}
+                                        <input type="hidden" id="addcost_total_operasional_${index}" value="${item.total_operasional}" class="form-control numaja uang hitungBiaya" readonly />
+                                    </td>
+                                    <td>
+                                        ${item.is_ditagihkan == null? '':item.is_ditagihkan}
+                                        <input type="hidden" id="addcost_is_ditagihkan_${index}" value="${item.is_ditagihkan}" class="form-control" readonly />
+                                    </td>
+                                    <td>
+                                        ${item.is_dipisahkan == null? '':item.is_dipisahkan}
+                                        <input type="hidden" id="addcost_is_dipisahkan_${index}" value="${item.is_dipisahkan}" class="form-control" readonly />
+                                    </td>
+                                    <td>
+                                        ${item.catatan == null? '':item.catatan}
+                                        <input type="hidden" id="addcost_catatan_${index}" value="${item.catatan}" class="form-control w-auto" readonly />
+                                    </td>
+                                </tr>
+                            `
+                        );
+                    }
                 });
             }
         }
