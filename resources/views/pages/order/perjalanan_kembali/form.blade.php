@@ -276,7 +276,9 @@
                                                 $value->deskripsi =='PLASTIK'||
                                                 $value->deskripsi =='TALLY'||
                                                 $value->deskripsi =='TIMBANG'||
-                                                $value->deskripsi =='BURUH'
+                                                $value->deskripsi =='BURUH'||
+                                                str_contains($value->deskripsi, 'OPERASIONAL')
+
                                             )
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                     <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi" readonly>
@@ -298,7 +300,9 @@
                                                 $value->deskripsi !='TIMBANG'&&
                                                 $value->deskripsi !='BURUH'&&
                                                 $value->deskripsi !='INAP'&& 
-                                                $value->deskripsi != 'CLEANING/REPAIR'
+                                                $value->deskripsi != 'CLEANING/REPAIR'&&
+                                                !str_contains($value->deskripsi, 'OPERASIONAL')
+
                                             )
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                     <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_lain" >
@@ -453,7 +457,7 @@
                                                     <div class="icheck-warning d-inline">
                                                         <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data]"  >
                                                         <label for="checkTagih_data_{{$index}}"></label>
-                                                        <input type="hidden" class="value_cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data_value]"  value="">
+                                                        <input type="hidden" class="value_cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data_value]"  value="N">
                                                         {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
                                                     </div>
                                                 </td>
@@ -461,7 +465,7 @@
                                                     <div class="icheck-warning d-inline">
                                                         <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="dataMaster[{{$index}}][dipisahkan_data]"   >
                                                         <label for="checkPisah_data_{{$index}}"></label>
-                                                        <input type="hidden" class="value_cek_dipisahkan_data" name="dataMaster[{{$index}}][dipisahkan_data_value]"  value="">
+                                                        <input type="hidden" class="value_cek_dipisahkan_data" name="dataMaster[{{$index}}][dipisahkan_data_value]"  value="N">
 
                                                         {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
                                                     </div>
@@ -478,7 +482,7 @@
                                     @endif
                                 @endif
                                  @if(isset($array_outbond))
-                                    @if ($sewa->jenis_order == "OUTBOUND")
+                                    @if ($sewa->jenis_order == "OUTBOUND" || $sewa->jenis_order == "INBOUND")
 
                                         @foreach ($array_outbond as $key => $value)
                                             <tr id="{{$index}}">
@@ -504,7 +508,7 @@
                                                     <div class="icheck-warning d-inline">
                                                         <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data]"  >
                                                         <label for="checkTagih_data_{{$index}}"></label>
-                                                        <input type="hidden" class="value_cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data_value]"  value="">
+                                                        <input type="hidden" class="value_cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data_value]"  value="N">
                                                         {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
                                                     </div>
                                                 </td>
@@ -512,7 +516,7 @@
                                                     <div class="icheck-warning d-inline">
                                                         <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="dataMaster[{{$index}}][dipisahkan_data]"   >
                                                         <label for="checkPisah_data_{{$index}}"></label>
-                                                        <input type="hidden" class="value_cek_dipisahkan_data" name="dataMaster[{{$index}}][dipisahkan_data_value]"  value="">
+                                                        <input type="hidden" class="value_cek_dipisahkan_data" name="dataMaster[{{$index}}][dipisahkan_data_value]"  value="N">
 
                                                         {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
                                                     </div>
@@ -1060,7 +1064,8 @@
                         trimTextbox ==='TIMBANG'||
                         trimTextbox ==='BURUH'||
                         trimTextbox ==='INAP'|| 
-                        trimTextbox === 'CLEANING/REPAIR'
+                        trimTextbox === 'CLEANING/REPAIR'||
+                        trimTextbox.includes("OPERASIONAL")
 
                     ) {
                         flagDeskripsiPrevent = true;
@@ -1122,7 +1127,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'BIAYA LAIN-LAIN TIDAK BOLEH SAMA!',
-                    text: 'Pilih Deskripsi Lain Selain Dari Data Template / Data Tersimpan / Data SDT / Data Tujuan Biaya / Data Yang Tersimpan',
+                    text: 'Pilih Deskripsi Selain Dari Data Yang sudah disediakan',
                 });
                 return;
             }

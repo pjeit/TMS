@@ -140,7 +140,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('perjalanan_kembali', 'App\Http\Controllers\PerjalananKembaliController');
 
         Route::post('/invoice/set_sewa_id', [App\Http\Controllers\InvoiceController::class, 'setSewaID'])->name('setSewaID.set');
-
+        Route::post('/invoice/invoiceKembali', [App\Http\Controllers\InvoiceController::class, 'invoiceKembali'])->name('invoiceKembali.set');
         Route::resource('invoice', 'App\Http\Controllers\InvoiceController');
 
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');

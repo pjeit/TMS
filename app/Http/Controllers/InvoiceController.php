@@ -37,7 +37,7 @@ class InvoiceController extends Controller
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
                 // ->where('s.jenis_tujuan', 'like', '%FTL%')
-                ->where('s.status', 'like', "%KENDARAAN KEMBALI%")
+                ->where('s.status', 'like', "%MENUNGGU INVOICE%")
                 ->whereNull('s.id_supplier')
                 // ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
@@ -70,6 +70,41 @@ class InvoiceController extends Controller
 
         
     }
+    public function invoiceKembali(Request $request)
+    {
+        //
+        $user = Auth::user()->id;
+        $data= $request->collect();
+        // dd(isset($data['idJo']));
+
+        try {
+            DB::table('sewa')
+                ->where('id_sewa',  $data['idSewa'])
+                ->update(array(
+                  'status' => 'DALAM PERJALANAN',
+                  'is_kembali' => 'N',
+                  'tanggal_kembali' => null,
+                  'updated_at'=> now(),
+                  'updated_by'=>  $user,
+                )
+            );
+            if(isset($data['idJo'])&&isset($data['idJo_detail']))
+            {
+                DB::table('job_order_detail')
+                ->where('id',  $data['idJo_detail'])
+                ->update(array(
+                  'status' => 'DALAM PERJALANAN',
+                  'updated_at'=> now(),
+                  'updated_by'=>  $user,
+                    )
+                ); 
+            }
+            return redirect()->route('invoice.index')->with('status','Sukses Mengubah mengembalikan data sewa!!');
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
+      
+    }
     public function create(Request $request)
     {
         $sewa = session()->get('sewa'); //buat ambil session
@@ -78,13 +113,13 @@ class InvoiceController extends Controller
         // dd($cust);
         
         $data = Sewa::whereIn('sewa.id_sewa', $sewa)
-                ->where('sewa.status', 'KENDARAAN KEMBALI')
+                ->where('sewa.status', 'MENUNGGU INVOICE')
                 ->get();
 
         $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
                 ->leftJoin('customer as c', 'c.id', 'id_customer')
                 ->where('c.grup_id', $grup[0])
-                ->where('sewa.status', 'KENDARAAN KEMBALI')
+                ->where('sewa.status', 'MENUNGGU INVOICE')
                 ->select('sewa.*')
                 ->get();
 

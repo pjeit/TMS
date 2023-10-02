@@ -79,7 +79,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="tabelInvoice" class="table table-bordered table-striped" width='100%'>
+                    <table id="tabelInvoice" class="table table-bordered" width='100%'>
                         <thead>
                             <tr>
                                 <th>Grup</th>
@@ -97,17 +97,56 @@
                             @if (isset($dataSewa))
                                 @foreach($dataSewa as $item)
                                     <tr>
-                                        <td >{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td >{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td>{{ $item->no_polisi }}</td>
+                                        <td >{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 0.9rem;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td >{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td>
+                                            
+                                            {{-- <div class="btn-group show">
+                                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+                                                </button>
+                                                <ul class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 30px, 0px);">
+                                                    <li>
+                                                        <a class="dropdown-item" href="https://testapps.pjexpress.co.id/index.php/c_belum_invoice/delete_data/17784"><span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin</a>
+                                                    </li>
+                                                </ul>
+                                            </div> --}}
+                                            {{ $item->no_polisi }}
+                                        </td>
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                         <td>{{ $item->nama_tujuan }}</td>
-                                        <td>{{ $item->supir }} ({{ $item->telpSupir }}) </td>
+                                        <td>{{ $item->supir }} ({{ $item->telpSupir }})
+                                            <div class="btn-group dropleft float-right">
+                                                <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fa fa-list"></i>
+                                                </button>
+                                                <div class="dropdown-menu" >
+                                                    <form action="{{route('invoiceKembali.set')}}" method="POST" class="btn btn-responsive">
+                                                                @csrf
+                                                                <button class="dropdown-item" >
+                                                                    <span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin
+                                                                </button>
+                                                                <input type="hidden" name="idCust[]" placeholder="idCust">
+                                                                <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                                                <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
+                                                                <input type="hidden" name="idJo" value="{{$item->id_jo}}">
+                                                                <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
+                                                    </form>  
+                                                    {{-- <a class="dropdown-item" href="{{route('perjalanan_kembali.edit',[$item->id_sewa])}}"><span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin</a> --}}
+                                                    {{-- <a class="dropdown-item" href="{{route('invoiceKembali.set')}}"><span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin</a>
+                                                    <input type="hidden" name="idCust[]" placeholder="idCust">
+                                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                                    <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
+                                                    <input type="hidden" name="idJo" value="{{$item->id_jo}}">
+                                                    <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}"> --}}
+
+
+                                                </div>
+                                            </div>
+                                        </td>
                                         {{-- <td>{{ $item->status }}</td> --}}
                                         <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
-                                        <input type="hidden" name="idCust[]" placeholder="idCust">
-                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                        
                                     </tr>
                                 @endforeach
                             @endif
@@ -356,7 +395,6 @@
                 custId.push($(this).attr('custId'));
                 grupId.push($(this).attr('grupId'));
             });
-            console.log(selectedValues);
             
             if (selectedValues.length === 0) {
                 // event.preventDefault(); 
@@ -386,8 +424,6 @@
             }
             else
             {
-                window.location.href = '{{ route("invoice.create") }}';
-                $('#modal-loading').modal('show');
 
                 var baseUrl = "{{ asset('') }}";
                 $.ajax({
@@ -400,12 +436,16 @@
                         _token: $('meta[name="csrf-token"]').attr('content'),
                     },
                     success: function(response) {
-                        if(response)
-                        {
+                        // if(response)
+                        // {
+                         $('#modal-loading').modal('show');
+                         console.log(selectedValues);
+                         window.location.href = '{{ route("invoice.create") }}';
+
                             // console.log(response);
                             // window.location.href = '{{ route("invoice.create") }}';
     
-                        }
+                        // }
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
