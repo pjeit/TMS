@@ -28,7 +28,7 @@ class CetakInvoiceController extends Controller
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         // Session::flush();
         // Session::forget(['sewa', 'cust', 'grup']);
-        $dataSewa =  DB::table('invoice AS i')
+        $dataInvoice =  DB::table('invoice AS i')
                 ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','g.id as id_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                 ->leftJoin('grup AS g', 'c.grup_id', '=', 'g.id')
@@ -40,9 +40,9 @@ class CetakInvoiceController extends Controller
                 ->get();
         // dd($dataSewa);
     
-        return view('pages.invoice.belum_invoice.index',[
-            'judul'=>"BELUM INVOICE",
-            'dataSewa' => $dataSewa,
+        return view('pages.invoice.cetak_invoice.index',[
+            'judul'=>"CETAK INVOICE",
+            'dataInvoice' => $dataInvoice,
         ]);
     }
 
