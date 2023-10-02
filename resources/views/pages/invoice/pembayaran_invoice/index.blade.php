@@ -9,58 +9,9 @@
 @section('content')
 @include('sweetalert::alert')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
+
 <style>
-#button{
-  display:block;
-  margin:20px auto;
-  padding:10px 30px;
-  background-color:#eee;
-  border:solid #ccc 1px;
-  cursor: pointer;
-}
-#overlay{	
-  position: fixed;
-  top: 0;
-  z-index: 100;
-  width: 100%;
-  height:100%;
-  /* display: none; */
-  background: rgba(0,0,0,0.6);
-}
-.cv-spinner {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;  
-}
-.loader {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: block;
-  margin:15px auto;
-  position: relative;
-  background: #FFF;
-  box-shadow: -24px 0 #FFF, 24px 0 #FFF;
-  box-sizing: border-box;
-  animation: shadowPulse 2s linear infinite;
-}
-
-@keyframes shadowPulse {
-  33% {
-    background: #FFF;
-    box-shadow: -24px 0 #2631ff, 24px 0 #FFF;
-  }
-  66% {
-    background: #2631ff;
-    box-shadow: -24px 0 #FFF, 24px 0 #FFF;
-  }
-  100% {
-    background: #FFF;
-    box-shadow: -24px 0 #FFF, 24px 0 #2631ff;
-  }
-}
-
+   
 </style>
 
 <div class="container-fluid">
@@ -74,40 +25,43 @@
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Buat Invoice
                         </a>  --}}
                           <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="sewaAdd">
-                             <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
+                             <i class="fa fa-credit-card"></i> Bayar
                         </button>
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="tabelInvoice" class="table table-bordered table-striped" width='100%'>
+                    <table id="tabelInvoice" class="table table-bordered" width='100%'>
                         <thead>
                             <tr>
                                 <th>Grup</th>
                                 <th>Customer</th>
-                                <th>No. Polisi Kendaraan</th>
-                                <th>No. Sewa</th>
-                                <th>Tgl Berangkat</th>
-                                <th>Tujuan</th>
-                                <th>Driver</th>
+                                <th>No. Invoice</th>
+                                <th width='100'>Tgl Invoice</th>
+                                <th width='100'>Jatuh Tempo</th>
+                                <th>Sisa Tagihan</th>
+                                <th>Catatan</th>
                                 <th></th>
-                                {{-- <th>Status</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                             @if (isset($dataSewa))
                                 @foreach($dataSewa as $item)
                                     <tr>
-                                        <td >{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td >{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td>{{ $item->no_polisi }}</td>
-                                        <td>{{ $item->no_sewa }}</td>
-                                        <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
-                                        <td>{{ $item->nama_tujuan }}</td>
-                                        <td>{{ $item->supir }} ({{ $item->telpSupir }}) </td>
-                                        {{-- <td>{{ $item->status }}</td> --}}
-                                        <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
-                                        <input type="hidden" name="idCust[]" placeholder="idCust">
-                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                        <td >{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 0.9rem;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td >{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang" id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td>{{ $item->no_invoice }}</td>
+                                        <td>{{ date("d-M-Y", strtotime($item->tgl_invoice)) }}</td>
+                                        <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
+                                        <td class="float-right">{{ number_format($item->total_sisa) }}
+                                        <td>{{ $item->catatan }}
+                                            <div class="btn-group dropleft float-right">
+                                                <div class="dropdown-menu" >
+                                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                                    <input type="hidden" name="idSewa" value="{{$item->billing_to}}">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="text-align: center;"> <input type="checkbox" name="idCust[]" class="sewa_centang" custId="{{ $item->billing_to }}" grupId="{{ $item->id_grup }}" value="{{ $item->billing_to }}"></td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -356,7 +310,6 @@
                 custId.push($(this).attr('custId'));
                 grupId.push($(this).attr('grupId'));
             });
-            console.log(selectedValues);
             
             if (selectedValues.length === 0) {
                 // event.preventDefault(); 
@@ -386,8 +339,6 @@
             }
             else
             {
-                window.location.href = '{{ route("invoice.create") }}';
-                $('#modal-loading').modal('show');
 
                 var baseUrl = "{{ asset('') }}";
                 $.ajax({
@@ -400,12 +351,16 @@
                         _token: $('meta[name="csrf-token"]').attr('content'),
                     },
                     success: function(response) {
-                        if(response)
-                        {
+                        // if(response)
+                        // {
+                         $('#modal-loading').modal('show');
+                         console.log(selectedValues);
+                         window.location.href = '{{ route("invoice.create") }}';
+
                             // console.log(response);
                             // window.location.href = '{{ route("invoice.create") }}';
     
-                        }
+                        // }
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);

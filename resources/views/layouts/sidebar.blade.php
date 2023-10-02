@@ -501,7 +501,9 @@
             
           </li>
 
-          <li class="nav-item {{ request()->is('invoice*')  ? 'menu-is-opening menu-open' : '' }}">
+          <li class="nav-item {{ request()->is('invoice*') ||
+            request()->is('pembayaran_invoice*')
+              ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="fas nav-icon fa-solid fa-file-invoice"></i>
               {{-- <i class=""></i> --}}
@@ -517,6 +519,15 @@
                 <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                   <p>
                      Belum Invoice
+                  </p>
+                </a>
+              </li>
+              
+              <li class="nav-item">
+                <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{request()->url() === route('pembayaran_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
+                  <p>
+                     Pembayaran Invoice
                   </p>
                 </a>
               </li>

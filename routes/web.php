@@ -145,6 +145,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/invoice/invoiceKembali', [App\Http\Controllers\InvoiceController::class, 'invoiceKembali'])->name('invoiceKembali.set');
         Route::resource('invoice', 'App\Http\Controllers\InvoiceController');
 
+
+        Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
+
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
 
 
