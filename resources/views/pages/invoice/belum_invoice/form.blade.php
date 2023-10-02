@@ -193,7 +193,10 @@
                 @isset($data)
                     @foreach ($data as $key => $item)
                         <tr id="0">
-                            <td> {{ $item->getCustomer->nama }} </td>
+                            <td> 
+                                {{ $item->getCustomer->nama }} 
+                                <input type="hidden" name="detail[{{ $item->id_sewa }}][id_customer]" value="{{ ($item->id_customer) }}" />
+                            </td>
                             <td> {{ $item->nama_tujuan }} </td>
                             <td> {{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }} <br> {{ $item->no_polisi }} ({{ $item->getKaryawan->nama_panggilan }}) </td>
                             <td> <span id="no_kontainer_text_{{ $item->id_sewa }}">{{ isset($item->id_jo_detail)? $item->getJOD->no_kontainer:'(OUTBOUND)' }}</span> <br> <span id='no_surat_jalan_text_{{ $item->id_sewa }}'>{{ $item->no_surat_jalan }}</span> </td>

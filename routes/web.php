@@ -141,6 +141,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/invoice/set_sewa_id', [App\Http\Controllers\InvoiceController::class, 'setSewaID'])->name('setSewaID.set');
 
+        Route::get('/invoice/print/{id}', [App\Http\Controllers\InvoiceController::class, 'print'])->name('invoice.print');
         Route::resource('invoice', 'App\Http\Controllers\InvoiceController');
 
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');

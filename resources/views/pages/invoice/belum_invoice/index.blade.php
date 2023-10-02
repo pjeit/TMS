@@ -442,4 +442,16 @@
 });
 
 </script>
+
+@if (session('id_print_invoice'))
+<script>
+    window.open("/invoice/print/{{ session('id_print_invoice') }}", "_blank");
+
+    // di set null biar ga open new tab terus2an 
+    setTimeout(function() {
+        sessionStorage.setItem('id_print_invoice', null);
+    }, 1000); // Adjust the delay (in milliseconds) as needed
+</script>
+@endif
+
 @endsection

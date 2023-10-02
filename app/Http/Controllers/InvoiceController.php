@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\InvoiceDetail;
+use App\Models\InvoiceDetailAddcost;
 use App\Models\Sewa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +13,9 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\Node\Stmt\Return_;
 use Illuminate\Support\Facades\Session;
+use Barryvdh\DomPDF\Facade\PDF; // use PDF;
+use Carbon\Carbon;
+
 class InvoiceController extends Controller
 {
     /**
@@ -111,6 +116,7 @@ class InvoiceController extends Controller
     {
         $user = Auth::user()->id;
         $data = $request->post();
+        // dd($data);
         try {
             // logic nomer booking
                 $kode = 'PJE/'.$data['kode_customer'].'/'.date("y").date("m");
@@ -140,10 +146,41 @@ class InvoiceController extends Controller
             $invoice->created_by = $user;
             $invoice->created_at = now();
             $invoice->is_aktif = 'Y';
-            $invoice->save();
-            // dd($data);
+            if($invoice->save()){
+                foreach ($data['detail'] as $key => $value) {
+                    $invoice_d = new InvoiceDetail();
+                    $invoice_d->id_invoice = $invoice->id;
+                    $invoice_d->id_customer = $value['id_customer'];
+                    $invoice_d->id_sewa = $key;
+                    $invoice_d->tarif = $value['tarif']!=NULL? $value['tarif']:0;
+                    $invoice_d->add_cost = $value['addcost']!=NULL? $value['addcost']:0;
+                    $invoice_d->diskon = $value['diskon']!=NULL? $value['diskon']:0;
+                    $invoice_d->sub_total = $value['subtotal']!=NULL? $value['subtotal']:0;
+                    $invoice_d->catatan = $value['catatan'];
+                    $invoice_d->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
+                    $invoice_d->created_by = $user;
+                    $invoice_d->created_at = now();
+                    $invoice_d->is_aktif = 'Y';
+                    if($invoice_d->save()){
+                        $dataAddcost = json_decode($value['addcost_details']);
+                        foreach ($dataAddcost as $i => $addcost) {
+                            $invoice_da = new InvoiceDetailAddcost();
+                            $invoice_da->id_invoice = $invoice->id;
+                            $invoice_da->id_invoice_detail = $invoice_d->id;
+                            $invoice_da->id_sewa_operasional = $addcost->id;
+                            $invoice_da->catatan = $addcost->catatan;
+                            $invoice_da->created_by = $user;
+                            $invoice_da->created_at = now();
+                            $invoice_da->is_aktif = 'Y';
+                            $invoice_da->save();
+                        }
+                    }
+                }
+            }
 
-            return redirect()->route('invoice.index')->with('status','Success!!');
+            return redirect()->route('invoice.index')
+                ->with('id_print_invoice', $invoice->id)
+                ->with('status', 'Success!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -192,5 +229,33 @@ class InvoiceController extends Controller
     public function destroy(Invoice $invoice)
     {
         //
+    }
+
+    public function print($id)
+    {
+        $data = Invoice::where('is_aktif', '=', "Y")
+            ->where('id', $id)
+            ->first();
+        // dd($id);
+        $TotalBiayaRev = 0;
+
+        // dd($dataJoDetail);   
+        $pdf = PDF::loadView('pages.invoice.belum_invoice.print',[
+            'judul' => "Invoice",
+            'data' => $data,
+
+        ]); 
+        $pdf->setPaper('A4', 'portrait');
+
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true, // Enable HTML5 parser
+            'isPhpEnabled' => true, // Enable inline PHP execution
+            'defaultFont' => 'sans-serif',
+             'dpi' => 180, // Set a high DPI for better resolution
+             'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
+        ]);
+
+        return $pdf->stream('xxxxx'.'.pdf'); 
+
     }
 }

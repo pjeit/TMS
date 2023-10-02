@@ -94,6 +94,8 @@
 {{-- multi row grouping datatable --}}
 <script src="https://cdn.datatables.net/rowgroup/1.4.0/js/dataTables.rowGroup.min.js"></script>
 
+{{-- qr code generator --}}
+<script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
 
 {{-- end custom dropdown bootstrap --}}
