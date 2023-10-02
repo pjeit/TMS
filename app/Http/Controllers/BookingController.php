@@ -26,6 +26,7 @@ class BookingController extends Controller
             ->join('customer as c', 'c.id', '=', 'b.id_customer')
             ->join('grup_tujuan as g', 'g.id', '=', 'b.id_grup_tujuan')
             ->where('b.is_aktif', 'Y')
+            ->where('b.is_sewa', 'N')
             ->whereNull('b.id_jo_detail')
             ->get();
     

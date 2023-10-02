@@ -33,7 +33,7 @@ class PerjalananKembaliController extends Controller
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
                 ->where('s.status', 'DALAM PERJALANAN')
-                ->whereNull('s.id_supplier')
+                // ->whereNull('s.id_supplier')
                 ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
                 ->get();
@@ -94,7 +94,7 @@ class PerjalananKembaliController extends Controller
                     ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
                     // ->where('s.jenis_tujuan', 'like', '%FTL%')
                     ->where('s.status', 'DALAM PERJALANAN')
-                    ->whereNull('s.id_supplier')
+                    // ->whereNull('s.id_supplier')
                     ->whereNull('s.tanggal_kembali')
                     ->where('s.is_aktif', '=', 'Y')
                     ->where('s.id_sewa', '=', $perjalanan_kembali->id_sewa)
@@ -265,6 +265,8 @@ class PerjalananKembaliController extends Controller
             $perjalanan_kembali->no_surat_jalan = isset($data['surat_jalan'])? $data['surat_jalan']:null;
             $perjalanan_kembali->seal_pelayaran = isset($data['seal'])? $data['seal']:null;
             $perjalanan_kembali->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
+            $perjalanan_kembali->no_kontainer = isset($data['no_kontainer'])? $data['no_kontainer']:null;
+
             $perjalanan_kembali->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'DALAM PERJALANAN';
             $perjalanan_kembali->is_kembali = $data['is_kembali'];
 

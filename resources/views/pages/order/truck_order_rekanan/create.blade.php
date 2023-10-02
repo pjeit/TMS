@@ -166,7 +166,8 @@
                                 </div>
                                 <div class="form-group">
                                         <label for="catatan">Catatan</label>
-                                        <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value=""> 
+                                        {{-- <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="">  --}}
+                                    <textarea name="catatan" class="form-control" id="catatan" cols="20" rows="4" placeholder="" value=""></textarea>
                                     </div>
                             </div>
                             <div class="col-6">
@@ -322,7 +323,7 @@
         $('#garisInbound').hide();
         $("#inbound").removeClass("aktif");
         $("#outbond").addClass("aktif");
-        $('#jenis_order').val('OUTBOND');
+        $('#jenis_order').val('OUTBOUND');
         
         $('body').on('click','#inbound',function()
 		{
@@ -382,7 +383,7 @@
             
             $('#select_jo_detail').val('').trigger('change');
             $('#select_jo').val('').trigger('change');
-            $('#jenis_order').val('OUTBOND');
+            $('#jenis_order').val('OUTBOUND');
 
             $('#tujuan_id').val('');
             $('#nama_tujuan').val('');

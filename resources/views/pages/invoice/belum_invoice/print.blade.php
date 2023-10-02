@@ -111,7 +111,9 @@
                         <br>{{ $detail->sewa->nama_tujuan }}
                     </td>
                     <td>
-                        {{ $detail->sewa->getJOD->no_kontainer }}
+                        {{-- {{ $detail->sewa->getJOD->no_kontainer }} --}}
+                        {{ $detail->sewa->no_kontainer }}
+
                         <br>{{ $detail->sewa->no_surat_jalan }}
                         <br>{{ $detail->sewa->seal_pelayaran }}
                     </td>

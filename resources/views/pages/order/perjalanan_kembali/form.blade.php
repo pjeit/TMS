@@ -80,15 +80,21 @@
                                             <hr>
            
                                            </div> --}}
-                                           <div class="form-group col-6">
+                                           <div class="form-group col-4">
                                                <label for="no_akun">Kendaraan</label>
                                                <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="{{$sewa->no_polisi}}" readonly>                         
                                            </div>  
            
                                            {{-- @if ($sewa->supir) --}}
-                                           <div class="form-group col-6">
+                                           <div class="form-group col-8">
                                                <label for="no_akun">Driver</label>
+                                               @if ($sewa->id_supplier)
+                                               <input type="text" id="driver" name="driver" class="form-control" value="DRIVER REKANAN ({{$sewa->nama_cust    }})" readonly>     
+                                                   
+                                               @else
                                                <input type="text" id="driver" name="driver" class="form-control" value="{{$sewa->supir}} ({{$sewa->telpSupir}})" readonly>     
+                                                   
+                                               @endif
                                                <input type="hidden" name="id_karyawan" id="id_karyawan">                    
                                            </div> 
                                            {{-- @endif --}}
@@ -141,7 +147,7 @@
                                                 <label for="seal_pje">Seal PJE<span style="color:red">*</span></label>
                                                 <div class="input-group mb-0">
                                                     <div class="input-group-prepend">
-                                                            <span class="input-group-text"><input {{$sewa->seal_pje?'checked':''}}type="checkbox" name="cek_seal_pje" id="cek_seal_pje"></span>
+                                                            <span class="input-group-text"><input {{$sewa->seal_pje?'checked':''}} type="checkbox" name="cek_seal_pje" id="cek_seal_pje"></span>
                                                     </div>
                                                 <input readonly {{$sewa->seal_pje?'':'readonly'}}type="text" name="seal_pje" class="form-control" id="seal_pje" value="{{$sewa->seal_pje}}">
                                                 </div>

@@ -103,7 +103,36 @@
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                         <td>{{ $item->nama_tujuan }}</td>
-                                        <td>{{ $item->supir }} ({{ $item->telpSupir }}) </td>
+                                        <td>{{ $item->supir }} ({{ $item->telpSupir }})
+                                            <div class="btn-group dropleft float-right">
+                                                    <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-list"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" >
+                                                        <form action="{{route('invoiceKembali.set')}}" method="POST" class="btn btn-responsive">
+                                                                    @csrf
+                                                                    <button class="dropdown-item" >
+                                                                        <span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin
+                                                                    </button>
+                                                                    <input type="hidden" name="idCust[]" placeholder="idCust">
+                                                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                                                    <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
+                                                                    <input type="hidden" name="idJo" value="{{$item->id_jo}}">
+                                                                    <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
+                                                        </form>  
+                                                        {{-- <a class="dropdown-item" href="{{route('perjalanan_kembali.edit',[$item->id_sewa])}}"><span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin</a> --}}
+                                                        {{-- <a class="dropdown-item" href="{{route('invoiceKembali.set')}}"><span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin</a>
+                                                        <input type="hidden" name="idCust[]" placeholder="idCust">
+                                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                                        <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
+                                                        <input type="hidden" name="idJo" value="{{$item->id_jo}}">
+                                                        <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}"> --}}
+
+
+                                                    </div>
+                                            </div>
+                                        
+                                        </td>
                                         {{-- <td>{{ $item->status }}</td> --}}
                                         <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
                                         <input type="hidden" name="idCust[]" placeholder="idCust">

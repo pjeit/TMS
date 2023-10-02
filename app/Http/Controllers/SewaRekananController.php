@@ -73,11 +73,13 @@ class SewaRekananController extends Controller
         try {
             $data = $request->collect();
             // dd((float)str_replace(',', '', $data['harga_jual']));
+            // dd($data);
             
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
 
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
-            // $booking_id = $data['booking_id']; 
+            $booking_id = isset($data['booking_id'])? $data['booking_id']:null; 
+
 
             $lastNoSewa = Sewa::where('is_aktif', 'Y')
                         ->where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
@@ -99,7 +101,7 @@ class SewaRekananController extends Controller
             $sewa = new Sewa();
             $sewa->id_supplier = $data['supplier'];
             $sewa->no_sewa = $no_sewa;
-            $sewa->id_booking = $data['booking_id'];
+            $sewa->id_booking = $booking_id;
             $sewa->id_jo = $data['id_jo'];
             $sewa->id_jo_detail = $data['id_jo_detail'];
             $sewa->id_customer = $data['customer_id'];
@@ -110,7 +112,7 @@ class SewaRekananController extends Controller
             $sewa->nama_tujuan = $data['nama_tujuan'];
             $sewa->alamat_tujuan = $data['alamat_tujuan'];
             $sewa->kargo = $data['kargo'];
-            $sewa->jenis_order = $data['jenis_order']=='INBOUND'? 'INBOUND':'OUTBOND';
+            $sewa->jenis_order = $data['jenis_order'];
             $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
             $sewa->total_uang_jalan =$data['uang_jalan'];
             $sewa->total_komisi = $data['komisi']? $data['komisi']:null;

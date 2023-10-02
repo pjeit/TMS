@@ -47,7 +47,7 @@
                                         $simpenIdCust = $item->id_cust; 
                                     @endphp
                                     <tr>
-                                        <td colspan="6">{{ $item->nama_cust }}</td>
+                                        <th colspan="6">{{ $item->nama_cust }}</th>
                                     </tr>
                                 @endif
                                 <tr>
@@ -56,7 +56,14 @@
                                     <td>{{ $item->no_sewa }}</td>
                                     <td>{{ $item->tanggal_berangkat }}</td>
                                     <td>{{ $item->nama_tujuan }}</td>
+                                    @if ($item->id_supplier)
+                                    <td>DRIVER REKANAN  ({{ $item->nama_cust }})</td>
+
+                                    @else
                                     <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
+
+                                        
+                                    @endif
                                     <td>
                                          <div class="btn-group dropleft">
                                             <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

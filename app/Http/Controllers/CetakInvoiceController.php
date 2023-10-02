@@ -29,15 +29,15 @@ class CetakInvoiceController extends Controller
         // Session::flush();
         // Session::forget(['sewa', 'cust', 'grup']);
         $dataInvoice =  DB::table('invoice AS i')
-                ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','g.id as id_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
-                ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
-                ->leftJoin('grup AS g', 'c.grup_id', '=', 'g.id')
-                ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
-                ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
-                ->where('s.is_aktif', '=', 'Y')
-                ->where('s.status', 'like', "%MENUNGGU PEMBAYARAN INVOICE%")
-                ->orderBy('c.id','ASC')
+                ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
+                        ,'g.id as id_grup')
+                ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
+                ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
+                ->where('i.is_aktif', '=', 'Y')
+                ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                ->orderBy('i.id','ASC')
                 ->get();
+        // dd($dataSewa);
         // dd($dataSewa);
     
         return view('pages.invoice.cetak_invoice.index',[
