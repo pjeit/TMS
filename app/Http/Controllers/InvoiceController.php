@@ -42,7 +42,7 @@ class InvoiceController extends Controller
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
                 // ->where('s.jenis_tujuan', 'like', '%FTL%')
-                ->where('s.status', 'like', "%MENUNGGU INVOICE%")
+                ->where('s.status', 'MENUNGGU INVOICE')
                 ->whereNull('s.id_supplier')
                 // ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
@@ -209,7 +209,7 @@ class InvoiceController extends Controller
                     $invoice_d->id_sewa = $key;
                     $invoice_d->tarif = $value['tarif']!=NULL? $value['tarif']:0;
                     $invoice_d->add_cost = $value['addcost']!=NULL? $value['addcost']:0;
-                    $invoice_d->diskon = $value['diskon']!=NULL? $value['diskon']:0;
+                    $invoice_d->diskon = $value['diskon']!=NULL? floatval(str_replace(',', '', $value['diskon'])):0;
                     $invoice_d->sub_total = $value['subtotal']!=NULL? $value['subtotal']:0;
                     $invoice_d->catatan = $value['catatan'];
                     $invoice_d->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
