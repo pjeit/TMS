@@ -50,6 +50,27 @@ class PembayaranInvoiceController extends Controller
         ]);
     }
 
+    public function setInvoiceId(Request $request)
+    {
+        $idInvoice = session()->get('idInvoice'); //buat ambil session
+        $data = $request->collect();
+        Session::forget(['idInvoice']);
+
+        session()->put('idInvoice', $data['idInvoice']);
+
+        return $idInvoice;
+    }
+
+    public function bayar(Request $request)
+    {
+        $idInvoice = session()->get('idInvoice'); 
+        $invoice_detail = InvoiceDetail::whereIn('id', $idInvoice);
+        var_dump($invoice_detail); die;
+        return view('pages.invoice.pembayaran_invoice.bayar',[
+            'judul' => "Bayar INVOICE",
+            'idInvoice' => $idInvoice,
+        ]);
+    }
 
     /**
      * Show the form for creating a new resource.
