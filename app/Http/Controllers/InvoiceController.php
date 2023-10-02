@@ -184,6 +184,25 @@ class InvoiceController extends Controller
             $invoice->is_aktif = 'Y';
             if($invoice->save()){
                 foreach ($data['detail'] as $key => $value) {
+                    DB::table('sewa')
+                        ->where('id_sewa',  $key)
+                        ->update(array(
+                        'status' => 'MENUNGGU PEMBAYARAN INVOICE',
+                        'updated_at'=> now(),
+                        'updated_by'=>  $user,
+                        )
+                    );
+                    if(isset($value['id_jo_hidden'])&&isset($value['id_jo_detail_hidden']))
+                    {
+                        DB::table('job_order_detail')
+                        ->where('id',  $value['id_jo_detail_hidden'])
+                        ->update(array(
+                        'status' => 'MENUNGGU PEMBAYARAN INVOICE',
+                        'updated_at'=> now(),
+                        'updated_by'=>  $user,
+                            )
+                        ); 
+                    }
                     $invoice_d = new InvoiceDetail();
                     $invoice_d->id_invoice = $invoice->id;
                     $invoice_d->id_customer = $value['id_customer'];

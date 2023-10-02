@@ -144,6 +144,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice/print/{id}', [App\Http\Controllers\InvoiceController::class, 'print'])->name('invoice.print');
         Route::post('/invoice/invoiceKembali', [App\Http\Controllers\InvoiceController::class, 'invoiceKembali'])->name('invoiceKembali.set');
         Route::resource('invoice', 'App\Http\Controllers\InvoiceController');
+        Route::resource('cetak_invoice', 'App\Http\Controllers\CetakInvoiceController');
+
 
 
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');

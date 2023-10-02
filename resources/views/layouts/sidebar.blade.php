@@ -502,7 +502,8 @@
           </li>
 
           <li class="nav-item {{ request()->is('invoice*') ||
-            request()->is('pembayaran_invoice*')
+            request()->is('pembayaran_invoice*') ||
+            request()->is('cetak_invoice*') 
               ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
               <i class="fas nav-icon fa-solid fa-file-invoice"></i>
@@ -532,6 +533,14 @@
                 </a>
               </li>
            
+            <li class="nav-item">
+                <a href="{{route('cetak_invoice.index')}}" class="nav-link {{request()->url() === route('cetak_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="nav-icon fas fa-print " style="font-size: 15px;"></i>
+                  <p>
+                     Cetak Invoice
+                  </p>
+                </a>
+              </li>
             </ul>
           </li>
      
