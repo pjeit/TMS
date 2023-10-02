@@ -520,7 +520,14 @@
                   </p>
                 </a>
               </li>
-           
+            <li class="nav-item">
+                <a href="{{route('cetak_invoice.index')}}" class="nav-link {{request()->url() === route('cetak_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="nav-icon fas fa-print " style="font-size: 15px;"></i>
+                  <p>
+                     Cetak Invoice
+                  </p>
+                </a>
+              </li>
             </ul>
           </li>
      

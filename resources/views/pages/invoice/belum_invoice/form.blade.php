@@ -196,6 +196,9 @@
                             <td> 
                                 {{ $item->getCustomer->nama }} 
                                 <input type="hidden" name="detail[{{ $item->id_sewa }}][id_customer]" value="{{ ($item->id_customer) }}" />
+                                <input type="hidden" name="detail[{{ $item->id_sewa }}][id_jo_hidden]" value="{{ $item->id_jo }}" />
+                                <input type="hidden" name="detail[{{ $item->id_sewa }}][id_jo_detail_hidden]" value="{{ $item->id_jo_detail }}" />
+
                             </td>
                             <td> {{ $item->nama_tujuan }} </td>
                             <td> {{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }} <br> {{ $item->no_polisi }} ({{ $item->getKaryawan->nama_panggilan }}) </td>
