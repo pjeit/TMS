@@ -147,7 +147,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('cetak_invoice', 'App\Http\Controllers\CetakInvoiceController');
 
 
-
+        Route::post('/pembayaran_invoice/set_invoice_id', [App\Http\Controllers\PembayaranInvoiceController::class, 'setInvoiceId'])->name('setInvoiceId.set');
+        Route::get('/pembayaran_invoice/bayar', [App\Http\Controllers\PembayaranInvoiceController::class, 'bayar'])->name('pembayaran_invoice.bayar');
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
 
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');

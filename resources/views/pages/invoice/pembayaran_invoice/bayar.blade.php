@@ -23,73 +23,51 @@
         @endforeach
     @endif
 <section class="m-2">
-    <form action="{{ route('invoice.store') }}" id="save" method="POST" >
+    <form action="{{ route('pembayaran_invoice.store') }}" id="save" method="POST" >
         @csrf
         {{-- sticky header --}}
-        {{-- <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
+        <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
             <div class="card radiusSendiri" style="">
-                <div class="card-header ">
-                    <a href="{{ route('invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                <div class="card-header radiusSendiri">
+                    <a href="{{ route('pembayaran_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                     <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-                    <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
+                    {{-- <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button>  --}}
                 </div>
             </div>
-        </div> --}}
-        
+        </div>
         <div class="col-12">
             <div class="card radiusSendiri">
-                <div class="card-header ">
-                    <a href="{{ route('invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                </div>
                 <div class="card-body" >
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label for="no_akun">No. Invoice</label>
-                                        <input type="text" id="no_invoice" name="no_invoice" class="form-control" value="" placeholder="otomatis" readonly>   
-                                    </div>  
-                                </div>
-                                <div class="col-6">
+                                <div class="col-12">
                                         <div class="form-group">
-                                        <label for="tanggal_invoice">Tanggal Invoice<span style="color:red">*</span></label>
+                                        <label for="tanggal_pembayaran">Tanggal Pembayaran<span style="color:red">*</span></label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                             </div>
-                                            <input readonly type="text" autocomplete="off" name="tanggal_invoice" class="form-control date" id="tanggal_invoice" placeholder="dd-M-yyyy" value="">
+                                            <input type="text" autocomplete="off" name="tanggal_pembayaran" class="form-control date" id="tanggal_pembayaran" placeholder="dd-M-yyyy" value="">
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="">Grup</label>
-                                <input type="text" class="form-control" value="{{ $dataCust[0]->getGrup->nama_grup }}" readonly>                         
-                                <input type="hidden" id="grup_id" name="grup_id" class="form-control" value="{{ $dataCust[0]->grup_id }}" readonly>                         
-                            </div>  
-
-                            <div class="form-group">
-                                <label for="tanggal_pencairan">Jatuh Tempo<span style="color:red">*</span></label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                    </div>
-                                    <input name="jatuh_tempo" id="jatuh_tempo" class="form-control date" type="text" autocomplete="off" placeholder="dd-M-yyyy" value="">
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="">Billing To</label>
+                                        <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required>
+                                            <option value="">── BILLING TO ──</option>
+                                            {{-- @foreach ($dataCust as $cust)
+                                                <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" {{ $cust->id == $customer? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
+                                            @endforeach --}}
+                                        </select>
+                                    </div>  
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="">Catatan</label>
-                                <input type="text" id="catatan_invoice" name="catatan_invoice" class="form-control" value="">                         
-                            </div>  
-                        </div>
-
-                        <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="row">
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Total Tagihan</label>
+                                    <label for="">Total Diterima</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
@@ -98,7 +76,16 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Total Dibayar</label>
+                                    <label for="">Total Pph 23</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="">Total Bayar</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
@@ -107,84 +94,95 @@
                                     </div>
                                 </div>
                             </div>
-                        
+
+                        </div>
+
+                        <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="row">
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Total Jumlah Muatan</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Kg</span>
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="tipe">Cara Pembayaran</label>
+                                        <br>
+                                        <div class="icheck-primary d-inline">
+                                            <input id="transfer" type="radio" name="cara_pembayaran" value="transfer" checked>
+                                            <label class="form-check-label" for="transfer">Transfer</label>
                                         </div>
-                                        <input type="text" maxlength="100" id="total_jumlah_muatan" name="total_jumlah_muatan" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <div class="icheck-primary d-inline ml-4">
+                                            <input id="tunai" type="radio" name="cara_pembayaran" value="tunai">
+                                            <label class="form-check-label" for="tunai">Tunai</label>
+                                        </div>
+                                        <div class="icheck-primary d-inline ml-4">
+                                            <input id="cek" type="radio" name="cara_pembayaran" value="cek">
+                                            <label class="form-check-label" for="cek">Cek</label><br>
+                                        </div>
                                     </div>
                                 </div>
-    
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Total Sisa</label>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="">Pilih Kas</label>
+                                    <select name="kas" class="select2" style="width: 100%" id="kas" required>
+                                        <option value="">── PILIH KAS ──</option>
+                                        <option value="1">BESAR</option>
+                                        <option value="2">KECIL</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" id="showTransfer">
+                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="BiayaAdminCheck" value="ya">
+                                        <label class="form-check-label" for=""><b>Biaya Admin</b></label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-8 col-md-8 col-sm-12">
+                                    <select name="jenis_badmin" class="select2" style="width: 100%" id="jenis_badmin" required disabled>
+                                        <option value="">Pilih Metode</option>
+                                        <option value="kliring">Kliring</option>
+                                        <option value="RTGS">RTGS (Real Time Gross Settlement)</option>
+                                        <option value="RTO">RTO (Real Time Online)</option>
+                                        <option value="BIfast">BI Fast</option>
+                                    </select>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="total_sisa" name="total_sisa" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="text" maxlength="100" id="biaya_admin" name="biaya_admin" class="form-control uang numajaMinDesimal" value="" disabled>                         
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div class="row">
+                            <div class="row" id="showTunai">
+                               
+                            </div>
+                            <div class="row" id="showCek">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                    <ul class="list-group">
-                                        <li class="list-group-item text-primary"><b>BILLING TO</b></li>
-                                        <li class="list-group-item">
-                                            <div class="row">
-                                                <div class="col-lg-6 col-md-6 col-sm-12">
-                                                    <span><b>Grand Total</b></span>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12">
-                                                    <b><span id="total_tagihan_text">Rp. 0</span></b>
-                                                    {{-- <input type="hidden" name="total_tagihan" id="total_tagihan"> --}}
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li class="list-group-item">
-                                            <div class="row">
-                                                <div class="col-10">
-                                                    <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required>
-                                                        <option value="">── BILLING TO ──</option>
-                                                        @foreach ($dataCust as $cust)
-                                                            <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" {{ $cust->id == $customer? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <input type="hidden" name="kode_customer" id="kode_customer">
-                                                </div>
-                                                <div class="col-2">
-                                                    <button type="submit" class="btn btn-success">
-                                                        <i class="fa fa-credit-card"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </li>
-                                      </ul>
+                                    <label for="">No Cek</label>
+                                    <input type="text" name="no_cek" id='no_cek' class="form-control">
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="">Catatan</label>
+                                    <input type="text" name="catatan" class="form-control">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div> 
         </div>
+
         <div style="overflow: auto;">
             <table class="table table-hover table-bordered table-striped " width='100%' id="table_invoice">
                 <thead>
                     <tr class="bg-white">
-                        <th>Customer</th>
-                        <th>Tujuan</th>
-                        <th>Sewa</th>
-                        <th><small><b>Kontainer &amp; SJ</b></small></th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Muatan</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Tarif</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Add Cost</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Diskon</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Subtotal</th>
+                        <th>No Invoice</th>
+                        <th>Total Invoice</th>
+                        <th>Sisa Invoice</th>
+                        <th>Diterima</th>
+                        <th>PPh 23</th>
+                        <th>Dibayar</th>
                         <th>Catatan</th>
                         <th style="width:30px"></th>
                     </tr>
@@ -463,14 +461,7 @@
     $(document).ready(function() {
         // set value default tgl invoice
         var today = new Date();
-        $('#tanggal_invoice').datepicker({
-            autoclose: true,
-            format: "dd-M-yyyy",
-            todayHighlight: true,
-            language: 'en',
-            startDate: today,
-        }).datepicker("setDate", today);
-        $('#jatuh_tempo').datepicker({
+        $('#tanggal_pembayaran').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
@@ -478,160 +469,68 @@
             startDate: today,
         }).datepicker("setDate", today);
 
-        calculateGrandTotal(); // pas load awal langsung hitung grand total
+        $("#jenis_badmin").select2({
+            placeholder: "Pilih Metode",
+            initSelection: function(element, callback) {                   
+            }
+        });
 
-        $(document).on('click', '.detail', function(){ // open detail 
-            clearData(); // execute clear data dulu tiap open modal
-            $('#key').val(''); // key di clear dulu
-            var button_id = $(this).attr("id"); // get value id
-            var key = button_id.replace("detail_", ""); // hapus teks detail_
-            $('#key').val(key); // id key buat nge get data yg di hidden, key = id_sewa
+        // cara_pembayaran
+            $("#showTransfer, #showCek, #showTunai").hide();
+            $("input[name='cara_pembayaran']").change(function() {
+                var selectedValue = $(this).val();
+                // Hide all content divs
+                $("#showTransfer, #showCek, #showTunai").hide();
 
-            $('#tanggal_berangkat').val( $('#tgl_berangkat_hidden_'+key).val() );
-            $('#nama_tujuan').val( $('#nama_tujuan_hidden_'+key).val() ); 
-            $('#no_kontainer').val( $('#no_kontainer_hidden_'+key).val() ); 
-            $('#no_surat_jalan').val( $('#no_surat_jalan_hidden_'+key).val() ); 
-            $('#catatan').val( $('#catatan_hidden_'+key).val() ); 
-            $('#tarif').val( moneyMask($('#tarif_hidden_'+key).val()) ); 
-            $('#addcost').val( moneyMask($('#addcost_hidden_'+key).val()) ); 
-            $('#diskon').val( moneyMask($('#diskon_hidden_'+key).val()) ); 
-
-            var dataSewa = <?php echo $dataSewa; ?>;
-
-            dataSewa.forEach(function(item, index) {
-                var option = $('<option>');
-                option.text(item.no_sewa + ' - ' + item.nama_tujuan + ' - (' + dateMask(item.tanggal_berangkat) + ')');
-                option.val(item.id_sewa);
-                if (item.id_sewa == key) {
-                    option.prop('selected', true);
+                // Show the relevant content div based on the selected value
+                clear();
+                if (selectedValue === "transfer") {
+                    $("#showTransfer").show();
+                } else if (selectedValue === "tunai") {
+                    $("#showTunai").show();
+                } else if (selectedValue === "cek") {
+                    $("#showCek").show();
                 }
-                $('#addcost_sewa').append(option);
             });
 
-            showAddcostDetails(key);
-            hitung();
-            $('#modal_detail').modal('show');
-        });
+            // Trigger the change event initially to show the correct div
+            $("input[name='cara_pembayaran']:checked").change();
+        //
 
-        $(document).on('click', '.save_detail', function(event){ // save detail
-            var key = $('#key').val(); 
+        // toogle check biaya admin
+            var biayaAdminCheckbox = $("#BiayaAdminCheck");
+            var jenisBadminSelect = $("#jenis_badmin");
+            var biayaAdmin = $("#biaya_admin");
 
-            $('#no_kontainer_hidden_'+key).val( $('#no_kontainer').val() );
-            $('#no_surat_jalan_hidden_'+key).val( $('#no_surat_jalan').val() );
-            $('#catatan_hidden_'+key).val( $('#catatan').val() );
-            $('#diskon_hidden_'+key).val( $('#diskon').val() );
-            $('#subtotal_hidden_'+key).val( escapeComma($('#subtotal').val()) );
+            biayaAdminCheckbox.change(function() {
+                if (biayaAdminCheckbox.is(":checked")) {
+                    // If BiayaAdminCheck is checked, remove the 'disabled' attribute
+                    jenisBadminSelect.removeAttr("disabled");
+                    biayaAdmin.removeAttr("disabled");
+                } else {
+                    // If BiayaAdminCheck is unchecked, add the 'disabled' attribute
+                    jenisBadminSelect.attr("disabled", "disabled");
+                    $("#jenis_badmin").val('').trigger('change')
+                    biayaAdmin.val('');
+                    biayaAdmin.attr("disabled", "disabled");
 
-            // Set text content using JavaScript
-            var elementIds = ["no_kontainer", "no_surat_jalan", "catatan", "diskon", "subtotal"];
-            elementIds.forEach(function (id) {
-                document.getElementById(id + '_text_' + key).textContent = $('#' + id).val();
+                }
             });
 
-            calculateGrandTotal(); // pas load awal langsung hitung grand total
-            $('#modal_detail').modal('hide'); // close modal
+            // Trigger the change event initially to set the initial state
+            biayaAdminCheckbox.change();
+        // 
 
-            // var noKontainerText = document.getElementById("no_kontainer_text_"+key);
-            // noKontainerText.textContent = $('#no_kontainer').val(); 
-            // var noSJText = document.getElementById("no_surat_jalan_text_"+key);
-            // noSJText.textContent = $('#no_surat_jalan').val(); 
-            // var catatanText = document.getElementById("catatan_text_"+key);
-            // catatanText.textContent = $('#catatan').val(); 
-            // var diskonText = document.getElementById("diskon_text_"+key);
-            // diskonText.textContent = $('#diskon').val(); 
-            // var subtotalText = document.getElementById("subtotal_text_"+key);
-            // subtotalText.textContent = $('#subtotal').val(); 
-        });
-
-        $(document).on('keyup', '#diskon', function(){ // kalau diskon berubah, hitung total 
-            var id_sewa = $('#key').val();
-            hitung(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
-        });
-
-        function calculateGrandTotal(){ // hitung grand total buat ditagihkan 
-            var grandTotal = 0; 
-            var grandTotalText = document.getElementById("total_tagihan_text");
-            var subtotals = document.querySelectorAll('.hitung_subtotal');
-            subtotals.forEach(function(subtotal) {
-                grandTotal += parseFloat(subtotal.value); // Convert the value to a number
-            });
-            if(grandTotal && grandTotal >= 0){
-                $('#total_tagihan').val(moneyMask(grandTotal));
-                var total_dibayar = $('#total_dibayar').val() == 0 || $('#total_dibayar').val() == NULL? 0:$('#total_dibayar').val();
-                var total_sisa = grandTotal - parseFloat( total_dibayar );
-                $('#total_sisa').val( moneyMask(total_sisa) );
-                grandTotalText.textContent = "Rp. " + moneyMask(grandTotal); // Change the text content of the span
-            }
+        
+        function clear(){
+            $("#biaya_admin").val('');
+            $("#no_cek").val('');
+            $("#jenis_badmin").val('').trigger('change');
+            $("#jenis_badmin").attr("disabled", "disabled");
+            $("#biaya_admin").attr("disabled", "disabled");
+            $("#BiayaAdminCheck").prop("checked", false);
         }
 
-        function showAddcostDetails(key){
-            var details = $('#detail_addcost_'+key).val(); 
-            if (details && (details != null || cekBiaya != '')) { // cek apakah ada isi detail addcost
-                JSON.parse(details).forEach(function(item, index) {
-                    if(item.is_aktif=="Y")
-                    {
-                        $('#tabel_addcost > tbody:last-child').append(
-                            `
-                                <tr id="row_addcost_${index}">
-                                    <td>
-                                        ${item.deskripsi == null? '':item.deskripsi} 
-                                        <input type="hidden" id="addcost_deskripsi_${index}" value="${item.deskripsi}" class="form-control" readonly />
-                                        <input type="hidden" name="sewa_operasional_id${index}" id="sewa_operasional_id${index}" value="${item.id}">
-                                    </td>
-                                    <td>
-                                        ${item.total_operasional == null? '':moneyMask(item.total_operasional)}
-                                        <input type="hidden" id="addcost_total_operasional_${index}" value="${item.total_operasional}" class="form-control numaja uang hitungBiaya" readonly />
-                                    </td>
-                                    <td>
-                                        ${item.is_ditagihkan == null? '':item.is_ditagihkan}
-                                        <input type="hidden" id="addcost_is_ditagihkan_${index}" value="${item.is_ditagihkan}" class="form-control" readonly />
-                                    </td>
-                                    <td>
-                                        ${item.is_dipisahkan == null? '':item.is_dipisahkan}
-                                        <input type="hidden" id="addcost_is_dipisahkan_${index}" value="${item.is_dipisahkan}" class="form-control" readonly />
-                                    </td>
-                                    <td>
-                                        ${item.catatan == null? '':item.catatan}
-                                        <input type="hidden" id="addcost_catatan_${index}" value="${item.catatan}" class="form-control w-auto" readonly />
-                                    </td>
-                                </tr>
-                            `
-                        );
-                    }
-                });
-            }
-        }
-
-        function hitung(){ // hitung tarif + addcost - diskon 
-            var id_sewa = $('#key').val();
-            var tarif = parseFloat($('#tarif').val().replace(/,/g, ''));
-            var addcost = parseFloat($('#addcost').val().replace(/,/g, ''));
-            var diskon = $('#diskon').val() == null || $('#diskon').val() == 0? 0:parseFloat($('#diskon').val().replace(/,/g, ''));
-
-            if (diskon > (tarif + addcost) ){
-                diskon = (tarif + addcost);
-                $('#diskon').val(diskon);
-            } 
-
-            var subtotal = tarif + addcost - diskon;
-            calculateGrandTotal();
-            $('#subtotal').val(moneyMask(subtotal));
-        }
-
-        function clearData(){ // clear data sebelum buka modal 
-            $('#tanggal_berangkat').val('');
-            $('#nama_tujuan').val('');
-            $('#no_kontainer').val('');
-            $('#no_surat_jalan').val('');
-            $('#catatan').val('');
-            $('#tarif').val('');
-            $('#addcost').val('');
-            $('#subtotal').val('');
-            $('#diskon').val('');
-
-            $('#addcost_sewa').empty();
-            $('#tabel_addcost tbody').empty(); // clear tabel detail addcost di dalam modal
-        }
     });
 </script>
 
