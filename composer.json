@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
         "realrashid/sweet-alert": "^7.1",
+        "simplesoftwareio/simple-qrcode": "~4",
         "yajra/laravel-datatables-oracle": "^9.21"
     },
     "require-dev": {

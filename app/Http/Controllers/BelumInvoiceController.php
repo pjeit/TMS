@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use Exception;
-
+use QrCode;
 class BelumInvoiceController extends Controller
 {
     /**
@@ -302,24 +302,35 @@ class BelumInvoiceController extends Controller
             ->first();
         // dd($id);
         $TotalBiayaRev = 0;
-
+        // dd($data);
+        $qrcode = QrCode::size(150)
+        // ->backgroundColor(255, 0, 0, 25)
+        ->generate($data);
+        // dd($qrcode);
         // dd($dataJoDetail);   
         $pdf = PDF::loadView('pages.invoice.belum_invoice.print',[
             'judul' => "Invoice",
             'data' => $data,
+            'qrcode'=>$qrcode
 
-        ]); 
+        ]);
+        
         $pdf->setPaper('A4', 'portrait');
-
+ 
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true, // Enable HTML5 parser
             'isPhpEnabled' => true, // Enable inline PHP execution
             'defaultFont' => 'sans-serif',
-             'dpi' => 180, // Set a high DPI for better resolution
+             'dpi' => 190, // Set a high DPI for better resolution
              'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
         ]);
 
         return $pdf->stream('xxxxx'.'.pdf'); 
+        // return view('pages.invoice.belum_invoice.print',[
+        //     'judul'=>"Invoice",
+        //     'data' => $data,
+        //     'qrcode'=>$qrcode
+        // ]);
 
     }
 }
