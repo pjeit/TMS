@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\InvoiceDetailAddcost;
+use App\Models\KasBank;
 use App\Models\Sewa;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -42,7 +43,6 @@ class PembayaranInvoiceController extends Controller
                 ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
                 ->orderBy('i.id','ASC')
                 ->get();
-        // dd($dataSewa);
     
         return view('pages.invoice.pembayaran_invoice.index',[
             'judul' => "PEMBAYARAN INVOICE",
@@ -52,23 +52,42 @@ class PembayaranInvoiceController extends Controller
 
     public function setInvoiceId(Request $request)
     {
-        $idInvoice = session()->get('idInvoice'); //buat ambil session
+        $idInvoice  = session()->get('idInvoice'); //buat ambil session
+        $idCust     = session()->get('idCust'); //buat ambil session
+        $idGrup     = session()->get('idGrup'); //buat ambil session
+        
         $data = $request->collect();
-        Session::forget(['idInvoice']);
+        Session::forget(['idInvoice', 'idCust', 'idGrup']);
 
         session()->put('idInvoice', $data['idInvoice']);
+        session()->put('idCust', $data['idCust']);
+        session()->put('idGrup', $data['idGrup']);
 
         return $idInvoice;
     }
 
     public function bayar(Request $request)
     {
-        $idInvoice = session()->get('idInvoice'); 
-        $invoice_detail = InvoiceDetail::whereIn('id', $idInvoice);
-        var_dump($invoice_detail); die;
+        $idInvoice  = session()->get('idInvoice'); 
+        $idGrup     = session()->get('idGrup'); 
+        $idCust     = session()->get('idCust'); 
+        $data = Invoice::whereIn('id', $idInvoice)->where('is_aktif', 'Y')->get();
+        $dataInvoices = Invoice::where('id_grup', $idGrup)->where('is_aktif', 'Y')->get();
+        
+        $dataCustomers = Customer::where('grup_id', $idGrup)
+                                ->where('is_aktif', 'Y')->get();
+        
+        $dataKas = KasBank::where('is_aktif', 'Y')->orderBy('nama', 'ASC')->get();
+
+        // var_dump($idCust); die;
+
         return view('pages.invoice.pembayaran_invoice.bayar',[
             'judul' => "Bayar INVOICE",
-            'idInvoice' => $idInvoice,
+            'data' => $data,
+            'dataInvoices' => $dataInvoices,
+            'dataCustomers' => $dataCustomers,
+            'idCust' => $idCust,
+            'dataKas' => $dataKas,
         ]);
     }
 
@@ -90,7 +109,8 @@ class PembayaranInvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->post();
+        dd($data);
     }
 
     /**

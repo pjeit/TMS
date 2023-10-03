@@ -40,10 +40,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (isset($idInvoice))
-                                @foreach($idInvoice as $item)
+                            @if (isset($dataSewa))
+                                @foreach($dataSewa as $item)
                                     <tr >
-                                        {{-- <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 0.9rem;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
+                                        <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 0.9rem;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
                                         <td>{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang" id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
                                         <td>{{ $item->no_invoice }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tgl_invoice)) }}</td>
@@ -53,7 +53,8 @@
                                         </td>
                                         <td style="text-align: right;"> 
                                             <input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="{{ $item->billing_to }}" grupId="{{ $item->id_grup }}" value="{{ $item->id }}">
-                                        </td> --}}
+                                            <input type="hidden" name="idGrup[]" id="idGrup">
+                                        </td>
                                     </tr>
                                 @endforeach
                             @endif
@@ -67,16 +68,16 @@
 
     {{-- modal loading --}}
     <div class="modal" id="modal-loading" data-backdrop="static">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-        <div class="modal-body text-center">
-            <div class="cv-spinner">
-                <span class="loader"></span>
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="cv-spinner">
+                    <span class="loader"></span>
+                </div>
+                <div>Harap Tunggu Sistem Sedang Memproses....</div>
             </div>
-            <div>Harap Tunggu Sistem Sedang Memproses....</div>
+            </div>
         </div>
-        </div>
-    </div>
     </div>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -127,12 +128,10 @@
                         id_grup_sewa.prop('checked', false);
                     }
                 });
-                
             });
 
             $('body').on('click','.customer_centang',function()
             {
-
                 var idCustParent= $(this);
                 $('.grup_centang[type=checkbox]').each(function(idx) {
                     var id_grup_semua_cekbox = $(this);
@@ -261,12 +260,16 @@
             $('body').on('click','#bayarInvoice',function()
             {
                 var selectedValues = [];
-                var custId = [];
-                var grupId = [];
+                // var custId = [];
+                // var grupId = [];
+                var custId = '';
+                var grupId = '';
                 $(".sewa_centang[type=checkbox]:checked").each(function() {
                     selectedValues.push($(this).val());
                     // custId.push($(this).attr('custId'));
                     // grupId.push($(this).attr('grupId'));
+                    custId = ($(this).attr('custId'));
+                    grupId = ($(this).attr('grupId'));
                 });
                 console.log('selectedValues : '+selectedValues);
                 if (selectedValues.length === 0) {
@@ -298,8 +301,8 @@
                         method: 'POST', 
                         data: { 
                             idInvoice: selectedValues ,
-                            // idCust: custId,
-                            // idGrup: grupId,
+                            idCust: custId,
+                            idGrup: grupId,
                             _token: $('meta[name="csrf-token"]').attr('content'),
                         },
                         success: function(response) {
