@@ -23,7 +23,7 @@
         @endforeach
     @endif
 <section class="m-2">
-    <form action="{{ route('invoice.store') }}" id="save" method="POST" >
+    <form action="{{ route('belum_invoice.store') }}" id="save" method="POST" >
         @csrf
         {{-- sticky header --}}
         {{-- <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
@@ -39,7 +39,7 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header ">
-                    <a href="{{ route('invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                    <a href="{{ route('belum_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                 </div>
                 <div class="card-body" >
                     <div class="row">
@@ -247,7 +247,7 @@
                                         <button type="button" name="detail" id="detail_{{$item->id_sewa}}" class="detail dropdown-item"> 
                                             <span class="fas fa-edit mr-3"></span> Edit
                                         </button>
-                                        <a href="{{ route('invoice.destroy', ['invoice' => $item->id_sewa]) }}" class="dropdown-item" data-confirm-delete="true">
+                                        <a href="{{ route('belum_invoice.destroy', ['belum_invoice' => $item->id_sewa]) }}" class="dropdown-item" data-confirm-delete="true">
                                             <span class="fas fa-trash mr-3"></span> Delete
                                         </a>
                                     </div>

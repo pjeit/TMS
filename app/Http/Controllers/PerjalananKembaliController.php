@@ -94,7 +94,7 @@ class PerjalananKembaliController extends Controller
                     ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
                     // ->where('s.jenis_tujuan', 'like', '%FTL%')
                     ->where('s.status', 'DALAM PERJALANAN')
-                    // ->whereNull('s.id_supplier')
+                    ->whereNull('s.id_supplier')
                     ->whereNull('s.tanggal_kembali')
                     ->where('s.is_aktif', '=', 'Y')
                     ->where('s.id_sewa', '=', $perjalanan_kembali->id_sewa)

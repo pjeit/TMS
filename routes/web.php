@@ -140,10 +140,14 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('perjalanan_kembali', 'App\Http\Controllers\PerjalananKembaliController');
 
         Route::post('/invoice/set_sewa_id', [App\Http\Controllers\InvoiceController::class, 'setSewaID'])->name('setSewaID.set');
-
         Route::get('/invoice/print/{id}', [App\Http\Controllers\InvoiceController::class, 'print'])->name('invoice.print');
         Route::post('/invoice/invoiceKembali', [App\Http\Controllers\InvoiceController::class, 'invoiceKembali'])->name('invoiceKembali.set');
         Route::resource('invoice', 'App\Http\Controllers\InvoiceController');
+
+        Route::post('/belum_invoice/set_sewa_id', [App\Http\Controllers\BelumInvoiceController::class, 'setSewaID'])->name('setSewaIDs.set');
+        Route::get('/belum_invoice/print/{id}', [App\Http\Controllers\BelumInvoiceController::class, 'print'])->name('belum_invoice.print');
+        Route::post('/belum_invoice/invoiceKembali', [App\Http\Controllers\BelumInvoiceController::class, 'invoiceKembali'])->name('belum_invoiceKembali.set');
+        Route::resource('belum_invoice', 'App\Http\Controllers\BelumInvoiceController');
         Route::resource('cetak_invoice', 'App\Http\Controllers\CetakInvoiceController');
 
 

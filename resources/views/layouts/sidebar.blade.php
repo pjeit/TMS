@@ -515,8 +515,16 @@
           
             <ul class="nav nav-treeview">
 
-              <li class="nav-item">
+              {{-- <li class="nav-item">
                 <a href="{{route('invoice.index')}}" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
+                  <p>
+                     Belum Invoice
+                  </p>
+                </a>
+              </li> --}}
+              <li class="nav-item">
+                <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                   <p>
                      Belum Invoice

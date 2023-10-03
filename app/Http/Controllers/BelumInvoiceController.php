@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
@@ -11,19 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
-use PhpParser\Node\Stmt\Return_;
 use Illuminate\Support\Facades\Session;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
-use Carbon\Carbon;
+use Exception;
 
-
-
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
-
-class InvoiceController extends Controller
+class BelumInvoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -33,13 +24,14 @@ class InvoiceController extends Controller
     public function index()
     {
         //
+         //
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         // Session::flush();
-        Session::forget(['sewa', 'cust', 'grup']);
+        // Session::forget(['sewa', 'cust', 'grup']);
         $dataSewa =  DB::table('sewa AS s')
                 ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','g.id as id_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
@@ -61,24 +53,26 @@ class InvoiceController extends Controller
             'dataSewa' => $dataSewa,
         ]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-     public function setSewaID(Request $request)
+    public function setSewaID(Request $request)
     {
-        $sewa = session()->get('sewa'); //buat ambil session
-        $cust = session()->get('cust'); //buat ambil session
-        $grup = session()->get('grup'); //buat ambil session
-        Session::forget(['sewa', 'cust', 'grup']);
+        try {
+            //code...
+            $sewa = session()->get('sewa'); //buat ambil session
+            $cust = session()->get('cust'); //buat ambil session
+            $grup = session()->get('grup'); //buat ambil session
+            Session::forget(['sewa', 'cust', 'grup']);
 
-        $data= $request->collect();
-        session()->put('sewa', $data['idSewa']);
-        session()->put('cust', $data['idCust']);
-        session()->put('grup', $data['idGrup']);
-        return $sewa;
+            $data= $request->collect();
+            session()->put('sewa', $data['idSewa']);
+            session()->put('cust', $data['idCust']);
+            session()->put('grup', $data['idGrup']);
+            return response()->json(['status'=>'ok','dataSewa'=>$sewa,'dataCustomer'=>$cust,'dataGrup'=>$grup],200);
+        } catch (Exception $ex) {
+            //throw $th;
+                return response()->json(['status'=>'error','message' => $ex->getMessage()], 500);
+
+        }
+        
 
         
     }
@@ -117,12 +111,18 @@ class InvoiceController extends Controller
         }
       
     }
-    public function create(Request $request)
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
     {
+        //
         $sewa = session()->get('sewa'); //buat ambil session
         $cust = session()->get('cust'); //buat ambil session
         $grup = session()->get('grup'); //buat ambil session
-        // dd($cust);
+        // dd($sewa);
         
         $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                 ->where('sewa.status', 'MENUNGGU INVOICE')
@@ -156,7 +156,7 @@ class InvoiceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+     {
         $user = Auth::user()->id;
         $data = $request->post();
         // dd($data);
@@ -288,11 +288,10 @@ class InvoiceController extends Controller
      * @param  \App\Models\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Invoice $invoice)
+    public function destroy(Invoice $belum_invoice)
     {
         //
     }
-
     public function print($id)
     {
         $data = Invoice::where('is_aktif', '=', "Y")

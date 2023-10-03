@@ -109,7 +109,7 @@
                                                         <i class="fa fa-list"></i>
                                                     </button>
                                                     <div class="dropdown-menu" >
-                                                        <form action="{{route('invoiceKembali.set')}}" method="POST" class="btn btn-responsive">
+                                                        <form action="{{route('belum_invoiceKembali.set')}}" method="POST" class="btn btn-responsive">
                                                                     @csrf
                                                                     <button class="dropdown-item" >
                                                                         <span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin
@@ -385,7 +385,7 @@
                 custId.push($(this).attr('custId'));
                 grupId.push($(this).attr('grupId'));
             });
-            console.log(selectedValues);
+            // console.log(selectedValues);
             
             if (selectedValues.length === 0) {
                 // event.preventDefault(); 
@@ -415,12 +415,11 @@
             }
             else
             {
-                window.location.href = '{{ route("invoice.create") }}';
                 $('#modal-loading').modal('show');
 
                 var baseUrl = "{{ asset('') }}";
                 $.ajax({
-                    url: `${baseUrl}invoice/set_sewa_id`, 
+                    url: `${baseUrl}belum_invoice/set_sewa_id`, 
                     method: 'POST', 
                     data: { 
                         idSewa: selectedValues ,
@@ -429,10 +428,11 @@
                         _token: $('meta[name="csrf-token"]').attr('content'),
                     },
                     success: function(response) {
-                        if(response)
+                        console.log(response.status=='ok');
+                        if(response.status=='ok')
                         {
                             // console.log(response);
-                            // window.location.href = '{{ route("invoice.create") }}';
+                            window.location.href = '{{ route("invoice.create") }}';
     
                         }
                     },
@@ -440,6 +440,8 @@
                         console.error('Error:', error);
                     }
                 });
+                window.location.href = '{{ route("belum_invoice.create") }}';
+
             }
             
 
@@ -474,7 +476,7 @@
 
 @if (session('id_print_invoice'))
 <script>
-    window.open("/invoice/print/{{ session('id_print_invoice') }}", "_blank");
+    window.open("/belum_invoice/print/{{ session('id_print_invoice') }}", "_blank");
 
     // di set null biar ga open new tab terus2an 
     setTimeout(function() {

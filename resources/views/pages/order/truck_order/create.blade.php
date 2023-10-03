@@ -377,7 +377,7 @@
 		{
             var selectedValue = $(this).val();
             var splitValue = selectedValue.split('-');
-            console.log('splitValue '+splitValue);
+            // console.log('splitValue '+splitValue);
             var booking_id=splitValue[0];
             var idCustomer=splitValue[1];
             var idTujuan=splitValue[2];
@@ -598,7 +598,7 @@
                     if(response)
                     {
                         customerLoad = true;
-                        // console.log(customerLoad);
+                        console.log(customerLoad);
                         // console.log(response.dataKredit.kreditCustomer);
                         // console.log(response.dataKredit.maxGrup);
 

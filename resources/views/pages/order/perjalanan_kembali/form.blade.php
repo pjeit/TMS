@@ -149,7 +149,7 @@
                                                     <div class="input-group-prepend">
                                                             <span class="input-group-text"><input {{$sewa->seal_pje?'checked':''}} type="checkbox" name="cek_seal_pje" id="cek_seal_pje"></span>
                                                     </div>
-                                                <input readonly {{$sewa->seal_pje?'':'readonly'}}type="text" name="seal_pje" class="form-control" id="seal_pje" value="{{$sewa->seal_pje}}">
+                                                <input readonly {{$sewa->seal_pje?'':'readonly'}} type="text" name="seal_pje" class="form-control" id="seal_pje" value="{{$sewa->seal_pje}}">
                                                 </div>
                                             </div> 
                                         </div> 
@@ -857,6 +857,7 @@
             } else if ($(this).is(":not(:checked)")) {
         
                 $('#seal_pje').prop('readonly', true);
+                $('#seal_pje').val('');
             }
         });
         if ($('#cek_seal_pje').is(":checked")) {
