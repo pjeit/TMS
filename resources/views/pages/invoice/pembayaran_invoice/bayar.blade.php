@@ -648,10 +648,7 @@
             $(document).on("blur", ".numajaMinDesimal", function (e) {
                 if ($(this).val() != "") {
                     var value = removePeriod($(this).val(), ",");
-                    // alert('raw '+value);
-                    // alert('float '+parseFloat(value));
                     var hasil = parseFloat(value).toFixed(2);
-                    // alert('hasil '+hasil);
                     $(this).val(addPeriodDesimal(hasil, ","));
                 }
                 if (e.keyCode == 9) {
