@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\InvoiceDetailAddcost;
+use App\Models\InvoicePembayaran;
 use App\Models\KasBank;
 use App\Models\Sewa;
 use Illuminate\Support\Facades\DB;
@@ -110,7 +111,41 @@ class PembayaranInvoiceController extends Controller
     public function store(Request $request)
     {
         $data = $request->post();
-        dd($data);
+        $user = Auth::user()->id; 
+
+        try {
+            if($data['detail'] != null){
+                foreach ($data['detail'] as $key => $value) {
+                    $new = new InvoicePembayaran();
+                    $new->id_invoice = $key;
+                    $new->no_invoice = $value['no_invoice'];
+                    $new->billing_to = $data['billingTo'];
+                    $new->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
+                    $new->total_diterima = $value['diterima'];
+                    $new->total_pph23 = $value['pph23'];
+                    $new->total_bayar = $value['dibayar'];
+                    $new->cara_pembayaran = $data['cara_pembayaran'];
+                    $new->id_kas = $data['kas'];
+                    $new->metode_transfer = $data['jenis_badmin'];
+                    $new->biaya_admin = $data['biaya_admin'];
+                    $new->no_cek = $data['no_cek'];
+                    $new->no_bukti_potong = $value['no_bukti_potong'];
+                    $new->catatan = $value['catatan'];
+                    if($new->save()){
+                        $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($key);
+                        if($invoice){
+                            $invoice->total_dibayar += $new->total_bayar;
+                            $invoice->total_sisa = $new->total_bayar;
+
+                        }
+                    }
+                }
+            }
+
+            return redirect()->route('pembayaran_invoice.index')->with('status', "Success!");
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
     }
 
     /**
