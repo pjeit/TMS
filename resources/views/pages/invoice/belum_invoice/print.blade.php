@@ -6,14 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style type="text/css">
+  
         :root {
-            margin: 35px;
+            margin: 55px;
             padding: 0;
             font-size: 25px;
+            font-family: Arial, sans-serif;
+
         }
         table {
             width: 100%;
         }
+        	
         .border-table{
              /* Optional: Set table width */    
             border: 1px solid #000000; /* Border around the table */
@@ -21,7 +25,7 @@
         }
 
         .bg-gray{
-            background-color: rgb(180, 180, 180);
+            background-color: rgb(225, 225, 225);
         }
         .bg-blue{
             background-color: rgb(35, 83, 154);
@@ -38,19 +42,85 @@
         .text-bold{
             font-weight: bold;
         }
+        .kontener{
+            display: flex;
+            justify-content: start; 
+        }
+        thead{
+            display:table-header-group;
+        }
     </style>
 </head>
 <body>
+    
+    <hr style=" border: 10px solid rgb(54, 78, 163);margin-top: -55px;">
     @if ($data)
         {{-- <img src="{{ asset('img/LOGO_PJE.jpg') }}" alt=""> --}}
-        <div class="kontener">
-            <img src="{{ public_path("img/LOGO_PJE.jpg") }}"  width="250" height="250" style="filter: grayscale(100%)">
-            <div id="qrcode"></div>
+        {{-- <div class="kontener">
+            <img src="{{ public_path("img/LOGO_PJE_WARNA.jpg") }}"  width="300" height="300" style="margin-left: -50px;">
+            <h3>PRIMATRANS JAYA EXPRESS</h3>
+            <p>Jl. Ikan Mungsing VII No. 61, Surabaya</p>
+            <p>Telp: 0896-0301-1919</p> --}}
+            {{-- <div id="qrcode">
+                <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" >
+            </div> --}}
 
-            <h2 class="text" style="text-align: center">INVOICE</h2>
-        </div>
+            {{-- <h2 class="text" style="">INVOICE</h2> --}}
+            
+        {{-- </div> --}}
+        <table  autosize='1' style="width:100%; page-break-inside: avoid;margin-top: -105px;" >
+            <thead >
+                <tr>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                    <th style="width:5%;"></th>
+                </tr>
+                 <tr>
+                    <th colspan='4' style="text-align:left;"><img src="{{ public_path("img/LOGO_PJE_WARNA.jpg") }}"  width="300" height="300"></th>
+                    <th colspan='10' style="text-align:left;">
+                        {{-- <h4 style="color:#1f55a2">PRIMATRANS JAYA EXPRESS</h4> --}}
+                        <p>
+                            <span style="color:#1f55a2"> PRIMATRANS JAYA EXPRESS</span>
+                            <br>
+                            <span style="font-size:20px; font-weight:normal">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
+                            <br>
+                            <span style="font-size:20px; font-weight:normal">Telp: 0896-0301-1919</span>
+                            
+                        </p>
+						{{-- <p style="font-size:20px; font-weight:normal"></p>
+                        <p style="font-size:20px; font-weight:normal"></p> --}}
+                    </th>
+                    <th colspan='6' style="text-align:right;">
+                        <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" >
+
+                        <h2>INVOICE</h2>
+
+                    </th>
+    			</tr>
+            </thead>
+        </table>
+        <hr style=" border: 1px solid rgb(76, 76, 76);margin-top: -30px;">
         <table class="border-table" >
             <thead class="border-table">
+               
+                
                 <tr>
                     <td style="padding-left: 10px; padding-top: 10px;">Kepada Yth:</td>
                     <td width='30%'>&nbsp;</td>
@@ -120,7 +190,7 @@
                         <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
                     <td class="text-right">{{ number_format($detail->tarif+$detail->add_cost) }}</td>
                     <td class="text-right">{{ number_format($detail->diskon) }}</td>
-                    <td class="text-right">{{ number_format($detail->sub_total) }}</td>
+                    <td class="text-right" style="padding-right: 20px;">{{ number_format($detail->sub_total) }}</td>
                 </tr>
                 @php
                     $total += $detail->sub_total;                 
@@ -130,23 +200,32 @@
             <tfoot>
                 <tr>
                     <td colspan="6" class="text-right" style="padding-right: 15px;">Total</td>
-                    <td class="text-right">{{ number_format($total) }}</td>
+                    <td class="text-right"  style="padding-right: 20px;">{{ number_format($total) }}</td>
                 </tr>
             </tfoot>
         </table>
 
         <span>
+            <!-- Display the QR code -->
+            {{-- <img src="{{ public_path("img/LOGO_PJE.jpg") }}"  width="250" height="250" style="filter: grayscale(100%)"> --}}
+            <!-- Display the QR code -->
+
+
+
             Pembayaran dapat dilakukan pembukaan cek atas nama <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b>
             <br>Atau transfer ke rekening
             <br>BCA: <b><u>51308 14141</u></b> / Mandiri: <b><u>14000 41415 135</u></b>
-            <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b>
+            <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b><br>
+            {{-- {{$qrcode}} --}}
+{{-- <img src="{{ public_path("img/") }}{{ $qrcode }}" alt="QR Code"> --}}
+            {{-- <br><br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
         </span>    
     
         <table class="table-bawah" style="margin-top: 50px;">
             <tbody> 
                 <tr>
                     <td width="800px;">&nbsp;</td>
-                    <td class="text-right" style="padding-right: 80px;">Hormat Kami,</td>
+                    <td class="text-right" style="padding-right: 50px;">Hormat Kami,</td>
                 </tr>
             </tbody>
             <br>
@@ -157,7 +236,7 @@
             <tfoot>
                 <tr>
                     <td width="800px;">&nbsp;</td>
-                    <td class="text-right" style="padding-right: 80px;">Edwin</td>
+                    <td class="text-right" >(..................................)</td>
                 </tr>
             </tfoot>
         </table>

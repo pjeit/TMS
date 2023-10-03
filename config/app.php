@@ -166,7 +166,7 @@ return [
         RealRashid\SweetAlert\SweetAlertServiceProvider::class, // buat sweet alert
         'Barryvdh\DomPDF\ServiceProvider', //pdf
         // Intervention\Image\ImageServiceProvider::class,
-
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class, //qr code
         /*
          * Package Service Providers...
          */
@@ -235,7 +235,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
-        'PDF'       => 'Barryvdh\DomPDF\Facade' //pdf
+        'PDF'       => 'Barryvdh\DomPDF\Facade', //pdf
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ],
 
 ];

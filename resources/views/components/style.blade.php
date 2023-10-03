@@ -1,4 +1,4 @@
-<link rel="icon" href="{{asset('img/pje.png')}}" type="image/gif">
+<link rel="icon" href="{{asset('img/LOGO_PJE_WARNA.jpg')}}" type="image/gif">
 
 <!-- Google Font: Source Sans Pro -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
