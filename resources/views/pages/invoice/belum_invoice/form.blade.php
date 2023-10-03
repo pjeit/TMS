@@ -210,7 +210,7 @@
                                     $total_addcost = 0;
                                 @endphp
                                 @foreach ($item->sewaOperasional as $i => $oprs)
-                                    @if ($oprs->is_aktif == 'Y' && $oprs->status == 'SUDAH DICAIRKAN')
+                                    @if ($oprs->is_aktif == 'Y' && $oprs->status == 'SUDAH DICAIRKAN' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N')
                                         <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
                                         @php
                                             $total_addcost += $oprs->total_operasional;

@@ -501,7 +501,7 @@
             
           </li>
 
-          <li class="nav-item {{ request()->is('invoice*') ||
+          <li class="nav-item {{ request()->is('belum_invoice*') ||
             request()->is('pembayaran_invoice*') ||
             request()->is('cetak_invoice*') 
               ? 'menu-is-opening menu-open' : '' }}">
@@ -524,7 +524,7 @@
                 </a>
               </li> --}}
               <li class="nav-item">
-                <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->url() === route('belum_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
                 <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                   <p>
                      Belum Invoice

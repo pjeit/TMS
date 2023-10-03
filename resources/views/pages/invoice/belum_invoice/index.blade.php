@@ -6,6 +6,10 @@
     </div>
 @endif
 
+{{-- @if(session()->has('sewa')||session()->has('cust')||session()->has('grup'))
+        {{ session()->forget(['sewa', 'cust', 'grup']) }}
+@endif --}}
+
 @section('content')
 @include('sweetalert::alert')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
