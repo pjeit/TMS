@@ -49,19 +49,15 @@ Route::middleware(['auth'])->group(function () {
         ]);
     });
 
-    Route::middleware(['is_admin'])->group(function () {
+    Route::middleware(['is_admin','is_superadmin'])->group(function () {
         Route::resource('coa', 'App\Http\Controllers\CoaController');
 
         Route::get('/booking/getTujuan/{id}', [App\Http\Controllers\BookingController::class, 'getTujuan']);
-        // Route::get('/booking/getTujuan/{id}', ['uses' => 'UserController@attendance']);
         Route::resource('booking', 'App\Http\Controllers\BookingController');
 
         Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO'])->name('job_order.print');
-        // Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
         Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');
-        // Route::get('job_order/storage_demurage/{jobOrder}', 'App\Http\Controllers\JobOrderController@storage_demurage')->name('job_order.storage_demurage');
         Route::post('job_order/unloading_plan/data', 'App\Http\Controllers\JobOrderController@unloading_data')->name('job_order.unloading_data');
-        // Route::get('/unloading_plan', 'JobOrderController@unloading_plan')->name('unloading_plan');
         Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
 
         Route::get('job_order/storage_demurage_input/{id}', 'App\Http\Controllers\JobOrderController@storage_demurage_input')->name('job_order.storage_demurage_input');
@@ -160,42 +156,17 @@ Route::middleware(['auth'])->group(function () {
 
     });
 
-    Route::middleware(['is_marketing'])->group(function () {
-        Route::get('/marketing1', function () {
-            return view('pages.dummy.marketing1', [
-                'judul'=>'marketing1'
-            ]);
-        });
-        Route::get('/marketing2', function () {
-                return view('pages.dummy.marketing2', [
-                    'judul'=>'marketing2'
-                ]);
-        });
-        Route::get('/marketing3', function () {
-                return view('pages.dummy.marketing3', [
-                    'judul'=>'marketing3'
-                ]);
-        });
-    });
+    // Route::middleware(['is_admin'])->group(function () {
+    //     Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO'])->name('job_order.print');
+    //     Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');
+    //     Route::post('job_order/unloading_plan/data', 'App\Http\Controllers\JobOrderController@unloading_data')->name('job_order.unloading_data');
+    //     Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
 
-    Route::middleware(['is_finnance'])->group(function () {
-        Route::get('/finnance1', function () {
-            return view('pages.dummy.finnance1', [
-                'judul'=>'finnance1'
-            ]);
-        });
-        Route::get('/finnance2', function () {
-                return view('pages.dummy.finnance2', [
-                    'judul'=>'finnance2'
-                ]);
-        });
-        Route::get('/finnance3', function () {
-                return view('pages.dummy.finnance3', [
-                    'judul'=>'finnance3'
-                ]);
-        });
-    });
-        
+    //     // storage_demurage
+    //     Route::get('job_order/storage_demurage_input/{id}', 'App\Http\Controllers\JobOrderController@storage_demurage_input')->name('job_order.storage_demurage_input');
+    //     Route::post('storage_demurage/load_data', 'App\Http\Controllers\StorageDemurageController@load_data')->name('storage_demurage.load_data');
+    //     Route::resource('storage_demurage', 'App\Http\Controllers\StorageDemurageController');
+    // });
    
 });
 

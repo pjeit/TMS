@@ -26,6 +26,6 @@ class isAdminNasional
             return $next($request); // artinya di bolehin 
         }
 
-        return redirect('/')->with('error', "Access denied!");
+        return redirect('/')->with('error', "Access denied! (isAdminNasional)");
     }
 }

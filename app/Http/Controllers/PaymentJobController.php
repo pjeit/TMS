@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
+use App\Helper\UserHelper;
 
 class PaymentJobController extends Controller
 {
@@ -18,16 +19,25 @@ class PaymentJobController extends Controller
      */
     public function index()
     {
-        //
-        $data = DB::table('job_order')
-        ->select('job_order.id','job_order.no_jo','customer.nama as namaCustomer','supplier.nama as namaSupplier','job_order.pelabuhan_muat','job_order.pelabuhan_bongkar','job_order.tgl_sandar','job_order.status')
-        ->Join('supplier', 'job_order.id_supplier', '=', 'supplier.id')
-        ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
-        // ->join('jaminan', 'job_order.id', '=', 'jaminan.id_job_order')
-        ->where('job_order.is_aktif', '=', 'Y') 
-        ->where('job_order.status', 'like', 'MENUNGGU PEMBAYARAN') 
+        // use App\Helper\UserHelper;
+        $id_role = Auth::user()->role_id; 
+        $cabang = UserHelper::getCabang();
 
-        ->paginate(5);
+        $data = DB::table('job_order')
+                ->leftJoin('user as u', 'u.id', '=', 'job_order.created_by')
+                ->leftJoin('karyawan as k', 'k.id', '=', 'u.karyawan_id')
+                ->where(function ($query) use ($id_role, $cabang) {
+                    if(!in_array($id_role, [1,3])){
+                        $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
+                    }
+                })
+                ->select('job_order.id','job_order.no_jo','customer.nama as namaCustomer','supplier.nama as namaSupplier','job_order.pelabuhan_muat','job_order.pelabuhan_bongkar','job_order.tgl_sandar','job_order.status')
+                ->Join('supplier', 'job_order.id_supplier', '=', 'supplier.id')
+                ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
+                // ->join('jaminan', 'job_order.id', '=', 'jaminan.id_job_order')
+                ->where('job_order.is_aktif', '=', 'Y') 
+                ->where('job_order.status', 'like', 'MENUNGGU PEMBAYARAN') 
+                ->get();
 
         //  $data = JobOrder::where('is_aktif', 'Y')->paginate(5);
 

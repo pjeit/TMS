@@ -146,7 +146,7 @@
                                 //         </div>
                                 //     </div>
                                 // </td>`);
-                                row.append("<td colspan='5'>" + data[i].no_jo + "<br> Status Jo: " + data[i].statusJO + "</td>");
+                                row.append("<td colspan='5'><b>" + data[i].no_jo + "</b><br> Status Jo: " + data[i].statusJO + "</td>");
                                 $("#hasil").append(row);
                                 nyimpenIdBapakJO = data[i].id_jo;
                             }
