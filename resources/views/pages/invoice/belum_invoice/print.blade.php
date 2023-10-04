@@ -95,7 +95,6 @@
                  <tr>
                     <th colspan='4' style="text-align:left;"><img src="{{ public_path("img/LOGO_PJE_WARNA.jpg") }}"  width="300" height="300"></th>
                     <th colspan='10' style="text-align:left;">
-                        {{-- <h4 style="color:#1f55a2">PRIMATRANS JAYA EXPRESS</h4> --}}
                         <p>
                             <span style="color:#1f55a2"> PRIMATRANS JAYA EXPRESS</span>
                             <br>
@@ -104,8 +103,6 @@
                             <span style="font-size:20px; font-weight:normal">Telp: 0896-0301-1919</span>
                             
                         </p>
-						{{-- <p style="font-size:20px; font-weight:normal"></p>
-                        <p style="font-size:20px; font-weight:normal"></p> --}}
                     </th>
                     <th colspan='6' style="text-align:right;">
                         <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" >
@@ -117,31 +114,31 @@
             </thead>
         </table>
         <hr style=" border: 1px solid rgb(76, 76, 76);margin-top: -30px;">
-        <table class="border-table" >
+        <table class="border-table">
             <thead class="border-table">
-               
-                
-                <tr>
-                    <td style="padding-left: 10px; padding-top: 10px;">Kepada Yth:</td>
+                <tr style="">
+                    <td style="padding-left: 10px; ">Kepada Yth :</td>
+                    <td></td>
                     <td width='30%'>&nbsp;</td>
-                    <td>No Invoice</td>
-                    <td>: {{ $data['no_invoice'] }}</td>
+                    <td style="">No Invoice</td>
+                    <td style="">: {{ $data['no_invoice'] }}</td>
                 </tr>
                 <tr>
-                    <td style="padding-left: 10px;">{{ $data->getBillingTo->nama }}</td>
+                    <td style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{ ($data->getBillingTo->nama) }}</td>
+                    <td></td>
                     <td width='30%'>&nbsp;</td>
-                    <td>Tanggal</td>
-                    <td>: {{ date("d-M-Y", strtotime($data['tgl_invoice'])) }}</td>
+                    <td style="">Tanggal</td>
+                    <td style="">: {{ date("d-M-Y", strtotime($data['tgl_invoice'])) }}</td>
                 </tr>
                 <tr>
-                    <td width='30%' colspan="2">&nbsp;</td>
-                    <td>Jatuh Tempo</td>
-                    <td>: {{ date("d-M-Y", strtotime($data['jatuh_tempo'])) }}</td>
+                    <td style=""width='30%' colspan="2">&nbsp;</td>
+                    <td style="">Jatuh Tempo</td>
+                    <td style="">: {{ date("d-M-Y", strtotime($data['jatuh_tempo'])) }}</td>
                 </tr>
                 <tr>
-                    <td width='30%' colspan="2">&nbsp;</td>
-                    <td>Catatan</td>
-                    <td>: {{ $data['catatan'] }}</td>
+                    <td style="" width='30%' colspan="2">&nbsp;</td>
+                    <td style=" text-align:left;vertical-align:top;">Catatan</td>
+                    <td style="">: {{ $data['catatan'] }}</td>
                 </tr>
                 <tr>
                     <td width='30%' colspan="2">&nbsp;</td>
@@ -199,8 +196,8 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="6" class="text-right" style="padding-right: 15px;">Total</td>
-                    <td class="text-right"  style="padding-right: 20px;">{{ number_format($total) }}</td>
+                    <td colspan="6" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                    <td class="text-right"  style="padding-right: 20px; border-top: 1px solid black; border-collapse: collapse;""><strong>{{ number_format($total) }}</strong></td>
                 </tr>
             </tfoot>
         </table>
@@ -210,14 +207,12 @@
             {{-- <img src="{{ public_path("img/LOGO_PJE.jpg") }}"  width="250" height="250" style="filter: grayscale(100%)"> --}}
             <!-- Display the QR code -->
 
-
-
             Pembayaran dapat dilakukan pembukaan cek atas nama <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b>
             <br>Atau transfer ke rekening
             <br>BCA: <b><u>51308 14141</u></b> / Mandiri: <b><u>14000 41415 135</u></b>
             <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b><br>
             {{-- {{$qrcode}} --}}
-{{-- <img src="{{ public_path("img/") }}{{ $qrcode }}" alt="QR Code"> --}}
+            {{-- <img src="{{ public_path("img/") }}{{ $qrcode }}" alt="QR Code"> --}}
             {{-- <br><br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
         </span>    
     

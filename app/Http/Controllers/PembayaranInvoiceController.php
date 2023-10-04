@@ -17,6 +17,7 @@ use PhpParser\Node\Stmt\Return_;
 use Illuminate\Support\Facades\Session;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use Carbon\Carbon;
+use App\Helper\UserHelper;
 
 
 class PembayaranInvoiceController extends Controller
@@ -28,12 +29,12 @@ class PembayaranInvoiceController extends Controller
      */
     public function index()
     {
-        //
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+
         // Session::flush();
         $dataSewa =  DB::table('invoice AS i')
                 ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
