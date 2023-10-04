@@ -52,4 +52,9 @@ class User extends Authenticatable
         $role = $role->nama;
         return $role;
     }
+
+    public function karyawan()
+    {
+         return $this->hasOne(Karyawan::class, 'id', 'karyawan_id');
+    }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class isAdmin
+class isAdminNasional
 {
     /**
      * Handle an incoming request.
@@ -21,7 +21,7 @@ class isAdmin
         }
 
         $user_role = auth()->user()->role_id;
-        if($user_role == 2 || $user_role == 1 || $user_role == 3){ 
+        if($user_role == 3 || $user_role == 1){ 
             // admin
             return $next($request); // artinya di bolehin 
         }
