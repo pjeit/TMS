@@ -187,6 +187,8 @@ class PerjalananKembaliController extends Controller
                     'biaya' => $item->seal_pelayaran,
                 ];
                 array_push($array_outbond, $objSeal);
+                array_push($array_inbound, $objSeal); // soalnya di inbound ada biaya seal pelayaran, makanya dimasukin
+
             }
     
             if ($item->seal_pje) {
