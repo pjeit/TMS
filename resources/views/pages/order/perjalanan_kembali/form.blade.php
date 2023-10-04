@@ -265,7 +265,7 @@
                                             </td>
                                             @if($value->deskripsi =='INAP'|| $value->deskripsi == 'CLEANING/REPAIR')
                                                 <td id="deskripsi_tabel_{{$index}}" >
-                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_hardcode" readonly>
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_hardcode ambil_text_deskripsi" readonly>
                                                     <span class="badge badge-success">Data Yang Tersimpan</span>
                                                
                                                 </td>
@@ -287,7 +287,7 @@
 
                                             )
                                                 <td id="deskripsi_tabel_{{$index}}" >
-                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi" readonly>
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi ambil_text_deskripsi" readonly>
                                                     <span class="badge badge-success">Data Yang Tersimpan</span>
                                                 
                                                 </td>
@@ -311,7 +311,7 @@
 
                                             )
                                                 <td id="deskripsi_tabel_{{$index}}" >
-                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_lain" >
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_lain ambil_text_deskripsi" >
                                                     <span class="badge badge-success">Data Yang Tersimpan</span>
                                                 
                                                 </td>
@@ -358,7 +358,7 @@
                                                     <input type="hidden" id="id_sewa_operasional_data_{{ $index}}"  class="id_operasional" name="data_hardcode[{{$index}}][id_sewa_operasional_data]" value="">
                                                 </td>
                                                 <td id="deskripsi_tabel_{{ $index}}" >
-                                                        <input type="text" name="data_hardcode[{{ $index}}][deskripsi_data]" id="deskripsi_data_{{ $index}}" value="CLEANING/REPAIR" class="form-control uang numaja" readonly>
+                                                        <input type="text" name="data_hardcode[{{ $index}}][deskripsi_data]" id="deskripsi_data_{{ $index}}" value="CLEANING/REPAIR" class="form-control ambil_text_deskripsi" readonly>
                                                     <span class="badge badge-danger">Data Template</span>
                                                 
                                                 </td>
@@ -404,7 +404,7 @@
                                             </td>
                                             <td id="deskripsi_tabel_{{ $index}}" >
                                                 
-                                                    <input type="text" name="data_hardcode[{{ $index}}][deskripsi_data]" id="deskripsi_data_{{ $index}}" value="INAP" class="form-control uang numaja" readonly>
+                                                    <input type="text" name="data_hardcode[{{ $index}}][deskripsi_data]" id="deskripsi_data_{{ $index}}" value="INAP" class="form-control ambil_text_deskripsi" readonly>
                                                     <span class="badge badge-danger">Data Template</span>
                                             </td>
                                             <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{ $index}}">
@@ -452,7 +452,7 @@
                                                     <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="dataMaster[{{$index}}][id_sewa_operasional_data]" value="">
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
-                                                    <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control uang numaja" readonly>
+                                                    <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
                                                     <span class="badge badge-warning">Data S/D/T</span>
                                                 
                                                 </td>
@@ -488,7 +488,7 @@
                                     @endif
                                 @endif
                                  @if(isset($array_outbond))
-                                    @if ($sewa->jenis_order == "OUTBOUND" || $sewa->jenis_order == "INBOUND")
+                                    @if ($sewa->jenis_order == "OUTBOUND")
 
                                         @foreach ($array_outbond as $key => $value)
                                             <tr id="{{$index}}">
@@ -503,7 +503,7 @@
                                                     <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="dataMaster[{{$index}}][id_sewa_operasional_data]" value="">
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
-                                                        <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control uang numaja" readonly>
+                                                        <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
                                                     <span class="badge badge-warning">Data Tujuan Biaya</span>
                                                 
                                                 </td>
@@ -705,8 +705,8 @@
                 row.find('.catatan').prop('readonly', true);
                 row.find('.catatan').val('');
 
-                value_cek_tagih.val('');
-                value_cek_dipisahkan_data.val('');
+                value_cek_tagih.val('N');
+                value_cek_dipisahkan_data.val('N');
                 // id_operasional.val('HAPUS');
                  row.find('.deskripsi_lain').prop('readonly', true);
                 row.find('.nominal_lain').prop('readonly', true);
@@ -865,56 +865,6 @@
             $('#seal_pje').prop('readonly', false);
 
         };
-       
-        // var baseUrl = "{{ asset('') }}";
-        // var array_add_cost = [];
-        // $.ajax({
-        //     url: `${baseUrl}truck_order/getDetailJOBiaya/${$('#id_jo_detail_hidden').val()}`, 
-        //     method: 'GET', 
-        //     success: function(response) {
-        //         if(!response)
-        //         {
-        //             array_add_cost = [];
-        //         }
-        //         else
-        //         {
-        //             for (var i in response) {
-        //                 if(response[i].storage || response[i].storage!=0)
-        //                 {
-        //                     var objSTORAGE = {
-        //                             deskripsi: 'STORAGE',
-        //                             biaya: response[i].storage,
-        //                         };
-        //                     array_add_cost.push(objSTORAGE);
-        //                 } 
-        //                 if(response[i].demurage||response[i].demurage!=0)
-        //                 {
-        //                     var objDEMURAGE = {
-        //                             deskripsi: 'DEMURAGE',
-        //                             biaya: response[i].demurage,
-        //                         };
-        //                     array_add_cost.push(objDEMURAGE);
-        //                 } 
-        //                 if(response[i].detention||response[i].detention!=0)
-        //                 {
-        //                     var objDETENTION = {
-        //                             deskripsi: 'DETENTION',
-        //                             biaya: response[i].detention,
-        //                         };
-        //                     array_add_cost.push(objDETENTION);
-        //                 } 
-                            
-        //             }
-        //             $('#add_cost_hidden').val(JSON.stringify(array_add_cost));
-        //             console.log('array_add_cost '+array_add_cost);
-
-        //         }
-        //     },
-        //     error: function(xhr, status, error) {
-        //         console.error('Error:', error);
-        //     }
-        // });
-
 
         $('body').on('click','#btnTmbh',function()
 		{
@@ -933,7 +883,7 @@
                             <input type="hidden" id="id_sewa_operasional_data_${maxID}"  class="id_operasional" name="dataLain[${maxID}][id_sewa_operasional_data]" value="">
                         </td>
                         <td id="deskripsi_tabel_${maxID}" >
-                                <input type="text" readonly name="dataLain[${maxID}][deskripsi_data]" id="deskripsi_data_${maxID}" value="" class="form-control deskripsi_lain">
+                                <input type="text" readonly name="dataLain[${maxID}][deskripsi_data]" id="deskripsi_data_${maxID}" value="" class="form-control deskripsi_lain ambil_text_deskripsi">
                                 <span class="badge badge-primary">Data Lain-lain</span>
                         
                         </td>
@@ -1027,12 +977,16 @@
             var deskripsi = $('.deskripsi_lain');
             var nominal_lain = $('.nominal_lain');
             var nominal_hardcode = $('.nominal_hardcode');
+            var cek_checkbox_ditagihkan = $('.value_cek_tagih');
 
             var flagDeskripsi = false;
             var flagDeskripsiPrevent = false;
 
             var flagNominal = false;
             var flagNominalHardcode = false;
+
+            var flagCekBoxDitagihkanDicentangGak = false;
+            var deskripsi_text = '';
 
 
             for (var i = 0; i < deskripsi.length; i++) {
@@ -1112,7 +1066,27 @@
                     }
                 }
             }
+                    for (var i = 0; i < cek_checkbox_ditagihkan.length; i++) {
+                    var index_cekbox_ditagihkan = cek_checkbox_ditagihkan.eq(i);
+                    var row = index_cekbox_ditagihkan.closest('tr');
+                    var value_cekbox_ditagihkan = row.find('.value_cek_tagih').val();
+                    // console.log(value_cekbox_ditagihkan);
+                    var cek_box_simpan=row.find('.centang_cekbox').val();
+                    var deskripsi=row.find('.ambil_text_deskripsi').val();
 
+
+                    if(cek_box_simpan=="Y")
+                    {
+                        if (value_cekbox_ditagihkan == 'N') {
+                            flagCekBoxDitagihkanDicentangGak = true;
+                            deskripsi_text = deskripsi;
+                            break; 
+                        }
+                    }
+                }
+            
+
+        
             if (flagDeskripsi) {
                 event.preventDefault(); 
                 Swal.fire({
@@ -1138,7 +1112,34 @@
                 });
                 return;
             }
+            const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
 
+                  
+            if (flagCekBoxDitagihkanDicentangGak) {
+                event.preventDefault(); 
+                  Toast.fire({
+                        icon: 'warning',
+                        text: `${deskripsi_text} belum ditagihkan!`,
+                    })
+                //     event.preventDefault();
+                // Swal.fire({
+                //     icon: 'warning',
+                //     title: `PERINGATAN`,
+
+                // });
+                return;
+            }
+            
             event.preventDefault();
 
             Swal.fire({
