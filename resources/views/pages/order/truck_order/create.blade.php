@@ -257,7 +257,7 @@
                                         <option value="">Pilih Driver</option>
 
                                         @foreach ($dataDriver as $drvr)
-                                            <option value="{{$drvr->id}}">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
+                                            <option value="{{$drvr->id}}" nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="driver_nama" name="driver_nama" value="">
@@ -992,6 +992,16 @@
             
             console.log(karoseris);
             $('#karoseri').val(karoseris);
+
+		});
+
+        $('body').on('change','#select_driver',function()
+		{
+            var selectedOption = $(this).find('option:selected');
+            var nama_driver = selectedOption.attr('nama_driver');
+            
+            console.log(nama_driver);
+            $('#driver_nama').val(nama_driver);
 
 		});
          $('#post_data').submit(function(event) {

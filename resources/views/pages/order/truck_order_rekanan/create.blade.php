@@ -218,19 +218,23 @@
                                     <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
                                 </div>
                                 <div class="form-group">
-                                    <label for="no_polisi">No. polisi rekanan</label>
-                                    <input type="text" maxlength="11" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value=""> 
-                                </div>
-                                <div class="form-group">
                                     <label for="supplier">Supplier</label>
                                     <select class="form-control select2" style="width: 100%;" id='supplier' name="supplier">
                                         <option value="">Pilih Supplier</option>
-
                                          @foreach ($supplier as $s)
-                                            <option value="{{$s->id}}">{{ $s->nama }}</option>
+                                            <option value="{{$s->id}}" nama_supplier='{{$s->nama}}'>{{ $s->nama }}</option>
                                         @endforeach 
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="no_polisi">No. polisi rekanan</label>
+                                    <input type="text" maxlength="11" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value=""> 
+                                </div>
+                                 <div class="form-group">
+                                    <label for="no_polisi">Driver rekanan</label>
+                                    <input type="text"  name="driver_nama" class="form-control" id="driver_nama" name="driver_nama" placeholder="" value="" readonly> 
+                                </div>
+                                
                                 
                                 <div class="form-group">
                                     <label for="harga_jual">Harga Jual</label>
@@ -242,59 +246,6 @@
                                     
                                     </div>
                                 </div>
-                                {{-- <div class="row">
-                                    <div class="col">
-                                          <div class="form-group">
-                                            <label for="select_kategori_kendaraan">Kategori Kendaraan<span style="color:red">*</span></label>
-                                            <select class="form-control select2" style="width: 100%;" id='select_kategori_kendaraan' name="select_kategori_kendaraan">
-                                                <option value="">Pilih Kendaraan</option>
-
-                                         
-                                            </select>
-                                            <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
-                                        </div>
-                                    </div>
-                                    <div class="col"> --}}
-                                          {{-- <div class="form-group">
-                                            <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                            <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
-                                                <option value="">Pilih Kendaraan</option>
- 
-                                                @foreach ($dataKendaraan as $kendaraan)
-                                                    <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}-{{$kendaraan->driver_id}}">{{ $kendaraan->no_polisi }}</option>
-                                                @endforeach
-                                            </select>
-                                            <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
-                                            <input type="hidden" id="no_polisi" name="no_polisi" value="">
-                                        </div> --}}
-                                    {{-- </div>
-
-                                </div> --}}
-                              
-                                {{-- <div class="form-group">
-                                    <label for="select_ekor">Chassis<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis">
-                                        <option value="">Pilih Chassis</option>
-
-                                        @foreach ($dataChassis as $cha)
-                                            <option value="{{$cha->id}}">{{ $cha->kode }} - {{ $cha->karoseri }}</option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" id="ekor_id" name="ekor_id" value="">
-                                    <input type="hidden" id="karoseri" name="karoseri" value="">
-
-                                </div>
-                                <div class="form-group">
-                                    <label for="select_driver">Driver<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver">
-                                        <option value="">Pilih Driver</option>
-
-                                        @foreach ($dataDriver as $drvr)
-                                            <option value="{{$drvr->id}}">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" id="driver_nama" name="driver_nama" value="">
-                                </div> --}}
                             </div>
                          
 
@@ -518,72 +469,6 @@
             var baseUrl = "{{ asset('') }}";
             // var myjson;
             var array_tambahan_sdt = [];
-
-            // $.ajax({
-            //     url: `${baseUrl}truck_order/getDetailJOBiaya/${idJoDetail}`, 
-            //     method: 'GET', 
-            //     success: function(response) {
-            //         if(!response)
-            //         {
-            //             array_tambahan_sdt = [];
-            //         }
-            //         else
-            //         {
-            //             for (var i in response) {
-            //                 if(response[i].storage || response[i].storage!=0)
-            //                 {
-            //                     var objSTORAGE = {
-            //                             deskripsi: 'STORAGE',
-            //                             biaya: response[i].storage,
-            //                         };
-            //                     array_tambahan_sdt.push(objSTORAGE);
-            //                 } 
-            //                 if(response[i].demurage||response[i].demurage!=0)
-            //                 {
-            //                     var objDEMURAGE = {
-            //                             deskripsi: 'DEMURAGE',
-            //                             biaya: response[i].demurage,
-            //                         };
-            //                     array_tambahan_sdt.push(objDEMURAGE);
-            //                 } 
-            //                 if(response[i].detention||response[i].detention!=0)
-            //                 {
-            //                     var objDETENTION = {
-            //                             deskripsi: 'DETENTION',
-            //                             biaya: response[i].detention,
-            //                         };
-            //                     array_tambahan_sdt.push(objDETENTION);
-            //                 } 
-                                
-            //             }
-            //             $('#biayaTambahSDT').val(JSON.stringify(array_tambahan_sdt));
-            //             console.log('array_tambahan_sdt '+array_tambahan_sdt);
-
-            //         }
-            //     },
-            //     error: function(xhr, status, error) {
-            //         console.error('Error:', error);
-            //     }
-            // });
-
-            // get data booking
-            // $.ajax({
-            //     url: `${baseUrl}truck_order/getDataBooking/${idJoDetail}`, 
-            //     method: 'GET', 
-            //     success: function(response) {
-            //         // console.log('response '+response.tgl_booking);
-            //         // console.log('today '+today);
-
-            //         // if(!response){
-            //         //     array_tambahan_sdt = [];
-            //         // }
-            //     },
-            //     error: function(xhr, status, error) {
-            //         console.error('Error:', error);
-            //     }
-            // });
-           
-
 		});
 
         $('body').on('change','#select_customer',function()
@@ -860,11 +745,32 @@
 
 
 		});
+        $('body').on('change','#supplier',function()
+		{
+            var selectedOption = $(this).find('option:selected');
+            var nama_supplier = selectedOption.attr('nama_supplier');
+            
+            console.log(nama_supplier);
+            if(nama_supplier==undefined)
+            {
+                $('#driver_nama').val('');
+
+            }
+            else
+            {
+                $('#driver_nama').val('DRIVER '+ nama_supplier);
+
+            }
+
+		});
         $('#post_data').submit(function(event) {
             var no_polisi = $('#no_polisi').val();
             var supplier = $('#supplier').val();
             var harga_jual = $('#harga_jual').val();
 
+            var tarif = $('#tarif').val();
+            var uang_jalan = $('#uang_jalan').val();
+            to
             if(no_polisi.trim()=='')
             {
                 event.preventDefault();

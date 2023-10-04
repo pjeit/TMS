@@ -107,6 +107,7 @@ class SewaController extends Controller
             $sewa->id_chassis = $data['select_chassis']? $data['select_chassis']:null;
             $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
             $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
+            $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
