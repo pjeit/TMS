@@ -109,12 +109,17 @@
        
         {{-- menu admin --}}
         @php
+            // 1 = superadmin
+            // 2 = admin
+            // 3 = admin nasional
             $user_role = Auth::user()->role_id;
             $role = array(1,2,3,4);
         @endphp
 
         @if (in_array($user_role, $role))
-          @if ($user_role == 1 || $user_role == 2)
+        
+          @if (in_array($user_role, [1,2,3]))
+            {{-- MASTER --}}
             <li class="nav-item 
                 {{ 
                     request()->is('marketing*')||
@@ -193,9 +198,6 @@
                   </ul>
                 </li>
                 
-                  {{-- {{request()->url() === route('karyawan.index') ? ' active' : '' }}  --}}
-                
-
                 <li class="nav-item {{ request()->is('head*')||
                               request()->is('pair_kendaraan*')||
                               request()->is('mutasi_kendaraan*')||
@@ -302,396 +304,295 @@
                     </p>
                   </a> 
                 </li> 
-                {{-- <li class="nav-item">
-                    <a href="#" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>
-                        Level 2
-                        <i class="right fas fa-angle-left"></i>
-                      </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                      <li class="nav-item">
-                        <a href="#" class="nav-link">
-                          <i class="far fa-dot-circle nav-icon"></i>
-                          <p>Level 3</p>
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a href="#" class="nav-link">
-                          <i class="far fa-dot-circle nav-icon"></i>
-                          <p>Level 3</p>
-                        </a>
-                      </li>
-                      <li class="nav-item">
-                        <a href="#" class="nav-link">
-                          <i class="far fa-dot-circle nav-icon"></i>
-                          <p>Level 3</p>
-                        </a>
-                      </li>
-                    </ul>
-                  </li> --}}
               </ul>
             </li>
           @endif
-
-          <li class="nav-item {{ request()->is('job_order*')||
-            request()->is('storage_demurage*')||
-            request()->is('unloading_plan*')
-            ? 'menu-is-opening menu-open' : '' }}">
-            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
-              <i class="nav-icon fas fa-shipping-fast"></i>
-              <p>
-                INBOUND ORDER <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('job_order.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('job_order*') ? 'active' : ''  }}">
-                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Job Order
-                  </p>
-                </a>
-              </li>
-            </ul>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('storage_demurage.index')}}" class="nav-link {{request()->url() === route('storage_demurage.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Storage Demurage
-                  </p>
-                </a>
-              </li>
-            </ul>
-            {{-- <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('job_order.unloading_plan')}}" class="nav-link {{request()->url() === route('job_order.unloading_plan')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Unloading Plan
-                  </p>
-                </a>
-              </li>
-            </ul> --}}
-         
-          </li>
-           <li class="nav-item {{ request()->is('booking*')||
-            request()->is('perjalanan_kembali*') ||
-            request()->is('truck_order*')? 'menu-is-opening menu-open' : '' }}">
-            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
-              {{-- <i class="nav-icon fas fa-shipping-fast"></i> --}}
-              <i class="nav-icon fas fa-solid fa-truck"></i>
-              <p>
-                TRUCKING ORDER <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('booking.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('booking*') ? 'active' : ''  }}">
-                <i class="far fa-bookmark nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Booking
-                  </p>
-                </a>
-              </li>
-            </ul>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('truck_order.index')}}" style="font-weight: 500;" class="nav-link {{ request()->is('truck_order') ||  request()->is('truck_order/create') || request()->is('truck_order/*/edit') ? ' active' : '' }}">
-                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                     Order
-                  </p>
-                </a>
-              </li>
-            </ul>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('truck_order_rekanan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('truck_order_rekanan') ||  request()->is('truck_order_rekanan/create') || request()->is('truck_order_rekanan/*/edit') ? ' active' : '' }}">
-                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                     Order Rekanan
-                  </p>
-                </a>
-              </li>
-            </ul> 
-
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('perjalanan_kembali.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('perjalanan_kembali*') ? 'active' : ''  }}">
-                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                     Perjalanan Kembali 
-                  </p>
-                </a>
-              </li>
-            </ul> 
             
-          </li>
-         
-          <li class="nav-item {{ 
-            request()->is('pembayaran_jo*') ||
-            request()->is('pencairan_uang_jalan_ftl*') ||
-            request()->is('pencairan_operasional*') ||
-            request()->is('biaya_operasional*') ||
-            request()->is('pembayaran_sdt*') 
-            ? 'menu-is-opening menu-open' : '' }}">
-            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
-              <i class="nav-icon fas fa-dollar-sign"></i>
-              <p>FINANCE 
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-          
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('pembayaran_jo.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pembayaran_jo*') ? 'active' : ''  }}">
-                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Pembayaran JO
-                  </p>
-                </a>
-              </li>
-            </ul>
-          
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{ route('pembayaran_sdt.index') === request()->url() ? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Pembayaran S/D/T
-                  </p>
-                </a>
-              </li>
-            </ul>
-
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Pencairan UJ
-                  </p>
-                </a>
-              </li>
-            </ul>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Biaya Operasional
-                  </p>
-                </a>
-              </li>
-            </ul>
-            {{-- <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('pencairan_operasional.index')}}" class="nav-link {{request()->is('pencairan_operasional*') ? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Pencairan <small><strong>Operasional</strong></small>
-                  </p>
-                </a>
-              </li>
-            </ul> --}}
-           
-            
-          </li>
-
-          <li class="nav-item {{ request()->is('belum_invoice*') ||
-            request()->is('pembayaran_invoice*') ||
-            request()->is('cetak_invoice*') 
+          @if (in_array($user_role, [1,2,3]))
+            {{-- BOUND ORDER --}}
+            <li class="nav-item {{ request()->is('job_order*')||
+              request()->is('storage_demurage*')||
+              request()->is('unloading_plan*')
               ? 'menu-is-opening menu-open' : '' }}">
-            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
-              <i class="fas nav-icon fa-solid fa-file-invoice"></i>
-              {{-- <i class=""></i> --}}
-              <p>INVOICE
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-          
-            <ul class="nav nav-treeview">
-
-              {{-- <li class="nav-item">
-                <a href="{{route('invoice.index')}}" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
-                  <p>
-                     Belum Invoice
-                  </p>
-                </a>
-              </li> --}}
-              <li class="nav-item">
-                <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->url() === route('belum_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
-                  <p>
-                     Belum Invoice
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{route('cetak_invoice.index')}}" class="nav-link {{request()->url() === route('cetak_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="nav-icon fas fa-print " style="font-size: 15px;"></i>
-                  <p>
-                     Cetak Invoice
-                  </p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{request()->url() === route('pembayaran_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                {{-- <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i> --}}
-                <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
-                  <p>
-                     Pembayaran Invoice
-                  </p>
-                </a>
-              </li>
-           
-         
-            </ul>
-          </li>
-     
-          <li class="nav-item {{ request()->is('rollback*')  ? 'menu-is-opening menu-open' : '' }}">
-            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
-              <i class="fas nav-icon fa-solid fa fa-undo"></i>
-              {{-- <i class=""></i> --}}
-              <p>Rollback
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-          
-            <ul class="nav nav-treeview">
-
-              <li class="nav-item">
-                <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                     Job Order
-                  </p>
-                </a>
-              </li>
-           
-            </ul>
-          </li>
-
-          <li class="nav-item {{ request()->is('laporan_kas*') ||
-              request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">
-            <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
-              <i class="nav-icon fas fa-dollar-sign"></i>
-              <p>LAPORAN FINANCE
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-          
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('laporan_kas.index')}}" class="nav-link {{request()->url() === route('laporan_kas.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Laporan Kas
-                  </p>
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a href="{{route('laporan_bank.index')}}" class="nav-link {{request()->url() === route('laporan_bank.index')? ' active' : '' }} " style="font-weight: 500;">
-                <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Laporan Bank
-                  </p>
-                </a>
-              </li>
-           
-            </ul>
-          </li>
-
-          @if ($user_role == 1 || $user_role == 3)
-            {{-- menu marketing --}}
-            {{-- <li class="nav-item">
               <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
-                <i class="nav-icon fas fa-key"></i>
-                <p>MARKETING
-                  <i class="fas fa-angle-left right"></i>
+                <i class="nav-icon fas fa-shipping-fast"></i>
+                <p>
+                  INBOUND ORDER <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{url('marketing1')}}" style="font-weight: 500;" class="nav-link ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                  <a href="{{route('job_order.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('job_order*') ? 'active' : ''  }}">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      Menu Marketing 1
-                    </p>
-                  </a>
-                <li class="nav-item">
-                  <a href="{{url('marketing2')}}" style="font-weight: 500;" class="nav-link ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                    <p>
-                      Menu Marketing 2
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="{{url('marketing3')}}" style="font-weight: 500;" class="nav-link ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                    <p>
-                      Menu Marketing 3
+                      Job Order
                     </p>
                   </a>
                 </li>
               </ul>
-            </li> --}}
-          @endif
-
-          @if ($user_role == 1 || $user_role == 4)
-            {{-- menu finnance --}}
-            {{-- <li class="nav-item">
-              <a href="#" class="nav-link" style="font-weight: 700;">
-                <i class="nav-icon fas fa-key"></i>
-                <p>Menu Finnance
-                  <i class="fas fa-angle-left right"></i>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('storage_demurage.index')}}" class="nav-link {{request()->url() === route('storage_demurage.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Storage Demurage
+                    </p>
+                  </a>
+                </li>
+              </ul>
+              {{-- <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('job_order.unloading_plan')}}" class="nav-link {{request()->url() === route('job_order.unloading_plan')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Unloading Plan
+                    </p>
+                  </a>
+                </li>
+              </ul> --}}
+           
+            </li>
+          
+            {{-- TRUCKING ORDER --}}
+            <li class="nav-item {{ request()->is('booking*')||
+              request()->is('perjalanan_kembali*') ||
+              request()->is('truck_order*')? 'menu-is-opening menu-open' : '' }}">
+              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+                {{-- <i class="nav-icon fas fa-shipping-fast"></i> --}}
+                <i class="nav-icon fas fa-solid fa-truck"></i>
+                <p>
+                  TRUCKING ORDER <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{url('finnance1')}}" style="font-weight: 500;" class="nav-link ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
+                  <a href="{{route('booking.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('booking*') ? 'active' : ''  }}">
+                  <i class="far fa-bookmark nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      Menu Finnance 1
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="{{url('finnance2')}}" style="font-weight: 500;" class="nav-link ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                    <p>
-                      Menu Finnance 2
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="{{url('finnance3')}}" style="font-weight: 500;" class="nav-link ">
-                  <i class="far nav-icon fa fa-circle" style="font-size: 15px;"></i>
-                    <p>
-                      Menu Finnance 3
+                      Booking
                     </p>
                   </a>
                 </li>
               </ul>
-            </li> --}}
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('truck_order.index')}}" style="font-weight: 500;" class="nav-link {{ request()->is('truck_order') ||  request()->is('truck_order/create') || request()->is('truck_order/*/edit') ? ' active' : '' }}">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                       Order
+                    </p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('truck_order_rekanan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('truck_order_rekanan') ||  request()->is('truck_order_rekanan/create') || request()->is('truck_order_rekanan/*/edit') ? ' active' : '' }}">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                       Order Rekanan
+                    </p>
+                  </a>
+                </li>
+              </ul> 
+  
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('perjalanan_kembali.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('perjalanan_kembali*') ? 'active' : ''  }}">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                       Perjalanan Kembali 
+                    </p>
+                  </a>
+                </li>
+              </ul> 
+              
+            </li>
+           
+            {{-- FINANCE --}}
+            <li class="nav-item {{ 
+              request()->is('pembayaran_jo*') ||
+              request()->is('pencairan_uang_jalan_ftl*') ||
+              request()->is('pencairan_operasional*') ||
+              request()->is('biaya_operasional*') ||
+              request()->is('pembayaran_sdt*') 
+              ? 'menu-is-opening menu-open' : '' }}">
+              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+                <i class="nav-icon fas fa-dollar-sign"></i>
+                <p>FINANCE 
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+            
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pembayaran_jo.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pembayaran_jo*') ? 'active' : ''  }}">
+                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Pembayaran JO
+                    </p>
+                  </a>
+                </li>
+              </ul>
+            
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{ route('pembayaran_sdt.index') === request()->url() ? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Pembayaran S/D/T
+                    </p>
+                  </a>
+                </li>
+              </ul>
+  
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Pencairan UJ
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Biaya Operasional
+                    </p>
+                  </a>
+                </li>
+              </ul>
+              
+              {{-- <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pencairan_operasional.index')}}" class="nav-link {{request()->is('pencairan_operasional*') ? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Pencairan <small><strong>Operasional</strong></small>
+                    </p>
+                  </a>
+                </li>
+              </ul> --}}
+            </li>
           @endif
 
+          @if (in_array($user_role, [1,2,3]))
+            {{-- INVOICE --}}
+            <li class="nav-item {{ request()->is('belum_invoice*') ||
+              request()->is('pembayaran_invoice*') ||
+              request()->is('cetak_invoice*') 
+                ? 'menu-is-opening menu-open' : '' }}">
+              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+                <i class="fas nav-icon fa-solid fa-file-invoice"></i>
+                {{-- <i class=""></i> --}}
+                <p>INVOICE
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+
+              <ul class="nav nav-treeview">
+
+                {{-- <li class="nav-item">
+                  <a href="{{route('invoice.index')}}" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
+                    <p>
+                      Belum Invoice
+                    </p>
+                  </a>
+                </li> --}}
+                <li class="nav-item">
+                  <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->url() === route('belum_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
+                    <p>
+                      Belum Invoice
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{route('cetak_invoice.index')}}" class="nav-link {{request()->url() === route('cetak_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="nav-icon fas fa-print " style="font-size: 15px;"></i>
+                    <p>
+                      Cetak Invoice
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{request()->url() === route('pembayaran_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  {{-- <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i> --}}
+                  <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
+                    <p>
+                      Pembayaran Invoice
+                    </p>
+                  </a>
+                </li>
+            
+
+              </ul>
+            </li>
+
+            {{-- Rollback --}}
+            <li class="nav-item {{ request()->is('rollback*')  ? 'menu-is-opening menu-open' : '' }}">
+              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+                <i class="fas nav-icon fa-solid fa fa-undo"></i>
+                {{-- <i class=""></i> --}}
+                <p>Rollback
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+
+              <ul class="nav nav-treeview">
+
+                <li class="nav-item">
+                  <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Job Order
+                    </p>
+                  </a>
+                </li>
+            
+              </ul>
+            </li>
+
+            {{-- LAPORAN FINANCE --}}
+            <li class="nav-item {{ request()->is('laporan_kas*') ||
+                request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">
+              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+                <i class="nav-icon fas fa-dollar-sign"></i>
+                <p>LAPORAN FINANCE
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('laporan_kas.index')}}" class="nav-link {{request()->url() === route('laporan_kas.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Laporan Kas
+                    </p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a href="{{route('laporan_bank.index')}}" class="nav-link {{request()->url() === route('laporan_bank.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Laporan Bank
+                    </p>
+                  </a>
+                </li>
+            
+              </ul>
+            </li>
+          @endif
+            
         @endif
 
-        <!-- <li class="nav-item">
-          <a href="" class="nav-link">
-            <i class="nav-icon fas fa-columns"></i>
-            <p>
-              User
-            </p>
-          </a>
-        </li> -->
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

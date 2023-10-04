@@ -12,6 +12,8 @@ use App\Models\JobOrderDetailBiaya;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
+use App\Helper\UserHelper;
+use App\Models\Supplier;
 
 class StorageDemurageController extends Controller
 {
@@ -33,6 +35,7 @@ class StorageDemurageController extends Controller
             ->where('customer.is_aktif', "Y")
             ->orderBy('nama')
             ->get();
+
         return view('pages.order.storage_demurage.index',[
             'judul'=>"Storage Demurage",
             'supplier'=>$supplier,
@@ -182,15 +185,24 @@ class StorageDemurageController extends Controller
             $data = $request->collect();
             $pengirim  = $data['pengirim'];
             $pelayaran   =  $data['pelayaran'];
-
+            $id_role = Auth::user()->role_id; 
+            $cabang = UserHelper::getCabang();
             // var_dump($statusJO);die;
 
             $dataJO = DB::table('job_order AS jo')
                     ->select('jo.*','jod.*','jo.status as statusJO','jod.status as statusDetail','c.kode AS kode', 'c.nama AS nama_cust', 's.nama AS nama_supp')
+   
                     ->leftJoin('customer AS c', 'c.id', '=', 'jo.id_customer')
                     ->leftJoin('supplier AS s', 's.id', '=', 'jo.id_supplier')
                     ->join('job_order_detail AS jod', function($join){
                             $join->on('jo.id', '=', 'jod.id_jo') ->where('jod.is_aktif',"Y");
+                    })
+                    ->leftJoin('user as u', 'u.id', '=', 'jod.created_by')
+                    ->leftJoin('karyawan as k', 'k.id', '=', 'u.karyawan_id')
+                    ->where(function ($query) use ($id_role, $cabang) {
+                        if(!in_array($id_role, [1,3])){
+                            $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
+                        }
                     })
                     ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
                     ->where('jo.is_aktif', '=', 'Y')

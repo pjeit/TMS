@@ -32,23 +32,21 @@
                             </tr>
                           </thead>
                         <tbody>
-                                @foreach($data as $item)
-                                 <tr>
-                                    <td>{{ $item->no_jo }}</td>
-                                    <td>{{ $item->namaCustomer }}</td>
-                                    <td>{{ $item->namaSupplier }}</td>
-                                    <td>{{ $item->status}}</td>
-                                    <td>                                    
-                                        <a class="btn btn-success radiusSendiri" href="{{route('pembayaran_jo.edit',[$item->id])}}">
-                                              <i class="fas fa-credit-card"></i> Pembayaran
-                                        </a>   
-                                    </td>
-                                </tr>
-                                @endforeach
-                     
+                            @foreach($data as $item)
+                                <tr>
+                                <td>{{ $item->no_jo }}</td>
+                                <td>{{ $item->namaCustomer }}</td>
+                                <td>{{ $item->namaSupplier }}</td>
+                                <td>{{ $item->status}}</td>
+                                <td>                                    
+                                    <a class="btn btn-success radiusSendiri" href="{{route('pembayaran_jo.edit',[$item->id])}}">
+                                            <i class="fas fa-credit-card"></i> Pembayaran
+                                    </a>   
+                                </td>
+                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
-                        {{ $data->links('pagination::bootstrap-4') }}
                 </div>
             </div>
         </div>

@@ -34,7 +34,6 @@ class JobOrderController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         
-        $id_user = Auth::user()->id; 
         $id_role = Auth::user()->role_id; 
         $cabang = UserHelper::getCabang();
 
