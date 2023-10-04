@@ -428,7 +428,7 @@
             format: "dd-M-yyyy",
             todayHighlight: true,
             language: 'en',
-            startDate: today,
+            // startDate: today,
         }).datepicker("setDate", today);
 
         $("#jenis_badmin").select2({
@@ -469,6 +469,7 @@
                 diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
                 if(diterima > sisaInvoice){
                     $('#modal_diterima').val(moneyMask(sisaInvoice));
+                    $('#modal_pph23').val(0);
                 }
                 dibayar();
             });
