@@ -112,34 +112,80 @@ class PembayaranInvoiceController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id; 
-
+        // dd($data);
         try {
             if($data['detail'] != null){
-                foreach ($data['detail'] as $key => $value) {
-                    $new = new InvoicePembayaran();
-                    $new->id_invoice = $key;
-                    $new->no_invoice = $value['no_invoice'];
-                    $new->billing_to = $data['billingTo'];
-                    $new->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
-                    $new->total_diterima = $value['diterima'];
-                    $new->total_pph23 = $value['pph23'];
-                    $new->total_bayar = $value['dibayar'];
-                    $new->cara_pembayaran = $data['cara_pembayaran'];
-                    $new->id_kas = $data['kas'];
-                    $new->metode_transfer = $data['jenis_badmin'];
-                    $new->biaya_admin = $data['biaya_admin'];
-                    $new->no_cek = $data['no_cek'];
-                    $new->no_bukti_potong = $value['no_bukti_potong'];
-                    $new->catatan = $value['catatan'];
-                    if($new->save()){
-                        $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($key);
-                        if($invoice){
-                            $invoice->total_dibayar += $new->total_bayar;
-                            $invoice->total_sisa = $new->total_bayar;
+                $jenisBAdmin = isset($data['jenis_badmin'])? ' - '.$data['jenis_badmin']:'';
+                $keterangan_transaksi = $data['catatan'] . ' | '. $data['cara_pembayaran'] . $jenisBAdmin . ' |';
+                $id_invoices = '';
 
+                foreach ($data['detail'] as $key => $value) {
+                    if($value['diterima'] != null || $value['diterima'] != 0){
+                        $new = new InvoicePembayaran();
+                        $new->id_invoice = $key;
+                        $new->no_invoice = $value['no_invoice'];
+                        $new->billing_to = $data['billingTo'];
+                        $new->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
+                        $new->total_diterima = $value['diterima'];
+                        $new->total_pph23 = $value['pph23'];
+                        $new->total_bayar = $value['dibayar'];
+                        $new->cara_pembayaran = $data['cara_pembayaran'];
+                        $new->id_kas = $data['kas'];
+                        $new->metode_transfer = isset($data['jenis_badmin'])? $data['jenis_badmin']:null;
+                        $new->biaya_admin = $jenisBAdmin;
+                        $new->no_cek = isset($data['no_cek'])? $data['no_cek']:null;
+                        $new->no_bukti_potong = $value['no_bukti_potong'];
+                        $new->catatan = $value['catatan'];
+                        $new->created_by = $user;
+                        $new->created_at = now();
+                        if($new->save()){
+                            $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($key);
+                            $keterangan_transaksi .= ' #'.$invoice->no_invoice;
+                            $id_invoices .= $invoice->id . ',';
+                            if($invoice){
+                                $invoice->total_dibayar += $new->total_bayar;
+                                $invoice->total_sisa = $invoice->total_tagihan - $invoice->total_dibayar;
+                                if($invoice->total_sisa == 0){
+                                    $invoice->status = 'SELESAI PEMBAYARAN INVOICE';
+                                }
+                                $invoice->updated_by = $user;
+                                $invoice->updated_at = now();
+                                $invoice->save();
+    
+                                // jika status == SELESAI PEMBAYARAN INVOICE, otomatis TRIGGER "update_status_invoice_detail" di tabel invoice di DB
+                            }
                         }
                     }
                 }
+
+                // dump data ke dump transaction
+                $total_bayar = (float)str_replace(',', '', $data['total_dibayar'])+ (isset($data['biaya_admin'])? (float)str_replace(',', '', $data['biaya_admin']):0) ;
+                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                    array(
+                        $data['kas'],// id kas_bank dr form
+                        now(),//tanggal
+                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                        $total_bayar, //uang keluar (kredit)
+                        1018, //kode coa
+                        'bayar_invoice',
+                        $keterangan_transaksi, //keterangan_transaksi
+                        substr($id_invoices, 0, -1),//keterangan_kode_transaksi
+                        $user,//created_by
+                        now(),//created_at
+                        $user,//updated_by
+                        now(),//updated_at
+                        'Y'
+                    ) 
+                );
+
+                $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
+                if($cust){
+                    $cust->kredit_sekarang -= $value['dibayar'];
+                    $cust->updated_by = $user;
+                    $cust->updated_at = now();
+                    $cust->save();
+                }
+
             }
 
             return redirect()->route('pembayaran_invoice.index')->with('status', "Success!");
