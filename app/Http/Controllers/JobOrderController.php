@@ -33,14 +33,15 @@ class JobOrderController extends Controller
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
     
         $dataJO = DB::table('job_order as jo')
+            ->select('jo.*', DB::raw('jo.thc + jo.lolo + jo.apbs + jo.cleaning as Jumlah_sblm_dooring'),'c.kode as kode', 'c.nama as nama_cust', 's.nama as nama_supp')
             ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
             ->leftJoin('supplier as s', 's.id', '=', 'jo.id_supplier')
-            ->select('jo.*', 'c.kode as kode', 'c.nama as nama_cust', 's.nama as nama_supp')
             ->where('jo.is_aktif', '=', "Y")
             ->OrderBy('c.nama', 'ASC')
             ->OrderBy('jo.status', 'ASC')
             ->OrderBy('jo.created_at', 'ASC')
             ->get();
+            // dd($dataJO);s
         
             return view('pages.order.job_order.index',[
                 'judul'=>"Job Order",
