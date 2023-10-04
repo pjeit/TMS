@@ -33,7 +33,7 @@ class PerjalananKembaliController extends Controller
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
                 ->where('s.status', 'DALAM PERJALANAN')
-                // ->whereNull('s.id_supplier')
+                ->whereNull('s.id_supplier')
                 ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
                 ->get();

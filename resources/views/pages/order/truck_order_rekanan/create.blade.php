@@ -770,7 +770,7 @@
 
             var tarif = $('#tarif').val();
             var uang_jalan = $('#uang_jalan').val();
-            to
+            var total_uang_jalan = parseFloat(tarif)+parseFloat(uang_jalan);
             if(no_polisi.trim()=='')
             {
                 event.preventDefault();
@@ -831,6 +831,27 @@
                     Toast.fire({
                         icon: 'error',
                         title: 'Harga Jual Rekanan Harus Diisi!'
+                    })
+                return;
+            }
+            if(total_uang_jalan > parseFloat(harga_jual) )
+            {
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: `Harga Jual Rekanan Harus lebih besar dari Rp. ${moneyMask(total_uang_jalan)}`
                     })
                 return;
             }

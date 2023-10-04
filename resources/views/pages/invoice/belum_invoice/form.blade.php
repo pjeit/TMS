@@ -151,7 +151,7 @@
                                                     <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required>
                                                         <option value="">── BILLING TO ──</option>
                                                         @foreach ($dataCust as $cust)
-                                                            <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" {{ $cust->id == $customer? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
+                                                            <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" ketentuan_bayar="{{ $cust->ketentuan_bayar }}" {{ $cust->id == $customer? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
                                                         @endforeach
                                                     </select>
                                                     <input type="hidden" name="kode_customer" id="kode_customer">
@@ -473,13 +473,28 @@
             language: 'en',
             startDate: today,
         }).datepicker("setDate", today);
-        $('#jatuh_tempo').datepicker({
-            autoclose: true,
-            format: "dd-M-yyyy",
-            todayHighlight: true,
-            language: 'en',
-            startDate: today,
-        }).datepicker("setDate", today);
+        // $('#jatuh_tempo').datepicker({
+        //     autoclose: true,
+        //     format: "dd-M-yyyy",
+        //     todayHighlight: true,
+        //     language: 'en',
+        //     startDate: today,
+        // }).datepicker("setDate", today);
+        var selectedOption = $('#billingTo').find('option:selected');
+        var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
+        
+        console.log(ketentuan_bayar);
+        if(ketentuan_bayar==undefined)
+        {
+            getDate(0);
+
+
+        }
+        else
+        {
+            getDate(parseFloat(ketentuan_bayar) );
+
+        }
 
         calculateGrandTotal(); // pas load awal langsung hitung grand total
 
@@ -551,6 +566,39 @@
             hitung(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
         });
 
+        $('body').on('change','#billingTo',function()
+		{
+            var selectedOption = $(this).find('option:selected');
+            var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
+            
+            console.log(ketentuan_bayar);
+            if(ketentuan_bayar==undefined)
+            {
+                getDate(0);
+
+
+            }
+            else
+            {
+                getDate(parseFloat(ketentuan_bayar) );
+
+            }
+
+		});
+        function getDate(hari){
+            var today = new Date();
+            var set_hari = new Date(today);
+            set_hari.setDate(today.getDate() + hari);
+
+            $('#jatuh_tempo').datepicker({
+                autoclose: false,
+                format: "dd-M-yyyy",
+                todayHighlight: true,
+                language: 'en',
+                // endDate: '+0d',
+                startDate: today,
+            }).datepicker("setDate", set_hari);
+        }
         function calculateGrandTotal(){ // hitung grand total buat ditagihkan 
             var grandTotal = 0; 
             var grandTotalText = document.getElementById("total_tagihan_text");
