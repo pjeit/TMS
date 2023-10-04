@@ -167,7 +167,7 @@ class CustomerController extends Controller
             // $customer->telp2 = $request->telp2;
             // $customer->email = $request->email;
             $customer->catatan = $request->catatan;
-            $customer->kredit_sekarang = ($request->kredit_sekarang == 0)? NULL:$request->kredit_sekarang;
+            $customer->kredit_sekarang = ($request->kredit_sekarang == 0)? NULL:floatval(str_replace(',', '', $request->kredit_sekarang));
             // $customer->max_kredit = $max_kredit;
             $customer->ketentuan_bayar = $request->ketentuan_bayar;
             $customer->updated_by = $user;
