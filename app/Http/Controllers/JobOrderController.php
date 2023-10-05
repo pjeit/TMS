@@ -48,15 +48,18 @@ class JobOrderController extends Controller
                 }
             })
             // ->select('jo.id as id_jo', 'jo.no_jo', 'u.id as id_user', 'u.karyawan_id as id_karyawan', 'u.username', 'k.cabang_id')
-            ->select('jo.*', DB::raw('jo.thc + jo.lolo + jo.apbs + jo.cleaning as Jumlah_sblm_dooring'),'c.kode as kode', 'c.nama as nama_cust', 's.nama as nama_supp')
+            ->select('jo.*','ja.id as idJaminan', DB::raw('jo.thc + jo.lolo + jo.apbs + jo.cleaning as Jumlah_sblm_dooring'),'c.kode as kode', 'c.nama as nama_cust', 's.nama as nama_supp')
             ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
             ->leftJoin('supplier as s', 's.id', '=', 'jo.id_supplier')
+            ->leftJoin('jaminan AS ja', function($join) {
+                $join->on('jo.id', '=', 'ja.id_job_order')->where('ja.is_aktif', '=', 'Y');
+            })
             ->where('jo.is_aktif', '=', "Y")
             ->OrderBy('c.nama', 'ASC')
             ->OrderBy('jo.status', 'ASC')
             ->OrderBy('jo.created_at', 'ASC')
             ->get();
-            // dd($dataJO);s
+            // dd($dataJO);
         
             return view('pages.order.job_order.index',[
                 'judul'=>"Job Order",
