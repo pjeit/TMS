@@ -1,12 +1,6 @@
 
 @extends('layouts.home_master')
 
-@if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
-@endif
-
 @section('content')
 @include('sweetalert::alert')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
@@ -72,13 +66,11 @@
         scrollX: true
       });
     });
+
 </script>
 
 <script>
 
-    var sessionMessage = "{{ session()->has('message') ? session('message') : '' }}";
-    if (sessionMessage !== '') {
-        toastr.success(sessionMessage);
-    }
+
 </script>
 @endsection

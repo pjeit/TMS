@@ -177,29 +177,30 @@
         <!-- Main content -->
         <section class="content">
 
-          @if(session("message"))
+          {{-- @if(session("message"))
           <div class="alert alert-warning">
             {{session('message')}}
           </div>
-          @endif
+          @endif --}}
 
           @if(session("status"))
-
-          {{-- sweetalert --}}
-          @include('sweetalert::alert')
-
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{-- sweetalert --}}
+            @include('sweetalert::alert')
+            {{-- <div class="alert alert-success alert-dismissible fade show" role="alert">
               {{session('status')}}
-
+  
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
+            </div> --}}
+            <div class="alert alert-dismissible fade show" id="popup-alert">
+
             </div>
 
           @endif
 
           @yield('content')
-          @include('sweetalert::alert')
+          {{-- @include('sweetalert::alert') --}}
           
         </section>
         <!-- /.content -->
@@ -222,7 +223,29 @@
 </body>
 
 <script>
- 
+     $(document).ready(function() {
+        var sessionMessage = "<?= session()->has('status') ? session()->get('status') : null ?>";
+        console.log('sessionMessage', sessionMessage);
+        if (sessionMessage != '') {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'center',
+                timer: 2500,
+                showConfirmButton: false,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            var iconData = sessionMessage == 'Success'? 'success':'danger';
+            var titleData = sessionMessage == 'Success'? 'Data tersimpan!':'Data gagal disimpan!';
+            Toast.fire({
+                icon: iconData,
+                title: titleData
+            })
+        }
+    });
 </script>
 
 </html>
