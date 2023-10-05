@@ -988,6 +988,20 @@
             var flagCekBoxDitagihkanDicentangGak = false;
             var deskripsi_text = '';
 
+             const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+
+       
 
             for (var i = 0; i < deskripsi.length; i++) {
                 var desTextbox = deskripsi.eq(i);
@@ -1066,27 +1080,50 @@
                     }
                 }
             }
-                    for (var i = 0; i < cek_checkbox_ditagihkan.length; i++) {
-                    var index_cekbox_ditagihkan = cek_checkbox_ditagihkan.eq(i);
-                    var row = index_cekbox_ditagihkan.closest('tr');
-                    var value_cekbox_ditagihkan = row.find('.value_cek_tagih').val();
-                    // console.log(value_cekbox_ditagihkan);
-                    var cek_box_simpan=row.find('.centang_cekbox').val();
-                    var deskripsi=row.find('.ambil_text_deskripsi').val();
+            for (var i = 0; i < cek_checkbox_ditagihkan.length; i++) {
+                var index_cekbox_ditagihkan = cek_checkbox_ditagihkan.eq(i);
+                var row = index_cekbox_ditagihkan.closest('tr');
+                var value_cekbox_ditagihkan = row.find('.value_cek_tagih').val();
+                // console.log(value_cekbox_ditagihkan);
+                var cek_box_simpan=row.find('.centang_cekbox').val();
+                var deskripsi=row.find('.ambil_text_deskripsi').val();
 
 
-                    if(cek_box_simpan=="Y")
-                    {
-                        if (value_cekbox_ditagihkan == 'N') {
-                            flagCekBoxDitagihkanDicentangGak = true;
-                            deskripsi_text = deskripsi;
-                            break; 
-                        }
+                if(cek_box_simpan=="Y")
+                {
+                    if (value_cekbox_ditagihkan == 'N') {
+                        flagCekBoxDitagihkanDicentangGak = true;
+                        deskripsi_text = deskripsi;
+                        break; 
                     }
                 }
-            
-
-        
+            }
+            if ($("#is_kembali").val()=='Y' && $('#seal').val().trim()=='') {
+                  event.preventDefault(); 
+                  Toast.fire({
+                        icon: 'error',
+                        text: `Seal wajib diisi!`,
+                    })
+                return;
+            } 
+            if($("#is_kembali").val()=='Y' && $('#surat_jalan').val().trim()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `Surat jalan wajib diisi!`,
+                })
+                return;
+            }
+            if($("#is_kembali").val()=='Y' && $('#no_kontainer').val().trim()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `Nomor kontainer wajib diisi!`,
+                })
+                return;
+            }
             if (flagDeskripsi) {
                 event.preventDefault(); 
                 Swal.fire({
@@ -1112,18 +1149,6 @@
                 });
                 return;
             }
-            const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
                   
             if (flagCekBoxDitagihkanDicentangGak) {
                 event.preventDefault(); 
