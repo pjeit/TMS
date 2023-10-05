@@ -396,7 +396,45 @@ class JobOrderController extends Controller
      */
     public function destroy(JobOrder $jobOrder)
     {
-        dd($jobOrder);
+        // dd($jobOrder);
+         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+
+        // try{
+            DB::table('job_order')
+            ->where('id', $jobOrder['id'])
+            ->update(array(
+                'is_aktif' => "N",
+                'updated_at'=> now(),
+                'updated_by'=> $user, 
+              )
+            );
+            DB::table('job_order_detail')
+            ->where('id_jo', $jobOrder['id'])
+            ->update(array(
+                'is_aktif' => "N",
+                'updated_at'=> now(),
+                'updated_by'=> $user, 
+              )
+            );
+            $jaminan = Jaminan::where('id_job_order', $jobOrder->id)->where('is_aktif', 'Y')->first();
+            if($jaminan)
+            {
+                DB::table('jaminan')
+               ->where('id_job_order', $jobOrder['id'])
+               ->update(array(
+                   'is_aktif' => "N",
+                   'updated_at'=> now(),
+                   'updated_by'=> $user, 
+                 )
+               );
+            }
+
+             return redirect()->route('job_order.index')->with('status','Berhasil menghapus data!');
+
+        // }
+        // catch (ValidationException $e) {
+        //     return redirect()->back()->withErrors($e->errors());
+        // }
     }
 
     public function printJO(JobOrder $JobOrder)
