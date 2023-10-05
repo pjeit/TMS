@@ -175,36 +175,51 @@
                 </tr> --}}
             </thead>
             <tbody > 
+                @if ($JobOrder->thc)
+                    
                 <tr>
                     <td>THC</td>
                     <td>:</td>
                     <td class="aligh-right">Rp. {{number_format($JobOrder->thc,2) }}</td>
 
                 </tr>
-                <tr>
-                    <td>LOLO</td>
-                    <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->lolo,2)}}</td>
-
-                </tr>
-                <tr>
-                    <td>APBS</td>
-                    <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->apbs,2)}}</td>
-
-                </tr>
-                <tr>
-                    <td>CLEANING</td>
-                    <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->cleaning,2)}}</td>
-
-                </tr>
-                <tr>
-                    <td>DOC FEE</td>
-                    <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
-
-                </tr>
+                @endif
+                   @if ($JobOrder->lolo)
+                    
+                   <tr>
+                       <td>LOLO</td>
+                       <td>:</td>
+                       <td class="aligh-right">Rp. {{number_format($JobOrder->lolo,2)}}</td>
+   
+                   </tr>
+                @endif
+                   @if ($JobOrder->apbs)
+                    
+                   <tr>
+                       <td>APBS</td>
+                       <td>:</td>
+                       <td class="aligh-right">Rp. {{number_format($JobOrder->apbs,2)}}</td>
+   
+                   </tr>
+                @endif
+                   @if ($JobOrder->cleaning)
+                    
+                   <tr>
+                       <td>CLEANING</td>
+                       <td>:</td>
+                       <td class="aligh-right">Rp. {{number_format($JobOrder->cleaning,2)}}</td>
+   
+                   </tr>
+                @endif
+                   @if ($JobOrder->doc_fee)
+                    
+                   <tr>
+                       <td>DOC FEE</td>
+                       <td>:</td>
+                       <td class="aligh-right">Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
+   
+                   </tr>
+                @endif
                 <tr>
                     <td>SUB TOTAL</td>
                     <td>:</td>
