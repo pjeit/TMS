@@ -198,10 +198,10 @@ class GrupController extends Controller
                 $edit_grup->updated_at = now();
                 $edit_grup->updated_by = $user;
                 $edit_grup->save();
-                return redirect()->route('grup.index')->with('status','Success!!');
-                
+                // dd(session()->get('message'));
+                return redirect()->route('grup.index')->with('status','Success');
             } catch (ValidationException $e) {
-                return redirect()->route('grup.index')->with('status','Error!!');
+                return redirect()->route('grup.index')->with('status','Error');
                 // return redirect()->back()->withErrors($e->errors())->withInput();
             }
         }

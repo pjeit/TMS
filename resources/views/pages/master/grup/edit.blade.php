@@ -133,14 +133,14 @@
                         }
                     })
 
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Disimpan'
-                    })
+                    // Toast.fire({
+                    //     icon: 'success',
+                    //     title: 'Data Disimpan'
+                    // })
 
-                    setTimeout(() => {
+                    // setTimeout(() => {
                         this.submit();
-                    }, 1000); // 2000 milliseconds = 2 seconds
+                    // }, 1000); // 2000 milliseconds = 2 seconds
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
