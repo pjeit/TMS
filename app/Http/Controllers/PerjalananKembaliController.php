@@ -383,10 +383,6 @@ class PerjalananKembaliController extends Controller
                 }
             }
 
-           
-
-
-            
             return redirect()->route('perjalanan_kembali.index')->with('status','Berhasil menyimpan data!');
         } catch (ValidationException $e) {
             //throw $th;
