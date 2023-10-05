@@ -405,8 +405,8 @@
                         jo_detail.attr('disabled',false);
                         jo_detail.empty(); 
                         jo_detail.append('<option value="">Pilih Kontainer</option>');
-                        if(selectedValue!="")
-                        {
+                        // if(selectedValue!="")
+                        // {
                             response.forEach(joDetail => {
                                 const option = document.createElement('option');
                                 option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer+'-'+joDetail.seal+"-"+joDetail.tipe_kontainer;
@@ -417,7 +417,7 @@
                                 // }
                                  jo_detail.append(option);
                             });
-                        }
+                        // }
 
                     }
                     else

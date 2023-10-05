@@ -424,8 +424,8 @@
                         jo_detail.attr('disabled',false);
                         jo_detail.empty(); 
                         jo_detail.append('<option value="">Pilih Kontainer</option>');
-                        if(selectedValue!="")
-                        {
+                        // if(selectedValue!="")
+                        // {
                             response.forEach(joDetail => {
                                 const option = document.createElement('option');
                                 option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer+'-'+joDetail.seal+"-"+joDetail.tipe_kontainer;
@@ -436,7 +436,7 @@
                                 // }
                                  jo_detail.append(option);
                             });
-                        }
+                        // }
 
                     }
                     else
@@ -490,68 +490,7 @@
             var array_tambahan_sdt = [];
             setKendaraan(tipe_kontainer)
             setChassis(tipe_kontainer)
-            // $.ajax({
-            //     url: `${baseUrl}truck_order/getDetailJOBiaya/${idJoDetail}`, 
-            //     method: 'GET', 
-            //     success: function(response) {
-            //         if(!response)
-            //         {
-            //             array_tambahan_sdt = [];
-            //         }
-            //         else
-            //         {
-            //             for (var i in response) {
-            //                 if(response[i].storage || response[i].storage!=0)
-            //                 {
-            //                     var objSTORAGE = {
-            //                             deskripsi: 'STORAGE',
-            //                             biaya: response[i].storage,
-            //                         };
-            //                     array_tambahan_sdt.push(objSTORAGE);
-            //                 } 
-            //                 if(response[i].demurage||response[i].demurage!=0)
-            //                 {
-            //                     var objDEMURAGE = {
-            //                             deskripsi: 'DEMURAGE',
-            //                             biaya: response[i].demurage,
-            //                         };
-            //                     array_tambahan_sdt.push(objDEMURAGE);
-            //                 } 
-            //                 if(response[i].detention||response[i].detention!=0)
-            //                 {
-            //                     var objDETENTION = {
-            //                             deskripsi: 'DETENTION',
-            //                             biaya: response[i].detention,
-            //                         };
-            //                     array_tambahan_sdt.push(objDETENTION);
-            //                 } 
-                                
-            //             }
-            //             $('#biayaTambahSDT').val(JSON.stringify(array_tambahan_sdt));
-            //             console.log('array_tambahan_sdt '+array_tambahan_sdt);
-
-            //         }
-            //     },
-            //     error: function(xhr, status, error) {
-            //         console.error('Error:', error);
-            //     }
-            // });
-
-            // get data booking
-            // $.ajax({
-            //     url: `${baseUrl}truck_order/getDataBooking/${idJoDetail}`, 
-            //     method: 'GET', 
-            //     success: function(response) {
-            //         // console.log('response '+response.tgl_booking);
-            //         // console.log('today '+today);
-
-            //         // if(!response){
-            //         //     array_tambahan_sdt = [];
-            //         // }
-            //     },
-            //     error: function(xhr, status, error) {
-            //         console.error('Error:', error);
-            //     }
+        
             // });
            
 
@@ -584,12 +523,6 @@
             $('#kargo').val('');
             $('#biayaDetail').val('');
             $('#biayaTambahTarif').val('');
-
-            // let creds = $('#cred_val').val();
-            // let creds_max = $('#cred_val_max').val();
-            // creds = creds.replace(/,/g,'');
-            // creds_max = creds_max.replace(/,/g,'');
-            // //debug sini 2
            
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
@@ -599,17 +532,8 @@
                     {
                         customerLoad = true;
                         console.log(customerLoad);
-                        // console.log(response.dataKredit.kreditCustomer);
-                        // console.log(response.dataKredit.maxGrup);
 
                         // ==============================kredit=================
-                        
-                        // let creds = $('#cred_val').val();
-                        // let creds_max = $('#cred_val_max').val();
-                        // creds = creds.replace(/,/g,'');
-                        // creds_max = creds_max.replace(/,/g,'');
-                        // //debug sini 2
-                        // creds = parseInt(creds) + parseInt(total_tarif);
            
                         let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
                         creds_now = creds_now.toFixed(1);
