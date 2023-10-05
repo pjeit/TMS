@@ -167,6 +167,8 @@ return [
         'Barryvdh\DomPDF\ServiceProvider', //pdf
         // Intervention\Image\ImageServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class, //qr code
+        Spatie\Permission\PermissionServiceProvider::class, // buat role
+
         /*
          * Package Service Providers...
          */
