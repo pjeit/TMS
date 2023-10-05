@@ -55,12 +55,13 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="">Billing To</label>
-                                        <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required>
+                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required disabled
                                             <option value="">── BILLING TO ──</option>
                                             @foreach ($dataCustomers as $cust)
                                                 <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" {{ $cust->id == $idCust? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
                                             @endforeach
                                         </select>
+                                        <input type="hidden" name="billingTo" value="{{ $idCust }}">
                                     </div>  
                                 </div>
                             </div>

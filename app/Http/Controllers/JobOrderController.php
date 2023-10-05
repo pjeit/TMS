@@ -37,6 +37,8 @@ class JobOrderController extends Controller
         $id_role = Auth::user()->role_id; 
         $cabang = UserHelper::getCabang();
 
+        // dd(User::find(1)->HasRole('Super User'));
+
         $dataJO = DB::table('job_order as jo')
             ->leftJoin('user as u', 'u.id', '=', 'jo.created_by')
             ->leftJoin('karyawan as k', 'k.id', '=', 'u.karyawan_id')

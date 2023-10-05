@@ -181,7 +181,11 @@ class PembayaranInvoiceController extends Controller
 
                 $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
                 if($cust){
-                    $cust->kredit_sekarang -= $value['dibayar'];
+                    $kredit_sekarang = $cust->kredit_sekarang - $value['dibayar'];
+                    if($kredit_sekarang < 0){
+                        $kredit_sekarang = 0;
+                    }
+                    $cust->kredit_sekarang = $kredit_sekarang;
                     $cust->updated_by = $user;
                     $cust->updated_at = now();
                     $cust->save();

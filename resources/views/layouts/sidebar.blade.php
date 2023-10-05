@@ -539,7 +539,7 @@
               <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
                 <i class="fas nav-icon fa-solid fa fa-undo"></i>
                 {{-- <i class=""></i> --}}
-                <p>Rollback
+                <p>Revisi
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -550,7 +550,39 @@
                   <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      Job Order
+                      <b>
+                        <small>Revisi Uang Jalan</small>
+                      </b>
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <b>
+                        <small>Revisi Biaya Operasional</small>
+                      </b>
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <b>
+                        <small>Revisi Belum Invoice</small>
+                      </b>
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <b>
+                        <small>Revisi Pembayaran Invoice</small>
+                      </b>
                     </p>
                   </a>
                 </li>
