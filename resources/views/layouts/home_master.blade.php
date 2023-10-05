@@ -193,7 +193,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div> --}}
-            <div class="alert alert-dismissible fade show" id="popup-alert">
+            <div class="" id="popup-alert">
 
             </div>
 

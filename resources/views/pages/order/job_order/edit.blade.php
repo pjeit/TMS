@@ -186,7 +186,7 @@
                                                         <option value="">── Pilih Tujuan ──</option>
                                                         @if ($dataTujuan)
                                                             @foreach ($dataTujuan as $tuj)
-                                                                <option value="{{$tuj->id}}"  <?= $item->id_grup_tujuan == $tuj->id ? 'selected':''; ?> >{{ $tuj->nama_tujuan }}</option>
+                                                                <option value="{{$tuj->id}}" <?= $item->id_grup_tujuan == $tuj->id ? 'selected':''; ?> >{{ $tuj->nama_tujuan }}</option>
                                                             @endforeach
                                                         @endif
                                                     </select>
