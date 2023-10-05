@@ -145,6 +145,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/belum_invoice/invoiceKembali', [App\Http\Controllers\BelumInvoiceController::class, 'invoiceKembali'])->name('belum_invoiceKembali.set');
         Route::resource('belum_invoice', 'App\Http\Controllers\BelumInvoiceController');
         Route::resource('cetak_invoice', 'App\Http\Controllers\CetakInvoiceController');
+        Route::resource('revisi_sewa_invoice', 'App\Http\Controllers\RevisiSewaBelumInvoiceController');
+
 
 
         Route::post('/pembayaran_invoice/set_invoice_id', [App\Http\Controllers\PembayaranInvoiceController::class, 'setInvoiceId'])->name('setInvoiceId.set');
