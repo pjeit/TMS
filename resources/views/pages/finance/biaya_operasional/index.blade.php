@@ -33,10 +33,11 @@
                             {{-- <li class="list-inline-item"> --}}
                                 <div class="col-sm-12 col-md-3 col-lg-3 bg-white pb-3">
                                     <div class="form-group">
-                                        <label for="">Jenis Biaya</label>
-                                        <select class="form-control selectpicker" name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                        <label for="">Jenis Biaya</label> 
+                                        <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                             <option value="">­­— PILIH DATA —</option>
                                             <option value="TALLY">TALLY</option>
+                                            <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
                                             <option value="OPERASIONAL">OPERASIONAL</option>
                                             <option value="TIMBANG">TIMBANG</option>
                                             <option value="BURUH">BURUH</option>
@@ -60,7 +61,7 @@
                             {{-- <li class="list-inline-item"> --}}
                                 <div class="col-sm-12 col-md-5 col-lg-5 bg-white pb-3">
                                     <div class="input-group mt-4">
-                                        <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                        <select class="form-control selectpicker" required id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                             <option value="">── PILIH PEMBAYARAN ──</option>
                                             @foreach ($dataKas as $kas)
                                                 <option value="{{$kas->id}}">{{ $kas->nama }}</option>
@@ -230,6 +231,7 @@
                         $("#loading-spinner").hide();
                         var item = $('#item').val();
                         var data = response.data;
+                        console.log('data', data);
     
                         $("th").remove();
                         $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
@@ -273,6 +275,8 @@
                                 }
                                 if(item == 'TALLY'){
                                     nominal = data[i].tally;       
+                                }else if(item == 'SEAL PELAYARAN'){
+                                    nominal = data[i].seal_pelayaran;       
                                 }
                                 if(item == 'TIMBANG' || item == 'BURUH'){
                                     ord = 6;
