@@ -193,7 +193,7 @@
                 <span aria-hidden="true">&times;</span>
               </button>
             </div> --}}
-            <div class="alert alert-dismissible fade show" id="popup-alert">
+            <div class="" id="popup-alert">
 
             </div>
 
@@ -236,10 +236,19 @@
                 didOpen: (toast) => {
                     toast.addEventListener('mouseenter', Swal.stopTimer)
                     toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
+              }
             })
-            var iconData = sessionMessage == 'Success'? 'success':'danger';
-            var titleData = sessionMessage == 'Success'? 'Data tersimpan!':'Data gagal disimpan!';
+
+            if (/^Success/.test(sessionMessage) || /^Sukses/.test(sessionMessage)) {
+                var iconData = 'success';
+                var titleData = 'Data tersimpan!';
+            } else if (/^Error/.test(sessionMessage)) {
+                var iconData = 'danger';
+                var titleData = 'Data gagal disimpan!';
+              }else{
+                var iconData = 'success';
+                var titleData = '';
+            }
             Toast.fire({
                 icon: iconData,
                 title: titleData

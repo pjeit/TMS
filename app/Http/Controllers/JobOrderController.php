@@ -323,8 +323,12 @@ class JobOrderController extends Controller
             if(isset($data['detail'])){
                 foreach ($data['detail'] as $key => $detail) {
                     $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($detail['id_detail']);
-                    $JOD->id_grup_tujuan = $detail['tujuan'];
-                    $JOD->pick_up = $detail['pick_up'];
+                    if(isset($detail['tujuan'])){
+                        $JOD->id_grup_tujuan = $detail['tujuan'];
+                    }
+                    if(isset($detail['pick_up'])){
+                        $JOD->pick_up = $detail['pick_up'];
+                    }
                     $JOD->updated_by = $user;
                     $JOD->updated_at = now();
                     if($JOD->save() && isset($detail['tgl_booking'])){
@@ -382,9 +386,10 @@ class JobOrderController extends Controller
             //     $jaminan->save();
             // }
 
-            return redirect()->route('job_order.index')->with('status','Success!!');
+            return redirect()->route('job_order.index')->with('status','Success');
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->route('job_order.index')->with('status','Error');
+            // return redirect()->back()->withErrors($e->errors())->withInput();
         }
     }
 

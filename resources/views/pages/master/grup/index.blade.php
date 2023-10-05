@@ -66,11 +66,6 @@
         scrollX: true
       });
     });
-
 </script>
 
-<script>
-
-
-</script>
 @endsection

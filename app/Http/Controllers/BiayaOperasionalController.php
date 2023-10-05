@@ -89,7 +89,7 @@ class BiayaOperasionalController extends Controller
                         ->where('is_aktif', '=', "Y")
                         ->where('kas_bank.id', '=', $data['pembayaran'])
                         ->get();
-            dd($data['pembayaran']); 
+            // dd($data['pembayaran']); 
             $saldo_baru = $saldo[0]->saldo_sekarang - ( floatval(str_replace(',', '', $data['t_total'])) );
 
             DB::table('kas_bank')
