@@ -1,9 +1,5 @@
 @extends('layouts.home_master')
-@if(session()->has('message'))
-    <div class="alert alert-success">
-        {{ session()->get('message') }}
-    </div>
-@endif
+
 @section('pathjudul')
 <li class="breadcrumb-item"><a href="/">Home</a></li>
 <li class="breadcrumb-item">Master</li>
@@ -91,6 +87,11 @@
 
     <!-- /.row -->
 </div>
+@if(session()->has('message'))
+    <div class="alert alert-success">
+        {{ session()->get('message') }}
+    </div>
+@endif
 <script type="text/javascript">
     $(function () {
       var table = $('#myTable').DataTable({
