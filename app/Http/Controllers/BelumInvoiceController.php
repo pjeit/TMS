@@ -302,10 +302,13 @@ class BelumInvoiceController extends Controller
             ->first();
         // dd($id);
         $TotalBiayaRev = 0;
-        // dd($data);
+        dd($data);
         $qrcode = QrCode::size(150)
         // ->backgroundColor(255, 0, 0, 25)
-        ->generate($data);
+        ->generate(
+             'No. Invoice: ' . $data->no_invoice . "\n" .
+             'Total tagihan: ' . $data->total_tagihan
+        );
         // dd($qrcode);
         // dd($dataJoDetail);   
         $pdf = PDF::loadView('pages.invoice.belum_invoice.print',[
