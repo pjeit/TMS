@@ -287,7 +287,6 @@
 <script>
      $(document).ready(function() {
         var sessionMessage = "<?= session()->has('status') ? session()->get('status') : null ?>";
-        console.log('sessionMessage', sessionMessage);
         if (sessionMessage != '') {
             const Toast = Swal.mixin({
                 toast: true,

@@ -36,7 +36,7 @@ class PaymentJobController extends Controller
                 ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
                 // ->join('jaminan', 'job_order.id', '=', 'jaminan.id_job_order')
                 ->where('job_order.is_aktif', '=', 'Y') 
-                ->where('job_order.status', 'like', 'MENUNGGU PEMBAYARAN') 
+                ->where('job_order.status', 'MENUNGGU PEMBAYARAN') 
                 ->get();
 
         //  $data = JobOrder::where('is_aktif', 'Y')->paginate(5);
@@ -88,7 +88,6 @@ class PaymentJobController extends Controller
      */
     public function edit(JobOrder $pembayaran_jo)
     {
-        //
         $dataSupplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
@@ -114,32 +113,32 @@ class PaymentJobController extends Controller
             // ->where('kas_bank.id', '=', 2)
             ->get();
             // kalau bug misal data ga ada, ganti variable sama nama routing sama
-        // dd($dataJaminan);
-        // dd($pembayaran_jo->no_jo);
-        // dd($dataKas[0]->saldo_awal);
-        
-        // $totalThc =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $pembayaran_jo->id)
-        //     ->where('keterangan', 'LIKE', '%THC%')
-        //     ->sum('nominal');
-        // $totalLolo =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $pembayaran_jo->id)
-        //     ->where('keterangan', 'LIKE', '%LOLO%')
-        //     ->sum('nominal');
-        // $totalApbs =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $pembayaran_jo->id)
-        //     ->where('keterangan', 'LIKE', '%APBS%')
-        //     ->sum('nominal');
-        //  $totalCleaning =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $pembayaran_jo->id)
-        //     ->where('keterangan', 'LIKE', '%CLEANING%')
-        //     ->sum('nominal');
-        //  $Docfee =  DB::table('job_order_detail_biaya')
-        //     ->select('nominal')
-        //     ->where('id_jo', $pembayaran_jo->id)
-        //     ->where('keterangan', 'LIKE', '%DOC_FEE%')
-        //     ->first();
-        // $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
+            // dd($dataJaminan);
+            // dd($pembayaran_jo->no_jo);
+            // dd($dataKas[0]->saldo_awal);
+            
+            // $totalThc =  DB::table('job_order_detail_biaya')
+            //     ->where('id_jo', $pembayaran_jo->id)
+            //     ->where('keterangan', 'LIKE', '%THC%')
+            //     ->sum('nominal');
+            // $totalLolo =  DB::table('job_order_detail_biaya')
+            //     ->where('id_jo', $pembayaran_jo->id)
+            //     ->where('keterangan', 'LIKE', '%LOLO%')
+            //     ->sum('nominal');
+            // $totalApbs =  DB::table('job_order_detail_biaya')
+            //     ->where('id_jo', $pembayaran_jo->id)
+            //     ->where('keterangan', 'LIKE', '%APBS%')
+            //     ->sum('nominal');
+            //  $totalCleaning =  DB::table('job_order_detail_biaya')
+            //     ->where('id_jo', $pembayaran_jo->id)
+            //     ->where('keterangan', 'LIKE', '%CLEANING%')
+            //     ->sum('nominal');
+            //  $Docfee =  DB::table('job_order_detail_biaya')
+            //     ->select('nominal')
+            //     ->where('id_jo', $pembayaran_jo->id)
+            //     ->where('keterangan', 'LIKE', '%DOC_FEE%')
+            //     ->first();
+            // $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
         $TotalBiayaRev = $pembayaran_jo->thc+$pembayaran_jo->lolo+$pembayaran_jo->apbs+$pembayaran_jo->cleaning+$pembayaran_jo->doc_fee;
 
         return view('pages.finance.pembayaran_order.edit',[
@@ -150,12 +149,6 @@ class PaymentJobController extends Controller
             'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
             'dataJaminan' =>$dataJaminan,
             'dataKas'=>$dataKas,
-            // 'totalThc'=> $totalThc,
-            // 'totalLolo'=> $totalLolo,
-            // 'totalApbs'=> $totalApbs,
-            // 'totalCleaning'=>$totalCleaning,
-            // 'Docfee'=>$Docfee,
-            // 'TotalBiaya'=>$TotalBiaya,
             'TotalBiayaRev'=>$TotalBiayaRev
         ]);
     }
@@ -207,8 +200,7 @@ class PaymentJobController extends Controller
             DB::table('job_order')
                 ->where('id', $pembayaran_jo['id'])
                 ->update(array(
-                    //    'nama' => strtoupper($data['nama']),
-                        'status' => 'DALAM PERJALANAN',
+                        'status' => 'PROSES DOORING',
                         'updated_at'=> VariableHelper::TanggalFormat(),
                         'updated_by'=> $user,
                         'is_aktif' => "Y",

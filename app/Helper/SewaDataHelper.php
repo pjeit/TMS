@@ -29,7 +29,7 @@ class SewaDataHelper
         return JobOrder::select('job_order.*')
             ->leftJoin('job_order_detail as jod', 'job_order.id', '=', 'jod.id_jo')
             ->where('jod.status', 'BELUM DOORING')
-            ->where('job_order.status','like', '%DALAM PERJALANAN%')
+            ->where('job_order.status', 'PROSES DOORING')
             ->where('job_order.is_aktif', '=', "Y")
             ->with('getCustomer')
             ->with('getSupplier')

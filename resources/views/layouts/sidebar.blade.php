@@ -335,7 +335,7 @@
                   <a href="{{route('storage_demurage.index')}}" class="nav-link {{request()->url() === route('storage_demurage.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      Storage Demurage
+                      Input S/D/T
                     </p>
                   </a>
                 </li>

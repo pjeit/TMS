@@ -147,63 +147,64 @@
             </div>
             <div class="col-12">
                 <div class="d-flex justify-content-between" style="gap: 10px;">
-                            <table class="table" id="sortable" >
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Biaya Sebelum Dooring</th>
-                                    </tr>
-                                </thead>
-                                <tbody > 
-                                    <tr>
-                                        <th><span> <input disabled type="checkbox" name="thc_cekbox" id="thc_cekbox" {{$pembayaran_jo->thc!=0?'checked':''}}></span> THC</th>
-                                        <td name="total_thc"><input type="text" id="total_thc" class="form-control" value="Rp. {{number_format($pembayaran_jo->thc,2)}}" readonly></td>
-                                    </tr>
-                                    <tr>
-                                        <th><span> <input disabled type="checkbox" name="lolo_cekbox" id="lolo_cekbox" {{$pembayaran_jo->lolo!=0?'checked':''}}></span> LOLO</th>
-                                        <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" value="Rp. {{number_format($pembayaran_jo->lolo,2)}}" readonly></td>
-                                    </tr>
-                                    <tr>
-                                        <th><span> <input disabled type="checkbox" name="apbs_cekbox" id="apbs_cekbox" {{$pembayaran_jo->apbs!=0?'checked':''}}></span> APBS</th>
-                                        <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" value="Rp. {{number_format($pembayaran_jo->apbs,2)}}" readonly></td>
-                                    </tr>
-                                    <tr>
-                                        <th><span> <input disabled type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox" {{$pembayaran_jo->cleaning!=0?'checked':''}}></span> CLEANING</th>
-                                        <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" value="Rp. {{number_format($pembayaran_jo->cleaning,2)}}" readonly></td>
-                                    </tr>
-                                    <tr>
-                                        <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox" {{$pembayaran_jo->doc_fee!=0?'checked':''}}></span> DOC FEE</th>
-                                        <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($pembayaran_jo->doc_fee,2)}}" readonly></td>
-                                    </tr>
-                                    <tr>
-                                        <th>SUB TOTAL</th>
-                                        <th name="total_sblm_dooring" id="total_sblm_dooring" >Rp. {{number_format($TotalBiayaRev,2)}}</th>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                </tfoot>
-                            </table>
-                            @if($dataJaminan)
-                            <table class="table" id="sortable">
-                                <thead>
-                                    <tr>
-                                        <th colspan="2">Biaya Jaminan</th>
-                                    </tr>
-                                </thead>
-                                <tbody > 
-                                    <tr class="tinggi">
-                                        <th>Tgl Bayar Jaminan</th>
-                                        <td><input type="text" name="" class="form-control" value="{{\Carbon\Carbon::parse($dataJaminan->tgl_bayar)->format('d-M-Y')}}" readonly></td>
-                                    </tr>
-                                    <tr>
-                                        <th>Total Jaminan</th>
-                                        <th>Rp. {{number_format($dataJaminan->nominal,2)}}</th>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                </tfoot>
-                            </table>
-                            @endif
-                        </div>
+                    <table class="table" id="sortable" style="background: #fff">
+                        <thead>
+                            <tr>
+                                <th colspan="2">Biaya Sebelum Dooring</th>
+                            </tr>
+                        </thead>
+                        <tbody > 
+                            <tr>
+                                <th><span> <input disabled type="checkbox" name="thc_cekbox" id="thc_cekbox" {{$pembayaran_jo->thc!=0?'checked':''}}></span> THC</th>
+                                <td name="total_thc"><input type="text" id="total_thc" class="form-control" value="Rp. {{number_format($pembayaran_jo->thc,2)}}" readonly></td>
+                            </tr>
+                            <tr>
+                                <th><span> <input disabled type="checkbox" name="lolo_cekbox" id="lolo_cekbox" {{$pembayaran_jo->lolo!=0?'checked':''}}></span> LOLO</th>
+                                <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" value="Rp. {{number_format($pembayaran_jo->lolo,2)}}" readonly></td>
+                            </tr>
+                            <tr>
+                                <th><span> <input disabled type="checkbox" name="apbs_cekbox" id="apbs_cekbox" {{$pembayaran_jo->apbs!=0?'checked':''}}></span> APBS</th>
+                                <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" value="Rp. {{number_format($pembayaran_jo->apbs,2)}}" readonly></td>
+                            </tr>
+                            <tr>
+                                <th><span> <input disabled type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox" {{$pembayaran_jo->cleaning!=0?'checked':''}}></span> CLEANING</th>
+                                <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" value="Rp. {{number_format($pembayaran_jo->cleaning,2)}}" readonly></td>
+                            </tr>
+                            <tr>
+                                <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox" {{$pembayaran_jo->doc_fee!=0?'checked':''}}></span> DOC FEE</th>
+                                <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($pembayaran_jo->doc_fee,2)}}" readonly></td>
+                            </tr>
+                            <tr>
+                                <th>SUB TOTAL</th>
+                                <th name="total_sblm_dooring" id="total_sblm_dooring" >Rp. {{number_format($TotalBiayaRev,2)}}</th>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+
+                    @if($dataJaminan)
+                        <table class="table" id="sortable" style="background: #fff">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">Biaya Jaminan</th>
+                                </tr>
+                            </thead>
+                            <tbody > 
+                                <tr class="tinggi">
+                                    <th>Tgl Bayar Jaminan</th>
+                                    <td><input type="text" name="" class="form-control" value="{{\Carbon\Carbon::parse($dataJaminan->tgl_bayar)->format('d-M-Y')}}" readonly></td>
+                                </tr>
+                                <tr>
+                                    <th>Total Jaminan</th>
+                                    <th>Rp. {{number_format($dataJaminan->nominal,2)}}</th>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    @endif
+                </div>
             </div>
         
         </div>

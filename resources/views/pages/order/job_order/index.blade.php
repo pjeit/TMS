@@ -63,7 +63,7 @@
                                                 @endphp
                                                 @if(!$kondisi)
                                                     <a href="{{route('job_order.print',[$item->id])}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
-                                                        <span class="fas fa-print mr-3"></span> Cetak Biaya JO & Jaminan 
+                                                        <span class="fas fa-print mr-3"></span> Cetak Nota
                                                     </a>
                                                 @endif
                                                 @if ($item->status == 'MENUNGGU PEMBAYARAN')

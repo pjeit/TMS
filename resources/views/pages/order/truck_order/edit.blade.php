@@ -181,16 +181,35 @@
                                     <input type="hidden" id="biayaTambahTarif" name="biayaTambahTarif">
                                     <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
                                 </div>
-                                    <div class="form-group">
-                                    <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
-                                        <option value="">Pilih Kendaraan</option>
-                                        @foreach ($dataKendaraan as $kendaraan)
-                                            <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}-{{$kendaraan->driver_id}}"  {{$kendaraan->kendaraanId == $data['id_kendaraan']? 'selected':''}}>{{ $kendaraan->no_polisi }}</option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
-                                    <input type="hidden" id="no_polisi" name="no_polisi" value="">
+
+                                <div class="row">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        {{-- <div class="form-group" id="inboundDataKontainer">
+                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                            <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
+                                            <input type="hidden" id="status" value="">
+                                        </div> --}}
+                                        <div class="form-group" id="outbondDataKontainer">
+                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                            <select class="form-control selectpicker tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                <option value="">── Tipe ──</option>
+                                                <option value='20'>20"</option>
+                                                <option value='40'>40"</option>
+                                            </select>
+                                        </div>
+                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
+                                    </div>    
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
+                                        <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
+                                            <option value="">Pilih Kendaraan</option>
+                                            @foreach ($dataKendaraan as $kendaraan)
+                                                <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}-{{$kendaraan->driver_id}}"  {{$kendaraan->kendaraanId == $data['id_kendaraan']? 'selected':''}}>{{ $kendaraan->no_polisi }}</option>
+                                            @endforeach
+                                        </select>
+                                        <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
+                                        <input type="hidden" id="no_polisi" name="no_polisi" value="">
+                                    </div>
                                 </div>
                               
                                 <div class="form-group">
@@ -216,6 +235,15 @@
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="driver_nama" name="driver_nama" value="">
+                                </div>
+                                <div class="form-group">
+                                    <label for="select_driver">Stack TL</label>
+                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
+                                        <option value="">Pilih TL</option>
+                                        <option value="Perak">Perak</option>
+                                        <option value="Priuk">Priuk</option>
+                                        <option value="Teluk Lamong">Teluk Lamong</option>
+                                    </select>
                                 </div>
                             </div>
                          

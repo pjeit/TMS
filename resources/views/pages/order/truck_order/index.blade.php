@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="dt" class="table table-bordered table-striped" width='100%'>
+                    <table id="datatable" class="table table-bordered table-striped" width='100%'>
                         <thead>
                             <tr>
                                 <th>Customer</th>

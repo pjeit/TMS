@@ -227,7 +227,7 @@
                                         <option value="">Pilih Chassis</option>
 
                                         @foreach ($dataChassis as $cha)
-                                            <option value="{{$cha->idChassis}}" karoseris="{{$cha->karoseri}}">{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}})</option>
+                                            <option value="{{$cha->idChassis}}" modelChassis="{{ $cha->modelChassis }}">{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}}")</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="karoseri" name="karoseri" value="">
@@ -243,6 +243,16 @@
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="driver_nama" name="driver_nama" value="">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="select_driver">Stack TL</label>
+                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
+                                        <option value="">Pilih TL</option>
+                                        <option value="Perak">Perak</option>
+                                        <option value="Priuk">Priuk</option>
+                                        <option value="Teluk Lamong">Teluk Lamong</option>
+                                    </select>
                                 </div>
                             </div>
                          
@@ -513,7 +523,6 @@
                     if(response)
                     {
                         customerLoad = true;
-                        console.log(customerLoad);
 
                         // ==============================kredit=================
            
@@ -740,12 +749,15 @@
 
 		});
         $('body').on('change','#tipe_kontainer_out', function (){
-      //fire your ajax call  
-            setKendaraan($(this).val())
-            setChassis($(this).val())
-
-
-
+            
+            var return_option = $("#select_chassis").select2().find(":selected")[0];    
+            var modelChassis = $( return_option ).attr('modelChassis');
+            if(this.value != modelChassis){
+                setKendaraan($(this).val())
+                setChassis($(this).val())
+                $('#select_driver').val('').trigger('change');
+            }
+            // select_chassis
         })
 
         function setKendaraan(tipeKontainer)
@@ -844,7 +856,6 @@
                         if(response)
                         {
                             
-                            console.log(response);
                             select_chassis.empty(); 
                             select_chassis.append('<option value="">Pilih Chassis</option>');
                             if(tipeKontainer!=""|| tipeKontainer!= undefined)
@@ -880,7 +891,6 @@
             var idChassis = selectedOption.attr('idChassis');
             var nopol = selectedOption.attr('noPol');
             var supir = selectedOption.attr('idDriver');
-            console.log(idChassis);
             // kendaraan_id
             // no_polisi
             // select_chassis
@@ -896,7 +906,6 @@
             var selectedOption = $(this).find('option:selected');
             var karoseris = selectedOption.attr('karoseris');
             
-            console.log(karoseris);
             $('#karoseri').val(karoseris);
 
 		});
@@ -906,7 +915,6 @@
             var selectedOption = $(this).find('option:selected');
             var nama_driver = selectedOption.attr('nama_driver');
             
-            console.log(nama_driver);
             $('#driver_nama').val(nama_driver);
 
 		});
