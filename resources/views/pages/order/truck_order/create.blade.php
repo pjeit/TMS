@@ -118,28 +118,6 @@
                                         <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
                                     </div> 
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-7">
-                                        <label for="no_sewa">No. Sewa</label>
-                                        <input type="text" class="form-control" id="no_sewa" placeholder="Otomatis" readonly="" value="">    
-                                        <input type="hidden" id="status" value="">
-                                    </div>
-                                    <div class="form-group col-5">
-                                        <div class="form-group" id="inboundDataKontainer">
-                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
-                                            <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
-                                        </div>
-                                        <div class="form-group" id="outbondDataKontainer">
-                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
-                                            <select class="form-control selectpicker tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">── Tipe ──</option>
-                                                <option value='20'>20"</option>
-                                                <option value='40'>40"</option>
-                                            </select>
-                                        </div>
-                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
-                                    </div>                                    
-                                </div>
                                 <div class="form-group">
                                     <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
@@ -172,6 +150,7 @@
                                     <input type="hidden" id="booking_id" name="booking_id" value="" placeholder="booking_id">
                                     <input type="hidden" id="jenis_order" name="jenis_order" value="" placeholder="jenis_order">
                                 </div>
+
                                 <div class="form-group">
                                     <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
                                     <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" required>
@@ -204,41 +183,44 @@
                                     <input type="hidden" id="biayaTambahTarif" name="biayaTambahTarif">
                                     <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
                                 </div>
-                                {{-- <div class="row">
-                                    <div class="col">
-                                          <div class="form-group">
-                                            <label for="select_kategori_kendaraan">Kategori Kendaraan<span style="color:red">*</span></label>
-                                            <select class="form-control select2" style="width: 100%;" id='select_kategori_kendaraan' name="select_kategori_kendaraan">
-                                                <option value="">Pilih Kendaraan</option>
 
-                                         
-                                            </select>
-                                            <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
+                                <div class="row">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group" id="inboundDataKontainer">
+                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                            <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
+                                            <input type="hidden" id="status" value="">
                                         </div>
+                                        <div class="form-group" id="outbondDataKontainer">
+                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                            <select class="form-control selectpicker tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                <option value="">── Tipe ──</option>
+                                                <option value='20'>20"</option>
+                                                <option value='40'>40"</option>
+                                            </select>
+                                        </div>
+                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
+                                    </div>     
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
+                                        <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan" required>
+                                            <option value="">Pilih Kendaraan</option>
+
+                                            @foreach ($dataKendaraan as $kendaraan)
+                                            
+                                                <option value="{{$kendaraan->kendaraanId}}"
+                                                    idChassis='{{$kendaraan->chassisId}}'
+                                                    noPol='{{$kendaraan->no_polisi}}'
+                                                    idDriver='{{$kendaraan->driver_id}}'
+                                                    kategoriKendaraan='{{$kendaraan->kategoriKendaraan}}'
+                                                    >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
+                                            @endforeach
+                                        </select>
+                                        <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
+                                        <input type="hidden" id="no_polisi" name="no_polisi" value="">
                                     </div>
-                                    <div class="col"> --}}
-                                          <div class="form-group">
-                                            <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                            <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan" required>
-                                                <option value="">Pilih Kendaraan</option>
- 
-                                                @foreach ($dataKendaraan as $kendaraan)
-                                                
-                                                    <option value="{{$kendaraan->kendaraanId}}"
-                                                        idChassis='{{$kendaraan->chassisId}}'
-                                                        noPol='{{$kendaraan->no_polisi}}'
-                                                        idDriver='{{$kendaraan->driver_id}}'
-                                                        kategoriKendaraan='{{$kendaraan->kategoriKendaraan}}'
-                                                        >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
-                                                @endforeach
-                                            </select>
-                                            <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
-                                            <input type="hidden" id="no_polisi" name="no_polisi" value="">
-                                        </div>
-                                    {{-- </div>
+                                </div>
 
-                                </div> --}}
-                              
                                 <div class="form-group">
                                     <label for="select_ekor">Chassis<span style="color:red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis">

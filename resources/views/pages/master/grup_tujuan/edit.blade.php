@@ -242,7 +242,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-lg-3 col-md-6 col-sm-6">
-                                <label for="komisi">Komisi Tujuan</label>
+                                <label for="komisi">Komisi Customer</label>
                                 <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Rp</span>

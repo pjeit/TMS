@@ -250,9 +250,9 @@
               </template>
             </div> --}}
 
-              <div id="toast-container" class="container">
+              {{-- <div id="toast-container" class="container">
                 Toast Should be here?
-              </div>  
+              </div>   --}}
 
 
             {{-- <div class="swal2-show swal2-backdrop-show swal2-icon-show" style="background-color: #fff;" role="alert">
@@ -296,10 +296,6 @@
                 timer: 2500,
                 showConfirmButton: false,
                 timerProgressBar: true,
-                target: document.querySelector('#toast-container'),
-                onOpen: function () {
-                  alert('The ID of my parent is: ' + swal.getContainer().parentElement.id)
-                },
                 didOpen: (toast) => {
                     toast.addEventListener('mouseenter', Swal.stopTimer)
                     toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -316,17 +312,9 @@
                 var iconData = 'success';
                 var titleData = '';
             }
-            // Toast.fire({
-            //     icon: iconData,
-            //     title: titleData
-            // })
-            // Swal.fire({
-            //   template: '#my-template'
-            // })
-
             Toast.fire({
-              title: 'Toast in a custom container',
-              toast: true,
+                icon: iconData,
+                title: titleData
             })
         }
     });
