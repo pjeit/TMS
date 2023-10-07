@@ -62,7 +62,7 @@ class SewaController extends Controller
         
         try {
             $data = $request->collect();
-            
+            dd($data);
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
 
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
@@ -112,12 +112,12 @@ class SewaController extends Controller
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
             $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
+            $sewa->stack_tl = $data['stack_tl'];
             $sewa->created_by = $user;
             $sewa->created_at = now();
             $sewa->is_aktif = 'Y';
             
             if($sewa->save()){
-
                 $customer = DB::table('customer as c')
                     ->select('c.*')
                     ->where('c.id', '=', $data['customer_id'])

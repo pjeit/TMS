@@ -63,7 +63,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input  type="text" name="total_max_kredit" class="form-control numaja uang" value="{{number_format($data->total_max_kredit)}}" id='total_max_kredit' >
+                                    <input  type="text" name="total_max_kredit" class="form-control numaja uang" value="{{number_format($data->total_max_kredit)}}" id='total_max_kredit' {{ $role_id == 1? '':'readonoly' }} >
                                 </div>
                             </div>
                         </div>

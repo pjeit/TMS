@@ -138,10 +138,13 @@ class GrupController extends Controller
     public function edit(Grup $grup)
     {
         $data = Grup::where('is_aktif', 'Y')->findOrFail($grup->id);
+        $role_id = Auth::user()->role_id;
+        // dd(Auth::user());
         
         return view('pages.master.grup.edit',[
             'judul' => "Grup",
             'data' => $data,
+            'role_id' => $role_id,
         ]);
     }
 
