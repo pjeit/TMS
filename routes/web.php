@@ -153,6 +153,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pembayaran_invoice/bayar', [App\Http\Controllers\PembayaranInvoiceController::class, 'bayar'])->name('pembayaran_invoice.bayar');
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
 
+        Route::resource('add_return_tl', 'App\Http\Controllers\AddReturnTLController');
+
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
 
 

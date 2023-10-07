@@ -23,8 +23,6 @@ class BelumInvoiceController extends Controller
      */
     public function index()
     {
-        //
-         //
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
@@ -33,8 +31,8 @@ class BelumInvoiceController extends Controller
         // Session::flush();
         // Session::forget(['sewa', 'cust', 'grup']);
         if (session()->has('sewa') || session()->has('cust') || session()->has('grup')) {
-    session()->forget(['sewa', 'cust', 'grup']);
-}
+            session()->forget(['sewa', 'cust', 'grup']);
+        }
         $dataSewa =  DB::table('sewa AS s')
                 ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','g.id as id_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')

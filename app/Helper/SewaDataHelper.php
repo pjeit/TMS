@@ -131,8 +131,9 @@ class SewaDataHelper
                         ->where('b.is_aktif', "Y");
             })
             ->where('jod.id_jo', '=', $id)
-            ->where('status' ,'like','%BELUM DOORING%')
+            ->where('status', 'BELUM DOORING')
             ->where('jod.is_aktif', '=', "Y")
+            ->orderBy('jod.id', 'ASC')
             ->whereNotNull('jod.id_grup_tujuan' )
             ->get();
         return response()->json($datajODetail);

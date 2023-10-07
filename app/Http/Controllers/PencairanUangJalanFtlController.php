@@ -95,9 +95,6 @@ class PencairanUangJalanFtlController extends Controller
         try {
             // dump transaksi
             // dd($data);
-
-            
-            
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
 
             if(isset($kh)){
@@ -216,7 +213,7 @@ class PencairanUangJalanFtlController extends Controller
                     ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                     ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                     ->where('s.jenis_tujuan', 'like', '%FTL%')
-                    ->where('s.status', 'like', "%MENUNGGU UANG JALAN%")
+                    ->where('s.status', 'MENUNGGU UANG JALAN')
                     ->where('s.is_aktif', '=', 'Y')
                     ->where('s.id_sewa', '=', $pencairan_uang_jalan_ftl->id_sewa)
                     ->groupBy('c.id')

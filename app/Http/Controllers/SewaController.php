@@ -10,6 +10,10 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
 use App\Helper\SewaDataHelper;
+use App\Models\PengaturanKeuangan;
+use App\Models\SewaBiaya;
+use App\Models\SewaOperasional;
+
 class SewaController extends Controller
 {
     /**
@@ -62,11 +66,10 @@ class SewaController extends Controller
         
         try {
             $data = $request->collect();
-            dd($data);
+            $pengaturan = PengaturanKeuangan::first();
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
-
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
-            $booking_id = isset($data['booking_id'])? $data['booking_id']:null; 
+            // dd($data['stack_tl']);
 
             $lastNoSewa = Sewa::where('is_aktif', 'Y')
                         ->where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
@@ -87,7 +90,7 @@ class SewaController extends Controller
             
             $sewa = new Sewa();
             $sewa->no_sewa = $no_sewa;
-            $sewa->id_booking = $data['booking_id'];
+            $sewa->id_booking = ($data['booking_id'] == NULL || $data['booking_id'] == 'null')? NULL:$data['booking_id'];
             $sewa->id_jo = $data['id_jo'];
             $sewa->id_jo_detail = $data['id_jo_detail'];
             $sewa->id_customer = $data['customer_id'];
@@ -112,12 +115,26 @@ class SewaController extends Controller
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
             $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
-            $sewa->stack_tl = $data['stack_tl'];
+            $sewa->stack_tl = $data['stack_tl'] == NULL? NULL: ($data['stack_tl'] != ''? 1:NULL) ;
             $sewa->created_by = $user;
             $sewa->created_at = now();
             $sewa->is_aktif = 'Y';
             
             if($sewa->save()){
+                if($data['stack_tl'] != NULL){
+                    DB::table('sewa_biaya')
+                        ->insert(array(
+                        'id_sewa' => $sewa->id_sewa,
+                        'deskripsi' => 'TL',
+                        'biaya' => $pengaturan[$data['stack_tl']],
+                        'catatan' => $data['stack_tl'],
+                        'created_at' => now(),
+                        'created_by' => $user,
+                        'is_aktif' => "Y",
+                        )
+                    ); 
+                }
+
                 $customer = DB::table('customer as c')
                     ->select('c.*')
                     ->where('c.id', '=', $data['customer_id'])
@@ -169,7 +186,7 @@ class SewaController extends Controller
                         ->where('id', $data['id_jo_detail'])
                         ->update([
                             'tgl_dooring' => date_format($tgl_berangkat, 'Y-m-d'),
-                            'status'=> 'DALAM PERJALANAN',
+                            'status'=> 'PROSES DOORING',
                             'updated_at' => now(),
                             'updated_by' => $user,
                         ]);
@@ -177,8 +194,7 @@ class SewaController extends Controller
                 }
               
                 $arrayBiaya = json_decode($data['biayaDetail'], true);
-                
-                if( isset($arrayBiaya))
+                if(isset($arrayBiaya))
                 {
                     foreach ($arrayBiaya as /*$key =>*/ $item) {
                         DB::table('sewa_biaya')
@@ -186,22 +202,22 @@ class SewaController extends Controller
                             'id_sewa' => $sewa->id_sewa,
                             'deskripsi' => $item['deskripsi'] ,
                             'biaya' => $item['biaya'],
-                            'catatan' => $item['catatan']?$item['catatan']:null,
-                            'is_aktif' => "Y",
+                            'catatan' => $item['catatan']? $item['catatan']:null,
                             'created_at' => now(), 
                             'created_by' => $user,
-                            'updated_at' => now(),
-                            'updated_by' => $user,
+                            'is_aktif' => "Y",
                             )
                         ); 
                     }
                 }
+
+           
             
                 // EXECUTE TRIGGER BUAT INPUT KE TRIP SUPIR (CEK TRIGGER DI TABEL SEWA)
                 
             }
 
-            return redirect()->route('truck_order.index')->with('status','Berhasil menambahkan data Sewa');
+            return redirect()->route('truck_order.index')->with(['status' => 'Success', 'msg' => 'Data berhasil dibuat']);
         } catch (ValidationException $e) {
             // cancel input db
             DB::rollBack();
@@ -238,6 +254,11 @@ class SewaController extends Controller
     public function edit(Sewa $sewa, $id)
     {
         $data_sewa = Sewa::where('is_aktif', 'Y')->findOrFail($id);
+        $checkTL = SewaBiaya::where('is_aktif', 'Y')
+                            ->where('deskripsi', 'TL')
+                            ->where('id_sewa', $id)
+                            ->first();
+        // dd($checkTL);
         $dataBooking = DB::table('booking as b')
                 ->select('*','b.id as idBooking')
                 ->Join('customer AS c', 'b.id_customer', '=', 'c.id')
@@ -251,6 +272,7 @@ class SewaController extends Controller
         return view('pages.order.truck_order.edit',[
             'judul' => "Edit Trucking Order",
             'data' => $data_sewa,
+            'checkTL' => $checkTL,
             'datajO' => SewaDataHelper::DataJO(),
             'dataCustomer' => SewaDataHelper::DataCustomer(),
             'dataDriver' => SewaDataHelper::DataDriver(),

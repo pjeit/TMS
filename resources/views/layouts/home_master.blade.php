@@ -286,8 +286,10 @@
 
 <script>
      $(document).ready(function() {
-        var sessionMessage = "<?= session()->has('status') ? session()->get('status') : null ?>";
-        if (sessionMessage != '') {
+        var sessionStatus = "<?= session()->has('status') ? session()->get('status') : null ?>";
+        var sessionMsg = "<?= session()->has('msg') ? session()->get('msg') : null ?>";
+        // console.log('sessionMsg', sessionMsg);
+        if (sessionStatus != '') {
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top',
@@ -301,19 +303,16 @@
               }
             })
 
-            if (/^Success/.test(sessionMessage) || /^Sukses/.test(sessionMessage)) {
+            if (/^Success/.test(sessionStatus) || /^Sukses/.test(sessionStatus)) {
                 var iconData = 'success';
-                var titleData = 'Data tersimpan!';
-            } else if (/^Error/.test(sessionMessage)) {
+            } else if (/^Error/.test(sessionStatus)) {
                 var iconData = 'danger';
-                var titleData = 'Data gagal disimpan!';
-              }else{
-                var iconData = 'success';
-                var titleData = '';
+            }else{
+                var iconData = 'question';
             }
             Toast.fire({
                 icon: iconData,
-                title: titleData
+                title: sessionMsg
             })
         }
     });

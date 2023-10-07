@@ -193,8 +193,8 @@
                                             <label for="">Tipe Kontainer<span class="text-red">*</span></label>
                                             <select class="form-control selectpicker tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                                 <option value="">── Tipe ──</option>
-                                                <option value='20'>20"</option>
-                                                <option value='40'>40"</option>
+                                                <option value='20' {{ $data['tipe_kontainer'] == '20'? 'selected':'' }}>20"</option>
+                                                <option value='40' {{ $data['tipe_kontainer'] == '40'? 'selected':'' }}>40"</option>
                                             </select>
                                         </div>
                                         <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
@@ -240,14 +240,12 @@
                                     <label for="select_driver">Stack TL</label>
                                         <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                         <option value="">Pilih TL</option>
-                                        <option value="Perak">Perak</option>
-                                        <option value="Priuk">Priuk</option>
-                                        <option value="Teluk Lamong">Teluk Lamong</option>
+                                        <option value="tl_perak" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_perak'? 'selected':''):'' }}>Perak</option>
+                                        <option value="tl_priuk" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_priuk'? 'selected':''):'' }}>Priuk</option>
+                                        <option value="tl_teluk_lamong" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_teluk_lamong'? 'selected':''):'' }}>Teluk Lamong</option>
                                     </select>
                                 </div>
                             </div>
-                         
-
                         </div>
                     </div>
                 </div>

@@ -286,7 +286,7 @@ class PaymentJobController extends Controller
                     ) 
                 );
             }
-            return redirect()->route('pembayaran_jo.index')->with('status', "Pembayaran Job Order Dengan Kode $pembayaran_jo->no_jo berhasil");
+            return redirect()->route('pembayaran_jo.index')->with(['status' => 'Success', 'msg' => "Pembayaran Job Order dengan kode $pembayaran_jo->no_jo berhasil"]);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }

@@ -124,13 +124,15 @@ class PengaturanKeuanganController extends Controller
         $update->lolo_40ft_dalam = floatval(str_replace(',', '', $data['lolo_40ft_dalam']));
         $update->apbs_40ft = floatval(str_replace(',', '', $data['apbs_40ft']));
         $update->cleaning_40ft = floatval(str_replace(',', '', $data['cleaning_40ft']));
+        $update->tl_perak = floatval(str_replace(',', '', $data['tl_perak']));
+        $update->tl_priuk = floatval(str_replace(',', '', $data['tl_priuk']));
+        $update->tl_teluk_lamong = floatval(str_replace(',', '', $data['tl_teluk_lamong']));
         $update->updated_at = date("Y-m-d h:i:s");
         $update->updated_by = $user;
 
         $update->save();
 
-        return redirect()->route('pengaturan_keuangan.index')->with('status','Berhasil update data');
-
+        return redirect()->route('pengaturan_keuangan.index')->with(['status' => 'Success', 'msg' => 'Data berhasil disimpan!']);
     }
 
     /**

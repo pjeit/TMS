@@ -237,7 +237,6 @@
                                     <label for="select_driver">Driver<span style="color:red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required>
                                         <option value="">Pilih Driver</option>
-
                                         @foreach ($dataDriver as $drvr)
                                             <option value="{{$drvr->id}}" nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                         @endforeach
@@ -249,9 +248,9 @@
                                     <label for="select_driver">Stack TL</label>
                                         <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                         <option value="">Pilih TL</option>
-                                        <option value="Perak">Perak</option>
-                                        <option value="Priuk">Priuk</option>
-                                        <option value="Teluk Lamong">Teluk Lamong</option>
+                                        <option value="tl_perak">Perak</option>
+                                        <option value="tl_priuk">Priuk</option>
+                                        <option value="tl_teluk_lamong">Teluk Lamong</option>
                                     </select>
                                 </div>
                             </div>
@@ -927,7 +926,7 @@
                 event.preventDefault();
                 const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,
@@ -948,7 +947,7 @@
                 event.preventDefault();
                 const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,
@@ -970,7 +969,7 @@
                 event.preventDefault();
                 const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,
@@ -1001,30 +1000,11 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Disimpan'
-                    })
-
-                    setTimeout(() => {
-                        this.submit();
-                    }, 800); // 2000 milliseconds = 2 seconds
+                    this.submit();
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,

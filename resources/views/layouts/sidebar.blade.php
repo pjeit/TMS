@@ -414,6 +414,7 @@
               request()->is('pencairan_uang_jalan_ftl*') ||
               request()->is('pencairan_operasional*') ||
               request()->is('biaya_operasional*') ||
+              request()->is('add_return_tl*') ||
               request()->is('pembayaran_sdt*') 
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
@@ -462,6 +463,17 @@
                   <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Biaya Operasional
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('add_return_tl.index')}}" class="nav-link {{request()->url() === route('add_return_tl.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Add / Return TL
                     </p>
                   </a>
                 </li>

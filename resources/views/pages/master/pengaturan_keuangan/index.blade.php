@@ -35,7 +35,7 @@
 </style>
 <div class="container-fluid">
     <div class="row">
-        <form action="{{ route('pengaturan_keuangan.update', [$data->id]) }}" method="POST" >
+        <form action="{{ route('pengaturan_keuangan.update', [$data->id]) }}" method="POST" id="save" >
             @csrf
             @method('PUT')
 
@@ -43,7 +43,7 @@
                 <div class="card radiusSendiri">
                     <div class="card-header ">
                         <div class="float-left">
-                            <button type="submit" name="save" id="save" value="save" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                            <button type="submit" name="submitButton" id="submitButton" class="btn ml-auto btn-success radiusSendiri"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -181,6 +181,40 @@
                                         </div>
                                     </div>
                 
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <hr>
+                                <span class="col-sm-12 col-md-12 col-lg-12 d-flex justify-content-center" ><label>Stack TL</label></span>
+                                <div class="row">
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                        <label>Perak</label>
+                                        <div class="input-group ">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input required type="text" name="tl_perak" id="tl_perak" class="form-control numaja uang" value="{{number_format($data->tl_perak)}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                        <label>Priuk</label>
+                                        <div class="input-group ">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input required type="text" name="tl_priuk" id="tl_priuk" class="form-control numaja uang" value="{{number_format($data->tl_priuk)}}">
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-12 col-md-4 col-lg-4">
+                                        <label>Teluk Lamong</label>
+                                        <div class="input-group ">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input required type="text" name="tl_teluk_lamong" id="tl_teluk_lamong" class="form-control numaja uang" value="{{number_format($data->tl_teluk_lamong)}}">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -338,11 +372,51 @@
         </form>
     </div>
 </div>
-
 <script>
+    $(document).ready(function() {
+        // logic save
+        $( document ).on( 'click', '#submitButton', function (event) {
+            event.preventDefault();
+            // pop up confirmation
+                Swal.fire({
+                    title: 'Apakah Anda yakin data sudah benar?',
+                    text: "Periksa kembali data anda",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonText: 'Batal',
+                    confirmButtonText: 'Ya',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("#save").submit();
+                    }else{
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
 
-
-    
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Batal Disimpan'
+                        })
+                        event.preventDefault();
+                        // return;
+                    }
+                })
+            // pop up confirmation
+        });
+    });
+</script>
+<script>    
 $(function () {
     $('#batas_pemutihan').ionRangeSlider({
       min     : 0,

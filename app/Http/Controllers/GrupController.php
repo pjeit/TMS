@@ -112,9 +112,10 @@ class GrupController extends Controller
             $grup->is_aktif = "Y";
             $grup->save();
 
-            return redirect()->route('grup.index')->with('status','Success!!');
+            return redirect()->route('grup.index')->with(['status' => 'Success', 'msg' => 'Data berhasil disimpan!']);
         } catch (ValidationException $e) {
-            return redirect()->route('grup.index')->with('status','Error!!');
+            return redirect()->route('grup.index')->with(['status' => 'Error', 'msg' => 'Data gagal disimpan!']);
+
         }
     }
 
@@ -202,9 +203,10 @@ class GrupController extends Controller
                 $edit_grup->updated_by = $user;
                 $edit_grup->save();
                 // dd(session()->get('message'));
-                return redirect()->route('grup.index')->with('status','Success');
+                return redirect()->route('grup.index')->with(['status' => 'Success', 'msg' => 'Data berhasil disimpan!']);
             } catch (ValidationException $e) {
-                return redirect()->route('grup.index')->with('status','Error');
+                return redirect()->route('grup.index')->with(['status' => 'Error', 'msg' => 'Data gagal disimpan!']);
+                // return redirect()->route('grup.index')->with('status','Error');
                 // return redirect()->back()->withErrors($e->errors())->withInput();
             }
         }
