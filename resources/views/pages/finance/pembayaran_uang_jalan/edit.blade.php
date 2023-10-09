@@ -95,6 +95,12 @@
                                     <label for="no_akun">Tujuan</label>
                                     <input type="text" id="tujuan" name="tujuan" class="form-control" value="" readonly>                         
                                 </div>  
+                                {{-- @if (isset($sewaBiayaTelukLamong))
+                                    <div class="form-group col-12">
+                                        <label for="no_akun" style="opacity: 0%">handle white space</label>
+                                        <input type="text" id="white" name="white" class="form-control" value="" readonly style="opacity: 0%">                         
+                                    </div>  
+                                @endif --}}
                             </div>
                             <div class="row">
                                 {{-- <div class="form-group col-12">
@@ -137,7 +143,7 @@
 
                              
 
-                                <div class="form-group col-6">
+                                <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'3':'6'}}">
                                     <label for="uang_jalan">Uang Jalan</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -147,8 +153,8 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-6">
-                                    <label for="total_diterima">Total Diterima</label>
+                                <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'3':'6'}}">
+                                    <label for="total_diterima">Total Uang Jalan</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
@@ -156,6 +162,17 @@
                                         <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                     </div>
                                 </div>
+                            @if (isset($sewaBiayaTelukLamong))
+                                <div class="form-group col-6">
+                                    <label for="uang_jalan">Biaya Teluk Lamong</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="teluk_lamong" name="teluk_lamong" class="form-control uang numajaMinDesimal" value="{{number_format($sewaBiayaTelukLamong->biaya)}}" readonly>                         
+                                    </div>
+                                </div>
+                            @endif
 
                                 <div class="form-group col-12">
                                     <label for="">PILIH PEMBAYARAN</label>      

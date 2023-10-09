@@ -253,6 +253,8 @@
                                         <option value="tl_teluk_lamong">Teluk Lamong</option>
                                         <option value="tl_priuk">Priuk</option>
                                     </select>
+                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="">
+
                                 </div>
                             </div>
                          
@@ -615,7 +617,6 @@
 
 
 		});
-        var array_detail_biaya = [];
         $('body').on('change','#select_grup_tujuan',function(){
             var selectedValue = $(this).val();
             var baseUrl = "{{ asset('') }}";
@@ -624,6 +625,7 @@
             var selectBooking = $('#select_booking').val();
             var splitValue = selectBooking.split('-');
             var idTujuan=splitValue[2];
+            var array_detail_biaya = [];
 
             // var myjson;
             //
@@ -718,7 +720,7 @@
                 }
             });
            
-
+            console.log(array_detail_biaya);
 
 		});
         $('body').on('change','#tipe_kontainer_out', function (){
@@ -925,6 +927,23 @@
             $('#driver_nama').val(nama_driver);
 
 		});
+          $('body').on('change','#stack_tl',function()
+		{
+            var selectedOption = $(this).val();
+            var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
+            // console.log(dataTelukLamong.tl_teluk_lamong);
+                if(selectedOption=='tl_teluk_lamong')
+                {
+                    $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
+                }
+                else
+                {
+                    $('#stack_teluk_lamong_hidden').val('');
+                    
+                }
+
+		});
+
          $('#post_data').submit(function(event) {
             var jenis_order = $('#jenis_order').val();
             var selectKendaraan = $('#select_kendaraan').find('option:selected');

@@ -76,6 +76,13 @@ class SewaDataHelper
             ->orderBy('nama_lengkap')
             ->get();
      }
+     public static function DataPengaturanBiaya()
+     {
+        return DB::table('pengaturan_keuangan')
+            ->select('*')
+            ->where('pengaturan_keuangan.is_aktif', "Y")
+            ->first();
+     }
      public static function DataBooking()
      {
         return DB::table('booking as b')
