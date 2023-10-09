@@ -52,7 +52,7 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input disabled type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="">
+                                        <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="">
                                     </div>
                                 </div>  
                                 {{-- <div class="form-group col-6">
@@ -254,7 +254,7 @@
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language: 'en',
-                startDate: today,
+                // startDate: today,
             }).datepicker("setDate", today);
 
             $('#tanggal_pencatatan').datepicker({

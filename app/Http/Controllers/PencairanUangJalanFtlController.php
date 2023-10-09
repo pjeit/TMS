@@ -94,7 +94,7 @@ class PencairanUangJalanFtlController extends Controller
 
         try {
             // dump transaksi
-            // dd($data);
+            dd($data);
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
 
             if(isset($kh)){
@@ -138,7 +138,7 @@ class PencairanUangJalanFtlController extends Controller
                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                         array(
                             $data['pembayaran'],// id kas_bank dr form
-                            now(),//tanggal
+                            date_format($data['tanggal_pencairan'], 'Y-m-d'),//tanggal
                             0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                             (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
                             1016, //kode coa
