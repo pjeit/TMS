@@ -94,7 +94,7 @@ class PencairanUangJalanFtlController extends Controller
 
         try {
             // dump transaksi
-            dd($data);
+            // dd($data);
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
 
             if(isset($kh)){
