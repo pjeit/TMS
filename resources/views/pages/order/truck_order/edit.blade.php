@@ -29,6 +29,20 @@
     .aktif {
         background-color: #e0efff;
     }
+
+    /*Select2 ReadOnly Start*/
+        select[readonly].select2-hidden-accessible + .select2-container {
+            pointer-events: none;
+            touch-action: none;
+        }
+        select[readonly].select2-hidden-accessible + .select2-container .select2-selection {
+            background: #eee;
+            box-shadow: none;
+        }
+        select[readonly].select2-hidden-accessible + .select2-container .select2-selection__arrow, select[readonly].select2-hidden-accessible + .select2-container .select2-selection__clear {
+            display: none;
+        }
+    /*Select2 ReadOnly End*/
 </style>
 <div class="container-fluid">
   
@@ -129,13 +143,13 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="">
+                                        <input {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }} type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="">
                                     </div>
                                     
                                 </div>
                                 <div class="form-group">
                                         <label for="catatan">Catatan</label>
-                                        <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="{{$data['catatan']}}"> 
+                                        <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="{{$data['catatan']}}" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }}> 
                                     </div>
                             </div>
                             <div class="col-6">
@@ -191,7 +205,7 @@
                                         </div> --}}
                                         <div class="form-group" id="outbondDataKontainer">
                                             <label for="">Tipe Kontainer<span class="text-red">*</span></label>
-                                            <select class="form-control selectpicker tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                            <select class="form-control select2 tipeKontainer" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }} id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                                 <option value="">── Tipe ──</option>
                                                 <option value='20' {{ $data['tipe_kontainer'] == '20'? 'selected':'' }}>20"</option>
                                                 <option value='40' {{ $data['tipe_kontainer'] == '40'? 'selected':'' }}>40"</option>
@@ -201,7 +215,7 @@
                                     </div>    
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                         <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
+                                        <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }}>
                                             <option value="">Pilih Kendaraan</option>
                                             @foreach ($dataKendaraan as $kendaraan)
                                                 <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}-{{$kendaraan->driver_id}}"  {{$kendaraan->kendaraanId == $data['id_kendaraan']? 'selected':''}}>{{ $kendaraan->no_polisi }}</option>
@@ -214,7 +228,7 @@
                               
                                 <div class="form-group">
                                     <label for="select_ekor">Chassis<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis">
+                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }} >
                                         <option value="">Pilih Chassis</option>
 
                                         @foreach ($dataChassis as $cha)
@@ -227,7 +241,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="select_driver">Driver<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver">
+                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }} >
                                         <option value="">Pilih Driver</option>
 
                                         @foreach ($dataDriver as $drvr)

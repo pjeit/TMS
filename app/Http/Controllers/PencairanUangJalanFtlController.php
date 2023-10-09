@@ -94,7 +94,7 @@ class PencairanUangJalanFtlController extends Controller
 
         try {
             // dump transaksi
-            dd($data);
+            // dd(date_create_from_format('d-M-Y', $data['tanggal_pencairan']));
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
 
             if(isset($kh)){
@@ -115,7 +115,6 @@ class PencairanUangJalanFtlController extends Controller
             // $ujr->created_by = $user;
             // $ujr->created_at = now();
             // $ujr->is_aktif = 'Y';
-         
 
             // if($ujr->save())
             // {
@@ -138,7 +137,7 @@ class PencairanUangJalanFtlController extends Controller
                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                         array(
                             $data['pembayaran'],// id kas_bank dr form
-                            date_format($data['tanggal_pencairan'], 'Y-m-d'),//tanggal
+                            date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
                             0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                             (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
                             1016, //kode coa
@@ -158,7 +157,7 @@ class PencairanUangJalanFtlController extends Controller
 
             $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
             // dd($sewa);
-            $sewa->status = 'DALAM PERJALANAN';
+            $sewa->status = 'PROSES DOORING';
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             $sewa->save();
@@ -181,10 +180,11 @@ class PencairanUangJalanFtlController extends Controller
                 )
             );
 
-            return redirect()->route('pencairan_uang_jalan_ftl.index')->with('status', "Pembayaran berhasil");
+            return redirect()->route('pencairan_uang_jalan_ftl.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
         } catch (ValidationException $e) {
             db::rollBack();
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->route('pencairan_uang_jalan_ftl.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
+            // return redirect()->back()->withErrors($e->errors())->withInput();
         }
     }
 

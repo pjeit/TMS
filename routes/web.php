@@ -110,6 +110,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
         Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
+        Route::get('/truck_order/getSewaByStatus/{status}', [App\Helper\SewaDataHelper::class, 'getSewaByStatus'])->name('getSewaByStatus.get');
         Route::get('/truck_order/getJoDetail/{id}', [App\Helper\SewaDataHelper::class, 'getJoDetail'])->name('getJoDetail.get');
         Route::get('/truck_order/getTujuanCust/{id}', [App\Helper\SewaDataHelper::class, 'getTujuanCust'])->name('getTujuanCust.get');
         Route::get('/truck_order/getTujuanBiaya/{id}', [App\Helper\SewaDataHelper::class, 'getTujuanBiaya'])->name('getTujuanBiaya.get');
@@ -153,6 +154,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pembayaran_invoice/bayar', [App\Http\Controllers\PembayaranInvoiceController::class, 'bayar'])->name('pembayaran_invoice.bayar');
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
 
+        Route::get('/add_return_tl/cair/{id}', [App\Http\Controllers\AddReturnTLController::class, 'cair'])->name('add_return_tl.cair');
         Route::resource('add_return_tl', 'App\Http\Controllers\AddReturnTLController');
 
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');

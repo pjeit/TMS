@@ -31,7 +31,7 @@ class SewaController extends Controller
     
         return view('pages.order.truck_order.index',[
             'judul'=>"Trucking Order",
-            'dataSewa' => SewaDataHelper::DataSewa(),
+            // 'dataSewa' => SewaDataHelper::DataSewa(),
         ]);
     }
 
@@ -300,11 +300,35 @@ class SewaController extends Controller
             $sewa->id_kendaraan = $data['kendaraan_id'];
             $sewa->id_chassis = $data['ekor_id'];
             $sewa->no_polisi = $data['no_polisi'];
+            $sewa->stack_tl = $data['stack_tl'] == null? null:1;
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             $sewa->save();
+
+            // if($data['stack_tl'] == null){
+            //     DB::table('sewa_biaya')
+            //         ->where('id_sewa', $data['sewa_id'])->where('is_aktif', 'Y')->where('deskripsi', 'TL')
+            //         ->update([
+            //             'updated_at' => now(),
+            //             'updated_by' => $user,
+            //             'is_aktif' => "N",
+            //         ]);
+            // }else{
+            //     $pengaturan = PengaturanKeuangan::first();
+            //     DB::table('sewa_biaya')
+            //         ->insert(array(
+            //         'id_sewa' => $sewa->id_sewa,
+            //         'deskripsi' => 'TL',
+            //         'biaya' => $pengaturan[$data['stack_tl']],
+            //         'catatan' => $data['stack_tl'],
+            //         'created_at' => now(),
+            //         'created_by' => $user,
+            //         'is_aktif' => "Y",
+            //         )
+            //     ); 
+            // }
             
-            return redirect()->route('truck_order.index')->with('status','Berhasil merubah data Sewa');
+            return redirect()->route('truck_order.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data!']);
         } catch (ValidationException $e) {
             //throw $th;
             DB::rollBack();

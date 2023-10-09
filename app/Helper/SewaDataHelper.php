@@ -21,6 +21,21 @@ class SewaDataHelper
             ->orderBy('created_at', 'DESC')
             ->get();
      }
+
+     public static function getSewaByStatus($status)
+     {
+        // some logic to determine if the publisher is main
+        return DB::table('sewa as s')
+            ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap', 'c.nama as nama_customer')
+            ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+            ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
+            ->where('gt.is_aktif', '=', "Y")
+            ->where('s.is_aktif', '=', "Y")
+            ->where('s.status', $status)
+            ->orderBy('created_at', 'DESC')
+            ->get();
+     }
     //=================================create,edit??================================
     
     public static function DataJO()
