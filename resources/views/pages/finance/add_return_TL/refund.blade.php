@@ -58,74 +58,44 @@
                                 </div>
 
                                 <div class="form-group col-12">
-                                    <label for="">Tanggal Berangkat<span style="color:red">*</span></label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                        </div>
-                                        <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="">
-                                    </div>
+                                    <label for="">Customer</label>
+                                    <input type="text" id="customer" name="customer" class="form-control" value="{{ $sewa->getCustomer->nama }}" readonly>                         
                                 </div>  
 
                                 <div class="form-group col-12">
-                                    <label for="no_akun">Customer</label>
-                                    <input type="text" id="customer" name="customer" class="form-control" value="" readonly>                         
-                                </div>  
-
-                                <div class="form-group col-12">
-                                    <label for="no_akun">Tujuan</label>
-                                    <input type="text" id="tujuan" name="tujuan" class="form-control" value="" readonly>                         
+                                    <label for="">Tujuan</label>
+                                    <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{ $sewa->nama_tujuan }}" readonly>                         
                                 </div>  
                             </div>
                             <div class="row">
                                 <div class="form-group col-5">
-                                    <label for="no_akun">Kendaraan</label>
-                                    <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="" readonly>                         
+                                    <label for="">Kendaraan</label>
+                                    <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="{{ $sewa->no_polisi }}" readonly>                         
                                 </div>  
 
                                 <div class="form-group col-7">
-                                    <label for="no_akun">Driver</label>
-                                    <input type="text" id="driver" name="driver" class="form-control" value="" readonly>     
-                                    <input type="hidden" name="id_karyawan" id="id_karyawan">                    
+                                    <label for="">Driver</label>
+                                    <input type="text" id="driver" name="driver" class="form-control" value="{{ $sewa->nama_driver }}" readonly>     
+                                    <input type="hidden" name="id_karyawan" id="id_karyawan" value="{{ $sewa->id_karyawan }}">                    
                                 </div> 
 
-                                <div class="form-group col-7">
-                                    <label for="total_hutang">Total Hutang</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-5">
-                                    <label for="potong_hutang">Potong Hutang</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numajaMinDesimal" value="" >                         
-                                    </div>
+                                <div class="form-group col-6">
+                                    <label for="uang_jalan">Stack TL</label>
+                                    <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl" disabled>
+                                        <option value="" {{ $sewa->stack_tl == ''? 'selected':'' }}>── Pilih TL ──</option>
+                                        <option value="tl_perak" {{ $sewa->stack_tl == 'tl_perak'? 'selected':'' }}>Perak</option>
+                                        <option value="tl_teluk_lamong" {{ $sewa->stack_tl == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
+                                        <option value="tl_priuk" {{ $sewa->stack_tl == 'tl_priuk'? 'selected':'' }}>Priuk</option>
+                                    </select>
                                 </div>
 
                                 <div class="form-group col-6">
-                                    <label for="uang_jalan">Uang Jalan</label>
+                                    <label for="total_diterima">Jumlah</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="uang_jalan" name="uang_jalan" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                    </div>
-                                </div>
-
-                                <div class="form-group col-6">
-                                    <label for="total_diterima">Total Diterima</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="text" idname="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                         
                                     </div>
                                 </div>
 

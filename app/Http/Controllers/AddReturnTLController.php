@@ -55,7 +55,6 @@ class AddReturnTLController extends Controller
         $id_sewa_default = $id;
         $pengaturan = PengaturanKeuangan::first();
 
-
         $sewa = Sewa::from('sewa AS s')
                     ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
@@ -85,7 +84,9 @@ class AddReturnTLController extends Controller
     public function refund(Request $request, $id)
     {
         $id_sewa_default = $id;
-        $sewa = DB::table('sewa AS s')
+        $pengaturan = PengaturanKeuangan::first();
+
+        $sewa = Sewa::from('sewa AS s')
                     ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
@@ -102,10 +103,11 @@ class AddReturnTLController extends Controller
             ->where('is_aktif', '=', "Y")
             ->get();
         return view('pages.finance.add_return_TL.refund',[
-            'judul' => "Refund TL",
-            'sewa'=>$sewa,
-            'dataKas'=>$dataKas,
-            'id_sewa_defaulth'=>$id_sewa_default,
+            'judul' => "Pencairan TL",
+            'sewa' => $sewa,
+            'jumlah' => $pengaturan[$sewa['stack_tl']],
+            'dataKas' => $dataKas,
+            'id_sewa_defaulth' => $id_sewa_default,
         ]);
     }
 
