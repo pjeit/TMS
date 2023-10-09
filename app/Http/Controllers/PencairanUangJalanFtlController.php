@@ -99,7 +99,7 @@ class PencairanUangJalanFtlController extends Controller
             // dd(date_create_from_format('d-M-Y', $data['tanggal_pencairan']));
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
 
-            if(isset($kh)){
+            if(isset($kh)&&isset($data['potong_hutang'])){
                 $kh->total_hutang = $kh->total_hutang - isset($data['potong_hutang'])? (float)str_replace(',', '', $data['potong_hutang']):0; 
                 $kh->updated_by = $user;
                 $kh->updated_at = now();
