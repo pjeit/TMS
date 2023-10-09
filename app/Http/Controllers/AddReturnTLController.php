@@ -102,12 +102,19 @@ class AddReturnTLController extends Controller
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
+  $checkTL = SewaBiaya::where('is_aktif', 'Y')
+                            ->where('deskripsi', 'TL')
+                            ->where('id_sewa', $id)
+                            ->first();
+        // dd($pengaturan);
+
         return view('pages.finance.add_return_TL.refund',[
-            'judul' => "Pencairan TL",
+            'judul' => "Pengembalian TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
             'dataKas' => $dataKas,
             'id_sewa_defaulth' => $id_sewa_default,
+            'checkTL'=>$checkTL
         ]);
     }
 
@@ -157,15 +164,6 @@ class AddReturnTLController extends Controller
                             ->where('deskripsi', 'TL')
                             ->where('id_sewa', $id)
                             ->first();
-        $dataBooking = DB::table('booking as b')
-                ->select('*','b.id as idBooking')
-                ->Join('customer AS c', 'b.id_customer', '=', 'c.id')
-                ->Join('grup_tujuan AS gt', 'b.id_grup_tujuan', '=', 'gt.id')
-                ->where('b.is_aktif', "Y")
-                ->where('b.id', $data_sewa['id_booking'])
-                ->orderBy('tgl_booking')
-                ->whereNull('b.id_jo_detail')
-                ->get();
 
         return view('pages.finance.add_return_TL.edit',[
             'judul' => "Edit Trucking Order",
@@ -175,7 +173,6 @@ class AddReturnTLController extends Controller
             'dataCustomer' => SewaDataHelper::DataCustomer(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'dataKendaraan' => SewaDataHelper::DataKendaraan(),
-            'dataBooking' => $dataBooking,
             'dataChassis' => SewaDataHelper::DataChassis()
         ]);
     }

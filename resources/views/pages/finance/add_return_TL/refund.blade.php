@@ -35,13 +35,15 @@
             <div class="col">
                 <div class="card radiusSendiri">
                     <div class="card-header">
-                        <a href="{{ route('pencairan_uang_jalan_ftl.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                        <a href="{{ route('add_return_tl.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                        <button type="submit" class="btn btn-success radiusSendiri"><i class="fa fa-fw fa-save" aria-hidden="true"></i> Simpan</button>
+                        
                     </div>
                     <div class="card-body" >
                         <div class="d-flex" style="gap: 20px">
                             <div class="row">
                                 <div class="form-group col-12">
-                                    <label for="">Tanggal Pencairan<span style="color:red">*</span></label>
+                                    <label for="">Tanggal Pengembalian<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -81,12 +83,13 @@
 
                                 <div class="form-group col-6">
                                     <label for="uang_jalan">Stack TL</label>
-                                    <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl" disabled>
+                                    <input type="text" id="driver" name="driver" class="form-control" value="BIAYA TELUK LAMONG" readonly>     
+                                    {{-- <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl" disabled>
                                         <option value="" {{ $sewa->stack_tl == ''? 'selected':'' }}>── Pilih TL ──</option>
                                         <option value="tl_perak" {{ $sewa->stack_tl == 'tl_perak'? 'selected':'' }}>Perak</option>
                                         <option value="tl_teluk_lamong" {{ $sewa->stack_tl == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
                                         <option value="tl_priuk" {{ $sewa->stack_tl == 'tl_priuk'? 'selected':'' }}>Priuk</option>
-                                    </select>
+                                    </select> --}}
                                 </div>
 
                                 <div class="form-group col-6">
@@ -95,21 +98,19 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" idname="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                         
+                                        <input type="text" idname="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($checkTL->biaya) }}" readonly>                         
                                     </div>
                                 </div>
 
                                 <div class="form-group col-12">
-                                    <label for="">PILIH PEMBAYARAN</label>      
+                                    <label for="">Dikembalikan Sebagai:</label>      
                                     <div class="d-flex" style="gap: 10px;">
                                         <select class="form-control select2" style="width: 100%;" id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                            <option value="">--PILIH KAS--</option>
+                                            <option value="">--PILIH OPSI--</option>
                                             @foreach ($dataKas as $kas)
                                                 <option value="{{$kas->id}}">{{ $kas->nama }}</option>
                                             @endforeach
                                         </select>
-
-                                        <button type="submit" class="btn btn-success radiusSendiri"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
                                     </div>  
                                 </div>  
                                  <div class="form-group col-12">

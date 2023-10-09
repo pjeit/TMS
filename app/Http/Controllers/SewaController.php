@@ -127,7 +127,7 @@ class SewaController extends Controller
                     DB::table('sewa_biaya')
                         ->insert(array(
                         'id_sewa' => $sewa->id_sewa,
-                        'deskripsi' => $data['stack_tl'],
+                        'deskripsi' => 'TL',
                         'biaya' => $data['stack_teluk_lamong_hidden'],
                         'catatan' => $data['stack_tl'],
                         'created_at' => now(),

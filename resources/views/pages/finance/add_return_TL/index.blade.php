@@ -79,6 +79,7 @@
                 success: function(response) {
                     var table = $('#datatable').DataTable();
                     table.clear().destroy();
+                    var baseUrl = "{{ asset('') }}";
 
                     $("#hasil").append(row);
                     $("#loading-spinner").hide();
@@ -94,14 +95,15 @@
                         row.append(`<td>${data[i].nama_driver}</td>`);
                         row.append(`<td>${data[i].status}</td>`);
                         if(status == 'Add TL'){
-                            var jenisTL =  `<a href="add_return_tl/cair/${data[i].id_sewa}" class="dropdown-item">
+                            var jenisTL =  `<a href="${baseUrl}add_return_tl/cair/${data[i].id_sewa}" class="dropdown-item">
                                                 <span class="fa fa-credit-card mr-3"></span> Cairkan TL
                                             </a>`;
                         }else{
-                            var jenisTL =  `<a href="add_return_tl/refund/${data[i].id_sewa}" class="dropdown-item">
+                            var jenisTL =  `<a href="${baseUrl}add_return_tl/refund/${data[i].id_sewa}" class="dropdown-item">
                                                 <span class="fa fa-credit-card mr-3"></span> Kembalikan TL
                                             </a>`;
                         }
+                        
                         row.append(`<td class='text-center'> 
                                         <div class="btn-group dropleft">
                                             <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
