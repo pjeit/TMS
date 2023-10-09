@@ -49,7 +49,8 @@ class SewaController extends Controller
             'dataDriver'=>SewaDataHelper::DataDriver(),
             'dataKendaraan'=>SewaDataHelper::DataKendaraan(),
             'dataBooking'=>SewaDataHelper::DataBooking(),
-            'dataChassis'=>SewaDataHelper::DataChassis()
+            'dataChassis'=>SewaDataHelper::DataChassis(),
+            'dataPengaturanKeuangan'=>SewaDataHelper::DataPengaturanBiaya()
         ]);
     }
    
@@ -111,6 +112,7 @@ class SewaController extends Controller
             $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
             $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
             $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
+            $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
@@ -121,12 +123,12 @@ class SewaController extends Controller
             $sewa->is_aktif = 'Y';
             
             if($sewa->save()){
-                if($data['stack_tl'] != NULL){
+                if($data['stack_tl'] == 'tl_teluk_lamong'){
                     DB::table('sewa_biaya')
                         ->insert(array(
                         'id_sewa' => $sewa->id_sewa,
-                        'deskripsi' => 'TL',
-                        'biaya' => $pengaturan[$data['stack_tl']],
+                        'deskripsi' => $data['stack_tl'],
+                        'biaya' => $data['stack_teluk_lamong_hidden'],
                         'catatan' => $data['stack_tl'],
                         'created_at' => now(),
                         'created_by' => $user,
