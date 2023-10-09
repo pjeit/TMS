@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use Exception;
+use App\Models\PengaturanKeuangan;
 use App\Helper\SewaDataHelper;
 use App\Models\SewaBiaya;
 
@@ -51,8 +52,63 @@ class AddReturnTLController extends Controller
 
     public function cair(Request $request, $id)
     {
-        dd($id);
+        $id_sewa_default = $id;
+        $pengaturan = PengaturanKeuangan::first();
+
+
+        $sewa = Sewa::from('sewa AS s')
+                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+                    ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+                    ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
+                    ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
+                    ->where('s.is_aktif', '=', 'Y')
+                    ->where('s.jenis_tujuan', 'like', '%FTL%')
+                    ->where('s.status', "PROSES DOORING")
+                    ->where('s.is_aktif', '=', 'Y')
+                    ->where('s.id_sewa', $id)
+                    ->groupBy('c.id')
+                    ->first();
+         $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
+        // dd($sewa);
+        return view('pages.finance.add_return_TL.cair',[
+            'judul' => "Pencairan TL",
+            'sewa' => $sewa,
+            'jumlah' => $pengaturan[$sewa['stack_tl']],
+            'dataKas' => $dataKas,
+            'id_sewa_defaulth' => $id_sewa_default,
+        ]);
     }
+
+    public function refund(Request $request, $id)
+    {
+        $id_sewa_default = $id;
+        $sewa = DB::table('sewa AS s')
+                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+                    ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+                    ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
+                    ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
+                    ->where('s.is_aktif', '=', 'Y')
+                    ->where('s.jenis_tujuan', 'like', '%FTL%')
+                    ->where('s.status', "PROSES DOORING")
+                    ->where('s.is_aktif', '=', 'Y')
+                    ->where('s.id_sewa', $id)
+                    ->groupBy('c.id')
+                    ->first();
+         $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
+        return view('pages.finance.add_return_TL.refund',[
+            'judul' => "Refund TL",
+            'sewa'=>$sewa,
+            'dataKas'=>$dataKas,
+            'id_sewa_defaulth'=>$id_sewa_default,
+        ]);
+    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -149,15 +205,50 @@ class AddReturnTLController extends Controller
     public function getData($status)
      {
         // some logic to determine if the publisher is main
-        return DB::table('sewa as s')
-            ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap', 'c.nama as nama_customer')
+        
+        if($status == 'Return TL'){
+            return DB::table('sewa as s')
+            ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap', 'c.nama as nama_customer'
+                    ,'s.stack_tl','sb.id_biaya', 'sb.deskripsi as isTL', 'sb.catatan as jenisTL', 'sb.is_aktif as TLAktif')
+            ->leftJoin('sewa_biaya as sb', function($join){
+                $join->on('sb.id_sewa', '=', 's.id_sewa')
+                ->where('sb.deskripsi', 'TL')
+                ->where('sb.is_aktif', 'Y')
+                ->whereNull('s.stack_tl');
+            })
+            ->whereNull('s.stack_tl')
+            ->whereNotNull('sb.id_biaya')
             ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
             ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
             ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
             ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
-            ->where('s.status', $status)
+            ->where('s.status', 'PROSES DOORING')
             ->orderBy('created_at', 'DESC')
             ->get();
+        }else if($status == 'Add TL'){
+            return DB::table('sewa as s')
+            ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap', 'c.nama as nama_customer'
+                    ,'s.stack_tl','sb.id_biaya', 'sb.deskripsi as isTL', 'sb.catatan as jenisTL', 'sb.is_aktif as TLAktif')
+            ->leftJoin('sewa_biaya as sb', function($join){
+                $join->on('sb.id_sewa', '=', 's.id_sewa')
+                ->where('sb.deskripsi', 'TL')
+                ->where('sb.is_aktif', 'Y')
+                ->whereNotNull('s.stack_tl');
+            })
+            ->whereNotNull('s.stack_tl')
+            ->whereNull('sb.id_biaya')
+            ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+            ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
+            ->where('gt.is_aktif', '=', "Y")
+            ->where('s.is_aktif', '=', "Y")
+            ->where('s.status', 'PROSES DOORING')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+        }else{
+            return null;
+        }
+
      }
 }

@@ -115,7 +115,7 @@ class SewaController extends Controller
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
             $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
-            $sewa->stack_tl = $data['stack_tl'] == NULL? NULL: ($data['stack_tl'] != ''? 1:NULL) ;
+            $sewa->stack_tl = $data['stack_tl'];
             $sewa->created_by = $user;
             $sewa->created_at = now();
             $sewa->is_aktif = 'Y';
@@ -300,7 +300,7 @@ class SewaController extends Controller
             $sewa->id_kendaraan = $data['kendaraan_id'];
             $sewa->id_chassis = $data['ekor_id'];
             $sewa->no_polisi = $data['no_polisi'];
-            $sewa->stack_tl = $data['stack_tl'] == null? null:1;
+            $sewa->stack_tl = $data['stack_tl'];
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             $sewa->save();

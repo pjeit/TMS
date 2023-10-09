@@ -155,6 +155,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
 
         Route::get('/add_return_tl/cair/{id}', [App\Http\Controllers\AddReturnTLController::class, 'cair'])->name('add_return_tl.cair');
+        Route::get('/add_return_tl/refund/{id}', [App\Http\Controllers\AddReturnTLController::class, 'refund'])->name('add_return_tl.refund');
         Route::get('/add_return_tl/getData/{status}', [App\Http\Controllers\AddReturnTLController::class, 'getData'])->name('add_return_tl.getData');
         Route::resource('add_return_tl', 'App\Http\Controllers\AddReturnTLController');
 

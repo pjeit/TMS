@@ -254,9 +254,12 @@
                                     <label for="select_driver">Stack TL</label>
                                         <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                         <option value="">Pilih TL</option>
-                                        <option value="tl_perak" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_perak'? 'selected':''):'' }}>Perak</option>
+                                        {{-- <option value="tl_perak" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_perak'? 'selected':''):'' }}>Perak</option>
                                         <option value="tl_priuk" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_priuk'? 'selected':''):'' }}>Priuk</option>
-                                        <option value="tl_teluk_lamong" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_teluk_lamong'? 'selected':''):'' }}>Teluk Lamong</option>
+                                        <option value="tl_teluk_lamong" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_teluk_lamong'? 'selected':''):'' }}>Teluk Lamong</option> --}}
+                                        <option value="tl_perak" {{ $data['stack_tl'] == 'tl_perak'? 'selected':'' }}>Perak</option>
+                                        <option value="tl_priuk" {{ $data['stack_tl'] == 'tl_priuk'? 'selected':'' }}>Priuk</option>
+                                        <option value="tl_teluk_lamong" {{ $data['stack_tl'] == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
                                     </select>
                                 </div>
                             </div>

@@ -37,6 +37,7 @@
                 </div>
             </div>
             <hr>
+            <div style="overflow: auto;">
                 <table id="datatable" class="table table-bordered table-striped" width='100%'>
                     <thead>
                         <tr>
@@ -51,39 +52,10 @@
                         </tr>
                     </thead>
                     <tbody id="hasil">
-                    @if (isset($data))
-                        @foreach($data as $item)
-                            <tr>
-                                <td>{{ $item->nama_customer }}</td>
-                                <td>{{ $item->no_polisi }}</td>
-                                <td>{{ $item->no_sewa }}</td>
-                                <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
-                                <td>{{ $item->nama_tujuan }}</td>
-                                <td>{{ $item->nama_lengkap }}</td>
-                                <td>{{ $item->status }}</td>
-                                <td>                                    
-                                    <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-list"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a href="{{route('add_return_tl.edit',[$item->id_sewa])}}" class="dropdown-item">
-                                                <span class="fas fa-edit mr-3"></span> Edit
-                                            </a>
-                                            <a href="{{route('add_return_tl.cair',['id' => $item->id_sewa])}}" class="dropdown-item">
-                                                <span class="fa fa-credit-card mr-3"></span> Cair/Return
-                                            </a>
-                                            {{-- <a href="{{ route('truck_order.destroy', $item->id_sewa) }}" class="dropdown-item" data-confirm-delete="true">
-                                                <span class="fas fa-trash mr-3"></span> Delete
-                                            </a> --}}
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endif
+                  
                     </tbody>
                 </table>
+            </div>
         </div>
     </div>
 </div>
@@ -112,33 +84,39 @@
                     $("#loading-spinner").hide();
                     var data = response;
                     console.log('response', data);
-                    // for (var i = 0; i < data.length; i++) {
-                    //     var row = $("<tr></tr>");
-                    //     row.append(`<td>${data[i].nama_customer}</td>`);
-                    //     row.append(`<td>${data[i].no_polisi}</td>`);
-                    //     row.append(`<td>${data[i].no_sewa}</td>`);
-                    //     row.append(`<td>${data[i].tanggal_berangkat}</td>`);
-                    //     row.append(`<td>${data[i].alamat_tujuan}</td>`);
-                    //     row.append(`<td>${data[i].nama_driver}</td>`);
-                    //     row.append(`<td>${data[i].status}</td>`);
-                    //     row.append(`<td class='text-center'> 
-                    //                     <div class="btn-group dropleft">
-                    //                         <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    //                             <i class="fa fa-list"></i>
-                    //                         </button>
-                    //                         <div class="dropdown-menu">
-                    //                             <a href="truck_order/${data[i].id_sewa}/edit" class="dropdown-item">
-                    //                                 <span class="fas fa-edit mr-3"></span> Edit
-                    //                             </a>
-                    //                             <a href="truck_order/destroy/${data[i].id_sewa}" class="dropdown-item" data-confirm-delete="true">
-                    //                                 <span class="fas fa-trash mr-3"></span> Delete
-                    //                             </a>
-                    //                         </div>
-                    //                     </div>
-                    //                 </td>`);
-                    //     $("#hasil").append(row);
-                    //     $("#datatable").dataTable();
-                    // }
+                    for (var i = 0; i < data.length; i++) {
+                        var row = $("<tr></tr>");
+                        row.append(`<td>${data[i].nama_customer}</td>`);
+                        row.append(`<td>${data[i].no_polisi}</td>`);
+                        row.append(`<td>${data[i].no_sewa}</td>`);
+                        row.append(`<td>${data[i].tanggal_berangkat}</td>`);
+                        row.append(`<td>${data[i].alamat_tujuan}</td>`);
+                        row.append(`<td>${data[i].nama_driver}</td>`);
+                        row.append(`<td>${data[i].status}</td>`);
+                        if(status == 'Add TL'){
+                            var jenisTL =  `<a href="add_return_tl/cair/${data[i].id_sewa}" class="dropdown-item">
+                                                <span class="fa fa-credit-card mr-3"></span> Cairkan TL
+                                            </a>`;
+                        }else{
+                            var jenisTL =  `<a href="add_return_tl/refund/${data[i].id_sewa}" class="dropdown-item">
+                                                <span class="fa fa-credit-card mr-3"></span> Kembalikan TL
+                                            </a>`;
+                        }
+                        row.append(`<td class='text-center'> 
+                                        <div class="btn-group dropleft">
+                                            <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                `+
+                                                jenisTL
+                                                +`
+                                            </div>
+                                        </div>
+                                    </td>`);
+                        $("#hasil").append(row);
+                        $("#datatable").dataTable();
+                    }
 
                 },error: function (xhr, status, error) {
                     $("#loading-spinner").hide();
