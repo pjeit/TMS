@@ -40,6 +40,9 @@
             <div class="card radiusSendiri">
                 <div class="card-header ">
                     <a href="{{ route('belum_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                     <button type="submit" class="btn btn-success radiusSendiri">
+                        <i class="fa fa-fw fa-save"></i> Simpan    
+                    </button>
                 </div>
                 <div class="card-body" >
                     <div class="row">
@@ -157,9 +160,7 @@
                                                     <input type="hidden" name="kode_customer" id="kode_customer">
                                                 </div>
                                                 <div class="col-2">
-                                                    <button type="submit" class="btn btn-success">
-                                                        <i class="fa fa-credit-card"></i>
-                                                    </button>
+                                                   
                                                 </div>
                                             </div>
                                         </li>

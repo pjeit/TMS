@@ -300,7 +300,7 @@ class BelumInvoiceController extends Controller
             ->first();
         // dd($id);
         $TotalBiayaRev = 0;
-        dd($data);
+        // dd($data);
         $qrcode = QrCode::size(150)
         // ->backgroundColor(255, 0, 0, 25)
         ->generate(

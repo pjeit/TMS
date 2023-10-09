@@ -289,7 +289,7 @@
 
                         Toast.fire({
                             icon: 'error',
-                            title: 'Harap pilih sewa yang ingin dibuat invoice!'
+                            title: 'Harap pilih invoice yang ingin dibayar!'
                         })
                         event.preventDefault();
             
