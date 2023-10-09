@@ -399,7 +399,7 @@
                 url: `${baseUrl}truck_order/getJoDetail/${idJo}`, 
                 method: 'GET', 
                 success: function(response) {
-                    if(response&&customerLoad)
+                    if(response/*&&customerLoad*/)
                     {
                         var jo_detail = $('#select_jo_detail');
                         jo_detail.attr('disabled',false);
@@ -512,7 +512,7 @@
                 success: function(response) {
                     if(response)
                     {
-                        customerLoad = true;
+                        // customerLoad = true;
                         // console.log(customerLoad);
                         // console.log(response.dataKredit.kreditCustomer);
                         // console.log(response.dataKredit.maxGrup);

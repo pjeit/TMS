@@ -87,7 +87,7 @@ class SewaDataHelper
      public static function DataKendaraan()
      {
         return DB::table('kendaraan AS k')
-                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota')
+                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota','mc.nama as tipeKontainerKendaraanDariChassis')
                 // ini buat nge get pair kendaraan yang trailer
                 ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
                     $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
@@ -263,7 +263,7 @@ class SewaDataHelper
         // if($model)
         // {
             $data= DB::table('kendaraan AS k')
-                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota')
+                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota','mc.nama as tipeKontainerKendaraanDariChassis')
                 // ini buat nge get pair kendaraan yang trailer
                 ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
                     $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');

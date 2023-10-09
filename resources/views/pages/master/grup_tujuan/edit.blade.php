@@ -80,7 +80,7 @@
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Jenis</th>
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Tarif</th>
                                                 <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center">Uang Jalan</th>
-                                                <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center; width: 110px;">Komisi</th>
+                                                <th style="white-space: nowrap; text-align:center; justify-content: center; align-items: center; width: 110px;">Komisi Customer</th>
                                                 <th style="">Catatan</th>
                                                 <th style="width:30px;">Detail</th>
                                                 <th style="width:30px;"></th>
