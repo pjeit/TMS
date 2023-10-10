@@ -128,7 +128,7 @@
                                     </li>
                                 </ul>
                                 <div class="input-group">
-                                    <select class="form-control selectpicker"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                    <select class="form-control select2"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                         <option value="">--PILIH PEMBAYARAN--</option>
                                         @foreach ($dataKas as $data)
                                             <option value="{{$data->id}}">{{ $data->nama }}</option>

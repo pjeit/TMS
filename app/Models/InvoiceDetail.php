@@ -15,5 +15,14 @@ class InvoiceDetail extends Model
     {
          return $this->hasOne(sewa::class, 'id_sewa', 'id_sewa');
     }
+    public function invoiceDetailsAddCost()
+    {
+        return $this->hasMany(InvoiceDetailAddcost::class, 'id_invoice_detail', 'id'); //id target, id sendiri
+    } 
+    
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class, 'id', 'id_invoice');  //id target, id sendiri
+    }   
 
 }

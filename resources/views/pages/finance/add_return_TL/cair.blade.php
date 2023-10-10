@@ -28,14 +28,14 @@
             </div>
         @endforeach
     @endif
-    <form action="{{ route('pencairan_uang_jalan_ftl.store') }}" id="post_data" method="POST" >
+    <form action="{{ route('add_return_tl.store') }}" id="post_data" method="POST" >
       @csrf
         <div class="row m-2">
         
             <div class="col">
                 <div class="card radiusSendiri">
                     <div class="card-header">
-                        <a href="{{ route('pencairan_uang_jalan_ftl.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                        <a href="{{ route('add_return_tl.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                     </div>
                     <div class="card-body" >
                         <div class="d-flex" style="gap: 20px">
@@ -51,10 +51,12 @@
                                 </div>  
                                 <div class="form-group col-12">
                                     <label for="select_customer">No. Sewa<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_sewa' name="select_sewa">
+                                    <select class="form-control select2" style="width: 100%;" id='select_sewa' name="select_sewa" disabled>
                                         <option value="{{$sewa->id_sewa}}" selected>{{ $sewa->supir }} / {{ $sewa->nama_tujuan }} - {{ $sewa->no_sewa }} ({{ \Carbon\Carbon::parse($sewa->tanggal_berangkat)->format('d-M-Y') }}) </option>
                                     </select>
-                                    <input type="hidden" value="{{$id_sewa_defaulth}}" id="id_sewa_defaulth">
+                                    <input type="hidden" name="id_sewa_defaulth" value="{{$id_sewa_defaulth}}" id="id_sewa_defaulth">
+                                    <input type="hidden" name="no_sewa" value="{{$sewa->no_sewa}}" id="no_sewa">
+
                                 </div>
 
                                 <div class="form-group col-12">
@@ -88,6 +90,7 @@
                                         <option value="tl_priuk" {{ $sewa->stack_tl == 'tl_priuk'? 'selected':'' }}>Priuk</option>
                                     </select>
                                     <input type="hidden" value="{{ $sewa->stack_tl }}" name='stack_tl'>
+                                    <input type="hidden" name="stack_tl_hidden_value" value="{{$sewa->stack_tl}}">
                                 </div>
 
                                 <div class="form-group col-6">
@@ -98,6 +101,7 @@
                                         </div>
                                         <input type="text" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                         
                                         <input type="hidden" name="jumlah" value="{{ $jumlah }}">
+                                        <input type="text" id="jumlah" name="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                         
                                     </div>
                                 </div>
 

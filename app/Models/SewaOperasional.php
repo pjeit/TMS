@@ -22,6 +22,11 @@ class SewaOperasional extends Model
         return $this->hasMany(Sewa::class, 'id_sewa', 'id_sewa');
     }
 
+     public function invoiceDetailsAddCostOperasional()
+    {
+        return $this->hasMany(InvoiceDetailAddcost::class, 'id_sewa_operasional', 'id'); //id target, id sendiri
+    } 
+
     // eloquent
     public function sewa()
     {

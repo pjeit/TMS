@@ -143,7 +143,7 @@
 
                              
 
-                                <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'3':'6'}}">
+                                <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}">
                                     <label for="uang_jalan">Uang Jalan</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -153,7 +153,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'3':'6'}}">
+                                <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}">
                                     <label for="total_diterima">Total Uang Jalan</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -163,7 +163,7 @@
                                     </div>
                                 </div>
                             @if (isset($sewaBiayaTelukLamong))
-                                <div class="form-group col-6">
+                                <div class="form-group col-4">
                                     <label for="uang_jalan">Biaya Teluk Lamong</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">

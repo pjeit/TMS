@@ -32,7 +32,7 @@ class PerjalananKembaliController extends Controller
                 ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
-                ->where('s.status', 'DALAM PERJALANAN')
+                ->where('s.status', 'PROSES DOORING')
                 ->whereNull('s.id_supplier')
                 ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
@@ -93,7 +93,7 @@ class PerjalananKembaliController extends Controller
                     ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                     ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
                     // ->where('s.jenis_tujuan', 'like', '%FTL%')
-                    ->where('s.status', 'DALAM PERJALANAN')
+                    ->where('s.status', 'PROSES DOORING')
                     ->whereNull('s.id_supplier')
                     ->whereNull('s.tanggal_kembali')
                     ->where('s.is_aktif', '=', 'Y')
@@ -269,7 +269,7 @@ class PerjalananKembaliController extends Controller
             $perjalanan_kembali->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
             $perjalanan_kembali->no_kontainer = isset($data['no_kontainer'])? $data['no_kontainer']:null;
 
-            $perjalanan_kembali->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'DALAM PERJALANAN';
+            $perjalanan_kembali->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
             $perjalanan_kembali->is_kembali = $data['is_kembali'];
 
             $perjalanan_kembali->updated_by = $user;
@@ -383,7 +383,8 @@ class PerjalananKembaliController extends Controller
                 }
             }
 
-            return redirect()->route('perjalanan_kembali.index')->with('status','Berhasil menyimpan data!');
+            return redirect()->route('perjalanan_kembali.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+            
         } catch (ValidationException $e) {
             //throw $th;
             DB::rollBack();

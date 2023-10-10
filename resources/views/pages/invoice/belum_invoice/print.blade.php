@@ -68,7 +68,7 @@
             {{-- <h2 class="text" style="">INVOICE</h2> --}}
             
         {{-- </div> --}}
-        <table  autosize='1' style="width:100%; page-break-inside: avoid;margin-top: -105px;" >
+        <table  autosize='1' style="width:100%;" >
             <thead >
                 <tr>
                     <th style="width:5%;"></th>
@@ -93,52 +93,51 @@
                     <th style="width:5%;"></th>
                 </tr>
                  <tr>
-                    <th colspan='4' style="text-align:left;"><img src="{{ public_path("img/LOGO_PJE_WARNA.jpg") }}"  width="300" height="300"></th>
+                    <th colspan='5' style="text-align:left;"><img style="position: absolute;margin-top: -170px;" src="{{ public_path("img/LOGO_PJE_WARNA_BG_ILANG.png") }}"  width="500" height="500"></th>
                     <th colspan='10' style="text-align:left;">
                         <p>
                             <span style="color:#1f55a2"> PRIMATRANS JAYA EXPRESS</span>
                             <br>
-                            <span style="font-size:20px; font-weight:normal">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
-                            <br>
+                            {{-- <span style="font-size:20px; font-weight:normal">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
+                            <br> --}}
                             <span style="font-size:20px; font-weight:normal">Telp: 0896-0301-1919</span>
                             
                         </p>
                     </th>
-                    <th colspan='6' style="text-align:right;">
-                        <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" >
-
-                        <h2>INVOICE</h2>
-
-                    </th>
+                    <td colspan='5' style="text-align:right;">
+                        {{-- <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
+                        <h1>INVOICE</h1>
+                        {{-- <span style="color:#1f55a2">{{ $data['no_invoice'] }}</span> --}}
+                    </td>
     			</tr>
             </thead>
         </table>
-        <hr style=" border: 1px solid rgb(76, 76, 76);margin-top: -30px;">
+        <hr style=" border: 1px solid rgb(76, 76, 76);margin-top: 100px;">
         <table class="border-table">
             <thead class="border-table">
                 <tr style="">
-                    <td style="padding-left: 10px; ">Kepada Yth :</td>
+                    <td style="padding-left: 10px; "><b>Kepada Yth :</b> </td>
                     <td></td>
                     <td width='30%'>&nbsp;</td>
-                    <td style="">No Invoice</td>
-                    <td style="">: {{ $data['no_invoice'] }}</td>
+                    <td style=""><b>No Invoice</b></td>
+                    <td style=""><b>:</b> {{ $data['no_invoice'] }}</td>
                 </tr>
                 <tr>
                     <td style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{ ($data->getBillingTo->nama) }}</td>
                     <td></td>
                     <td width='30%'>&nbsp;</td>
-                    <td style="">Tanggal</td>
-                    <td style="">: {{ date("d-M-Y", strtotime($data['tgl_invoice'])) }}</td>
+                    <td style=""><b>Tanggal</b> </td>
+                    <td style=""><b>:</b> {{ date("d-M-Y", strtotime($data['tgl_invoice'])) }}</td>
                 </tr>
                 <tr>
                     <td style=""width='30%' colspan="2">&nbsp;</td>
-                    <td style="">Jatuh Tempo</td>
-                    <td style="">: {{ date("d-M-Y", strtotime($data['jatuh_tempo'])) }}</td>
+                    <td style=""><b>Jatuh Tempo</b> </td>
+                    <td style=""><b>:</b> {{ date("d-M-Y", strtotime($data['jatuh_tempo'])) }}</td>
                 </tr>
                 <tr>
                     <td style="" width='30%' colspan="2">&nbsp;</td>
-                    <td style=" text-align:left;vertical-align:top;">Catatan</td>
-                    <td style="">: {{ $data['catatan'] }}</td>
+                    <td style=" text-align:left;vertical-align:top;"><b>Catatan</b> </td>
+                    <td style=""><b>:</b> {{ $data['catatan'] }}</td>
                 </tr>
                 <tr>
                     <td width='30%' colspan="2">&nbsp;</td>
@@ -159,6 +158,7 @@
                     </td>
                     <td style="border: 1px solid black; border-collapse: collapse;">NOPOL</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
+                    <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">SUBTOTAL</td>
                 </tr>
@@ -184,8 +184,23 @@
                         <br>{{ $detail->sewa->no_surat_jalan }}
                         <br>{{ $detail->sewa->seal_pelayaran }}
                     </td>
-                        <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
-                    <td class="text-right">{{ number_format($detail->tarif+$detail->add_cost) }}</td>
+                    <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
+                    <td class="text-right">{{ number_format($detail->tarif) }}</td>
+                    <td class="text-right" {{--rowspan="27"--}}> <br>
+                     @if (isset($dataOperasional))
+                        @foreach ($dataOperasional as $DO)
+
+                            @if ($detail->id_sewa == $DO->id_sewa)
+                                    
+                                    <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
+                            @endif
+                            
+                        @endforeach
+                     @else
+                        -
+                        
+                    @endif
+                    </td>
                     <td class="text-right">{{ number_format($detail->diskon) }}</td>
                     <td class="text-right" style="padding-right: 20px;">{{ number_format($detail->sub_total) }}</td>
                 </tr>
@@ -196,7 +211,7 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="6" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                    <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
                     <td class="text-right"  style="padding-right: 20px; border-top: 1px solid black; border-collapse: collapse;""><strong>{{ number_format($total) }}</strong></td>
                 </tr>
             </tfoot>
@@ -210,7 +225,9 @@
             Pembayaran dapat dilakukan pembukaan cek atas nama <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b>
             <br>Atau transfer ke rekening
             <br>BCA: <b><u>51308 14141</u></b> / Mandiri: <b><u>14000 41415 135</u></b>
-            <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b><br>
+            <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b></br>
+            </br></br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" >
+
             {{-- {{$qrcode}} --}}
             {{-- <img src="{{ public_path("img/") }}{{ $qrcode }}" alt="QR Code"> --}}
             {{-- <br><br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
