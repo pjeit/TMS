@@ -68,12 +68,12 @@
                                 </div>  
                             </div>
                             <div class="row">
-                                <div class="form-group col-5">
+                                <div class="form-group col-6">
                                     <label for="">Kendaraan</label>
                                     <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="{{ $sewa->no_polisi }}" readonly>                         
                                 </div>  
 
-                                <div class="form-group col-7">
+                                <div class="form-group col-6">
                                     <label for="">Driver</label>
                                     <input type="text" id="driver" name="driver" class="form-control" value="{{ $sewa->nama_driver }}" readonly>     
                                     <input type="hidden" name="id_karyawan" id="id_karyawan" value="{{ $sewa->id_karyawan }}">                    
@@ -81,12 +81,13 @@
 
                                 <div class="form-group col-6">
                                     <label for="uang_jalan">Stack TL</label>
-                                    <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl" disabled>
+                                    <select class="form-control select2" style="width: 100%;" disabled>
                                         <option value="" {{ $sewa->stack_tl == ''? 'selected':'' }}>── Pilih TL ──</option>
                                         <option value="tl_perak" {{ $sewa->stack_tl == 'tl_perak'? 'selected':'' }}>Perak</option>
                                         <option value="tl_teluk_lamong" {{ $sewa->stack_tl == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
                                         <option value="tl_priuk" {{ $sewa->stack_tl == 'tl_priuk'? 'selected':'' }}>Priuk</option>
                                     </select>
+                                    <input type="hidden" value="{{ $sewa->stack_tl }}" name='stack_tl'>
                                 </div>
 
                                 <div class="form-group col-6">
@@ -95,7 +96,8 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" idname="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                         
+                                        <input type="text" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                         
+                                        <input type="hidden" name="jumlah" value="{{ $jumlah }}">
                                     </div>
                                 </div>
 

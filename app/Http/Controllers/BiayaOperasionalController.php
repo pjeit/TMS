@@ -63,11 +63,15 @@ class BiayaOperasionalController extends Controller
             $data = $request->post();
             $item = $data['item'];
             $keterangan = '';
+            $is_UJ = false;
             // dd($data['data']);
 
             foreach ($data['data'] as $key => $value) {
+                if(isset($value['tambahan_uj'])){
+                    $is_UJ = true;
+                }
                 if(isset($value['item']) && $value['dicairkan'] != null){
-                    $keterangan .= $value['keterangan']. ' # ';
+                    $keterangan .= '# ' . $value['keterangan'] . ' ';
 
                     $sewa_o = new SewaOperasional();
                     $sewa_o->id_sewa = $key;
@@ -81,47 +85,89 @@ class BiayaOperasionalController extends Controller
                     $sewa_o->tgl_dicairkan = now();
                     $sewa_o->is_aktif = 'Y';
                     $sewa_o->save();
+
+                    if($is_UJ == true){
+                        $saldo = DB::table('kas_bank')
+                                ->select('*')
+                                ->where('is_aktif', '=', "Y")
+                                ->where('kas_bank.id', '=', $data['pembayaran'])
+                                ->get();
+
+                        // dd($data['pembayaran']); 
+                        $saldo_baru = $saldo[0]->saldo_sekarang - ( floatval(str_replace(',', '', $data['t_total'])) );
+
+                        DB::table('kas_bank')
+                            ->where('id', $data['pembayaran'])
+                            ->update(array(
+                                'saldo_sekarang' => $saldo_baru,
+                                'updated_at'=> now(),
+                                'updated_by'=> $user,
+                            )
+                        );
+                        $keterangan .= 'TAMBAHAN UJ';
+                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                            array(
+                                $data['pembayaran'], // id kas_bank dr form
+                                now(), //tanggal
+                                0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                floatval(str_replace(',', '', $data['t_total'])), //uang keluar (kredit)
+                                1015, //kode coa
+                                'pencairan_operasional',
+                                $keterangan, //keterangan_transaksi
+                                $key, //keterangan_kode_transaksi
+                                $user, //created_by
+                                now(), //created_at
+                                $user, //updated_by
+                                now(), //updated_at
+                                'Y'
+                            ) 
+                        );
+                    }
                 }
             }
 
-            $saldo = DB::table('kas_bank')
-                        ->select('*')
-                        ->where('is_aktif', '=', "Y")
-                        ->where('kas_bank.id', '=', $data['pembayaran'])
-                        ->get();
-            // dd($data['pembayaran']); 
-            $saldo_baru = $saldo[0]->saldo_sekarang - ( floatval(str_replace(',', '', $data['t_total'])) );
+            if($is_UJ == false){
+                // kalau bukan tambahan UJ masuk action ini
+                $saldo = DB::table('kas_bank')
+                            ->select('*')
+                            ->where('is_aktif', '=', "Y")
+                            ->where('kas_bank.id', '=', $data['pembayaran'])
+                            ->get();
+                // dd($data['pembayaran']); 
+                $saldo_baru = $saldo[0]->saldo_sekarang - ( floatval(str_replace(',', '', $data['t_total'])) );
+    
+                DB::table('kas_bank')
+                    ->where('id', $data['pembayaran'])
+                    ->update(array(
+                        'saldo_sekarang' => $saldo_baru,
+                        'updated_at'=> now(),
+                        'updated_by'=> $user,
+                    )
+                );
+    
+                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                    array(
+                        $data['pembayaran'], // id kas_bank dr form
+                        now(), //tanggal
+                        0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                        floatval(str_replace(',', '', $data['t_total'])), //uang keluar (kredit)
+                        1015, //kode coa
+                        'pencairan_operasional',
+                        $keterangan, //keterangan_transaksi
+                        $key, //keterangan_kode_transaksi
+                        $user, //created_by
+                        now(), //created_at
+                        $user, //updated_by
+                        now(), //updated_at
+                        'Y'
+                    ) 
+                );
+            } 
 
-            DB::table('kas_bank')
-                ->where('id', $data['pembayaran'])
-                ->update(array(
-                    'saldo_sekarang' => $saldo_baru,
-                    'updated_at'=> now(),
-                    'updated_by'=> $user,
-                )
-            );
 
-            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                array(
-                    $data['pembayaran'], // id kas_bank dr form
-                    now(), //tanggal
-                    0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                    floatval(str_replace(',', '', $data['t_total'])), //uang keluar (kredit)
-                    1015, //kode coa
-                    'pencairan_operasional',
-                    $keterangan, //keterangan_transaksi
-                    $key, //keterangan_kode_transaksi
-                    $user, //created_by
-                    now(), //created_at
-                    $user, //updated_by
-                    now(), //updated_at
-                    'Y'
-                ) 
-            );
-
-            return redirect()->route('biaya_operasional.index')->with('status','Sukses!!');
+            return redirect()->route('biaya_operasional.index')->with(['status' => 'Success', 'msg' => 'Data berhasil dicairkan!']);
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->back()->with(['status' => 'Error', 'msg' => 'Terjadi Kesalahan!']);
         }
 
         
@@ -181,11 +227,48 @@ class BiayaOperasionalController extends Controller
 
     public function load_dataOldNotUsed($item){
         try {
+
+            // query lama
+                // $data = db::table('sewa as s')
+                //         ->leftJoin('job_order_detail AS jod', function($join) {
+                //             $join->on('s.id_jo_detail', '=', 'jod.id')
+                //                 ->where('jod.is_aktif', 'Y')
+                //                 ->where('jod.status', 'PROSES DOORING');
+                //         })
+                //         ->leftJoin('grup_tujuan AS gt', function($join) {
+                //             $join->on('gt.id', '=', 's.id_grup_tujuan')
+                //                 ->where('gt.is_aktif', 'Y');
+                //         })
+                //         ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
+                //         ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+                //         ->leftJoin('sewa_operasional as so', function ($join) use ($item) {
+                //             if($item == 'TALLY'){
+                //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
+                //                     ->where('so.is_aktif', 'Y')
+                //                     ->where('so.deskripsi', $item);
+                //             }else {
+                //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
+                //                 ->where('so.is_aktif', 'Y');
+                //             }
+                //         })
+                //         ->where('s.is_aktif', 'Y')
+                //         ->where('s.id_sewa', '<>', 'NULL')
+                //         ->select('jod.*', 'gt.nama_tujuan as nama_tujuan','c.nama as customer', 'jod.status as status_jod',
+                //                 's.id_sewa as id_sewa','s.id_jo as id_jo','so.id as id_oprs', 'c.id as id_customer',
+                //                 'so.deskripsi as deskripsi_so', 's.no_polisi as no_polisi', 'k.nama_panggilan as nama_panggilan',
+                //                 's.jenis_order as jenis_order','s.tipe_kontainer as tipe_kontainer',
+                //                 DB::raw('COALESCE(gt.tally, 0) as tally'), 
+                //                 )
+                //         ->orderBy('s.id_customer', 'asc')
+                //         ->orderBy('jod.id_jo', 'asc')
+                // ->get();
+            //
+
             $dataJO = JobOrder::from('job_order AS jo')
                     ->leftJoin('job_order_detail AS jod', function($join) {
                         $join->on('jo.id', '=', 'jod.id_jo')
                             ->where('jod.is_aktif', 'Y')
-                            ->where('jod.status', 'DALAM PERJALANAN');
+                            ->where('jod.status', 'PROSES DOORING');
                     })
                     ->leftJoin('grup_tujuan AS gt', function($join) {
                         $join->on('gt.id', '=', 'jod.id_grup_tujuan')
@@ -230,41 +313,6 @@ class BiayaOperasionalController extends Controller
 
     public function load_data($item){
         try {
-            // query lama
-                // $data = db::table('sewa as s')
-                //         ->leftJoin('job_order_detail AS jod', function($join) {
-                //             $join->on('s.id_jo_detail', '=', 'jod.id')
-                //                 ->where('jod.is_aktif', 'Y')
-                //                 ->where('jod.status', 'DALAM PERJALANAN');
-                //         })
-                //         ->leftJoin('grup_tujuan AS gt', function($join) {
-                //             $join->on('gt.id', '=', 's.id_grup_tujuan')
-                //                 ->where('gt.is_aktif', 'Y');
-                //         })
-                //         ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
-                //         ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
-                //         ->leftJoin('sewa_operasional as so', function ($join) use ($item) {
-                //             if($item == 'TALLY'){
-                //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
-                //                     ->where('so.is_aktif', 'Y')
-                //                     ->where('so.deskripsi', $item);
-                //             }else {
-                //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
-                //                 ->where('so.is_aktif', 'Y');
-                //             }
-                //         })
-                //         ->where('s.is_aktif', 'Y')
-                //         ->where('s.id_sewa', '<>', 'NULL')
-                //         ->select('jod.*', 'gt.nama_tujuan as nama_tujuan','c.nama as customer', 'jod.status as status_jod',
-                //                 's.id_sewa as id_sewa','s.id_jo as id_jo','so.id as id_oprs', 'c.id as id_customer',
-                //                 'so.deskripsi as deskripsi_so', 's.no_polisi as no_polisi', 'k.nama_panggilan as nama_panggilan',
-                //                 's.jenis_order as jenis_order','s.tipe_kontainer as tipe_kontainer',
-                //                 DB::raw('COALESCE(gt.tally, 0) as tally'), 
-                //                 )
-                //         ->orderBy('s.id_customer', 'asc')
-                //         ->orderBy('jod.id_jo', 'asc')
-                // ->get();
-            //
             $data = DB::table('sewa AS s')
                     ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
                         if($item == 'OPERASIONAL'){
@@ -277,7 +325,12 @@ class BiayaOperasionalController extends Controller
                                 ->where('so.deskripsi', '=', $item);
                         }
                     })
-                    ->where('s.status', 'DALAM PERJALANAN')
+                    ->where('s.status', 'PROSES DOORING')
+                    ->where(function($where) use($item){
+                        if($item == 'TAMBAHAN UJ'){
+                            $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
+                        }
+                    })
                     ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')
@@ -290,7 +343,7 @@ class BiayaOperasionalController extends Controller
                         'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
                         DB::raw('COALESCE(gt.tally, 0) as tally'),
                         DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), 
-                        'gt.nama_tujuan',
+                        'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
                         'c.nama as customer',
                         'g.nama_grup as nama_grup'
                     )

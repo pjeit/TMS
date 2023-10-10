@@ -114,7 +114,7 @@
                                                         <input type="hidden" name="data[tujuan][{{$key}}][id_tujuan]" id="id_tujuan_{{$key}}" value="{{$item->id}}" >
                                                         <input type="hidden" name="data[tujuan][{{$key}}][alamat_hidden]" id="alamat_hidden_{{$key}}" value="{{$item->alamat}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][uang_jalan_hidden]" id="uang_jalan_hidden_{{$key}}" value="{{$item->uang_jalan}}">
-                                                        <input type="hidden" name="data[tujuan][{{$key}}][komisi_hidden]" id="komisi_hidden_{{$key}}" value="{{number_format($item->komisi)}}">
+                                                        <input type="hidden" name="data[tujuan][{{$key}}][komisi_hidden]" id="komisi_hidden_{{$key}}" value="{{$item->komisi}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][komisi_driver_hidden]" id="komisi_driver_hidden_{{$key}}" value="{{number_format($item->komisi_driver)}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][harga_per_kg_hidden]" id="harga_per_kg_hidden_{{$key}}" value="{{number_format($item->harga_per_kg)}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][min_muatan_hidden]" id="min_muatan_hidden_{{$key}}" value="{{$item->min_muatan}}">
@@ -411,30 +411,11 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Disimpan'
-                    })
-
-                    setTimeout(() => {
-                        this.submit();
-                    }, 1000); // 2000 milliseconds = 2 seconds
+                    this.submit();
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,
@@ -945,7 +926,7 @@
                     var selJns = $("input[name='select_jenis_tujuan']:checked").val();
                     if(selJns == 'FTL'){
                         var cekTarif = $('#tarif').val();
-                        console.log("Tarif value:", cekTarif);
+                        // console.log("Tarif value:", cekTarif);
                         if(cekTarif == '' || cekTarif == null){
                             event.preventDefault(); // Prevent form submission
                             Swal.fire({
@@ -972,6 +953,7 @@
                     $('#tarif_'+key).val($('#tarif').val());
                     $('#nama_tujuan_'+key).val($('#nama_tujuan').val());
                     $('#uang_jalan_'+key).val(parseFloat($('#uang_jalan').val()));
+                    $('#uang_jalan_hidden_'+key).val(escapeComma($('#uang_jalan').val()));
                     $('#komisi_'+key).val($('#komisi').val());
                     $('#komisi_driver_hidden_'+key).val($('#komisi_driver').val());
                     $('#catatan_'+key).val($('#catatan').val());
@@ -1010,6 +992,7 @@
         
                             // ini buat di simpan (hidden), nanti dikirim waktu post
                             // $('#obj_biaya'+key).val('');
+                            // console.log('key'+key+' : ', JSON.stringify(array_detail_biaya));
                             $('#obj_biaya'+key).val(JSON.stringify(array_detail_biaya));
                         });
                         // ini ngitung semua uangnya
@@ -1037,7 +1020,7 @@
                     var selJns = $("input[name='select_jenis_tujuan']:checked").val();
                     if(selJns == 'FTL'){
                         var cekTarif = $('#tarif').val();
-                        console.log("Tarif value:", cekTarif);
+                        // console.log("Tarif value:", cekTarif);
                         if(cekTarif == '' || cekTarif == null){
                             event.preventDefault(); // Prevent form submission
                             Swal.fire({
@@ -1106,16 +1089,16 @@
                             <input value="${$('#id_tujuan').val()}" name="data[tujuan][${i}][id_tujuan]" id="id_tujuan_${i}" type="hidden" >
                             <input value="${$('#alamat').val()}" name="data[tujuan][${i}][alamat_hidden]" id="alamat_hidden_${i}" type="hidden" >
                             <input value="${total_biaya}" name="data[tujuan][${i}][uang_jalan_hidden]" id="uang_jalan_hidden_${i}" type="hidden" >
-                            <input value="${$('#komisi').val()}" name="data[tujuan][${i}][komisi_hidden]" id="komisi_hidden_${i}" type="hidden" >
+                            <input value="${escapeComma($('#komisi').val())}" name="data[tujuan][${i}][komisi_hidden]" id="komisi_hidden_${i}" type="hidden" >
                             <input value="${$('#komisi_driver').val()}" type="hidden" name="data[tujuan][${i}][komisi_driver_hidden]" id="komisi_driver_hidden_${i}" >
                             <input value="${$('#harga_per_kg').val()}" name="data[tujuan][${i}][harga_per_kg_hidden]" id="harga_per_kg_hidden_${i}" type="hidden" >
                             <input value="${$('#min_muatan').val()}" name="data[tujuan][${i}][min_muatan_hidden]" id="min_muatan_hidden_${i}" type="hidden" >
                             <input value="${$('#grup').val()}" name="data[tujuan][${i}][grup_hidden]" id="grup_hidden_${i}" type="hidden"  placeholder="">
                             <input value="${$('#marketing').val()}" name="data[tujuan][${i}][marketing_hidden]" id="marketing_hidden_${i}" type="hidden" placeholder="">
-                            <input value="${$('#seal_pje').val()}" type="hidden" name="data[tujuan][${i}][seal_pje_hidden]" id="seal_pje_hidden_${i}" placeholder="">
-                            <input value="${$('#seal_pelayaran').val()}" type="hidden" name="data[tujuan][${i}][seal_pelayaran_hidden]" id="seal_pelayaran_hidden_${i}" placeholder="">
-                            <input value="${$('#tally_pje').val()}" type="hidden" name="data[tujuan][${i}][tally_hidden]" id="tally_hidden_${i}" placeholder="">
-                            <input value="${$('#plastik_pje').val()}" type="hidden" name="data[tujuan][${i}][plastik_hidden]" id="plastik_hidden_${i}" placeholder="">
+                            <input value="${escapeComma($('#seal_pje').val())}" type="hidden" name="data[tujuan][${i}][seal_pje_hidden]" id="seal_pje_hidden_${i}" placeholder="">
+                            <input value="${escapeComma($('#seal_pelayaran').val())}" type="hidden" name="data[tujuan][${i}][seal_pelayaran_hidden]" id="seal_pelayaran_hidden_${i}" placeholder="">
+                            <input value="${escapeComma($('#tally_pje').val())}" type="hidden" name="data[tujuan][${i}][tally_hidden]" id="tally_hidden_${i}" placeholder="">
+                            <input value="${escapeComma($('#plastik_pje').val())}" type="hidden" name="data[tujuan][${i}][plastik_hidden]" id="plastik_hidden_${i}" placeholder="">
                             <input value="${$('#kargo_pje').val()}" type="hidden" name="data[tujuan][${i}][kargo_hidden]" id="kargo_hidden_${i}" >
                             <input value='${JSON.stringify(array_detail_biaya)}' name="data[tujuan][${i}][obj_biaya]" id="obj_biaya${i}" type="hidden" placeholder="">
                             <td><button type="button" name="remove" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  

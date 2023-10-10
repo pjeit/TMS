@@ -41,6 +41,7 @@
                                             <option value="OPERASIONAL">OPERASIONAL</option>
                                             <option value="TIMBANG">TIMBANG</option>
                                             <option value="BURUH">BURUH</option>
+                                            <option value="TAMBAHAN UJ">TAMBAHAN UJ</option>
                                         </select>
                                     </div>
                                 </div>
@@ -201,7 +202,7 @@
         $(document).on('keyup', '.dicairkan', function() {  
             var row = $(this).closest('tr');
             var item = $('#item').val();
-            if(item == 'TIMBANG' || item == 'BURUH'){
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'TAMBAHAN UJ'){
                 // hidden biaya nominal di cet sama dengan nominal dicairkan
                 row.find('.hiddenNominal').val(row.find('.dicairkan').val())
             }
@@ -235,7 +236,7 @@
     
                         $("th").remove();
                         $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
-                        if(item == 'TIMBANG' || item == 'BURUH'){
+                        if(item == 'TIMBANG' || item == 'BURUH' || item == 'TAMBAHAN UJ'){
                             
                         }else{
                             $("thead tr").append("<th>Total</th>");
@@ -246,79 +247,95 @@
                         $("#hasil").html("");
                         var ord = 7;
                         var dataCustomer = null;
-                        for (var i = 0; i <data.length; i++) {
-                            if(data[i].total_dicairkan == null){
-                                var start = data[i].deskripsi_so;
-                                var row = $("<tr class='hoverEffect'></tr>");
-                                row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input class='check_item check_grup' grup_parent='${data[i].grup_id}' type='checkbox'> </span> </div> </b></td>`);
-                                row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input class='check_item check_cust' grup_child='${data[i].grup_id}' cust_parent='${data[i].id_customer}' type='checkbox'> </span> </div> </b></td>`);
-                            
-                                row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} </td>`);
-                                row.append(`<td> ${data[i].tipe_kontainer}" <b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
-                                var nominal = 0;
-                                if(data[i].jenis_order == 'INBOUND'){
-                                    if(data[i].tipe_kontainer=='20'){
-                                        if(data[i].pick_up == 'DEPO'){
-                                            nominal = 15000;
+                        console.log('data.length', data.length);
+                        if(data.length > 0){
+                            for (var i = 0; i <data.length; i++) {
+                                if(data[i].total_dicairkan == null){
+                                    var start = data[i].deskripsi_so;
+                                    var row = $("<tr class='hoverEffect'></tr>");
+                                    row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input class='check_item check_grup' grup_parent='${data[i].grup_id}' type='checkbox'> </span> </div> </b></td>`);
+                                    row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input class='check_item check_cust' grup_child='${data[i].grup_id}' cust_parent='${data[i].id_customer}' type='checkbox'> </span> </div> </b></td>`);
+                                
+                                    row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan} </td>`);
+                                    row.append(`<td> ${data[i].tipe_kontainer}" <b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                    var nominal = 0;
+                                    if(data[i].jenis_order == 'INBOUND'){
+                                        if(data[i].tipe_kontainer=='20'){
+                                            if(data[i].pick_up == 'DEPO'){
+                                                nominal = 15000;
+                                            }
+                                        }else{
+                                            if(data[i].pick_up == 'DEPO'){
+                                                nominal = 25000;
+                                            }
                                         }
                                     }else{
-                                        if(data[i].pick_up == 'DEPO'){
+                                        if(data[i].tipe_kontainer=='20'){
+                                            nominal = 15000;
+                                        }else{
                                             nominal = 25000;
                                         }
                                     }
-                                }else{
-                                    if(data[i].tipe_kontainer=='20'){
-                                        nominal = 15000;
-                                    }else{
-                                        nominal = 25000;
+                                    if(item == 'TALLY'){
+                                        nominal = data[i].tally;       
+                                    }else if(item == 'SEAL PELAYARAN'){
+                                        nominal = data[i].seal_pelayaran;       
                                     }
+                                    if(item == 'TIMBANG' || item == 'BURUH' || item == 'TAMBAHAN UJ'){
+                                        if(item == 'TAMBAHAN UJ'){
+                                            // nominal = data[i].uj_tujuan - data[i].uj_sewa;
+                                        }
+                                        ord = 6;
+                                    }else{
+                                        row.append(`<td> ${nominal.toLocaleString()} </td>`);
+                                    }
+                                    var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+data[i].nama_panggilan;
+                                    var tambahanUJ = '';
+    
+                                    if(item == 'TAMBAHAN UJ'){
+                                        var inputan = `<input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${moneyMask(data[i].uj_tujuan - data[i].uj_sewa)}' readonly/>`; 
+                                        tambahanUJ = `<input type="hidden" name="data[${data[i].id_sewa}][tambahan_uj]" value="Y" />`
+                                    }else{
+                                        var inputan = `<input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>`; 
+                                    }
+                                    row.append(`<td> 
+                                                    ${inputan}
+                                                    ${tambahanUJ}
+                                                    <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
+                                                    <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
+                                                </td>`);
+                                    row.append(`<td class='text-center'> 
+                                                    <input class="form-control open_cust_cttn_${data[i].id_customer} open_grup_cttn_${data[i].grup_id}" id='open_cttn_${data[i].id_sewa}' name='data[${data[i].id_sewa}][catatan]' sewaOprsCttn='${data[i].id_sewa}' type="text" readonly/> 
+                                                </td>`);
+                                    row.append(`<td class='text-center'> 
+                                                    <input class='check_item check_container' id_sewa="${data[i].id_sewa}" grup_child='${data[i].grup_id}' cust_child='${data[i].id_customer}'  name="data[${data[i].id_sewa}][item]" type='checkbox'> 
+                                                    <input type='hidden' class='hiddenNominal' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH') ? $('#open_' + data[i].id_sewa).val() : nominal}' class='form-control' readonly>
+                                                </td>`);
+                                    $("#hasil").append(row);
                                 }
-                                if(item == 'TALLY'){
-                                    nominal = data[i].tally;       
-                                }else if(item == 'SEAL PELAYARAN'){
-                                    nominal = data[i].seal_pelayaran;       
-                                }
-                                if(item == 'TIMBANG' || item == 'BURUH'){
-                                    ord = 6;
-                                }else{
-                                    row.append(`<td> ${nominal.toLocaleString()} </td>`);
-                                }
-                                var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+data[i].nama_panggilan;
-                                row.append(`<td> 
-                                                <input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/> 
-                                                <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
-                                                <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <input class="form-control open_cust_cttn_${data[i].id_customer} open_grup_cttn_${data[i].grup_id}" id='open_cttn_${data[i].id_sewa}' name='data[${data[i].id_sewa}][catatan]' sewaOprsCttn='${data[i].id_sewa}' type="text" readonly/> 
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <input class='check_item check_container' id_sewa="${data[i].id_sewa}" grup_child='${data[i].grup_id}' cust_child='${data[i].id_customer}'  name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                                <input type='hidden' class='hiddenNominal' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH') ? $('#open_' + data[i].id_sewa).val() : nominal}' class='form-control' readonly>
-                                            </td>`);
-                                $("#hasil").append(row);
                             }
+                            
+                            new DataTable('#rowGroup', {
+                                order: [
+                                    [0, 'asc'], // 0 = grup
+                                    [1, 'asc'] // 1 = customer
+                                ],
+                                rowGroup: {
+                                    dataSrc: [0, 1] // di order grup dulu, baru customer
+                                },
+                                columnDefs: [
+                                    {
+                                        targets: [0, 1], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
+                                        visible: false
+                                    },
+                                    {
+                                        targets: [ord, ord-1],
+                                        orderable: false, // matiin sortir kolom centang
+                                    },
+                                ],
+                            });
                         }
                         
-                        new DataTable('#rowGroup', {
-                            order: [
-                                [0, 'asc'], // 0 = grup
-                                [1, 'asc'] // 1 = customer
-                            ],
-                            rowGroup: {
-                                dataSrc: [0, 1] // di order grup dulu, baru customer
-                            },
-                            columnDefs: [
-                                {
-                                    targets: [0, 1], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
-                                    visible: false
-                                },
-                                {
-                                    targets: [ord, ord-1],
-                                    orderable: false, // matiin sortir kolom centang
-                                },
-                            ],
-                        });
                     },error: function (xhr, status, error) {
                         $("#loading-spinner").hide();
                         if ( xhr.responseJSON.result == 'error') {
@@ -342,17 +359,26 @@
             //     $('[id^="open_"]').prop('readonly', !isChecked);
             // }
             function toggleReadonlyAll(inputId) {
+                var item = $('#item').val();
                 var isChecked = $('#check_all').prop('checked');
                 var readonlyValue = isChecked ? false : true; // Set to true when not checked (isChecked is false)
                 if(readonlyValue == true){
-                    $(`[id^="open_"]`).val('');
-                    hitung();
+                    if(item != 'TAMBAHAN UJ'){
+                        $(`[id^="open_"]`).val('');
+                    }else{
+                        $(`[id^="open_cttn_"]`).val('');
+                    }
                 }
-                $('[id^="open_"]').prop('readonly', readonlyValue);
+                if(item != 'TAMBAHAN UJ'){
+                    $('[id^="open_"]').prop('readonly', readonlyValue);
+                }else{
+                    $('[id^="open_cttn_"]').prop('readonly', readonlyValue);
+                }
             }
             $(document).on('change', '#check_all', function() {  
                 toggleReadonlyAll();
                 $(".check_item").prop('checked', $(this).prop('checked'));
+                hitung();
             });
             $(document).on('change', '#check_all_pick_up', function() {  
                 $(".check_item_pick_up").prop('checked', $(this).prop('checked'));
@@ -361,20 +387,25 @@
 
         // check per grup
             function toggleReadonlyGrup(grup_id) {
+                var item = $('#item').val();
                 var checkbox = $(`.check_grup[grup_parent="${grup_id}"]`);
                 var inputElements = $('.open_grup_' + grup_id);
                 var cttnElements = $('.open_grup_cttn_' + grup_id);
                 if (checkbox.prop('checked')) {
-                    inputElements.prop('readonly', false);
+                    if(item != 'TAMBAHAN UJ'){
+                        inputElements.prop('readonly', false);
+                    }
                     cttnElements.prop('readonly', false);
                 } else {
-                    inputElements.val('');
+                    if(item != 'TAMBAHAN UJ'){
+                        inputElements.val('');
+                    }
                     cttnElements.val('');
                     inputElements.prop('readonly', true);
                     cttnElements.prop('readonly', true);
-                    hitung();
                     caps();
                 }
+                hitung();
             }
             $(document).on('change', '.check_grup, .check_grup_tps, .check_grup_ttl, .check_grup_depo', function() {
                 var opr = $(this).attr('opr');
@@ -391,19 +422,25 @@
  
         // check per customer
             function toggleReadonlyCust(cust_id) {
+                var item = $('#item').val();
                 var checkbox = $(`.check_cust[cust_parent="${cust_id}"]`);
                 var inputElements = $('.open_cust_' + cust_id);
                 var cttnElements = $('.open_cust_cttn_' + cust_id);
+
                 if (checkbox.prop('checked')) {
-                    inputElements.prop('readonly', false);
+                    if(item != 'TAMBAHAN UJ'){
+                        inputElements.prop('readonly', false);
+                    }
                     cttnElements.prop('readonly', false);
                 } else {
-                    inputElements.val('');
+                    if(item != 'TAMBAHAN UJ'){
+                        inputElements.val('');
+                    }
                     cttnElements.val('');
-                    hitung();
                     inputElements.prop('readonly', true);
-                    cttnElements    .prop('readonly', true);
+                    cttnElements.prop('readonly', true);
                 }
+                hitung();
             }
             $(document).on('change', '.check_cust, .check_cust_tps, .check_cust_ttl, .check_cust_depo', function() {
                 var opr = $(this).attr('opr');
@@ -428,13 +465,20 @@
             function toggleReadonly(inputId) {
                 var isChecked = $(`input[id_sewa='${inputId}']`).prop('checked');
                 var readonlyValue = isChecked ? false : true; // Set to true when not checked (isChecked is false)
+                var item = $('#item').val();
+                
                 if(readonlyValue == true){
-                    $(`#open_${inputId}`).val('');
+                    if(item != 'TAMBAHAN UJ'){
+                        $(`#open_${inputId}`).val('');
+                    }
                     $(`#open_cttn_${inputId}`).val('');
-                    hitung();
                 }
-                $(`#open_${inputId}`).prop('readonly', readonlyValue);
+      
+                if(item != 'TAMBAHAN UJ'){
+                    $(`#open_${inputId}`).prop('readonly', readonlyValue);
+                }
                 $(`#open_cttn_${inputId}`).prop('readonly', readonlyValue);
+                hitung();
                 caps();
             }
             $(document).on('click', '.check_container', function (event) {
@@ -451,7 +495,6 @@
             });
         //
         
-        // 
         $(document).on('keyup', '.dicairkan', function(){
             var idOprs = $(this).attr('sewaOprs');
             var inputed = parseFloat(this.value.replace(/,/g, ''));
@@ -464,17 +507,36 @@
         });
 
         function hitung(){
+            var item = $('#item').val();
+            console.log('item', item);
             var totalCair = 0;
-
             var dicairkan = document.querySelectorAll('.dicairkan');
 
-            for (var i = 0; i < dicairkan.length; i++) {
-                totalCair += parseFloat(dicairkan[i].value.replace(/,/g, '')) || 0; // Convert to a number or use 0 if NaN
+            if(item == 'TAMBAHAN UJ'){
+                // Get all checked checkboxes with the class .check_container
+                var checkedCheckboxes = document.querySelectorAll('.check_container:checked');
+
+                // Loop through each checked checkbox and get the id_sewa attribute
+                checkedCheckboxes.forEach(function(checkbox) {
+                    var idSewa = checkbox.getAttribute('id_sewa');
+                    totalCair += parseFloat(escapeComma($('#open_'+idSewa).val()));
+                });
+
+                var totalElement = document.querySelector('.t_total');
+                $('#t_total').val(totalCair);
+                totalElement.textContent = "Rp. "+(totalCair).toLocaleString();
+            }else{
+                for (var i = 0; i < dicairkan.length; i++) {
+                    totalCair += parseFloat(dicairkan[i].value.replace(/,/g, '')) || 0; // Convert to a number or use 0 if NaN
+                }
+
+                var totalElement = document.querySelector('.t_total');
+                $('#t_total').val(totalCair);
+                totalElement.textContent = "Rp. "+(totalCair).toLocaleString();
             }
 
-            var totalElement = document.querySelector('.t_total');
-            $('#t_total').val(totalCair);
-            totalElement.textContent = "Rp. "+(totalCair).toLocaleString(); 
+
+ 
         }
 
         function caps(){

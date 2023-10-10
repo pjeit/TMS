@@ -191,7 +191,6 @@ class GrupTujuanController extends Controller
 
                     $edit_tujuan = GrupTujuan::where('is_aktif', 'Y')->findOrFail($value['id_tujuan']);
                     if($edit_tujuan){
-                        // $edit_tujuan->grup_id = $value['grup_hidden'];
                         $edit_tujuan->marketing_id = $value['marketing_hidden'];
                         $edit_tujuan->nama_tujuan = $value['nama_tujuan'];
                         $edit_tujuan->alamat = $value['alamat_hidden'];
@@ -210,41 +209,33 @@ class GrupTujuanController extends Controller
                         $edit_tujuan->kargo = $value['kargo_hidden'];
                         $edit_tujuan->updated_by = $user;
                         $edit_tujuan->updated_at = now();
-                        // var_dump($edit_tujuan);
-                        $edit_tujuan->save();
-                        // if(){
-                        //     if($value['obj_biaya'] != null){
-                        //         $data_biaya = json_decode($value['obj_biaya'], true);
-                                
-                        //         foreach ($data_biaya as $key => $item) {
-                        //             $biaya_clean = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
-                        //             // var_dump(  $item ); 
-                        //             if (!empty($item['id'])) {
-                        //                 $biaya = GrupTujuanBiaya::where('is_aktif', 'Y')->findOrFail($item['id']);
-                        //                 if($biaya){
-                        //                     $biaya->updated_by = $user;
-                        //                     $biaya->updated_at = now();
-                        //                     $biaya->biaya = $biaya_clean;
-                        //                     $biaya->deskripsi = $item['deskripsi'];
-                        //                     $biaya->catatan = $item['catatan'];
-                        //                     $biaya->save();
-                        //                 }
-                        //             }else{
-                        //                 $biaya = new GrupTujuanBiaya();
-                        //                 $biaya->grup_id = $value['grup_hidden'];
-                        //                 $biaya->grup_tujuan_id = $value['id_tujuan'];
-                        //                 $biaya->created_by = $user;
-                        //                 $biaya->created_at = now();
-                        //                 $biaya->biaya = $biaya_clean;
-                        //                 $biaya->deskripsi = $item['deskripsi'];
-                        //                 $biaya->catatan = $item['catatan'];
-                        //                 $biaya->save();
-                        //             }
-                        //         }
-                        //     }
-                        // }
+                        if($edit_tujuan->save()){
+                            $data_biaya = json_decode($value['obj_biaya'], true);
+                            foreach ($data_biaya as $key => $item) {
+                                $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
+    
+                                $new_biaya = GrupTujuanBiaya::where('is_aktif', 'Y')->find($item['id']);
+                                if($new_biaya){
+                                    $new_biaya->biaya = $biaya;
+                                    $new_biaya->deskripsi = $item['deskripsi'];
+                                    $new_biaya->catatan = $item['catatan'];
+                                    $new_biaya->updated_by = $user;
+                                    $new_biaya->updated_at = now();
+                                    $new_biaya->save();
+                                }else{
+                                    $new_biaya = new GrupTujuanBiaya();
+                                    $new_biaya->grup_id = $value['grup_hidden'];
+                                    $new_biaya->grup_tujuan_id = $edit_tujuan->id;
+                                    $new_biaya->biaya = $biaya;
+                                    $new_biaya->deskripsi = $item['deskripsi'];
+                                    $new_biaya->catatan = $item['catatan'];
+                                    $new_biaya->created_by = $user;
+                                    $new_biaya->created_at = now();
+                                    $new_biaya->save();
+                                }
+                            }
+                        }
                     }
-                    // die;
                 }else{
                      // ini create baru
 
@@ -297,9 +288,9 @@ class GrupTujuanController extends Controller
             }
 
             // return redirect()->route('grup_tujuan.index')->with('status','Success!!');
-            return redirect('grup_tujuan')->with('status','Success!!');
+            return redirect('grup_tujuan')->with(['status' => 'Success', 'msg' => 'Data berhasil disimpan!']);
         } catch (ValidationException $e) {
-            return redirect('grup_tujuan')->with('status','Error!!');
+            return redirect('grup_tujuan')->with('status','Error');
         }
     }
 

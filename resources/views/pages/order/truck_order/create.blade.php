@@ -250,8 +250,8 @@
                                         <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                         <option value="">── Pilih TL ──</option>
                                         <option value="tl_perak">Perak</option>
-                                        <option value="tl_teluk_lamong">Teluk Lamong</option>
                                         <option value="tl_priuk">Priuk</option>
+                                        <option value="tl_teluk_lamong">Teluk Lamong</option>
                                     </select>
                                     <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="">
 
