@@ -135,30 +135,11 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Disimpan'
-                    })
-
-                    setTimeout(() => {
-                        this.submit();
-                    }, 800); // 2000 milliseconds = 2 seconds
+                    this.submit();
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,
@@ -294,7 +275,10 @@
     
                                     if(item == 'TAMBAHAN UJ'){
                                         var inputan = `<input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${moneyMask(data[i].uj_tujuan - data[i].uj_sewa)}' readonly/>`; 
-                                        tambahanUJ = `<input type="hidden" name="data[${data[i].id_sewa}][tambahan_uj]" value="Y" />`
+                                        tambahanUJ =`<input type="hidden" name="data[${data[i].id_sewa}][tambahan_uj]" value="Y" />
+                                                        <input type="hidden" name="data[${data[i].id_sewa}][tambahan_uj]" value="Y" />
+                                                        <input type="hidden" name="data[${data[i].id_sewa}][tambahan_uj]" value="Y" />
+                                                    `;
                                     }else{
                                         var inputan = `<input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>`; 
                                     }

@@ -64,7 +64,7 @@ class BiayaOperasionalController extends Controller
             $item = $data['item'];
             $keterangan = '';
             $is_UJ = false;
-            // dd($data['data']);
+            dd($data['data']);
 
             foreach ($data['data'] as $key => $value) {
                 if(isset($value['tambahan_uj'])){
