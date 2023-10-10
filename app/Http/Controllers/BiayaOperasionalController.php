@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
 use App\Models\JobOrder;
 use App\Models\JobOrderDetail;
+use App\Models\Sewa;
 use App\Models\SewaOperasional;
 
 class BiayaOperasionalController extends Controller
@@ -64,7 +65,7 @@ class BiayaOperasionalController extends Controller
             $item = $data['item'];
             $keterangan = '';
             $is_UJ = false;
-            dd($data['data']);
+            // dd($data['data']);
 
             foreach ($data['data'] as $key => $value) {
                 if(isset($value['tambahan_uj'])){
@@ -104,7 +105,9 @@ class BiayaOperasionalController extends Controller
                                 'updated_by'=> $user,
                             )
                         );
+
                         $keterangan .= 'TAMBAHAN UJ';
+                        
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
                                 $data['pembayaran'], // id kas_bank dr form
@@ -122,6 +125,15 @@ class BiayaOperasionalController extends Controller
                                 'Y'
                             ) 
                         );
+
+                        $sewa = Sewa::where('is_aktif', 'Y')->find($key);
+                        if($sewa){
+                            $sewa->total_uang_jalan += floatval(str_replace(',', '', $value['dicairkan']));
+                            $sewa->updated_by = $user;
+                            $sewa->updated_at = now();
+                            $sewa->save();
+                        }
+
                     }
                 }
             }
