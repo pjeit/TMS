@@ -93,7 +93,7 @@ class InvoiceController extends Controller
             DB::table('sewa')
                 ->where('id_sewa',  $data['idSewa'])
                 ->update(array(
-                  'status' => 'DALAM PERJALANAN',
+                  'status' => 'PROSES DOORING',
                   'is_kembali' => 'N',
                   'tanggal_kembali' => null,
                   'updated_at'=> now(),
@@ -105,7 +105,7 @@ class InvoiceController extends Controller
                 DB::table('job_order_detail')
                 ->where('id',  $data['idJo_detail'])
                 ->update(array(
-                  'status' => 'DALAM PERJALANAN',
+                  'status' => 'PROSES DOORING',
                   'updated_at'=> now(),
                   'updated_by'=>  $user,
                     )
@@ -298,7 +298,7 @@ class InvoiceController extends Controller
         $data = Invoice::where('is_aktif', '=', "Y")
             ->where('id', $id)
             ->first();
-        // dd($id);
+        dd($data);
         $TotalBiayaRev = 0;
 
         // dd($dataJoDetail);   
@@ -307,6 +307,8 @@ class InvoiceController extends Controller
             'data' => $data,
 
         ]); 
+
+        
         $pdf->setPaper('A4', 'portrait');
 
         $pdf->setOptions([
@@ -318,6 +320,7 @@ class InvoiceController extends Controller
         ]);
 
         return $pdf->stream('xxxxx'.'.pdf'); 
+       
 
     }
 }

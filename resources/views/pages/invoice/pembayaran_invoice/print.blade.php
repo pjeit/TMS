@@ -107,10 +107,11 @@
                 <tr>
                     <td class="text-center">{{ $i }}</td>
                     <td>
-                        {{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }}
+                        {{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }} //
                         <br>{{ $detail->sewa->nama_tujuan }}
                     </td>
                     <td>
+                        {{-- beberapa ada dari model pakai eloquent --}}
                         {{ $detail->sewa->getJOD->no_kontainer }}
                         <br>{{ $detail->sewa->no_surat_jalan }}
                         <br>{{ $detail->sewa->seal_pelayaran }}

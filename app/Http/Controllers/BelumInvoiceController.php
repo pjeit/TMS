@@ -6,6 +6,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\InvoiceDetailAddcost;
 use App\Models\Sewa;
+use App\Models\SewaOperasional;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -298,21 +299,44 @@ class BelumInvoiceController extends Controller
         $data = Invoice::where('is_aktif', '=', "Y")
             ->where('id', $id)
             ->first();
-        // dd($id);
+        // $dataInvoiceAddCost = InvoiceDetailAddcost::where('is_aktif', '=', "Y")
+        //     ->where('id_invoice', $id)
+        //     ->get();
+      
+
+        $arrIdOperasional=[];
+        foreach ($data->invoiceDetailsCost as $key => $value) {
+            # code...
+            array_push( $arrIdOperasional, $value->id_sewa_operasional);
+        }
+        $dataOperasional = SewaOperasional::where('is_aktif', '=', "Y")
+        ->whereIn('id', $arrIdOperasional)
+        // ->groupBy('deskripsi') // Group by 'deskripsi'
+        // ->selectRaw('*, SUM(total_operasional) as total')
+        ->selectRaw('*, total_operasional as total')
+
+        ->get();
+        // dd($arrIdOperasional);
+        // dd($data->invoiceDetailsCost);
+        // dd($dataOperasional);
+
+        // dd($dataInvoiceAddCost->sewaOperasionalDetail);
+
         $TotalBiayaRev = 0;
         // dd($data);
         $qrcode = QrCode::size(150)
         // ->backgroundColor(255, 0, 0, 25)
         ->generate(
              'No. Invoice: ' . $data->no_invoice . "\n" .
-             'Total tagihan: ' . $data->total_tagihan
+             'Total tagihan: ' .'Rp.' .number_format($data->total_tagihan,2) 
         );
         // dd($qrcode);
         // dd($dataJoDetail);   
         $pdf = PDF::loadView('pages.invoice.belum_invoice.print',[
             'judul' => "Invoice",
             'data' => $data,
-            'qrcode'=>$qrcode
+            'qrcode'=>$qrcode,
+            'dataOperasional'=>$dataOperasional
 
         ]);
         
@@ -322,7 +346,7 @@ class BelumInvoiceController extends Controller
             'isHtml5ParserEnabled' => true, // Enable HTML5 parser
             'isPhpEnabled' => true, // Enable inline PHP execution
             'defaultFont' => 'sans-serif',
-             'dpi' => 190, // Set a high DPI for better resolution
+             'dpi' => 250, // Set a high DPI for better resolution
              'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
         ]);
 
@@ -330,7 +354,9 @@ class BelumInvoiceController extends Controller
         // return view('pages.invoice.belum_invoice.print',[
         //     'judul'=>"Invoice",
         //     'data' => $data,
-        //     'qrcode'=>$qrcode
+        //     'qrcode'=>$qrcode,
+        //     'dataOperasional'=>$dataOperasional
+
         // ]);
 
     }

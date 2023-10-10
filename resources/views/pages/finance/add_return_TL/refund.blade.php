@@ -28,8 +28,9 @@
             </div>
         @endforeach
     @endif
-    <form action="{{ route('pencairan_uang_jalan_ftl.store') }}" id="post_data" method="POST" >
+    <form action="{{ route('add_return_tl.update',[$id]) }}" id="post_data" method="POST" >
       @csrf
+      @method('PUT')
         <div class="row m-2">
         
             <div class="col">
@@ -48,7 +49,7 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="">
+                                        <input type="text" autocomplete="off" name="tanggal_pengembalian" class="form-control date" id="tanggal_pengembalian" placeholder="dd-M-yyyy" value="">
                                     </div>
                                 </div>  
                                 <div class="form-group col-12">
@@ -56,7 +57,9 @@
                                     <select class="form-control select2" style="width: 100%;" id='select_sewa' name="select_sewa" disabled>
                                         <option value="{{$sewa->id_sewa}}" selected>{{ $sewa->supir }} / {{ $sewa->nama_tujuan }} - {{ $sewa->no_sewa }} ({{ \Carbon\Carbon::parse($sewa->tanggal_berangkat)->format('d-M-Y') }}) </option>
                                     </select>
-                                    <input type="hidden" value="{{$id_sewa_defaulth}}" id="id_sewa_defaulth">
+                                    <input type="hidden" name="id_sewa_defaulth" value="{{$id_sewa_defaulth}}" id="id_sewa_defaulth">
+                                    <input type="hidden" name="no_sewa" value="{{$sewa->no_sewa}}" id="no_sewa">
+
                                 </div>
 
                                 <div class="form-group col-12">
@@ -83,7 +86,10 @@
 
                                 <div class="form-group col-6">
                                     <label for="uang_jalan">Stack TL</label>
-                                    <input type="text" id="driver" name="driver" class="form-control" value="BIAYA TELUK LAMONG" readonly>     
+                                    <input type="text" id="cuman_deskripsi" name="cuman_deskripsi" class="form-control" value="BIAYA TELUK LAMONG" readonly> 
+                                    <input type="hidden" name="deskripsi_sewa_biaya" value="{{$checkTL->deskripsi}}">    
+                                    <input type="hidden" name="id_sewa_biaya" value="{{$checkTL->id_biaya}}">    
+
                                     {{-- <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl" disabled>
                                         <option value="" {{ $sewa->stack_tl == ''? 'selected':'' }}>── Pilih TL ──</option>
                                         <option value="tl_perak" {{ $sewa->stack_tl == 'tl_perak'? 'selected':'' }}>Perak</option>
@@ -98,7 +104,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" idname="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($checkTL->biaya) }}" readonly>                         
+                                        <input type="text" id="jumlah"name="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($checkTL->biaya) }}" readonly>                         
                                     </div>
                                 </div>
 
@@ -129,7 +135,7 @@
     $(document).ready(function() {
         var today = new Date();
 
-        $('#tanggal_pencairan').datepicker({
+        $('#tanggal_pengembalian').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,

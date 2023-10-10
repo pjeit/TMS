@@ -102,11 +102,12 @@ class AddReturnTLController extends Controller
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
-  $checkTL = SewaBiaya::where('is_aktif', 'Y')
+        $checkTL = SewaBiaya::where('is_aktif', 'Y')
                             ->where('deskripsi', 'TL')
                             ->where('id_sewa', $id)
                             ->first();
         // dd($pengaturan);
+        // dd($checkTL);
 
         return view('pages.finance.add_return_TL.refund',[
             'judul' => "Pengembalian TL",
@@ -114,7 +115,8 @@ class AddReturnTLController extends Controller
             'jumlah' => $pengaturan[$sewa['stack_tl']],
             'dataKas' => $dataKas,
             'id_sewa_defaulth' => $id_sewa_default,
-            'checkTL'=>$checkTL
+            'checkTL'=>$checkTL,
+            'id'=>$id
         ]);
     }
 
@@ -138,6 +140,64 @@ class AddReturnTLController extends Controller
     public function store(Request $request)
     {
         //
+        $user = Auth::user()->id;
+        $data = $request->post();
+        try {
+            //code...
+            DB::table('sewa_biaya')
+                ->insert(array(
+                'id_sewa' =>  $data['id_sewa_defaulth'],
+                'deskripsi' => 'TL',
+                'biaya' => (float)str_replace(',', '', $data['jumlah']),
+                'catatan' => $data['stack_tl_hidden_value'],//value combobox
+                'created_at' => now(),
+                'created_by' => $user,
+                'is_aktif' => "Y",
+                )
+            ); 
+            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            array(
+                $data['pembayaran'],// id kas_bank dr form
+                date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
+                0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                (float)str_replace(',', '', $data['jumlah']), //uang keluar (kredit)
+                1016, //kode coa
+                'teluk_lamong',
+                'UANG KELUAR # PENAMBAHAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                $data['id_sewa_defaulth'],//keterangan_kode_transaksi
+                $user,//created_by
+                now(),//created_at
+                $user,//updated_by
+                now(),//updated_at
+                'Y'
+            ));
+
+            
+            $saldo = DB::table('kas_bank')
+                ->select('*')
+                ->where('is_aktif', '=', "Y")
+                ->where('kas_bank.id', '=', $data['pembayaran'])
+                ->first();
+
+            $saldo_baru = $saldo->saldo_sekarang - (float)str_replace(',', '', $data['jumlah']);
+            
+            DB::table('kas_bank')
+                ->where('id', $data['pembayaran'])
+                ->update(array(
+                    'saldo_sekarang' => $saldo_baru,
+                    'updated_at'=> now(),
+                    'updated_by'=> $user,
+                )
+            );
+            return redirect()->route('add_return_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambah Biaya TL!!']);
+                    
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->withErrors($th->getMessage())->withInput();
+            db::rollBack();
+
+        }
+          
     }
 
     /**
@@ -159,22 +219,7 @@ class AddReturnTLController extends Controller
      */
     public function edit($id)
     {
-        $data_sewa = Sewa::where('is_aktif', 'Y')->findOrFail($id);
-        $checkTL = SewaBiaya::where('is_aktif', 'Y')
-                            ->where('deskripsi', 'TL')
-                            ->where('id_sewa', $id)
-                            ->first();
-
-        return view('pages.finance.add_return_TL.edit',[
-            'judul' => "Edit Trucking Order",
-            'data' => $data_sewa,
-            'checkTL' => $checkTL,
-            'datajO' => SewaDataHelper::DataJO(),
-            'dataCustomer' => SewaDataHelper::DataCustomer(),
-            'dataDriver' => SewaDataHelper::DataDriver(),
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
-            'dataChassis' => SewaDataHelper::DataChassis()
-        ]);
+       
     }
 
     /**
@@ -187,7 +232,61 @@ class AddReturnTLController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->post();
-        dd($data);
+        $user = Auth::user()->id;
+        // dd($id);
+        // dd($data);
+
+        try {
+            //code...
+             DB::table('sewa_biaya')
+                ->where('id_biaya', $data['id_sewa_biaya'])
+                ->update(array(
+                    'id_sewa' =>  $data['id_sewa_defaulth'],
+                    'updated_at' => now(),
+                    'updated_by' => $user,
+                    'is_aktif' => "N",
+                )
+            );
+            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            array(
+                $data['pembayaran'],// id kas_bank dr form
+                date_create_from_format('d-M-Y', $data['tanggal_pengembalian']),//tanggal
+                (float)str_replace(',', '', $data['jumlah']),// debit uang masuk
+                0, //uang keluar (kredit) 0 soalnya kan ini uang MASUK, ga ada uang KELUAR
+                1016, //kode coa
+                'teluk_lamong',
+                'UANG kembali # PENGEMBALIAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                $data['id_sewa_defaulth'],//keterangan_kode_transaksi
+                $user,//created_by
+                now(),//created_at
+                $user,//updated_by
+                now(),//updated_at
+                'Y'
+            ));
+             $saldo = DB::table('kas_bank')
+                ->select('*')
+                ->where('is_aktif', '=', "Y")
+                ->where('kas_bank.id', '=', $data['pembayaran'])
+                ->first();
+
+            $saldo_baru = $saldo->saldo_sekarang + (float)str_replace(',', '', $data['jumlah']);
+            
+            DB::table('kas_bank')
+                ->where('id', $data['pembayaran'])
+                ->update(array(
+                    'saldo_sekarang' => $saldo_baru,
+                    'updated_at'=> now(),
+                    'updated_by'=> $user,
+                )
+            );
+            return redirect()->route('add_return_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Mengembalikan Biaya TL!!']);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->back()->withErrors($th->getMessage())->withInput();
+            db::rollBack();
+
+        }
     }
 
     /**
@@ -213,9 +312,10 @@ class AddReturnTLController extends Controller
                 $join->on('sb.id_sewa', '=', 's.id_sewa')
                 ->where('sb.deskripsi', 'TL')
                 ->where('sb.is_aktif', 'Y')
-                ->whereNull('s.stack_tl');
+                ->whereNotIn('s.stack_tl',['tl_teluk_lamong']);
+
             })
-            ->whereNull('s.stack_tl')
+            ->whereNotIn('s.stack_tl',['tl_teluk_lamong'])
             ->whereNotNull('sb.id_biaya')
             ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
             ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
@@ -233,9 +333,10 @@ class AddReturnTLController extends Controller
                 $join->on('sb.id_sewa', '=', 's.id_sewa')
                 ->where('sb.deskripsi', 'TL')
                 ->where('sb.is_aktif', 'Y')
-                ->whereNotNull('s.stack_tl');
+                ->where('s.stack_tl','like','%tl_teluk_lamong%');
+
             })
-            ->whereNotNull('s.stack_tl')
+            ->where('s.stack_tl','like','%tl_teluk_lamong%')
             ->whereNull('sb.id_biaya')
             ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
             ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
