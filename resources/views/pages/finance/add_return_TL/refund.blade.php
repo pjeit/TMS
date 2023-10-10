@@ -53,7 +53,7 @@
                                 </div>  
                                 <div class="form-group col-12">
                                     <label for="select_customer">No. Sewa<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_sewa' name="select_sewa">
+                                    <select class="form-control select2" style="width: 100%;" id='select_sewa' name="select_sewa" disabled>
                                         <option value="{{$sewa->id_sewa}}" selected>{{ $sewa->supir }} / {{ $sewa->nama_tujuan }} - {{ $sewa->no_sewa }} ({{ \Carbon\Carbon::parse($sewa->tanggal_berangkat)->format('d-M-Y') }}) </option>
                                     </select>
                                     <input type="hidden" value="{{$id_sewa_defaulth}}" id="id_sewa_defaulth">
