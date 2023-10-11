@@ -400,7 +400,7 @@
                   <a href="{{route('perjalanan_kembali.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('perjalanan_kembali*') ? 'active' : ''  }}">
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
-                       Perjalanan Kembali 
+                       Dalam Perjalanan
                     </p>
                   </a>
                 </li>

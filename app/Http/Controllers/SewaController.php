@@ -13,7 +13,7 @@ use App\Helper\SewaDataHelper;
 use App\Models\PengaturanKeuangan;
 use App\Models\SewaBiaya;
 use App\Models\SewaOperasional;
-
+use App\Models\JobOrder;
 class SewaController extends Controller
 {
     /**
@@ -31,7 +31,7 @@ class SewaController extends Controller
     
         return view('pages.order.truck_order.index',[
             'judul'=>"Trucking Order",
-            // 'dataSewa' => SewaDataHelper::DataSewa(),
+            'dataSewa' => SewaDataHelper::DataSewa(),
         ]);
     }
 
@@ -260,6 +260,14 @@ class SewaController extends Controller
                             ->where('id_sewa', $id)
                             ->first();
         // dd($checkTL);
+        // dd($data_sewa);
+        $dataJo=JobOrder::select('job_order.*')
+            ->leftJoin('job_order_detail as jod', 'job_order.id', '=', 'jod.id_jo')
+            ->where('job_order.is_aktif', '=', "Y")
+            ->with('getCustomer')
+            ->with('getSupplier')
+            ->groupBy('job_order.id')
+            ->get();
         $dataBooking = DB::table('booking as b')
                 ->select('*','b.id as idBooking')
                 ->Join('customer AS c', 'b.id_customer', '=', 'c.id')
@@ -274,12 +282,14 @@ class SewaController extends Controller
             'judul' => "Edit Trucking Order",
             'data' => $data_sewa,
             'checkTL' => $checkTL,
-            'datajO' => SewaDataHelper::DataJO(),
+            'datajO' => $dataJo,
             'dataCustomer' => SewaDataHelper::DataCustomer(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'dataKendaraan' => SewaDataHelper::DataKendaraan(),
             'dataBooking' => $dataBooking,
-            'dataChassis' => SewaDataHelper::DataChassis()
+            'dataChassis' => SewaDataHelper::DataChassis(),
+            'dataPengaturanKeuangan'=>SewaDataHelper::DataPengaturanBiaya()
+
         ]);
     }
 
@@ -296,16 +306,156 @@ class SewaController extends Controller
         $user = Auth::user()->id; 
         // dd($data);
         try {
-            $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['sewa_id']);
-            $sewa->id_karyawan = $data['select_driver'];
-            $sewa->id_kendaraan = $data['kendaraan_id'];
-            $sewa->id_chassis = $data['ekor_id'];
-            $sewa->no_polisi = $data['no_polisi'];
-            $sewa->stack_tl = $data['stack_tl'];
-            $sewa->updated_by = $user;
-            $sewa->updated_at = now();
-            $sewa->save();
 
+            $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
+            $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['sewa_id']);
+            // $sewa->jenis_order = $data['jenis_order']=='INBOUND'? 'INBOUND':'OUTBOUND';
+            $customer_lama = DB::table('customer as c')
+                    ->select('c.*')
+                    ->where('c.id', '=', $sewa->id_customer)
+                    ->where('c.is_aktif', '=', "Y")
+                    ->first();
+            $grup_lama = DB::table('grup as g')
+                ->select('g.*')
+                ->where('g.id', '=', $customer_lama->grup_id)
+                ->where('g.is_aktif', '=', "Y")
+                ->first();
+            DB::table('customer')
+                ->where('id', $sewa->id_customer)
+                ->update([
+                    'kredit_sekarang' => (float)$customer_lama->kredit_sekarang-$sewa->total_tarif < 0 ? 0 : $customer_lama->kredit_sekarang-$sewa->total_tarif,
+                    'updated_at' => now(),
+                    'updated_by' => $user,
+            ]);
+            DB::table('grup')
+                ->where('id', $customer_lama->grup_id)
+                ->update([
+                    'total_kredit' => (float)$grup_lama->total_kredit-$sewa->total_tarif< 0 ? 0 : $grup_lama->total_kredit-$sewa->total_tarif,
+                    'updated_at' => now(),
+                    'updated_by' => $user,
+            ]);
+
+            // if($data['jenis_order']=='OUTBOUND')
+            // {
+                $sewa->id_customer = $data['customer_id'];
+                $sewa->id_grup_tujuan = $data['tujuan_id'];
+                $sewa->jenis_tujuan = $data['jenis_tujuan'];
+                $sewa->nama_tujuan = $data['nama_tujuan'];
+                $sewa->alamat_tujuan = $data['alamat_tujuan'];
+                $sewa->kargo = $data['kargo'];
+                $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
+                $sewa->total_uang_jalan = $data['uang_jalan'];
+                $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
+                
+                $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
+                $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
+                $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
+                $sewa->id_chassis = $data['select_chassis']? $data['select_chassis']:null;
+                $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
+                $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
+                $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
+                $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
+                $sewa->catatan = $data['catatan']? $data['catatan']:null;
+                $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
+                $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
+                $sewa->updated_by = $user;
+                $sewa->updated_at = now();
+                $sewa->save();
+
+                
+
+                if ($data['jenis_tujuan'] === "LTL") {
+                    $harga = (float)$data['harga_per_kg'] * $data['min_muatan'];
+                } else {
+                    $harga = (float)$data['tarif'];
+                }
+            $customer = DB::table('customer as c')
+                    ->select('c.*')
+                    ->where('c.id', '=', $data['customer_id'])
+                    ->where('c.is_aktif', '=', "Y")
+                    ->first();
+            $grup = DB::table('grup as g')
+                ->select('g.*')
+                ->where('g.id', '=', $customer->grup_id)
+                ->where('g.is_aktif', '=', "Y")
+                ->first();
+                // update kredit grup + customer
+                //masih bingung
+                DB::table('customer')
+                    ->where('id', $data['customer_id'])
+                    ->update([
+                        'kredit_sekarang' => (float)$customer->kredit_sekarang+$harga,
+                        'updated_at' => now(),
+                        'updated_by' => $user,
+                ]);
+
+                DB::table('grup')
+                    ->where('id', $customer->grup_id)
+                    ->update([
+                        'total_kredit' => (float)$grup->total_kredit+$harga,
+                        'updated_at' => now(),
+                        'updated_by' => $user,
+                ]);
+                $arrayBiaya = json_decode($data['biayaDetail'], true);
+                if(isset($arrayBiaya))
+                {
+                    DB::table('sewa_biaya')
+                    ->where('id_sewa', $sewa->id_sewa)
+                    ->update(array(
+                        'is_aktif' => "N",
+                        'updated_at'=> now(),
+                        'updated_by'=> $user, // masih hardcode nanti diganti cookies
+                    )
+                    );
+
+                    foreach ($arrayBiaya as /*$key =>*/ $item) {
+                        DB::table('sewa_biaya')
+                            ->insert(array(
+                            'id_sewa' => $sewa->id_sewa,
+                            'deskripsi' => $item['deskripsi'] ,
+                            'biaya' => $item['biaya'],
+                            'catatan' => $item['catatan']? $item['catatan']:null,
+                            'created_at' => now(), 
+                            'created_by' => $user,
+                            'is_aktif' => "Y",
+                            )
+                        ); 
+                    }
+                    if($data['stack_tl'] == 'tl_teluk_lamong'){
+                        DB::table('sewa_biaya')
+                            ->insert(array(
+                            'id_sewa' => $sewa->id_sewa,
+                            'deskripsi' => 'TL',
+                            'biaya' => $data['stack_teluk_lamong_hidden'],
+                            'catatan' => $data['stack_tl'],
+                            'created_at' => now(),
+                            'created_by' => $user,
+                            'is_aktif' => "Y",
+                            )
+                        ); 
+                    }
+                }
+            // }
+            // else
+            // {
+            //     $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
+            //     $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
+            //     $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
+            //     $sewa->id_chassis = $data['select_chassis']? $data['select_chassis']:null;
+            //     $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
+            //     $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
+            //     $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
+            //     $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
+            //     $sewa->catatan = $data['catatan']? $data['catatan']:null;
+            //     $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
+            //     $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
+            //     $sewa->updated_by = $user;
+            //     $sewa->updated_at = now();
+            //     $sewa->save();
+            // }
+            
+
+            
             // if($data['stack_tl'] == null){
             //     DB::table('sewa_biaya')
             //         ->where('id_sewa', $data['sewa_id'])->where('is_aktif', 'Y')->where('deskripsi', 'TL')

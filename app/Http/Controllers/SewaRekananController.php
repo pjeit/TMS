@@ -47,7 +47,7 @@ class SewaRekananController extends Controller
         $supplier = DB::table('supplier as s')
         ->select('s.*')
         ->where('s.is_aktif', '=', "Y")
-        ->where('s.jenis_supplier_id', '=', 6)
+        ->where('s.jenis_supplier_id', '=', 1)
         ->get();
          return view('pages.order.truck_order_rekanan.create',[
             'judul'=>"Trucking Order Rekanan",

@@ -85,9 +85,9 @@
                                     <div class="d-flex justify-content-center mt-1">
                                         <span class="rubik-w400-12" id="persenanCredit"></span>
                                     </div>
-                                    <input type="hidden" name="cred_now" id="cred_now" class="form-control" value="0">
-                                    <input type="hidden" name="cred_val" id="cred_val" class="form-control" value="0">
-                                    <input type="hidden" name="cred_val_max" id="cred_val_max" class="form-control" value="0">
+                                    <input type="hidden" name="cred_now" id="cred_now" class="form-control" value="0" placeholder="cred_now">
+                                    <input type="hidden" name="cred_val" id="cred_val" class="form-control" value="0"placeholder="cred_val">
+                                    <input type="hidden" name="cred_val_max" id="cred_val_max" class="form-control" value="0"placeholder="cred_val_max">
                                 </div>
                             </div>
                             <div class="col-6">
@@ -102,7 +102,7 @@
                                 </div>  
                                 <div id="inboundData">
                                     <div class="form-group">
-                                        <label for="">No. Job Order</label>
+                                        <label for="">No. Job Order<span class="text-red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_jo' name="select_jo">
                                             <option value="">Pilih No JO</option>
                                             @foreach ($datajO as $jo)
@@ -111,7 +111,7 @@
                                         </select>
                                     </div>  
                                     <div class="form-group">
-                                        <label for="">No. Kontainer</label>
+                                        <label for="">No. Kontainer<span class="text-red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_jo_detail' name="select_jo_detail">
                                             <option value="">Pilih Kontainer</option>
                                         </select>
@@ -164,23 +164,23 @@
                                     <input type="hidden" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
                                     <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="" placeholder="id_jo_detail">
                                     <input type="hidden" name="id_jo" id="id_jo" value="" placeholder="id_jo">
-                                    <input type="hidden" id="nama_tujuan" name="nama_tujuan" value="">
-                                    <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="">
-                                    <input type="hidden" id="tarif" name="tarif" value="">
-                                    <input type="hidden" id="uang_jalan" name="uang_jalan" value="">
-                                    <input type="hidden" id="komisi" name="komisi" value="">
-                                    <input type="hidden" id="komisi_driver" name="komisi_driver" value="">
-                                    <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value="">
-                                    <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0">
-                                    <input type="hidden" id="min_muatan" name="min_muatan" value="0">
+                                    <input type="hidden" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
+                                    <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
+                                    <input type="hidden" id="tarif" name="tarif" value=""placeholder="tarif">
+                                    <input type="hidden" id="uang_jalan" name="uang_jalan" value=""placeholder="uang_jalan">
+                                    <input type="hidden" id="komisi" name="komisi" value=""placeholder="komisi">
+                                    <input type="hidden" id="komisi_driver" name="komisi_driver" value=""placeholder="komisi_driver">
+                                    <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value=""placeholder="jenis_tujuan">
+                                    <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0"placeholder="harga_per_kg">
+                                    <input type="hidden" id="min_muatan" name="min_muatan" value="0"placeholder="min_muatan">
 
-                                    <input type="hidden" id="plastik" name="plastik" value="">
-                                    <input type="hidden" id="tally" name="tally" value="">
-                                    <input type="hidden" id="kargo" name="kargo" value="">
+                                    <input type="hidden" id="plastik" name="plastik" value=""placeholder="plastik">
+                                    <input type="hidden" id="tally" name="tally" value=""placeholder="tally">
+                                    <input type="hidden" id="kargo" name="kargo" value=""placeholder="kargo">
 
 
-                                    <input type="hidden" id="biayaDetail" name="biayaDetail">
-                                    <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
+                                    <input type="hidden" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
+                                    <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT"placeholder="biayaTambahSDT">
                                 </div>
 
                                 <div class="row">
@@ -188,7 +188,7 @@
                                         <div class="form-group" id="inboundDataKontainer">
                                             <label for="">Tipe Kontainer<span class="text-red">*</span></label>
                                             <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
-                                            <input type="hidden" id="status" value="">
+                                            {{-- <input type="text" id="status" value=""> --}}
                                         </div>
                                         <div class="form-group" id="outbondDataKontainer">
                                             <label for="">Tipe Kontainer<span class="text-red">*</span></label>
@@ -198,7 +198,7 @@
                                                 <option value='40'>40"</option>
                                             </select>
                                         </div>
-                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
+                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer" placeholder="tipe_kontainer">
                                     </div>     
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                         <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
@@ -216,9 +216,9 @@
                                                     >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
                                             @endforeach
                                         </select>
-                                        <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
-                                        <input type="hidden" id="no_polisi" name="no_polisi" value="">
-                                        <input type="hidden" id="tipeKontainerKendaraanDariChassis" name="tipeKontainerKendaraanDariChassis" value="">
+                                        <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="" placeholder="kendaraan_id">
+                                        <input type="hidden" id="no_polisi" name="no_polisi" value="" placeholder="no_polisi">
+                                        <input type="hidden" id="tipeKontainerKendaraanDariChassis" name="tipeKontainerKendaraanDariChassis" value="" placeholder="tipeKontainerKendaraanDariChassis">
                                     </div>
                                 </div>
 
@@ -231,7 +231,7 @@
                                             <option value="{{$cha->idChassis}}" modelChassis="{{ $cha->modelChassis }}" karoseris="{{ $cha->karoseri }}">{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}})</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="karoseri" name="karoseri" value="">
+                                    <input type="hidden" id="karoseri" name="karoseri" value="" placeholder="karoseri">
 
                                 </div>
                                 <div class="form-group">
@@ -242,7 +242,7 @@
                                             <option value="{{$drvr->id}}" nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="driver_nama" name="driver_nama" value="">
+                                    <input type="hidden" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">
                                 </div>
                                 
                                 <div class="form-group">
@@ -253,7 +253,9 @@
                                         <option value="tl_priuk">Priuk</option>
                                         <option value="tl_teluk_lamong">Teluk Lamong</option>
                                     </select>
-                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="">
+                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+                                    {{-- <input type="text" id="value_jenis_tl" name="value_jenis_tl" value=""> --}}
+
 
                                 </div>
                             </div>
@@ -433,6 +435,7 @@
                                 const option = document.createElement('option');
                                 option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer+'-'+joDetail.seal+"-"+joDetail.tipe_kontainer;
                                 option.setAttribute('booking_id', joDetail.booking_id);
+                                option.setAttribute('pick_up', joDetail.pick_up);
                                 option.textContent = joDetail.no_kontainer ;
                                 // if (selected_marketing == marketing.id) {
                                 //     option.selected = true;
@@ -461,10 +464,6 @@
 
 		});
 
-        $('body').on('change','#tipe_kontainer_out',function(){
-            $('#tipe_kontainer').val(this.value);
-        })
-
         $('body').on('change','#select_jo_detail',function()
 		{
             var selectedValue = $(this).val();
@@ -476,7 +475,29 @@
             var tipe_kontainer=splitValue[4];
             
             var selectedOption = $(this).find('option:selected');
-            var bookingId = selectedOption.attr('booking_id');            
+            var bookingId = selectedOption.attr('booking_id');
+            var pick_up = selectedOption.attr('pick_up');
+            
+            // tl_perak
+            // tl_priuk
+            // tl_teluk_lamong
+            if(pick_up=='TTL')
+            {
+                
+                 $('#stack_tl').val('tl_teluk_lamong').trigger('change');
+
+            }
+            else if (pick_up=='DEPO')
+            {
+                 $('#stack_tl').val('tl_perak').trigger('change');
+
+            }
+            else
+            {
+                 $('#stack_tl').val('').trigger('change');
+
+            }
+
 
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
             $('#booking_id').val(bookingId);
@@ -525,7 +546,9 @@
             $('#tally').val('');
             $('#kargo').val('');
             $('#biayaDetail').val('');
-           
+            console.log(selectedValue);
+            var select_grup_tujuan = $('#select_grup_tujuan');
+
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
                 method: 'GET', 
@@ -574,7 +597,6 @@
                         // ==============================kredit=================
 
 
-                        var select_grup_tujuan = $('#select_grup_tujuan');
                         select_grup_tujuan.empty(); 
                         select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                         if(selectedValue!="")
@@ -593,18 +615,25 @@
                                  select_grup_tujuan.append(option);
                             });
                         }
+                        // else
+                        // {
+                        //       select_grup_tujuan.empty(); 
+                        //       select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
+                        // }
 
                     }
                     else
                     {
-                        customerLoad = false;
+
+                            customerLoad = false;
                             const persen = document.getElementById('persenanCredit');
                             const cred = document.getElementById('credit_customer');
                             persen.innerHTML = 0+"%";
                             cred.style.width = 0+"%";
                             cred.style.backgroundColor = "#53de02";
                             cred.style.color = "black";
-
+                            select_grup_tujuan.empty(); 
+                            select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                     }
                     // jo_detail.trigger('change');
         
@@ -728,6 +757,7 @@
             // var return_option = $("#select_chassis").select2().find(":selected")[0];    
             // var modelChassis = $( return_option ).attr('modelChassis');
             // if(this.value != modelChassis){
+            $('#tipe_kontainer').val(this.value);
                 setKendaraan($(this).val())
                 setChassis($(this).val())
                 // $('#select_driver').val('').trigger('change');
@@ -758,6 +788,11 @@
                     option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})` ;
                     select_kendaraan.append(option);
                 });
+                $('#kendaraan_id').val('');
+                $('#no_polisi').val('');
+                $('#tipeKontainerKendaraanDariChassis').val('');
+                $('#select_driver').val('').trigger('change');
+                $('#karoseri').val('');
             }
             else
             {
@@ -833,6 +868,7 @@
                     option.textContent = `${chassis.karoseri} - ${chassis.kode} (${chassis.modelChassis})` ;
                     select_chassis.append(option);
                 });
+                $('#karoseri').val('');
 
             }
             else
@@ -927,11 +963,14 @@
             $('#driver_nama').val(nama_driver);
 
 		});
-          $('body').on('change','#stack_tl',function()
+        $('body').on('change','#stack_tl',function()
 		{
             var selectedOption = $(this).val();
             var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
             // console.log(dataTelukLamong.tl_teluk_lamong);
+            
+            // $('#value_jenis_tl').val(selectedOption);
+
                 if(selectedOption=='tl_teluk_lamong')
                 {
                     $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
@@ -948,6 +987,94 @@
             var jenis_order = $('#jenis_order').val();
             var selectKendaraan = $('#select_kendaraan').find('option:selected');
             var kategoriKendaraan = selectKendaraan.attr('kategoriKendaraan');
+
+
+            if($('#select_jo').val().trim()=='' && jenis_order=='INBOUND')
+            {
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Customer Harus dipilih!'
+                    })
+                return;
+            }
+            if($('#select_jo_detail').val().trim()==''&& jenis_order=='INBOUND')
+            {
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Customer Harus dipilih!'
+                    })
+                return;
+            }
+            if($('#customer_id').val().trim()=='')
+            {
+            console.log($('#customer_id').val());
+
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Customer Harus dipilih!'
+                    })
+                return;
+            }
+            if($('#tujuan_id').val().trim()=='')
+            {
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Tujuan Harus dipilih!'
+                    })
+                return;
+            }
             if($('#select_kendaraan').val()=='')
             {
                 event.preventDefault();
@@ -965,7 +1092,7 @@
 
                     Toast.fire({
                         icon: 'error',
-                        title: 'Kendaraan Harus dipilih'
+                        title: 'Kendaraan Harus dipilih!'
                     })
                 return;
             }
@@ -986,7 +1113,7 @@
 
                     Toast.fire({
                         icon: 'error',
-                        title: 'chassis Harus dipilih'
+                        title: 'Chassis Harus dipilih!'
                     })
                 return;
             }
@@ -1008,7 +1135,7 @@
 
                     Toast.fire({
                         icon: 'error',
-                        title: 'Tipe Kontainer Harus dipilih'
+                        title: 'Tipe Kontainer Harus dipilih!'
                     })
                 return;
             }
