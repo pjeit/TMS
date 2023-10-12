@@ -33,7 +33,7 @@ class PerjalananKembaliController extends Controller
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
                 ->where('s.status', 'PROSES DOORING')
-                ->whereNull('s.id_supplier')
+                // ->whereNull('s.id_supplier')
                 ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
                 ->get();
@@ -94,12 +94,17 @@ class PerjalananKembaliController extends Controller
                     ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
                     // ->where('s.jenis_tujuan', 'like', '%FTL%')
                     ->where('s.status', 'PROSES DOORING')
-                    ->whereNull('s.id_supplier')
+                    // ->whereNull('s.id_supplier')
                     ->whereNull('s.tanggal_kembali')
                     ->where('s.is_aktif', '=', 'Y')
                     ->where('s.id_sewa', '=', $perjalanan_kembali->id_sewa)
                     ->groupBy('c.id')
                     ->first();
+        $dataJO=DB::table('job_order as jo')
+            ->select('jo.*')
+            ->where('jo.is_aktif', '=', "Y")
+            ->where('jo.id', '=', $perjalanan_kembali->id_jo)
+            ->get();
      
         $datajODetailBiaya = DB::table('job_order_detail_biaya as jodb')
             ->select('jodb.*')
@@ -158,6 +163,52 @@ class PerjalananKembaliController extends Controller
                     'biaya' =>$item->detention,
                 ];
                 array_push($array_inbound, $objDETENTION);
+            }
+        }
+
+        if($perjalanan_kembali->jenis_order=="INBOUND")
+        {
+            $dataJO=DB::table('job_order as jo')
+                ->select('jo.*')
+                ->where('jo.is_aktif', '=', "Y")
+                ->where('jo.id', '=', $perjalanan_kembali->id_jo)
+                ->get();
+            foreach ($dataJO as $value) {
+                if ($value->thc||$value->thc != 0) {
+                    $objthc = [
+                        'deskripsi' => 'THC',
+                        'biaya' =>$value->thc,
+                    ];
+                    array_push($array_inbound, $objthc);
+                }
+                if ($value->lolo||$value->lolo != 0) {
+                    $objlolo = [
+                        'deskripsi' => 'LOLO',
+                        'biaya' =>$value->lolo,
+                    ];
+                    array_push($array_inbound, $objlolo);
+                }
+                if ($value->apbs||$value->apbs != 0) {
+                    $objapbs = [
+                        'deskripsi' => 'APBS',
+                        'biaya' =>$value->apbs,
+                    ];
+                    array_push($array_inbound, $objapbs);
+                }
+                if ($value->cleaning||$value->cleaning != 0) {
+                    $objcleaning = [
+                        'deskripsi' => 'CLEANING/REPAIR',
+                        'biaya' =>$value->cleaning,
+                    ];
+                    array_push($array_inbound, $objcleaning);
+                }
+                if ($value->doc_fee||$value->doc_fee != 0) {
+                    $objdoc_fee = [
+                        'deskripsi' => 'DOC_FEE',
+                        'biaya' =>$value->doc_fee,
+                    ];
+                    array_push($array_inbound, $objdoc_fee);
+                }
             }
         }
         foreach($dataOpreasional as $opersional)
@@ -280,8 +331,6 @@ class PerjalananKembaliController extends Controller
                 $JOD->status = 'MENUNGGU INVOICE';
                 $JOD->save();
             }
-            
-            
             //ini kalo dicentang yang harcode di html
             if(isset($data['data_hardcode']))
             {

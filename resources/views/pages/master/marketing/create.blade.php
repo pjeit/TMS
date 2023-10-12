@@ -38,57 +38,64 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Grup<span class="text-red">*</span></label>
-                            <select class="form-control select2" style="width: 100%;" id='grup_id' name="grup_id" required>
-                                <option value="">── Pilih Grup ──</option>
-                                @foreach ($grup as $item)
-                                    <option value="{{$item->id}}">{{ $item['nama_grup'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>   
-    
-                        <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Nama Marketing<span class="text-red">*</span></label>
-                            <input  type="text" required name="nama" class="form-control" value="{{old('nama','')}}" >                         
-                        </div>
+                        <div class="col-12 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="">Grup<span class="text-red">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id='grup_id' name="grup_id" required>
+                                    <option value="">── Pilih Grup ──</option>
+                                    @foreach ($grup as $item)
+                                        <option value="{{$item->id}}">{{ $item['nama_grup'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>   
+        
+                            <div class="form-group ">
+                                <label for="">Kota<span class="text-red">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id='kota_id' name="kota_id" required>
+                                    <option value="">── Pilih Kota ──</option>
+                                    @foreach ($kota as $kt)
+                                        <option value="{{$kt->id}}">{{ $kt['nama'] }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group ">
+                                <label for="">Nama Marketing<span class="text-red">*</span></label>
+                                <input  type="text" required name="nama" class="form-control" value="{{old('nama','')}}" >                         
+                            </div>
 
-                        <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Kota<span class="text-red">*</span></label>
-                            <select class="form-control select2" style="width: 100%;" id='kota_id' name="kota_id" required>
-                                <option value="">── Pilih Kota ──</option>
-                                @foreach ($kota as $kt)
-                                    <option value="{{$kt->id}}">{{ $kt['nama'] }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                 
-                        <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">No Rekening<span class="text-red">*</span></label>
-                            <input type="text" name="no_rek" maxlength="20" class="form-control numaja" value="{{old('no_rek','')}}" required>                         
-                        </div>
-                        <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Atas Nama Rekening<span class="text-red">*</span></label>
-                            <input type="text" name="atas_nama" maxlength="30" class="form-control " value="{{old('atas_nama','')}}" required>                         
-                        </div>
-                        <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Nama Bank<span class="text-red">*</span></label>
-                            <input type="text" name="bank" maxlength="15" class="form-control " value="{{old('bank','')}}" required>                         
-                        </div>
-                        <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="">Cabang Bank</label>
-                            <input type="text" name="cabang" maxlength="25" class="form-control " value="{{old('cabang','')}}" >                         
-                        </div>
-
-                        <div class="form-group  col-12 col-md-6 col-sm-12">
-                            <label for="telp_1">Telp<span class="text-red">*</span></label>
-                            <div class="input-group mb-0">
-                              <div class="input-group-prepend">
-                                <span class="input-group-text">+62</span>
-                              </div>
-                              <input type="text" name="telp1" class="form-control numaja" maxlength="14" id="telp1" placeholder="" value="" required>    
+                            <div class="form-group ">
+                                <label for="telp_1">Telp<span class="text-red">*</span></label>
+                                <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">+62</span>
+                                </div>
+                                <input type="text" name="telp1" class="form-control numaja" maxlength="14" id="telp1" placeholder="" value="" required>    
+                                </div>
                             </div>
                         </div>
+                        <div class="col-12 col-md-6 col-sm-12">
+                            <div class="form-group ">
+                                <label for="">No Rekening</label>
+                                <input type="text" name="no_rek" maxlength="20" class="form-control numaja" value="{{old('no_rek','')}}" required>                         
+                            </div>
+                            <div class="form-group ">
+                                <label for="">Atas Nama Rekening</label>
+                                <input type="text" name="atas_nama" maxlength="30" class="form-control " value="{{old('atas_nama','')}}" required>                         
+                            </div>
+                             <div class="form-group ">
+                                <label for="">Cabang Bank</label>
+                                <input type="text" name="cabang" maxlength="25" class="form-control " value="{{old('cabang','')}}" >                         
+                            </div>
+                            <div class="form-group ">
+                                <label for="">Nama Bank</label>
+                                <input type="text" name="bank" maxlength="15" class="form-control " value="{{old('bank','')}}" required>                         
+                            </div>
+                           
+                        </div>
+                       
+                        
+
+                        
                     </div>
 
 

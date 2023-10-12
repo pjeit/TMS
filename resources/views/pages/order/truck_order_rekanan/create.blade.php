@@ -118,42 +118,8 @@
                                         <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
                                     </div> 
                                 </div>
-                                <div class="row">
-                                    <div class="form-group col-7">
-                                        <label for="no_sewa">No. Sewa</label>
-                                        <input type="text" class="form-control" id="no_sewa" placeholder="Otomatis" readonly="" value="">    
-                                        <input type="hidden" id="status" value="">
-                                    </div>
-                                    <div class="form-group col-5">
-                                        <div class="form-group" id="inboundDataKontainer">
-                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
-                                            <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
-                                        </div>
-                                        <div class="form-group" id="outbondDataKontainer">
-                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
-                                            <select class="form-control selectpicker tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">── Tipe ──</option>
-                                                <option value='20'>20"</option>
-                                                <option value='40'>40"</option>
-                                            </select>
-                                        </div>
-                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
-                                    </div>                                    
-                                </div>
-                                {{-- <div class="form-group">
-                                        <label for="no_sewa">No. Sewa</label>
-                                        <input type="text" class="form-control" id="no_sewa" placeholder="Otomatis" readonly="" value="">    
-                                        <input type="hidden" id="status" value="">
-                                        <!-- <div class='col-5 col-md-5 col-lg-5'>
-                                            <label for="status">Status</label>
-                                            <select onchange='ganti_status(this)' class="form-control" id="status" value="" disabled>
-                                                <option value='Open'>Open</option>
-                                                <option value='Approved'>Setuju</option>
-                                                <option value='Released' hidden>Perjalanan</option>
-                                                <option value='Finished' hidden>Selesai</option>
-                                            </select>
-                                        </div> -->
-                                </div> --}}
+                              
+                            
                                 <div class="form-group">
                                     <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
@@ -218,7 +184,7 @@
                                     <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
                                 </div>
                                 <div class="form-group">
-                                    <label for="supplier">Supplier</label>
+                                    <label for="supplier">Supplier<span class="text-red">*</span></label>
                                     <select class="form-control select2" style="width: 100%;" id='supplier' name="supplier">
                                         <option value="">Pilih Supplier</option>
                                          @foreach ($supplier as $s)
@@ -226,18 +192,35 @@
                                         @endforeach 
                                     </select>
                                 </div>
-                                <div class="form-group">
-                                    <label for="no_polisi">No. polisi rekanan</label>
-                                    <input type="text" maxlength="11" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value=""> 
-                                </div>
-                                 <div class="form-group">
-                                    <label for="no_polisi">Driver rekanan</label>
-                                    <input type="text"  name="driver_nama" class="form-control" id="driver_nama" name="driver_nama" placeholder="" value="" readonly> 
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <div class="form-group" id="inboundDataKontainer">
+                                                <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                                <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
+                                            </div>
+                                            <div class="form-group" id="outbondDataKontainer">
+                                                <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                                <select class="form-control select2 tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                                    <option value="">── Tipe ──</option>
+                                                    <option value='20'>20"</option>
+                                                    <option value='40'>40"</option>
+                                                </select>
+                                            </div>
+                                            <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
+                                        </div>                                    
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label for="no_polisi">No. polisi rekanan</label>
+                                            <input type="text" maxlength="11" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value=""> 
+                                            <input type="hidden"  name="driver_nama" class="form-control" id="driver_nama" name="driver_nama" placeholder="" value="" readonly> 
+                                        </div>
+                                    </div>
                                 </div>
                                 
-                                
                                 <div class="form-group">
-                                    <label for="harga_jual">Harga Jual</label>
+                                    <label for="harga_jual">Harga Jual<span class="text-red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp.</span>
@@ -499,33 +482,15 @@
             $('#biayaTambahTarif').val('');
 
         
-			
-            // let creds = $('#cred_val').val();
-            // let creds_max = $('#cred_val_max').val();
-            // creds = creds.replace(/,/g,'');
-            // creds_max = creds_max.replace(/,/g,'');
-            // //debug sini 2
-           
+            var select_grup_tujuan = $('#select_grup_tujuan');
+
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
                 method: 'GET', 
                 success: function(response) {
                     if(response)
                     {
-                        // customerLoad = true;
-                        // console.log(customerLoad);
-                        // console.log(response.dataKredit.kreditCustomer);
-                        // console.log(response.dataKredit.maxGrup);
-
-                        // ==============================kredit=================
-                        
-                        // let creds = $('#cred_val').val();
-                        // let creds_max = $('#cred_val_max').val();
-                        // creds = creds.replace(/,/g,'');
-                        // creds_max = creds_max.replace(/,/g,'');
-                        // //debug sini 2
-                        // creds = parseInt(creds) + parseInt(total_tarif);
-           
+    
                         let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
                         creds_now = creds_now.toFixed(1);
                         // persenanCredit
@@ -564,7 +529,6 @@
                         // ==============================kredit=================
 
 
-                        var select_grup_tujuan = $('#select_grup_tujuan');
                         select_grup_tujuan.empty(); 
                         select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                         if(selectedValue!="")
@@ -588,6 +552,7 @@
                     else
                     {
                         customerLoad = false;
+                        
                             const persen = document.getElementById('persenanCredit');
                             const cred = document.getElementById('credit_customer');
                             persen.innerHTML = 0+"%";
@@ -595,6 +560,8 @@
                             cred.style.backgroundColor = "#53de02";
                             cred.style.color = "black";
 
+                        select_grup_tujuan.empty(); 
+                        select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                     }
                     // jo_detail.trigger('change');
         
@@ -771,27 +738,27 @@
             var tarif = $('#tarif').val();
             var uang_jalan = $('#uang_jalan').val();
             var total_uang_jalan = parseFloat(tarif)+parseFloat(uang_jalan);
-            if(no_polisi.trim()=='')
-            {
-                event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
+            // if(no_polisi.trim()=='')
+            // {
+            //     event.preventDefault();
+            //     const Toast = Swal.mixin({
+            //             toast: true,
+            //             position: 'top-end',
+            //             timer: 2500,
+            //             showConfirmButton: false,
+            //             timerProgressBar: true,
+            //             didOpen: (toast) => {
+            //                 toast.addEventListener('mouseenter', Swal.stopTimer)
+            //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+            //             }
+            //         })
 
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Nomor Polisi Rekanan Harus diisi!'
-                    })
-                return;
-            }
+            //         Toast.fire({
+            //             icon: 'error',
+            //             title: 'Nomor Polisi Rekanan Harus diisi!'
+            //         })
+            //     return;
+            // }
             if(supplier.trim()=='')
             {
                 event.preventDefault();
@@ -834,27 +801,27 @@
                     })
                 return;
             }
-            if(total_uang_jalan > parseFloat(harga_jual) )
-            {
-                event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
+            // if( parseFloat(harga_jual)<total_uang_jalan )
+            // {
+            //     event.preventDefault();
+            //     const Toast = Swal.mixin({
+            //             toast: true,
+            //             position: 'top-end',
+            //             timer: 2500,
+            //             showConfirmButton: false,
+            //             timerProgressBar: true,
+            //             didOpen: (toast) => {
+            //                 toast.addEventListener('mouseenter', Swal.stopTimer)
+            //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+            //             }
+            //         })
 
-                    Toast.fire({
-                        icon: 'error',
-                        title: `Harga Jual Rekanan Harus lebih besar dari Rp. ${moneyMask(total_uang_jalan)}`
-                    })
-                return;
-            }
+            //         Toast.fire({
+            //             icon: 'error',
+            //             title: `Harga Jual Rekanan Harus lebih besar dari Rp. ${moneyMask(total_uang_jalan)}`
+            //         })
+            //     return;
+            // }
             event.preventDefault();
 
             Swal.fire({

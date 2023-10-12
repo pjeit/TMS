@@ -73,7 +73,15 @@
                                                 <a href="{{route('perjalanan_kembali.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                     <span class="fas fa-truck mr-3"></span> Input Kendaraan Kembali
                                                 </a>
-                                               
+                                                @if ($item->id_supplier)
+                                                    <a href="{{route('truck_order_rekanan.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                        <span class="fas fa-edit mr-3"></span> Edit Sewa Rekanan
+                                                    </a>
+                                                @else
+                                                    <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                        <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
+                                                    </a>
+                                                @endif
                                                
                                             </div>
                                         </div>

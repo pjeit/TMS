@@ -152,16 +152,6 @@
                                         <input type="text" maxlength="100" id="uang_jalan" name="uang_jalan" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                     </div>
                                 </div>
-
-                                <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}">
-                                    <label for="total_diterima">Total Uang Jalan</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                    </div>
-                                </div>
                             @if (isset($sewaBiayaTelukLamong))
                                 <div class="form-group col-4">
                                     <label for="uang_jalan">Biaya Teluk Lamong</label>
@@ -173,6 +163,16 @@
                                     </div>
                                 </div>
                             @endif
+                                <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}">
+                                    <label for="total_diterima">Total</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                    </div>
+                                </div>
+                            
 
                                 <div class="form-group col-12">
                                     <label for="">PILIH PEMBAYARAN</label>      
@@ -224,8 +224,21 @@
             }else{
                 var potong_hutang=0;
             }
-            
-            var total_diterima=parseFloat(total_uang_jalan)-parseFloat(potong_hutang);
+            var cekTL= <?php echo json_encode($sewaBiayaTelukLamong); ?>;
+            var total_diterima=0;
+            if(cekTL)
+            {
+                if($('#teluk_lamong').val()!='' || $('#teluk_lamong').val()!= undefined){
+                    var teluk_lamong=removePeriod($('#teluk_lamong').val(),',');
+                }else{
+                    var teluk_lamong=0;
+                }
+               total_diterima=(parseFloat(total_uang_jalan)+parseFloat(teluk_lamong))-parseFloat(potong_hutang);
+            }
+            else
+            {
+               total_diterima=parseFloat(total_uang_jalan)-parseFloat(potong_hutang);
+            }
             if(total_diterima!=0){
                 $('#total_diterima').val(addPeriodType(total_diterima,','));
             }else{
@@ -260,7 +273,6 @@
     $(document).ready(function() {
 
         // console.log($('#select_sewa').val());
-        
         function getDate(){
             var today = new Date();
             // var tomorrow = new Date(today);
@@ -296,6 +308,9 @@
                     {
                         var dataSewaDetail = response.sewaDetail;
                         var dataHutangKaryawan =  response.hutangKaryawan;
+                        var biayaTL =  response.SewaBiayaTL;
+
+                        // console.log(biayaTL.biaya);
 
 
                         $('#tanggal_berangkat').val( ubahTanggal(dataSewaDetail.tanggal_berangkat));
