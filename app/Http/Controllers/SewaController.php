@@ -307,14 +307,17 @@ class SewaController extends Controller
      * @param  \App\Models\Sewa  $sewa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request,$id)
     {
+        // dd($id);
         $data = $request->post();
         $user = Auth::user()->id; 
         // dd($data);
         try {
 
-            $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['sewa_id']);
+            $sewa = Sewa::where('is_aktif', 'Y')
+            ->whereNull('id_supplier') 
+            ->findOrFail($data['sewa_id']);
             // $sewa->jenis_order = $data['jenis_order']=='INBOUND'? 'INBOUND':'OUTBOUND';
             $customer_lama = DB::table('customer as c')
                     ->select('c.*')
@@ -576,8 +579,17 @@ class SewaController extends Controller
             //         )
             //     ); 
             // }
-            
-            return redirect()->route('truck_order.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data!']);
+            $sewaCek = Sewa::where('is_aktif', 'Y')->findOrFail($id);
+
+            if($sewaCek->status=="MENUNGGU UANG JALAN")
+            {
+                return redirect()->route('truck_order.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data!']);
+
+            }
+            else
+            {
+                return redirect()->route('perjalanan_kembali.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data!']);
+            }
         } catch (ValidationException $e) {
             //throw $th;
             DB::rollBack();

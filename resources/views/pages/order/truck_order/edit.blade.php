@@ -70,7 +70,12 @@
             <div class="col">
                 <div class="card radiusSendiri card-outline card-primary">
                     <div class="card-header">
-                        <a href="{{ route('truck_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        @if ($data['status']=="MENUNGGU UANG JALAN")
+                            <a href="{{ route('truck_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        @else
+                            <a href="{{ route('perjalanan_kembali.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                            
+                        @endif
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         {{-- <button type="submit">wet</button> --}}
                     </div>
