@@ -155,7 +155,7 @@ class PencairanOperasionalController extends Controller
                     $sewaOprs->updated_at = now();
                     $sewaOprs->save();
 
-                    // execute trigger update status sewa = DALAM PERJALANAN
+                    // execute trigger update status sewa = PROSES DOORING
 
                     $saldo = DB::table('kas_bank')
                         ->select('*')

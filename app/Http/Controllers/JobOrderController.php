@@ -154,9 +154,9 @@ class JobOrderController extends Controller
                     $newJO->cleaning == 0 && $newJO->doc_fee == 0 && 
                     ($data['tgl_bayar_jaminan'] == null || $data['total_jaminan'] == null) ){
 
-                $newJO->status = 'DALAM PERJALANAN'; // MENUNGGU PEMBAYARAN, DALAM PERJALANAN
+                $newJO->status = 'PROSES DOORING'; // MENUNGGU PEMBAYARAN, PROSES DOORING
             }else{
-                $newJO->status = 'MENUNGGU PEMBAYARAN'; // MENUNGGU PEMBAYARAN, DALAM PERJALANAN
+                $newJO->status = 'MENUNGGU PEMBAYARAN'; // MENUNGGU PEMBAYARAN, PROSES DOORING
             }
 
             if($newJO->save()){
@@ -578,7 +578,7 @@ class JobOrderController extends Controller
                             $query->where('jo.id_customer', '=', $pengirim);
                         }
                     })
-                    ->where('jo.status', 'like', "DALAM PERJALANAN")
+                    ->where('jo.status', 'like', "PROSES DOORING")
                     ->groupBy('jod.id_jo','jod.id')
                     ->get();
 

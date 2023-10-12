@@ -14,6 +14,7 @@ use App\Models\PengaturanKeuangan;
 use App\Models\SewaBiaya;
 use App\Models\SewaOperasional;
 use App\Models\JobOrder;
+use Illuminate\Support\Carbon;
 class SewaController extends Controller
 {
     /**
@@ -170,7 +171,6 @@ class SewaController extends Controller
                             'updated_by' => $user,
                     ]);
                 ///
-                
                 if(isset($booking_id)){
                     DB::table('booking')
                         ->where('id', $booking_id)
@@ -180,7 +180,6 @@ class SewaController extends Controller
                             'updated_by' => $user,
                     ]);
                 }
-    
                 if(isset($data['select_jo']) && isset($data['id_jo_detail']))
                 {
                     DB::table('job_order_detail')
@@ -254,7 +253,9 @@ class SewaController extends Controller
      */
     public function edit(Sewa $sewa, $id)
     {
-        $data_sewa = Sewa::where('is_aktif', 'Y')->findOrFail($id);
+        $data_sewa = Sewa::where('is_aktif', 'Y')
+        ->whereNull('id_supplier') 
+        ->findOrFail($id);
         $checkTL = SewaBiaya::where('is_aktif', 'Y')
                             ->where('deskripsi', 'TL')
                             ->where('id_sewa', $id)
@@ -283,7 +284,7 @@ class SewaController extends Controller
                                 ->where('sb.is_aktif', 'Y')
                                 ->where('sb.deskripsi', 'TL')
                                 ->first();
-        // dd($sewa_biaya_TL);
+        // dd($data_sewa);
         return view('pages.order.truck_order.edit',[
             'judul' => "Edit Trucking Order",
             'data' => $data_sewa,
@@ -455,22 +456,50 @@ class SewaController extends Controller
             }
             else
             {
-                $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
-                $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
-                $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
-                $sewa->id_chassis = $data['select_chassis']? $data['select_chassis']:null;
-                $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
-                $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
-                $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
-                $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
-                $sewa->catatan = $data['catatan']? $data['catatan']:null;
-                $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
-                $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
-                $sewa->updated_by = $user;
-                $sewa->updated_at = now();
-                $sewa->save();
-                // pengecekan kalau null dan kalau status sewa masih menunggu uang jalan bisa dimasukin tl nya dari edit, 
-                //kalau udah dibayar uang jalan, gabisa masuk detail, harus dari add/return TL
+                if($sewa->status=="MENUNGGU UANG JALAN")
+                {
+
+                    $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
+                    $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
+                    $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
+                    $sewa->id_chassis = $data['select_chassis']? $data['select_chassis']:null;
+                    $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
+                    $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
+                    $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
+                    $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
+                    $sewa->catatan = $data['catatan']? $data['catatan']:null;
+                    $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
+                    $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
+                    $sewa->updated_by = $user;
+                    $sewa->updated_at = now();
+                    $sewa->save();
+
+                    // dd(isset($data['id_jo_detail']));
+                    if(isset($data['id_jo_detail']))
+                    {
+                        $ganti_tgl_dooring_jod = DB::table('job_order_detail as jod')
+                                ->select('jod.*')
+                                ->where('jod.id', $data['id_jo_detail'])
+                                ->where('jod.is_aktif', 'Y')
+                                ->first();
+                        // dd($ganti_tgl_dooring_jod);
+                        // dd(Carbon::parse($ganti_tgl_dooring_jod->tgl_dooring)->format('Y-m-d')!=date_format($tgl_berangkat, 'Y-m-d'));
+                        // dd(date_format($ganti_tgl_dooring_jod['tgl_dooring'], 'Y-m-d')!=date_format($tgl_berangkat, 'Y-m-d'));
+                        if(Carbon::parse($ganti_tgl_dooring_jod->tgl_dooring)->format('Y-m-d')!=date_format($tgl_berangkat, 'Y-m-d'))
+                        {
+                            DB::table('job_order_detail')
+                                ->where('id', $data['id_jo_detail'])
+                                ->update([
+                                    'tgl_dooring' => date_format($tgl_berangkat, 'Y-m-d'),
+                                    'status'=> 'PROSES DOORING',
+                                    'updated_at' => now(),
+                                    'updated_by' => $user,
+                                ]);
+                        }
+                        
+                    }
+                }
+                
                 if($data['stack_tl'] == 'tl_teluk_lamong'){
                     $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
                                 ->select('sb.*')
@@ -478,6 +507,8 @@ class SewaController extends Controller
                                 ->where('sb.is_aktif', 'Y')
                                 ->where('sb.deskripsi', 'TL')
                                 ->first();
+                    // pengecekan kalau null dan kalau status sewa masih menunggu uang jalan bisa dimasukin tl nya dari edit, 
+                    //kalau udah dibayar uang jalan, gabisa masuk detail, harus dari add/return TL
                     if($cek_sewa_biaya_TL ==null && $sewa->status=="MENUNGGU UANG JALAN")
                     {
                         DB::table('sewa_biaya')
@@ -515,9 +546,6 @@ class SewaController extends Controller
             //     $sewa->updated_at = now();
             //     $sewa->save();
             // }
-            
-
-            
             // if($data['stack_tl'] == null){
             //     DB::table('sewa_biaya')
             //         ->where('id_sewa', $data['sewa_id'])

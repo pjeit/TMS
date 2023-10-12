@@ -143,7 +143,7 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }} type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="">
+                                        <input {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }} type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="{{old('tanggal_berangkat',\Carbon\Carbon::parse($data['tanggal_berangkat'])->format('d-M-Y')) }}">
                                     </div>
                                     
                                 </div>
@@ -162,7 +162,7 @@
                                             <option value="{{$cust->idCustomer}}" <?= $cust->idCustomer==$data['id_customer']? 'selected':''  ?> > {{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="text" id="customer_id" name="customer_id" value="" placeholder="customer_id">
+                                    <input type="text" id="customer_id" name="customer_id" value="{{$data['id_customer']}}" placeholder="customer_id">
                                     <input type="text" id="booking_id" name="booking_id" value="" placeholder="booking_id">
                                     <input type="text" id="jenis_order" name="jenis_order" value="{{$data['jenis_order']}}" placeholder="jenis_order">
                                 </div>
@@ -175,8 +175,8 @@
                                     </select>
 
                                      <input type="text" id="tujuan_id" name="tujuan_id" value="{{$data['id_grup_tujuan']}}" placeholder="tujuan_id">
-                                    <input type="text" name="id_jo_detail" id="id_jo_detail" value="" placeholder="id_jo_detail">
-                                    <input type="text" name="id_jo" id="id_jo" value="" placeholder="id_jo">
+                                    <input type="text" name="id_jo_detail" id="id_jo_detail" value="{{!empty($data['id_jo_detail'])? $data['id_jo_detail']:''}}" placeholder="id_jo_detail">
+                                    <input type="text" name="id_jo" id="id_jo" value="{{!empty($data['id_jo'])?$data['id_jo']:''}}" placeholder="id_jo">
                                     <input type="text" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
                                     <input type="text" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
                                     <input type="text" id="tarif" name="tarif" value=""placeholder="tarif">
@@ -193,7 +193,7 @@
 
 
                                     <input type="text" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
-                                    <input type="text" id="biayaTambahSDT" name="biayaTambahSDT"placeholder="biayaTambahSDT">
+                                    {{-- <input type="text" id="biayaTambahSDT" name="biayaTambahSDT"placeholder="biayaTambahSDT"> --}}
                                 </div>
 
                                 <div class="row">
@@ -373,7 +373,7 @@
             }
 		});
 
-       
+        var  customerLoad = false;
         $('body').on('change','#select_customer',function()
 		{
             var selectedValue = $(this).val();
@@ -564,11 +564,15 @@
                          // console.log( response.dataTujuanBiaya);
                         var dataBiaya = response.dataTujuanBiaya;
                         for (var i in dataBiaya) {
+                            // if(dataBiaya[i].deskripsi!= 'TL')
+                            // {
                                 var obj = {
                                     deskripsi: dataBiaya[i].deskripsi,
                                     biaya: dataBiaya[i].biaya,
                                     catatan: dataBiaya[i].catatan,
                                 };
+
+                            // }
                             array_detail_biaya.push(obj);
                         }
                         
@@ -675,17 +679,17 @@
        
    
         function getDate(){
-            var today = new Date();
-            var tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
+            // var today = new Date();
+            // var tomorrow = new Date(today);
+            // tomorrow.setDate(today.getDate() + 1);
 
             $('#tanggal_berangkat').datepicker({
                 autoclose: true,
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language: 'en',
-                startDate: tomorrow,
-            }).datepicker("setDate", tomorrow);
+                // startDate: today,
+            })/*.datepicker("setDate", tomorrow)*/;
         }
         function setKendaraan(tipeKontainer)
         {
@@ -1045,12 +1049,18 @@
                             // console.log( response.dataTujuanBiaya);
                             var dataBiaya = response.dataTujuanBiaya;
                             for (var i in dataBiaya) {
-                                    var obj = {
-                                        deskripsi: dataBiaya[i].deskripsi,
-                                        biaya: dataBiaya[i].biaya,
-                                        catatan: dataBiaya[i].catatan,
-                                    };
-                                array_detail_biaya.push(obj);
+                                   
+                                var obj = {
+                                    deskripsi: dataBiaya[i].deskripsi,
+                                    biaya: dataBiaya[i].biaya,
+                                    catatan: dataBiaya[i].catatan,
+                                };
+
+                                    
+                                // if(dataBiaya[i].deskripsi!= 'TL')
+                                // {
+                                    array_detail_biaya.push(obj);
+                                // }
                             }
                             
 

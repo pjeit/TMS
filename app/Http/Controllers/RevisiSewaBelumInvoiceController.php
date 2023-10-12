@@ -70,7 +70,7 @@ class RevisiSewaBelumInvoiceController extends Controller
                     ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                     ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
                     // ->where('s.jenis_tujuan', 'like', '%FTL%')
-                    ->where('s.status', 'DALAM PERJALANAN')
+                    ->where('s.status', 'PROSES DOORING')
                     ->whereNull('s.id_supplier')
                     ->whereNull('s.tanggal_kembali')
                     ->where('s.is_aktif', '=', 'Y')
@@ -246,7 +246,7 @@ class RevisiSewaBelumInvoiceController extends Controller
             $revisi_sewa_invoice->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
             $revisi_sewa_invoice->no_kontainer = isset($data['no_kontainer'])? $data['no_kontainer']:null;
 
-            $revisi_sewa_invoice->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'DALAM PERJALANAN';
+            $revisi_sewa_invoice->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
             $revisi_sewa_invoice->is_kembali = $data['is_kembali'];
 
             $revisi_sewa_invoice->updated_by = $user;

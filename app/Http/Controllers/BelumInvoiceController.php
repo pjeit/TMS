@@ -89,7 +89,7 @@ class BelumInvoiceController extends Controller
             DB::table('sewa')
                 ->where('id_sewa',  $data['idSewa'])
                 ->update(array(
-                  'status' => 'DALAM PERJALANAN',
+                  'status' => 'PROSES DOORING',
                   'is_kembali' => 'N',
                   'tanggal_kembali' => null,
                   'updated_at'=> now(),
@@ -101,7 +101,7 @@ class BelumInvoiceController extends Controller
                 DB::table('job_order_detail')
                 ->where('id',  $data['idJo_detail'])
                 ->update(array(
-                  'status' => 'DALAM PERJALANAN',
+                  'status' => 'PROSES DOORING',
                   'updated_at'=> now(),
                   'updated_by'=>  $user,
                     )

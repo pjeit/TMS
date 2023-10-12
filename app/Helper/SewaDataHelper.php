@@ -17,6 +17,7 @@ class SewaDataHelper
             ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
             ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
+            ->whereNull('id_supplier') 
             ->where('s.status', 'MENUNGGU UANG JALAN')
             ->orderBy('created_at', 'DESC')
             ->get();
@@ -248,12 +249,18 @@ class SewaDataHelper
                     ->where('s.id_sewa', '=', $id)
                     ->groupBy('c.id')
                     ->first();
+        $sewa_biaya_TL = DB::table('sewa_biaya as sb')
+                                ->select('sb.*')
+                                ->where('sb.id_sewa', $id)
+                                ->where('sb.is_aktif', 'Y')
+                                ->where('sb.deskripsi', 'TL')
+                                ->first();
         $hutangKaryawan = DB::table('karyawan_hutang AS k')
                     ->select('k.*')
                     ->where('k.is_aktif', '=', 'Y')
                     ->where('k.id_karyawan', '=', $sewaDetail->id_karyawan)
                     ->first();
-        return response()->json(['sewaDetail'=>$sewaDetail,'hutangKaryawan'=>$hutangKaryawan]);
+        return response()->json(['sewaDetail'=>$sewaDetail,'hutangKaryawan'=>$hutangKaryawan,'SewaBiayaTL'=>$sewa_biaya_TL]);
     }
 
      public static function getDataChassisByModel($model)
