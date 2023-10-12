@@ -56,7 +56,7 @@
             <div class="col">
                 <div class="card radiusSendiri card-outline card-primary">
                     <div class="card-header">
-                        <a href="{{ route('truck_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <a href="{{ route('truck_order_rekanan.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         {{-- <button type="submit">wet</button> --}}
                     </div>

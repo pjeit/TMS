@@ -198,8 +198,8 @@
                                 <span class="badge badge-success">Data Yang Tersimpan</span>
                                 <span class="badge badge-danger">Data Template</span>
                                 <span class="badge badge-primary">Data Lain-lain</span>
-                                <span class="badge badge-warning">Data S/D/T</span>
-                                <span class="badge badge-warning">Data Tujuan Biaya</span>
+                                <span class="badge badge-warning">Data Inbound</span>
+                                <span class="badge badge-warning">Data Outbound</span>
 
 
                         <button type="button" id="btnTmbh" class="btn btn-primary radiusSendiri float-right">Tambah Biaya <i class="fa fa-fw fa-plus"></i> </button></br>
@@ -453,7 +453,7 @@
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                     <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
-                                                    <span class="badge badge-warning">Data S/D/T</span>
+                                                    <span class="badge badge-warning">Data Inbound</span>
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
@@ -504,7 +504,7 @@
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                         <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
-                                                    <span class="badge badge-warning">Data Tujuan Biaya</span>
+                                                    <span class="badge badge-warning">Data Outbound</span>
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">

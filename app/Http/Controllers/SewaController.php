@@ -314,7 +314,6 @@ class SewaController extends Controller
         // dd($data);
         try {
 
-            $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
             $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['sewa_id']);
             // $sewa->jenis_order = $data['jenis_order']=='INBOUND'? 'INBOUND':'OUTBOUND';
             $customer_lama = DB::table('customer as c')
@@ -330,6 +329,7 @@ class SewaController extends Controller
             // kalo tujuan baru ga sama sama tujuan yang lama
             if($data['tujuan_id']!=$sewa->id_grup_tujuan &&$sewa->status=="MENUNGGU UANG JALAN"&&$sewa->jenis_order == "OUTBOUND")
             {
+                $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
                 //KURANGI DULU KREDIT YANG LAMA,SOALNYA KAN TARIFNYA BEDA PER TUJUAN
                 DB::table('customer')
                     ->where('id', $sewa->id_customer)
@@ -458,7 +458,7 @@ class SewaController extends Controller
             {
                 if($sewa->status=="MENUNGGU UANG JALAN")
                 {
-
+                    $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
                     $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
                     $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
                     $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
@@ -499,30 +499,36 @@ class SewaController extends Controller
                         
                     }
                 }
-                
-                if($data['stack_tl'] == 'tl_teluk_lamong'){
-                    $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
-                                ->select('sb.*')
-                                ->where('sb.id_sewa', $data['sewa_id'])
-                                ->where('sb.is_aktif', 'Y')
-                                ->where('sb.deskripsi', 'TL')
-                                ->first();
-                    // pengecekan kalau null dan kalau status sewa masih menunggu uang jalan bisa dimasukin tl nya dari edit, 
-                    //kalau udah dibayar uang jalan, gabisa masuk detail, harus dari add/return TL
-                    if($cek_sewa_biaya_TL ==null && $sewa->status=="MENUNGGU UANG JALAN")
-                    {
-                        DB::table('sewa_biaya')
-                            ->insert(array(
-                            'id_sewa' => $sewa->id_sewa,
-                            'deskripsi' => 'TL',
-                            'biaya' => $data['stack_teluk_lamong_hidden'],
-                            'catatan' => $data['stack_tl'],
-                            'created_at' => now(),
-                            'created_by' => $user,
-                            'is_aktif' => "Y",
-                            )
-                        ); 
+                else
+                {
+                    $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
+                    $sewa->catatan = $data['catatan']? $data['catatan']:null;
+                    $sewa->save();
+                    if($data['stack_tl'] == 'tl_teluk_lamong'){
+                        $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
+                                    ->select('sb.*')
+                                    ->where('sb.id_sewa', $data['sewa_id'])
+                                    ->where('sb.is_aktif', 'Y')
+                                    ->where('sb.deskripsi', 'TL')
+                                    ->first();
+                        // pengecekan kalau null dan kalau status sewa masih menunggu uang jalan bisa dimasukin tl nya dari edit, 
+                        //kalau udah dibayar uang jalan, gabisa masuk detail, harus dari add/return TL
+                        if($cek_sewa_biaya_TL ==null && $sewa->status=="MENUNGGU UANG JALAN")
+                        {
+                            DB::table('sewa_biaya')
+                                ->insert(array(
+                                'id_sewa' => $sewa->id_sewa,
+                                'deskripsi' => 'TL',
+                                'biaya' => $data['stack_teluk_lamong_hidden'],
+                                'catatan' => $data['stack_tl'],
+                                'created_at' => now(),
+                                'created_by' => $user,
+                                'is_aktif' => "Y",
+                                )
+                            ); 
+                        }
                     }
+
                 }
             }
 

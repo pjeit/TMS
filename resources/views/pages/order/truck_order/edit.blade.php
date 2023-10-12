@@ -143,20 +143,20 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }} type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="{{old('tanggal_berangkat',\Carbon\Carbon::parse($data['tanggal_berangkat'])->format('d-M-Y')) }}">
+                                        <input {{ $data['status']== 'PROSES DOORING'? 'disabled':'' }} type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="{{old('tanggal_berangkat',\Carbon\Carbon::parse($data['tanggal_berangkat'])->format('d-M-Y')) }}">
                                     </div>
                                     
                                 </div>
                                 <div class="form-group">
                                         <label for="catatan">Catatan</label>
-                                        <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="{{$data['catatan']}}" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }}> 
+                                        <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="{{$data['catatan']}}"> 
                                     </div>
                             </div>
                             <div class="col-6">
                                
                                 <div class="form-group">
                                     <label for="select_customer">Customer<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" {{$data['jenis_order']=="INBOUND"?'disabled':''}} >
+                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" {{$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}} >
                                         <option value="">Pilih Customer</option>
                                         @foreach ($dataCustomer as $cust)                                        
                                             <option value="{{$cust->idCustomer}}" <?= $cust->idCustomer==$data['id_customer']? 'selected':''  ?> > {{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
@@ -167,8 +167,9 @@
                                     <input type="text" id="jenis_order" name="jenis_order" value="{{$data['jenis_order']}}" placeholder="jenis_order">
                                 </div>
                                 <div class="form-group">
+                                    
                                     <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" {{$data['jenis_order']=="INBOUND"?'disabled':''}} >
+                                    <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" {{$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}} >
                                         {{-- @isset($data['id_grup_tujuan'])
                                             <option value="{{$data['id_grup_tujuan']}}">{{$data->getTujuan->nama_tujuan}}</option>
                                         @endisset --}}
@@ -249,7 +250,7 @@
 
                                 <div class="form-group">
                                     <label for="select_ekor">Chassis<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis">
+                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
                                         <option value="">Pilih Chassis</option>
 
                                         @foreach ($dataChassis as $cha)
@@ -261,7 +262,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="select_driver">Driver<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required>
+                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required {{$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
                                         <option value="">Pilih Driver</option>
                                         @foreach ($dataDriver as $drvr)
                                             <option value="{{$drvr->id}}" nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})" {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
