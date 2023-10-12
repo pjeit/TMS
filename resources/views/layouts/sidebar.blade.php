@@ -547,7 +547,7 @@
             </li>
 
             {{-- Rollback --}}
-            <li class="nav-item {{ request()->is('rollback*')  ? 'menu-is-opening menu-open' : '' }}">
+            <li class="nav-item {{ request()->is('revisi_uang_jalan*')  ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
                 <i class="fas nav-icon fa-solid fa fa-undo"></i>
                 {{-- <i class=""></i> --}}
@@ -559,12 +559,10 @@
               <ul class="nav nav-treeview">
 
                 <li class="nav-item">
-                  <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('revisi_uang_jalan.index')}}" class="nav-link {{request()->url() === route('revisi_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      <b>
-                        <small>Revisi Uang Jalan</small>
-                      </b>
+                      Rev. Uang Jalan
                     </p>
                   </a>
                 </li>
@@ -572,9 +570,7 @@
                   <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      <b>
-                        <small>Revisi Biaya Operasional</small>
-                      </b>
+                      <span style="font-size: 0.9em;">Rev. Biaya Operasional</span>
                     </p>
                   </a>
                 </li>
@@ -582,9 +578,7 @@
                   <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      <b>
-                        <small>Revisi Belum Invoice</small>
-                      </b>
+                      Rev. Belum Invoice
                     </p>
                   </a>
                 </li>
@@ -592,13 +586,10 @@
                   <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      <b>
-                        <small>Revisi Pembayaran Invoice</small>
-                      </b>
+                      <span style="font-size: 0.84em;">Rev. Pembayaran Invoice</span>
                     </p>
                   </a>
                 </li>
-            
               </ul>
             </li>
 
