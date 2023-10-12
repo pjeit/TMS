@@ -45,4 +45,10 @@ class Sewa extends Model
     {
         return $this->belongsTo(Customer::class, 'id', 'id_customer');
     }   
+
+    public function revisiUJ(): HasOne
+    {
+         return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan')
+                         ->where('is_aktif', 'Y');
+    }
 }

@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
- use Carbon\Carbon;
-use App\Helper\VariableHelper;
 use App\Models\JobOrder;
-use App\Models\JobOrderDetail;
 use App\Models\Sewa;
 use App\Models\SewaOperasional;
+use App\Helper\VariableHelper;
+use App\Models\JobOrderDetail;
+use Carbon\Carbon;
 
 class BiayaOperasionalController extends Controller
 {
@@ -33,7 +33,6 @@ class BiayaOperasionalController extends Controller
         ->select('*')
         ->where('is_aktif', '=', "Y")
         ->get();
-
 
         return view('pages.finance.biaya_operasional.index',[
             'judul' => "Biaya Operasional",
@@ -175,7 +174,6 @@ class BiayaOperasionalController extends Controller
                     ) 
                 );
             } 
-
 
             return redirect()->route('biaya_operasional.index')->with(['status' => 'Success', 'msg' => 'Data berhasil dicairkan!']);
         } catch (ValidationException $e) {
@@ -366,6 +364,5 @@ class BiayaOperasionalController extends Controller
         } catch (\Throwable $th) {
             return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
         }
-       
     }
 }
