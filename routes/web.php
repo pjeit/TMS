@@ -143,6 +143,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/belum_invoice/set_sewa_id', [App\Http\Controllers\BelumInvoiceController::class, 'setSewaID'])->name('setSewaIDs.set');
         Route::get('/belum_invoice/print/{id}', [App\Http\Controllers\BelumInvoiceController::class, 'print'])->name('belum_invoice.print');
+        Route::get('/belum_invoice/printGabung/{no_invoice}', [App\Http\Controllers\BelumInvoiceController::class, 'printGabung'])->where('no_invoice', '\w+\/\w+\/(\d+)')->name('belum_invoice_gabung.print');
         Route::post('/belum_invoice/invoiceKembali', [App\Http\Controllers\BelumInvoiceController::class, 'invoiceKembali'])->name('belum_invoiceKembali.set');
         Route::resource('belum_invoice', 'App\Http\Controllers\BelumInvoiceController');
         Route::resource('cetak_invoice', 'App\Http\Controllers\CetakInvoiceController');

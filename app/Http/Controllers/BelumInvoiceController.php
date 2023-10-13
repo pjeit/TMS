@@ -163,6 +163,7 @@ class BelumInvoiceController extends Controller
         $data = $request->post();
         // json_decode($data['detail'][77]['addcost_details'])
         // dd($data['detail'][77]['addcost_details_pisah']=='[]');
+        // dd($data);
         try {
             // logic nomer booking
                 $kode = 'PJE/'.$data['kode_customer'].'/'.date("y").date("m");
@@ -178,7 +179,7 @@ class BelumInvoiceController extends Controller
                     $newInvoiceNumber = 'PJE/' . $data['kode_customer'] .'/'. date("y") . date("m") . '001';
                 }
             //
-
+            // dd(explode('/',$newInvoiceNumber)[2]);
             $invoice = new Invoice();
             $invoice->id_grup = $data['grup_id'];
             $invoice->no_invoice = $newInvoiceNumber;
@@ -219,6 +220,7 @@ class BelumInvoiceController extends Controller
                     $invoice_d->id_sewa = $key;
                     $invoice_d->tarif = $value['tarif']!=NULL? $value['tarif']:0;
                     $invoice_d->add_cost = $value['addcost']!=NULL? $value['addcost']:0;
+                    $invoice_d->add_cost_pisah = $value['addcost_pisah']!=NULL? $value['addcost_pisah']:0;
                     $invoice_d->diskon = $value['diskon']!=NULL? floatval(str_replace(',', '', $value['diskon'])):0;
                     $invoice_d->sub_total = $value['subtotal']!=NULL? $value['subtotal']:0;
                     $invoice_d->catatan = $value['catatan'];
@@ -247,68 +249,64 @@ class BelumInvoiceController extends Controller
                 }
             }
 
-               
-                    
-            // $newInvoiceNumberPisah = 'PJE/' . $data['kode_customer'] . '/' . date("y") . date("m") . str_pad($maxInvoice, 3, '0', STR_PAD_LEFT).'/'.'l';
+            
+            if($data['total_pisah']>0)
+            {
+              
+                $invoicePisah = new Invoice();
+                $invoicePisah->id_grup = $data['grup_id'];
+                $invoicePisah->no_invoice = $newInvoiceNumber .'/'.'I';
+                $invoicePisah->tgl_invoice = date_create_from_format('d-M-Y', $data['tanggal_invoice']);
+                $invoicePisah->total_tagihan = ($data['total_pisah'] != '')? floatval(str_replace(',', '', $data['total_pisah'])):0;
+                $invoicePisah->total_sisa = ($data['total_pisah'] != '')? floatval(str_replace(',', '', $data['total_pisah'])):0;
+                $invoicePisah->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
+                $invoicePisah->catatan = $data['catatan_invoice'];
+                $invoicePisah->status = 'MENUNGGU PEMBAYARAN INVOICE';
+                $invoicePisah->billing_to = $data['billingTo'];
+                $invoicePisah->created_by = $user;
+                $invoicePisah->created_at = now();
+                $invoicePisah->is_aktif = 'Y';
+                if($invoicePisah->save()){
+                    foreach ($data['detail'] as $key => $value) {
+                        
+                        $invoice_d_pisah = new InvoiceDetail();
+                        $invoice_d_pisah->id_invoice = $invoicePisah->id;
+                        $invoice_d_pisah->id_customer = $value['id_customer'];
+                        $invoice_d_pisah->id_sewa = $key;
+                        $invoice_d_pisah->add_cost_pisah = $value['addcost_pisah']!=NULL? $value['addcost_pisah']:0;
+                        $invoice_d_pisah->sub_total = $value['addcost_pisah']!=NULL? $value['addcost_pisah']:0;
+                        $invoice_d_pisah->catatan = $value['catatan'];
+                        $invoice_d_pisah->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
+                        $invoice_d_pisah->created_by = $user;
+                        $invoice_d_pisah->created_at = now();
+                        $invoice_d_pisah->is_aktif = 'Y';
+                        if($invoice_d_pisah->save()){
+                            $dataAddcost_pisah = json_decode($value['addcost_details']);
+                            foreach ($dataAddcost_pisah as $i => $addcost_pisah) {
+    
+                                if($addcost_pisah->is_ditagihkan=='Y'&&$addcost_pisah->is_dipisahkan=='Y')
+                                {
+                                    $invoice_da_pisah = new InvoiceDetailAddcost();
+                                    $invoice_da_pisah->id_invoice = $invoicePisah->id;
+                                    $invoice_da_pisah->id_invoice_detail = $invoice_d_pisah->id;
+                                    $invoice_da_pisah->id_sewa_operasional = $addcost_pisah->id;
+                                    $invoice_da_pisah->catatan = $addcost_pisah->catatan;
+                                    $invoice_da_pisah->created_by = $user;
+                                    $invoice_da_pisah->created_at = now();
+                                    $invoice_da_pisah->is_aktif = 'Y';
+                                    $invoice_da_pisah->save();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
-            // if (is_null($maxInvoice)) {
-            //     $newInvoiceNumberPisah = 'PJE/' . $data['kode_customer'] .'/'. date("y") . date("m") . '001'.'/'.'1';
-            // }
-            // //
-
-            // $invoicePisah = new Invoice();
-            // $invoicePisah->id_grup = $data['grup_id'];
-            // $invoicePisah->no_invoice = $newInvoiceNumberPisah;
-            // $invoicePisah->tgl_invoice = date_create_from_format('d-M-Y', $data['tanggal_invoice']);
-            // $invoicePisah->total_tagihan = ($data['total_tagihan'] != '')? floatval(str_replace(',', '', $data['total_tagihan'])):0;
-            // $invoicePisah->total_sisa = ($data['total_sisa'] != '')? floatval(str_replace(',', '', $data['total_sisa'])):0;
-            // $invoicePisah->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
-            // $invoicePisah->catatan = $data['catatan_invoice'];
-            // $invoicePisah->status = 'MENUNGGU PEMBAYARAN INVOICE';
-            // $invoicePisah->billing_to = $data['billingTo'];
-            // $invoicePisah->created_by = $user;
-            // $invoicePisah->created_at = now();
-            // $invoicePisah->is_aktif = 'Y';
-            // if($invoice->save()){
-            //     foreach ($data['detail'] as $key => $value) {
-                    
-            //         $invoice_d = new InvoiceDetail();
-            //         $invoice_d->id_invoice = $invoice->id;
-            //         $invoice_d->id_customer = $value['id_customer'];
-            //         $invoice_d->id_sewa = $key;
-            //         $invoice_d->tarif = $value['tarif']!=NULL? $value['tarif']:0;
-            //         $invoice_d->add_cost = $value['addcost']!=NULL? $value['addcost']:0;
-            //         $invoice_d->diskon = $value['diskon']!=NULL? floatval(str_replace(',', '', $value['diskon'])):0;
-            //         $invoice_d->sub_total = $value['subtotal']!=NULL? $value['subtotal']:0;
-            //         $invoice_d->catatan = $value['catatan'];
-            //         $invoice_d->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
-            //         $invoice_d->created_by = $user;
-            //         $invoice_d->created_at = now();
-            //         $invoice_d->is_aktif = 'Y';
-            //         if($invoice_d->save()){
-            //             $dataAddcost = json_decode($value['addcost_details']);
-            //             foreach ($dataAddcost as $i => $addcost) {
-
-            //                 if($addcost->is_ditagihkan=='Y'&&$addcost->is_dipisahkan=='N')
-            //                 {
-            //                     $invoice_da = new InvoiceDetailAddcost();
-            //                     $invoice_da->id_invoice = $invoice->id;
-            //                     $invoice_da->id_invoice_detail = $invoice_d->id;
-            //                     $invoice_da->id_sewa_operasional = $addcost->id;
-            //                     $invoice_da->catatan = $addcost->catatan;
-            //                     $invoice_da->created_by = $user;
-            //                     $invoice_da->created_at = now();
-            //                     $invoice_da->is_aktif = 'Y';
-            //                     $invoice_da->save();
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
-
+        
             return redirect()->route('invoice.index')
-                ->with('id_print_invoice', $invoice->id)
-                ->with('status', 'Success!!');
+                    ->with('id_print_invoice', $invoice->id)
+                    ->with('id_print_invoice_pisah', isset($invoicePisah->id)? $invoicePisah->id:null)
+                    ->with('status', 'Success!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -363,6 +361,75 @@ class BelumInvoiceController extends Controller
         $data = Invoice::where('is_aktif', '=', "Y")
             ->where('id', $id)
             ->first();
+        // $dataInvoiceAddCost = InvoiceDetailAddcost::where('is_aktif', '=', "Y")
+        //     ->where('id_invoice', $id)
+        //     ->get();
+      
+
+        $arrIdOperasional=[];
+        foreach ($data->invoiceDetailsCost as $key => $value) {
+            # code...
+            array_push( $arrIdOperasional, $value->id_sewa_operasional);
+        }
+        $dataOperasional = SewaOperasional::where('is_aktif', '=', "Y")
+        ->whereIn('id', $arrIdOperasional)
+        // ->groupBy('deskripsi') // Group by 'deskripsi'
+        // ->selectRaw('*, SUM(total_operasional) as total')
+        ->selectRaw('*, total_operasional as total')
+
+        ->get();
+        // dd($arrIdOperasional);
+        // dd($data->invoiceDetailsCost);
+        // dd($dataOperasional);
+
+        // dd($dataInvoiceAddCost->sewaOperasionalDetail);
+
+        $TotalBiayaRev = 0;
+        // dd($data);
+        $qrcode = QrCode::size(150)
+        // ->backgroundColor(255, 0, 0, 25)
+        ->generate(
+             'No. Invoice: ' . $data->no_invoice . "\n" .
+             'Total tagihan: ' .'Rp.' .number_format($data->total_tagihan,2) 
+        );
+        // dd($qrcode);
+        // dd($dataJoDetail);   
+        $pdf = PDF::loadView('pages.invoice.belum_invoice.print',[
+            'judul' => "Invoice",
+            'data' => $data,
+            'qrcode'=>$qrcode,
+            'dataOperasional'=>$dataOperasional
+
+        ]);
+        
+        $pdf->setPaper('A4', 'portrait');
+ 
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true, // Enable HTML5 parser
+            'isPhpEnabled' => true, // Enable inline PHP execution
+            'defaultFont' => 'sans-serif',
+             'dpi' => 250, // Set a high DPI for better resolution
+             'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
+        ]);
+
+        return $pdf->stream('xxxxx'.'.pdf'); 
+        // return view('pages.invoice.belum_invoice.print',[
+        //     'judul'=>"Invoice",
+        //     'data' => $data,
+        //     'qrcode'=>$qrcode,
+        //     'dataOperasional'=>$dataOperasional
+
+        // ]);
+
+    }
+
+    public function printGabung($no_invoice)
+    {
+        $no_invoice_split =explode("/",$no_invoice);
+        $data = Invoice::where('is_aktif', '=', "Y")
+            ->where('no_invoice', $no_invoice_split[2])
+            ->get();
+        dd($data);
         // $dataInvoiceAddCost = InvoiceDetailAddcost::where('is_aktif', '=', "Y")
         //     ->where('id_invoice', $id)
         //     ->get();
