@@ -1063,6 +1063,10 @@
                         trimTextbox ==='BURUH'||
                         trimTextbox ==='INAP'|| 
                         trimTextbox === 'CLEANING/REPAIR'||
+                        trimTextbox =='THC'||
+                        trimTextbox =='LOLO'||
+                        trimTextbox =='APBS'||
+                        trimTextbox =='DOCFEE'||
                         trimTextbox.includes("OPERASIONAL")
 
                     ) {
@@ -1114,7 +1118,7 @@
 
                 if(cek_box_simpan=="Y")
                 {
-                    if (value_cekbox_ditagihkan == 'N') {
+                    if (value_cekbox_ditagihkan == 'N'&&deskripsi!='SEAL PELAYARAN') {
                         flagCekBoxDitagihkanDicentangGak = true;
                         deskripsi_text = deskripsi;
                         break; 
