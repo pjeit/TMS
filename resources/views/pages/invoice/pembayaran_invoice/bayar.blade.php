@@ -22,7 +22,7 @@
             </div>
         @endforeach
     @endif
-<section class="m-2">
+<section class="">
     <form action="{{ route('pembayaran_invoice.store') }}" id="save" method="POST" >
         @csrf
         {{-- sticky header --}}
@@ -82,10 +82,11 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="total_pph23" name="total_pph23" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="text" id="total_pph23" name="total_pph23" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="hidden" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                     </div>
                                 </div>
-                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                {{-- <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">Total Bayar</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -93,7 +94,7 @@
                                         </div>
                                         <input type="text" maxlength="100" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
 
                         </div>
@@ -149,7 +150,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="biaya_admin" name="biaya_admin" class="form-control uang numajaMinDesimal" value="" disabled>                         
+                                        <input type="text" maxlength="100" id="biaya_admin" name="biaya_admin" class="form-control uang" value="" disabled>                         
                                     </div>
                                 </div>
                             </div>
@@ -182,9 +183,9 @@
                         <th>No Invoice</th>
                         <th>Total Tagihan</th>
                         <th>Sisa Invoice</th>
-                        <th>Diterima</th>
                         <th>PPh 23</th>
-                        <th>Dibayar</th>
+                        <th>Diterima</th>
+                        {{-- <th>Dibayar</th> --}}
                         <th>Catatan</th>
                         <th style="width:30px"></th>
                     </tr>
@@ -192,7 +193,7 @@
                 <tbody>
                 @isset($data)   
                     @foreach ($data as $key => $item)
-                        <tr id='{{ $item->id }}'>
+                        <tr id='{{ $key }}' id_sewa='{{ $item->id }}'>
                             <td> 
                                 <span id="text_no_invoice">{{ $item->no_invoice }}</span>
                                 <input type="hidden" id="no_invoice_{{ $item->id }}" name="detail[{{ $item->id }}][no_invoice]" value="{{ $item->no_invoice }}">
@@ -207,17 +208,19 @@
                                 <input type="hidden" class="total_sisa" id="total_sisa_{{ $item->id }}" name="detail[{{ $item->id }}][total_sisa]" value="{{ $item->total_sisa }}">
                             </td>
                             <td>
+                                <span id="text_pph23_{{ $item->id }}"></span>
+                                <input type="hidden" class="total_pph23" id="total_pph23_{{ $item->id }}" name="detail[{{ $item->id }}][pph23]" value="{{ $item->pph23 }}">
+                                <input type="hidden" class="total_dibayar" id="total_dibayar_{{ $item->id }}" name="detail[{{ $item->id }}][dibayar]" value="{{ $item->dibayar }}">
+                            </td>
+                            <td>
                                 <span id="text_diterima_{{ $item->id }}"></span>
                                 <input type="hidden" class="total_diterima" id="total_diterima_{{ $item->id }}" name="detail[{{ $item->id }}][diterima]" value="{{ $item->diterima }}">
                             </td>
-                            <td>
-                                <span id="text_pph23_{{ $item->id }}"></span>
-                                <input type="hidden" class="total_pph23" id="total_pph23_{{ $item->id }}" name="detail[{{ $item->id }}][pph23]" value="{{ $item->pph23 }}">
-                            </td>
-                            <td>
+     
+                            {{-- <td>
                                 <span id="text_dibayar_{{ $item->id }}"></span>
                                 <input type="hidden" class="total_dibayar" id="total_dibayar_{{ $item->id }}" name="detail[{{ $item->id }}][dibayar]" value="{{ $item->dibayar }}">
-                            </td>
+                            </td> --}}
                             <td>
                                 <span id="text_catatan_{{ $item->id }}">{{ $item->catatan }}</span>
                                 <input type="hidden" id="catatan_{{ $item->id }}" name="detail[{{ $item->id }}][catatan]" value="{{ $item->catatan }}">
@@ -261,7 +264,7 @@
                                 <div class="row">
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="sewa">No. Invoice <span style="color:red;">*</span></label>
-                                        <select class="select2" style="width: 100%" id="modal_no_invoice">
+                                        <select class="select2" style="width: 100%" id="modal_no_invoice" disabled>
                                             <option value="">── Pilih Invoice ──</option>
                                             @foreach ($dataInvoices as $inv)
                                                 <option value="{{ $inv->id }}">{{ $inv->no_invoice }} ({{ date("d-M-Y", strtotime($inv->tgl_invoice)) }}) - {{ number_format($inv->total_tagihan) }} </option>
@@ -318,20 +321,21 @@
                                                 <span class="input-group-text">Rp</span>
                                             </div>
                                             <input type="text" class="form-control numaja uang" id="modal_pph23" placeholder="" >
+                                            <input type="hidden" class="form-control numaja uang" id="modal_dibayar" placeholder="" readonly>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="">Dibayar</label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" class="form-control numaja uang" id="modal_dibayar" placeholder="" readonly>
+                                            <input type="hidden" class="form-control numaja uang" id="modal_dibayar" placeholder="" readonly>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </form>
@@ -494,7 +498,7 @@
             document.getElementById("text_pph23_"+key).textContent = $('#modal_pph23').val();
 
             $('#total_dibayar_'+key).val( escapeComma($('#modal_dibayar').val()) );
-            document.getElementById("text_dibayar_"+key).textContent = $('#modal_dibayar').val();
+            // document.getElementById("text_dibayar_"+key).textContent = $('#modal_dibayar').val();
 
             $('#catatan_'+key).val( escapeComma($('#modal_catatan').val()) );
             document.getElementById("text_catatan_"+key).textContent = $('#modal_catatan').val();
@@ -502,7 +506,6 @@
             hitungAll();
             $('#modal_detail').modal('hide'); // close modal
         });
-
 
         $(document.body).on("change","#jenis_badmin",function(){
             if(this.value == 'kliring'){
@@ -515,7 +518,9 @@
                 $('#biaya_admin').val('2,500');
             }
             uang();
+            hitungBiayaAdmin();
         });
+
 
         // cara_pembayaran
             $("#showTransfer, #showCek, #showTunai").hide();
@@ -545,10 +550,11 @@
             var biayaAdmin = $("#biaya_admin");
 
             biayaAdminCheckbox.change(function() {
+                
                 if (biayaAdminCheckbox.is(":checked")) {
                     // If BiayaAdminCheck is checked, remove the 'disabled' attribute
                     jenisBadminSelect.removeAttr("disabled");
-                    biayaAdmin.removeAttr("disabled");
+                    // biayaAdmin.removeAttr("disabled");
                 } else {
                     // If BiayaAdminCheck is unchecked, add the 'disabled' attribute
                     jenisBadminSelect.attr("disabled", "disabled");
@@ -557,11 +563,24 @@
                     biayaAdmin.attr("disabled", "disabled");
 
                 }
+                hitungBiayaAdmin();
             });
 
             // Trigger the change event initially to set the initial state
             biayaAdminCheckbox.change();
         // 
+
+        $(document).on('keyup', '#biaya_admin', function(){ // kalau berubah, hitung total 
+            hitungBiayaAdmin(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+        });
+
+
+        function hitungBiayaAdmin(){
+            var biaya_admin = $('#biaya_admin').val();
+            if(biaya_admin != 0 || biaya_admin != ''){
+                console.log('biaya_admin', escapeComma(biaya_admin));
+            }
+        }
 
         function hitungAll(){
             var total_diterima = total_pph23 = 0;
