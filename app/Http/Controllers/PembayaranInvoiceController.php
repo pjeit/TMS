@@ -70,18 +70,18 @@ class PembayaranInvoiceController extends Controller
 
     public function bayar(Request $request)
     {
-        $idInvoice  = session()->get('idInvoice'); 
-        $idGrup     = session()->get('idGrup'); 
-        $idCust     = session()->get('idCust'); 
-        $data = Invoice::whereIn('id', $idInvoice)->where('is_aktif', 'Y')->get();
-        $dataInvoices = Invoice::where('id_grup', $idGrup)->where('is_aktif', 'Y')->get();
+        $idInvoice      = session()->get('idInvoice'); 
+        $idGrup         = session()->get('idGrup'); 
+        $idCust         = session()->get('idCust'); 
+        $data           = Invoice::whereIn('id', $idInvoice)->where('is_aktif', 'Y')->get();
+        $dataInvoices   = Invoice::where('id_grup', $idGrup)->where('is_aktif', 'Y')->get();
         
-        $dataCustomers = Customer::where('grup_id', $idGrup)
+        $dataCustomers  = Customer::where('grup_id', $idGrup)
                                 ->where('is_aktif', 'Y')->get();
         
         $dataKas = KasBank::where('is_aktif', 'Y')->orderBy('nama', 'ASC')->get();
 
-        // var_dump($idCust); die;
+        // var_dump($data); die;
 
         return view('pages.invoice.pembayaran_invoice.bayar',[
             'judul' => "Bayar INVOICE",
@@ -113,13 +113,13 @@ class PembayaranInvoiceController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id; 
-        // dd($data);
+        // dd();
         try {
             if($data['detail'] != null){
                 $jenisBAdmin = isset($data['jenis_badmin'])? ' - '.$data['jenis_badmin']:'';
                 $keterangan_transaksi = $data['catatan'] . ' | '. $data['cara_pembayaran'] . $jenisBAdmin . ' |';
                 $id_invoices = '';
-
+                $i = 0;
                 foreach ($data['detail'] as $key => $value) {
                     if($value['diterima'] != null || $value['diterima'] != 0){
                         $new = new InvoicePembayaran();
@@ -127,14 +127,20 @@ class PembayaranInvoiceController extends Controller
                         $new->no_invoice = $value['no_invoice'];
                         $new->billing_to = $data['billingTo'];
                         $new->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
-                        $new->total_diterima = $value['diterima'];
+                        
+                        $diterima = $value['diterima'];
+                        if($i == 0){
+                            // kalau index pertama, dikurangi biaya admin
+                            $diterima = $value['diterima']-(float)str_replace(',', '', $data['biaya_admin']);
+                            $new->metode_transfer = isset($data['jenis_badmin'])? $data['jenis_badmin']:null;
+                            $new->biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
+                            $new->no_cek = isset($data['no_cek'])? $data['no_cek']:null;
+                        }
+
+                        $new->total_diterima = $diterima;
                         $new->total_pph23 = $value['pph23'];
-                        $new->total_bayar = $value['dibayar'];
                         $new->cara_pembayaran = $data['cara_pembayaran'];
                         $new->id_kas = $data['kas'];
-                        $new->metode_transfer = isset($data['jenis_badmin'])? $data['jenis_badmin']:null;
-                        $new->biaya_admin = $jenisBAdmin;
-                        $new->no_cek = isset($data['no_cek'])? $data['no_cek']:null;
                         $new->no_bukti_potong = $value['no_bukti_potong'];
                         $new->catatan = $value['catatan'];
                         $new->created_by = $user;
@@ -144,8 +150,11 @@ class PembayaranInvoiceController extends Controller
                             $keterangan_transaksi .= ' #'.$invoice->no_invoice;
                             $id_invoices .= $invoice->id . ',';
                             if($invoice){
-                                $invoice->total_dibayar += $new->total_bayar;
+                                $invoice->total_dibayar = $new->total_diterima + $new->total_pph23;
                                 $invoice->total_sisa = $invoice->total_tagihan - $invoice->total_dibayar;
+                                if($i == 0){
+                                    $invoice->total_sisa = $invoice->total_tagihan - $invoice->total_dibayar - $new->biaya_admin;
+                                }
                                 if($invoice->total_sisa == 0){
                                     $invoice->status = 'SELESAI PEMBAYARAN INVOICE';
                                 }
@@ -157,16 +166,17 @@ class PembayaranInvoiceController extends Controller
                             }
                         }
                     }
+                    $i++;
                 }
 
                 // dump data ke dump transaction
-                $total_bayar = (float)str_replace(',', '', $data['total_dibayar'])+ (isset($data['biaya_admin'])? (float)str_replace(',', '', $data['biaya_admin']):0) ;
+                $total_bayar = (float)str_replace(',', '', $data['total_diterima']);
                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                     array(
                         $data['kas'],// id kas_bank dr form
                         now(),//tanggal
-                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                        $total_bayar, //uang keluar (kredit)
+                        $total_bayar, //uang masuk (debit)
+                        0,// kredit 0 soalnya kan ini uang masuk
                         1018, //kode coa
                         'bayar_invoice',
                         $keterangan_transaksi, //keterangan_transaksi

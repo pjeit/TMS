@@ -150,7 +150,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="biaya_admin" name="biaya_admin" class="form-control uang" value="" disabled>                         
+                                        <input type="text" id="biaya_admin" name="biaya_admin" class="form-control uang" value="" readonly>                         
                                     </div>
                                 </div>
                             </div>
@@ -168,6 +168,8 @@
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">Catatan</label>
                                     <input type="text" name="catatan" class="form-control">
+                                    <input type="hidden" id="firstId" value="{{ isset($data)? $data[0]['id']:NULL }}">
+                                    <input type="hidden" class="form-control" id="di_potong_admin" placeholder="di_potong_admin"> 
                                 </div>
                             </div>
                         </div>
@@ -380,30 +382,11 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'center',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Disimpan'
-                    })
-
-                    setTimeout(() => {
-                        this.submit();
-                    }, 800); // 2000 milliseconds = 2 seconds
+                    this.submit();
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,
@@ -484,6 +467,7 @@
 
         $(document).on('click', '.save_detail', function(){ // save
             var key = $('#key').val(); // id key buat nge get data yg di hidden, key = id_sewa
+            var firstId = $('#firstId').val();
 
             $('#catatan_'+key).val( escapeComma($('#modal_catatan').val()) );
             document.getElementById("catatan_"+key).textContent = $('#modal_catatan').val();
@@ -503,6 +487,12 @@
             $('#catatan_'+key).val( escapeComma($('#modal_catatan').val()) );
             document.getElementById("text_catatan_"+key).textContent = $('#modal_catatan').val();
 
+            // if(firstId == key){
+            //     if(escapeComma($('#modal_diterima').val()) == 0 || escapeComma($('#modal_diterima').val()) == ''){
+            //         clear();
+            //     }
+            // }
+
             hitungAll();
             $('#modal_detail').modal('hide'); // close modal
         });
@@ -516,11 +506,13 @@
                 $('#biaya_admin').val('6,500');
             }else if(this.value == 'BIfast'){
                 $('#biaya_admin').val('2,500');
+            }else{
+                $('#biaya_admin').val(0);
             }
             uang();
             hitungBiayaAdmin();
+            hitungAll();
         });
-
 
         // cara_pembayaran
             $("#showTransfer, #showCek, #showTunai").hide();
@@ -549,31 +541,39 @@
             var jenisBadminSelect = $("#jenis_badmin");
             var biayaAdmin = $("#biaya_admin");
 
-            biayaAdminCheckbox.change(function() {
-                
-                if (biayaAdminCheckbox.is(":checked")) {
-                    // If BiayaAdminCheck is checked, remove the 'disabled' attribute
-                    jenisBadminSelect.removeAttr("disabled");
-                    // biayaAdmin.removeAttr("disabled");
-                } else {
-                    // If BiayaAdminCheck is unchecked, add the 'disabled' attribute
-                    jenisBadminSelect.attr("disabled", "disabled");
-                    $("#jenis_badmin").val('').trigger('change')
-                    biayaAdmin.val('');
-                    biayaAdmin.attr("disabled", "disabled");
-
+            // biayaAdminCheckbox.change(function(event) {
+            $(document.body).on("change","#BiayaAdminCheck",function(){
+                var firstId = $('#firstId').val();
+                // cek id pertama sudah di inputkan total diterima atau belum
+                var total_diterima = $('#total_diterima_'+firstId).val();
+                // if(total_diterima < 0 || total_diterima == ''){
+                //     Swal.fire(
+                //         'Perhatian',
+                //         'Harap isi terlebih dahulu uang diterima pada baris pertama',
+                //         'warning'
+                //     )
+                //     $("#BiayaAdminCheck").prop("checked", false);
+                // }else
+                {
+                    if (biayaAdminCheckbox.is(":checked")) {
+                        // If BiayaAdminCheck is checked, remove the 'disabled' attribute
+                        jenisBadminSelect.removeAttr("disabled");
+                        // biayaAdmin.removeAttr("disabled");
+                    } else {
+                        // If BiayaAdminCheck is unchecked, add the 'disabled' attribute
+                        jenisBadminSelect.attr("disabled", "disabled");
+                        $("#jenis_badmin").val('').trigger('change')
+                        biayaAdmin.val('');
+                        biayaAdmin.attr("disabled", "disabled");
+                    }
+                    hitungBiayaAdmin();
                 }
-                hitungBiayaAdmin();
             });
-
-            // Trigger the change event initially to set the initial state
-            biayaAdminCheckbox.change();
         // 
 
         $(document).on('keyup', '#biaya_admin', function(){ // kalau berubah, hitung total 
             hitungBiayaAdmin(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
         });
-
 
         function hitungBiayaAdmin(){
             var biaya_admin = $('#biaya_admin').val();
@@ -586,6 +586,8 @@
             var total_diterima = total_pph23 = 0;
             var diterima = document.getElementsByClassName("total_diterima");
             var pph23 = document.getElementsByClassName("total_pph23");
+            var biaya_admin = escapeComma($("#biaya_admin").val());
+            console.log('biaya_admin', biaya_admin);
 
             for (var i = 0; i < diterima.length; i++) {
                 var value = parseFloat(diterima[i].value); 
@@ -600,6 +602,9 @@
                 }
             }
 
+            if(biaya_admin != 0 || biaya_admin != ''){
+                total_diterima -= biaya_admin;
+            }
             $('#total_diterima').val(moneyMask(total_diterima));
             $('#total_pph23').val(moneyMask(total_pph23));
             $('#total_dibayar').val(moneyMask(total_diterima+total_pph23));
@@ -646,7 +651,7 @@
             $("#no_cek").val('');
             $("#jenis_badmin").val('').trigger('change');
             $("#jenis_badmin").attr("disabled", "disabled");
-            $("#biaya_admin").attr("disabled", "disabled");
+            $("#biaya_admin").attr("readonly", "true");
             $("#BiayaAdminCheck").prop("checked", false);
             $('#modal_dibayar').val('');
         }
