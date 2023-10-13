@@ -150,7 +150,7 @@
                                         </li>
                                         <li class="list-group-item">
                                             <div class="row">
-                                                <div class="col-10">
+                                                <div class="col-12">
                                                     <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required>
                                                         <option value="">── BILLING TO ──</option>
                                                         @foreach ($dataCust as $cust)
@@ -158,9 +158,6 @@
                                                         @endforeach
                                                     </select>
                                                     <input type="hidden" name="kode_customer" id="kode_customer">
-                                                </div>
-                                                <div class="col-2">
-                                                   
                                                 </div>
                                             </div>
                                         </li>
@@ -419,30 +416,11 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Disimpan'
-                    })
-
-                    setTimeout(() => {
-                        this.submit();
-                    }, 800); // 2000 milliseconds = 2 seconds
+                    this.submit();
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,

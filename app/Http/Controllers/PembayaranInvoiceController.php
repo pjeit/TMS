@@ -193,7 +193,7 @@ class PembayaranInvoiceController extends Controller
 
             }
 
-            return redirect()->route('pembayaran_invoice.index')->with('status', "Success!");
+            return redirect()->route('pembayaran_invoice.index')->with(['status' => "Success", "msg" => "Berhasil Membayar invoice!"]);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
