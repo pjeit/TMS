@@ -128,7 +128,8 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="total_sisa" name="total_sisa" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="text" id="total_sisa" name="total_sisa" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="hidden" id="total_pisah" name="total_pisah" class="form-control uang numajaMinDesimal" value="" placeholder="total_pisah" readonly>                         
                                     </div>
                                 </div>
                             </div>
@@ -225,7 +226,7 @@
                                 <input type="hidden" name="detail[{{ $item->id_sewa }}][addcost_details_pisah]" id="detail_addcost_pisah_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasionalPisah) }}" />
 
                                 <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost]' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
-                                <input type="hidden" class="addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">
+                                <input type="hidden" class="addcost_pisah addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">
 
                             </td>
                             <td style="text-align:right">
@@ -461,13 +462,8 @@
             language: 'en',
             startDate: today,
         }).datepicker("setDate", today);
-        // $('#jatuh_tempo').datepicker({
-        //     autoclose: true,
-        //     format: "dd-M-yyyy",
-        //     todayHighlight: true,
-        //     language: 'en',
-        //     startDate: today,
-        // }).datepicker("setDate", today);
+        addCostPisah();
+
         var selectedOption = $('#billingTo').find('option:selected');
         var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
         
@@ -475,13 +471,10 @@
         if(ketentuan_bayar==undefined)
         {
             getDate(0);
-
-
         }
         else
         {
             getDate(parseFloat(ketentuan_bayar) );
-
         }
 
         calculateGrandTotal(); // pas load awal langsung hitung grand total
@@ -655,6 +648,15 @@
             var subtotal = tarif + addcost - diskon;
             calculateGrandTotal();
             $('#subtotal').val(moneyMask(subtotal));
+        }
+
+        function addCostPisah(){
+            var total = 0;
+            $(".addcost_pisah").each(function() {
+                var value = parseFloat($(this).val()) || 0;
+                total += value;
+            });
+            $("#total_pisah").val(total);
         }
 
         function clearData(){ // clear data sebelum buka modal 
