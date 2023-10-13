@@ -63,7 +63,6 @@
                                                     </button>
                                                     <div class="dropdown-menu" >
                                                         <a target="_blank"  class="dropdown-item" href="{{route('belum_invoice.print',[$item->id])}}"><span class="fas fa-print" style="width:24px"></span>Cetak</a>
-                                                        
                                                     </div>
                                             </div>
                                         </td>

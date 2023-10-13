@@ -604,8 +604,42 @@ class SewaController extends Controller
      * @param  \App\Models\Sewa  $sewa
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Sewa $sewa)
+    public function destroy(Sewa $truck_order)
     {
-        var_dump('xxx'); die;
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        try{
+            DB::table('sewa')
+            ->where('id_sewa', $truck_order->id_sewa)
+            ->update(array(
+                'is_aktif' => "N",
+                'updated_at'=> now(),
+                'updated_by'=> $user, // masih hardcode nanti diganti cookies
+              )
+            );
+
+            DB::table('sewa_biaya')
+            ->where('id_sewa', $truck_order->id_sewa)
+            ->update(array(
+                'is_aktif' => "N",
+                'updated_at'=> now(),
+                'updated_by'=> $user, // masih hardcode nanti diganti cookies
+              )
+            );
+
+            DB::table('sewa_operasional')
+            ->where('id_sewa', $truck_order->id_sewa)
+            ->update(array(
+                'is_aktif' => "N",
+                'updated_at'=> now(),
+                'updated_by'=> $user, // masih hardcode nanti diganti cookies
+              )
+            );
+            return redirect()->route('truck_order.index')->with(['status' => 'Success', 'msg' => 'Berhasil Menghapus data!']);
+
+
+        }
+        catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
+        }
     }
 }

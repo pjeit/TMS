@@ -10,7 +10,7 @@
         :root {
             margin: 55px;
             padding: 0;
-            font-size: 25px;
+            font-size: 30px;
             font-family: Arial, sans-serif;
 
         }
@@ -55,6 +55,8 @@
     
     <hr style=" border: 10px solid rgb(54, 78, 163);margin-top: -55px;">
     @if ($data)
+
+    
         {{-- <img src="{{ asset('img/LOGO_PJE.jpg') }}" alt=""> --}}
         {{-- <div class="kontener">
             <img src="{{ public_path("img/LOGO_PJE_WARNA.jpg") }}"  width="300" height="300" style="margin-left: -50px;">
@@ -106,7 +108,16 @@
                     </th>
                     <td colspan='5' style="text-align:right;">
                         {{-- <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
-                        <h1>INVOICE</h1>
+                         @foreach ($data->invoiceDetails as $i => $detail)
+
+                            @if ($detail->tarif>0)
+                                <h1>INVOICE</h1>
+                            @else
+                                <h1>INVOICE PISAH</h1>
+
+                            @endif
+                            
+                        @endforeach
                         {{-- <span style="color:#1f55a2">{{ $data['no_invoice'] }}</span> --}}
                     </td>
     			</tr>
@@ -153,12 +164,23 @@
                     <td style="border: 1px solid black; border-collapse: collapse;">NO</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">TGL. BERANGKAT <br> TUJUAN</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">NO. CONTAINER
-                        <br>NO. SURAT JALAN
+                        {{-- <br>NO. SURAT JALAN --}}
                         <br>NO. SEGEL
                     </td>
                     <td style="border: 1px solid black; border-collapse: collapse;">NOPOL</td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
+                    @foreach ($data->invoiceDetails as $i => $detail)
+
+                        @if ($detail->tarif>0)
+
+                            <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
+                            <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
+                        @else
+                            <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
+
+                        @endif
+                        
+                    @endforeach
+               
                     <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">SUBTOTAL</td>
                 </tr>
@@ -181,26 +203,48 @@
                         {{-- {{ $detail->sewa->getJOD->no_kontainer }} --}}
                         {{ $detail->sewa->no_kontainer }}
 
-                        <br>{{ $detail->sewa->no_surat_jalan }}
+                        {{-- <br>{{ $detail->sewa->no_surat_jalan }} --}}
                         <br>{{ $detail->sewa->seal_pelayaran }}
                     </td>
                     <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
-                    <td class="text-right">{{ number_format($detail->tarif) }}</td>
-                    <td class="text-right" {{--rowspan="27"--}}> <br>
-                     @if (isset($dataOperasional))
-                        @foreach ($dataOperasional as $DO)
+                    
+                    @if ($detail->tarif>0)
 
-                            @if ($detail->id_sewa == $DO->id_sewa)
-                                    
-                                    <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
-                            @endif
+                        <td class="text-right">{{ number_format($detail->tarif) }}</td>
+                        <td class="text-right" {{--rowspan="27"--}}> <br>
+                        @if (isset($dataOperasional))
+                            @foreach ($dataOperasional as $DO)
+
+                                @if ($detail->id_sewa == $DO->id_sewa)
+                                        
+                                        <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
+                                @endif
+                                
+                            @endforeach
+                        @else
+                            -
                             
-                        @endforeach
-                     @else
-                        -
-                        
+                        @endif
+                        </td>
+
+                    @else
+                        <td class="text-right" {{--rowspan="27"--}}> <br>
+                        @if (isset($dataOperasional))
+                            @foreach ($dataOperasional as $DO)
+
+                                @if ($detail->id_sewa == $DO->id_sewa)
+                                        
+                                        <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
+                                @endif
+                                
+                            @endforeach
+                        @else
+                            -
+                            
+                        @endif
+                        </td>
                     @endif
-                    </td>
+
                     <td class="text-right">{{ number_format($detail->diskon) }}</td>
                     <td class="text-right" style="padding-right: 20px;">{{ number_format($detail->sub_total) }}</td>
                 </tr>
@@ -211,7 +255,15 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                    @foreach ($data->invoiceDetails as $i => $detail)
+
+                        @if ($detail->tarif>0)
+                            <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                        @else
+                            <td colspan="6" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                        @endif
+                        
+                    @endforeach
                     <td class="text-right"  style="padding-right: 20px; border-top: 1px solid black; border-collapse: collapse;""><strong>{{ number_format($total) }}</strong></td>
                 </tr>
             </tfoot>
@@ -248,11 +300,14 @@
             <tfoot>
                 <tr>
                     <td width="800px;">&nbsp;</td>
-                    <td class="text-right" >(..................................)</td>
+                    {{-- <td class="text-right" >(..................................)</td> --}}
+                    <td class="text-right" style="padding-right: 50px;">{{Auth::user()->username}} - {{Auth::user()->getRole()}}</td>
+
                 </tr>
             </tfoot>
         </table>
     @endif
+    
 </body>
 
 </html>

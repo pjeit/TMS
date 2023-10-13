@@ -311,7 +311,7 @@
             <br/>
              <tr>
                 {{-- customer --}}
-                <td style="text-align: left; ">(.........................)</td> 
+                <td style="text-align: left; ">({{Auth::user()->username}} - {{Auth::user()->getRole()}})</td> 
                 <td style="text-align: right; padding-left: 550px;">
                    (.........................)
                 </td>

@@ -488,5 +488,32 @@
     }, 1000); // Adjust the delay (in milliseconds) as needed
 </script>
 @endif
+{{-- @if (session('id_print_invoice')&&session('id_print_invoice_pisah'))
+<script>
+    window.open("/belum_invoice/print/{{ session('id_print_invoice') }}", "_blank");
+
+    // di set null biar ga open new tab terus2an 
+    setTimeout(function() {
+        sessionStorage.setItem('id_print_invoice', null);
+    }, 1000); // Adjust the delay (in milliseconds) as needed
+    window.open("/belum_invoice/print/{{ session('id_print_invoice_pisah') }}", "_blank");
+
+    // di set null biar ga open new tab terus2an 
+    setTimeout(function() {
+        sessionStorage.setItem('id_print_invoice_pisah', null);
+    }, 1000); // Adjust the delay (in milliseconds) as needed
+</script>
+@endif --}}
+@if (session('id_print_invoice_pisah'))
+<script>
+    window.open("/belum_invoice/print/{{ session('id_print_invoice_pisah') }}", "_blank");
+
+    // di set null biar ga open new tab terus2an 
+    setTimeout(function() {
+        sessionStorage.setItem('id_print_invoice_pisah', null);
+    }, 1000); // Adjust the delay (in milliseconds) as needed
+</script>
+@endif
+
 
 @endsection
