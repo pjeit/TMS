@@ -588,7 +588,7 @@ class SewaController extends Controller
             }
             else
             {
-                return redirect()->route('perjalanan_kembali.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data!']);
+                return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data!']);
             }
         } catch (ValidationException $e) {
             //throw $th;
