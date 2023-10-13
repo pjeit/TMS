@@ -38,7 +38,19 @@ class Sewa extends Model
     // eloquent relation
     public function sewaOperasional()
     {
-        return $this->hasMany(SewaOperasional::class, 'id_sewa', 'id_sewa');
+        return $this->hasMany(SewaOperasional::class, 'id_sewa', 'id_sewa')
+        ->where('is_aktif', 'Y');
+     //    ->where('is_ditagihkan', 'Y')
+     //    ->where('is_dipisahkan', 'N');
+         
+    }   
+
+     public function sewaOperasionalPisah()
+    {
+        return $this->hasMany(SewaOperasional::class, 'id_sewa', 'id_sewa')
+        ->where('is_aktif', 'Y')
+        ->where('is_ditagihkan', 'Y')
+        ->where('is_dipisahkan', 'Y');
     }   
 
     public function customer()

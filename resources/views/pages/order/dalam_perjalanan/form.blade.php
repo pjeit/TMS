@@ -89,7 +89,7 @@
                                            <div class="form-group col-8">
                                                <label for="no_akun">Driver</label>
                                                @if ($sewa->id_supplier)
-                                               <input type="text" id="driver" name="driver" class="form-control" value="DRIVER REKANAN ({{$sewa->nama_cust    }})" readonly>     
+                                               <input type="text" id="driver" name="driver" class="form-control" value="DRIVER REKANAN ({{$sewa->namaSupplier}})" readonly>     
                                                    
                                                @else
                                                <input type="text" id="driver" name="driver" class="form-control" value="{{$sewa->supir}} ({{$sewa->telpSupir}})" readonly>     
@@ -283,6 +283,11 @@
                                                 $value->deskripsi =='TALLY'||
                                                 $value->deskripsi =='TIMBANG'||
                                                 $value->deskripsi =='BURUH'||
+                                                $value->deskripsi =='THC'||
+                                                $value->deskripsi =='LOLO'||
+                                                $value->deskripsi =='APBS'||
+                                                $value->deskripsi =='DOCFEE'||
+
                                                 str_contains($value->deskripsi, 'OPERASIONAL')
 
                                             )
@@ -307,6 +312,10 @@
                                                 $value->deskripsi !='BURUH'&&
                                                 $value->deskripsi !='INAP'&& 
                                                 $value->deskripsi != 'CLEANING/REPAIR'&&
+                                                $value->deskripsi !='THC'&&
+                                                $value->deskripsi !='LOLO'&&
+                                                $value->deskripsi !='APBS'&&
+                                                $value->deskripsi !='DOCFEE'&&
                                                 !str_contains($value->deskripsi, 'OPERASIONAL')
 
                                             )
@@ -789,7 +798,21 @@
             // $('#div_foto_segel_pelayaran_2').hide();
             // $('#div_foto_segel_pje').hide();
         }
+        function hitung_total_harga_dari_muatan(jum_muatan) {
+            let harga_total = 0;
+            let harga_per_kg = parseFloat($('#harga_per_kg').val());
+            let min_muatan = parseFloat($('#min_muatan').val());
+            jum_muatan = parseFloat(jum_muatan);
 
+            if (jum_muatan != '') {
+                if (min_muatan < jum_muatan) {
+                    harga_total = harga_per_kg * jum_muatan;
+                } else {
+                    harga_total = harga_per_kg * min_muatan;
+                }
+            }
+            return harga_total;
+        }
         function getDate(){
             var today = new Date();
             // var tomorrow = new Date(today);

@@ -126,7 +126,7 @@ class SewaRekananController extends Controller
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['kontainer']? $data['kontainer']:null;
             $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
-            $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
+            // $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
             $sewa->harga_jual = (float)str_replace(',', '', $data['harga_jual']);
             $sewa->created_by = $user;
             $sewa->created_at = now();

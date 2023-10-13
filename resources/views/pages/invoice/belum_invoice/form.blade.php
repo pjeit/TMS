@@ -209,6 +209,7 @@
                             <td style="text-align:right">
                                 @php
                                     $total_addcost = 0;
+                                    $total_addcost_pisah = 0;
                                 @endphp
                                 @foreach ($item->sewaOperasional as $i => $oprs)
                                     @if ($oprs->is_aktif == 'Y' && $oprs->status == 'SUDAH DICAIRKAN' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N')
@@ -216,11 +217,19 @@
                                         @php
                                             $total_addcost += $oprs->total_operasional;
                                         @endphp
+                                    @else
+                                        @php
+                                            $total_addcost_pisah += $oprs->total_operasional;
+                                        @endphp
                                     @endif
                                 @endforeach
                                 {{ number_format($total_addcost) }}
                                 <input type="hidden" name="detail[{{ $item->id_sewa }}][addcost_details]" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
+                                <input type="hidden" name="detail[{{ $item->id_sewa }}][addcost_details_pisah]" id="detail_addcost_pisah_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasionalPisah) }}" />
+
                                 <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost]' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
+                                <input type="hidden" class="addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">
+
                             </td>
                             <td style="text-align:right">
                                 <span id='diskon_text_{{ $item->id_sewa }}'></span>

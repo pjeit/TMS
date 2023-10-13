@@ -148,7 +148,7 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input {{ $data['status']== 'PROSES DOORING'? 'disabled':'' }} type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="{{old('tanggal_berangkat',\Carbon\Carbon::parse($data['tanggal_berangkat'])->format('d-M-Y')) }}">
+                                        <input {{--{{ $data['status']== 'PROSES DOORING'? 'disabled':'' }}--}} type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="{{old('tanggal_berangkat',\Carbon\Carbon::parse($data['tanggal_berangkat'])->format('d-M-Y')) }}">
                                     </div>
                                     
                                 </div>
@@ -167,9 +167,9 @@
                                             <option value="{{$cust->idCustomer}}" <?= $cust->idCustomer==$data['id_customer']? 'selected':''  ?> > {{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="text" id="customer_id" name="customer_id" value="{{$data['id_customer']}}" placeholder="customer_id">
-                                    <input type="text" id="booking_id" name="booking_id" value="" placeholder="booking_id">
-                                    <input type="text" id="jenis_order" name="jenis_order" value="{{$data['jenis_order']}}" placeholder="jenis_order">
+                                    <input type="hidden" id="customer_id" name="customer_id" value="{{$data['id_customer']}}" placeholder="customer_id">
+                                    <input type="hidden" id="booking_id" name="booking_id" value="" placeholder="booking_id">
+                                    <input type="hidden" id="jenis_order" name="jenis_order" value="{{$data['jenis_order']}}" placeholder="jenis_order">
                                 </div>
                                 <div class="form-group">
                                     
@@ -180,25 +180,25 @@
                                         @endisset --}}
                                     </select>
 
-                                     <input type="text" id="tujuan_id" name="tujuan_id" value="{{$data['id_grup_tujuan']}}" placeholder="tujuan_id">
-                                    <input type="text" name="id_jo_detail" id="id_jo_detail" value="{{!empty($data['id_jo_detail'])? $data['id_jo_detail']:''}}" placeholder="id_jo_detail">
-                                    <input type="text" name="id_jo" id="id_jo" value="{{!empty($data['id_jo'])?$data['id_jo']:''}}" placeholder="id_jo">
-                                    <input type="text" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
-                                    <input type="text" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
-                                    <input type="text" id="tarif" name="tarif" value=""placeholder="tarif">
-                                    <input type="text" id="uang_jalan" name="uang_jalan" value=""placeholder="uang_jalan">
-                                    <input type="text" id="komisi" name="komisi" value=""placeholder="komisi">
-                                    <input type="text" id="komisi_driver" name="komisi_driver" value=""placeholder="komisi_driver">
-                                    <input type="text" id="jenis_tujuan" name="jenis_tujuan" value=""placeholder="jenis_tujuan">
-                                    <input type="text" id="harga_per_kg" name="harga_per_kg" value="0"placeholder="harga_per_kg">
-                                    <input type="text" id="min_muatan" name="min_muatan" value="0"placeholder="min_muatan">
+                                     <input type="hidden" id="tujuan_id" name="tujuan_id" value="{{$data['id_grup_tujuan']}}" placeholder="tujuan_id">
+                                    <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="{{!empty($data['id_jo_detail'])? $data['id_jo_detail']:''}}" placeholder="id_jo_detail">
+                                    <input type="hidden" name="id_jo" id="id_jo" value="{{!empty($data['id_jo'])?$data['id_jo']:''}}" placeholder="id_jo">
+                                    <input type="hidden" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
+                                    <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
+                                    <input type="hidden" id="tarif" name="tarif" value=""placeholder="tarif">
+                                    <input type="hidden" id="uang_jalan" name="uang_jalan" value=""placeholder="uang_jalan">
+                                    <input type="hidden" id="komisi" name="komisi" value=""placeholder="komisi">
+                                    <input type="hidden" id="komisi_driver" name="komisi_driver" value=""placeholder="komisi_driver">
+                                    <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value=""placeholder="jenis_tujuan">
+                                    <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0"placeholder="harga_per_kg">
+                                    <input type="hidden" id="min_muatan" name="min_muatan" value="0"placeholder="min_muatan">
 
-                                    <input type="text" id="plastik" name="plastik" value=""placeholder="plastik">
-                                    <input type="text" id="tally" name="tally" value=""placeholder="tally">
-                                    <input type="text" id="kargo" name="kargo" value=""placeholder="kargo">
+                                    <input type="hidden" id="plastik" name="plastik" value=""placeholder="plastik">
+                                    <input type="hidden" id="tally" name="tally" value=""placeholder="tally">
+                                    <input type="hidden" id="kargo" name="kargo" value=""placeholder="kargo">
 
 
-                                    <input type="text" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
+                                    <input type="hidden" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
                                     {{-- <input type="text" id="biayaTambahSDT" name="biayaTambahSDT"placeholder="biayaTambahSDT"> --}}
                                 </div>
 
@@ -217,7 +217,7 @@
                                                 <option value='40' {{ $data['tipe_kontainer'] == '40'? 'selected':'' }}>40"</option>
                                             </select>
                                         </div>
-                                        <input type="text" name="tipe_kontainer" id="tipe_kontainer" value="{{$data['tipe_kontainer']}}">
+                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer" value="{{$data['tipe_kontainer']}}">
                                     </div> 
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                         <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
@@ -236,9 +236,9 @@
                                                     >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
                                             @endforeach
                                         </select>
-                                        <input type="text" id="kendaraan_id" name="kendaraan_id" value="" placeholder="kendaraan_id">
-                                        <input type="text" id="no_polisi" name="no_polisi" value="" placeholder="no_polisi">
-                                        <input type="text" id="tipeKontainerKendaraanDariChassis" name="tipeKontainerKendaraanDariChassis" value="" placeholder="tipeKontainerKendaraanDariChassis">
+                                        <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="" placeholder="kendaraan_id">
+                                        <input type="hidden" id="no_polisi" name="no_polisi" value="" placeholder="no_polisi">
+                                        <input type="hidden" id="tipeKontainerKendaraanDariChassis" name="tipeKontainerKendaraanDariChassis" value="" placeholder="tipeKontainerKendaraanDariChassis">
                                     </div>   
                                     {{-- <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                         <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
@@ -262,7 +262,7 @@
                                             <option value="{{$cha->idChassis}}" modelChassis="{{ $cha->modelChassis }}" karoseris="{{ $cha->karoseri }}" {{$cha->id==$data['id_chassis']? 'selected':''}}>{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}})</option>
                                         @endforeach
                                     </select>
-                                    <input type="text" id="karoseri" name="karoseri" value="" placeholder="karoseri">
+                                    <input type="hidden" id="karoseri" name="karoseri" value="" placeholder="karoseri">
 
                                 </div>
                                 <div class="form-group">
@@ -273,7 +273,7 @@
                                             <option value="{{$drvr->id}}" nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})" {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                         @endforeach
                                     </select>
-                                    <input type="text" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">
+                                    <input type="hidden" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">
                                 </div>
                               
                                 {{-- <div class="form-group">
@@ -311,7 +311,7 @@
                                         <option value="tl_priuk" {{ $data['stack_tl'] == 'tl_priuk'? 'selected':'' }}>Priuk</option>
                                         <option value="tl_teluk_lamong" {{ $data['stack_tl'] == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
                                     </select>
-                                    <input type="text" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
 
                                 </div>
                             </div>

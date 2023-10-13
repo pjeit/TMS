@@ -346,6 +346,7 @@ class BiayaOperasionalController extends Controller
                     ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')
                     ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
                     ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
+                    ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
                     ->select(
                         's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer', 'c.grup_id',
                         's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
@@ -355,7 +356,8 @@ class BiayaOperasionalController extends Controller
                         DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), 
                         'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
                         'c.nama as customer',
-                        'g.nama_grup as nama_grup'
+                        'g.nama_grup as nama_grup',
+                        'sp.nama as namaSupplier'
                     )
             ->get();
             // var_dump($data); die;

@@ -57,7 +57,7 @@
                                 <td>{{ $item->tanggal_berangkat }}</td>
                                 <td>{{ $item->nama_tujuan }}</td>
                                 @if ($item->id_supplier)
-                                <td>DRIVER REKANAN  ({{ $item->nama_cust }})</td>
+                                <td>DRIVER REKANAN  ({{ $item->namaSupplier }})</td>
 
                                 @else
                                 <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>

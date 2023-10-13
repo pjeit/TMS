@@ -27,12 +27,14 @@ class DalamPerjalananController extends Controller
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
     $dataSewa =  DB::table('sewa AS s')
-                ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+                ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                 ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
+                ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
                 ->where('s.is_aktif', '=', 'Y')
                 ->where('s.status', 'PROSES DOORING')
+                ->where('s.jenis_tujuan', 'FTL')
                 // ->whereNull('s.id_supplier')
                 ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
@@ -87,12 +89,13 @@ class DalamPerjalananController extends Controller
     {
         //
         $sewa = DB::table('sewa AS s')
-                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                     ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                     ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
-                    // ->where('s.jenis_tujuan', 'like', '%FTL%')
+                    ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
+                    ->where('s.jenis_tujuan', 'like', '%FTL%')
                     ->where('s.status', 'PROSES DOORING')
                     // ->whereNull('s.id_supplier')
                     ->whereNull('s.tanggal_kembali')
