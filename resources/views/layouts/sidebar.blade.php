@@ -177,16 +177,7 @@
                         </p>
                       </a>
                     </li>
-                   
-                    <li class="nav-item">
-                      <a href="{{route('grup_tujuan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('grup_tujuan') ||   request()->is('grup_tujuan/*/edit') ? ' active' : '' }}">
-                      <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
-                        <p>
-                          Grup Tujuan
-                        </p>
-                      </a>
-                    </li>
-    
+
                     <li class="nav-item">
                       <a href="{{route('customer.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('customer*') ? ' active' : '' }} ">
                       <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
@@ -195,6 +186,16 @@
                         </p>
                       </a>
                     </li>
+                   
+                    <li class="nav-item">
+                      <a href="{{route('grup_tujuan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('grup_tujuan') ||   request()->is('grup_tujuan/*/edit') ? ' active' : '' }}">
+                      <i class="far fa-dot-circle nav-icon" style=  "font-size: 15px;"></i>
+                        <p>
+                          Grup Tujuan
+                        </p>
+                      </a>
+                    </li>
+
                   </ul>
                 </li>
                 
@@ -355,7 +356,7 @@
           
             {{-- TRUCKING ORDER --}}
             <li class="nav-item {{ request()->is('booking*')||
-              request()->is('perjalanan_kembali*') ||
+              request()->is('dalam_perjalanan*') ||
               request()->is('truck_order*')? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
                 {{-- <i class="nav-icon fas fa-shipping-fast"></i> --}}
@@ -397,7 +398,7 @@
   
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{route('perjalanan_kembali.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('perjalanan_kembali*') ? 'active' : ''  }}">
+                  <a href="{{route('dalam_perjalanan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('dalam_perjalanan*') ? 'active' : ''  }}">
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
                        Dalam Perjalanan

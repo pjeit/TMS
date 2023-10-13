@@ -28,7 +28,7 @@
             </div>
         @endforeach
     @endif
-    <form action="{{ route('perjalanan_kembali.update',[$sewa->id_sewa]) }}" id="post_data" method="POST" >
+    <form action="{{ route('dalam_perjalanan.update',[$sewa->id_sewa]) }}" id="post_data" method="POST" >
       @csrf
         @method('PUT')
 
@@ -38,7 +38,7 @@
             <div class="col-12">
                 <div class="card radiusSendiri ">
                     <div class="card-header ">
-                        <a href="{{ route('perjalanan_kembali.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                        <a href="{{ route('dalam_perjalanan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         <span style="font-size:11pt;" class="badge bg-dark float-right m-2">{{$sewa->jenis_order}} ORDER {{$sewa->jenis_tujuan}}</span>
                     </div>

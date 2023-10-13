@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 
-class PerjalananKembaliController extends Controller
+class DalamPerjalananController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -39,7 +39,7 @@ class PerjalananKembaliController extends Controller
                 ->get();
         // dd($dataSewa);
     
-        return view('pages.order.perjalanan_kembali.index',[
+        return view('pages.order.dalam_perjalanan.index',[
             'judul'=>"Trucking Order",
             'dataSewa' => $dataSewa,
         ]);
@@ -83,7 +83,7 @@ class PerjalananKembaliController extends Controller
      * @param  \App\Models\Sewa  $sewa
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sewa $perjalanan_kembali)
+    public function edit(Sewa $dalam_perjalanan)
     {
         //
         $sewa = DB::table('sewa AS s')
@@ -97,13 +97,13 @@ class PerjalananKembaliController extends Controller
                     // ->whereNull('s.id_supplier')
                     ->whereNull('s.tanggal_kembali')
                     ->where('s.is_aktif', '=', 'Y')
-                    ->where('s.id_sewa', '=', $perjalanan_kembali->id_sewa)
+                    ->where('s.id_sewa', '=', $dalam_perjalanan->id_sewa)
                     ->groupBy('c.id')
                     ->first();
         $dataJO=DB::table('job_order as jo')
             ->select('jo.*')
             ->where('jo.is_aktif', '=', "Y")
-            ->where('jo.id', '=', $perjalanan_kembali->id_jo)
+            ->where('jo.id', '=', $dalam_perjalanan->id_jo)
             ->get();
      
         $datajODetailBiaya = DB::table('job_order_detail_biaya as jodb')
@@ -114,7 +114,7 @@ class PerjalananKembaliController extends Controller
             //         ->where('status' ,'like','%BELUM DOORING%')
             //         ->whereNotNull('job.id_grup_tujuan');
             //     })
-            ->where('jodb.id_jo_detail', '=', $perjalanan_kembali->id_jo_detail)
+            ->where('jodb.id_jo_detail', '=', $dalam_perjalanan->id_jo_detail)
             ->where('status_bayar' ,'like','%SELESAI PEMBAYARAN%')
             ->where('jodb.is_aktif', '=', "Y")
             ->get();
@@ -122,7 +122,7 @@ class PerjalananKembaliController extends Controller
                     ->select('so.*')
                     ->where('so.is_aktif', '=', 'Y')
                     ->where('so.status', 'like', '%SUDAH DICAIRKAN%')
-                    ->where('so.id_sewa', '=', $perjalanan_kembali->id_sewa)
+                    ->where('so.id_sewa', '=', $dalam_perjalanan->id_sewa)
                     ->get();
         // dd($dataOpreasional);
         // dd(strpos($dataOpreasional, 'CLEANING/REPAIR'));
@@ -166,12 +166,12 @@ class PerjalananKembaliController extends Controller
             }
         }
 
-        if($perjalanan_kembali->jenis_order=="INBOUND")
+        if($dalam_perjalanan->jenis_order=="INBOUND")
         {
             $dataJO=DB::table('job_order as jo')
                 ->select('jo.*')
                 ->where('jo.is_aktif', '=', "Y")
-                ->where('jo.id', '=', $perjalanan_kembali->id_jo)
+                ->where('jo.id', '=', $dalam_perjalanan->id_jo)
                 ->get();
             foreach ($dataJO as $value) {
                 if ($value->thc||$value->thc != 0) {
@@ -227,7 +227,7 @@ class PerjalananKembaliController extends Controller
 
          $Tujuan = DB::table('grup_tujuan as gt')
             ->select('gt.*')
-            ->where('gt.id', '=',  $perjalanan_kembali->id_grup_tujuan)
+            ->where('gt.id', '=',  $dalam_perjalanan->id_grup_tujuan)
             ->where('gt.is_aktif', '=', "Y")
             ->get();
         $array_outbond = [];
@@ -286,8 +286,8 @@ class PerjalananKembaliController extends Controller
             return strcmp($b['deskripsi'],$a['deskripsi']);
         });
         // dd($array_outbond);
-        return view('pages.order.perjalanan_kembali.form',[
-            'judul' => "Perjalanan Kembali",
+        return view('pages.order.dalam_perjalanan.form',[
+            'judul' => "Dalam Perjalanan",
             'sewa'=>$sewa,
             'dataOpreasional'=>$dataOpreasional,
             'array_inbound'=>$array_inbound,
@@ -304,29 +304,29 @@ class PerjalananKembaliController extends Controller
      * @param  \App\Models\Sewa  $sewa
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Sewa $perjalanan_kembali)
+    public function update(Request $request, Sewa $dalam_perjalanan)
     {
         //
         $data = $request->post();
         $user = Auth::user()->id; 
         // dd(/*isset(*/$data['data_hardcode']/*[0]['masuk_db'])*/);
-        // dd($perjalanan_kembali->jenis_order);
+        // dd($dalam_perjalanan->jenis_order);
 
         try {
-            $perjalanan_kembali->catatan = isset($data['catatan'])? $data['catatan']:null;
-            $perjalanan_kembali->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
-            $perjalanan_kembali->no_surat_jalan = isset($data['surat_jalan'])? $data['surat_jalan']:null;
-            $perjalanan_kembali->seal_pelayaran = isset($data['seal'])? $data['seal']:null;
-            $perjalanan_kembali->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
-            $perjalanan_kembali->no_kontainer = isset($data['no_kontainer'])? $data['no_kontainer']:null;
+            $dalam_perjalanan->catatan = isset($data['catatan'])? $data['catatan']:null;
+            $dalam_perjalanan->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
+            $dalam_perjalanan->no_surat_jalan = isset($data['surat_jalan'])? $data['surat_jalan']:null;
+            $dalam_perjalanan->seal_pelayaran = isset($data['seal'])? $data['seal']:null;
+            $dalam_perjalanan->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
+            $dalam_perjalanan->no_kontainer = isset($data['no_kontainer'])? $data['no_kontainer']:null;
 
-            $perjalanan_kembali->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
-            $perjalanan_kembali->is_kembali = $data['is_kembali'];
+            $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
+            $dalam_perjalanan->is_kembali = $data['is_kembali'];
 
-            $perjalanan_kembali->updated_by = $user;
-            $perjalanan_kembali->updated_at = now();
+            $dalam_perjalanan->updated_by = $user;
+            $dalam_perjalanan->updated_at = now();
 
-            if($perjalanan_kembali->save()&&$perjalanan_kembali->jenis_order=='INBOUND'&&$data['is_kembali']=='Y'){
+            if($dalam_perjalanan->save()&&$dalam_perjalanan->jenis_order=='INBOUND'&&$data['is_kembali']=='Y'){
                 $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($data['id_jo_detail_hidden']);
                 $JOD->status = 'MENUNGGU INVOICE';
                 $JOD->save();
@@ -340,7 +340,7 @@ class PerjalananKembaliController extends Controller
                     if(isset($value['masuk_db']))
                     {
                         $SOP = new SewaOperasional();
-                        $SOP->id_sewa = $perjalanan_kembali->id_sewa; 
+                        $SOP->id_sewa = $dalam_perjalanan->id_sewa; 
                         $SOP->deskripsi = $value['deskripsi_data'];
                         $SOP->total_operasional = (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
@@ -364,7 +364,7 @@ class PerjalananKembaliController extends Controller
                     if(isset($value['masuk_db']))
                     {
                          DB::table('sewa_operasional')
-                            ->where('id_sewa', $perjalanan_kembali->id_sewa)
+                            ->where('id_sewa', $dalam_perjalanan->id_sewa)
                             ->where('id', $value['id_sewa_operasional_data'])
                             ->update([
                                 'deskripsi' => $value['deskripsi_data'],
@@ -391,7 +391,7 @@ class PerjalananKembaliController extends Controller
                     {
                        
                         $SOP = new SewaOperasional();
-                        $SOP->id_sewa = $perjalanan_kembali->id_sewa; 
+                        $SOP->id_sewa = $dalam_perjalanan->id_sewa; 
                         $SOP->deskripsi = $value['deskripsi_data'];
                         $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
@@ -416,7 +416,7 @@ class PerjalananKembaliController extends Controller
                     if(isset($value['masuk_db']))
                     {
                         $SOP = new SewaOperasional();
-                        $SOP->id_sewa = $perjalanan_kembali->id_sewa; 
+                        $SOP->id_sewa = $dalam_perjalanan->id_sewa; 
                         $SOP->deskripsi = $value['deskripsi_data'];
                         $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
@@ -432,7 +432,7 @@ class PerjalananKembaliController extends Controller
                 }
             }
 
-            return redirect()->route('perjalanan_kembali.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
             
         } catch (ValidationException $e) {
             //throw $th;

@@ -140,10 +140,10 @@ class PencairanUangJalanFtlController extends Controller
                 {
                     if (isset($data['teluk_lamong'])) {
                         // $nominal =(float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']);
-                        $keterangan_string='UANG KELUAR # PEMBAYARAN UANG JALAN + TELUK LAMONG';
+                        $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
                     } else {
                         // $nominal =(float)str_replace(',', '', $data['total_diterima']);
-                        $keterangan_string='UANG KELUAR # PEMBAYARAN UANG JALAN';
+                        $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN';
                     }
                     // dd( $data['total_diterima']);
                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -173,7 +173,7 @@ class PencairanUangJalanFtlController extends Controller
                     //             (float)str_replace(',', '', $data['teluk_lamong']), //uang keluar (kredit)
                     //             1016, //kode coa
                     //             'teluk_lamong',
-                    //             'UANG KELUAR # PEMBAYARAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                    //             'UANG KELUAR #PEMBAYARAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
                     //             $data['id_sewa_defaulth'],//keterangan_kode_transaksi
                     //             $user,//created_by
                     //             now(),//created_at
