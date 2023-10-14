@@ -116,6 +116,8 @@
                                             @foreach ($dataKas as $kas)
                                                 <option value="{{$kas->id}}">{{ $kas->nama }}</option>
                                             @endforeach
+                                            <option value="hutang_karyawan">KEMBALI SEBAGAI HUTANG KARYAWAN</option>
+
                                         </select>
                                     </div>  
                                 </div>  
@@ -134,7 +136,6 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var today = new Date();
-
         $('#tanggal_pengembalian').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",

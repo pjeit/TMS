@@ -13,7 +13,7 @@
 <style>
 
 </style>
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
@@ -26,6 +26,16 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="col-sm-12 col-md-3 col-lg-3 ">
+                        <div class="form-group">
+                            <label for="">Status</label> 
+                            <select class="form-control selectpicker" required name="status_tl" id="status_tl" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <option value="BELUM LUNAS">Belum Lunas</option>
+                                <option value="LUNAS">Lunas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <hr>
                     <table id="tabelInvoice" class="table table-bordered" width='100%'>
                         <thead>
                             <tr style="margin-right: 0px;">
@@ -39,22 +49,36 @@
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @if (isset($dataSewa))
-                                @foreach($dataSewa as $item)
+                        <tbody id="hasil">
+                            @if (isset($data))
+                                @foreach($data as $item)
                                     <tr >
                                         <td>{{ $item->nama_grup }}</td>
-
                                         {{-- <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 0.9rem;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td> --}}
-                                        <td>{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang" id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td>{{ $item->no_invoice }}</td>
+                                        <td>{{ $item->nama_cust }} 
+                                            @if ($item->total_sisa != 0)
+                                                <span class="float-right">
+                                                    <input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang" id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->id_grup }}">
+                                                </span> 
+                                            @endif
+                                        </td>
+                                        <td>{{ $item->no_invoice }}
+                                            <input type="hidden" id="id_{{ $item->id }}" value="{{ $item->id }}" >
+                                            <input type="hidden" id="invoice_{{ $item->id }}" value="{{ $item->no_invoice }}" >
+                                            <input type="hidden" id="bukti_potong_{{ $item->id }}" value="{{ $item->no_bukti_potong }}" >
+                                            <input type="hidden" id="catatan_{{ $item->id }}" value="{{ $item->catatan }}" >
+                                        </td>
                                         <td>{{ date("d-M-Y", strtotime($item->tgl_invoice)) }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
                                         <td class="float-right">{{ number_format($item->total_sisa) }}
                                         <td>{{ $item->catatan }}
                                         </td>
                                         <td style="text-align: right;"> 
-                                            <input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="{{ $item->billing_to }}" grupId="{{ $item->id_grup }}" value="{{ $item->id }}">
+                                            @if ($item->total_sisa != 0)
+                                                <input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="{{ $item->billing_to }}" grupId="{{ $item->id_grup }}" value="{{ $item->id }}">
+                                            @else
+                                                <btn class="btn btn-primary btn-sm radiusSendiri" id='input_bukti' idInvoice="{{ $item->id }}"> <span class="fa fa-inbox mr-2"></span> Input Bukti Potong</btn>
+                                            @endif
                                             <input type="hidden" name="idGrup[]" id="idGrup">
                                         </td>
                                     </tr>
@@ -64,6 +88,52 @@
                     </table>
                 </div>
             </div>
+        </div>
+    </div>
+
+    {{-- modal edit --}}
+    <div class="modal fade" id="modal_detail" tabindex='-1'>
+        <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title">Detail Invoice</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <form id='form_add_detail'>
+                    <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_sewa --}}
+    
+                    <div class='row'>
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="sewa">No. Invoice</label>
+                                    <input  type="text" class="form-control" id="modal_no_invoice" name="no_invoice" readonly> 
+                                    <input  type="hidden" class="form-control" id="modal_id_invoice" name="id_invoice" readonly> 
+                                    <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
+                                </div>   
+    
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="">No. Bukti Potong</label>
+                                    <input  type="text" class="form-control" id="modal_no_bukti_potong" name="no_bukti_potong" > 
+                                </div>
+    
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="">Catatan</label>
+                                    <input  type="text" class="form-control" id="modal_catatan" name="catatan" > 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">BATAL</button>
+                <button type="button" class="btn btn-sm btn-success save_detail" id="simpanBuktiPotong" style='width:85px'>OK</button> 
+            </div>
+        </div>
+        <!-- /.modal-content -->
         </div>
     </div>
 </div>
@@ -83,77 +153,11 @@
     </div>
 <script type="text/javascript">
     $(document).ready(function () {
-            // $('body').on('click','.grup_centang',function()
-            // {
-            //     var idGrupParent= $(this);
-            //     $('.grup_centang[type=checkbox]').each(function(idx) {
-            //         var id_pergrup_semua_cekbox = $(this);
-            //         // var idGrupCheckboxes = $(`.grup_centang[id_grup='${idGrupParent.attr('id_grup')}']`);
-            //         // cek semua cekbox
-            //         if (id_pergrup_semua_cekbox.is(":checked")) {
-            //             // kalau id cekbox ga sama dengan yang di centang sekarang, hapus cheknya
-            //             id_pergrup_semua_cekbox.not(idGrupParent).prop('checked', false);
-            //         }
-            //     });
-            //     $('.customer_centang[type=checkbox]').each(function(idx) {
-            //         var id_percust_semua = $(this);
-            //         if (id_percust_semua.is(":checked")) {
-            //             id_percust_semua.not(idGrupParent).prop('checked', false);
-            //         }
-            //         if(id_percust_semua.attr('id_customer_grup')==idGrupParent.attr('id_grup'))
-            //         {
-            //             if (idGrupParent.is(":checked")) {
-            //                 id_percust_semua.prop('checked', true);
-            //             } else if (!idGrupParent.is(":checked")) {
-            //                 id_percust_semua.prop('checked', false);
-            //             }
-            //         }
-            //         else
-            //         {
-            //             id_percust_semua.prop('checked', false);
-            //         }
-            //     });
-            //     $('.sewa_centang[type=checkbox]').each(function(idx) {
-            //         var id_grup_sewa = $(this);
-            //         if(id_grup_sewa.attr('grupId')==idGrupParent.attr('id_grup'))
-            //         {
-            //             if (idGrupParent.is(":checked")) {
-            //                 id_grup_sewa.prop('checked', true);
-
-            //             } else if (!idGrupParent.is(":checked")) {
-            //                 id_grup_sewa.prop('checked', false);
-
-            //             }
-            //         }
-            //         else
-            //         {
-            //             id_grup_sewa.prop('checked', false);
-            //         }
-            //     });
-            // });
-
+            
             $('body').on('click','.customer_centang',function()
             {
                 var idCustParent= $(this);
-                // $('.grup_centang[type=checkbox]').each(function(idx) {
-                //     var id_grup_semua_cekbox = $(this);
-                //     // cek semua cekbox
-                //     if(id_grup_semua_cekbox.attr('id_grup')==idCustParent.attr('id_customer_grup'))
-                //     {
-                //         if (id_grup_semua_cekbox.is(":checked")) {
-                //                 id_grup_semua_cekbox.prop('checked', true);
-                //             } else if (!id_grup_semua_cekbox.is(":checked")) {
-                //                 id_grup_semua_cekbox.prop('checked', false);
-                //             }
-                //         }
-                //     else
-                //     {
-                //         if(id_grup_semua_cekbox.attr('id_grup')!=idCustParent.attr('id_customer_grup'))
-                //         {
-                //             id_grup_semua_cekbox.prop('checked', false);
-                //         }
-                //     }
-                // });
+            
                 $('.customer_centang[type=checkbox]').each(function(idx) {
                     var id_percust_semua = $(this);
                     
@@ -199,25 +203,7 @@
             $('body').on('click','.sewa_centang',function()
             {
                 var sewa_cekbox= $(this);
-                // $('.grup_centang[type=checkbox]').each(function(idx) {
-                //     var id_grup_semua_cekbox = $(this);
-                //     // cek semua cekbox
-                //     if(id_grup_semua_cekbox.attr('id_grup')==sewa_cekbox.attr('grupId'))
-                //     {
-                //         if (id_grup_semua_cekbox.is(":checked")) {
-                //                 id_grup_semua_cekbox.prop('checked', false);
-                //             } 
-                //     }
-                //     else
-                //     {
-                //         if(id_grup_semua_cekbox.attr('id_grup')!=sewa_cekbox.attr('grupId'))
-                //         {
-                            
-                //             id_grup_semua_cekbox.prop('checked', false);
-                //             // idCustParent.prop('checked', false);
-                //         }
-                //     }
-                // });
+             
                 $('.customer_centang[type=checkbox]').each(function(idx) {
                     var id_percust_semua = $(this);
                     
@@ -262,18 +248,13 @@
             $('body').on('click','#bayarInvoice',function()
             {
                 var selectedValues = [];
-                // var custId = [];
-                // var grupId = [];
                 var custId = '';
                 var grupId = '';
                 $(".sewa_centang[type=checkbox]:checked").each(function() {
                     selectedValues.push($(this).val());
-                    // custId.push($(this).attr('custId'));
-                    // grupId.push($(this).attr('grupId'));
                     custId = ($(this).attr('custId'));
                     grupId = ($(this).attr('grupId'));
                 });
-                console.log('selectedValues : '+selectedValues);
                 if (selectedValues.length === 0) {
                     const Toast = Swal.mixin({
                             toast: true,
@@ -308,28 +289,75 @@
                             _token: $('meta[name="csrf-token"]').attr('content'),
                         },
                         success: function(response) {
-                            // if(response)
-                            // {
                             $('#modal-loading').modal('show');
                             console.log(response);
                             window.location.href = '{{ route("pembayaran_invoice.bayar") }}';
-
-                                // console.log(response);
-                                // window.location.href = '{{ route("invoice.create") }}';
-        
-                            // }
                         },
                         error: function(xhr, status, error) {
                             console.error('Error:', error);
                         }
                     });
                 }
-                
-
-                
-                
-            
             })
+
+            $('body').on('click', '#input_bukti', function () {
+                clear();
+                var idInvoice = $(this).attr('idInvoice');
+                
+                $('#modal_id_invoice').val( $('#id_'+idInvoice).val() );
+                $('#modal_no_invoice').val( $('#invoice_'+idInvoice).val() );
+                $('#modal_no_bukti_potong').val( $('#bukti_potong_'+idInvoice).val() );
+                $('#modal_catatan').val( $('#catatan_'+idInvoice).val() );
+                
+                $('#modal_detail').modal('show');
+            });
+
+            $('#simpanBuktiPotong').click(function () {
+                var id = $('#modal_id_invoice').val();
+                var noInvoice = $('#modal_no_invoice').val();
+                var noBuktiPotong = $('#modal_no_bukti_potong').val();
+                var catatan = $('#modal_catatan').val();
+                var token = $('meta[name="csrf-token"]').attr('content');
+                console.log('token', token);
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: 'POST', // Use POST method
+                    header:{
+                      'X-CSRF-TOKEN': token
+                    },
+                    url: '/pembayaran_invoice/update_bukti_potong/' + id, // Replace with the actual URL and someId
+                    data: {
+                        _method: 'POST', // Specify the HTTP method as PUT
+                        no_invoice: noInvoice,
+                        no_bukti_potong: noBuktiPotong,
+                        catatan: catatan,
+                        _token: token,
+                    },
+                    success: function (response) {
+                        // Handle success response
+                        console.log(response);
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        console.log(error);
+                    }
+                });
+
+
+            });
+
+
+            function clear(){
+                $('#modal_no_invoice').val('');
+                $('#modal_no_bukti_potong').val('');
+                $('#modal_catatan').val('');
+            }
+            
         new DataTable('#tabelInvoice', {
             order: [
                 [0, 'asc'],

@@ -36,19 +36,20 @@ class PembayaranInvoiceController extends Controller
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
         // Session::flush();
-        $dataSewa =  DB::table('invoice AS i')
+        $data =  DB::table('invoice AS i')
                 ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
-                        ,'g.id as id_grup')
+                        ,'g.id as id_grup','ip.no_bukti_potong', 'ip.catatan')
                 ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
                 ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
+                ->leftJoin('invoice_pembayaran AS ip', 'i.id', '=', 'ip.id_invoice')
                 ->where('i.is_aktif', '=', 'Y')
-                ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                // ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
                 ->orderBy('i.id','ASC')
                 ->get();
     
         return view('pages.invoice.pembayaran_invoice.index',[
             'judul' => "PEMBAYARAN INVOICE",
-            'dataSewa' => $dataSewa,
+            'data' => $data,
         ]);
     }
 
@@ -80,8 +81,6 @@ class PembayaranInvoiceController extends Controller
                                 ->where('is_aktif', 'Y')->get();
         
         $dataKas = KasBank::where('is_aktif', 'Y')->orderBy('nama', 'ASC')->get();
-
-        // var_dump($data); die;
 
         return view('pages.invoice.pembayaran_invoice.bayar',[
             'judul' => "Bayar INVOICE",
@@ -228,7 +227,24 @@ class PembayaranInvoiceController extends Controller
      */
     public function edit($id)
     {
-        //
+        // dd($id);
+        $idInvoice      = session()->get('idInvoice'); 
+        $idGrup         = session()->get('idGrup'); 
+        $idCust         = session()->get('idCust'); 
+        $data           = Invoice::where('is_aktif', 'Y')->findOrFail($id);
+        // $dataInvoices   = Invoice::where('id_grup', $idGrup)->where('is_aktif', 'Y')->get();
+        
+        // $dataCustomers  = Customer::where('grup_id', $idGrup)
+        //                         ->where('is_aktif', 'Y')->get();
+        // dd($data);
+        $dataKas = KasBank::where('is_aktif', 'Y')->orderBy('nama', 'ASC')->get();
+
+        return view('pages.invoice.pembayaran_invoice.edit',[
+            'judul' => "EDIT INVOICE",
+            'data' => $data,
+            'dataKas' => $dataKas,
+            // 'idCust' => $idCust,
+        ]);
     }
 
     /**
@@ -238,9 +254,9 @@ class PembayaranInvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update_bukti_potong($id)
     {
-        //
+        dd($id);
     }
 
     /**

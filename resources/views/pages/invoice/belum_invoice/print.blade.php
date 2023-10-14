@@ -278,7 +278,7 @@
             <br>Atau transfer ke rekening
             <br>BCA: <b><u>51308 14141</u></b> / Mandiri: <b><u>14000 41415 135</u></b>
             <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b></br>
-            </br></br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" >
+            <!-- </br></br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > -->
 
             {{-- {{$qrcode}} --}}
             {{-- <img src="{{ public_path("img/") }}{{ $qrcode }}" alt="QR Code"> --}}
@@ -293,11 +293,11 @@
                 </tr>
             </tbody>
             <br>
-            <br>
-            <br>
-            <br>
-            <br>
             <tfoot>
+                <tr>
+                    <td width="800px;">&nbsp;</td>
+                    <td class="text-right" style="padding-right: 50px;"><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" ></td>
+                </tr>
                 <tr>
                     <td width="800px;">&nbsp;</td>
                     {{-- <td class="text-right" >(..................................)</td> --}}
