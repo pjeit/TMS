@@ -19,7 +19,7 @@ use App\Helper\SewaDataHelper;
 use App\Models\SewaBiaya;
 use App\Models\KaryawanHutang;
 use App\Models\KaryawanHutangTransaction;
-
+use App\Models\SewaOperasional;
 class AddReturnTLController extends Controller
 {
     /**
@@ -160,6 +160,19 @@ class AddReturnTLController extends Controller
                     'is_aktif' => "Y",
                     )
                 ); 
+            $SOP = new SewaOperasional();
+            $SOP->id_sewa = $data['id_sewa_defaulth']; 
+            $SOP->deskripsi = 'TL';
+            $SOP->total_operasional = $data['jumlah'];
+            $SOP->total_dicairkan = $data['total_diterima'];
+            $SOP->tgl_dicairkan = now();
+            $SOP->is_ditagihkan = 'N';
+            $SOP->is_dipisahkan = 'N';
+            $SOP->status = "SUDAH DICAIRKAN";
+            $SOP->created_by = $user;
+            $SOP->created_at = now();
+            $SOP->is_aktif = 'Y';
+            $SOP->save();
             if(isset($kh)&&isset($data['potong_hutang'])){
                 
                 $kht = new KaryawanHutangTransaction();
@@ -187,6 +200,7 @@ class AddReturnTLController extends Controller
                 }
                 if($data['total_diterima']!=0)
                 {
+                    
                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                     array(
                         $data['pembayaran'],// id kas_bank dr form
@@ -294,11 +308,18 @@ class AddReturnTLController extends Controller
         try {
             //code...
              $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
-  
              DB::table('sewa_biaya')
                 ->where('id_biaya', $data['id_sewa_biaya'])
                 ->update(array(
-                    'id_sewa' =>  $data['id_sewa_defaulth'],
+                    'updated_at' => now(),
+                    'updated_by' => $user,
+                    'is_aktif' => "N",
+                )
+            );
+            DB::table('sewa_operasional')
+                ->where('id_sewa', $data['id_sewa_defaulth'])
+                ->where('deskripsi', 'TL')
+                ->update(array(
                     'updated_at' => now(),
                     'updated_by' => $user,
                     'is_aktif' => "N",
@@ -311,8 +332,8 @@ class AddReturnTLController extends Controller
                 $kht->refrensi_id = $data['id_sewa_defaulth'];
                 $kht->refrensi_keterangan = 
                 '#totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
-                ' #potongHutang:0' . 
-                ' #totalTLMasukHutang:'. (($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0);
+                '#potongHutang:0' . 
+                '#totalTLMasukHutang:'. (($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0);
                 $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                 $kht->tanggal = now();
                 $kht->debit = ($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0;
@@ -324,7 +345,7 @@ class AddReturnTLController extends Controller
                 $kht->is_aktif = 'Y';
                 if($kht->save())
                 {
-                    $kh->total_hutang = $kh->total_hutang + isset($data['jumlah'])? (float)str_replace(',', '', $data['jumlah']):0; 
+                    $kh->total_hutang = $kh->total_hutang + (float)str_replace(',', '', $data['jumlah']); 
                     $kh->updated_by = $user;
                     $kh->updated_at = now();
                     $kh->save();
@@ -340,7 +361,7 @@ class AddReturnTLController extends Controller
                     (float)str_replace(',', '', $data['jumlah']),// debit uang masuk
                     0, //uang keluar (kredit) 0 soalnya kan ini uang MASUK, ga ada uang KELUAR
                     1016, //kode coa
-                    'teluk_lamong',
+                    'tambahan_teluk_lamong',
                     'UANG kembali # PENGEMBALIAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
                     $data['id_sewa_defaulth'],//keterangan_kode_transaksi
                     $user,//created_by
@@ -411,6 +432,7 @@ class AddReturnTLController extends Controller
             ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
             ->where('s.status', 'PROSES DOORING')
+            ->whereNull('s.id_supplier')
             ->orderBy('created_at', 'DESC')
             ->get();
         }else if($status == 'Add TL'){
@@ -431,6 +453,7 @@ class AddReturnTLController extends Controller
             ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
             ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
+            ->whereNull('s.id_supplier')
             ->where('s.status', 'PROSES DOORING')
             ->orderBy('created_at', 'DESC')
             ->get();

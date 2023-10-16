@@ -14,6 +14,7 @@ use App\Helper\VariableHelper;
 use App\Models\KaryawanHutang;
 use App\Models\KaryawanHutangTransaction;
 use App\Models\UangJalanRiwayat;
+use App\Models\SewaOperasional;
 class PencairanUangJalanFtlController extends Controller
 {
     /**
@@ -93,39 +94,59 @@ class PencairanUangJalanFtlController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
-            // dd(isset($data['teluk_lamong']) );
+            // dd($data);
 
             // dump transaksi
             // dd(date_create_from_format('d-M-Y', $data['tanggal_pencairan']));
-            $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
 
-            if(isset($kh)&&isset($data['potong_hutang'])){
-                $kh->total_hutang = $kh->total_hutang - isset($data['potong_hutang'])? (float)str_replace(',', '', $data['potong_hutang']):0; 
-                $kh->updated_by = $user;
-                $kh->updated_at = now();
-                $kh->save();
-            }
             // $ujr = new UangJalanRiwayat();
             // $ujr->tanggal = now();
             // $ujr->tanggal_pencatatan = now();
             // $ujr->sewa_id = $data['id_sewa_defaulth'];
             // $ujr->total_uang_jalan = (float)str_replace(',', '', $data['uang_jalan']);
-            // $ujr->potong_hutang = (float)str_replace(',', '', $data['potong_hutang']);
+            // $ujr->total_tl = (isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0);
+            // $ujr->total_uang_jalan_tl = (float)str_replace(',', '', $data['uang_jalan'])+(isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0);
+            // $ujr->potong_hutang = (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0);
             // $ujr->total_diterima = (float)str_replace(',', '', $data['total_diterima']);
             // $ujr->kas_bank_id = $data['pembayaran'];
             // $ujr->catatan = $data['catatan'];
             // $ujr->created_by = $user;
             // $ujr->created_at = now();
             // $ujr->is_aktif = 'Y';
+            // $ujr->save();
             // if($ujr->save())
-            // {isset($data['teluk_lamong'])
+            // {
+            // }
+            $total_uj = isset($data['uang_jalan'])  ? (float)str_replace(',', '', $data['uang_jalan']) : 0;
+            $total_tl = isset($data['teluk_lamong'])  ? (float)str_replace(',', '', $data['teluk_lamong']) : 0;
+
+            $total_uj_dan_tl = '#total_uj_dan_tl:' . ($total_uj + $total_tl);
+            // dd($total_uj_dan_tl);
+
+            $refrensi_keterangan_string = 
+                '#uang_jalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
+                '#teluk_lamong:'.(isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0) . 
+                '#total_uj_dan_tl:'.$total_uj_dan_tl . 
+                '#potongHutang:' .(isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
+                '#totalDiterima:' .(float)str_replace(',', '', $data['total_diterima']);
+            $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+            if(isset($kh)&&isset($data['potong_hutang'])){
+                // dd($kh->total_hutang - isset($data['potong_hutang'])? (float)str_replace(',', '', $data['potong_hutang']):0); 
+                $saldo_hutang= $kh->total_hutang - (float)str_replace(',', '', $data['potong_hutang']);
+                // dd($saldo_hutang);
+                // dd($saldo_hutang);
+
+                $kh->total_hutang = $saldo_hutang; 
+                // dd($kh->total_hutang);
+
+                $kh->updated_by = $user;
+                $kh->updated_at = now();
+                $kh->save();
+
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
                 $kht->refrensi_id = $data['id_sewa_defaulth'];
-                $kht->refrensi_keterangan = 
-                '#totalUangJalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
-                ' #potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
-                ' #totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);
+                $kht->refrensi_keterangan = $refrensi_keterangan_string;
                 $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                 $kht->tanggal = now();
                 $kht->debit = 0;
@@ -135,27 +156,40 @@ class PencairanUangJalanFtlController extends Controller
                 $kht->created_by = $user;
                 $kht->created_at = now();
                 $kht->is_aktif = 'Y';
-                // $kht->save();
-                if($kht->save())
+                $kht->save();
+             
+                if( $data['total_diterima']!=0)
                 {
                     if (isset($data['teluk_lamong'])) {
                         // $nominal =(float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']);
                         $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
+                        $SOP = new SewaOperasional();
+                        $SOP->id_sewa = $data['id_sewa_defaulth']; 
+                        $SOP->deskripsi = 'TL';
+                        $SOP->total_operasional = (float)str_replace(',', '', $data['teluk_lamong']);
+                        $SOP->total_dicairkan = (float)str_replace(',', '', $data['teluk_lamong']);
+                        $SOP->tgl_dicairkan = now();
+                        $SOP->is_ditagihkan = 'N';
+                        $SOP->is_dipisahkan = 'N';
+                        $SOP->status = "SUDAH DICAIRKAN";
+                        $SOP->created_by = $user;
+                        $SOP->created_at = now();
+                        $SOP->is_aktif = 'Y';
+                        $SOP->save();
                     } else {
                         // $nominal =(float)str_replace(',', '', $data['total_diterima']);
                         $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN';
                     }
-                    // dd( $data['total_diterima']);
                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                         array(
                             $data['pembayaran'],// id kas_bank dr form
                             date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
                             0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                            (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
+                            (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                             1016, //kode coa
                             'uang_jalan',
-                            $keterangan_string.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                            $kht->id,//keterangan_kode_transaksi
+                            $keterangan_string.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'].$refrensi_keterangan_string, //keterangan_transaksi
+                            $data['id_sewa_defaulth'],//keterangan_kode_transaksi
                             $user,//created_by
                             now(),//created_at
                             $user,//updated_by
@@ -163,30 +197,49 @@ class PencairanUangJalanFtlController extends Controller
                             'Y'
                         ) 
                     );
-                    // if(isset($data['teluk_lamong']))
-                    // {
-                    //     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                    //         array(
-                    //             $data['pembayaran'],// id kas_bank dr form
-                    //             date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
-                    //             0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                    //             (float)str_replace(',', '', $data['teluk_lamong']), //uang keluar (kredit)
-                    //             1016, //kode coa
-                    //             'teluk_lamong',
-                    //             'UANG KELUAR #PEMBAYARAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                    //             $data['id_sewa_defaulth'],//keterangan_kode_transaksi
-                    //             $user,//created_by
-                    //             now(),//created_at
-                    //             $user,//updated_by
-                    //             now(),//updated_at
-                    //             'Y'
-                    //         ) 
-                    //     );
-                    // }
                 }
-            // }
-
-
+            }
+            else
+            {
+                if (isset($data['teluk_lamong'])) {
+                        // $nominal =(float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']);
+                        $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
+                        $SOP = new SewaOperasional();
+                        $SOP->id_sewa = $data['id_sewa_defaulth']; 
+                        $SOP->deskripsi = 'TL';
+                        $SOP->total_operasional = (float)str_replace(',', '', $data['teluk_lamong']);
+                        $SOP->total_dicairkan = (float)str_replace(',', '', $data['teluk_lamong']);
+                        $SOP->tgl_dicairkan = now();
+                        $SOP->is_ditagihkan = 'N';
+                        $SOP->is_dipisahkan = 'N';
+                        $SOP->status = "SUDAH DICAIRKAN";
+                        $SOP->created_by = $user;
+                        $SOP->created_at = now();
+                        $SOP->is_aktif = 'Y';
+                        $SOP->save();
+                    } else {
+                        // $nominal =(float)str_replace(',', '', $data['total_diterima']);
+                        $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN';
+                    }
+                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                        array(
+                            $data['pembayaran'],// id kas_bank dr form
+                            date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
+                            0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                            (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
+                            1016, //kode coa
+                            'uang_jalan',
+                            $keterangan_string.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'].$refrensi_keterangan_string, //keterangan_transaksi
+                            $data['id_sewa_defaulth'],//keterangan_kode_transaksi
+                            $user,//created_by
+                            now(),//created_at
+                            $user,//updated_by
+                            now(),//updated_at
+                            'Y'
+                        ) 
+                    );
+            }
+            
             $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
             // dd($sewa);
             $sewa->status = 'PROSES DOORING';

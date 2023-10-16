@@ -133,6 +133,8 @@
                                             <input type="text" id="surat_jalan" name="surat_jalan" class="form-control" value="{{$sewa->no_surat_jalan}}" >                         
                                         </div> 
                                         <input type="hidden" name="id_jo_detail_hidden" id="id_jo_detail_hidden" value="{{$sewa->id_jo_detail}}">
+                                        <input type="hidden" name="id_jo_hidden" id="id_jo_detail_hidden" value="{{$sewa->id_jo}}">
+
                                         <input type="hidden" name="add_cost_hidden" id="add_cost_hidden">
                                         <input type="hidden" id='jenis_tujuan' value='{{$sewa->jenis_tujuan}}'>
 
@@ -286,9 +288,9 @@
                                                 $value->deskripsi =='THC'||
                                                 $value->deskripsi =='LOLO'||
                                                 $value->deskripsi =='APBS'||
-                                                $value->deskripsi =='DOCFEE'||
-
-                                                str_contains($value->deskripsi, 'OPERASIONAL')
+                                                $value->deskripsi =='TL'||
+                                                $value->deskripsi =='DOCFEE'/*||
+                                                str_contains($value->deskripsi, 'OPERASIONAL')*/
 
                                             )
                                                 <td id="deskripsi_tabel_{{$index}}" >
@@ -315,8 +317,9 @@
                                                 $value->deskripsi !='THC'&&
                                                 $value->deskripsi !='LOLO'&&
                                                 $value->deskripsi !='APBS'&&
-                                                $value->deskripsi !='DOCFEE'&&
-                                                !str_contains($value->deskripsi, 'OPERASIONAL')
+                                                $value->deskripsi !='TL'&&
+                                                $value->deskripsi !='DOCFEE'/*&&
+                                                !str_contains($value->deskripsi, 'OPERASIONAL')*/
 
                                             )
                                                 <td id="deskripsi_tabel_{{$index}}" >
@@ -1066,8 +1069,8 @@
                         trimTextbox =='THC'||
                         trimTextbox =='LOLO'||
                         trimTextbox =='APBS'||
-                        trimTextbox =='DOCFEE'||
-                        trimTextbox.includes("OPERASIONAL")
+                        trimTextbox =='DOCFEE'/*||
+                        trimTextbox.includes("OPERASIONAL")*/
 
                     ) {
                         flagDeskripsiPrevent = true;

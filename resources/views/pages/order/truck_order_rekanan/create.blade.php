@@ -52,7 +52,7 @@
             <div class="col">
                 <div class="card radiusSendiri card-outline card-primary">
                     <div class="card-header">
-                        <a href="{{ route('truck_order_rekanan.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <a href="{{ route('truck_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         {{-- <button type="submit">wet</button> --}}
                     </div>
@@ -192,6 +192,7 @@
                                         @endforeach 
                                     </select>
                                 </div>
+                                
                                 <div class="row">
                                     <div class="col">
                                         <div class="form-group">
@@ -228,6 +229,20 @@
                                         <input type="text" name="harga_jual" class="form-control numaja uang" id="harga_jual"  min="0">
                                     
                                     </div>
+                                </div>
+
+                                 <div class="form-group">
+                                    <label for="select_driver">Stack TL</label>
+                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
+                                        <option value="">── Pilih TL ──</option>
+                                        <option value="tl_perak">Perak</option>
+                                        <option value="tl_priuk">Priuk</option>
+                                        <option value="tl_teluk_lamong">Teluk Lamong</option>
+                                    </select>
+                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+                                    {{-- <input type="text" id="value_jenis_tl" name="value_jenis_tl" value=""> --}}
+
+
                                 </div>
                             </div>
                          
@@ -394,6 +409,7 @@
                                 const option = document.createElement('option');
                                 option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer+'-'+joDetail.seal+"-"+joDetail.tipe_kontainer;
                                 option.setAttribute('booking_id', joDetail.booking_id);
+                                option.setAttribute('pick_up', joDetail.pick_up);
                                 option.textContent = joDetail.no_kontainer ;
                                 // if (selected_marketing == marketing.id) {
                                 //     option.selected = true;
@@ -438,7 +454,24 @@
             
             var selectedOption = $(this).find('option:selected');
             var bookingId = selectedOption.attr('booking_id');            
+            var pick_up = selectedOption.attr('pick_up');
 
+            if(pick_up=='TTL')
+            {
+                
+                 $('#stack_tl').val('tl_teluk_lamong').trigger('change');
+
+            }
+            else if (pick_up=='DEPO')
+            {
+                 $('#stack_tl').val('tl_perak').trigger('change');
+
+            }
+            else
+            {
+                 $('#stack_tl').val('').trigger('change');
+
+            }
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
             $('#booking_id').val(bookingId);
             $('#id_jo_detail').val(idJoDetail);
@@ -728,6 +761,25 @@
                 $('#driver_nama').val('DRIVER '+ nama_supplier);
 
             }
+
+		});
+        $('body').on('change','#stack_tl',function()
+		{
+            var selectedOption = $(this).val();
+            var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
+            // console.log(dataTelukLamong.tl_teluk_lamong);
+            
+            // $('#value_jenis_tl').val(selectedOption);
+
+                if(selectedOption=='tl_teluk_lamong')
+                {
+                    $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
+                }
+                else
+                {
+                    $('#stack_teluk_lamong_hidden').val('');
+                    
+                }
 
 		});
         $('#post_data').submit(function(event) {
