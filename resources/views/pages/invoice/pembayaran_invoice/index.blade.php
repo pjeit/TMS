@@ -26,12 +26,12 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="col-sm-12 col-md-3 col-lg-3 ">
+                    <div class="col-sm-12 col-md-4 col-lg-4 ">
                         <div class="form-group">
-                            <label for="">Status</label> 
+                            <label for="">Status Invoice</label> 
                             <select class="form-control selectpicker" required name="status" id="status" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                <option value="BELUM LUNAS">Belum Lunas</option>
-                                <option value="LUNAS">Lunas</option>
+                                <option value="BELUM LUNAS">Belum Dibayar</option>
+                                <option value="LUNAS" selected>Selesai Dibayar</option>
                             </select>
                         </div>
                     </div>
@@ -105,7 +105,8 @@
                 <span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
-                <form id='form_add_detail'>
+                <form action="" method="POST" enctype="multipart/form-data" id="formDataKaryawan">
+
                     <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_sewa --}}
     
                     <div class='row'>
@@ -113,8 +114,8 @@
                             <div class="row">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="sewa">No. Invoice</label>
-                                    <input  type="text" class="form-control" id="modal_no_invoice" name="no_invoice" readonly> 
-                                    <input  type="hidden" class="form-control" id="modal_id_invoice" name="id_invoice" readonly> 
+                                    <input type="text" class="form-control" id="modal_no_invoice" name="no_invoice" readonly> 
+                                    <input type="hidden" class="form-control" id="modal_id_invoice" name="id_invoice" readonly> 
                                     <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
                                 </div>   
     
@@ -157,6 +158,117 @@
     </div>
 <script type="text/javascript">
     $(document).ready(function () {
+        $('body').on('click', '#input_bukti', function () {
+            clear();
+            var idInvoice = $(this).attr('idInvoice');
+            var buktiPotong = $('#bukti_potong_'+idInvoice).val() != 'null'? $('#bukti_potong_'+idInvoice).val():'';
+            var catatan = $('#catatan_'+idInvoice).val() != 'null'? $('#catatan_'+idInvoice).val():'';
+            $('#modal_id_invoice').val( $('#id_'+idInvoice).val() );
+            $('#modal_no_invoice').val( $('#invoice_'+idInvoice).val() );
+            $('#modal_no_bukti_potong').val( buktiPotong );
+            $('#modal_catatan').val( catatan );
+            
+            $('#modal_detail').modal('show');
+        });
+        
+        $('#simpanBuktiPotong').click(function () {
+            var id = $('#modal_id_invoice').val();
+            var noInvoice = $('#modal_no_invoice').val();
+            var noBuktiPotong = $('#modal_no_bukti_potong').val();
+            var catatan = $('#modal_catatan').val();
+            var token = $('meta[name="csrf-token"]').attr('content');
+            var baseUrl = "{{ asset('') }}";
+            var url = '/pembayaran_invoice/update_bukti_potong/'+id;
+            // console.log('url', url);
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type: 'POST', // Use POST method
+                header:{
+                    'X-CSRF-TOKEN': token
+                },
+                url: url, // Replace with the actual URL and someId
+                data: {
+                    _method: 'POST', // Specify the HTTP method as PUT
+                    no_invoice: noInvoice,
+                    no_bukti_potong: noBuktiPotong,
+                    catatan: catatan,
+                    _token: token,
+                },
+                success: function (response) {
+                    console.log('Response: ' + response.status);
+                    if(response.status == 'success'){
+                        $('#modal_detail').modal('hide');
+
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+    
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Data tersimpan'
+                        })
+
+                        setTimeout(function() {
+                            location.reload(true);
+                        }, 700); // 500 milliseconds (0.5 seconds)
+                    }else{
+                        $('#modal_detail').modal('hide');
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        Toast.fire({
+                            icon: 'danger',
+                            title: 'Terjadi kesalahan'
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('response: ' +error);
+                    $('#modal_detail').modal('hide');
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'danger',
+                        title: 'Terjadi kesalahan'
+                    })
+                }
+            });
+
+
+        });
+
+
         $('body').on('click','.customer_centang',function() {
             var idCustParent= $(this);
         
@@ -209,43 +321,26 @@
             $('.customer_centang[type=checkbox]').each(function(idx) {
                 var id_percust_semua = $(this);
                 
-                // if(id_percust_semua.attr('id_customer_grup')==sewa_cekbox.attr('grupId'))
-                // {
-                    if(id_percust_semua.attr('id_customer')==sewa_cekbox.attr('custId'))
-                    {
-                        if (id_percust_semua.is(":checked")) {
-                        id_percust_semua.prop('checked', false);
-                        } 
-                    }
-                    
-                // }
-                else
+                if(id_percust_semua.attr('id_customer')==sewa_cekbox.attr('custId'))
                 {
-                        id_percust_semua.prop('checked', false);
-                    
+                    if (id_percust_semua.is(":checked")) {
+                    id_percust_semua.prop('checked', false);
+                    } 
+                }else                {
+                    id_percust_semua.prop('checked', false);
                 }
             });
             
             
             $('.sewa_centang[type=checkbox]').each(function(idx) {
                 var id_cust_sewa = $(this);
-                // if(id_cust_sewa.attr('grupId')!=sewa_cekbox.attr('grupId'))
-                // {
-                    if(id_cust_sewa.attr('custId')!=sewa_cekbox.attr('custId'))
-                    {
-                        if (id_cust_sewa.is(":checked")) {
-                            id_cust_sewa.prop('checked', false);
-    
-                        } 
-                        
-                    }
-                    // else
-                    // {
-                    //     id_cust_sewa.prop('checked', false);
-                    // }
-                // }
-                
-            });
+                if(id_cust_sewa.attr('custId')!=sewa_cekbox.attr('custId'))
+                {
+                    if (id_cust_sewa.is(":checked")) {
+                        id_cust_sewa.prop('checked', false);
+                    } 
+                }
+        });
         });
 
         $('body').on('click','#bayarInvoice',function() {
@@ -276,9 +371,7 @@
                     })
                     event.preventDefault();
         
-            }
-            else
-            {
+            }else{
 
                 var baseUrl = "{{ asset('') }}";
                 $.ajax({
@@ -302,57 +395,6 @@
             }
         })
 
-        $('body').on('click', '#input_bukti', function () {
-            clear();
-            var idInvoice = $(this).attr('idInvoice');
-            
-            $('#modal_id_invoice').val( $('#id_'+idInvoice).val() );
-            $('#modal_no_invoice').val( $('#invoice_'+idInvoice).val() );
-            $('#modal_no_bukti_potong').val( $('#bukti_potong_'+idInvoice).val() );
-            $('#modal_catatan').val( $('#catatan_'+idInvoice).val() );
-            
-            $('#modal_detail').modal('show');
-        });
-
-        $('#simpanBuktiPotong').click(function () {
-            var id = $('#modal_id_invoice').val();
-            var noInvoice = $('#modal_no_invoice').val();
-            var noBuktiPotong = $('#modal_no_bukti_potong').val();
-            var catatan = $('#modal_catatan').val();
-            var token = $('meta[name="csrf-token"]').attr('content');
-            console.log('token', token);
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $.ajax({
-                type: 'POST', // Use POST method
-                header:{
-                    'X-CSRF-TOKEN': token
-                },
-                url: '/pembayaran_invoice/update_bukti_potong/' + id, // Replace with the actual URL and someId
-                data: {
-                    _method: 'POST', // Specify the HTTP method as PUT
-                    no_invoice: noInvoice,
-                    no_bukti_potong: noBuktiPotong,
-                    catatan: catatan,
-                    _token: token,
-                },
-                success: function (response) {
-                    // Handle success response
-                    console.log(response);
-                },
-                error: function (xhr, status, error) {
-                    // Handle error
-                    console.log(error);
-                }
-            });
-
-
-        });
-
         var status = $('#status').val();
         showTable(status);
 
@@ -375,12 +417,17 @@
                     var baseUrl = "{{ asset('') }}";
                     $("#loading-spinner").hide();
                     var data = response;
-                    console.log('data', data);
+
                     for (var i = 0; i < data.length; i++) {
                         var row = $("<tr></tr>");
                         row.append(`<td>${data[i].nama_grup}</td>`);
                         row.append(`<td>${data[i].nama_cust}</td>`);
-                        row.append(`<td>${data[i].no_invoice}</td>`);
+                        row.append(`<td>${data[i].no_invoice}
+                                        <input type="hidden" placeholder='id' id="id_${data[i].id_ip}" value="${data[i].id_ip}" >
+                                        <input type="hidden" placeholder='invoice' id="invoice_${data[i].id_ip}" value="${data[i].no_invoice}" >
+                                        <input type="hidden" placeholder='bukti_potong' id="bukti_potong_${data[i].id_ip}" value="${data[i].no_bukti_potong}" >
+                                        <input type="hidden" placeholder='catatan' id="catatan_${data[i].id_ip}" value="${data[i].catatan}" >
+                                    </td>`);
                         row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
                         row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
                         row.append(`<td>${data[i].total_sisa == 0? 'LUNAS':data[i].total_sisa}</td>`);
@@ -388,7 +435,7 @@
                         if(status == 'BELUM LUNAS'){
                             var jenis =  `<input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="${data[i].billing_to}" grupId="${data[i].id_grup}" value="${data[i].id}">`;
                         }else{
-                            var jenis =  `<btn class="btn btn-primary btn-sm radiusSendiri" id='input_bukti' idInvoice="${data[i].id}"> <span class="fa fa-sticky-note mr-1"></span> Input Bukti Potong</btn>`;
+                            var jenis =  `<btn class="btn btn-primary btn-sm radiusSendiri" id='input_bukti' idInvoice="${data[i].id_ip}"> <span class="fa fa-sticky-note mr-1"></span> Input Bukti Potong</btn>`;
                         }
                         row.append(`<td class='text-center'>${jenis}</td>`);
                         $("#hasil").append(row);
@@ -406,10 +453,10 @@
                                 targets: [0, 1], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
                                 visible: false
                             },
-                            // {
-                            //     targets: [ord, ord-1],
-                            //     orderable: false, // matiin sortir kolom centang
-                            // },
+                            {
+                                targets: [7],
+                                orderable: false, // matiin sortir kolom centang
+                            },
                         ],
                     });
                 },error: function (xhr, status, error) {
@@ -431,7 +478,7 @@
             $('#modal_no_bukti_potong').val('');
             $('#modal_catatan').val('');
         }
-            
+
        
     });
 </script>
