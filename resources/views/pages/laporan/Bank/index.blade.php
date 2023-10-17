@@ -73,7 +73,7 @@
                 {{-- </div> --}}
             </div>
             
-            <div class="card-body">
+            <div class="card-body" style="overflow: auto;">
                 <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;">
                     <thead>
                         <tr>
@@ -86,7 +86,7 @@
                             <th style="width:1px; white-space: nowrap; text-align:right;">Saldo</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody >
                             @php
                                 $total_debit=$total_kredit=0;
                             @endphp

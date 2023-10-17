@@ -257,9 +257,9 @@ class BelumInvoiceController extends Controller
                 $invoicePisah->id_grup = $data['grup_id'];
                 $invoicePisah->no_invoice = $newInvoiceNumber .'/'.'I';
                 $invoicePisah->tgl_invoice = date_create_from_format('d-M-Y', $data['tanggal_invoice']);
-                $invoicePisah->total_tagihan = ($data['total_pisah'] != '')? floatval(str_replace(',', '', $data['total_pisah'])):0;
-                $invoicePisah->total_sisa = ($data['total_pisah'] != '')? floatval(str_replace(',', '', $data['total_pisah'])):0;
-                $invoicePisah->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
+                $invoicePisah->total_tagihan = ($data['total_pisah'] != '' || $data['total_pisah'] != 0)? floatval(str_replace(',', '', $data['total_pisah'])):0;
+                $invoicePisah->total_sisa = ($data['total_pisah'] != ''|| $data['total_pisah'] != 0)? floatval(str_replace(',', '', $data['total_pisah'])):0;
+                $invoicePisah->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo_pisah']);
                 $invoicePisah->catatan = $data['catatan_invoice'];
                 $invoicePisah->status = 'MENUNGGU PEMBAYARAN INVOICE';
                 $invoicePisah->billing_to = $data['billingTo'];
@@ -281,7 +281,7 @@ class BelumInvoiceController extends Controller
                         $invoice_d_pisah->created_at = now();
                         $invoice_d_pisah->is_aktif = 'Y';
                         if($invoice_d_pisah->save()){
-                            $dataAddcost_pisah = json_decode($value['addcost_details']);
+                            $dataAddcost_pisah = json_decode($value['addcost_details_pisah']);
                             foreach ($dataAddcost_pisah as $i => $addcost_pisah) {
     
                                 if($addcost_pisah->is_ditagihkan=='Y'&&$addcost_pisah->is_dipisahkan=='Y')

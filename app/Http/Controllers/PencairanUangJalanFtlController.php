@@ -126,7 +126,7 @@ class PencairanUangJalanFtlController extends Controller
             $refrensi_keterangan_string = 
                 '#uang_jalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
                 '#teluk_lamong:'.(isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0) . 
-                '#total_uj_dan_tl:'.$total_uj_dan_tl . 
+                 $total_uj_dan_tl . 
                 '#potongHutang:' .(isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
                 '#totalDiterima:' .(float)str_replace(',', '', $data['total_diterima']);
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
@@ -247,27 +247,32 @@ class PencairanUangJalanFtlController extends Controller
             $sewa->updated_at = now();
             $sewa->save();
 
+            // dd((float)str_replace(',', '', $data['total_diterima']));
 
-            $saldo = DB::table('kas_bank')
-                ->select('*')
-                ->where('is_aktif', '=', "Y")
-                ->where('kas_bank.id', '=', $data['pembayaran'])
-                ->first();
+            if ((float)str_replace(',', '', $data['total_diterima']>0))
+            {
+                $saldo = DB::table('kas_bank')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->where('kas_bank.id', '=', $data['pembayaran'])
+                    ->first();
+    
+                // if (isset($data['teluk_lamong'])) {
+                //     $saldo_baru = $saldo->saldo_sekarang - ((float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']));
+                // } else {
+                    $saldo_baru = $saldo->saldo_sekarang - (float)str_replace(',', '', $data['total_diterima']);
+                // }
+                
+                DB::table('kas_bank')
+                    ->where('id', $data['pembayaran'])
+                    ->update(array(
+                        'saldo_sekarang' => $saldo_baru,
+                        'updated_at'=> now(),
+                        'updated_by'=> $user,
+                    )
+                );
 
-            // if (isset($data['teluk_lamong'])) {
-            //     $saldo_baru = $saldo->saldo_sekarang - ((float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']));
-            // } else {
-                $saldo_baru = $saldo->saldo_sekarang - (float)str_replace(',', '', $data['total_diterima']);
-            // }
-            
-            DB::table('kas_bank')
-                ->where('id', $data['pembayaran'])
-                ->update(array(
-                    'saldo_sekarang' => $saldo_baru,
-                    'updated_at'=> now(),
-                    'updated_by'=> $user,
-                )
-            );
+            }
 
             return redirect()->route('pencairan_uang_jalan_ftl.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
         } catch (ValidationException $e) {
