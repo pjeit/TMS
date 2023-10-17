@@ -46,6 +46,7 @@ class SewaDataHelper
             ->leftJoin('job_order_detail as jod', 'job_order.id', '=', 'jod.id_jo')
             ->where('jod.status', 'BELUM DOORING')
             ->where('job_order.status', 'PROSES DOORING')
+            ->whereNotNull('jod.id_grup_tujuan')
             ->where('job_order.is_aktif', '=', "Y")
             ->with('getCustomer')
             ->with('getSupplier')

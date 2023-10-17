@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\JobOrder;
 class DalamPerjalananController extends Controller
 {
     /**
@@ -121,12 +121,44 @@ class DalamPerjalananController extends Controller
             ->where('status_bayar' ,'like','%SELESAI PEMBAYARAN%')
             ->where('jodb.is_aktif', '=', "Y")
             ->get();
+        // $dataOpreasional = DB::table('sewa_operasional AS so')
+        //             ->select('so.*')
+        //             ->where('so.is_aktif', '=', 'Y')
+        //             ->where('so.status', 'like', '%SUDAH DICAIRKAN%')
+        //             ->orWhere('so.status' ,'like','%TAGIHKAN DI INVOICE%')
+        //             ->where('so.id_sewa', '=', $dalam_perjalanan->id_sewa)
+        //             ->get();
         $dataOpreasional = DB::table('sewa_operasional AS so')
                     ->select('so.*')
                     ->where('so.is_aktif', '=', 'Y')
-                    ->where('so.status', 'like', '%SUDAH DICAIRKAN%')
                     ->where('so.id_sewa', '=', $dalam_perjalanan->id_sewa)
+                    ->where('so.deskripsi', 'not like', '%OPERASIONAL%')
+                    ->where(function ($query) {
+                        $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
+                            ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
+                    })
                     ->get();
+        // $cek_trigger = JobOrder::select('job_order.*')
+        //         ->leftJoin('job_order_detail as jod', 'job_order.id', '=', 'jod.id_jo')
+        //         ->where('jod.status', 'PROSES DOORING')
+        //         ->where('job_order.status', 'PROSES DOORING')
+        //         ->where('job_order.id', $dalam_perjalanan->id_jo)
+        //         // ->where('jod.id', $dalam_perjalanan->id_jo_detail)
+        //         ->where('job_order.is_aktif', '=', "Y")
+        //         ->with('getCustomer')
+        //         ->with('getSupplier')
+        //         // ->groupBy('job_order.id')
+        //         ->get();
+// $cek_trigger = DB::table('job_order_detail as jod')
+//                 ->leftJoin('job_order', 'job_order.id', '=', 'jod.id_jo')
+//                 ->where('jod.status', 'PROSES DOORING')
+//                 ->where('jod.is_aktif', 'Y')
+//                 ->where('job_order.status', 'PROSES DOORING')
+//                 ->where('job_order.id', $dalam_perjalanan->id_jo)
+//                 // ->where('jod.id', $dalam_perjalanan->id_jo_detail)
+//                 ->where('job_order.is_aktif', '=', "Y")
+//                 ->get();
+//         dd( $cek_trigger );
         // dd($dataOpreasional);
         // dd(strpos($dataOpreasional, 'CLEANING/REPAIR'));
 
@@ -330,9 +362,32 @@ class DalamPerjalananController extends Controller
             $dalam_perjalanan->updated_at = now();
 
             if($dalam_perjalanan->save()&&$dalam_perjalanan->jenis_order=='INBOUND'&&$data['is_kembali']=='Y'){
+
                 $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($data['id_jo_detail_hidden']);
                 $JOD->status = 'MENUNGGU INVOICE';
                 $JOD->save();
+
+                //LOGIC BUAT UBAH STATUS JO DARI PROSES DOORING KE MENUNGGU INVOICE
+                $cek_trigger = DB::table('job_order_detail as jod')
+                ->leftJoin('job_order', 'job_order.id', '=', 'jod.id_jo')
+                ->where('job_order.status', 'PROSES DOORING')
+                ->where('job_order.id', $data['id_jo_hidden'])
+                ->where('job_order.is_aktif', '=', "Y")
+                // ->where('jod.id', $dalam_perjalanan->id_jo_detail)
+                ->where('jod.status', 'PROSES DOORING')
+                ->where('jod.is_aktif', 'Y')
+                ->get();
+
+                if($cek_trigger=='[]')
+                {
+                    DB::table('job_order')
+                            ->where('id', $data['id_jo_hidden'])
+                            ->update([
+                                'status' => 'MENUNGGU INVOICE',
+                                'updated_at' => now(),
+                                'updated_by' => $user,
+                            ]);
+                }
             }
             //ini kalo dicentang yang harcode di html
             if(isset($data['data_hardcode']))
@@ -349,7 +404,7 @@ class DalamPerjalananController extends Controller
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
                         $SOP->catatan = $value['catatan_data'];
-                        $SOP->status = "SUDAH DICAIRKAN";
+                        $SOP->status = "TAGIHKAN DI INVOICE";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
                         $SOP->is_aktif = 'Y';
@@ -400,7 +455,7 @@ class DalamPerjalananController extends Controller
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
                         $SOP->catatan = $value['catatan_data'];
-                        $SOP->status = "SUDAH DICAIRKAN";
+                        $SOP->status = "TAGIHKAN DI INVOICE";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
                         $SOP->is_aktif = 'Y';
@@ -425,7 +480,7 @@ class DalamPerjalananController extends Controller
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
                         $SOP->catatan = $value['catatan_data'];
-                        $SOP->status = "SUDAH DICAIRKAN";
+                        $SOP->status = "TAGIHKAN DI INVOICE";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
                         $SOP->is_aktif = 'Y';

@@ -311,7 +311,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp.</span>
                                     </div>
-                                    <input type="text" name="plastik_pje" class="form-control numaja uang" id="plastik_pje" placeholder="" readonly> 
+                                    <input type="text" name="plastik_pje" class="form-control numaja uang" id="plastik_pje" placeholder="" > 
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><input type="checkbox" id="check_is_plastik" name="is_plastik"></span>
                                     </div>
@@ -489,7 +489,7 @@
         $('#check_is_plastik').click(function(){
             if($(this).is(":checked")){
                 $('#plastik_pje').val(uang['plastik'].toLocaleString());
-                // $('#plastik_pje').attr('readonly',false);
+                $('#plastik_pje').attr('readonly',false);
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
                 $('#plastik_pje').val('');
@@ -1156,7 +1156,7 @@
             $('#seal_pje').attr('readonly',true);
             $('#seal_pelayaran').attr('readonly',true);
             $('#tally_pje').attr('readonly',true);
-            $('#plastik_pje').attr('readonly',true);
+            // $('#plastik_pje').attr('readonly',true);
 
             
         }

@@ -17,6 +17,8 @@ class UangJalanRiwayat extends Model
         'tanggal_pencatatan',
         'sewa_id',
         'total_uang_jalan',
+        'total_tl',
+        'total_uang_jalan_tl',
         'potong_hutang',
         'total_diterima',
         'kas_bank_id',

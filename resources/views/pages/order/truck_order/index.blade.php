@@ -21,6 +21,9 @@
                         <a href="{{route('truck_order.create')}}" class="btn btn-primary btn-responsive radiusSendiri">
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Order PJE
                         </a> 
+                        <a href="{{route('truck_order_rekanan.create')}}" class="btn btn-warning btn-responsive float-right radiusSendiri">
+                             Tambah Order Rekanan <i class="fa fa-plus-circle" aria-hidden="true"> </i>
+                        </a> 
                     </div>
                 </div>
                 <div class="card-body">

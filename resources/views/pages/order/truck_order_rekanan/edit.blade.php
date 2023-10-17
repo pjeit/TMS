@@ -222,6 +222,21 @@
                                     
                                     </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="select_driver">Stack TL</label>
+                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
+                                        <option value="">Pilih TL</option>
+                                        {{-- <option value="tl_perak" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_perak'? 'selected':''):'' }}>Perak</option>
+                                        <option value="tl_priuk" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_priuk'? 'selected':''):'' }}>Priuk</option>
+                                        <option value="tl_teluk_lamong" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_teluk_lamong'? 'selected':''):'' }}>Teluk Lamong</option> --}}
+                                        <option value="tl_perak" {{ $data['stack_tl'] == 'tl_perak'? 'selected':'' }}>Perak</option>
+                                        <option value="tl_priuk" {{ $data['stack_tl'] == 'tl_priuk'? 'selected':'' }}>Priuk</option>
+                                        <option value="tl_teluk_lamong" {{ $data['stack_tl'] == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
+                                    </select>
+                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+
+                                </div>
                             </div>
 
                            
@@ -511,7 +526,25 @@
         $('body').on('change','#tipe_kontainer_out', function (){
             $('#tipe_kontainer').val(this.value);
         })
-     
+         $('body').on('change','#stack_tl',function()
+		{
+            var selectedOption = $(this).val();
+            var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
+            // console.log(dataTelukLamong.tl_teluk_lamong);
+            
+            // $('#value_jenis_tl').val(selectedOption);
+
+                if(selectedOption=='tl_teluk_lamong')
+                {
+                    $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
+                }
+                else
+                {
+                    $('#stack_teluk_lamong_hidden').val('');
+                    
+                }
+
+		});
     
         function getDate(){
             var today = new Date();
@@ -759,6 +792,23 @@
                         console.error('Error:', error);
                     }
                 });
+
+
+
+                var selectedOption = $('#stack_tl').val();
+                var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
+                // console.log(dataTelukLamong.tl_teluk_lamong);
+                
+                // $('#value_jenis_tl').val(selectedOption);    
+                if(selectedOption=='tl_teluk_lamong')
+                {
+                    $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
+                }
+                else
+                {
+                    $('#stack_teluk_lamong_hidden').val('');
+                    
+                }
             
         }
     });
