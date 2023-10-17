@@ -11,18 +11,23 @@ class JobOrderDetailBiaya extends Model
     protected $table = 'job_order_detail_biaya';
     protected $primaryKey='id';
     protected $fillable=[
-        'id',
-        'id_jo',
-        'id_jo_detail',
-        'keterangan',
-        'nominal',
-        'status_bayar',
-        'tgl_bayar',
-        
-        'created_at',
-        'created_by',
-        'updated_at',
-        'updated_by',
-        'is_aktif',
+        "id_jo"	,
+        "id_jo_detail"	,
+        "storage"	,
+        "demurage",	
+        "detention"	,
+        "repair",	
+        "washing",	
+        "status_bayar",	
+        "catatan"	,
+        "tgl_bayar",	
+        "created_by",	
+        "created_at",	
+        "updated_by",	
+        "updated_at",	
+        "is_aktif"	
    ];
+
+   	
+
 }

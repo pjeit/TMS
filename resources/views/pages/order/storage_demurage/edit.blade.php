@@ -108,6 +108,8 @@
                                             <th style="">Storage</th>
                                             <th style="">Demurage</th>
                                             <th style="">Detention</th>
+                                            <th style="">Repair</th>
+                                            <th style="">Washing</th>
                                             <th style="">Status</th>
                                             <th style="width:30px;"></th>
                                         </tr>
@@ -116,7 +118,7 @@
                                         @if (isset($data['biaya']))
                                             @foreach ($data['biaya'] as $key => $item)
                                             <tr id="row_{{$key}}">
-                                                <td style="width: 22%">
+                                                <td style="width: 15%">
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">Rp.</span>
@@ -124,7 +126,7 @@
                                                         <input type="text" class="form-control numaja uang" value="{{ number_format($item->storage, 2) }}" disabled>
                                                     </div>
                                                 </td>
-                                                <td style="width: 22%">
+                                                <td style="width: 15%">
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">Rp.</span>
@@ -132,7 +134,7 @@
                                                         <input type="text" class="form-control numaja uang" value="{{ number_format($item->demurage, 2) }}" disabled>
                                                     </div>
                                                 </td>
-                                                <td style="width: 22%">
+                                                <td style="width: 15%">
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">Rp.</span>
@@ -140,7 +142,23 @@
                                                         <input type="text" class="form-control numaja uang" value="{{ number_format($item->detention, 2) }}" disabled>
                                                     </div>
                                                 </td>
-                                                <td style="width: 29%" >
+                                                <td style="width: 15%">
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">Rp.</span>
+                                                        </div>
+                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->repair, 2) }}" disabled>
+                                                    </div>
+                                                </td>
+                                                 <td style="width: 15%">
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">Rp.</span>
+                                                        </div>
+                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->washing, 2) }}" disabled>
+                                                    </div>
+                                                </td>
+                                                <td style="width: 50%" >
                                                     <input type="text" class="form-control" value="{{$item->status_bayar}}" disabled>
                                                 </td>
                                                 <td style="width: 5%"></td>
@@ -271,6 +289,22 @@
                                 <span class="input-group-text">Rp.</span>
                             </div>
                             <input type="text" name="data[${i}][detention]" id="detention${i}" class="form-control numaja uang"/>
+                        </div>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Rp.</span>
+                            </div>
+                            <input type="text" name="data[${i}][repair]" id="repair${i}" class="form-control numaja uang"/>
+                        </div>
+                    </td>
+                      <td style="text-align: center; vertical-align: middle;">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Rp.</span>
+                            </div>
+                            <input type="text" name="data[${i}][washing]" id="washing${i}" class="form-control numaja uang"/>
                         </div>
                     </td>
                     <td style="text-align: center; vertical-align: middle;">

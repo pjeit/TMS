@@ -199,10 +199,26 @@ class DalamPerjalananController extends Controller
                 ];
                 array_push($array_inbound, $objDETENTION);
             }
+            if ($item->repair ||$item->repair != 0) {
+                $objRepair = [
+                    'deskripsi' => 'REPAIR',
+                    'biaya' =>$item->repair,
+                ];
+                array_push($array_inbound, $objRepair);
+            }
+            if ($item->washing ||$item->washing != 0) {
+                $objWashing = [
+                    'deskripsi' => 'WASHING',
+                    'biaya' =>$item->washing,
+                ];
+                array_push($array_inbound, $objWashing);
+            }
         }
 
         if($dalam_perjalanan->jenis_order=="INBOUND")
         {
+            $array_inbound_parent = [];
+
             $dataJO=DB::table('job_order as jo')
                 ->select('jo.*')
                 ->where('jo.is_aktif', '=', "Y")
@@ -214,38 +230,52 @@ class DalamPerjalananController extends Controller
                         'deskripsi' => 'THC',
                         'biaya' =>$value->thc,
                     ];
-                    array_push($array_inbound, $objthc);
+                    array_push($array_inbound_parent, $objthc);
                 }
                 if ($value->lolo||$value->lolo != 0) {
                     $objlolo = [
                         'deskripsi' => 'LOLO',
                         'biaya' =>$value->lolo,
                     ];
-                    array_push($array_inbound, $objlolo);
+                    array_push($array_inbound_parent, $objlolo);
                 }
                 if ($value->apbs||$value->apbs != 0) {
                     $objapbs = [
                         'deskripsi' => 'APBS',
                         'biaya' =>$value->apbs,
                     ];
-                    array_push($array_inbound, $objapbs);
+                    array_push($array_inbound_parent, $objapbs);
                 }
                 if ($value->cleaning||$value->cleaning != 0) {
                     $objcleaning = [
-                        'deskripsi' => 'CLEANING/REPAIR',
+                        'deskripsi' => 'CLEANING',
                         'biaya' =>$value->cleaning,
                     ];
-                    array_push($array_inbound, $objcleaning);
+                    array_push($array_inbound_parent, $objcleaning);
                 }
                 if ($value->doc_fee||$value->doc_fee != 0) {
                     $objdoc_fee = [
                         'deskripsi' => 'DOC_FEE',
                         'biaya' =>$value->doc_fee,
                     ];
-                    array_push($array_inbound, $objdoc_fee);
+                    array_push($array_inbound_parent, $objdoc_fee);
                 }
             }
         }
+        // dd($array_inbound_parent);
+        //yang thc lolo
+        foreach($dataOpreasional as $opersional)
+        {
+            foreach ($array_inbound_parent as $key=> $dataInbound) {
+                # code...
+                if($opersional->deskripsi == $dataInbound['deskripsi'] && $opersional->total_operasional == $dataInbound['biaya'] )
+                {
+                    //hapus array kalau datanya sama 
+                    unset($array_inbound_parent[$key]);
+                }
+            }
+        }
+        //yang storage demurage dkk
         foreach($dataOpreasional as $opersional)
         {
             foreach ($array_inbound as $key=> $dataInbound) {
@@ -326,7 +356,8 @@ class DalamPerjalananController extends Controller
             'sewa'=>$sewa,
             'dataOpreasional'=>$dataOpreasional,
             'array_inbound'=>$array_inbound,
-            'array_outbond'=>$array_outbond
+            'array_outbond'=>$array_outbond,
+            'array_inbound_parent'=>$array_inbound_parent
             // 'datajODetail'=>$datajODetail,
             // 'TujuanBiaya'=>$TujuanBiaya
         ]);

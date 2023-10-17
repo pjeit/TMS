@@ -156,6 +156,8 @@ class StorageDemurageController extends Controller
                     $newBiaya->storage = floatval(str_replace(',', '', $value['storage']));
                     $newBiaya->demurage = floatval(str_replace(',', '', $value['demurage']));
                     $newBiaya->detention = floatval(str_replace(',', '', $value['detention']));
+                    $newBiaya->repair = floatval(str_replace(',', '', $value['repair']));
+                    $newBiaya->washing = floatval(str_replace(',', '', $value['washing']));
                     $newBiaya->status_bayar = "MENUNGGU PEMBAYARAN";
                     $newBiaya->created_by = $user;
                     $newBiaya->created_at = now();

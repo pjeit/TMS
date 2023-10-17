@@ -71,6 +71,9 @@
                                         <th scope="col" style="text-align: center;">Storage</th>
                                         <th scope="col" style="text-align: center;">Demurage</th>
                                         <th scope="col" style="text-align: center;">Detention</th>
+                                        <th scope="col" style="text-align: center;">Repair</th>
+                                        <th scope="col" style="text-align: center;">Washing</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -79,6 +82,8 @@
                                             $t_storage = 0;
                                             $t_demurage = 0;
                                             $t_detention = 0;
+                                            $t_repair = 0;
+                                            $t_washing = 0;
                                         @endphp
                                         @foreach ($data['biaya'] as $key => $item)
                                         <tr>
@@ -90,12 +95,18 @@
                                             <td style="text-align: right;">{{ number_format($item->storage, 2) }}</td>
                                             <td style="text-align: right;">{{ number_format($item->demurage, 2) }}</td>
                                             <td style="text-align: right;">{{ number_format($item->detention, 2) }}</td>
+                                            <td style="text-align: right;">{{ number_format($item->repair, 2) }}</td>
+                                            <td style="text-align: right;">{{ number_format($item->washing, 2) }}</td>
+
+
                                         </tr>
                                         @php
                                             $t_storage += $item->storage;
                                             $t_demurage += $item->demurage;
                                             $t_detention += $item->detention;
-                                            $t_all = $t_storage+$t_demurage+$t_detention;
+                                            $t_repair += $item->repair;
+                                            $t_washing += $item->washing;
+                                            $t_all = $t_storage+$t_demurage+$t_detention+$t_repair+$t_washing;
                                         @endphp
                                         @endforeach
                                     @endisset
@@ -106,10 +117,13 @@
                                         <th style="text-align: right;">{{ number_format($t_storage, 2) }}</th>
                                         <th style="text-align: right;">{{ number_format($t_demurage, 2) }}</th>
                                         <th style="text-align: right;">{{ number_format($t_detention, 2) }}</th>
+                                        <th style="text-align: right;">{{ number_format($t_repair, 2) }}</th>
+                                        <th style="text-align: right;">{{ number_format($t_washing, 2) }}</th>
+
                                     </tr>
                                     <tr>
                                         <th colspan="2" class="pl-4">Grand Total</th>
-                                        <th colspan="3"> <span class="float-right">{{ number_format($t_all, 2) }}</span></th>
+                                        <th colspan="5"> <span class="float-right">{{ number_format($t_all, 2) }}</span></th>
                                         <input type="hidden" name="total" id="total" value="{{$t_all}}">
                                     </tr>
                                 </tfoot>

@@ -210,7 +210,13 @@
 
                             </td>
                             <td> {{ $item->nama_tujuan }} </td>
-                            <td> {{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }} <br> {{ $item->no_polisi }} ({{ $item->getKaryawan->nama_panggilan }}) </td>
+                            <td> {{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }} <br>
+                                @if ($item->id_supplier)
+                                        DRIVER REKANAN  ({{ $item->namaSupplier }})
+                                @else
+                                    {{ $item->no_polisi }} ({{ $item->getKaryawan->nama_panggilan }}) 
+                                @endif
+                            </td>
                             <td> <span id="no_kontainer_text_{{ $item->id_sewa }}">{{ isset($item->id_jo_detail)? $item->getJOD->no_kontainer:$item->no_kontainer }}</span> <br> <span id='no_seal_text_{{ $item->id_sewa }}'>{{ $item->seal_pelayaran }}</span> </td>
                             <td>-</td>
                             <td style="text-align:right" id="tarif_{{ $key }}">{{ number_format($item->total_tarif) }}</td>

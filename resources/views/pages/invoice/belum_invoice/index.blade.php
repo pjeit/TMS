@@ -107,7 +107,15 @@
                                         <td>{{ $item->no_sewa }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                         <td>{{ $item->nama_tujuan }}</td>
-                                        <td>{{ $item->supir }} ({{ $item->telpSupir }})
+                                        <td>
+                                           @if ($item->id_supplier)
+                                            DRIVER REKANAN  ({{ $item->namaSupplier }})
+
+                                            @else
+                                            {{ $item->supir }} ({{ $item->telpSupir }})
+
+                                                
+                                            @endif
                                             <div class="btn-group dropleft float-right">
                                                     <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         <i class="fa fa-list"></i>
@@ -432,11 +440,11 @@
                         _token: $('meta[name="csrf-token"]').attr('content'),
                     },
                     success: function(response) {
-                        console.log(response.status=='ok');
+                        // console.log(response.status=='ok');
                         if(response.status=='ok')
                         {
                             // console.log(response);
-                            window.location.href = '{{ route("invoice.create") }}';
+                            window.location.href = '{{ route("belum_invoice.create") }}';
     
                         }
                     },
@@ -444,7 +452,7 @@
                         console.error('Error:', error);
                     }
                 });
-                window.location.href = '{{ route("belum_invoice.create") }}';
+                // window.location.href = '{{ route("belum_invoice.create") }}';
 
             }
             

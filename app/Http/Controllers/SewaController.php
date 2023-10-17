@@ -212,8 +212,6 @@ class SewaController extends Controller
                     }
                 }
 
-           
-            
                 // EXECUTE TRIGGER BUAT INPUT KE TRIP SUPIR (CEK TRIGGER DI TABEL SEWA)
                 
             }

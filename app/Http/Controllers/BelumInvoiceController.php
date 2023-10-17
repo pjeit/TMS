@@ -35,16 +35,17 @@ class BelumInvoiceController extends Controller
             session()->forget(['sewa', 'cust', 'grup']);
         }
         $dataSewa =  DB::table('sewa AS s')
-                ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','g.id as id_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+                ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','g.id as id_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                 ->leftJoin('grup AS g', 'c.grup_id', '=', 'g.id')
                 ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
+                    ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
 
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
                 // ->where('s.jenis_tujuan', 'like', '%FTL%')
                 ->where('s.status', 'MENUNGGU INVOICE')
-                ->whereNull('s.id_supplier')
+                // ->whereNull('s.id_supplier')
                 // ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
                 ->get();
@@ -127,12 +128,16 @@ class BelumInvoiceController extends Controller
         // dd($sewa);
         
         $data = Sewa::whereIn('sewa.id_sewa', $sewa)
+                ->leftJoin('supplier AS sp', 'sewa.id_supplier', '=', 'sp.id')
                 ->where('sewa.status', 'MENUNGGU INVOICE')
+                ->where('sewa.is_aktif', '=', 'Y')
+                ->select('sewa.*','sp.nama as namaSupplier')
                 ->get();
-
+        // dd($data);
         $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
                 ->leftJoin('customer as c', 'c.id', 'id_customer')
                 ->where('c.grup_id', $grup[0])
+                ->where('sewa.is_aktif', '=', 'Y')
                 ->where('sewa.status', 'MENUNGGU INVOICE')
                 ->select('sewa.*')
                 ->get();

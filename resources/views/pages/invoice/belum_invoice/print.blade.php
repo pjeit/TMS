@@ -145,7 +145,7 @@
                     <td style=""><b>:</b> {{ $data['no_invoice'] }}</td>
                 </tr>
                 <tr>
-                    <td style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{ ($data->getBillingTo->nama) }}</td>
+                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{ ($data->getBillingTo->nama) }}</td>
                     <td></td>
                     <td width='30%'>&nbsp;</td>
                     <td style=""><b>Tanggal</b> </td>

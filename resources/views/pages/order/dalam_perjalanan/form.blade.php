@@ -237,7 +237,7 @@
                                 @if (isset($dataOpreasional))
                                 @php
                                      foreach ($dataOpreasional as $key => $value) {
-                                         if( $value->deskripsi== 'CLEANING/REPAIR' )
+                                         if( $value->deskripsi== 'CLEANING' )
                                             {
                                                 //FLAG KALO KETEMU KELUAR LOOPING
                                                 $flagCleaning = true;
@@ -281,6 +281,8 @@
                                                 $value->deskripsi =='STORAGE'||
                                                 $value->deskripsi =='DEMURAGE'||
                                                 $value->deskripsi =='DETENTION'||
+                                                $value->deskripsi =='REPAIR'||
+                                                $value->deskripsi =='WASHING'||
                                                 $value->deskripsi =='SEAL PELAYARAN'||
                                                 $value->deskripsi =='SEAL PJE'||
                                                 $value->deskripsi =='PLASTIK'||
@@ -308,6 +310,8 @@
                                                  $value->deskripsi !='STORAGE'&&
                                                 $value->deskripsi !='DEMURAGE'&&
                                                 $value->deskripsi !='DETENTION'&&
+                                                $value->deskripsi !='REPAIR'&&
+                                                $value->deskripsi !='WASHING'&&
                                                 $value->deskripsi !='SEAL PELAYARAN'&&
                                                 $value->deskripsi !='SEAL PJE'&&
                                                 $value->deskripsi !='PLASTIK'&&
@@ -315,7 +319,7 @@
                                                 $value->deskripsi !='TIMBANG'&&
                                                 $value->deskripsi !='BURUH'&&
                                                 $value->deskripsi !='INAP'&& 
-                                                $value->deskripsi != 'CLEANING/REPAIR'&&
+                                                $value->deskripsi != 'CLEANING'&&
                                                 $value->deskripsi !='THC'&&
                                                 $value->deskripsi !='LOLO'&&
                                                 $value->deskripsi !='APBS'&&
@@ -366,7 +370,20 @@
                                          @endphp
                                     @endforeach
                                 @endif
-                                  @if  (!$flagCleaning && $sewa->jenis_order=="INBOUND")
+                                @php
+                                 $flagJOCleaning = false;
+                                if ($sewa->jenis_order=="INBOUND") {
+                                    foreach ($array_inbound_parent as $key => $value) {
+                                        if( $value['deskripsi']== 'CLEANING' )
+                                            {
+                                                //FLAG KALO KETEMU KELUAR LOOPING
+                                                $flagCleaning = true;
+                                                break;
+                                            }
+                                    }
+                                }
+                                @endphp 
+                                @if(!$flagCleaning && $sewa->jenis_order=="INBOUND" /*|| !$flagJOCleaning&& $sewa->jenis_order=="INBOUND"*/ )
                                             <tr id="{{ $index}}">
                                                 <td>
                                                     <div class="icheck-danger d-inline">
@@ -378,7 +395,7 @@
                                                     <input type="hidden" id="id_sewa_operasional_data_{{ $index}}"  class="id_operasional" name="data_hardcode[{{$index}}][id_sewa_operasional_data]" value="">
                                                 </td>
                                                 <td id="deskripsi_tabel_{{ $index}}" >
-                                                        <input type="text" name="data_hardcode[{{ $index}}][deskripsi_data]" id="deskripsi_data_{{ $index}}" value="CLEANING/REPAIR" class="form-control ambil_text_deskripsi" readonly>
+                                                        <input type="text" name="data_hardcode[{{ $index}}][deskripsi_data]" id="deskripsi_data_{{ $index}}" value="CLEANING" class="form-control ambil_text_deskripsi" readonly>
                                                     <span class="badge badge-danger">Data Template</span>
                                                 
                                                 </td>
@@ -460,6 +477,57 @@
                                     @if ($sewa->jenis_order == "INBOUND")
 
                                         @foreach ($array_inbound as $key => $value)
+                                            <tr id="{{$index}}">
+                                                <td >
+                                                    <div class="icheck-warning d-inline">
+                                                        <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N" name="dataMaster[{{$index}}][masuk_db]">
+                                                        <label for="checkboxPrimary_{{$index}}"></label>
+                                                    </div>
+                                                    
+                                                </td>
+                                                <td id="id_sewa_operasional_tabel_{{$index}}" hidden="">
+                                                    <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="dataMaster[{{$index}}][id_sewa_operasional_data]" value="">
+                                                </td>
+                                                <td id="deskripsi_tabel_{{$index}}" >
+                                                    <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
+                                                    <span class="badge badge-warning">Data Inbound</span>
+                                                
+                                                </td>
+                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya'],2) }}" class="form-control uang numaja" readonly>
+                                                </td>
+                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
+                                                    <div class="icheck-warning d-inline">
+                                                        <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data]"  >
+                                                        <label for="checkTagih_data_{{$index}}"></label>
+                                                        <input type="hidden" class="value_cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data_value]"  value="N">
+                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                                    </div>
+                                                </td>
+                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}" >
+                                                    <div class="icheck-warning d-inline">
+                                                        <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="dataMaster[{{$index}}][dipisahkan_data]"   >
+                                                        <label for="checkPisah_data_{{$index}}"></label>
+                                                        <input type="hidden" class="value_cek_dipisahkan_data" name="dataMaster[{{$index}}][dipisahkan_data_value]"  value="N">
+
+                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                                    </div>
+                                                </td>
+                                                <td id="catatan_tabel_{{$index}}">
+                                                    <input type="text" name="dataMaster[{{$index}}][catatan_data]" id="catatan_data_{{$index}}"   class="form-control catatan">
+                                                </td>
+                                            </tr>
+                                            @php
+                                            $index+=1;
+                                            @endphp
+                                        @endforeach
+                                        
+                                    @endif
+                                @endif
+                                @if(isset($array_inbound_parent))
+                                    @if ($sewa->jenis_order == "INBOUND")
+
+                                        @foreach ($array_inbound_parent as $key => $value)
                                             <tr id="{{$index}}">
                                                 <td >
                                                     <div class="icheck-warning d-inline">
@@ -1068,6 +1136,8 @@
                         trimTextbox ==='STORAGE'||
                         trimTextbox ==='DEMURAGE'||
                         trimTextbox ==='DETENTION'||
+                        trimTextbox === 'REPAIR'||
+                        trimTextbox === 'WASHING'||
                         trimTextbox ==='SEAL PELAYARAN'||
                         trimTextbox ==='SEAL PJE'||
                         trimTextbox ==='PLASTIK'||
@@ -1075,7 +1145,7 @@
                         trimTextbox ==='TIMBANG'||
                         trimTextbox ==='BURUH'||
                         trimTextbox ==='INAP'|| 
-                        trimTextbox === 'CLEANING/REPAIR'||
+                        trimTextbox === 'CLEANING'||
                         trimTextbox =='THC'||
                         trimTextbox =='LOLO'||
                         trimTextbox =='APBS'||
