@@ -100,24 +100,35 @@
                         <p>
                             <span style="color:#1f55a2"> PRIMATRANS JAYA EXPRESS</span>
                             <br>
-                            {{-- <span style="font-size:20px; font-weight:normal">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
-                            <br> --}}
-                            <span style="font-size:20px; font-weight:normal">Telp: 0896-0301-1919</span>
+                            <span style="font-size:20px; font-weight:normal">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
+                            <br>
+                            {{-- <span style="font-size:20px; font-weight:normal">Telp: 0896-0301-1919</span> --}}
                             
                         </p>
                     </th>
                     <td colspan='5' style="text-align:right;">
                         {{-- <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
-                         @foreach ($data->invoiceDetails as $i => $detail)
+                        @php
+                            $cekTarif = false;
+                        @endphp
+                        @php
+                            foreach ($data->invoiceDetails as $i => $detail) {
+                                if( $detail->tarif>0 )
+                                {
+                                    //FLAG KALO KETEMU KELUAR LOOPING
+                                    $cekTarif = true;
+                                    break;
+                                }
+                            }
+                        @endphp 
+                        @if ($cekTarif)
+                    
+                            <h1>INVOICE</h1>
+                        @else
+                            <h1>INVOICE PISAH</h1>
 
-                            @if ($detail->tarif>0)
-                                <h1>INVOICE</h1>
-                            @else
-                                <h1>INVOICE PISAH</h1>
-
-                            @endif
+                        @endif
                             
-                        @endforeach
                         {{-- <span style="color:#1f55a2">{{ $data['no_invoice'] }}</span> --}}
                     </td>
     			</tr>
@@ -168,9 +179,9 @@
                         <br>NO. SEGEL
                     </td>
                     <td style="border: 1px solid black; border-collapse: collapse;">NOPOL</td>
-                    @foreach ($data->invoiceDetails as $i => $detail)
+                    {{-- @foreach ($data->invoiceDetails as $i => $detail) --}}
 
-                        @if ($detail->tarif>0)
+                        @if ($cekTarif)
 
                             <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
                             <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
@@ -179,7 +190,7 @@
 
                         @endif
                         
-                    @endforeach
+                    {{-- @endforeach --}}
                
                     <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">SUBTOTAL</td>
@@ -255,15 +266,15 @@
             </tbody>
             <tfoot>
                 <tr>
-                    @foreach ($data->invoiceDetails as $i => $detail)
+                    {{-- @foreach ($data->invoiceDetails as $i => $detail) --}}
 
-                        @if ($detail->tarif>0)
+                        @if ($cekTarif)
                             <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
                         @else
                             <td colspan="6" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
                         @endif
                         
-                    @endforeach
+                    {{-- @endforeach --}}
                     <td class="text-right"  style="padding-right: 20px; border-top: 1px solid black; border-collapse: collapse;""><strong>{{ number_format($total) }}</strong></td>
                 </tr>
             </tfoot>
@@ -301,7 +312,7 @@
                 <tr>
                     <td width="800px;">&nbsp;</td>
                     {{-- <td class="text-right" >(..................................)</td> --}}
-                    <td class="text-right" style="padding-right: 50px;">{{Auth::user()->username}} - {{Auth::user()->getRole()}}</td>
+                    <td class="text-right" style="padding-right: 50px;">({{Auth::user()->username}})</td>
 
                 </tr>
             </tfoot>
