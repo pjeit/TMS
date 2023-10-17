@@ -115,8 +115,7 @@ class PembayaranInvoiceController extends Controller
         // dd();
         try {
             if($data['detail'] != null){
-                $jenisBAdmin = isset($data['jenis_badmin'])? ' - '.$data['jenis_badmin']:'';
-                $keterangan_transaksi = $data['catatan'] . ' | '. $data['cara_pembayaran'] . $jenisBAdmin . ' |';
+                $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
                 $id_invoices = '';
                 $i = 0;
                 foreach ($data['detail'] as $key => $value) {
@@ -267,5 +266,26 @@ class PembayaranInvoiceController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function loadData($status) {
+        // dd($status);
+        $data =  DB::table('invoice AS i')
+            ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
+                    ,'g.id as id_grup','ip.no_bukti_potong', 'ip.catatan')
+            ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
+            ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
+            ->leftJoin('invoice_pembayaran AS ip', 'i.id', '=', 'ip.id_invoice')
+            ->where('i.is_aktif', '=', 'Y')
+            ->when($status === 'BELUM LUNAS', function ($query) {
+                return $query->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE');
+            })
+            ->when($status === 'LUNAS', function ($query) {
+                return $query->where('i.status', 'SELESAI PEMBAYARAN INVOICE');
+            })
+            ->orderBy('i.id','ASC')
+            ->get();
+
+        return $data;
     }
 }

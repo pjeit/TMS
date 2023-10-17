@@ -152,8 +152,9 @@ Route::middleware(['auth'])->group(function () {
 
 
         Route::post('/pembayaran_invoice/set_invoice_id', [App\Http\Controllers\PembayaranInvoiceController::class, 'setInvoiceId'])->name('setInvoiceId.set');
-        Route::post('/pembayaran_invoice/update_bukti_potong/{id}', [App\Http\Controllers\PembayaranInvoiceController::class, 'update_bukti_potong'])->name('setInvoiceId.update_bukti_potong');
         Route::get('/pembayaran_invoice/bayar', [App\Http\Controllers\PembayaranInvoiceController::class, 'bayar'])->name('pembayaran_invoice.bayar');
+        Route::post('/pembayaran_invoice/update_bukti_potong/{id}', [App\Http\Controllers\PembayaranInvoiceController::class, 'update_bukti_potong'])->name('setInvoiceId.update_bukti_potong');
+        Route::get('/pembayaran_invoice/loadData/{status}', [App\Http\Controllers\PembayaranInvoiceController::class, 'loadData'])->name('pembayaran_invoice.loadData');
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
 
         Route::get('/add_return_tl/cair/{id}', [App\Http\Controllers\AddReturnTLController::class, 'cair'])->name('add_return_tl.cair');

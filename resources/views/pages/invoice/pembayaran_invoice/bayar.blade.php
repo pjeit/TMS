@@ -126,7 +126,7 @@
                                     <select name="kas" class="select2" style="width: 100%" id="kas" required>
                                         <option value="">── PILIH KAS ──</option>
                                         @foreach ($dataKas as $kas)
-                                            <option value="{{ $kas->id }}">{{ $kas->nama }}</option>
+                                            <option value="{{ $kas->id }}" {{ $kas->id == 1? 'selected':''}}>{{ $kas->nama }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -273,7 +273,7 @@
                                         </select>
                                     </div>   
 
-                                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <div class="form-group col-lg-12 col-md-12 col-sm-12" id="hide_bukti_potong">
                                         <label for="">No. Bukti Potong</label>
                                         <input  type="text" class="form-control" id="modal_no_bukti_potong" > 
                                     </div>
@@ -444,6 +444,13 @@
             $('#modal_no_bukti_potong').val( $('#no_bukti_potong_'+key).val() );
             $('#modal_total_invoice').val( moneyMask($('#total_tagihan_'+key).val()) );
             $('#modal_sisa_invoice').val( moneyMask($('#total_sisa_'+key).val()) );
+
+            var checkReimburse = $('#no_invoice_'+key).val().substr(-2);
+            if(checkReimburse == '/I'){
+                $("#hide_bukti_potong").hide();
+            }
+
+            // hide_bukti_potong
 
             $(document).on('keyup', '#modal_pph23', function(){ // kalau berubah, hitung total 
                 hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
@@ -621,6 +628,7 @@
             $('#modal_sisa_invoice').val('');
             $('#modal_pph23').val('');
             $('#modal_diterima').val('');
+            $("#hide_bukti_potong").show();
         }
 
         function clear(){
