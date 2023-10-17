@@ -131,7 +131,6 @@ class PembayaranInvoiceController extends Controller
                         if($i == 0){
                             // kalau index pertama, dikurangi biaya admin
                             $diterima = $value['diterima']-(float)str_replace(',', '', $data['biaya_admin']);
-                            $new->metode_transfer = isset($data['jenis_badmin'])? $data['jenis_badmin']:null;
                             $new->biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
                             $new->no_cek = isset($data['no_cek'])? $data['no_cek']:null;
                         }

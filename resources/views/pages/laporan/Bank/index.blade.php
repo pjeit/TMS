@@ -51,7 +51,7 @@
                                             <label for="">Kas / Bank <span class="text-red">*</span></label>
                                             <select class="form-control selectpicker" name="tipe" id="tipe" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                                 @foreach ($kasBank as $kb)
-                                                    <option value="{{$kb->id}}" <?= $request['tipe'] == $kb->id ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                                    <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                                 @endforeach
                                             </select>
                                         </div>

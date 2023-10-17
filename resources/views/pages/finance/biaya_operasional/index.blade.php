@@ -41,7 +41,7 @@
                                             <option value="OPERASIONAL">OPERASIONAL</option>
                                             <option value="TIMBANG">TIMBANG</option>
                                             <option value="BURUH">BURUH</option>
-                                            <option value="TAMBAHAN UJ">TAMBAHAN UJ</option>
+                                            <option value="LEMBUR">LEMBUR</option>
                                         </select>
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@
         $(document).on('keyup', '.dicairkan', function() {  
             var row = $(this).closest('tr');
             var item = $('#item').val();
-            if(item == 'TIMBANG' || item == 'BURUH' || item == 'TAMBAHAN UJ'){
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
                 // hidden biaya nominal di cet sama dengan nominal dicairkan
                 row.find('.hiddenNominal').val(row.find('.dicairkan').val())
             }
@@ -217,7 +217,7 @@
     
                         $("th").remove();
                         $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
-                        if(item == 'TIMBANG' || item == 'BURUH' || item == 'TAMBAHAN UJ'){
+                        if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
                             
                         }else{
                             $("thead tr").append("<th>Total</th>");
@@ -237,7 +237,7 @@
                                     row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input class='check_item check_grup' grup_parent='${data[i].grup_id}' type='checkbox'> </span> </div> </b></td>`);
                                     row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input class='check_item check_cust' grup_child='${data[i].grup_id}' cust_parent='${data[i].id_customer}' type='checkbox'> </span> </div> </b></td>`);
                                 
-                                    row.append(`<td> ${data[i].nama_tujuan} / ${data[i].no_polisi} / ${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier} </td>`);
+                                    row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' / '+data[i].no_polisi:'' } / ${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier} </td>`);
                                     row.append(`<td> ${data[i].tipe_kontainer}" <b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
                                     var nominal = 0;
                                     if(data[i].jenis_order == 'INBOUND'){
@@ -262,7 +262,7 @@
                                     }else if(item == 'SEAL PELAYARAN'){
                                         nominal = data[i].seal_pelayaran;       
                                     }
-                                    if(item == 'TIMBANG' || item == 'BURUH' || item == 'TAMBAHAN UJ'){
+                                    if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR' || item == 'TAMBAHAN UJ'){
                                         if(item == 'TAMBAHAN UJ'){
                                             // nominal = data[i].uj_tujuan - data[i].uj_sewa;
                                         }
@@ -290,7 +290,11 @@
                                                 </td>`);
                                     row.append(`<td class='text-center'> 
                                                     <input class='check_item check_container' id_sewa="${data[i].id_sewa}" grup_child='${data[i].grup_id}' cust_child='${data[i].id_customer}'  name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                                    <input type='hidden' class='hiddenNominal' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH') ? $('#open_' + data[i].id_sewa).val() : nominal}' class='form-control' readonly>
+                                                    <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? $('#open_' + data[i].id_sewa).val() : nominal}' class='form-control hiddenNominal' readonly>
+                                                    <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
+                                                    <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
+                                                    <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
+                                                    <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
                                                 </td>`);
                                     $("#hasil").append(row);
                                 }

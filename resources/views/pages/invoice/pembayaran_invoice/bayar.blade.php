@@ -139,18 +139,18 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-8 col-md-8 col-sm-12">
-                                    <select name="jenis_badmin" class="select2" style="width: 100%" id="jenis_badmin" disabled>
+                                    {{-- <select name="jenis_badmin" class="select2" style="width: 100%" id="jenis_badmin" disabled>
                                         <option value="">Pilih Metode</option>
                                         <option value="kliring">Kliring</option>
                                         <option value="RTGS">RTGS (Real Time Gross Settlement)</option>
                                         <option value="RTO">RTO (Real Time Online)</option>
                                         <option value="BIfast">BI Fast</option>
-                                    </select>
+                                    </select> --}}
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" id="biaya_admin" name="biaya_admin" class="form-control uang" value="" readonly>                         
+                                        <input type="text" id="biaya_admin" name="biaya_admin" class="form-control uang" value="" readonly >
                                     </div>
                                 </div>
                             </div>
@@ -218,7 +218,6 @@
                                 <span id="text_diterima_{{ $item->id }}"></span>
                                 <input type="hidden" class="total_diterima" id="total_diterima_{{ $item->id }}" name="detail[{{ $item->id }}][diterima]" value="{{ $item->diterima }}">
                             </td>
-     
                             {{-- <td>
                                 <span id="text_dibayar_{{ $item->id }}"></span>
                                 <input type="hidden" class="total_dibayar" id="total_dibayar_{{ $item->id }}" name="detail[{{ $item->id }}][dibayar]" value="{{ $item->dibayar }}">
@@ -419,11 +418,11 @@
             // startDate: today,
         }).datepicker("setDate", today);
 
-        $("#jenis_badmin").select2({
-            placeholder: "Pilih Metode",
-            initSelection: function(element, callback) {                   
-            }
-        });
+        // $("#jenis_badmin").select2({
+        //     placeholder: "Pilih Metode",
+        //     initSelection: function(element, callback) {                   
+        //     }
+        // });
 
         hitungAll();
 
@@ -497,22 +496,22 @@
             $('#modal_detail').modal('hide'); // close modal
         });
 
-        $(document.body).on("change","#jenis_badmin",function(){
-            if(this.value == 'kliring'){
-                $('#biaya_admin').val('5,000');
-            }else if(this.value == 'RTGS'){
-                $('#biaya_admin').val('25,000');
-            }else if(this.value == 'RTO'){
-                $('#biaya_admin').val('6,500');
-            }else if(this.value == 'BIfast'){
-                $('#biaya_admin').val('2,500');
-            }else{
-                $('#biaya_admin').val(0);
-            }
-            uang();
-            hitungBiayaAdmin();
-            hitungAll();
-        });
+        // $(document.body).on("change","#jenis_badmin",function(){
+        //     if(this.value == 'kliring'){
+        //         $('#biaya_admin').val('5,000');
+        //     }else if(this.value == 'RTGS'){
+        //         $('#biaya_admin').val('25,000');
+        //     }else if(this.value == 'RTO'){
+        //         $('#biaya_admin').val('6,500');
+        //     }else if(this.value == 'BIfast'){
+        //         $('#biaya_admin').val('2,500');
+        //     }else{
+        //         $('#biaya_admin').val(0);
+        //     }
+        //     uang();
+        //     hitungBiayaAdmin();
+        //     hitungAll();
+        // });
 
         // cara_pembayaran
             $("#showTransfer, #showCek, #showTunai").hide();
@@ -537,42 +536,21 @@
         //
 
         // toogle check biaya admin
-            var biayaAdminCheckbox = $("#BiayaAdminCheck");
-            var jenisBadminSelect = $("#jenis_badmin");
-            var biayaAdmin = $("#biaya_admin");
-
-            // biayaAdminCheckbox.change(function(event) {
-            $(document.body).on("change","#BiayaAdminCheck",function(){
-                var firstId = $('#firstId').val();
-                // cek id pertama sudah di inputkan total diterima atau belum
-                var total_diterima = $('#total_diterima_'+firstId).val();
-                // if(total_diterima < 0 || total_diterima == ''){
-                //     Swal.fire(
-                //         'Perhatian',
-                //         'Harap isi terlebih dahulu uang diterima pada baris pertama',
-                //         'warning'
-                //     )
-                //     $("#BiayaAdminCheck").prop("checked", false);
-                // }else
-                {
-                    if (biayaAdminCheckbox.is(":checked")) {
-                        // If BiayaAdminCheck is checked, remove the 'disabled' attribute
-                        jenisBadminSelect.removeAttr("disabled");
-                        // biayaAdmin.removeAttr("disabled");
-                    } else {
-                        // If BiayaAdminCheck is unchecked, add the 'disabled' attribute
-                        jenisBadminSelect.attr("disabled", "disabled");
-                        $("#jenis_badmin").val('').trigger('change')
-                        biayaAdmin.val('');
-                        biayaAdmin.attr("disabled", "disabled");
-                    }
-                    hitungBiayaAdmin();
+            $("#BiayaAdminCheck").change(function() {
+                if(this.checked) {
+                    $("#biaya_admin").removeAttr("readonly");
+                } else {
+                    $("#biaya_admin").val('');
+                    $("#biaya_admin").attr("readonly", true);
                 }
+                hitungAll();
             });
+
         // 
 
         $(document).on('keyup', '#biaya_admin', function(){ // kalau berubah, hitung total 
-            hitungBiayaAdmin(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+            // hitungBiayaAdmin(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+            hitungAll();
         });
 
         function hitungBiayaAdmin(){
@@ -587,7 +565,6 @@
             var diterima = document.getElementsByClassName("total_diterima");
             var pph23 = document.getElementsByClassName("total_pph23");
             var biaya_admin = escapeComma($("#biaya_admin").val());
-            console.log('biaya_admin', biaya_admin);
 
             for (var i = 0; i < diterima.length; i++) {
                 var value = parseFloat(diterima[i].value); 
