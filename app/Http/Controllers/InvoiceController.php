@@ -242,7 +242,10 @@ class InvoiceController extends Controller
 
             return redirect()->route('invoice.index')
                 ->with('id_print_invoice', $invoice->id)
-                ->with('status', 'Success!!');
+                ->with([
+                        'status' => 'Success',
+                        'msg' => 'Data berhasil disimpan!'
+                    ]);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
