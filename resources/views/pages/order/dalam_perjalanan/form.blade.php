@@ -274,6 +274,8 @@
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                     <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional,2) }}" class="form-control uang numaja nominal_hardcode">
                                                 </td>
+                                                 
+
                                             @endif
                                             @if (
                                                 $value->deskripsi =='STORAGE'||
@@ -352,6 +354,12 @@
                                             <td id="catatan_tabel_{{$index}}">
                                                 <input type="text" name="data[{{$index}}][catatan_data]" id="catatan_data_{{$index}}"  value="{{$value->catatan}}" class="form-control catatan">
                                             </td>
+{{-- 
+                                            <td class="text-danger">
+                                                    <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove"  class="btn btn-danger radiusSendiri btnDelete">
+                                                        <i class="fa fa-fw fa-trash-alt"></i>
+                                                    </button>
+                                                </td> --}}
                                         </tr>
                                         @php
                                         $index+=1;
@@ -1012,6 +1020,8 @@
             var flagNominalHardcode = false;
 
             var flagCekBoxDitagihkanDicentangGak = false;
+            var flagCekBoxsealPJE = false;
+
             var deskripsi_text = '';
 
              const Toast = Swal.mixin({
@@ -1126,13 +1136,53 @@
                         deskripsi_text = deskripsi;
                         break; 
                     }
+                    if(
+                        value_cekbox_ditagihkan == 'Y'&&deskripsi=='SEAL PJE' && $('#cek_seal_pje').is(":not(:checked)")||
+                        value_cekbox_ditagihkan == 'Y'&&deskripsi=='SEAL PJE' && $('#cek_seal_pje').is(":checked")&&$('#seal_pje').val().trim()==''
+                    )
+                    {
+                        flagCekBoxsealPJE= true;
+                        deskripsi_text = deskripsi + ' DITAGIHKAN TETAPI NOMOR SEAL PJE BELUM DI ISI!';
+                        break; 
+                    }
+                     
+                }
+                else
+                {
+                    if(
+                        deskripsi=='SEAL PJE' && $('#cek_seal_pje').is(":checked") &&$('#seal_pje').val().trim()==''
+                    )
+                    {
+                        flagCekBoxsealPJE= true;
+                        deskripsi_text = deskripsi + ' BELUM DI ISI!';
+                        break; 
+                    }
+                    if(
+                        deskripsi=='SEAL PJE' && $('#cek_seal_pje').is(":checked") &&$('#seal_pje').val().trim()!='' && value_cekbox_ditagihkan == 'N'
+                    )
+                    {
+                        flagCekBoxsealPJE= true;
+                        deskripsi_text = deskripsi + ' BELUM DITAGIHKAN!';
+                        break; 
+                    }
                 }
             }
+            // if ($('#cek_seal_pje').is(":checked")) {
+
+            //     $('#seal_pje').prop('readonly', false);
+
+            // };
+            // else if ($(this).is(":not(:checked)")) {
+                    
+            //     $('#seal_pje').prop('readonly', true);
+            //     $('#seal_pje').val('');
+            // }
+            
             if ($("#is_kembali").val()=='Y' && $('#seal').val().trim()=='') {
                   event.preventDefault(); 
                   Toast.fire({
                         icon: 'error',
-                        text: `Seal wajib diisi!`,
+                        text: `SEAL PELAYARAN WAJIB DI ISI!`,
                     })
                 return;
             } 
@@ -1141,7 +1191,7 @@
                 event.preventDefault(); 
                 Toast.fire({
                     icon: 'error',
-                    text: `Surat jalan wajib diisi!`,
+                    text: `SURAT JALAN WAJIB DI ISI!`,
                 })
                 return;
             }
@@ -1150,7 +1200,7 @@
                 event.preventDefault(); 
                 Toast.fire({
                     icon: 'error',
-                    text: `Nomor kontainer wajib diisi!`,
+                    text: `NO KONTAINER WAJIB DI ISI!`,
                 })
                 return;
             }
@@ -1158,7 +1208,7 @@
                 event.preventDefault(); 
                 Swal.fire({
                     icon: 'error',
-                    text: 'DESKRIPSI BIAYA WAJIB DIISI!',
+                    text: 'DESKRIPSI BIAYA WAJIB DI ISI!',
                 });
                 return;
             }
@@ -1166,7 +1216,7 @@
                 event.preventDefault(); 
                 Swal.fire({
                     icon: 'error',
-                    text: 'NOMINAL BIAYA WAJIB DIISI!',
+                    text: 'NOMINAL BIAYA WAJIB DI ISI!',
                 });
                 return;
             }
@@ -1183,8 +1233,8 @@
             if (flagCekBoxDitagihkanDicentangGak) {
                 event.preventDefault(); 
                   Toast.fire({
-                        icon: 'warning',
-                        text: `${deskripsi_text} belum ditagihkan!`,
+                        icon: 'error',
+                        text: `${deskripsi_text} BELUM DITAGIHKAN!`,
                     })
                 //     event.preventDefault();
                 // Swal.fire({
@@ -1194,7 +1244,14 @@
                 // });
                 return;
             }
-            
+            if (flagCekBoxsealPJE) {
+                  event.preventDefault(); 
+                  Toast.fire({
+                        icon: 'error',
+                        text: deskripsi_text,
+                    })
+                return;
+            } 
             event.preventDefault();
 
             Swal.fire({

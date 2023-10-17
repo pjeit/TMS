@@ -144,7 +144,7 @@
                              
 
                                 <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}">
-                                    <label for="uang_jalan">Uang Jalan</label>
+                                    <label for="uang_jalan">Biaya Uang Jalan</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
@@ -164,7 +164,7 @@
                                 </div>
                             @endif
                                 <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}">
-                                    <label for="total_diterima">Total</label>
+                                    <label for="total_diterima">Total Diberikan</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
@@ -242,7 +242,7 @@
             if(total_diterima!=0){
                 $('#total_diterima').val(addPeriodType(total_diterima,','));
             }else{
-                $('#total_diterima').val('');
+                $('#total_diterima').val(0);
             }
         }
    
@@ -252,13 +252,45 @@
             }else{
                 var total_hutang =0;
             }
+            if($('#uang_jalan').val()!=''){
+                var total_uang_jalan=removePeriod($('#uang_jalan').val(),',');
+            }else{
+                var total_uang_jalan=0;
+            }
+            
+            if($('#potong_hutang').val()!=''){
+                var potong_hutang=removePeriod($('#potong_hutang').val(),',');
+            }else{
+                var potong_hutang=0;
+            }
+            var cekTL= <?php echo json_encode($sewaBiayaTelukLamong); ?>;
+            var total_uj=0;
+            if(cekTL)
+            {
+                if($('#teluk_lamong').val()!='' || $('#teluk_lamong').val()!= undefined){
+                    var teluk_lamong=removePeriod($('#teluk_lamong').val(),',');
+                }else{
+                    var teluk_lamong=0;
+                }
+               total_uj=(parseFloat(total_uang_jalan)+parseFloat(teluk_lamong));
+            }
+            else
+            {
+               total_uj=parseFloat(total_uang_jalan);
+            }
             
             var potong_hutang = removePeriod($('#potong_hutang').val(),',');
             if(parseFloat(potong_hutang)>parseFloat(total_hutang)){
                 $('#potong_hutang').val(addPeriodType(total_hutang,','));
-            }else{
+            }
+            else{
                 $('#potong_hutang').val(addPeriodType(potong_hutang,','));
             }
+
+            if(parseFloat(potong_hutang)>parseFloat(total_uj) && parseFloat(total_hutang)>parseFloat(total_uj)){
+                $('#potong_hutang').val(addPeriodType(total_uj,','));
+            }
+             
         }
         function ubahTanggal(dateString) {
             var dateObject = new Date(dateString);
@@ -370,7 +402,7 @@
       
         $('#post_data').submit(function(event) {
             var kas = $('#pembayaran').val();
-            if (kas == '' || kas == null) {
+            if (kas == '' && $('#total_diterima').val()!=0 || kas == null && $('#total_diterima').val()!=0) {
                 event.preventDefault(); // Prevent form submission
                 Swal.fire({
                     icon: 'error',
