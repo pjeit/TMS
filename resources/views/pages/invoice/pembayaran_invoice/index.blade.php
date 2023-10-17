@@ -370,69 +370,48 @@
                 processData:false,
                 success: function(response) {
                     var table = $('#tabelInvoice').DataTable();
+                    $('#hasil').empty();
                     table.clear().destroy();
                     var baseUrl = "{{ asset('') }}";
-
-                    $("#hasil").append(row);
                     $("#loading-spinner").hide();
                     var data = response;
-                    console.log('response', data);
+                    console.log('data', data);
                     for (var i = 0; i < data.length; i++) {
                         var row = $("<tr></tr>");
+                        row.append(`<td>${data[i].nama_grup}</td>`);
+                        row.append(`<td>${data[i].nama_cust}</td>`);
                         row.append(`<td>${data[i].no_invoice}</td>`);
-                        row.append(`<td>${data[i].no_invoice}</td>`);
-                        row.append(`<td>${data[i].no_invoice}</td>`);
-                        row.append(`<td>${data[i].no_invoice}</td>`);
-                        row.append(`<td>${data[i].no_invoice}</td>`);
-                        row.append(`<td>${data[i].no_invoice}</td>`);
-                        row.append(`<td>${data[i].no_invoice}</td>`);
+                        row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
+                        row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
+                        row.append(`<td>${data[i].total_sisa == 0? 'LUNAS':data[i].total_sisa}</td>`);
+                        row.append(`<td>${data[i].catatan == null? '':data[i].catatan}</td>`);
                         if(status == 'BELUM LUNAS'){
-                            var jenisTL =  `<a href="${baseUrl}pembayaran_invoice/${data[i].id}" class="dropdown-item">
-                                                <span class="fa fa-credit-card mr-3"></span> Cairkan TL
-                                            </a>`;
+                            var jenis =  `<input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="${data[i].billing_to}" grupId="${data[i].id_grup}" value="${data[i].id}">`;
                         }else{
-                            var jenisTL =  `<a href="${baseUrl}pembayaran_invoice/${data[i].id}" class="dropdown-item">
-                                                <span class="fa fa-credit-card mr-3"></span> Kembalikan TL
-                                            </a>`;
+                            var jenis =  `<btn class="btn btn-primary btn-sm radiusSendiri" id='input_bukti' idInvoice="${data[i].id}"> <span class="fa fa-sticky-note mr-1"></span> Input Bukti Potong</btn>`;
                         }
-                        
-                        row.append(`<td class='text-center'> 
-                                        <div class="btn-group dropleft">
-                                            <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa fa-list"></i>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                `+
-                                                jenisTL
-                                                +`
-                                            </div>
-                                        </div>
-                                    </td>`);
+                        row.append(`<td class='text-center'>${jenis}</td>`);
                         $("#hasil").append(row);
-                        // $("#datatable").dataTable();
-
-                        new DataTable('#tabelInvoice', {
-                            order: [
-                                [0, 'asc'],
-                                [1, 'asc']
-                            ],
-                            rowGroup: {
-                                dataSrc: [0, 1]
-                            },
-                            columnDefs: [
-                                {
-                                    targets: [0, 1],
-                                    visible: false
-                                },
-                                {
-                                    "orderable": false,
-                                    "targets": [0,1,2,3,4,5,6,7]
-                                }
-                        
-                            ],
-                        });
                     }
-
+                    new DataTable('#tabelInvoice', {
+                        order: [
+                            [0, 'asc'], // 0 = grup
+                            [1, 'asc'] // 1 = customer
+                        ],
+                        rowGroup: {
+                            dataSrc: [0, 1] // di order grup dulu, baru customer
+                        },
+                        columnDefs: [
+                            {
+                                targets: [0, 1], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
+                                visible: false
+                            },
+                            // {
+                            //     targets: [ord, ord-1],
+                            //     orderable: false, // matiin sortir kolom centang
+                            // },
+                        ],
+                    });
                 },error: function (xhr, status, error) {
                     $("#loading-spinner").hide();
                     if ( xhr.responseJSON.result == 'error') {
