@@ -146,18 +146,31 @@ class PembayaranInvoiceController extends Controller
                             $keterangan_transaksi .= ' #'.$invoice->no_invoice;
                             $id_invoices .= $invoice->id . ',';
                             if($invoice){
-                                $invoice->total_dibayar = $new->total_diterima + $new->total_pph23;
-                                $invoice->total_sisa = $invoice->total_tagihan - $invoice->total_dibayar;
+                                $invoice->total_dibayar += $new->total_diterima + $new->total_pph23;
+                                $invoice->total_sisa -=  $invoice->total_dibayar;
                                 if($i == 0){
                                     $invoice->total_sisa = $invoice->total_tagihan - $invoice->total_dibayar - $new->biaya_admin;
                                 }
+                                $curStatus = '';
                                 if($invoice->total_sisa == 0){
                                     $invoice->status = 'SELESAI PEMBAYARAN INVOICE';
+                                    $curStatus = 'SELESAI PEMBAYARAN INVOICE';
                                 }
                                 $invoice->updated_by = $user;
                                 $invoice->updated_at = now();
-                                $invoice->save();
-                                // jika status == SELESAI PEMBAYARAN INVOICE, otomatis TRIGGER "update_status_invoice_detail" di tabel invoice di DB
+                                if($invoice->save()){
+                                    if($curStatus == 'SELESAI PEMBAYARAN INVOICE'){
+                                        $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice',$invoice->id)->first();
+                                        if($invoiceDetail){
+                                            $invoiceDetail->status = 'SELESAI PEMBAYARAN INVOICE';
+                                            $invoiceDetail->updated_by = $user;
+                                            $invoiceDetail->updated_at = now();
+                                            if($invoiceDetail->save()){
+                                                
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
