@@ -228,10 +228,10 @@ class DalamPerjalananController extends Controller
                 array_push($array_inbound, $objWashing);
             }
         }
+            $array_inbound_parent = [];
 
         if($dalam_perjalanan->jenis_order=="INBOUND")
         {
-            $array_inbound_parent = [];
 
             $dataJO=DB::table('job_order as jo')
                 ->select('jo.*')
@@ -280,22 +280,23 @@ class DalamPerjalananController extends Controller
                     array_push($array_inbound_parent, $objdoc_fee);
                 }
             }
-        }
-        //yang thc lolo
-        foreach($dataOpreasionalJO as $opersional)
-        {
-            foreach ($array_inbound_parent as $key=> $dataInbound) {
-                # code...
-                if($opersional->deskripsi == $dataInbound['deskripsi'] && 
-                   $opersional->total_operasional == $dataInbound['biaya'] &&
-                   $opersional->id_jo ==  $dataInbound['id_jo']
-                )
-                {
-                    //hapus array kalau datanya sama 
-                    unset($array_inbound_parent[$key]);
+             //yang thc lolo
+            foreach($dataOpreasionalJO as $opersional)
+            {
+                foreach ($array_inbound_parent as $key=> $dataInbound) {
+                    # code...
+                    if($opersional->deskripsi == $dataInbound['deskripsi'] && 
+                    $opersional->total_operasional == $dataInbound['biaya'] &&
+                    $opersional->id_jo ==  $dataInbound['id_jo']
+                    )
+                    {
+                        //hapus array kalau datanya sama 
+                        unset($array_inbound_parent[$key]);
+                    }
                 }
             }
         }
+       
         //yang storage demurage dkk
         foreach($dataOpreasional as $opersional)
         {

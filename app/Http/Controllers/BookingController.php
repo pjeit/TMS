@@ -21,6 +21,11 @@ class BookingController extends Controller
      */
     public function index()
     {
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
          $data =  DB::table('booking as b')
             ->select('b.*','c.nama as namaCustomer','g.nama_tujuan as namaTujuan')
             ->join('customer as c', 'c.id', '=', 'b.id_customer')
@@ -70,6 +75,20 @@ class BookingController extends Controller
         $user = Auth::user()->id;
         try {
             // var_dump($request->post()); die; 
+            $pesanKustom = [
+             
+                'id_customer.required' => 'Customer harap dipilih!',
+                'id_tujuan.required' => 'Tujuan Customer harap dipilih!',
+                // 'foto.required' => 'Foto karyawan harap diisi!',
+            ];
+             
+            
+            $request->validate([
+                // 'telp1' =>'required|in:1,2',  // buat radio button
+                'id_customer' => 'required',
+                'id_tujuan' => 'required',
+
+            ],$pesanKustom);
             $currentYear = Carbon::now()->format('y');
             $currentMonth = Carbon::now()->format('m');
 
@@ -103,7 +122,7 @@ class BookingController extends Controller
             $booking->is_aktif = "Y";
             $booking->save();
 
-            return redirect()->route('booking.index')->with('status','Sukses Menambahkan Booking Baru!!');
+            return redirect()->route('booking.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambah booking baru!']);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -157,13 +176,27 @@ class BookingController extends Controller
             // $booking->no_kontainer =$request->no_kontainer;
             // $booking->catatan =$request->catatan;
          try {
+            $pesanKustom = [
+             
+                'id_customer.required' => 'Customer harap dipilih!',
+                'id_tujuan.required' => 'Tujuan Customer harap dipilih!',
+                // 'foto.required' => 'Foto karyawan harap diisi!',
+            ];
+             
+            
+            $request->validate([
+                // 'telp1' =>'required|in:1,2',  // buat radio button
+                'id_customer' => 'required',
+                'id_tujuan' => 'required',
+
+            ],$pesanKustom);
             $data = $request->collect();
             // $tgl_berangkat = date_create_from_format('d-M-Y', $request->tgl_berangkat);
              DB::table('booking')
                 ->where('id', $booking['id'])
                 ->update(array(
                         // 'tgl_berangkat' => date_format($tgl_berangkat, 'Y-m-d'),
-                        'tgl_booking' => date_create_from_format('d-M-Y', $request->tgl_booking),
+                        // 'tgl_booking' => date_create_from_format('d-M-Y', $request->tgl_booking),
                         'id_customer' => $data['id_customer'],
                         'id_grup_tujuan' => $data['id_tujuan'],
                         // 'no_kontainer' => $data['no_kontainer'],
@@ -172,7 +205,7 @@ class BookingController extends Controller
                         'updated_by'=> $user,
                     )
                 );
-            return redirect()->route('booking.index')->with('status','Sukses Mengubah Data Booking!!');
+            return redirect()->route('booking.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data booking!']);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -187,5 +220,22 @@ class BookingController extends Controller
     public function destroy(Booking $booking)
     {
         //
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+
+        try{
+            DB::table('booking')
+            ->where('id', $booking['id'])
+            ->update(array(
+                'is_aktif' => "N",
+                'updated_at'=> now(),
+                'updated_by'=> $user, // masih hardcode nanti diganti cookies
+              )
+            );
+             return redirect()->route('booking.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data booking']);
+
+        }
+        catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
+        }
     }
 }

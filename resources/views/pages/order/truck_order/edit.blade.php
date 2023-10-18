@@ -161,7 +161,7 @@
                                
                                 <div class="form-group">
                                     <label for="select_customer">Customer<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" {{$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}} >
+                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" {{$data['id_booking']!=null ||$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}} >
                                         <option value="">Pilih Customer</option>
                                         @foreach ($dataCustomer as $cust)                                        
                                             <option value="{{$cust->idCustomer}}" <?= $cust->idCustomer==$data['id_customer']? 'selected':''  ?> > {{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
@@ -174,7 +174,7 @@
                                 <div class="form-group">
                                     
                                     <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" {{$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}} >
+                                    <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" {{$data['id_booking']!=null ||$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}} >
                                         {{-- @isset($data['id_grup_tujuan'])
                                             <option value="{{$data['id_grup_tujuan']}}">{{$data->getTujuan->nama_tujuan}}</option>
                                         @endisset --}}

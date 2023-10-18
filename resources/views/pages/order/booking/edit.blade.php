@@ -49,7 +49,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                    <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" readonly value="{{old('tgl_booking',\Carbon\Carbon::parse($booking->tgl_booking)->format('d-M-Y')) }}">
+                                    <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" disabled value="{{old('tgl_booking',\Carbon\Carbon::parse($booking->tgl_booking)->format('d-M-Y')) }}">
                                 </div>
                             </div>
                             <div class="form-group col-12 col-md-6 col-lg-6">

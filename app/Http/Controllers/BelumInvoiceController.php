@@ -417,7 +417,7 @@ class BelumInvoiceController extends Controller
              'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
         ]);
 
-        return $pdf->stream('xxxxx'.'.pdf'); 
+        return $pdf->stream($data->no_invoice.'.pdf'); 
         // return view('pages.invoice.belum_invoice.print',[
         //     'judul'=>"Invoice",
         //     'data' => $data,

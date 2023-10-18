@@ -286,7 +286,8 @@
             else{
                 $('#potong_hutang').val(addPeriodType(potong_hutang,','));
             }
-
+            //kalau hutang misal 500k dan uang jalannya 300k, jadi maks pencairan yang 300k bukan 500k,
+            //karena kalau 500k nanti jadi minus, kalau 300k, berarti gak tf sama sekali cuman potong hutang, gausah milih kas bank
             if(parseFloat(potong_hutang)>parseFloat(total_uj) && parseFloat(total_hutang)>parseFloat(total_uj)){
                 $('#potong_hutang').val(addPeriodType(total_uj,','));
             }

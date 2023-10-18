@@ -12,6 +12,8 @@
 @endsection
 
 @section('content')
+@include('sweetalert::alert')
+
 <br>
 <style>
    
@@ -44,14 +46,28 @@
                                 <td>{{ $item->no_booking }}</td>
                                 <td>{{ $item->namaCustomer }}</td>  
                                 <td>{{  $item->namaTujuan}}</td>  
-                                <td>                                    
-                                    <a class="btn btn-default bg-info radiusSendiri" href="{{route('booking.edit',[$item->id])}}">
+                                <td>    
+                                    
+                                    <div class="btn-group dropleft">
+                                        <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-list"></i>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a href="{{route('booking.edit',[$item->id])}}" class="dropdown-item">
+                                                <span class="fas fa-edit mr-3"></span> Edit
+                                            </a>
+                                            <a href="{{ route('booking.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                <span class="fas fa-trash mr-3"></span> Delete
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {{-- <a class="btn btn-default bg-info radiusSendiri" href="{{route('booking.edit',[$item->id])}}">
                                         <i class="fas fa-edit"></i> Edit
                                     </a>   
                                     <!-- Bu tton trigger modal -->
                                     <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus_{{ $item->id }}">
                                         <i class="fas fa-trash"></i> Hapus
-                                    </button>          
+                                    </button>           --}}
                                 </td>
                                 <!-- Modal -->
                                 <div class="modal fade" id="modalHapus_{{ $item->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
