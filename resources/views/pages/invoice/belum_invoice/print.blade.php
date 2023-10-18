@@ -95,16 +95,16 @@
                     <th style="width:5%;"></th>
                 </tr>
                  <tr>
-                    <th colspan='5' style="text-align:left;"><img style="position: absolute;margin-top: -170px;" src="{{ public_path("img/LOGO_PJE_WARNA_BG_ILANG.png") }}"  width="500" height="500"></th>
-                    <th colspan='10' style="text-align:left;">
-                        <p>
+                    <th colspan='4' style="text-align:left;"><img style="position: absolute;margin-top: -170px;margin-left: -70px;" src="{{ public_path("img/LOGO_PJE_DOANG.png") }}"  width="500" height="500"></th>
+                    <th colspan='11' style="text-align:left;">
+                        <h2 >
                             <span style="color:#1f55a2"> PRIMATRANS JAYA EXPRESS</span>
                             <br>
-                            <span style="font-size:20px; font-weight:normal">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
+                            <span style="font-size:20px; font-weight:normal; margin-top:-20px;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
                             <br>
                             {{-- <span style="font-size:20px; font-weight:normal">Telp: 0896-0301-1919</span> --}}
                             
-                        </p>
+                        </h2>
                     </th>
                     <td colspan='5' style="text-align:right;">
                         {{-- <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
@@ -134,7 +134,7 @@
     			</tr>
             </thead>
         </table>
-        <hr style=" border: 1px solid rgb(76, 76, 76);margin-top: 100px;">
+        <hr style=" border: 1px solid rgb(76, 76, 76);margin-top: 30px;">
         <table class="border-table">
             <thead class="border-table">
                 <tr style="">

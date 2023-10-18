@@ -308,10 +308,10 @@ class BelumInvoiceController extends Controller
             }
 
         
-            return redirect()->route('invoice.index')
+            return redirect()->route('belum_invoice.index')
                     ->with('id_print_invoice', $invoice->id)
                     ->with('id_print_invoice_pisah', isset($invoicePisah->id)? $invoicePisah->id:null)
-                    ->with('status', 'Success!!');
+                    ->with(['status' => 'Success', 'msg' => 'Pembuatan Invoice Berhasil!']);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }

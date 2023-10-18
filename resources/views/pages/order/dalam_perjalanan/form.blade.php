@@ -236,14 +236,14 @@
                                 @endphp
                                 @if (isset($dataOpreasional))
                                 @php
-                                     foreach ($dataOpreasional as $key => $value) {
-                                         if( $value->deskripsi== 'CLEANING' )
-                                            {
-                                                //FLAG KALO KETEMU KELUAR LOOPING
-                                                $flagCleaning = true;
-                                                break;
-                                            }
-                                    }
+                                    //  foreach ($dataOpreasional as $key => $value) {
+                                    //      if( $value->deskripsi== 'CLEANING' )
+                                    //         {
+                                    //             //FLAG KALO KETEMU KELUAR LOOPING
+                                    //             $flagCleaning = true;
+                                    //             break;
+                                    //         }
+                                    // }
                                      foreach ($dataOpreasional as $key => $value) {
                                          if( $value->deskripsi== 'INAP' )
                                             {
@@ -376,13 +376,24 @@
                                 @php
                                  $flagJOCleaning = false;
                                 if ($sewa->jenis_order=="INBOUND") {
-                                    foreach ($array_inbound_parent as $key => $value) {
-                                        if( $value['deskripsi']== 'CLEANING' )
-                                            {
-                                                //FLAG KALO KETEMU KELUAR LOOPING
-                                                $flagCleaning = true;
-                                                break;
-                                            }
+                                    // foreach ($array_inbound_parent as $key => $value) {
+                                    //     if( /*$value['deskripsi']== 'CLEANING' && */$value['id_jo']==$sewa->id_jo)
+                                    //         {
+                                    //             //FLAG KALO KETEMU KELUAR LOOPING
+                                    //             $flagCleaning = true;
+                                    //             break;
+                                    //         }
+                                    // }
+                                    if(isset($dataOpreasionalJO))
+                                    {
+                                        foreach ($dataOpreasionalJO as $key => $value) {
+                                             if( $value->deskripsi== 'CLEANING' )
+                                                {
+                                                    //FLAG KALO KETEMU KELUAR LOOPING
+                                                    $flagCleaning = true;
+                                                    break;
+                                                }
+                                        }
                                     }
                                 }
                                 @endphp 

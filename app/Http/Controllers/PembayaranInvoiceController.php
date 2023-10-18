@@ -126,6 +126,7 @@ class PembayaranInvoiceController extends Controller
                         $new->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
                         
                         $diterima = $value['diterima'];
+                        // dd($value['diterima']);
                         if($i == 0){
                             // kalau index pertama, dikurangi biaya admin
                             $diterima = $value['diterima']-(float)str_replace(',', '', $data['biaya_admin']);
