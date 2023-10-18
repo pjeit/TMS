@@ -43,11 +43,11 @@
                         <div class="col-12">
                             <div class="row">
                                 <div class="form-group col-6">
-                                    <label for="">No. JO <span class="text-red">*</span></label>
+                                    <label for="">No. JO<span class="text-red">*</span></label>
                                     <input  type="text" class="form-control" value="{{$data['JO']->no_jo}}" readonly>
                                 </div>  
                                 <div class="form-group col-6">
-                                    <label for="">No. BL <span class="text-red">*</span></label>
+                                    <label for="">No. BL<span class="text-red">*</span></label>
                                     <input  type="text" class="form-control" name="no_bl" value="{{$data['JO']->no_bl}}" readonly>
                                 </div>  
                                 <div class="form-group col-6">
@@ -138,16 +138,16 @@
                                 <div class="list-group-item">
                                     <div class="row">
                                         <div class="col-2 mt-2">
-                                            <p class="text-primary "><strong>PILIH PEMBAYARAN :</strong></p>
+                                            <p class="text-primary "><strong>PILIH PEMBAYARAN</strong></p>
                                             <label for=""></label>
-                                            <p class="text-primary "><strong>CATATAN :</strong></p>
+                                            <p class="text-primary "><strong>CATATAN</strong></p>
                                         </div>
                                         <div class="col-10">
                                              <div class="input-group" style="gap: 5px;">
                                                     <select class="form-control select2"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                                         <option value="">--PILIH KAS--</option>
                                                         @foreach ($dataKas as $kas)
-                                                            <option value="{{$kas->id}}">{{ $kas->nama }}</option>
+                                                            <option value="{{$kas->id}}" {{$kas->id == '1'? 'selected':''}} >{{ $kas->nama }}</option>
                                                         @endforeach
                                                     </select>
                                                 <button type="submit" class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
@@ -196,30 +196,11 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Disimpan'
-                    })
-
-                    setTimeout(() => {
-                        this.submit();
-                    }, 800); // 2000 milliseconds = 2 seconds
+                    this.submit();
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,

@@ -25,15 +25,29 @@ class PaymentSDTController extends Controller
             ->where('jenis_supplier_id', 6) // jenis pelayaran
             ->orderBy('nama')
             ->get();
+
         $customer = DB::table('customer')
             ->select('*')
             ->where('customer.is_aktif', "Y")
             ->orderBy('nama')
             ->get();
+
+        $customer = DB::table('job_order_detail_biaya as jodb')
+                    ->leftJoin('job_order as jo', 'jodb.id_jo', '=', 'jo.id')
+                    ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
+                    ->where('jodb.is_aktif', "Y")
+                    ->where('jodb.status_bayar', "MENUNGGU PEMBAYARAN")
+                    ->where('c.is_aktif', "Y")
+                    ->select('c.id as id', DB::raw("CONCAT('[',c.kode,'] ', c.nama) as nama"))
+                    ->distinct()
+                    ->get();
+
+        // dd($customer);  
+
         return view('pages.finance.pembayaran_SDT.index',[
             'judul' => "Pembayaran Storage / Demurage / Detention",
-            'supplier'=>$supplier,
-            'customer'=>$customer,
+            'supplier' => $supplier,
+            'customer' => $customer,
             'dataJO' => null,
         ]);
     }
@@ -153,22 +167,22 @@ class PaymentSDTController extends Controller
            
             DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 array(
-                    $data['pembayaran'],// id kas_bank dr form
-                    now(),//tanggal
-                    0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                    $data['total'], //uang keluar (kredit)
+                    $data['pembayaran'], // id kas_bank dr form
+                    now(), // tanggal
+                    0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                    $data['total'], // uang keluar (kredit)
                     1013, //kode coa
                     'uang_SDT',
-                    'UANG KELUAR # BAYAR S/D/T'.'# BL:'.$data['no_bl'].'# PENGIRIM:'.$data['pengiriman'].'# PELAYARAN:'.$data['pelayaran'].'# NO.KONTAINER:'.'('.implode('-', $data['no_kontainer']).')'.'# CATATAN :'.$data['catatan'], //keterangan_transaksi
+                    'UANG KELUAR # BAYAR S/D/T'.'# BL:'.$data['no_bl'].'# PENGIRIM:'.$data['pengiriman'].'# PELAYARAN:'.$data['pelayaran'].'# NO.KONTAINER:'.'('.implode('-', $data['no_kontainer']).')'.'# CATATAN :'.$data['catatan'], // keterangan_transaksi
                     $data['no_bl'],//keterangan_kode_transaksi
-                    $user,//created_by
-                    now(),//created_at
-                    $user,//updated_by
-                    now(),//updated_at
+                    $user, // created_by
+                    now(), // created_at
+                    $user, // updated_by
+                    now(), // updated_at
                     'Y'
                 ) 
             );
-            return redirect()->route('pembayaran_sdt.index')->with(['status' => 'Success', 'msg' => "Pembayaran Dengan No BL ".$data['no_bl']." berhasil"]);
+            return redirect()->route('pembayaran_sdt.index')->with(['status' => 'Success', 'msg' => "Berhasil membayar SDT"]);
             
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
@@ -218,38 +232,6 @@ class PaymentSDTController extends Controller
                     ->groupBy('jod.id_jo','jod.id')
                     ->get();
 
-            $result = DB::select("SELECT jo.*, jod.*, jo.status AS statusJO, jod.status AS statusDetail, c.kode AS kode, c.nama AS nama_cust, s.nama AS nama_supp,
-                SUM(jodb.storage) AS tot_storage
-                FROM job_order AS jo
-                LEFT JOIN customer AS c ON c.id = jo.id_customer
-                LEFT JOIN supplier AS s ON s.id = jo.id_supplier
-                JOIN job_order_detail AS jod ON jo.id = jod.id_jo
-                LEFT JOIN job_order_detail_biaya AS jodb ON jodb.id_jo_detail = jod.id AND jodb.is_aktif = 'Y' AND jodb.status_bayar = 'MENUNGGU PEMBAYARAN'
-                LEFT JOIN grup_tujuan AS gt ON jod.id_grup_tujuan = gt.id
-                WHERE jo.is_aktif = 'Y' AND jo.status = 'PROSES DOORING'
-                GROUP BY jod.id_jo, jod.id
-            ");
-
-
-            // $dataJO = DB::select("SELECT
-            //         jo.id,
-            //         jo.no_bl,
-            //         CONCAT('[', GROUP_CONCAT(
-            //             JSON_OBJECT(
-            //                 'no_jo', jo.no_jo,
-            //                 'no_kontainer', jod.no_kontainer,
-            //                 'seal', jod.seal
-            //             )
-            //             SEPARATOR ','
-            //         ), ']') AS json_detail
-            //     FROM job_order jo
-            //     LEFT JOIN job_order_detail jod ON jod.id_jo = jo.id
-            //     GROUP BY jo.id, jo.no_bl
-            //     ORDER BY no_bl;
-            // ");
-       
-            // var_dump($result); die;
-            // var_dump($dataJO); die;
             return response()->json(["result" => "success",'data' => $dataJO], 200);
         } catch (\Throwable $th) {
             return response()->json(["result" => "error",'message' => $th->getMessage()], 500);

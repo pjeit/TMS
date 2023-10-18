@@ -8,8 +8,6 @@
 
 @section('content')
 @include('sweetalert::alert')
-<meta name="csrf-token" content="{{ csrf_token() }}" />
-
 <style>
 
 </style>
@@ -19,11 +17,9 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <div class="">
-                          <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
-                             <i class="fa fa-credit-card"></i> Bayar
-                        </button>
-                    </div>
+                    <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
+                        <i class="fa fa-credit-card"></i> Bayar
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="col-sm-12 col-md-4 col-lg-4 ">

@@ -180,7 +180,7 @@
                                         <select class="form-control select2" style="width: 100%;" id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                             <option value="">--PILIH KAS--</option>
                                             @foreach ($dataKas as $kas)
-                                                <option value="{{$kas->id}}">{{ $kas->nama }}</option>
+                                                <option value="{{$kas->id}}" {{$kas->id == 1? 'selected':''}}>{{ $kas->nama }}</option>
                                             @endforeach
                                         </select>
 
