@@ -293,6 +293,7 @@
                                                 $value->deskripsi =='LOLO'||
                                                 $value->deskripsi =='APBS'||
                                                 $value->deskripsi =='TL'||
+                                                $value->deskripsi =='CLEANING'||
                                                 $value->deskripsi =='DOCFEE'/*||
                                                 str_contains($value->deskripsi, 'OPERASIONAL')*/
 

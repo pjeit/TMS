@@ -185,6 +185,8 @@
 
                             <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
                             <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
+                             <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
+
                         @else
                             <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
 
@@ -192,7 +194,6 @@
                         
                     {{-- @endforeach --}}
                
-                    <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">SUBTOTAL</td>
                 </tr>
             </thead>
@@ -232,11 +233,14 @@
                                 @endif
                                 
                             @endforeach
+
                         @else
                             -
                             
                         @endif
+
                         </td>
+                        <td class="text-right">{{ number_format($detail->diskon) }}</td>
 
                     @else
                         <td class="text-right" {{--rowspan="27"--}}> <br>
@@ -256,7 +260,6 @@
                         </td>
                     @endif
 
-                    <td class="text-right">{{ number_format($detail->diskon) }}</td>
                     <td class="text-right" style="padding-right: 20px;">{{ number_format($detail->sub_total) }}</td>
                 </tr>
                 @php
@@ -271,7 +274,7 @@
                         @if ($cekTarif)
                             <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
                         @else
-                            <td colspan="6" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                            <td colspan="5" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
                         @endif
                         
                     {{-- @endforeach --}}

@@ -138,6 +138,19 @@ class DalamPerjalananController extends Controller
                             ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
                     })
                     ->get();
+        $dataOpreasionalJO = DB::table('sewa_operasional AS so')
+                    ->select('so.*','s.id_sewa','jo.id as id_jo')
+                    ->leftJoin('sewa AS s', 'so.id_sewa', '=', 's.id_sewa')
+                    ->leftJoin('job_order AS jo', 's.id_jo', '=', 'jo.id')
+                    ->where('so.is_aktif', '=', 'Y')
+                    ->where('so.id_sewa', '=', $dalam_perjalanan->id_sewa)
+                    ->where('so.deskripsi', 'not like', '%OPERASIONAL%')
+                    ->where(function ($query) {
+                        $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
+                            ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
+                    })
+                    ->get();
+                dd($dataOpreasionalJO);
         // $cek_trigger = JobOrder::select('job_order.*')
         //         ->leftJoin('job_order_detail as jod', 'job_order.id', '=', 'jod.id_jo')
         //         ->where('jod.status', 'PROSES DOORING')
