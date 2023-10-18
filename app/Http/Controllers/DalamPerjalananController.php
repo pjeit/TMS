@@ -143,14 +143,15 @@ class DalamPerjalananController extends Controller
                     ->leftJoin('sewa AS s', 'so.id_sewa', '=', 's.id_sewa')
                     ->leftJoin('job_order AS jo', 's.id_jo', '=', 'jo.id')
                     ->where('so.is_aktif', '=', 'Y')
-                    ->where('so.id_sewa', '=', $dalam_perjalanan->id_sewa)
+                    // ->where('so.id_sewa', '=', $dalam_perjalanan->id_sewa)
+                    ->where('s.id_jo', '=', $dalam_perjalanan->id_jo)
                     ->where('so.deskripsi', 'not like', '%OPERASIONAL%')
                     ->where(function ($query) {
                         $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
                             ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
                     })
                     ->get();
-                dd($dataOpreasionalJO);
+                // dd($dataOpreasionalJO);
         // $cek_trigger = JobOrder::select('job_order.*')
         //         ->leftJoin('job_order_detail as jod', 'job_order.id', '=', 'jod.id_jo')
         //         ->where('jod.status', 'PROSES DOORING')
@@ -240,6 +241,7 @@ class DalamPerjalananController extends Controller
             foreach ($dataJO as $value) {
                 if ($value->thc||$value->thc != 0) {
                     $objthc = [
+                        'id_jo'=>$value->id,
                         'deskripsi' => 'THC',
                         'biaya' =>$value->thc,
                     ];
@@ -247,6 +249,7 @@ class DalamPerjalananController extends Controller
                 }
                 if ($value->lolo||$value->lolo != 0) {
                     $objlolo = [
+                        'id_jo'=>$value->id,
                         'deskripsi' => 'LOLO',
                         'biaya' =>$value->lolo,
                     ];
@@ -254,6 +257,7 @@ class DalamPerjalananController extends Controller
                 }
                 if ($value->apbs||$value->apbs != 0) {
                     $objapbs = [
+                        'id_jo'=>$value->id,
                         'deskripsi' => 'APBS',
                         'biaya' =>$value->apbs,
                     ];
@@ -261,6 +265,7 @@ class DalamPerjalananController extends Controller
                 }
                 if ($value->cleaning||$value->cleaning != 0) {
                     $objcleaning = [
+                        'id_jo'=>$value->id,
                         'deskripsi' => 'CLEANING',
                         'biaya' =>$value->cleaning,
                     ];
@@ -268,6 +273,7 @@ class DalamPerjalananController extends Controller
                 }
                 if ($value->doc_fee||$value->doc_fee != 0) {
                     $objdoc_fee = [
+                        'id_jo'=>$value->id,
                         'deskripsi' => 'DOC_FEE',
                         'biaya' =>$value->doc_fee,
                     ];
@@ -275,13 +281,15 @@ class DalamPerjalananController extends Controller
                 }
             }
         }
-        // dd($array_inbound_parent);
         //yang thc lolo
-        foreach($dataOpreasional as $opersional)
+        foreach($dataOpreasionalJO as $opersional)
         {
             foreach ($array_inbound_parent as $key=> $dataInbound) {
                 # code...
-                if($opersional->deskripsi == $dataInbound['deskripsi'] && $opersional->total_operasional == $dataInbound['biaya'] )
+                if($opersional->deskripsi == $dataInbound['deskripsi'] && 
+                   $opersional->total_operasional == $dataInbound['biaya'] &&
+                   $opersional->id_jo ==  $dataInbound['id_jo']
+                )
                 {
                     //hapus array kalau datanya sama 
                     unset($array_inbound_parent[$key]);
@@ -301,6 +309,7 @@ class DalamPerjalananController extends Controller
             }
         }
         // dd(  $array_inbound);
+        // dd($array_inbound_parent);
 
 
          $Tujuan = DB::table('grup_tujuan as gt')
