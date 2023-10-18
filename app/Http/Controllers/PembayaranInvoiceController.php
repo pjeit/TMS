@@ -112,7 +112,6 @@ class PembayaranInvoiceController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id; 
-        // dd();
         try {
             if($data['detail'] != null){
                 $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
@@ -158,7 +157,6 @@ class PembayaranInvoiceController extends Controller
                                 $invoice->updated_by = $user;
                                 $invoice->updated_at = now();
                                 $invoice->save();
-    
                                 // jika status == SELESAI PEMBAYARAN INVOICE, otomatis TRIGGER "update_status_invoice_detail" di tabel invoice di DB
                             }
                         }
@@ -299,7 +297,6 @@ class PembayaranInvoiceController extends Controller
                 ->orderBy('i.id','ASC')
                 ->get();
         }elseif($status === 'LUNAS'){
-            // row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
             $data = DB::table('invoice_pembayaran AS ip')
                 ->select('i.no_invoice', 'i.id as id', 'i.total_sisa','i.jatuh_tempo', 'i.tgl_invoice','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
                         ,'g.id as id_grup','ip.no_bukti_potong', 'ip.catatan', 'ip.id as id_ip')
@@ -307,6 +304,7 @@ class PembayaranInvoiceController extends Controller
                 ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
                 ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
                 ->where('i.is_aktif', '=', 'Y')
+                ->whereRaw("RIGHT(i.no_invoice, 2) != '/I'") // Add this line to filter based on the last 2 characters
                 ->where('ip.no_bukti_potong', NULL)
                 ->orderBy('i.id','ASC')
                 ->get();

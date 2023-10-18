@@ -122,7 +122,7 @@ class PencairanUangJalanFtlController extends Controller
 
             $total_uj_dan_tl = '#total_uj_dan_tl:' . ($total_uj + $total_tl);
             // dd($total_uj_dan_tl);
-            $tl = $data['teluk_lamong'] != 0? '#teluk_lamong:'.(isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0):''; 
+            $tl = isset($data['teluk_lamong'])? ($data['teluk_lamong'] != 0? '#teluk_lamong:'.(isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0):''):""; 
             $refrensi_keterangan_string = 
                 '#uang_jalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
                 $tl. 
