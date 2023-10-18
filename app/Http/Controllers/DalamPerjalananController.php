@@ -228,8 +228,7 @@ class DalamPerjalananController extends Controller
                 array_push($array_inbound, $objWashing);
             }
         }
-            $array_inbound_parent = [];
-
+        $array_inbound_parent = [];
         if($dalam_perjalanan->jenis_order=="INBOUND")
         {
 
@@ -378,6 +377,7 @@ class DalamPerjalananController extends Controller
             'judul' => "Dalam Perjalanan",
             'sewa'=>$sewa,
             'dataOpreasional'=>$dataOpreasional,
+            'dataOpreasionalJO'=>$dataOpreasionalJO,
             'array_inbound'=>$array_inbound,
             'array_outbond'=>$array_outbond,
             'array_inbound_parent'=>$array_inbound_parent
