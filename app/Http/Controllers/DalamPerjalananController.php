@@ -398,27 +398,27 @@ class DalamPerjalananController extends Controller
                 $JOD->status = 'MENUNGGU INVOICE';
                 $JOD->save();
 
-                //LOGIC BUAT UBAH STATUS JO DARI PROSES DOORING KE MENUNGGU INVOICE
-                $cek_trigger = DB::table('job_order_detail as jod')
-                ->leftJoin('job_order', 'job_order.id', '=', 'jod.id_jo')
-                ->where('job_order.status', 'PROSES DOORING')
-                ->where('job_order.id', $data['id_jo_hidden'])
-                ->where('job_order.is_aktif', '=', "Y")
-                // ->where('jod.id', $dalam_perjalanan->id_jo_detail)
-                ->where('jod.status', 'PROSES DOORING')
-                ->where('jod.is_aktif', 'Y')
-                ->get();
+                // //LOGIC BUAT UBAH STATUS JO DARI PROSES DOORING KE MENUNGGU INVOICE
+                // $cek_trigger = DB::table('job_order_detail as jod')
+                // ->leftJoin('job_order', 'job_order.id', '=', 'jod.id_jo')
+                // ->where('job_order.status', 'PROSES DOORING')
+                // ->where('job_order.id', $data['id_jo_hidden'])
+                // ->where('job_order.is_aktif', '=', "Y")
+                // // ->where('jod.id', $dalam_perjalanan->id_jo_detail)
+                // ->where('jod.status', 'PROSES DOORING')
+                // ->where('jod.is_aktif', 'Y')
+                // ->get();
 
-                if($cek_trigger=='[]')
-                {
-                    DB::table('job_order')
-                            ->where('id', $data['id_jo_hidden'])
-                            ->update([
-                                'status' => 'MENUNGGU INVOICE',
-                                'updated_at' => now(),
-                                'updated_by' => $user,
-                            ]);
-                }
+                // if($cek_trigger=='[]')
+                // {
+                //     DB::table('job_order')
+                //             ->where('id', $data['id_jo_hidden'])
+                //             ->update([
+                //                 'status' => 'MENUNGGU INVOICE',
+                //                 'updated_at' => now(),
+                //                 'updated_by' => $user,
+                //             ]);
+                // }
             }
             //ini kalo dicentang yang harcode di html
             if(isset($data['data_hardcode']))
