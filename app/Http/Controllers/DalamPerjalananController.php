@@ -397,7 +397,7 @@ class DalamPerjalananController extends Controller
         //
         $data = $request->post();
         $user = Auth::user()->id; 
-        // dd(/*isset(*/$data['data_hardcode']/*[0]['masuk_db'])*/);
+        // dd(/*isset(*/$data/*[0]['masuk_db'])*/); 
         // dd($dalam_perjalanan->jenis_order);
 
         try {
@@ -487,6 +487,21 @@ class DalamPerjalananController extends Controller
                                 'updated_by' => $user,
                             ]);
                       
+                    }
+                    else
+                    {
+                       DB::table('sewa_operasional')
+                            ->where('id_sewa', $dalam_perjalanan->id_sewa)
+                            ->where('id', $value['id_sewa_operasional_data'])
+                            ->update([
+                                'deskripsi' => $value['deskripsi_data'],
+                                'total_operasional' => (float)str_replace(',', '', $value['nominal_data']),
+                                'is_ditagihkan' => $value['ditagihkan_data_value'],
+                                'is_dipisahkan' => $value['dipisahkan_data_value'],
+                                'catatan' => $value['catatan_data'],
+                                'updated_at' => now(),
+                                'updated_by' => $user,
+                            ]); 
                     }
                     # code...
                 }

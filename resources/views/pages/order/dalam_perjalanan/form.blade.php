@@ -200,7 +200,7 @@
                                 <span class="badge badge-success">Data Yang Tersimpan</span>
                                 <span class="badge badge-danger">Data Template</span>
                                 <span class="badge badge-primary">Data Lain-lain</span>
-                                <span class="badge badge-warning">Data Inbound</span>
+                                <span class="badge badge-info">Data Inbound</span>
                                 <span class="badge badge-warning">Data Outbound</span>
 
 
@@ -289,6 +289,7 @@
                                                 $value->deskripsi =='TALLY'||
                                                 $value->deskripsi =='TIMBANG'||
                                                 $value->deskripsi =='BURUH'||
+                                                $value->deskripsi =='LEMBUR'||
                                                 $value->deskripsi =='THC'||
                                                 $value->deskripsi =='LOLO'||
                                                 $value->deskripsi =='APBS'||
@@ -319,6 +320,7 @@
                                                 $value->deskripsi !='TALLY'&&
                                                 $value->deskripsi !='TIMBANG'&&
                                                 $value->deskripsi !='BURUH'&&
+                                                $value->deskripsi !='LEMBUR'&&
                                                 $value->deskripsi !='INAP'&& 
                                                 $value->deskripsi != 'CLEANING'&&
                                                 $value->deskripsi !='THC'&&
@@ -491,14 +493,14 @@
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                     <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
-                                                    <span class="badge badge-warning">Data Inbound</span>
+                                                    <span class="badge badge-info">Data Inbound</span>
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                         <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya'],2) }}" class="form-control uang numaja" readonly>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
-                                                    <div class="icheck-warning d-inline">
+                                                    <div class="icheck-info d-inline">
                                                         <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data]"  >
                                                         <label for="checkTagih_data_{{$index}}"></label>
                                                         <input type="hidden" class="value_cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data_value]"  value="N">
@@ -506,7 +508,7 @@
                                                     </div>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}" >
-                                                    <div class="icheck-warning d-inline">
+                                                    <div class="icheck-info d-inline">
                                                         <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="dataMaster[{{$index}}][dipisahkan_data]"   >
                                                         <label for="checkPisah_data_{{$index}}"></label>
                                                         <input type="hidden" class="value_cek_dipisahkan_data" name="dataMaster[{{$index}}][dipisahkan_data_value]"  value="N">
@@ -531,7 +533,7 @@
                                         @foreach ($array_inbound_parent as $key => $value)
                                             <tr id="{{$index}}">
                                                 <td >
-                                                    <div class="icheck-warning d-inline">
+                                                    <div class="icheck-info d-inline">
                                                         <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N" name="dataMaster[{{$index}}][masuk_db]">
                                                         <label for="checkboxPrimary_{{$index}}"></label>
                                                     </div>
@@ -542,14 +544,14 @@
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                     <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
-                                                    <span class="badge badge-warning">Data Inbound</span>
+                                                    <span class="badge badge-info">Data Inbound</span>
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                         <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya'],2) }}" class="form-control uang numaja" readonly>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
-                                                    <div class="icheck-warning d-inline">
+                                                    <div class="icheck-info d-inline">
                                                         <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data]"  >
                                                         <label for="checkTagih_data_{{$index}}"></label>
                                                         <input type="hidden" class="value_cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data_value]"  value="N">
@@ -557,7 +559,7 @@
                                                     </div>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}" >
-                                                    <div class="icheck-warning d-inline">
+                                                    <div class="icheck-info d-inline">
                                                         <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="dataMaster[{{$index}}][dipisahkan_data]"   >
                                                         <label for="checkPisah_data_{{$index}}"></label>
                                                         <input type="hidden" class="value_cek_dipisahkan_data" name="dataMaster[{{$index}}][dipisahkan_data_value]"  value="N">
@@ -683,7 +685,7 @@
             var id_operasional = row.find('.id_operasional').val();
 
             
-            if (id_operasional) {
+            if (id_operasional && value_cek_tagih == 'Y') {
                 checkbox.prop('checked', true);
                 checkbox.val('Y');
 
@@ -1137,16 +1139,17 @@
                         trimTextbox ==='STORAGE'||
                         trimTextbox ==='DEMURAGE'||
                         trimTextbox ==='DETENTION'||
-                        trimTextbox === 'REPAIR'||
-                        trimTextbox === 'WASHING'||
+                        trimTextbox ==='REPAIR'||
+                        trimTextbox ==='WASHING'||
                         trimTextbox ==='SEAL PELAYARAN'||
                         trimTextbox ==='SEAL PJE'||
                         trimTextbox ==='PLASTIK'||
                         trimTextbox ==='TALLY'||
                         trimTextbox ==='TIMBANG'||
                         trimTextbox ==='BURUH'||
+                        trimTextbox ==='LEMBUR'||
                         trimTextbox ==='INAP'|| 
-                        trimTextbox === 'CLEANING'||
+                        trimTextbox ==='CLEANING'||
                         trimTextbox =='THC'||
                         trimTextbox =='LOLO'||
                         trimTextbox =='APBS'||
