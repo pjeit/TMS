@@ -50,13 +50,13 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                 </div>
-                                <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" >
+                                <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" autocomplete="off" >
                             </div>
                         </div>
                            <div class="form-group col-12 col-md-6 col-lg-6">
                             <label>Customer <span class="text-red">*</span></label>
                             <select class="form-control select2" style="width: 100%;" id='id_customer' name="id_customer" required>
-                                <option value="0">&nbsp;</option>
+                                <option value="">Pilih customer</option>
                                 @foreach ($customers as $item)
                                     <option value="{{$item->id}}">{{ $item['kode'] }} - {{ $item['nama'] }}</option>
                                 @endforeach

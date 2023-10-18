@@ -68,6 +68,8 @@ class SewaController extends Controller
         
         try {
             $data = $request->collect();
+            // dd($data);
+
             $pengaturan = PengaturanKeuangan::first();
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
@@ -172,9 +174,9 @@ class SewaController extends Controller
                             'updated_by' => $user,
                     ]);
                 ///
-                if(isset($booking_id)){
+                if(isset($data['booking_id'])){
                     DB::table('booking')
-                        ->where('id', $booking_id)
+                        ->where('id', $data['booking_id'])
                         ->update([
                             'is_sewa' => "Y", // berarti sudah masuk sewa
                             'updated_at' => now(),

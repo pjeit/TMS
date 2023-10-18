@@ -106,7 +106,7 @@ class SewaRekananController extends Controller
             $sewa = new Sewa();
             $sewa->id_supplier = $data['supplier'];
             $sewa->no_sewa = $no_sewa;
-            $sewa->id_booking = $booking_id;
+            $sewa->id_booking = ($data['booking_id'] == NULL || $data['booking_id'] == 'null')? NULL:$data['booking_id'];
             $sewa->id_jo = $data['id_jo'];
             $sewa->id_jo_detail = $data['id_jo_detail'];
             $sewa->id_customer = $data['customer_id'];
@@ -194,9 +194,9 @@ class SewaRekananController extends Controller
                     ]);
                 ///
                 
-                if(isset($booking_id)){
+                if(isset($data['booking_id'])){
                     DB::table('booking')
-                        ->where('id', $booking_id)
+                        ->where('id', $data['booking_id'])
                         ->update([
                             'is_sewa' => "Y", // berarti sudah masuk sewa
                             'updated_at' => now(),
@@ -250,7 +250,7 @@ class SewaRekananController extends Controller
                 }
             }
 
-            return redirect()->route('truck_order.index')->with('status','Berhasil menambahkan data Sewa Rekanan');
+            return redirect()->route('truck_order.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambah data sewa rekanan!']);
         } catch (ValidationException $e) {
             // cancel input db
             DB::rollBack();
@@ -643,7 +643,8 @@ class SewaRekananController extends Controller
             }
             
             
-            return redirect()->route('truck_order_rekanan.index')->with('status','Berhasil merubah data sewa rekanan');
+            return redirect()->route('truck_order_rekanan.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data sewa rekanan!']);
+            
         } catch (ValidationException $e) {
             //throw $th;
             DB::rollBack();
