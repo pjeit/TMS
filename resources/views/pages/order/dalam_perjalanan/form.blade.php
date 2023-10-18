@@ -482,7 +482,7 @@
                                         @foreach ($array_inbound as $key => $value)
                                             <tr id="{{$index}}">
                                                 <td >
-                                                    <div class="icheck-warning d-inline">
+                                                    <div class="icheck-info d-inline">
                                                         <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N" name="dataMaster[{{$index}}][masuk_db]">
                                                         <label for="checkboxPrimary_{{$index}}"></label>
                                                     </div>

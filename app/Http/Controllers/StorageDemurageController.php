@@ -165,7 +165,7 @@ class StorageDemurageController extends Controller
                 }
             }
 
-            return redirect()->route('storage_demurage.index')->with('status','Sukses Menambahkan Data!!');
+            return redirect()->route('storage_demurage.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambahkan Data']);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }

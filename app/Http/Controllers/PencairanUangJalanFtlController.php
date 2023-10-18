@@ -122,11 +122,11 @@ class PencairanUangJalanFtlController extends Controller
 
             $total_uj_dan_tl = '#total_uj_dan_tl:' . ($total_uj + $total_tl);
             // dd($total_uj_dan_tl);
-
+            $tl = isset($data['teluk_lamong'])? ($data['teluk_lamong'] != 0? '#teluk_lamong:'.(isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0):''):""; 
             $refrensi_keterangan_string = 
                 '#uang_jalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
-                '#teluk_lamong:'.(isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0) . 
-                 $total_uj_dan_tl . 
+                $tl. 
+                $total_uj_dan_tl . 
                 '#potongHutang:' .(isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
                 '#totalDiterima:' .(float)str_replace(',', '', $data['total_diterima']);
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();

@@ -139,7 +139,7 @@
                                             <span class="input-group-text">Rp</span>
                                         </div>
                                         <input type="text" id="total_sisa" name="total_sisa" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                        <input type="text" id="total_pisah" name="total_pisah" class="form-control uang numajaMinDesimal" value="" placeholder="total_pisah" readonly>                         
+                                        <input type="hidden" id="total_pisah" name="total_pisah" class="form-control uang numajaMinDesimal" value="" placeholder="total_pisah" readonly>                         
                                     </div>
                                 </div>
                             </div>

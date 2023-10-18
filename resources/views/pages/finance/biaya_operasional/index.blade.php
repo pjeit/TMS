@@ -65,7 +65,7 @@
                                         <select class="form-control selectpicker" required id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                             <option value="">── PILIH PEMBAYARAN ──</option>
                                             @foreach ($dataKas as $kas)
-                                                <option value="{{$kas->id}}">{{ $kas->nama }}</option>
+                                                <option value="{{$kas->id}}" {{$kas->id == '1'? 'selected':''}} >{{ $kas->nama }}</option>
                                             @endforeach
                                         </select>
                                         <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>

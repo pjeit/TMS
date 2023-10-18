@@ -8,8 +8,6 @@
 
 @section('content')
 @include('sweetalert::alert')
-<meta name="csrf-token" content="{{ csrf_token() }}" />
-
 <style>
 
 </style>
@@ -19,19 +17,17 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <div class="">
-                          <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
-                             <i class="fa fa-credit-card"></i> Bayar
-                        </button>
-                    </div>
+                    <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
+                        <i class="fa fa-credit-card"></i> Bayar
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="col-sm-12 col-md-4 col-lg-4 ">
                         <div class="form-group">
                             <label for="">Status Invoice</label> 
                             <select class="form-control selectpicker" required name="status" id="status" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                <option value="BELUM LUNAS">Belum Dibayar</option>
-                                <option value="LUNAS" selected>Selesai Dibayar</option>
+                                <option value="BELUM LUNAS" selected>Belum Dibayar</option>
+                                <option value="LUNAS">Selesai Dibayar</option>
                             </select>
                         </div>
                     </div>
@@ -430,7 +426,7 @@
                                     </td>`);
                         row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
                         row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
-                        row.append(`<td>${data[i].total_sisa == 0? 'LUNAS':data[i].total_sisa}</td>`);
+                        row.append(`<td>${data[i].total_sisa == 0? 'LUNAS':data[i].total_sisa.toLocaleString()}</td>`);
                         row.append(`<td>${data[i].catatan == null? '':data[i].catatan}</td>`);
                         if(status == 'BELUM LUNAS'){
                             var jenis =  `<input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="${data[i].billing_to}" grupId="${data[i].id_grup}" value="${data[i].id}">`;
