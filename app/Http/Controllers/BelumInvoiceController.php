@@ -229,7 +229,7 @@ class BelumInvoiceController extends Controller
                     $invoice_d->diskon = $value['diskon']!=NULL? floatval(str_replace(',', '', $value['diskon'])):0;
                     $invoice_d->sub_total = $value['subtotal']!=NULL? $value['subtotal']:0;
                     $invoice_d->catatan = $value['catatan'];
-                    $invoice_d->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
+                    // $invoice_d->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
                     $invoice_d->created_by = $user;
                     $invoice_d->created_at = now();
                     $invoice_d->is_aktif = 'Y';
@@ -281,7 +281,7 @@ class BelumInvoiceController extends Controller
                         $invoice_d_pisah->add_cost_pisah = $value['addcost_pisah']!=NULL? $value['addcost_pisah']:0;
                         $invoice_d_pisah->sub_total = $value['addcost_pisah']!=NULL? $value['addcost_pisah']:0;
                         $invoice_d_pisah->catatan = $value['catatan'];
-                        $invoice_d_pisah->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
+                        // $invoice_d_pisah->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
                         $invoice_d_pisah->created_by = $user;
                         $invoice_d_pisah->created_at = now();
                         $invoice_d_pisah->is_aktif = 'Y';

@@ -425,30 +425,31 @@
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
+                    // const Toast = Swal.mixin({
+                    //     toast: true,
+                    //     position: 'top',
+                    //     timer: 2500,
+                    //     showConfirmButton: false,
+                    //     timerProgressBar: true,
+                    //     didOpen: (toast) => {
+                    //         toast.addEventListener('mouseenter', Swal.stopTimer)
+                    //         toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    //     }
+                    // })
 
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Disimpan'
-                    })
+                    // Toast.fire({
+                    //     icon: 'success',
+                    //     title: 'Data Disimpan'
+                    // })
 
-                    setTimeout(() => {
-                        this.submit();
-                    }, 800); // 2000 milliseconds = 2 seconds
+                    // setTimeout(() => {
+                    //     this.submit();
+                    // }, 800); // 2000 milliseconds = 2 seconds
+                    this.submit();
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 2500,
                         showConfirmButton: false,
                         timerProgressBar: true,

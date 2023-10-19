@@ -27,7 +27,7 @@
                             <label for="">Status Invoice</label> 
                             <select class="form-control selectpicker" required name="status" id="status" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                 <option value="BELUM LUNAS" selected>Belum Dibayar</option>
-                                <option value="LUNAS">Selesai Dibayar</option>
+                                <option value="LUNAS">Riwayat Pembayaran (Tanpa bukti potong)</option>
                             </select>
                         </div>
                     </div>
