@@ -400,7 +400,7 @@ class DalamPerjalananController extends Controller
         $user = Auth::user()->id; 
         // dd(/*isset(*/$data/*[0]['masuk_db'])*/); 
         // dd($dalam_perjalanan->jenis_order);
-
+        // dd($data);
         try {
             $dalam_perjalanan->catatan = isset($data['catatan'])? $data['catatan']:null;
             $dalam_perjalanan->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;

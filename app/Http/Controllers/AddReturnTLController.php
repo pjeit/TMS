@@ -168,8 +168,8 @@ class AddReturnTLController extends Controller
             $SOP = new SewaOperasional();
             $SOP->id_sewa = $data['id_sewa_defaulth']; 
             $SOP->deskripsi = 'TL';
-            $SOP->total_operasional = $data['jumlah'];
-            $SOP->total_dicairkan = $data['total_diterima'];
+            $SOP->total_operasional = (float)str_replace(',', '', $data['jumlah']);
+            $SOP->total_dicairkan = (float)str_replace(',', '', $data['total_diterima']);
             $SOP->tgl_dicairkan = now();
             $SOP->is_ditagihkan = 'N';
             $SOP->is_dipisahkan = 'N';
