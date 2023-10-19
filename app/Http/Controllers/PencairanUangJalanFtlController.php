@@ -243,6 +243,11 @@ class PencairanUangJalanFtlController extends Controller
             $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
             // dd($sewa);
             $sewa->status = 'PROSES DOORING';
+            if (isset($data['teluk_lamong'])) {
+                        
+                $sewa->total_uang_jalan += (float)str_replace(',', '', $data['teluk_lamong']);
+                
+            }
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             $sewa->save();

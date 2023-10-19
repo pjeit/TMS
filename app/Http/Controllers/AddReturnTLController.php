@@ -149,6 +149,11 @@ class AddReturnTLController extends Controller
             //code...
          
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+             $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);                    
+            $sewa->total_uang_jalan += (float)str_replace(',', '', $data['jumlah']);
+            $sewa->updated_by = $user;
+            $sewa->updated_at = now();
+            $sewa->save();
             DB::table('sewa_biaya')
                     ->insert(array(
                     'id_sewa' =>  $data['id_sewa_defaulth'],
@@ -175,6 +180,12 @@ class AddReturnTLController extends Controller
             $SOP->save();
             if(isset($kh)&&isset($data['potong_hutang'])){
                 
+                
+                $kh->total_hutang -=(float)str_replace(',', '', $data['potong_hutang']); 
+                $kh->updated_by = $user;
+                $kh->updated_at = now();
+                $kh->save();
+
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
                 $kht->refrensi_id = $data['id_sewa_defaulth'];
@@ -191,13 +202,10 @@ class AddReturnTLController extends Controller
                 $kht->created_by = $user;
                 $kht->created_at = now();
                 $kht->is_aktif = 'Y';
-                if($kht->save())
-                {
-                    $kh->total_hutang = $kh->total_hutang - isset($data['potong_hutang'])? (float)str_replace(',', '', $data['potong_hutang']):0; 
-                    $kh->updated_by = $user;
-                    $kh->updated_at = now();
-                    $kh->save();
-                }
+                $kht->save();
+                
+                
+                
                 if($data['total_diterima']!=0)
                 {
                     
@@ -325,7 +333,12 @@ class AddReturnTLController extends Controller
                     'is_aktif' => "N",
                 )
             );
-            if(isset($kh)&&$data['pembayaran']=='hutang_karyawan'){
+            $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);                    
+            $sewa->total_uang_jalan -= (float)str_replace(',', '', $data['jumlah']);
+            $sewa->updated_by = $user;
+            $sewa->updated_at = now();
+            $sewa->save();
+            if(/*isset($kh)&&*/$data['pembayaran']=='hutang_karyawan'){
                 
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
@@ -345,7 +358,7 @@ class AddReturnTLController extends Controller
                 $kht->is_aktif = 'Y';
                 if($kht->save())
                 {
-                    $kh->total_hutang = $kh->total_hutang + (float)str_replace(',', '', $data['jumlah']); 
+                    $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']); 
                     $kh->updated_by = $user;
                     $kh->updated_at = now();
                     $kh->save();
