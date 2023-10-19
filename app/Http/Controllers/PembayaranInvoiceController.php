@@ -154,20 +154,18 @@ class PembayaranInvoiceController extends Controller
                                 }
                                 $curStatus = '';
                                 if($invoice->total_sisa == 0){
-                                    $invoice->status = 'SELESAI PEMBAYARAN INVOICE';
                                     $curStatus = 'SELESAI PEMBAYARAN INVOICE';
+                                    $invoice->status = $curStatus;
                                 }
                                 $invoice->updated_by = $user;
                                 $invoice->updated_at = now();
                                 if($invoice->save()){
                                     if($curStatus == 'SELESAI PEMBAYARAN INVOICE'){
-                                        $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice',$invoice->id)->first();
+                                        $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
                                         if($invoiceDetail){
-                                            $invoiceDetail->status = 'SELESAI PEMBAYARAN INVOICE';
-                                            $invoiceDetail->updated_by = $user;
-                                            $invoiceDetail->updated_at = now();
-                                            if($invoiceDetail->save()){
-                                                
+                                            foreach ($invoiceDetail as $i => $item) {
+                                                $checkInvoice = Invoice::where('is_aktif', 'Y')->find($item->id_invoice);        
+                                                // if($checkInvoice)
                                             }
                                         }
                                     }

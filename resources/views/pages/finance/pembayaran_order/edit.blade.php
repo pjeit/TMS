@@ -131,7 +131,7 @@
                                     <select class="form-control select2"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                         <option value="">--PILIH PEMBAYARAN--</option>
                                         @foreach ($dataKas as $data)
-                                            <option value="{{$data->id}}">{{ $data->nama }}</option>
+                                            <option value="{{$data->id}}" {{ $data->id == 1? 'selected':'' }}>{{ $data->nama }}</option>
                                         @endforeach
                                     </select>
                                     <button type="button" class="btn btn-success" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
@@ -250,27 +250,27 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                timer: 2500,
-                                showConfirmButton: false,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            })
+                            // const Toast = Swal.mixin({
+                            //     toast: true,
+                            //     position: 'top',
+                            //     timer: 2500,
+                            //     showConfirmButton: false,
+                            //     timerProgressBar: true,
+                            //     didOpen: (toast) => {
+                            //         toast.addEventListener('mouseenter', Swal.stopTimer)
+                            //         toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            //     }
+                            // })
 
-                            Toast.fire({
-                                icon: 'Sukses',
-                                title: 'Data Pembayaran Berhasil Disimpan'
-                            })
+                            // Toast.fire({
+                            //     icon: 'Sukses',
+                            //     title: 'Data Pembayaran Berhasil Disimpan'
+                            // })
                             $("#form").submit();
                     }else{
                         const Toast = Swal.mixin({
                             toast: true,
-                            position: 'top-end',
+                            position: 'top',
                             timer: 2500,
                             showConfirmButton: false,
                             timerProgressBar: true,
