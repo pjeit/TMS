@@ -230,6 +230,9 @@
                                 @if ($detail->id_sewa == $DO->id_sewa)
                                         
                                         <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
+                                {{-- @else
+                                        <span>0</br> --}}
+
                                 @endif
                                 
                             @endforeach
@@ -250,6 +253,9 @@
                                 @if ($detail->id_sewa == $DO->id_sewa)
                                         
                                         <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
+                                {{-- @else
+                                        <span >0</br> --}}
+
                                 @endif
                                 
                             @endforeach
