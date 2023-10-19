@@ -100,7 +100,7 @@
                         <h2 >
                             <span style="color:#1f55a2"> PRIMATRANS JAYA EXPRESS</span>
                             <br>
-                            <span style="font-size:20px; font-weight:normal; margin-top:-20px;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
+                            <span style="font-size:30px; font-weight:normal; margin-top:-20px;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
                             <br>
                             {{-- <span style="font-size:20px; font-weight:normal">Telp: 0896-0301-1919</span> --}}
                             
