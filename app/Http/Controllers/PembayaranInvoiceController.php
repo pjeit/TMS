@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Session;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use Carbon\Carbon;
 use App\Helper\UserHelper;
-
+use Symfony\Component\VarDumper\VarDumper;
 
 class PembayaranInvoiceController extends Controller
 {
@@ -164,8 +164,17 @@ class PembayaranInvoiceController extends Controller
                                         $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
                                         if($invoiceDetail){
                                             foreach ($invoiceDetail as $i => $item) {
-                                                $checkInvoice = Invoice::where('is_aktif', 'Y')->find($item->id_invoice);        
-                                                // if($checkInvoice)
+                                                $check = InvoiceDetail::leftJoin('invoice', 'invoice.id', '=', 'invoice_detail.id_invoice')
+                                                                        ->where('invoice_detail.is_aktif', 'Y')
+                                                                        ->where('invoice.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                                                                        ->where('id_sewa', $item->id_sewa)->get();
+                                                if ($check->isEmpty()) {
+                                                    $updateSewa = Sewa::where('is_aktif', 'Y')->find($item->id_sewa);
+                                                    $updateSewa->status = 'SELESAI PEMBAYARAN';
+                                                    $updateSewa->updated_by = $user;
+                                                    $updateSewa->updated_at = now();
+                                                    $updateSewa->save();
+                                                }
                                             }
                                         }
                                     }
