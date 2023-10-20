@@ -39,6 +39,7 @@
                 <div class="card radiusSendiri ">
                     <div class="card-header ">
                         <a href="{{ route('dalam_perjalanan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                        {{-- <a href="{{ $sewa->status=='PROSES DOORING'?route('dalam_perjalanan.index'):route('belum_invoice.create') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a> --}}
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         <span style="font-size:11pt;" class="badge bg-dark float-right m-2">{{$sewa->jenis_order}} ORDER {{$sewa->jenis_tujuan}}</span>
                     </div>
@@ -117,16 +118,19 @@
                                             </div> 
                                         @endif
                                        
-                                        <div class="form-group">
-                                            <label for="tanggal_pencairan">Tgl. Kembali Surat Jalan<span style="color:red">*</span></label>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                     <span class="input-group-text"><input {{$sewa->is_kembali=='N'?'':'checked'}} type="checkbox" name="check_is_kembali" id="check_is_kembali"></span>
+                                        @if ($sewa->is_kembali=='N')
+                                            <div class="form-group">
+                                                <label for="tanggal_pencairan">Tgl. Kembali Surat Jalan<span style="color:red">*</span></label>
+                                                <div class="input-group mb-0">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><input {{$sewa->is_kembali=='N'?'':'checked'}} type="checkbox" name="check_is_kembali" id="check_is_kembali"></span>
+                                                    </div>
+                                                    <input type="hidden" id="is_kembali" name='is_kembali' value="{{$sewa->is_kembali}}">
+                                                    <input {{$sewa->is_kembali=='N'?'disabled':''}} type="text" autocomplete="off" name="tanggal_kembali" class="form-control date" id="tanggal_kembali" placeholder="dd-M-yyyy" value="{{$sewa->is_kembali=='Y'?\Carbon\Carbon::parse($sewa->tanggal_kembali)->format('d-M-Y'):''}}">
                                                 </div>
-                                                <input type="hidden" id="is_kembali" name='is_kembali' value="{{$sewa->is_kembali}}">
-                                                <input {{$sewa->is_kembali=='N'?'disabled':''}} type="text" autocomplete="off" name="tanggal_kembali" class="form-control date" id="tanggal_kembali" placeholder="dd-M-yyyy" value="{{$sewa->is_kembali=='Y'?\Carbon\Carbon::parse($sewa->tanggal_kembali)->format('d-M-Y'):''}}">
-                                            </div>
-                                        </div> 
+                                            </div> 
+                                        @endif
+
         
                                         <div class="form-group">
                                             <label for="no_akun">No. Surat Jalan</label>

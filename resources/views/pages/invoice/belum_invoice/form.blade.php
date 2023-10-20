@@ -280,11 +280,14 @@
                                     </button>
                                     <div class="dropdown-menu">
                                         <button type="button" name="detail" id="detail_{{$item->id_sewa}}" class="detail dropdown-item"> 
-                                            <span class="fas fa-edit mr-3"></span> Edit
+                                            <span class="fas fa-edit mr-3"></span> Detail
                                         </button>
                                         <a href="{{ route('belum_invoice.destroy', ['belum_invoice' => $item->id_sewa]) }}" class="dropdown-item" data-confirm-delete="true">
                                             <span class="fas fa-trash mr-3"></span> Delete
                                         </a>
+                                         {{-- <a href="{{route('dalam_perjalanan.edit',[$item->id_sewa])}}" class="dropdown-item" target=”_blank” >
+                                                <span class="fas fa-truck mr-3"></span> Edit Sewa
+                                            </a> --}}
                                     </div>
                                 </div>
                             </td>
@@ -629,7 +632,9 @@
             var details = $('#detail_addcost_'+key).val(); 
             if (details && (details != null || cekBiaya != '')) { // cek apakah ada isi detail addcost
                 JSON.parse(details).forEach(function(item, index) {
-                    if(item.is_aktif=="Y")
+                    if(item.is_aktif=="Y"&&item.is_ditagihkan=="Y"&&item.is_dipisahkan=="N"||
+                    item.is_aktif=="Y"&&item.is_ditagihkan=="Y"&&item.is_dipisahkan=="Y"
+                    )
                     {
                         $('#tabel_addcost > tbody:last-child').append(
                             `
