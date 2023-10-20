@@ -319,7 +319,7 @@ class PembayaranInvoiceController extends Controller
                 ->get();
         }elseif($status === 'LUNAS'){
             $data = DB::table('invoice_pembayaran AS ip')
-                ->select('i.no_invoice', 'i.id as id', 'i.total_sisa','i.jatuh_tempo', 'i.tgl_invoice','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
+                ->select('ip.total_diterima','i.no_invoice', 'i.id as id', 'i.total_sisa','i.jatuh_tempo', 'i.tgl_invoice','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
                         ,'g.id as id_grup','ip.no_bukti_potong', 'ip.catatan', 'ip.id as id_ip')
                 ->leftJoin('invoice AS i', 'i.id', '=', 'ip.id_invoice')
                 ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
@@ -329,6 +329,7 @@ class PembayaranInvoiceController extends Controller
                 ->where('ip.no_bukti_potong', NULL)
                 ->orderBy('i.id','ASC')
                 ->get();
+            // var_dump($data); die;
         }
         return $data;
     }
