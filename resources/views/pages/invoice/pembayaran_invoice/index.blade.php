@@ -34,7 +34,7 @@
                     <hr>
                     <div style="overflow: auto;">
                         <table id="tabelInvoice" class="table table-bordered" width='100%'>
-                            <thead>
+                            <thead id="thead">
                                 <tr style="margin-right: 0px;">
                                     <th >Grup</th>
                                     <th >Customer</th>
@@ -413,6 +413,31 @@
                     var baseUrl = "{{ asset('') }}";
                     $("#loading-spinner").hide();
                     var data = response;
+                    if(status == 'BELUM LUNAS'){
+                        var tagihBayar = `<th>Sisa Tagihan</th>`;
+                    }else{
+                        var tagihBayar = `<th>Total Dibayarkan</th>`;
+                    }
+                    var newHeader = `
+                                <tr style="margin-right: 0px;">
+                                    <th >Grup</th>
+                                    <th >Customer</th>
+                                    <th>No. Invoice</th>
+                                    <th width='100'>Tgl Invoice</th>
+                                    <th width='100'>Jatuh Tempo</th>
+                                    `+
+                                    tagihBayar
+                                    +`
+                                    <th>Catatan</th>
+                                    <th></th>
+                                </tr>
+                    `;
+
+                var thead = document.getElementById("thead");
+
+                if (thead) {
+                    thead.innerHTML = newHeader;
+                }
 
                     for (var i = 0; i < data.length; i++) {
                         var row = $("<tr></tr>");
@@ -426,7 +451,11 @@
                                     </td>`);
                         row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
                         row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
-                        row.append(`<td>${data[i].total_sisa == 0? 'LUNAS':data[i].total_sisa.toLocaleString()}</td>`);
+                        if(status=='BELUM LUNAS'){
+                            row.append(`<td> ${ data[i].total_sisa.toLocaleString()}</td>`);
+                        }else{
+                            row.append(`<td> ${ data[i].total_diterima.toLocaleString()}</td>`);
+                        }
                         row.append(`<td>${data[i].catatan == null? '':data[i].catatan}</td>`);
                         if(status == 'BELUM LUNAS'){
                             var jenis =  `<input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="${data[i].billing_to}" grupId="${data[i].id_grup}" value="${data[i].id}">`;
