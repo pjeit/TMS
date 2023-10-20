@@ -336,6 +336,11 @@ class RevisiUangJalanController extends Controller
         try {
             $data = DB::table('sewa AS s')
                     ->where('s.status', 'PROSES DOORING')
+                    ->whereNull('s.id_supplier')
+                    // ->where('s.stack_tl','not like','%tl_teluk_lamong%')
+                    // ->where('sb.deskripsi', 'not like', '%TL%')
+                    // ->where('s.jenis_tujuan', 'FTL')
+                     ->where('s.is_aktif', '=', 'Y')
                     ->where( function($where) use($item){
                         if($item == 'TAMBAHAN UJ'){
                             $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
@@ -350,6 +355,8 @@ class RevisiUangJalanController extends Controller
                     ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')
                     ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
                     ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
+                    // ->leftJoin('sewa_biaya AS sb', 's.id_sewa', '=', 'sb.id_sewa')
+
                     ->select(
                         's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer', 'c.grup_id',
                         's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
