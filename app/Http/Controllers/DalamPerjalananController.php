@@ -96,9 +96,9 @@ class DalamPerjalananController extends Controller
                     ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
                     ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
                     ->where('s.jenis_tujuan', 'like', '%FTL%')
-                    ->where('s.status', 'PROSES DOORING')
+                    // ->where('s.status', 'PROSES DOORING')
                     // ->whereNull('s.id_supplier')
-                    ->whereNull('s.tanggal_kembali')
+                    // ->whereNull('s.tanggal_kembali')
                     ->where('s.is_aktif', '=', 'Y')
                     ->where('s.id_sewa', '=', $dalam_perjalanan->id_sewa)
                     ->groupBy('c.id')
@@ -402,20 +402,22 @@ class DalamPerjalananController extends Controller
         // dd($dalam_perjalanan->jenis_order);
         // dd($data);
         try {
+           
             $dalam_perjalanan->catatan = isset($data['catatan'])? $data['catatan']:null;
-            $dalam_perjalanan->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
             $dalam_perjalanan->no_surat_jalan = isset($data['surat_jalan'])? $data['surat_jalan']:null;
             $dalam_perjalanan->seal_pelayaran = isset($data['seal'])? $data['seal']:null;
             $dalam_perjalanan->seal_pje = isset($data['seal_pje'])? $data['seal_pje']:null;
             $dalam_perjalanan->no_kontainer = isset($data['no_kontainer'])? $data['no_kontainer']:null;
-
-            $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
-            $dalam_perjalanan->is_kembali = $data['is_kembali'];
-
+            if( $dalam_perjalanan->status == 'PROSES DOORING')
+            {
+                $dalam_perjalanan->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
+                $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
+                $dalam_perjalanan->is_kembali = $data['is_kembali'];
+            }
             $dalam_perjalanan->updated_by = $user;
             $dalam_perjalanan->updated_at = now();
-
-            if($dalam_perjalanan->save()&&$dalam_perjalanan->jenis_order=='INBOUND'&&$data['is_kembali']=='Y'){
+            $dalam_perjalanan->save();
+            if($dalam_perjalanan->jenis_order=='INBOUND'&&$data['is_kembali']=='Y'){
 
                 $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($data['id_jo_detail_hidden']);
                 $JOD->status = 'MENUNGGU INVOICE';
@@ -559,7 +561,15 @@ class DalamPerjalananController extends Controller
                 }
             }
 
-            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+
+            // if($dalam_perjalanan->status=='PROSES DOORING')
+            // {
+                return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+            // }
+            // else
+            // {
+            //     return redirect()->route('belum_invoice.create')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+            // }
             
         } catch (ValidationException $e) {
             //throw $th;
