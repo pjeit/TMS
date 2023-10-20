@@ -50,6 +50,8 @@
                                 <input type="hidden" value="{{$sewa->no_sewa}}" id="no_sewa" name="no_sewa">
                                 <input type="hidden" value="{{$sewa->id_sewa}}" id="id_sewa_defaulth" name="id_sewa_defaulth">
                                 <input type="hidden" value="{{$sewa->nama_tujuan}}" id="tujuan" name="tujuan">
+                                <input type="hidden" value="{{$sewa->id_grup_tujuan}}" id="id_tujuan" name="id_tujuan">
+
                             </div>
 
                             <div class="form-group col-lg-3 col-md-2 col-sm-12">

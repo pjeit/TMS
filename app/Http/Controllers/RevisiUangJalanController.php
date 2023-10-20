@@ -80,7 +80,19 @@ class RevisiUangJalanController extends Controller
     
             try {
                 // dd($data);
+                $sewa_biaya = DB::table('sewa_biaya AS sb')
+                ->select('sb.*')
+                ->where('sb.is_aktif', 'Y')
+                ->where('sb.id_sewa', $data['id_sewa_defaulth'])
+                ->get();
+                $data_grup_tujuan_biaya = DB::table('grup_tujuan_biaya AS gtb')
+                ->select('gtb.*')
+                ->where('gtb.is_aktif', 'Y')
+                ->where('gtb.grup_tujuan_id', $data['id_tujuan'])
+                ->get();
 
+                // dd($data_grup_tujuan_biaya[0]['deskripsi']);
+                
                 if($data['jenis'] == 'tambahan'){
                     $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
                     $sewa->total_uang_jalan += (float)str_replace(',', '', $data['uang_jalan']);
@@ -88,11 +100,37 @@ class RevisiUangJalanController extends Controller
                     $sewa->updated_at = now();
                     $sewa->save();
 
+                    foreach ($data_grup_tujuan_biaya as $item) {
+                        $cekAdaData = false;
+                        foreach ($sewa_biaya as $item1) {
+                            if ($item->deskripsi==$item1->deskripsi && $item->biaya==$item1->biaya ) {
+                                $cekAdaData = true;
+                                break;
+                            }
+                        }
+                        if (!$cekAdaData ) {
+                                DB::table('sewa_biaya')
+                                ->insert(array(
+                                'id_sewa' => $data['id_sewa_defaulth'],
+                                'deskripsi' => $item->deskripsi ,
+                                'biaya' => $item->biaya,
+                                'catatan' => $item->catatan? $item->catatan:null,
+                                'created_at' => now(), 
+                                'created_by' => $user,
+                                'is_aktif' => "Y",
+                                )
+                            ); 
+                        }
+                        
+                    }
+
                     $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
                     if(isset($kh)&&isset($data['potong_hutang'])){
                         $kh->total_hutang -= isset($data['potong_hutang'])? (float)str_replace(',', '', $data['potong_hutang']):0; 
                         $kh->updated_by = $user;
                         $kh->updated_at = now();
+
+                        
                         if($kh->save()){
                             $kht = new KaryawanHutangTransaction();
                             $kht->id_karyawan = $data['id_karyawan'];
@@ -156,6 +194,28 @@ class RevisiUangJalanController extends Controller
                     $sewa->updated_by = $user;
                     $sewa->updated_at = now();
                     $sewa->save();
+
+                    foreach ($sewa_biaya as $item) {
+                            $cekAdaData = false;
+                            foreach ($data_grup_tujuan_biaya as $item1) {
+                                if ($item->deskripsi==$item1->deskripsi && $item->biaya==$item1->biaya ) {
+                                    $cekAdaData = true;
+                                    break;
+                                }
+                            }
+                            if (!$cekAdaData && $item->deskripsi!='TL') {
+                                DB::table('sewa_biaya')
+                                ->where('id_sewa', $data['id_sewa_defaulth'])
+                                ->where('id_biaya', $item->id_biaya)
+                                ->update(array(
+                                    'is_aktif' => "N",
+                                    'updated_at'=> now(),
+                                    'updated_by'=> $user, // masih hardcode nanti diganti cookies
+                                )
+                                );
+                            }
+                            
+                    }
 
                     $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
                     if($data['pembayaran'] != 'HUTANG_KARYAWAN'){
