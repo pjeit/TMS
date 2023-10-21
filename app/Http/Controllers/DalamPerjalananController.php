@@ -603,12 +603,33 @@ class DalamPerjalananController extends Controller
 
     public function cancel($id)
     {
-        $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
+        $sewa = DB::table('sewa AS s')
+                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
+                    ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+                    ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
+                    ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
+                    ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
+                    ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
+                    ->where('s.jenis_tujuan', 'like', '%FTL%')
+                    // ->where('s.status', 'PROSES DOORING')
+                    // ->whereNull('s.id_supplier')
+                    // ->whereNull('s.tanggal_kembali')
+                    ->where('s.is_aktif', '=', 'Y')
+                    ->where('s.id_sewa', '=', $id)
+                    ->groupBy('c.id')
+                    ->first();
         // dd($sewa->customer);
-        
-        return view('pages.order.dalam_perjalanan.batal_muat',[
+        $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            // ->paginate(10);
+            ->get();
+        return view('pages.order.dalam_perjalanan.cancel',[
             'judul' => "cancel",
             'data' => $sewa,
+            'id' => $id,
+            'dataKas' => $dataKas,
+
         ]);
     }
 }
