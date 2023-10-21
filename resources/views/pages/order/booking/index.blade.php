@@ -14,7 +14,6 @@
 @section('content')
 @include('sweetalert::alert')
 
-<br>
 <style>
    
 </style>

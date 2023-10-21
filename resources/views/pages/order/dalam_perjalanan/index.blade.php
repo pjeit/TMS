@@ -12,13 +12,12 @@
 @endsection
 
 @section('content')
-<br>
 <style>
    
 </style>
 
-<div class="card radiusSendiri">
-    {{-- <div class="row"> --}}
+<div class="container-fluid">
+    <div class="card radiusSendiri">
         <div class="card-header ">
             
         </div>
@@ -82,7 +81,12 @@
                                                     <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
                                                 </a>
                                             @endif
-                                            
+                                            <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
+                                                <span class="fas fa-undo mr-3"></span> Batal muat
+                                            </a>
+                                            <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
+                                                <span class="fas fa-times mr-3"></span> Cancel
+                                            </a>
                                         </div>
                                     </div>
                                     {{-- <form method="POST" action="{{ route('pencairan_uang_jalan_ftl.form') }}">
@@ -103,7 +107,7 @@
                     </tbody>
                 </table>
         </div>
-    {{-- </div> --}}
+    </div>
 </div>
 
 <script>

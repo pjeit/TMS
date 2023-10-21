@@ -174,6 +174,9 @@ class PembayaranInvoiceController extends Controller
                                                     $updateSewa->updated_by = $user;
                                                     $updateSewa->updated_at = now();
                                                     $updateSewa->save();
+
+                                                    // trigger update status jo detail jika semua sewa sudah selesai
+                                                    // trigger update status jo jika semua jo detail sudah selesai
                                                 }
                                             }
                                         }

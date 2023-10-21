@@ -163,16 +163,16 @@ class DalamPerjalananController extends Controller
         //         ->with('getSupplier')
         //         // ->groupBy('job_order.id')
         //         ->get();
-// $cek_trigger = DB::table('job_order_detail as jod')
-//                 ->leftJoin('job_order', 'job_order.id', '=', 'jod.id_jo')
-//                 ->where('jod.status', 'PROSES DOORING')
-//                 ->where('jod.is_aktif', 'Y')
-//                 ->where('job_order.status', 'PROSES DOORING')
-//                 ->where('job_order.id', $dalam_perjalanan->id_jo)
-//                 // ->where('jod.id', $dalam_perjalanan->id_jo_detail)
-//                 ->where('job_order.is_aktif', '=', "Y")
-//                 ->get();
-//         dd( $cek_trigger );
+        // $cek_trigger = DB::table('job_order_detail as jod')
+        //                 ->leftJoin('job_order', 'job_order.id', '=', 'jod.id_jo')
+        //                 ->where('jod.status', 'PROSES DOORING')
+        //                 ->where('jod.is_aktif', 'Y')
+        //                 ->where('job_order.status', 'PROSES DOORING')
+        //                 ->where('job_order.id', $dalam_perjalanan->id_jo)
+        //                 // ->where('jod.id', $dalam_perjalanan->id_jo_detail)
+        //                 ->where('job_order.is_aktif', '=', "Y")
+        //                 ->get();
+        //         dd( $cek_trigger );
         // dd($dataOpreasional);
         // dd(strpos($dataOpreasional, 'CLEANING/REPAIR'));
 
@@ -588,5 +588,27 @@ class DalamPerjalananController extends Controller
     public function destroy(Sewa $sewa)
     {
         //
+    }
+
+    public function batal_muat($id)
+    {
+        $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
+        // dd($sewa->customer);
+
+        return view('pages.order.dalam_perjalanan.batal_muat',[
+            'judul' => "batal muat",
+            'data' => $sewa,
+        ]);
+    }
+
+    public function cancel($id)
+    {
+        $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
+        // dd($sewa->customer);
+        
+        return view('pages.order.dalam_perjalanan.batal_muat',[
+            'judul' => "cancel",
+            'data' => $sewa,
+        ]);
     }
 }
