@@ -149,7 +149,7 @@ class AddReturnTLController extends Controller
         $data = $request->post();
         try {
             //code...
-         
+            // dd($data);
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
             // $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);                    
             // $sewa->total_uang_jalan += (float)str_replace(',', '', $data['jumlah']);
@@ -180,6 +180,23 @@ class AddReturnTLController extends Controller
             $SOP->created_at = now();
             $SOP->is_aktif = 'Y';
             $SOP->save();
+            $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->where('sewa_id', $data['id_sewa_defaulth'])
+                    ->first();
+            DB::table('uang_jalan_riwayat')
+                ->where('sewa_id', $data['id_sewa_defaulth'])
+                ->where('is_aktif', 'Y')
+                ->update(array(
+                    'total_tl'=> $datauang_jalan_riwayat->total_tl+= (float)str_replace(',', '', $data['jumlah']),
+                    'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl+= (float)str_replace(',', '', $data['jumlah']),
+                    'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang+= (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0),
+                    'total_diterima'=> $datauang_jalan_riwayat->total_diterima+= (float)str_replace(',', '', $data['total_diterima']),
+                    'updated_at'=> now(),
+                    'updated_by'=> $user,
+                )
+            );
             if(isset($kh)&&isset($data['potong_hutang'])){
                 
                 
@@ -190,7 +207,7 @@ class AddReturnTLController extends Controller
 
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
-                $kht->refrensi_id = $data['id_sewa_defaulth'];
+                $kht->refrensi_id = $datauang_jalan_riwayat->id;
                 $kht->refrensi_keterangan = 
                 '#totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
                 ' #potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
@@ -220,7 +237,7 @@ class AddReturnTLController extends Controller
                         1016, //kode coa
                         'teluk_lamong',
                         'UANG KELUAR # PENAMBAHAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                        $data['id_sewa_defaulth'],//keterangan_kode_transaksi
+                        $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                         $user,//created_by
                         now(),//created_at
                         $user,//updated_by
@@ -241,7 +258,7 @@ class AddReturnTLController extends Controller
                     1016, //kode coa
                     'teluk_lamong',
                     'UANG KELUAR # PENAMBAHAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                    $data['id_sewa_defaulth'],//keterangan_kode_transaksi
+                    $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at
                     $user,//updated_by
@@ -335,6 +352,23 @@ class AddReturnTLController extends Controller
                     'is_aktif' => "N",
                 )
             );
+            $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->where('sewa_id', $data['id_sewa_defaulth'])
+                    ->first();
+            DB::table('uang_jalan_riwayat')
+                ->where('sewa_id', $data['id_sewa_defaulth'])
+                ->where('is_aktif', 'Y')
+                ->update(array(
+                    'total_tl'=> $datauang_jalan_riwayat->total_tl-= (float)str_replace(',', '', $data['jumlah']),
+                    'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl-= (float)str_replace(',', '', $data['jumlah']),
+                    // 'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang+= (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0),
+                    'total_diterima'=> $datauang_jalan_riwayat->total_diterima-= (float)str_replace(',', '', $data['jumlah']),
+                    'updated_at'=> now(),
+                    'updated_by'=> $user,
+                )
+            );
             // $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);                    
             // $sewa->total_uang_jalan -= (float)str_replace(',', '', $data['jumlah']);
             // $sewa->updated_by = $user;
@@ -344,7 +378,7 @@ class AddReturnTLController extends Controller
                 
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
-                $kht->refrensi_id = $data['id_sewa_defaulth'];
+                $kht->refrensi_id =  $datauang_jalan_riwayat->id;
                 $kht->refrensi_keterangan = 
                 '#totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
                 '#potongHutang:0' . 
@@ -378,7 +412,7 @@ class AddReturnTLController extends Controller
                     1016, //kode coa
                     'tambahan_teluk_lamong',
                     'UANG kembali # PENGEMBALIAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                    $data['id_sewa_defaulth'],//keterangan_kode_transaksi
+                     $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at
                     $user,//updated_by

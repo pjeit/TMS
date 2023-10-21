@@ -123,7 +123,7 @@
                                             <span class="input-group-text">Rp</span>
                                         </div>
                                         <!-- <input type="text" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                          -->
-                                        <input type="hidden" name="jumlah" value="{{ $jumlah }}">
+                                        {{-- <input type="hidden" name="jumlah" value="{{ $jumlah }}"> --}}
                                         <input type="text" id="jumlah" name="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                         
                                     </div>
                                 </div>

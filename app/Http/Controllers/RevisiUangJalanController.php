@@ -145,7 +145,7 @@ class RevisiUangJalanController extends Controller
                     
 
                     $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
-                    if(/*isset($kh)&&*/isset($data['potong_hutang'])){
+                    if(isset($kh)&&isset($data['potong_hutang'])){
                         $kh->total_hutang -= isset($data['potong_hutang'])? (float)str_replace(',', '', $data['potong_hutang']):0; 
                         $kh->updated_by = $user;
                         $kh->updated_at = now();
@@ -259,19 +259,20 @@ class RevisiUangJalanController extends Controller
                     }
     
                     $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
-                    if($data['pembayaran'] != 'HUTANG_KARYAWAN'){
-                        DB::table('uang_jalan_riwayat')
+                     DB::table('uang_jalan_riwayat')
                             ->where('sewa_id', $data['id_sewa_defaulth'])
                             ->where('is_aktif', 'Y')
                             ->update(array(
                                 'total_uang_jalan'=> $datauang_jalan_riwayat->total_uang_jalan-= (float)str_replace(',', '', $data['uang_jalan']),
                                 'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl-= (float)str_replace(',', '', $data['uang_jalan']),
-                                'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang-= (float)str_replace(',', '', $data['uang_jalan']),
+                                // 'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang-= (float)str_replace(',', '', $data['uang_jalan']),
                                 'total_diterima'=> $datauang_jalan_riwayat->total_diterima-= (float)str_replace(',', '', $data['uang_jalan']),
                                 'updated_at'=> now(),
                                 'updated_by'=> $user,
                             )
                         );
+                    if($data['pembayaran'] != 'HUTANG_KARYAWAN'){
+                       
                         $saldo = DB::table('kas_bank')
                             ->select('*')
                             ->where('is_aktif', '=', "Y")
