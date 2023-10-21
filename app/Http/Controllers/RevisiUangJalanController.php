@@ -12,6 +12,7 @@ use App\Models\KaryawanHutang;
 use App\Models\KaryawanHutangTransaction;
 use App\Models\KasBank;
 use App\Models\Sewa;
+use App\Models\UangJalanRiwayat;
 
 class RevisiUangJalanController extends Controller
 {
@@ -74,7 +75,7 @@ class RevisiUangJalanController extends Controller
      */
     public function store(Request $request)
     {
-        {
+        // {
             $data = $request->post();
             $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
     
@@ -90,16 +91,33 @@ class RevisiUangJalanController extends Controller
                 ->where('gtb.is_aktif', 'Y')
                 ->where('gtb.grup_tujuan_id', $data['id_tujuan'])
                 ->get();
-
+                $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->where('sewa_id', $data['id_sewa_defaulth'])
+                    ->first();
                 // dd($data_grup_tujuan_biaya[0]['deskripsi']);
                 
                 if($data['jenis'] == 'tambahan'){
+                    // dd('masuk if 1');
                     $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
                     $sewa->total_uang_jalan += (float)str_replace(',', '', $data['uang_jalan']);
                     $sewa->updated_by = $user;
                     $sewa->updated_at = now();
                     $sewa->save();
-
+                    
+                    DB::table('uang_jalan_riwayat')
+                        ->where('sewa_id', $data['id_sewa_defaulth'])
+                        ->where('is_aktif', 'Y')
+                        ->update(array(
+                            'total_uang_jalan'=> $datauang_jalan_riwayat->total_uang_jalan+= (float)str_replace(',', '', $data['uang_jalan']),
+                            'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl+= (float)str_replace(',', '', $data['uang_jalan']),
+                            'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang+= (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0),
+                            'total_diterima'=> $datauang_jalan_riwayat->total_diterima+= (float)str_replace(',', '', $data['total_diterima']),
+                            'updated_at'=> now(),
+                            'updated_by'=> $user,
+                        )
+                    );
                     foreach ($data_grup_tujuan_biaya as $item) {
                         $cekAdaData = false;
                         foreach ($sewa_biaya as $item1) {
@@ -120,21 +138,21 @@ class RevisiUangJalanController extends Controller
                                 'is_aktif' => "Y",
                                 )
                             ); 
-                        }
-                        
+                        }   
+                    
                     }
+                    
+                    
 
                     $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
-                    if(isset($kh)&&isset($data['potong_hutang'])){
+                    if(/*isset($kh)&&*/isset($data['potong_hutang'])){
                         $kh->total_hutang -= isset($data['potong_hutang'])? (float)str_replace(',', '', $data['potong_hutang']):0; 
                         $kh->updated_by = $user;
                         $kh->updated_at = now();
-
-                        
                         if($kh->save()){
                             $kht = new KaryawanHutangTransaction();
                             $kht->id_karyawan = $data['id_karyawan'];
-                            $kht->refrensi_id = $data['id_sewa_defaulth'];
+                            $kht->refrensi_id = $datauang_jalan_riwayat->id;
                             $kht->refrensi_keterangan = 
                             '#totalUangJalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
                             ' #potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
@@ -148,7 +166,8 @@ class RevisiUangJalanController extends Controller
                             $kht->created_by = $user;
                             $kht->created_at = now();
                             $kht->is_aktif = 'Y';
-                            if($kht->save())
+                            $kht->save();
+                            if($data['total_diterima']!=0||$data['total_diterima']!="0")
                             {
                                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                     array(
@@ -158,8 +177,8 @@ class RevisiUangJalanController extends Controller
                                         (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
                                         1016, //kode coa
                                         'uang_jalan',
-                                        'UANG KELUAR # PEMBAYARAN UANG JALAN'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                                        $kht->id,//keterangan_kode_transaksi
+                                        'UANG KELUAR # PENAMBAHAN UANG JALAN'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                                        $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at
                                         $user,//updated_by
@@ -170,7 +189,26 @@ class RevisiUangJalanController extends Controller
                             }
                         }
                     }
-                    
+                    else
+                    {
+                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                    array(
+                                        $data['pembayaran'],// id kas_bank dr form
+                                        date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
+                                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                        (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
+                                        1016, //kode coa
+                                        'uang_jalan',
+                                        'UANG KELUAR # PENAMBAHAN UANG JALAN'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                                        $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
+                                        $user,//created_by
+                                        now(),//created_at
+                                        $user,//updated_by
+                                        now(),//updated_at
+                                        'Y'
+                                    ) 
+                                );
+                    }
         
                     $saldo = DB::table('kas_bank')
                         ->select('*')
@@ -188,6 +226,8 @@ class RevisiUangJalanController extends Controller
                             'updated_by'=> $user,
                         )
                     );
+                    return redirect()->route('revisi_uang_jalan.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
+
                 }else{
                     $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
                     $sewa->total_uang_jalan -= (float)str_replace(',', '', $data['uang_jalan']);
@@ -195,6 +235,7 @@ class RevisiUangJalanController extends Controller
                     $sewa->updated_at = now();
                     $sewa->save();
 
+                    
                     foreach ($sewa_biaya as $item) {
                             $cekAdaData = false;
                             foreach ($data_grup_tujuan_biaya as $item1) {
@@ -216,9 +257,21 @@ class RevisiUangJalanController extends Controller
                             }
                             
                     }
-
+    
                     $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
                     if($data['pembayaran'] != 'HUTANG_KARYAWAN'){
+                        DB::table('uang_jalan_riwayat')
+                            ->where('sewa_id', $data['id_sewa_defaulth'])
+                            ->where('is_aktif', 'Y')
+                            ->update(array(
+                                'total_uang_jalan'=> $datauang_jalan_riwayat->total_uang_jalan-= (float)str_replace(',', '', $data['uang_jalan']),
+                                'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl-= (float)str_replace(',', '', $data['uang_jalan']),
+                                'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang-= (float)str_replace(',', '', $data['uang_jalan']),
+                                'total_diterima'=> $datauang_jalan_riwayat->total_diterima-= (float)str_replace(',', '', $data['uang_jalan']),
+                                'updated_at'=> now(),
+                                'updated_by'=> $user,
+                            )
+                        );
                         $saldo = DB::table('kas_bank')
                             ->select('*')
                             ->where('is_aktif', '=', "Y")
@@ -240,7 +293,7 @@ class RevisiUangJalanController extends Controller
                                         1016, //kode coa
                                         'uang_jalan',
                                         'UANG MASUK #PENGEMBALIAN UANG JALAN '.'#'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan'].' #'.$data['catatan'], //keterangan_transaksi
-                                        $data['id_sewa_defaulth'],//keterangan_kode_transaksi
+                                        $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at
                                         $user,//updated_by
@@ -258,7 +311,7 @@ class RevisiUangJalanController extends Controller
                             if($kh->save()){
                                 $kht = new KaryawanHutangTransaction();
                                 $kht->id_karyawan = $data['id_karyawan'];
-                                $kht->refrensi_id = $data['id_sewa_defaulth'];
+                                $kht->refrensi_id = $datauang_jalan_riwayat->id;
                                 $kht->refrensi_keterangan = 
                                 '#totalMasukHutang: ' . (float)str_replace(',', '', $data['uang_jalan']);
                                 $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
@@ -274,15 +327,15 @@ class RevisiUangJalanController extends Controller
                             }
                         }
                     }
+                    return redirect()->route('revisi_uang_jalan.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
                 }
-    
-                return redirect()->route('revisi_uang_jalan.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
+                // return redirect()->route('revisi_uang_jalan.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
             } catch (ValidationException $e) {
                 db::rollBack();
                 return redirect()->route('revisi_uang_jalan.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
                 // return redirect()->back()->withErrors($e->errors())->withInput();
             }
-        }
+        // }
     
     }
 

@@ -20,6 +20,8 @@ use App\Models\SewaBiaya;
 use App\Models\KaryawanHutang;
 use App\Models\KaryawanHutangTransaction;
 use App\Models\SewaOperasional;
+use App\Models\UangJalanRiwayat;
+
 class AddReturnTLController extends Controller
 {
     /**
