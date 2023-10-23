@@ -4,7 +4,7 @@
   <!-- Brand Logo -->
   <a href="/home" class="brand-link d-flex align-items-center bg-primary" >
     <img src="{{ asset('img/LOGO_PJE_WARNA.jpg') }}" alt="PJE Logo" class="brand-image img-circle elevation-3" >
-    <span class="brand-text small mx-2 text-bold" >Primatrans Jaya Express</span>
+    <span class="brand-text small mx-2 text-bold" >Primatrans</span>
   </a>
 
   <!-- Sidebar -->
@@ -428,7 +428,7 @@
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('pembayaran_jo.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pembayaran_jo*') ? 'active' : ''  }}">
-                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Pembayaran JO
                     </p>
@@ -439,7 +439,7 @@
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{ route('pembayaran_sdt.index') === request()->url() ? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Pembayaran S/D/T
                     </p>
@@ -450,7 +450,7 @@
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Pencairan UJ
                     </p>
@@ -461,7 +461,7 @@
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Biaya Operasional
                     </p>
@@ -472,7 +472,7 @@
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('add_return_tl.index')}}" class="nav-link {{request()->url() === route('add_return_tl.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Add / Return TL
                     </p>

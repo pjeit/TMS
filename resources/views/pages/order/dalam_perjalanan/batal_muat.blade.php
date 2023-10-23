@@ -18,12 +18,12 @@
    }
 </style>
 <div class="container-fluid">
-    <form action="{{ route('dalam_perjalanan.update', [1]) }}" id="post_data" method="POST" >
-        @csrf @method('PUT')
+    <form action="{{ route('dalam_perjalanan.save_batal_muat', [ $data['id_sewa'] ]) }}" method="POST" >
+        @csrf
         <div class="card radiusSendiri">
             <div class="card-header">
                 <a href="{{ route('dalam_perjalanan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                <a href="{{ route('dalam_perjalanan.index') }}" class="btn btn-success radiusSendiri"><i class="fa fa-save"></i> Simpan</a>
+                <button type='submit' class="btn btn-success radiusSendiri"><i class="fa fa-save"></i> Simpan</button>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -76,6 +76,9 @@
                         <div class="form-group">
                             <label for="tanggal_kembali">Tgl. Kembali<span style="color:red">*</span></label>
                             <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                </div>
                                 <input type="text" autocomplete="off" name="tanggal_kembali" class="form-control date" id="tanggal_kembali" placeholder="dd-M-yyyy" value="">
                             </div>
                         </div>
@@ -200,7 +203,7 @@
             // startDate: today,
         }).datepicker("setDate", today);
 
-        $(document).on('keydown', '#total_tarif_tagih', function(){ 
+        $(document).on('keyup', '#total_tarif_tagih', function(){ 
             var total_tarif = $('#total_tarif').val();
             if(parseFloat(escapeComma(this.value)) > parseFloat(escapeComma(total_tarif))){
                 console.log('total_tarif', total_tarif);
@@ -211,7 +214,7 @@
             });
         });
 
-        $(document).on('keydown', '#total_uang_jalan_kembali', function(){ 
+        $(document).on('keyup', '#total_uang_jalan_kembali', function(){ 
             var total_uang_jalan = $('#total_uang_jalan').val();
             if(parseFloat(escapeComma(this.value)) > parseFloat(escapeComma(total_uang_jalan))){
                 $('#total_uang_jalan_kembali').val(total_uang_jalan);

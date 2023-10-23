@@ -4,7 +4,7 @@
   <!-- Brand Logo -->
   <a href="/home" class="brand-link d-flex align-items-center bg-primary" >
     <img src="{{ asset('img/pje.jpg') }}" alt="PJE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text small mx-2 text-bold" >Primatrans Jaya Express</span>
+    <span class="brand-text small mx-2 text-bold" >Primatrans</span>
   </a>
 
   <!-- Sidebar -->

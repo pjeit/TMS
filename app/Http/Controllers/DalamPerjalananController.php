@@ -592,6 +592,17 @@ class DalamPerjalananController extends Controller
         //
     }
 
+    public function save_batal_muat(Request $request, Sewa $sewa){
+        $data = $request->post();
+
+        $sewa->status = 'BATAL MUAT';
+        if($sewa->save()){
+            
+            dd($sewa);
+        }
+
+    }
+
     public function batal_muat($id)
     {
         $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
