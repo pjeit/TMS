@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Models\JobOrder;
+use App\Models\KasBank;
+
 class DalamPerjalananController extends Controller
 {
     /**
@@ -593,11 +595,13 @@ class DalamPerjalananController extends Controller
     public function batal_muat($id)
     {
         $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
+        $kasbank = KasBank::where('is_aktif', 'Y')->get();
         // dd($sewa->customer);
 
         return view('pages.order.dalam_perjalanan.batal_muat',[
             'judul' => "batal muat",
             'data' => $sewa,
+            'kasbank' => $kasbank,
         ]);
     }
 
