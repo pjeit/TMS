@@ -92,11 +92,11 @@
                                     <div class="row">
                                         <div class="col-4 col-md-4 col-lg-4">
                                             <label for="kendaraan">Kendaraan</label>
-                                            <input type="text" class="form-control" id="kendaraan" readonly="" value="{{ $data['no_polisi'] }}">
+                                            <input type="text" class="form-control" name="kendaraan" readonly="" value="{{ $data['no_polisi'] }}">
                                         </div>
                                         <div class="col-8 col-md-8 col-lg-8">
                                             <label for="driver">Driver</label>
-                                            <input type="text" class="form-control" id="driver" readonly="" value="{{ $data['nama_driver'] }}">
+                                            <input type="text" class="form-control" name="driver" readonly="" value="{{ $data['nama_driver'] }}">
                                         </div>
                                     </div>
                                 </div>
