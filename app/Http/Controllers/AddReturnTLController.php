@@ -236,7 +236,7 @@ class AddReturnTLController extends Controller
                         (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
                         1016, //kode coa
                         'teluk_lamong',
-                        'UANG KELUAR # PENAMBAHAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                        'PENAMBAHAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
                         $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                         $user,//created_by
                         now(),//created_at
@@ -257,7 +257,7 @@ class AddReturnTLController extends Controller
                     (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
                     1016, //kode coa
                     'teluk_lamong',
-                    'UANG KELUAR # PENAMBAHAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                    'PENAMBAHAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
                     $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at
@@ -410,8 +410,8 @@ class AddReturnTLController extends Controller
                     (float)str_replace(',', '', $data['jumlah']),// debit uang masuk
                     0, //uang keluar (kredit) 0 soalnya kan ini uang MASUK, ga ada uang KELUAR
                     1016, //kode coa
-                    'tambahan_teluk_lamong',
-                    'UANG kembali # PENGEMBALIAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                    'teluk_lamong',
+                    'PENGEMBALIAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
                      $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at

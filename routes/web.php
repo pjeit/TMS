@@ -136,6 +136,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/dalam_perjalanan/batal_muat/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'batal_muat'])->name('dalam_perjalanan.batal_muat');
         Route::get('/dalam_perjalanan/cancel/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'cancel'])->name('dalam_perjalanan.cancel');
+        Route::post('/dalam_perjalanan/insertCancel', [App\Http\Controllers\DalamPerjalananController::class, 'insertCancel'])->name('insertCancel.insert');
+        
         Route::resource('dalam_perjalanan', 'App\Http\Controllers\DalamPerjalananController');
 
         Route::post('/invoice/set_sewa_id', [App\Http\Controllers\InvoiceController::class, 'setSewaID'])->name('setSewaID.set');

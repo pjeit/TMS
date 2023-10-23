@@ -11,7 +11,9 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Models\JobOrder;
 use App\Models\KasBank;
-
+use App\Models\SewaBatalCancel;
+use App\Models\KaryawanHutang;
+use App\Models\KaryawanHutangTransaction;
 class DalamPerjalananController extends Controller
 {
     /**
@@ -637,28 +639,181 @@ class DalamPerjalananController extends Controller
         return view('pages.order.dalam_perjalanan.cancel',[
             'judul' => "cancel",
             'data' => $sewa,
-            'id' => $id,
+            'id_sewa' => $id,
             'dataKas' => $dataKas,
 
         ]);
     }
 
-    public function insertCancel(Request $request, $id)
+    public function insertCancel(Request $request)
     {
         $user = Auth::user()->id;
+        $data = $request->post();
+        //  dd($data);
         try {
-            $pesanKustom = [
-                'kode.required' => 'Kode Harus diisi!',
-                'nama.required' => 'Nama Harus diisi!',
-            ];
+            // $pesanKustom = [
+            //     'kode.required' => 'Kode Harus diisi!',
+            //     'nama.required' => 'Nama Harus diisi!',
+            // ];
             
-            $request->validate([
-                'kode' => 'required',
-                'nama' => 'required',
-            ], $pesanKustom);
+            // $request->validate([
+            //     'kode' => 'required',
+            //     'nama' => 'required',
+            // ], $pesanKustom);
+            
+            $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->where('sewa_id', $data['id_sewa_hidden'])
+                    ->first();
+
+            // ====================update untuk ngurangin kredit customer sama grup======================
+            $sewa = Sewa::where('is_aktif', 'Y')
+            ->whereNull('id_supplier') 
+            ->findOrFail($data['id_sewa_hidden']);
+            $customer_lama = DB::table('customer as c')
+                    ->select('c.*')
+                    ->where('c.id', '=', $sewa->id_customer)
+                    ->where('c.is_aktif', '=', "Y")
+                    ->first();
+            $grup_lama = DB::table('grup as g')
+                ->select('g.*')
+                ->where('g.id', '=', $customer_lama->grup_id)
+                ->where('g.is_aktif', '=', "Y")
+                ->first();
+            DB::table('customer')
+                ->where('id', $sewa->id_customer)
+                ->update([
+                    'kredit_sekarang' => (float)$customer_lama->kredit_sekarang-$sewa->total_tarif < 0 ? 0 : $customer_lama->kredit_sekarang-$sewa->total_tarif,
+                    'updated_at' => now(),
+                    'updated_by' => $user,
+            ]);
+            DB::table('grup')
+                ->where('id', $customer_lama->grup_id)
+                ->update([
+                    'total_kredit' => (float)$grup_lama->total_kredit-$sewa->total_tarif< 0 ? 0 : $grup_lama->total_kredit-$sewa->total_tarif,
+                    'updated_at' => now(),
+                    'updated_by' => $user,
+            ]);
+            // ====================update untuk ngurangin kredit customer sama grup======================
+
+
+            DB::table('sewa')
+            ->where('id_sewa', $data['id_sewa_hidden'])
+            ->update([
+                'status' =>'CANCEL',
+                'tanggal_kembali' =>now(),
+                'is_kembali' =>'Y',
+                'updated_by' => $user,
+                'updated_at' => now(),
+
+            ]); 
+            $idHutangKaryawan = 0;
+            if(isset($data['nominal_kembali_hutang'])|| 
+                $data['nominal_kembali_hutang']!= 0 || 
+                (float)str_replace(',', '', $data['nominal_kembali_hutang'])!=0)
+            {
+                $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+
+                
+                $kh->total_hutang +=  (float)str_replace(',', '', $data['nominal_kembali_hutang']); 
+                $kh->updated_by = $user;
+                $kh->updated_at = now();
+                $kh->save();
+
+                $kht = new KaryawanHutangTransaction();
+                $kht->id_karyawan = $data['id_karyawan'];
+                $kht->refrensi_id = $datauang_jalan_riwayat->id;
+                $kht->refrensi_keterangan = 
+                '#totalMasukHutang: ' . (float)str_replace(',', '', $data['nominal_kembali_hutang']);
+                $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
+                $kht->tanggal = now();
+                $kht->debit = (float)str_replace(',', '', $data['nominal_kembali_hutang']);
+                $kht->kredit = 0;
+                $kht->kas_bank_id = null;
+                $kht->catatan = null;
+                $kht->created_by = $user;
+                $kht->created_at = now();
+                $kht->is_aktif = 'Y';
+                $kht->save();
+
+                $idHutangKaryawan = $kht->id;
+                if(
+                    isset($data['nominal_kembali_kas'])|| 
+                    $data['nominal_kembali_kas']!= 0 || 
+                    (float)str_replace(',', '', $data['nominal_kembali_kas'])!=0)
+                {
+                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                array(
+                                    $data['pembayaran'],// id kas_bank dr form
+                                    now(),//tanggal
+                                    (float)str_replace(',', '', $data['nominal_kembali_kas']),// uang masuk (debit)
+                                    0, //uang keluar (kredit)
+                                    1016, //kode coa
+                                    'uang_jalan',
+                                    'PENGEMBALIAN UANG JALAN'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                                    $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
+                                    $user,//created_by
+                                    now(),//created_at
+                                    $user,//updated_by
+                                    now(),//updated_at
+                                    'Y'
+                                ) 
+                            );
+                }
+            }
+            else
+            {
+                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                array(
+                                    $data['pembayaran'],// id kas_bank dr form
+                                    now(),//tanggal
+                                    (float)str_replace(',', '', $data['nominal_kembali_kas']),// uang masuk (debit)
+                                    0, //uang keluar (kredit)
+                                    1016, //kode coa
+                                    'uang_jalan',
+                                    'PENGEMBALIAN UANG JALAN'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                                    $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
+                                    $user,//created_by
+                                    now(),//created_at
+                                    $user,//updated_by
+                                    now(),//updated_at
+                                    'Y'
+                                ) 
+                            );
+            }
+            $SBC = new SewaBatalCancel();
+            $SBC->id_sewa =  $data['id_sewa_hidden']; 
+            $SBC->jenis = 'CANCEL';
+            $SBC->tgl_batal_muat_cancel = now();
+            // $SBC->total_tarif_ditagihkan =  (float)str_replace(',', '', $value['nominal_data']);//gapake soalnya cancel gaada
+            $SBC->total_uang_jalan_kembali = $data['nominal_kembali_kas']?(float)str_replace(',', '', $data['nominal_kembali_kas']):0;
+            $SBC->id_kas_bank = $data['pembayaran'];
+            $SBC->total_uang_jalan_kembali_hutang = $data['nominal_kembali_hutang']?(float)str_replace(',', '', $data['nominal_kembali_hutang']):0;
+            $SBC->id_karyawan_hutang = ($idHutangKaryawan!=0)?$idHutangKaryawan:null;
+            $SBC->tgl_kembali = now();
+            $SBC->alasan_batal = $data['alasan_cancel'];
+            $SBC->created_by = $user;
+            $SBC->created_at = now();
+            $SBC->updated_by = $user;
+            $SBC->updated_at = now();
+            $SBC->is_aktif = 'Y';
+            $SBC->save();
+
             
 
-            return redirect()->route('customer.index')->with(['status' => 'Success', 'msg' => "Berhasil Cancel perjalanan!"]);
+            DB::table('uang_jalan_riwayat')
+            ->where('sewa_id', $data['id_sewa_hidden'])
+            ->update([
+                'is_aktif' =>'N',
+                'updated_by' => $user,
+                'updated_at' => now(),
+
+            ]); 
+            
+                        
+
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil Cancel perjalanan!"]);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
