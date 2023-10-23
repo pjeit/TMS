@@ -74,8 +74,8 @@ class SewaController extends Controller
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
             // dd($data['stack_tl']);
-//    $sewa->total_uang_jalan = $data['stack_tl'] == 'tl_teluk_lamong'?$data['uang_jalan']+$data['stack_teluk_lamong_hidden']:$data['uang_jalan'];
-                // dd($data['uang_jalan']+$data['stack_teluk_lamong_hidden']);
+            //    $sewa->total_uang_jalan = $data['stack_tl'] == 'tl_teluk_lamong'?$data['uang_jalan']+$data['stack_teluk_lamong_hidden']:$data['uang_jalan'];
+            // dd($data['uang_jalan']+$data['stack_teluk_lamong_hidden']);
             $lastNoSewa = Sewa::where('is_aktif', 'Y')
                         ->where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
                         ->orderBy('no_sewa', 'DESC')
@@ -224,14 +224,12 @@ class SewaController extends Controller
             // cancel input db
             DB::rollBack();
             return redirect()->back()->withErrors($e->errors())->withInput();
-
             // return response()->json(['errorsCatch' => $e->errors()], 422);
         }
-       catch (Exception $ex) {
+        catch (Exception $ex) {
             // cancel input db
             DB::rollBack();
             return redirect()->back()->withErrors($ex->getMessage())->withInput();
-
             // return response()->json(['errorServer' => $ex->getMessage()],500);
         }
     }
@@ -334,8 +332,7 @@ class SewaController extends Controller
                    
                 // dd($data['uang_jalan']+$data['stack_teluk_lamong_hidden']);
             // kalo tujuan baru ga sama sama tujuan yang lama
-            if($data['tujuan_id']!=$sewa->id_grup_tujuan &&$sewa->status=="MENUNGGU UANG JALAN"&&$sewa->jenis_order == "OUTBOUND")
-            {
+            if($data['tujuan_id'] != $sewa->id_grup_tujuan && $sewa->status == "MENUNGGU UANG JALAN" && $sewa->jenis_order == "OUTBOUND"){
                 $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
                 //KURANGI DULU KREDIT YANG LAMA,SOALNYA KAN TARIFNYA BEDA PER TUJUAN
                 DB::table('customer')
@@ -461,11 +458,8 @@ class SewaController extends Controller
                     }
                 }
                 
-            }
-            else
-            {
-                if($sewa->status=="MENUNGGU UANG JALAN")
-                {
+            } else {
+                if($sewa->status=="MENUNGGU UANG JALAN"){
                     $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
                     $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
                     $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
@@ -529,17 +523,14 @@ class SewaController extends Controller
                                     'updated_by' => $user,
                                 ]);
                         }
-                        
                     }
-                }
-                else
-                {
+                } else if($sewa->status == "BATAL MUAT" || $sewa->status == "CANCEL"){ 
+                    
+                }else {
                     $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
                     $sewa->catatan = $data['catatan']? $data['catatan']:null;
                     $sewa->save();
                     // dd('masuk sini else');
-                    
-
                 }
             }
 
@@ -587,6 +578,12 @@ class SewaController extends Controller
             //         )
             //     ); 
             // }
+            if(in_array($sewa->status, ["CANCEL", "BATAL MUAT"])){
+                $sewa->status = 'MENUNGGU UANG JALAN';
+                $sewa->updated_by = $user;
+                $sewa->updated_at = now();
+                $sewa->save();
+            }
             $sewaCek = Sewa::where('is_aktif', 'Y')->findOrFail($id);
 
             if($sewaCek->status=="MENUNGGU UANG JALAN")

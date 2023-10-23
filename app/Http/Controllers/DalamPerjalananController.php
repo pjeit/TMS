@@ -11,6 +11,8 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Models\JobOrder;
 use App\Models\KasBank;
+use App\Models\KasBankTransaction;
+use App\Models\SewaBatalCancel;
 
 class DalamPerjalananController extends Controller
 {
@@ -594,11 +596,56 @@ class DalamPerjalananController extends Controller
 
     public function save_batal_muat(Request $request, Sewa $sewa){
         $data = $request->post();
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        // dd($data);
 
-        $sewa->status = 'BATAL MUAT';
-        if($sewa->save()){
-            
-            dd($sewa);
+        try {
+            $sewa->status = 'BATAL MUAT';
+            $sewa->catatan = $data['alasan_cancel'];
+            if($sewa->save()){
+                $batal = new SewaBatalCancel();
+                $batal->id_sewa = $sewa->id_sewa;
+                $batal->jenis = 'BATAL';
+                $batal->tgl_batal_muat_cancel = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+                $batal->total_tarif_ditagihkan = floatval(str_replace(',', '', $data['total_tarif_tagih']));
+                $batal->total_uang_jalan_kembali = floatval(str_replace(',', '', $data['total_uang_jalan_kembali']));
+                $batal->id_kas_bank = $data['kasbank'];
+                $batal->tgl_kembali = date_create_from_format('d-M-Y', $data['tanggal_kembali']);
+                $batal->alasan_batal = $data['alasan_cancel'];
+                $batal->created_by = $user;
+                $batal->created_at = now();
+                $batal->is_aktif = 'Y';
+                if($batal->save()){
+                    $total = floatval(str_replace(',', '', $data['total_tarif_tagih'])) + floatval(str_replace(',', '', $data['total_uang_jalan_kembali']));
+                    $kasBankTransaction = new KasBankTransaction ();
+                    $kasBankTransaction->id_kas_bank = $data['kasbank'];
+                    $kasBankTransaction->tanggal = $data['tanggal_cancel'];
+                    $kasBankTransaction->debit = $total;
+                    $kasBankTransaction->kredit = 0;
+                    $kasBankTransaction->jenis = 'BATAL MUAT';
+                    $kasBankTransaction->keterangan_transaksi = $data['alasan_cancel'] . ' - ' . $data['kendaraan'] . ' - ' . $data['driver'] ;
+                    $kasBankTransaction->kode_coa = 1823;
+                    $kasBankTransaction->keterangan_kode_transaksi = $sewa->id_sewa;
+                    $kasBankTransaction->created_at = $user;
+                    $kasBankTransaction->created_by = now();
+                    $kasBankTransaction->is_aktif = 'Y';
+                    if($kasBankTransaction->save()){
+                        $kasbank = KasBank::where('is_aktif', 'Y')->find($data['kasbank']);
+                        $kasbank->saldo_sekarang += $total;
+                        $kasbank->updated_by = $user;
+                        $kasbank->updated_at = now();
+                        $kasbank->save();
+                        DB::commit();
+                    }
+                }
+            }
+
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
+            // return redirect()->back()->withErrors($e->getMessage())->withInput();
         }
 
     }
@@ -607,7 +654,6 @@ class DalamPerjalananController extends Controller
     {
         $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
         $kasbank = KasBank::where('is_aktif', 'Y')->get();
-        // dd($sewa->customer);
 
         return view('pages.order.dalam_perjalanan.batal_muat',[
             'judul' => "batal muat",
