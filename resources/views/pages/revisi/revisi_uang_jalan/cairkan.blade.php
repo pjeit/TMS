@@ -115,7 +115,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang " value="" readonly>                         
+                                    <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang " value="{{ number_format($sewa->uang_jalan_gt - $sewa->total_uang_jalan) }}" readonly>                         
                                 </div>
                             </div>
                             <div class="form-group col-6">
@@ -164,7 +164,8 @@
             // kalau total hutang 0, di disable inputan potong hutangnya
             $('#potong_hutang').attr('readonly', 'readonly');
         }
-
+        cek_potongan_hutang();
+        hitung_total();
         $('#potong_hutang').on('keyup', function(event){
             cek_potongan_hutang();
             hitung_total();
@@ -178,9 +179,19 @@
             if(parseFloat(potong_hutang) > parseFloat(uang_jalan)){
                 $('#potong_hutang').val(uang_jalan);
             }
+
+            if(potong_hutang.trim()=='')
+            {
+                potong_hutang = 0;
+            }
         }
         function hitung_total(){
             var potong_hutang = escapeComma($('#potong_hutang').val());
+             if($('#potong_hutang').val()!=''){
+                var potong_hutang=removePeriod($('#potong_hutang').val(),',');
+            }else{
+                var potong_hutang=0;
+            }
             var uang_jalan = escapeComma($('#uang_jalan').val());
             var total = parseFloat(uang_jalan) - parseFloat(potong_hutang);
             $('#total_diterima').val(moneyMask(total));
