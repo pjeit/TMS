@@ -212,39 +212,39 @@ $(document).ready(function() {
 // nominal_kembali_kas
 // nominal_kembali_hutang
     function hitungan(){
-            var uang_jalan = parseFloat(removePeriod($('#total_uang_jalan').val(),','));
-    // console.log(uang_jalan);
-    var kembali_hutang = 0 ;
-    var kembali_kas = 0;
-    var total_kembali = 0;
-    if ($('#nominal_kembali_kas').val() != ''){
-        kembali_kas = parseFloat(removePeriod($('#nominal_kembali_kas').val(),','));
-    }else{
-        kembali_kas = 0;
-    }
-
-    if($('#nominal_kembali_hutang').val() != ''){
-        kembali_hutang = parseFloat(removePeriod($('#nominal_kembali_hutang').val(),','));
-    }else{
-        kembali_hutang = 0;
-    }
-
-    
-    total_kembali = kembali_kas + kembali_hutang;
-    if (total_kembali > uang_jalan){
-        var sisa = total_kembali - uang_jalan;
-        console.log(sisa);
-        if(kembali_hutang > kembali_kas){
-            kembali_hutang = kembali_hutang - sisa;
-            console.log(kembali_hutang);
-            $('#nominal_kembali_hutang').val(addPeriod(kembali_hutang,','));
+        var uang_jalan = parseFloat(removePeriod($('#total_uang_jalan').val(),','));
+        // console.log(uang_jalan);
+        var kembali_hutang = 0 ;
+        var kembali_kas = 0;
+        var total_kembali = 0;
+        if ($('#nominal_kembali_kas').val() != ''){
+            kembali_kas = parseFloat(removePeriod($('#nominal_kembali_kas').val(),','));
+        }else{
+            kembali_kas = 0;
         }
-        else{
-            kembali_kas = kembali_kas - sisa;
-            console.log(kembali_kas);
-            $('#nominal_kembali_kas').val(addPeriod(kembali_kas,','));
+
+        if($('#nominal_kembali_hutang').val() != ''){
+            kembali_hutang = parseFloat(removePeriod($('#nominal_kembali_hutang').val(),','));
+        }else{
+            kembali_hutang = 0;
         }
-    }
+
+        
+        total_kembali = kembali_kas + kembali_hutang;
+        if (total_kembali > uang_jalan){
+            var sisa = total_kembali - uang_jalan;
+            console.log(sisa);
+            if(kembali_hutang > kembali_kas){
+                kembali_hutang = kembali_hutang - sisa;
+                console.log(kembali_hutang);
+                $('#nominal_kembali_hutang').val(addPeriod(kembali_hutang,','));
+            }
+            else{
+                kembali_kas = kembali_kas - sisa;
+                console.log(kembali_kas);
+                $('#nominal_kembali_kas').val(addPeriod(kembali_kas,','));
+            }
+        }
 
     }
         hitungan();
