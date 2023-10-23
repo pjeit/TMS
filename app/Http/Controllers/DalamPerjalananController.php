@@ -817,10 +817,16 @@ class DalamPerjalananController extends Controller
                                     'Y'
                                 ) 
                             );
+                    $kasbank = KasBank::where('is_aktif', 'Y')->find($data['kasbank']);
+                        $kasbank->saldo_sekarang += (float)str_replace(',', '', $data['nominal_kembali_kas']);
+                        $kasbank->updated_by = $user;
+                        $kasbank->updated_at = now();
+                        $kasbank->save();
                 }
             }
             else
             {
+                   
                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                 array(
                                     $data['pembayaran'],// id kas_bank dr form
@@ -838,6 +844,11 @@ class DalamPerjalananController extends Controller
                                     'Y'
                                 ) 
                             );
+                $kasbank = KasBank::where('is_aktif', 'Y')->find($data['kasbank']);
+                        $kasbank->saldo_sekarang += (float)str_replace(',', '', $data['nominal_kembali_kas']);
+                        $kasbank->updated_by = $user;
+                        $kasbank->updated_at = now();
+                        $kasbank->save();
             }
             $SBC = new SewaBatalCancel();
             $SBC->id_sewa =  $data['id_sewa_hidden']; 
