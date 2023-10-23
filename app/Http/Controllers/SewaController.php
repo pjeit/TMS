@@ -110,6 +110,7 @@ class SewaController extends Controller
             $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
             $sewa->total_uang_jalan = $data['uang_jalan'];
             $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
+            $sewa->total_komisi_driver = $data['komisi_driver']? $data['komisi_driver']:null;
             $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
             $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
             $sewa->id_chassis = $data['select_chassis']? $data['select_chassis']:null;
@@ -360,7 +361,7 @@ class SewaController extends Controller
                     $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
                     $sewa->total_uang_jalan = /*$data['stack_tl'] == 'tl_teluk_lamong'?$data['uang_jalan']+$data['stack_teluk_lamong_hidden']:*/$data['uang_jalan'];
                     $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
-                    
+                    $sewa->total_komisi_driver = $data['komisi_driver']? $data['komisi_driver']:null;
                     $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
                     $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
                     $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;

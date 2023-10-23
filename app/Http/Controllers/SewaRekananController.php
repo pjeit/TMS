@@ -120,7 +120,7 @@ class SewaRekananController extends Controller
             $sewa->jenis_order = $data['jenis_order'];
             $sewa->total_tarif = $data['jenis_tujuan']=="LTL"? $data['harga_per_kg'] * $data['min_muatan']:$data['tarif'];
             $sewa->total_uang_jalan =$data['uang_jalan'];
-            $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
+            // $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
             $sewa->harga_jual =(float)str_replace(',', '', $data['harga_jual']);
             $sewa->no_polisi = $data['no_polisi']? $data['no_polisi']:null;
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
