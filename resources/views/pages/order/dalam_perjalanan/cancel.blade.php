@@ -130,12 +130,12 @@
                         </div>
                         {{-- <div class="col-lg-6 col-md-12"> --}}
                             <div class="form-group">
-                                <label for="total_uang_jalan">Total Uang Jalan Supir</label>
+                                <label for="total_uang_jalan">Total Uang Jalan Diterima Supir</label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="555,000">
+                                    <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="{{number_format($data->total_diterima_supir)}}">
                                 </div>
                             </div>
                             <div class="form-group">

@@ -608,12 +608,13 @@ class DalamPerjalananController extends Controller
     public function cancel($id)
     {
         $sewa = DB::table('sewa AS s')
-                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
+                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier','ujr.total_diterima as total_diterima_supir')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                     ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                     ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
                     ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
+                    ->join('uang_jalan_riwayat AS ujr', 's.id_sewa', '=', 'ujr.sewa_id')
                     ->where('s.jenis_tujuan', 'like', '%FTL%')
                     // ->where('s.status', 'PROSES DOORING')
                     // ->whereNull('s.id_supplier')
@@ -628,6 +629,11 @@ class DalamPerjalananController extends Controller
             ->where('is_aktif', '=', "Y")
             // ->paginate(10);
             ->get();
+        $dataUJ=DB::table('uang_jalan_riwayat')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            // ->paginate(10);
+            ->get();
         return view('pages.order.dalam_perjalanan.cancel',[
             'judul' => "cancel",
             'data' => $sewa,
@@ -635,5 +641,26 @@ class DalamPerjalananController extends Controller
             'dataKas' => $dataKas,
 
         ]);
+    }
+
+    public function insertCancel(Request $request, $id)
+    {
+        $user = Auth::user()->id;
+        try {
+            $pesanKustom = [
+                'kode.required' => 'Kode Harus diisi!',
+                'nama.required' => 'Nama Harus diisi!',
+            ];
+            
+            $request->validate([
+                'kode' => 'required',
+                'nama' => 'required',
+            ], $pesanKustom);
+            
+
+            return redirect()->route('customer.index')->with(['status' => 'Success', 'msg' => "Berhasil Cancel perjalanan!"]);
+        } catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }
     }
 }
