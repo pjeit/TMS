@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Sewa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PencairanKomisiCustomerController extends Controller
 {
@@ -15,6 +16,21 @@ class PencairanKomisiCustomerController extends Controller
     public function index()
     {
         //
+        $kasBank = DB::table('kas_bank')
+        ->where('is_aktif', 'Y')
+        ->orderBy('nama', 'asc')
+        ->get();
+
+        $dataCustomer = DB::table('customer')
+        ->where('is_aktif', 'Y')
+        ->orderBy('nama', 'asc')
+        ->get();
+
+        return view('pages.finance.pencairan_komisi_customer.index',[
+            'judul' => "PENCAIRAN KOMISI CUSTOMER",
+            'kasBank'=>$kasBank,
+            'dataCustomer'=>$dataCustomer
+        ]);
     }
 
     /**

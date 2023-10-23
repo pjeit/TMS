@@ -416,7 +416,9 @@
               request()->is('pencairan_operasional*') ||
               request()->is('biaya_operasional*') ||
               request()->is('add_return_tl*') ||
-              request()->is('pembayaran_sdt*') 
+              request()->is('pembayaran_sdt*') ||
+              request()->is('pencairan_komisi_driver*')||
+                request()->is('pencairan_komisi_customer*')
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-dollar-sign"></i>
@@ -424,6 +426,28 @@
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
+
+               <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('add_return_tl.index')}}" class="nav-link {{request()->url() === route('add_return_tl.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Add / Return TL
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+               <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Biaya Operasional
+                    </p>
+                  </a>
+                </li>
+              </ul>
             
               <ul class="nav nav-treeview">
                 <li class="nav-item">
@@ -457,13 +481,46 @@
                   </a>
                 </li>
               </ul>
-
+                 <ul class="nav nav-treeview">
+                <li class="nav-item   {{ 
+                request()->is('pencairan_komisi_driver*')||
+                request()->is('pencairan_komisi_customer*')
+                ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p style="font-weight: 500;" >
+                      Pencairan Komisi
+                      <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
+                    </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="{{route('pencairan_komisi_customer.index')}}" style="font-weight: 500;" class="nav-link {{ request()->is('pencairan_komisi_customer*')? ' active' : '' }} ">
+                      <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                        <p>
+                          Customer
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{route('pencairan_komisi_driver.index')}}" class="nav-link {{request()->is('pencairan_komisi_driver') ||  request()->is('pencairan_komisi_driver/create') || request()->is('pencairan_komisi_driver/*/edit') ? ' active' : '' }} " style="font-weight: 500;">
+                      <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                        <p>
+                          Driver
+                        </p>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+              
+              </ul>
+{{-- 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      Biaya Operasional
+                      Pencairan Komisi
                     </p>
                   </a>
                 </li>
@@ -471,14 +528,15 @@
 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{route('add_return_tl.index')}}" class="nav-link {{request()->url() === route('add_return_tl.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      Add / Return TL
+                      Pencairan UJ
                     </p>
                   </a>
                 </li>
-              </ul>
+              </ul> --}}
+             
               
               {{-- <ul class="nav nav-treeview">
                 <li class="nav-item">

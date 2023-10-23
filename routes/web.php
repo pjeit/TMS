@@ -172,7 +172,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/revisi_uang_jalan/load_data/{item}', 'App\Http\Controllers\RevisiUangJalanController@load_data')->name('revisi_uang_jalan.load_data');
         Route::resource('revisi_uang_jalan', 'App\Http\Controllers\RevisiUangJalanController');
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
-
+        
+        Route::get('pencairan_komisi_driver/load_data', 'App\Http\Controllers\PencairanKomisiDriverController@load_data')->name('pencairan_komisi_driver.load_data');
+        Route::resource('pencairan_komisi_driver', 'App\Http\Controllers\PencairanKomisiDriverController');
+        Route::get('pencairan_komisi_customer/load_data', 'App\Http\Controllers\PencairanKomisiCustomerController@load_data')->name('pencairan_komisi_customer.load_data');
+        Route::resource('pencairan_komisi_customer', 'App\Http\Controllers\PencairanKomisiCustomerController');
 
     });
 
