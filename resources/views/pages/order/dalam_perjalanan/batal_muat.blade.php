@@ -50,13 +50,13 @@
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label for="no_kontainer">No. Kontainer<span style="color:red">*</span></label>
-                            <input type="text" name="no_kontainer" class="form-control" id="no_kontainer" placeholder="" value="{{ $data['no_kontainer'] }}">
+                            <input type="text" required name="no_kontainer" class="form-control" id="no_kontainer" placeholder="" value="{{ $data['no_kontainer'] }}">
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label for="no_surat_jalan">No. Surat Jalan<span style="color:red">*</span></label>
-                            <input type="text" name="no_surat_jalan" class="form-control" id="no_surat_jalan" placeholder="" value="{{ $data['no_surat_jalan'] }}">
+                            <input type="text" required name="no_surat_jalan" class="form-control" id="no_surat_jalan" placeholder="" value="{{ $data['no_surat_jalan'] }}">
                         </div>
                     </div>
 
@@ -101,6 +101,28 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-lg-6 col-md-12">
+                                <div class="form-group">
+                                    <label for="kas_bank_id">Kas / Bank<span style="color:red">*</span></label>
+                                    <select class="form-control select2" style="width: 100%;" id='kasbank' name="kasbank" required>
+                                        @foreach ($kasbank as $item)
+                                            <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <div class="form-group">
+                                    <label for="kas_bank_id">Jenis<span style="color:red">*</span></label>
+                                    <select class="form-control select2" style="width: 100%;" id='jenis' name="jenis" required>
+                                        <option value="">── PILIH JENIS ──</option>
+                                        <option value="BELUM TRANSFER">BELUM TRANSFER</option>
+                                        <option value="SUDAH TRANSFER">SUDAH TRANSFER</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-group">
                                     <label for="">Total Tarif</label>
@@ -114,12 +136,12 @@
                             </div>
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-group">
-                                    <label for="">Total Tarif Yang Ditagihkan</label>
+                                    <label for="">Total Tarif Yang Ditagihkan<span style="color: red;">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input autocomplete="off" type="text" name="total_tarif_tagih" class="form-control numaja uang" id="total_tarif_tagih" placeholder="" value="">
+                                        <input autocomplete="off" type="text" required name="total_tarif_tagih" class="form-control numaja uang" id="total_tarif_tagih" placeholder="" value="">
                                     </div>
                                 </div>
                             </div>
@@ -136,25 +158,40 @@
                             </div>
                             <div class="col-lg-6 col-md-12">
                                 <div class="form-group">
-                                    <label for="total_uang_jalan_kembali">Total Uang Jalan Kembali</label>
+                                    <label for="total_uang_jalan_kembali">Total Uang Jalan Kembali<span style="color: red;">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input autocomplete="off" type="text" name="total_uang_jalan_kembali" class="form-control numaja uang" id="total_uang_jalan_kembali" placeholder="" value="">
+                                        <input autocomplete="off" type="text" required name="total_uang_jalan_kembali" class="form-control numaja uang" id="total_uang_jalan_kembali" placeholder="" value="">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 col-12">
+
+                            <div class="col-lg-6 col-md-12">
                                 <div class="form-group">
-                                    <label for="kas_bank_id">Kas / Bank<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='kasbank' name="kasbank" required>
-                                        @foreach ($kasbank as $item)
-                                            <option value="{{ $item->id }}">{{ $item->nama }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label for="total_uang_jalan">Riwayat Potong Hutang</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input readonly="" type="text" name="riwayat_potong_hutang" class="form-control numaja uang" id="riwayat_potong_hutang" placeholder="" value="{{ number_format($riwayatPotongHutang['potong_hutang']) }}">
+                                        <input type="hidden" name="id_riwayat_pot_hutang" value="{{ $riwayatPotongHutang['id'] }}">
+                                    </div>
                                 </div>
                             </div>
+                            <div class="col-lg-6 col-md-12">
+                                <div class="form-group">
+                                    <label for="total_uang_jalan_kembali">Potong Hutang Dikembalikan<span style="color: red;">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input autocomplete="off" type="text" required name="potong_hutang_dikembalikan" class="form-control numaja uang" id="potong_hutang_dikembalikan" placeholder="" value="">
+                                    </div>
+                                </div>
+                            </div>
+                          
                           
                          
                         </div>
@@ -165,7 +202,7 @@
                             <div class="col-12 col-md-12">
                                 <div class="form-group">
                                     <label for="alasan_cancel">Alasan Batal Muat<span style="color: red;">*</span></label>
-                                    <textarea name="alasan_cancel" class="form-control" id="alasan_cancel" rows="12" value=""></textarea>
+                                    <textarea name="alasan_cancel" required class="form-control" id="alasan_cancel" rows="15" value=""></textarea>
                                 </div>
                             </div>
                         </div>

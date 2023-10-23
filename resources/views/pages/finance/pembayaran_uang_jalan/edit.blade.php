@@ -127,7 +127,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang " value="" readonly>                         
                                     </div>
                                 </div>
 
@@ -137,7 +137,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numajaMinDesimal" value="" >                         
+                                        <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang " value="" >                         
                                     </div>
                                 </div>
 
@@ -149,7 +149,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="uang_jalan" name="uang_jalan" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="text" maxlength="100" id="uang_jalan" name="uang_jalan" class="form-control uang " value="" readonly>                         
                                     </div>
                                 </div>
                             @if (isset($sewaBiayaTelukLamong))
@@ -159,7 +159,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="teluk_lamong" name="teluk_lamong" class="form-control uang numajaMinDesimal" value="{{number_format($sewaBiayaTelukLamong->biaya)}}" readonly>                         
+                                        <input type="text" maxlength="100" id="teluk_lamong" name="teluk_lamong" class="form-control uang " value="{{number_format($sewaBiayaTelukLamong->biaya)}}" readonly>                         
                                     </div>
                                 </div>
                             @endif
@@ -169,7 +169,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang " value="" readonly>                         
                                     </div>
                                 </div>
                             

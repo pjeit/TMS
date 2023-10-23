@@ -47,7 +47,6 @@
                                     <td>{{ $item->kode }} - {{ $item->nama_cust }}</td>
                                     <td>{{ $item->nama_supp }}</td>
                                     <td>{{ $item->status}}</td>
-                                    {{-- <td>{{date("d-M-Y", strtotime($item->created_at))}}</td> --}}
                                     <td >                                    
                                         <!-- Default dropleft button -->
                                         <div class="btn-group dropleft">

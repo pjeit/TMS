@@ -377,31 +377,12 @@
                             event.preventDefault();
                             return false;
                         }else{
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                timer: 800,
-                                showConfirmButton: false,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            })
-
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Data Disimpan'
-                            })
-
-                            setTimeout(() => {
-                                this.submit();
-                            }, 1000); // 2000 milliseconds = 2 seconds
+                            this.submit();
                         }
                     }else{
                         const Toast = Swal.mixin({
                             toast: true,
-                            position: 'top-end',
+                            position: 'top',
                             timer: 2500,
                             showConfirmButton: false,
                             timerProgressBar: true,
@@ -433,66 +414,6 @@
             var kodeValue = selectedOption.getAttribute('kode');
             $('#kode_cust').val(kodeValue.trim());
         //
-        // logic save old
-            // $( document ).on( 'click', '#submitButton', function (event) {
-            //     event.preventDefault();
-            //     // pop up confirmation
-            //         Swal.fire({
-            //             title: 'Apakah Anda yakin data sudah benar?',
-            //             text: "Periksa kembali data anda",
-            //             icon: 'warning',
-            //             showCancelButton: true,
-            //             cancelButtonColor: '#d33',
-            //             confirmButtonColor: '#3085d6',
-            //             cancelButtonText: 'Batal',
-            //             confirmButtonText: 'Ya',
-            //             reverseButtons: true
-            //         }).then((result) => {
-            //             if (result.isConfirmed) {
-            //                 const Toast = Swal.mixin({
-            //                     toast: true,
-            //                     position: 'top-end',
-            //                     timer: 2500,
-            //                     showConfirmButton: false,
-            //                     timerProgressBar: true,
-            //                     didOpen: (toast) => {
-            //                         toast.addEventListener('mouseenter', Swal.stopTimer)
-            //                         toast.addEventListener('mouseleave', Swal.resumeTimer)
-            //                     }
-            //                 })
-
-            //                 Toast.fire({
-            //                     icon: 'success',
-            //                     title: 'Data Disimpan'
-            //                 })
-
-            //                 // form.submit();
-            //                 $("#send").submit();
-            //             }else{
-            //                 const Toast = Swal.mixin({
-            //                     toast: true,
-            //                     position: 'top-end',
-            //                     timer: 2500,
-            //                     showConfirmButton: false,
-            //                     timerProgressBar: true,
-            //                     didOpen: (toast) => {
-            //                         toast.addEventListener('mouseenter', Swal.stopTimer)
-            //                         toast.addEventListener('mouseleave', Swal.resumeTimer)
-            //                     }
-            //                 })
-
-            //                 Toast.fire({
-            //                     icon: 'warning',
-            //                     title: 'Batal Disimpan'
-            //                 })
-            //                 event.preventDefault();
-            //                 // return;
-            //             }
-            //         })
-            //     // pop up confirmation
-            // });
-        // 
-
         // master harga tipe
             var dataKeuangan = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
             var harga20Ft = {
@@ -566,7 +487,7 @@
                 error: function(xhr, status, error) {
                     const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 3000,
                         showConfirmButton: false,
                         timerProgressBar: true,
@@ -702,7 +623,7 @@
                  
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
+                position: 'top',
                 timer: 2500,
                 showConfirmButton: false,
                 timerProgressBar: true,

@@ -78,19 +78,19 @@ class RevisiUangJalanController extends Controller
         // {
             $data = $request->post();
             $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
-    
+            dd($data); die;
             try {
                 // dd($data);
                 $sewa_biaya = DB::table('sewa_biaya AS sb')
-                ->select('sb.*')
-                ->where('sb.is_aktif', 'Y')
-                ->where('sb.id_sewa', $data['id_sewa_defaulth'])
-                ->get();
+                    ->select('sb.*')
+                    ->where('sb.is_aktif', 'Y')
+                    ->where('sb.id_sewa', $data['id_sewa_defaulth'])
+                    ->get();
                 $data_grup_tujuan_biaya = DB::table('grup_tujuan_biaya AS gtb')
-                ->select('gtb.*')
-                ->where('gtb.is_aktif', 'Y')
-                ->where('gtb.grup_tujuan_id', $data['id_tujuan'])
-                ->get();
+                    ->select('gtb.*')
+                    ->where('gtb.is_aktif', 'Y')
+                    ->where('gtb.grup_tujuan_id', $data['id_tujuan'])
+                    ->get();
                 $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
                     ->select('*')
                     ->where('is_aktif', '=', "Y")
@@ -235,17 +235,17 @@ class RevisiUangJalanController extends Controller
                     $sewa->updated_at = now();
                     $sewa->save();
 
-                    
+                    // nonaktifkan detail sewa biaya jika ada data yg dihapus di grup_tujuan nya
                     foreach ($sewa_biaya as $item) {
-                            $cekAdaData = false;
-                            foreach ($data_grup_tujuan_biaya as $item1) {
-                                if ($item->deskripsi==$item1->deskripsi && $item->biaya==$item1->biaya ) {
-                                    $cekAdaData = true;
-                                    break;
-                                }
+                        $cekAdaData = false;
+                        foreach ($data_grup_tujuan_biaya as $item1) {
+                            if ($item->deskripsi==$item1->deskripsi && $item->biaya==$item1->biaya ) {
+                                $cekAdaData = true;
+                                break;
                             }
-                            if (!$cekAdaData && $item->deskripsi!='TL') {
-                                DB::table('sewa_biaya')
+                        }
+                        if (!$cekAdaData && $item->deskripsi != 'TL') {
+                            DB::table('sewa_biaya')
                                 ->where('id_sewa', $data['id_sewa_defaulth'])
                                 ->where('id_biaya', $item->id_biaya)
                                 ->update(array(
@@ -253,32 +253,13 @@ class RevisiUangJalanController extends Controller
                                     'updated_at'=> now(),
                                     'updated_by'=> $user, // masih hardcode nanti diganti cookies
                                 )
-                                );
-                            }
+                            );
+                        }
                             
                     }
     
                     $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
-                     DB::table('uang_jalan_riwayat')
-                            ->where('sewa_id', $data['id_sewa_defaulth'])
-                            ->where('is_aktif', 'Y')
-                            ->update(array(
-                                'total_uang_jalan'=> $datauang_jalan_riwayat->total_uang_jalan-= (float)str_replace(',', '', $data['uang_jalan']),
-                                'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl-= (float)str_replace(',', '', $data['uang_jalan']),
-                                // 'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang-= (float)str_replace(',', '', $data['uang_jalan']),
-                                'total_diterima'=> $datauang_jalan_riwayat->total_diterima-= (float)str_replace(',', '', $data['uang_jalan']),
-                                'updated_at'=> now(),
-                                'updated_by'=> $user,
-                            )
-                        );
                     if($data['pembayaran'] != 'HUTANG_KARYAWAN'){
-                       
-                        $saldo = DB::table('kas_bank')
-                            ->select('*')
-                            ->where('is_aktif', '=', "Y")
-                            ->where('kas_bank.id', '=', $data['pembayaran'])
-                            ->first();
-            
                         $kasbank = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
                         if($kasbank){
                             $kasbank->saldo_sekarang += (float)str_replace(',', '', $data['uang_jalan']);
@@ -470,7 +451,6 @@ class RevisiUangJalanController extends Controller
                     ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
                     ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
                     // ->leftJoin('sewa_biaya AS sb', 's.id_sewa', '=', 'sb.id_sewa')
-
                     ->select(
                         's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer', 'c.grup_id',
                         's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
