@@ -26,11 +26,11 @@ class PaymentSDTController extends Controller
             ->orderBy('nama')
             ->get();
 
-        $customer = DB::table('customer')
-            ->select('*')
-            ->where('customer.is_aktif', "Y")
-            ->orderBy('nama')
-            ->get();
+        // $customer = DB::table('customer')
+        //     ->select('*')
+        //     ->where('customer.is_aktif', "Y")
+        //     ->orderBy('nama')
+        //     ->get();
 
         $customer = DB::table('job_order_detail_biaya as jodb')
                     ->leftJoin('job_order as jo', 'jodb.id_jo', '=', 'jo.id')
