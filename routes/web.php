@@ -134,6 +134,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pencairan_uang_jalan_ftl/form', [App\Http\Controllers\PencairanUangJalanFtlController::class, 'form'])->name('pencairan_uang_jalan_ftl.form');
         Route::resource('pencairan_uang_jalan_ftl', 'App\Http\Controllers\PencairanUangJalanFtlController');
 
+        Route::post('/dalam_perjalanan/save_batal_muat/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_batal_muat'])->name('dalam_perjalanan.save_batal_muat');
         Route::get('/dalam_perjalanan/batal_muat/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'batal_muat'])->name('dalam_perjalanan.batal_muat');
         Route::get('/dalam_perjalanan/cancel/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'cancel'])->name('dalam_perjalanan.cancel');
         Route::post('/dalam_perjalanan/insertCancel', [App\Http\Controllers\DalamPerjalananController::class, 'insertCancel'])->name('insertCancel.insert');
