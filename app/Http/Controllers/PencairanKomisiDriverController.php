@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sewa;
+use App\Models\KasBank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class PencairanKomisiDriverController extends Controller
 {
@@ -87,6 +90,82 @@ class PencairanKomisiDriverController extends Controller
     public function store(Request $request)
     {
         //
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+
+        try {
+
+            DB::beginTransaction();
+            $data = $request->collect();
+            // dd($data);  
+            // $tanggal_pencairan = date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
+            $arr_tampungan=[];
+
+            foreach ($data['data'] as $value) {
+                  $objTampungan = [
+                        'Tujuan'=>$value['nama_tujuan'],
+                        'Komisi' =>'Rp.'.number_format($value['komisi_driver']) ,
+                    ];
+                    array_push($arr_tampungan, $objTampungan);
+                DB::table('sewa')
+                ->where('id_sewa', $value['id_sewa'])
+                ->where('id_karyawan', $data['karyawan'])
+                ->update(array(
+                        'status_pencairan_driver' =>'SUDAH DICAIRKAN',
+                        // 'tanggal_pencairan_driver' =>date_format($tanggal_pencairan, 'Y-m-d'),
+                        'tanggal_pencairan_driver' =>now(),
+                        'updated_at'=> now(),
+                        'updated_by'=> $user,
+                    )
+                );
+            }
+            $ubahKeString = [];
+            foreach ($arr_tampungan as $item) {
+                $ubahKeString[] = '(' . implode(', ', array_map(
+                    function ($key, $value) {
+                        return "\"$key\" = \"$value\"";
+                    },
+                    array_keys($item),
+                    $item
+                )) . ')';
+            }
+
+            $hasil_tampungan_string = implode('|', $ubahKeString);
+            // dd($hasil_tampungan_string);
+
+            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                array(
+                    $data['pembayaran'],// id kas_bank dr form
+                    // date_format($tanggal_pencairan, 'Y-m-d'),//tanggal
+                    now(),
+                    0,// uang masuk (debit)
+                    floatval(str_replace(',', '', $data['total_komisi_driver'])), //uang keluar (kredit)
+                    1016, //kode coa masik belum di komunikasiin
+                    'komisi_driver',
+                    'KOMISI DRIVER '.$data['valueDriver'].
+                    '# RINCIAN :'.$hasil_tampungan_string.
+                    '# TOTAL KOMISI :Rp. '.$data['total_komisi_driver'],
+                    $data['karyawan'],// nyimpen id karyawan buat di sewa
+                    $user,//created_by
+                    now(),//created_at
+                    $user,//updated_by
+                    now(),//updated_at
+                    'Y'
+                ) 
+            );
+            $kasbank = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
+            $kasbank->saldo_sekarang -= floatval(str_replace(',', '', $data['total_komisi_driver']));
+            $kasbank->updated_by = $user;
+            $kasbank->updated_at = now();
+            $kasbank->save();
+            DB::commit();
+            return redirect()->route('pencairan_komisi_driver.index')->with(['status' => 'Success', 'msg' => 'Berhasil Mencairkan Komisi Supir']);
+        } 
+        catch (\Throwable $th) {
+            return redirect()->back()->withErrors($th->getMessage())->withInput();
+            DB::rollBack();
+            // return redirect()->route('pencairan_komisi_driver.index')->with(['status' => 'Gagal', 'msg' =>$th->getMessage()],500)->withErrors($th->getMessage())->withInput();
+
+        }
     }
 
     /**
