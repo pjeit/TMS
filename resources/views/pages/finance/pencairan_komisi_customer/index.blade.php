@@ -33,7 +33,7 @@
         <div class="card radiusSendiri">
             <div class="card-header" style="border: 2px solid #bbbbbb;">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-6" >
                             <div class="form-group">
                                 <label for="tanggal_pencairan">Tanggal Pencairan</label>
                                 <div class="input-group mb-0">
@@ -55,7 +55,7 @@
 
                             </div>
                                 <div class="row" >
-                                    <div class="col-4">
+                                    <div class="col-5">
                                         <div class="form-group">
                                             <label for="periode">Tanggal Berangkat</label>
                                             <div class="input-group mb-0">
@@ -68,7 +68,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-5">
                                         <div class="form-group">
                                             <label for="periode" style="opacity: 0%;">Tanggal Akhir</label>
                                             <div class="input-group mb-0">
@@ -79,14 +79,14 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4" style="margin-top: 33px;">
+                                    <div class="col-2" style="margin-top: 33px;">
                                         <button type="button" id="btnFilter" class="btn btn-primary radiusSendiri" ><i class="fas fa-search"></i> <b> Filter</b></button>
 
                                     </div>
                                 
                                 </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-6 radiusSendiri p-3" style="background-color: rgb(230, 230, 232);">
                             <label for="Total">Total</label>
                             <ul class="list-group mb-1">
                                 <li class="list-group-item d-flex justify-content-between">
