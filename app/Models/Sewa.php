@@ -29,6 +29,11 @@ class Sewa extends Model
          return $this->hasOne(Customer::class, 'id', 'id_customer');
     }
 
+    public function getUJRiwayat()
+    {
+         return $this->hasMany(UangJalanRiwayat::class, 'sewa_id', 'id_sewa')->where('is_aktif', 'Y')->orderBy('id', 'DESC');
+    }
+
     public function getKaryawan()
     {
          return $this->hasOne(Karyawan::class, 'id', 'id_karyawan');

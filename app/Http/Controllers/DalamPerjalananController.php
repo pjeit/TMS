@@ -597,7 +597,8 @@ class DalamPerjalananController extends Controller
         //
     }
 
-    public function save_batal_muat(Request $request, Sewa $sewa){
+    public function save_batal_muat(Request $request, Sewa $sewa)
+    {
         $data = $request->post();
         $uj_kembali = floatval(str_replace(',', '', $data['total_uang_jalan_kembali']));
         $user = Auth::user()->id;
@@ -611,6 +612,16 @@ class DalamPerjalananController extends Controller
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             if($sewa->save()){
+                DB::table('uang_jalan_riwayat')
+                ->where('sewa_id', $sewa->id_sewa)
+                ->where('is_aktif', 'Y')
+                ->update([
+                    'catatan' => 'BATAL MUAT',
+                    'updated_at' => now(),
+                    'updated_by' => $user,
+                    'is_aktif' => 'N',
+                ]); 
+
                 $batal = new SewaBatalCancel();
                 $batal->id_sewa = $sewa->id_sewa;
                 $batal->jenis = 'BATAL';
@@ -715,33 +726,13 @@ class DalamPerjalananController extends Controller
 
     public function cancel($id)
     {
-        $sewa = DB::table('sewa AS s')
-                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
-                    ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
-                    ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
-                    ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
-                    ->leftJoin('job_order_detail AS jod', 's.id_jo_detail', '=', 'jod.id')
-                    ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
-                    ->join('uang_jalan_riwayat AS ujr', 's.id_sewa', '=', 'ujr.sewa_id')
-                    ->where('s.jenis_tujuan', 'like', '%FTL%')
-                    // ->where('s.status', 'PROSES DOORING')
-                    // ->whereNull('s.id_supplier')
-                    // ->whereNull('s.tanggal_kembali')
-                    ->where('s.is_aktif', '=', 'Y')
-                    ->where('s.id_sewa', '=', $id)
-                    ->groupBy('c.id')
-                    ->first();
-        // dd($sewa->customer);
+        $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
+
         $dataKas = DB::table('kas_bank')
-            ->select('*')
-            ->where('is_aktif', '=', "Y")
-            // ->paginate(10);
-            ->get();
-        $dataUJ=DB::table('uang_jalan_riwayat')
-            ->select('*')
-            ->where('is_aktif', '=', "Y")
-            // ->paginate(10);
-            ->get();
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->get();
+
         return view('pages.order.dalam_perjalanan.cancel',[
             'judul' => "cancel",
             'data' => $sewa,
@@ -751,59 +742,20 @@ class DalamPerjalananController extends Controller
         ]);
     }
 
-    public function insertCancel(Request $request)
+    public function save_cancel(Request $request, Sewa $sewa)
     {
         $user = Auth::user()->id;
         $data = $request->post();
-        //  dd($data);
+        DB::beginTransaction(); 
+        dd($data);
         try {
-            // $pesanKustom = [
-            //     'kode.required' => 'Kode Harus diisi!',
-            //     'nama.required' => 'Nama Harus diisi!',
-            // ];
-            
-            // $request->validate([
-            //     'kode' => 'required',
-            //     'nama' => 'required',
-            // ], $pesanKustom);
-            
-            $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
+            $uang_jalan_riwayat = DB::table('uang_jalan_riwayat')
                     ->select('*')
                     ->where('is_aktif', '=', "Y")
                     ->where('sewa_id', $data['id_sewa_hidden'])
                     ->first();
 
             // ====================update untuk ngurangin kredit customer sama grup======================
-            $sewa = Sewa::where('is_aktif', 'Y')
-            ->whereNull('id_supplier') 
-            ->findOrFail($data['id_sewa_hidden']);
-            $customer_lama = DB::table('customer as c')
-                    ->select('c.*')
-                    ->where('c.id', '=', $sewa->id_customer)
-                    ->where('c.is_aktif', '=', "Y")
-                    ->first();
-            $grup_lama = DB::table('grup as g')
-                ->select('g.*')
-                ->where('g.id', '=', $customer_lama->grup_id)
-                ->where('g.is_aktif', '=', "Y")
-                ->first();
-            DB::table('customer')
-                ->where('id', $sewa->id_customer)
-                ->update([
-                    'kredit_sekarang' => (float)$customer_lama->kredit_sekarang-$sewa->total_tarif < 0 ? 0 : $customer_lama->kredit_sekarang-$sewa->total_tarif,
-                    'updated_at' => now(),
-                    'updated_by' => $user,
-            ]);
-            DB::table('grup')
-                ->where('id', $customer_lama->grup_id)
-                ->update([
-                    'total_kredit' => (float)$grup_lama->total_kredit-$sewa->total_tarif< 0 ? 0 : $grup_lama->total_kredit-$sewa->total_tarif,
-                    'updated_at' => now(),
-                    'updated_by' => $user,
-            ]);
-            // ====================update untuk ngurangin kredit customer sama grup======================
-
-
             DB::table('sewa')
             ->where('id_sewa', $data['id_sewa_hidden'])
             ->update([
