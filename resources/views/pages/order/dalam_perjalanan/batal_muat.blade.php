@@ -96,30 +96,10 @@
                                         </div>
                                         <div class="col-8 col-md-8 col-lg-8">
                                             <label for="driver">Driver</label>
-                                            <input type="text" class="form-control" name="driver" readonly="" value="{{ $data['nama_driver'] }}">
+                                            <input type="text" class="form-control" readonly="" name="driver" value="{{ $data['nama_driver'] }}">
+                                            <input type="hidden" class="form-control" name="id_karyawan" readonly="" value="{{ $data['id_karyawan'] }}">
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 col-md-12">
-                                <div class="form-group">
-                                    <label for="kas_bank_id">Kas / Bank<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='kasbank' name="kasbank" required>
-                                        @foreach ($kasbank as $item)
-                                            <option value="{{ $item->id }}">{{ $item->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-12">
-                                <div class="form-group">
-                                    <label for="kas_bank_id">Jenis<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='jenis' name="jenis" required>
-                                        <option value="">── PILIH JENIS ──</option>
-                                        <option value="BELUM TRANSFER">BELUM TRANSFER</option>
-                                        <option value="SUDAH TRANSFER">SUDAH TRANSFER</option>
-                                    </select>
                                 </div>
                             </div>
 
@@ -152,7 +132,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="{{ number_format($data['total_uang_jalan']) }}">
+                                        <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="{{ number_format($data['total_uang_jalan'] + $data['total_tl']) }}">
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +148,31 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-6 col-md-12">
+                            {{-- <div class="col-lg-6 col-md-12">
+                                <div class="form-group">
+                                    <label for="kas_bank_id">Jenis<span style="color:red">*</span></label>
+                                    <select class="form-control select2" style="width: 100%;" id='jenis' name="jenis" required>
+                                        <option value="">── PILIH JENIS ──</option>
+                                        <option value="BELUM TRANSFER">BELUM TRANSFER</option>
+                                        <option value="SUDAH TRANSFER">SUDAH TRANSFER</option>
+                                    </select>
+                                </div>
+                            </div> --}}
+                            <div class="col-lg-12 col-md-12">
+                                <div class="form-group">
+                                    <label for="kas_bank_id">Kas / Bank<span style="color:red">*</span></label>
+                                    <select class="form-control select2" style="width: 100%;" id='kasbank' name="kasbank" required>
+                                        @foreach ($kasbank as $item)
+                                            <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                        @endforeach
+                                            <option value="HUTANG DRIVER">HUTANG DRIVER</option>
+                                    </select>
+                                </div>
+                            </div>
+                       
+
+
+                            {{-- <div class="col-lg-6 col-md-12">
                                 <div class="form-group">
                                     <label for="total_uang_jalan">Riwayat Potong Hutang</label>
                                     <div class="input-group">
@@ -190,10 +194,7 @@
                                         <input autocomplete="off" type="text" required name="potong_hutang_dikembalikan" class="form-control numaja uang" id="potong_hutang_dikembalikan" placeholder="" value="">
                                     </div>
                                 </div>
-                            </div>
-                          
-                          
-                         
+                            </div> --}}
                         </div>
                     </div>
 
@@ -202,7 +203,7 @@
                             <div class="col-12 col-md-12">
                                 <div class="form-group">
                                     <label for="alasan_cancel">Alasan Batal Muat<span style="color: red;">*</span></label>
-                                    <textarea name="alasan_cancel" required class="form-control" id="alasan_cancel" rows="15" value=""></textarea>
+                                    <textarea name="alasan_cancel" required class="form-control" id="alasan_cancel" rows="12" value=""></textarea>
                                 </div>
                             </div>
                         </div>

@@ -105,9 +105,7 @@ class PencairanUangJalanFtlController extends Controller
             $ujr->sewa_id = $data['id_sewa_defaulth'];
             $ujr->total_uang_jalan = (float)str_replace(',', '', $data['uang_jalan']);
             $ujr->total_tl = (isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0);
-            $ujr->total_uang_jalan_tl = (float)str_replace(',', '', $data['uang_jalan'])+(isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0);
             $ujr->potong_hutang = (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0);
-            $ujr->total_diterima = (float)str_replace(',', '', $data['total_diterima']);
             $ujr->kas_bank_id = $data['pembayaran'];
             $ujr->catatan = $data['catatan'];
             $ujr->created_by = $user;
@@ -116,28 +114,16 @@ class PencairanUangJalanFtlController extends Controller
             // $ujr->save();
             if($ujr->save())
             {
-                $total_uj = isset($data['uang_jalan'])  ? (float)str_replace(',', '', $data['uang_jalan']) : 0;
-                $total_tl = isset($data['teluk_lamong'])  ? (float)str_replace(',', '', $data['teluk_lamong']) : 0;
-
-                $total_uj_dan_tl = '#total_uj_dan_tl:' . ($total_uj + $total_tl);
-                // dd($total_uj_dan_tl);
-                $tl = isset($data['teluk_lamong'])? ($data['teluk_lamong'] != 0? '#teluk_lamong:'.(isset($data['teluk_lamong'])?(float)str_replace(',', '', $data['teluk_lamong']):0):''):""; 
+                $tl = isset($data['teluk_lamong'])? ($data['teluk_lamong'] != 0? ' #teluk_lamong:'.(isset($data['teluk_lamong'])? (float)str_replace(',', '', $data['teluk_lamong']):0):''):""; 
                 $refrensi_keterangan_string = 
-                    '#uang_jalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
+                    ' #uang_jalan: ' . (float)str_replace(',', '', $data['uang_jalan']) . 
                     $tl. 
-                    $total_uj_dan_tl . 
-                    '#potongHutang:' .(isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
-                    '#totalDiterima:' .(float)str_replace(',', '', $data['total_diterima']);
+                    ' #potongHutang: ' .(isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
+                    ' #totalDiterima: ' .(float)str_replace(',', '', $data['total_diterima']);
                 $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
                 if(isset($kh)&&isset($data['potong_hutang'])){
-                    // dd($kh->total_hutang - isset($data['potong_hutang'])? (float)str_replace(',', '', $data['potong_hutang']):0); 
                     $saldo_hutang= $kh->total_hutang - (float)str_replace(',', '', $data['potong_hutang']);
-                    // dd($saldo_hutang);
-                    // dd($saldo_hutang);
-
                     $kh->total_hutang = $saldo_hutang; 
-                    // dd($kh->total_hutang);
-
                     $kh->updated_by = $user;
                     $kh->updated_at = now();
                     $kh->save();
