@@ -50,7 +50,7 @@ class PencairanKomisiCustomerController extends Controller
             ->whereNull('id_supplier') 
             ->where('s.is_aktif', '=', "Y")
             ->where('s.status_pencairan_customer', 'BELUM DICAIRKAN')
-            ->where('s.status', 'SELESAI')
+            ->where('s.status', 'SELESAI PEMBAYARAN')
             ->where('s.id_customer', $customer)
             ->where('s.total_komisi', '!=', 0)
             ->whereBetween('s.tanggal_berangkat', [date_format($tanggal_awal_convert, 'Y-m-d'), date_format($tanggal_akhir_convert, 'Y-m-d')])
