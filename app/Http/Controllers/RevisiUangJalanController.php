@@ -77,8 +77,9 @@ class RevisiUangJalanController extends Controller
     {
         // {
             $data = $request->post();
+            $uang_jalan = (float)str_replace(',', '', $data['uang_jalan']);
             $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
-            dd($data); die;
+            // dd($data); die;
             try {
                 // dd($data);
                 $sewa_biaya = DB::table('sewa_biaya AS sb')
@@ -91,7 +92,7 @@ class RevisiUangJalanController extends Controller
                     ->where('gtb.is_aktif', 'Y')
                     ->where('gtb.grup_tujuan_id', $data['id_tujuan'])
                     ->get();
-                $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
+                $old_uang_jalan_riwayat = DB::table('uang_jalan_riwayat')
                     ->select('*')
                     ->where('is_aktif', '=', "Y")
                     ->where('sewa_id', $data['id_sewa_defaulth'])
@@ -230,7 +231,7 @@ class RevisiUangJalanController extends Controller
 
                 }else{
                     $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
-                    $sewa->total_uang_jalan -= (float)str_replace(',', '', $data['uang_jalan']);
+                    $sewa->total_uang_jalan -= $uang_jalan;
                     $sewa->updated_by = $user;
                     $sewa->updated_at = now();
                     $sewa->save();
@@ -260,6 +261,16 @@ class RevisiUangJalanController extends Controller
     
                     $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
                     if($data['pembayaran'] != 'HUTANG_KARYAWAN'){
+                        // $uang_jalan_riwayat = new UangJalanRiwayat();
+                        // $uang_jalan_riwayat->tanggal = now();
+                        // $uang_jalan_riwayat->tanggal_pencatatan = now();
+                        // $uang_jalan_riwayat->sewa_id = $data['id_sewa_defaulth'];
+                        // $uang_jalan_riwayat->total_uang_jalan = $old_uang_jalan_riwayat->total_uang_jalan - $uang_jalan;
+                        // $uang_jalan_riwayat->total_tl = $old_uang_jalan_riwayat->total_tl;
+                        // $uang_jalan_riwayat->total_uang_jalan_tl = $uang_jalan_riwayat->total_uang_jalan + $uang_jalan_riwayat->total_tl;
+                        // $uang_jalan_riwayat->potong_hutang = 0;
+                        // $uang_jalan_riwayat->total_diterima = $uang_jalan_riwayat->total_uang_jalan_tl;
+
                         $kasbank = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
                         if($kasbank){
                             $kasbank->saldo_sekarang += (float)str_replace(',', '', $data['uang_jalan']);
@@ -275,7 +286,7 @@ class RevisiUangJalanController extends Controller
                                         1016, //kode coa
                                         'uang_jalan',
                                         'UANG MASUK #PENGEMBALIAN UANG JALAN '.'#'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan'].' #'.$data['catatan'], //keterangan_transaksi
-                                        $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
+                                        $old_uang_jalan_riwayat->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at
                                         $user,//updated_by
