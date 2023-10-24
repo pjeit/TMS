@@ -92,7 +92,13 @@
                             <th style="width:1px; white-space: nowrap; text-align:right;">Komisi Driver</th>
                         </tr>
                     </thead>
-                    <tbody >
+                    <tbody id="dataTabel">
+                        <tr>
+                            <td>20-oct-2022</td>
+                            <td>Sampang</td>
+                            <td>JL.lol</td>
+                            <td>20.000</td>
+                        </tr>
                             
                     </tbody>
                 </table>
@@ -132,7 +138,19 @@
                         if(response)
                         {
                             console.log(response);
+                            var data = response.data;
+                             for (let i = 0; i < response.data; i++) {
+
+                                $('dataTabel').append(`
+                                
+                                
+                                `)
+                                const element = data[i];
+                                
+                            }
                         }
+
+                       
                       
             
                     },

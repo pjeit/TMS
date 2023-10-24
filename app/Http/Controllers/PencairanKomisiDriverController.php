@@ -58,7 +58,7 @@ class PencairanKomisiDriverController extends Controller
             return response()->json(['status'=>'success','data'=>$data]);
         } catch (\Throwable $th) {
             //throw $th;
-            return response()->json(['status'=>'success','error'=>$th->getMessage()]);
+            return response()->json(['status'=>'error','error'=>$th->getMessage()]);
 
         }
 
