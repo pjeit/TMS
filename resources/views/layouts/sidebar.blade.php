@@ -216,7 +216,7 @@
                   <ul class="nav nav-treeview">
                     <li class="nav-item">
                       <a href="{{route('head.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('head*') ? ' active' : '' }} ">
-                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                      <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                         <p>
                           Truck
                         </p>
@@ -224,7 +224,7 @@
                     </li>
                      <li class="nav-item">
                       <a href="{{route('chassis.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('chassis*') ? ' active' : '' }} ">
-                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                      <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                         <p>
                           Ekor Truck
                         </p>
@@ -232,7 +232,7 @@
                     </li> 
                     <li class="nav-item">
                       <a href="{{route('pair_kendaraan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pair_kendaraan*') ? ' active' : '' }}">
-                      <i class="far nav-icon fa fa-truck" style="font-size: 15px;"></i>
+                      <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                         <p>
                           Pairing Truck
                         </p>
