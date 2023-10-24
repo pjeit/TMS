@@ -95,7 +95,7 @@
                     <th style="width:5%;"></th>
                 </tr>
                  <tr>
-                    <th colspan='4' style="text-align:left;"><img style="position: absolute;margin-top: -170px;margin-left: -70px;" src="{{ public_path("img/LOGO_PJE_DOANG.png") }}"  width="500" height="500"></th>
+                    <th colspan='4' style="text-align:left;"><img style="position: absolute;margin-top: -170px;margin-left: -70px;" src="{{ public_path("img/LOGO_PJE_DOANG1.png") }}"  width="500" height="500"></th>
                     <th colspan='11' style="text-align:left;">
                         <h2 >
                             <span style="color:#1f55a2"> PRIMATRANS JAYA EXPRESS</span>

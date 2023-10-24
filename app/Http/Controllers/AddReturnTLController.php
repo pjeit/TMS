@@ -190,9 +190,9 @@ class AddReturnTLController extends Controller
                 ->where('is_aktif', 'Y')
                 ->update(array(
                     'total_tl'=> $datauang_jalan_riwayat->total_tl+= (float)str_replace(',', '', $data['jumlah']),
-                    'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl+= (float)str_replace(',', '', $data['jumlah']),
+                    // 'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl+= (float)str_replace(',', '', $data['jumlah']),
                     'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang+= (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0),
-                    'total_diterima'=> $datauang_jalan_riwayat->total_diterima+= (float)str_replace(',', '', $data['total_diterima']),
+                    // 'total_diterima'=> $datauang_jalan_riwayat->total_diterima+= (float)str_replace(',', '', $data['total_diterima']),
                     'updated_at'=> now(),
                     'updated_by'=> $user,
                 )
@@ -362,9 +362,9 @@ class AddReturnTLController extends Controller
                 ->where('is_aktif', 'Y')
                 ->update(array(
                     'total_tl'=> $datauang_jalan_riwayat->total_tl-= (float)str_replace(',', '', $data['jumlah']),
-                    'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl-= (float)str_replace(',', '', $data['jumlah']),
+                    // 'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl-= (float)str_replace(',', '', $data['jumlah']),
                     // 'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang+= (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0),
-                    'total_diterima'=> $datauang_jalan_riwayat->total_diterima-= (float)str_replace(',', '', $data['jumlah']),
+                    // 'total_diterima'=> $datauang_jalan_riwayat->total_diterima-= (float)str_replace(',', '', $data['jumlah']),
                     'updated_at'=> now(),
                     'updated_by'=> $user,
                 )
@@ -394,10 +394,24 @@ class AddReturnTLController extends Controller
                 $kht->is_aktif = 'Y';
                 if($kht->save())
                 {
-                    $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']); 
-                    $kh->updated_by = $user;
-                    $kh->updated_at = now();
-                    $kh->save();
+                    if(isset($kh)){
+                        // kalau ada data, update hutang
+                         $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']); 
+                         $kh->updated_by = $user;
+                         $kh->updated_at = now();
+                         $kh->save();
+                    }else{
+                        // kalau tidak ada data, buat data hutang baru
+                        $kh = new KaryawanHutang();
+                        $kh->id_karyawan = $data['id_karyawan'];
+                        $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']);
+                        $kh->createad_by = $user;
+                        $kh->createad_at = now();
+                        $kh->is_aktif = 'Y';
+                        $kh->save();
+                    }
+
+                   
                 }
             }
           
