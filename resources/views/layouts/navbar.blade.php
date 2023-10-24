@@ -1,4 +1,4 @@
-<nav class="main-header navbar navbar-expand navbar-white navbar-light bg-primary ">
+<nav class="main-header navbar navbar-expand navbar-white navbar-light " style="background-color: #0071BD;">
 
   <!-- Left navbar links -->
   <ul class="navbar-nav ">
@@ -27,10 +27,10 @@
       @endphp
       <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <!-- User image -->
-        <li class="user-header bg-primary">
+        <li class="user-header " style="background-color: #0071BD;">
           <img src="{{ asset('img/user-1.png') }}" class="img-circle elevation-2 bg-white" alt="User Image">
-          <p>
-            {{$username}} - {{$role}}
+          <p class="text-white">
+            {{ strtoupper($username) }} - {{ strtoupper($role) }}
             {{-- <small>Member since Nov. 2012</small> --}}
           </p>
         </li>

@@ -10,6 +10,20 @@
 
 
 <style>
+  .new-logo{
+    background: url({{ asset('img/LOGO_PJE_WARNA.jpg') }}) no-repeat;
+    height: 56px; /* Set the height to cover the entire anchor */
+    background-size: 100%;
+    top: -200px;
+  }
+
+  .sidebar-collapse .new-logo {
+    background: url({{ asset('img/LOGO_MINI.jpg') }}) no-repeat;
+    background-color: #fff;
+    background-size: 100%;
+    height: 56px; 
+  }
+
   [type=checkbox] {
   width: 1rem;
   height: 1rem;
