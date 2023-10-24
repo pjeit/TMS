@@ -132,7 +132,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="{{ number_format($data['total_uang_jalan'] + $data['total_tl']) }}">
+                                        <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}">
                                     </div>
                                 </div>
                             </div>
@@ -231,14 +231,12 @@
             format: "dd-M-yyyy",
             todayHighlight: true,
             language: 'en',
-            // startDate: today,
         }).datepicker("setDate", today);
         $('#tanggal_kembali').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
             language: 'en',
-            // startDate: today,
         }).datepicker("setDate", today);
 
         $(document).on('keyup', '#total_tarif_tagih', function(){ 

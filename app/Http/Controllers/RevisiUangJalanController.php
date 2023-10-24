@@ -268,8 +268,8 @@ class RevisiUangJalanController extends Controller
                         $kh = new KaryawanHutang();
                         $kh->id_karyawan = $data['id_karyawan'];
                         $kh->total_hutang += $uang_jalan;
-                        $kh->createad_by = $user;
-                        $kh->createad_at = now();
+                        $kh->created_by = $user;
+                        $kh->created_at = now();
                         $kh->is_aktif = 'Y';
                         $kh->save();
                     }
