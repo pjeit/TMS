@@ -18,14 +18,12 @@
    }
 </style>
 <div class="container-fluid">
-    <form action="{{ route('insertCancel.insert') }}" id="post_data" method="POST" >
+    <form action="{{ route('dalam_perjalanan.save_cancel', [ $data['id_sewa'] ]) }}" method="POST" >
         @csrf 
         <div class="card radiusSendiri">
             <div class="card-header">
                 <a href="{{ route('dalam_perjalanan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                {{-- <a href="{{ route('dalam_perjalanan.index') }}" class="btn btn-success radiusSendiri"><i class="fa fa-save"></i> Simpan</a> --}}
-                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-
+                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
             <div class="card-body">
                
@@ -52,7 +50,8 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input disabled type="text" autocomplete="off" name="tanggal_cancel" class="form-control date" id="tanggal_cancel" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse(now())->format('d-M-Y')}}">
+                                        <input disabled type="text" autocomplete="off"  class="form-control date" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse(now())->format('d-M-Y')}}">
+                                        <input type="hidden" autocomplete="off" name="tanggal_cancel" class="form-control date" id="tanggal_cancel" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse(now())->format('d-M-Y')}}">
                                     </div>
                                 </div> 
                             </div>
@@ -95,12 +94,13 @@
                     <div class="col-lg-6 col-md-6 col-sm-12">
                         <div class="row">
                             <div class="form-group col-12">
-                                <label for="tanggal_pencairan">Tgl. Kembali Surat Jalan</label>
+                                <label for="tanggal_pencairan">Tanggal Kembali</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                    <input disabled type="text" autocomplete="off" name="tanggal_kembali" class="form-control date" id="tanggal_kembali" placeholder="dd-M-yyyy" value="{{\Carbon\Carbon::parse(now())->format('d-M-Y')}}">
+                                    <input disabled type="text" autocomplete="off" class="form-control date" placeholder="dd-M-yyyy" value="{{\Carbon\Carbon::parse(now())->format('d-M-Y')}}">
+                                    <input type="hidden" autocomplete="off" name="tanggal_kembali" class="form-control date" id="tanggal_kembali" placeholder="dd-M-yyyy" value="{{\Carbon\Carbon::parse(now())->format('d-M-Y')}}">
                                 </div>
                             </div> 
 
