@@ -869,8 +869,6 @@ class DalamPerjalananController extends Controller
             $SBC->is_aktif = 'Y';
             $SBC->save();
 
-            
-
             DB::table('uang_jalan_riwayat')
             ->where('sewa_id', $data['id_sewa_hidden'])
             ->update([
@@ -879,11 +877,10 @@ class DalamPerjalananController extends Controller
                 'updated_at' => now(),
 
             ]); 
-            
-                        
-
+            DB::commit();
             return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil Cancel perjalanan!"]);
         } catch (ValidationException $e) {
+            DB::rollBack();
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
     }

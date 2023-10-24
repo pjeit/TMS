@@ -45,6 +45,10 @@ class BelumInvoiceController extends Controller
                 ->where('s.is_aktif', '=', 'Y')
                 // ->where('s.jenis_tujuan', 'like', '%FTL%')
                 ->where('s.status', 'MENUNGGU INVOICE')
+            //      ->where(function ($query) {
+            //     $query->where('s.status', 'MENUNGGU INVOICE')
+            //         ->orWhere('s.status', 'BATAL MUAT');
+            // })
                 // ->whereNull('s.id_supplier')
                 // ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
@@ -130,6 +134,10 @@ class BelumInvoiceController extends Controller
             $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                 ->leftJoin('supplier AS sp', 'sewa.id_supplier', '=', 'sp.id')
                 ->where('sewa.status', 'MENUNGGU INVOICE')
+            //      ->where(function ($query) {
+            //     $query->where('sewa.status', 'MENUNGGU INVOICE')
+            //         ->orWhere('sewa.status', 'BATAL MUAT');
+            // })
                 ->where('sewa.is_aktif', '=', 'Y')
                 ->select('sewa.*','sp.nama as namaSupplier')
                 ->get();
@@ -139,6 +147,10 @@ class BelumInvoiceController extends Controller
                     ->where('c.grup_id', $grup[0])
                     ->where('sewa.is_aktif', '=', 'Y')
                     ->where('sewa.status', 'MENUNGGU INVOICE')
+            //          ->where(function ($query) {
+            //     $query->where('sewa.status', 'MENUNGGU INVOICE')
+            //         ->orWhere('sewa.status', 'BATAL MUAT');
+            // })
                     ->select('sewa.*')
                     ->get();
 
