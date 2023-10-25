@@ -8,6 +8,7 @@ use App\Http\Controllers\KasBankController;
 use App\Http\Controllers\HeadController;
 use App\Http\Controllers\ChassisController;
 use App\Http\Controllers\CustomAuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\SupplierController;
 use App\Models\Karyawan;
@@ -50,6 +51,11 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::middleware(['is_admin','is_superadmin'])->group(function () {
+        Route::get('dashboard/reset', 'App\Http\Controllers\DashboardController@reset')->name('dashboard.reset');
+        Route::get('dashboard', [DashboardController::class, 'dashboard']); 
+
+
+
         Route::resource('coa', 'App\Http\Controllers\CoaController');
 
         Route::get('/booking/getTujuan/{id}', [App\Http\Controllers\BookingController::class, 'getTujuan']);
