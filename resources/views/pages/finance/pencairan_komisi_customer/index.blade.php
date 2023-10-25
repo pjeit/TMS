@@ -113,10 +113,10 @@
                 <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;">
                     <thead>
                         <tr>
-                            <th style="width:1px; white-space: nowrap;">Tgl. Berangkat</th>
+                            <th>Tgl. Berangkat</th>
                             <th>Nama Tujuan</th>
                             <th>Alamat Tujuan</th>
-                            <th style="width:1px; white-space: nowrap; text-align:right;">Komisi</th>
+                            <th>Komisi</th>
                         </tr>
                     </thead>
                     <tbody id="dataTabel">
