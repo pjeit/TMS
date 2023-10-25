@@ -26,16 +26,6 @@
         </div>
         
         <div class="card-body">
-            <div class="col-sm-12 col-md-3 col-lg-3 ">
-                <div class="form-group">
-                    <label for="">Status TL</label> 
-                    <select class="form-control selectpicker" required name="status_tl" id="status_tl" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                        <option value="Add TL">Tambah TL</option>
-                        <option value="Return TL">Kembalikan TL</option>
-                    </select>
-                </div>
-            </div>
-            <hr>
             <div style="overflow: auto;">
                 <table id="datatable" class="table table-bordered table-striped" width='100%'>
                     <thead>
@@ -60,12 +50,6 @@
 </div>
 <script>
     $(document).ready(function() {
-        var status = $('#status_tl').val();
-        showTable(status);
-
-        $(document).on('change', '#status_tl', function(e) {  
-            showTable(this.value)
-		});        
 
         function showTable(status){
             $.ajax({

@@ -190,6 +190,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pembayaran_invoice/loadData/{status}', [App\Http\Controllers\PembayaranInvoiceController::class, 'loadData'])->name('pembayaran_invoice.loadData');
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
 
+        Route::resource('pengembalian_jaminan', 'App\Http\Controllers\PengembalianJaminanController');
+
         // ===================================INVOICE=========================================================
 
         
