@@ -51,32 +51,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::middleware(['is_admin','is_superadmin'])->group(function () {
-        Route::get('dashboard/reset', 'App\Http\Controllers\DashboardController@reset')->name('dashboard.reset');
-        Route::get('dashboard', [DashboardController::class, 'dashboard']); 
-
-
-
+        // ===================================MASTER=========================================================
         Route::resource('coa', 'App\Http\Controllers\CoaController');
 
-        Route::get('/booking/getTujuan/{id}', [App\Http\Controllers\BookingController::class, 'getTujuan']);
-        Route::resource('booking', 'App\Http\Controllers\BookingController');
-
-        Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO'])->name('job_order.print');
-        Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');
-        Route::post('job_order/unloading_plan/data', 'App\Http\Controllers\JobOrderController@unloading_data')->name('job_order.unloading_data');
-        Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
-
-        Route::get('job_order/storage_demurage_input/{id}', 'App\Http\Controllers\JobOrderController@storage_demurage_input')->name('job_order.storage_demurage_input');
-        Route::post('storage_demurage/load_data', 'App\Http\Controllers\StorageDemurageController@load_data')->name('storage_demurage.load_data');
-        Route::resource('storage_demurage', 'App\Http\Controllers\StorageDemurageController');
-
-        Route::resource('pembayaran_jo', 'App\Http\Controllers\PaymentJobController');
-
-        Route::post('pembayaran_sdt/load_data', 'App\Http\Controllers\PaymentSDTController@load_data')->name('pembayaran_sdt.load_data');
-        Route::resource('pembayaran_sdt', 'App\Http\Controllers\PaymentSDTController');
-
         Route::get('/mutasi_kendaraan/filter', [App\Http\Controllers\MutasiKendaraanController::class, 'filterMutasi'])->name('filterMutasi.cari');
-
         Route::get('mutasi_kendaraan/get_data/{id}', 'App\Http\Controllers\MutasiKendaraanController@get_data')->name('mutasi_kendaraan.get_data');
         Route::resource('mutasi_kendaraan', 'App\Http\Controllers\MutasiKendaraanController');
 
@@ -89,11 +67,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('chassis', 'App\Http\Controllers\ChassisController');
         // filterSupplier itu nama method yang ada di controller
         Route::get('/supplier/filter', [App\Http\Controllers\SupplierController::class, 'filterSupplier'])->name('filterSupplier.cari');
-    
         Route::resource('supplier', 'App\Http\Controllers\SupplierController');
     
         Route::get('karyawan/getData/', [App\Http\Controllers\KaryawanController::class, 'index']);
-        
         Route::resource('karyawan', 'App\Http\Controllers\KaryawanController');
     
         Route::resource('grup', 'App\Http\Controllers\GrupController');
@@ -110,12 +86,36 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('users', 'App\Http\Controllers\UsersController');
     
         Route::resource('marketing', 'App\Http\Controllers\MarketingController');
-        Route::get('/pair_kendaraan/filter', [App\Http\Controllers\PairKendaraanController::class, 'filterTruck'])->name('pair_kendaraan.cari');
 
+        Route::get('/pair_kendaraan/filter', [App\Http\Controllers\PairKendaraanController::class, 'filterTruck'])->name('pair_kendaraan.cari');
         Route::resource('pair_kendaraan', 'App\Http\Controllers\PairKendaraanController');
 
         Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
         Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
+        
+        // ===================================MASTER=========================================================
+        
+       
+        // ===================================INBOUND ORDER=========================================================
+        Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO'])->name('job_order.print');
+        Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');
+        Route::post('job_order/unloading_plan/data', 'App\Http\Controllers\JobOrderController@unloading_data')->name('job_order.unloading_data');
+        Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
+
+        Route::get('job_order/storage_demurage_input/{id}', 'App\Http\Controllers\JobOrderController@storage_demurage_input')->name('job_order.storage_demurage_input');
+        Route::post('storage_demurage/load_data', 'App\Http\Controllers\StorageDemurageController@load_data')->name('storage_demurage.load_data');
+        Route::resource('storage_demurage', 'App\Http\Controllers\StorageDemurageController');
+
+        Route::resource('pembayaran_jo', 'App\Http\Controllers\PaymentJobController');
+
+        Route::post('pembayaran_sdt/load_data', 'App\Http\Controllers\PaymentSDTController@load_data')->name('pembayaran_sdt.load_data');
+        Route::resource('pembayaran_sdt', 'App\Http\Controllers\PaymentSDTController');
+
+        // ===================================INBOUND ORDER=========================================================
+        
+        // ===================================TRUCKING ORDER=========================================================
+        Route::get('/booking/getTujuan/{id}', [App\Http\Controllers\BookingController::class, 'getTujuan']);
+        Route::resource('booking', 'App\Http\Controllers\BookingController');
         Route::get('/truck_order/getSewaByStatus/{status}', [App\Helper\SewaDataHelper::class, 'getSewaByStatus'])->name('getSewaByStatus.get');
         Route::get('/truck_order/getJoDetail/{id}', [App\Helper\SewaDataHelper::class, 'getJoDetail'])->name('getJoDetail.get');
         Route::get('/truck_order/getTujuanCust/{id}', [App\Helper\SewaDataHelper::class, 'getTujuanCust'])->name('getTujuanCust.get');
@@ -125,11 +125,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/truck_order/getDataChassisByModel/{id}', [App\Helper\SewaDataHelper::class, 'getDataChassisByModel'])->name('getDataChassisByModel.get');
         Route::get('/truck_order/getDataKendaraanByModel/{id}', [App\Helper\SewaDataHelper::class, 'getDataKendaraanByModel'])->name('getDataKendaraanByModel.get');
 
-        
-
         Route::resource('truck_order', 'App\Http\Controllers\SewaController');
         Route::resource('truck_order_rekanan', 'App\Http\Controllers\SewaRekananController');
 
+        Route::post('/dalam_perjalanan/save_batal_muat/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_batal_muat'])->name('dalam_perjalanan.save_batal_muat');
+        Route::post('/dalam_perjalanan/save_cancel/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_cancel'])->name('dalam_perjalanan.save_cancel');
+        Route::get('/dalam_perjalanan/batal_muat/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'batal_muat'])->name('dalam_perjalanan.batal_muat');
+        Route::get('/dalam_perjalanan/cancel/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'cancel'])->name('dalam_perjalanan.cancel');
+        
+        Route::resource('dalam_perjalanan', 'App\Http\Controllers\DalamPerjalananController');
+
+        // ===================================TRUCKING ORDER=========================================================
+
+
+        // ===================================FINANCE=========================================================
         Route::get('/biaya_operasional/load_data/{item}', 'App\Http\Controllers\BiayaOperasionalController@load_data')->name('biaya_operasional.load_data');
         Route::resource('biaya_operasional', 'App\Http\Controllers\BiayaOperasionalController');
 
@@ -139,34 +148,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pencairan_uang_jalan_ftl/getDatasewaDetail/{id}', [App\Helper\SewaDataHelper::class, 'getDatasewaDetail'])->name('getDatasewaDetail.get');
         Route::post('/pencairan_uang_jalan_ftl/form', [App\Http\Controllers\PencairanUangJalanFtlController::class, 'form'])->name('pencairan_uang_jalan_ftl.form');
         Route::resource('pencairan_uang_jalan_ftl', 'App\Http\Controllers\PencairanUangJalanFtlController');
-
-        Route::post('/dalam_perjalanan/save_batal_muat/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_batal_muat'])->name('dalam_perjalanan.save_batal_muat');
-        Route::post('/dalam_perjalanan/save_cancel/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_cancel'])->name('dalam_perjalanan.save_cancel');
-        Route::get('/dalam_perjalanan/batal_muat/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'batal_muat'])->name('dalam_perjalanan.batal_muat');
-        Route::get('/dalam_perjalanan/cancel/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'cancel'])->name('dalam_perjalanan.cancel');
-        
-        Route::resource('dalam_perjalanan', 'App\Http\Controllers\DalamPerjalananController');
-
-        Route::post('/invoice/set_sewa_id', [App\Http\Controllers\InvoiceController::class, 'setSewaID'])->name('setSewaID.set');
-        Route::get('/invoice/print/{id}', [App\Http\Controllers\InvoiceController::class, 'print'])->name('invoice.print');
-        Route::post('/invoice/invoiceKembali', [App\Http\Controllers\InvoiceController::class, 'invoiceKembali'])->name('invoiceKembali.set');
-        Route::resource('invoice', 'App\Http\Controllers\InvoiceController');
-
-        Route::post('/belum_invoice/set_sewa_id', [App\Http\Controllers\BelumInvoiceController::class, 'setSewaID'])->name('setSewaIDs.set');
-        Route::get('/belum_invoice/print/{id}', [App\Http\Controllers\BelumInvoiceController::class, 'print'])->name('belum_invoice.print');
-        Route::get('/belum_invoice/printGabung/{no_invoice}', [App\Http\Controllers\BelumInvoiceController::class, 'printGabung'])->where('no_invoice', '\w+\/\w+\/(\d+)')->name('belum_invoice_gabung.print');
-        Route::post('/belum_invoice/invoiceKembali', [App\Http\Controllers\BelumInvoiceController::class, 'invoiceKembali'])->name('belum_invoiceKembali.set');
-        Route::resource('belum_invoice', 'App\Http\Controllers\BelumInvoiceController');
-        Route::resource('cetak_invoice', 'App\Http\Controllers\CetakInvoiceController');
-        Route::resource('revisi_sewa_invoice', 'App\Http\Controllers\RevisiSewaBelumInvoiceController');
-
-
-
-        Route::post('/pembayaran_invoice/set_invoice_id', [App\Http\Controllers\PembayaranInvoiceController::class, 'setInvoiceId'])->name('setInvoiceId.set');
-        Route::post('/pembayaran_invoice/update_bukti_potong/{id}', [App\Http\Controllers\PembayaranInvoiceController::class, 'updateBuktiPotong'])->name('pembayaran_invoice.updateBuktiPotong');
-        Route::get('/pembayaran_invoice/bayar', [App\Http\Controllers\PembayaranInvoiceController::class, 'bayar'])->name('pembayaran_invoice.bayar');
-        Route::get('/pembayaran_invoice/loadData/{status}', [App\Http\Controllers\PembayaranInvoiceController::class, 'loadData'])->name('pembayaran_invoice.loadData');
-        Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
 
         Route::get('/add_return_tl/cair/{id}', [App\Http\Controllers\AddReturnTLController::class, 'cair'])->name('add_return_tl.cair');
         Route::get('/add_return_tl/refund/{id}', [App\Http\Controllers\AddReturnTLController::class, 'refund'])->name('add_return_tl.refund');
@@ -182,6 +163,32 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pencairan_komisi_driver/load_data', 'App\Http\Controllers\PencairanKomisiDriverController@load_data')->name('pencairan_komisi_driver.load_data');
         Route::resource('pencairan_komisi_driver', 'App\Http\Controllers\PencairanKomisiDriverController');
         Route::resource('pencairan_komisi_customer', 'App\Http\Controllers\PencairanKomisiCustomerController');
+        // ===================================FINANCE=========================================================
+
+        
+        // ===================================INVOICE=========================================================
+        Route::post('/invoice/set_sewa_id', [App\Http\Controllers\InvoiceController::class, 'setSewaID'])->name('setSewaID.set');
+        Route::get('/invoice/print/{id}', [App\Http\Controllers\InvoiceController::class, 'print'])->name('invoice.print');
+        Route::post('/invoice/invoiceKembali', [App\Http\Controllers\InvoiceController::class, 'invoiceKembali'])->name('invoiceKembali.set');
+        Route::resource('invoice', 'App\Http\Controllers\InvoiceController');
+
+        Route::post('/belum_invoice/set_sewa_id', [App\Http\Controllers\BelumInvoiceController::class, 'setSewaID'])->name('setSewaIDs.set');
+        Route::get('/belum_invoice/print/{id}', [App\Http\Controllers\BelumInvoiceController::class, 'print'])->name('belum_invoice.print');
+        Route::get('/belum_invoice/printGabung/{no_invoice}', [App\Http\Controllers\BelumInvoiceController::class, 'printGabung'])->where('no_invoice', '\w+\/\w+\/(\d+)')->name('belum_invoice_gabung.print');
+        Route::post('/belum_invoice/invoiceKembali', [App\Http\Controllers\BelumInvoiceController::class, 'invoiceKembali'])->name('belum_invoiceKembali.set');
+        Route::resource('belum_invoice', 'App\Http\Controllers\BelumInvoiceController');
+        Route::resource('cetak_invoice', 'App\Http\Controllers\CetakInvoiceController');
+        Route::resource('revisi_sewa_invoice', 'App\Http\Controllers\RevisiSewaBelumInvoiceController');
+
+        Route::post('/pembayaran_invoice/set_invoice_id', [App\Http\Controllers\PembayaranInvoiceController::class, 'setInvoiceId'])->name('setInvoiceId.set');
+        Route::post('/pembayaran_invoice/update_bukti_potong/{id}', [App\Http\Controllers\PembayaranInvoiceController::class, 'updateBuktiPotong'])->name('pembayaran_invoice.updateBuktiPotong');
+        Route::get('/pembayaran_invoice/bayar', [App\Http\Controllers\PembayaranInvoiceController::class, 'bayar'])->name('pembayaran_invoice.bayar');
+        Route::get('/pembayaran_invoice/loadData/{status}', [App\Http\Controllers\PembayaranInvoiceController::class, 'loadData'])->name('pembayaran_invoice.loadData');
+        Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
+
+        // ===================================INVOICE=========================================================
+
+        
 
     });
 
