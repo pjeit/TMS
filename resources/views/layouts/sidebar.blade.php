@@ -7,7 +7,7 @@
 
   <!-- Brand Logo -->
 
-  <a href="/home" class="brand-link d-flex align-items-center " style="background: linear-gradient(to bottom, #0071BD, #00BFFF);">
+  <a href="/home" class="brand-link d-flex align-items-center " style="background: linear-gradient(to bottom, #0071BD, #00BFFF); ">
     <img src="{{ asset('img/LOGO_PJE_CLEAR.png') }}" alt="PJE Logo" class="brand-image img-circle ">
     <span class="brand-text mx-2 text-bold font-italic" ><b>PRIMATRANS</b></span>
   </a>

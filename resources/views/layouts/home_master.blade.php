@@ -16,6 +16,15 @@
     background-size: 100%;
     top: -200px;
   }
+  /* .btn-primary {
+      background:  #0071BD !important;
+      transition: background 0.3s ease; 
+  }
+
+  .btn-primary:hover {
+    background:  #00BFFF !important;
+
+  } */
 .hover-item:hover{
   transform: scale(1.1);
 }
