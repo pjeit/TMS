@@ -97,7 +97,7 @@ class LaporanBankController extends Controller
             $kasBank = DB::table('kas_bank')->where('is_aktif', 'Y')->where('tipe','like' ,'%Bank%')->orderBy('nama', 'asc')->get();
     
             return view('pages.laporan.Bank.index',[
-                'judul' => "LAPORAN KAS",
+                'judul' => "LAPORAN BANK",
                 'data' => $data,
                 'kas' => $kas,
                 'request' => $request,
@@ -108,7 +108,7 @@ class LaporanBankController extends Controller
             $data = NULL;
             $kas = NULL;
             return view('pages.laporan.Bank.index',[
-                'judul' => "LAPORAN KAS",
+                'judul' => "LAPORAN BANK",
                 'data' => $data,
                 'request' => $request,
                 'kas' => $kas,

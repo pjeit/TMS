@@ -16,7 +16,9 @@
     background-size: 100%;
     top: -200px;
   }
-
+.hover-item:hover{
+  transform: scale(1.1);
+}
   .sidebar-collapse .new-logo {
     background: url({{ asset('img/LOGO_MINI.jpg') }}) no-repeat;
     background-color: #fff;

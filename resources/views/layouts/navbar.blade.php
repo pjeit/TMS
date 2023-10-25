@@ -1,4 +1,4 @@
-<nav class="main-header navbar navbar-expand navbar-white navbar-light " style="background-color: #0071BD;">
+<nav class="main-header navbar navbar-expand navbar-white navbar-light " style="background: linear-gradient(to bottom, #0071BD, #00BFFF);">
 
   <!-- Left navbar links -->
   <ul class="navbar-nav ">
@@ -6,7 +6,9 @@
       <a class="nav-link text-white" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
-      <a  class="nav-link text-white">{{strtoupper($judul) }}</a>
+      <a  class="nav-link brand-text text-white text-bold"><b>{{strtoupper($judul) }}</b></a>
+    {{-- <span class="brand-text mx-2 text-bold" ><b>{{strtoupper($judul) }}</b></span> --}}
+
     </li>
     <!--<li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
