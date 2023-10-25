@@ -2,11 +2,10 @@
 {{-- <aside class="main-sidebar elevation-4 sidebar-light-primary"> --}}
 
   <!-- Brand Logo -->
-  <a href="/" class="brand-link d-flex align-items-center new-logo" >
-    {{-- <img src="{{ asset('img/LOGO_PJE_WARNA.jpg') }}" alt="PJE Logo"> --}}
-    {{-- <img src="{{ asset('img/LOGO_PJE_WARNA.jpg') }}" alt="PJE Logo" class="brand-image img-circle elevation-3" >
-    --}}
-    {{-- <span class="small text-bold" >Primatrans</span>  --}}
+
+  <a href="/home" class="brand-link d-flex align-items-center " style="background-color: #0071BD;">
+    <img src="{{ asset('img/LOGO_PJE_CLEAR.png') }}" alt="PJE Logo" class="brand-image img-circle ">
+    <span class="brand-text mx-2 text-bold" ><b>PRIMATRANS</b></span>
   </a>
 
   <!-- Sidebar -->
