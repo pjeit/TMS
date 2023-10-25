@@ -165,6 +165,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pencairan_komisi_driver/load_data', 'App\Http\Controllers\PencairanKomisiDriverController@load_data')->name('pencairan_komisi_driver.load_data');
         Route::resource('pencairan_komisi_driver', 'App\Http\Controllers\PencairanKomisiDriverController');
         Route::resource('pencairan_komisi_customer', 'App\Http\Controllers\PencairanKomisiCustomerController');
+
+        Route::resource('klaim_supir', 'App\Http\Controllers\KlaimSupirController');
         // ===================================FINANCE=========================================================
 
         
