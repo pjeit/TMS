@@ -52,6 +52,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['is_admin','is_superadmin'])->group(function () {
         // ===================================MASTER=========================================================
+        Route::get('/dashboard/reset', [App\Http\Controllers\DashboardController::class, 'reset'])->name('dashboard.reset');
+
         Route::resource('coa', 'App\Http\Controllers\CoaController');
 
         Route::get('/mutasi_kendaraan/filter', [App\Http\Controllers\MutasiKendaraanController::class, 'filterMutasi'])->name('filterMutasi.cari');

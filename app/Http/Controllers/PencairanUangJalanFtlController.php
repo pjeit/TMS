@@ -293,7 +293,7 @@ class PencairanUangJalanFtlController extends Controller
      */
     public function edit(Sewa $pencairan_uang_jalan_ftl)
     {
-         $sewa = DB::table('sewa AS s')
+         $sewa = Sewa::from('sewa AS s')
                     ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
@@ -318,7 +318,7 @@ class PencairanUangJalanFtlController extends Controller
 
         return view('pages.finance.pembayaran_uang_jalan.edit',[
             'judul' => "Pencairan Uang Jalan",
-            'sewa'=>$sewa,
+            'sewa'=> $sewa,
             'sewaBiayaTelukLamong'=>$sewaBiayaTelukLamong,
             'dataKas'=>$dataKas
         ]);
