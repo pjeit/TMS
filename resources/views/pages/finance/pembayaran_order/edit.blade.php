@@ -41,8 +41,8 @@
                     </div>
                     <div class="card-body" >
                         <div class="row">
-                            <div class="col-6">
-                                    <div class="row">
+                            <div class="col-lg-7 col-md-6 col-sm-12">
+                                <div class="row">
                                     <div class="col-6" > 
                                             <div class="form-group">
                                                 <label for="">Pengirim<span class="text-red">*</span></label>
@@ -88,7 +88,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-lg-5 col-md-6 col-sm-12">
                                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                                     <span class="text-primary">Total Biaya</span>
                                     {{-- <span class="badge bg-primary rounded-pill">3</span> --}}
@@ -175,8 +175,8 @@
                                 <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($pembayaran_jo->doc_fee,2)}}" readonly></td>
                             </tr>
                             <tr>
-                                <th>SUB TOTAL</th>
-                                <th name="total_sblm_dooring" id="total_sblm_dooring" >Rp. {{number_format($TotalBiayaRev,2)}}</th>
+                                <th class="text-blue">SUB TOTAL</th>
+                                <th name="total_sblm_dooring" id="total_sblm_dooring" > <input type="text" class="form-control" readonly value="Rp. {{number_format($TotalBiayaRev,2)}}"> </th>
                             </tr>
                         </tbody>
                         <tfoot>
@@ -195,9 +195,13 @@
                                     <th>Tgl Bayar Jaminan</th>
                                     <td><input type="text" name="" class="form-control" value="{{\Carbon\Carbon::parse($dataJaminan->tgl_bayar)->format('d-M-Y')}}" readonly></td>
                                 </tr>
-                                <tr>
+                                <tr class="tinggi">
                                     <th>Total Jaminan</th>
-                                    <th>Rp. {{number_format($dataJaminan->nominal,2)}}</th>
+                                    <th><input type="text" class="form-control" disabled value="Rp. {{number_format($dataJaminan->nominal,2)}}"></th>
+                                </tr>
+                                <tr>
+                                    <th>Catatan</th>
+                                    <th><input type="text" class="form-control" disabled value="{{ $pembayaran_jo->catatan }}"></th>
                                 </tr>
                             </tbody>
                             <tfoot>

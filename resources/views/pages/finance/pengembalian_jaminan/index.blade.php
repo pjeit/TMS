@@ -18,11 +18,7 @@
 <div class="container-fluid">
     <div class="card radiusSendiri">
         <div class="card-header">
-            {{-- <ul class="list-inline"> --}}
-                {{-- <div class="row"> --}}
-                    
-                {{-- </div> --}}
-            {{-- </ul> --}}
+
         </div>
         
         <div class="card-body">
@@ -31,25 +27,93 @@
                     <thead>
                         <tr>
                             <th>Customer</th>
-                            <th>No. Polisi</th>
-                            <th>No. Sewa</th>
-                            <th>Tgl Berangkat</th>
-                            <th>Tujuan</th>
-                            <th>Driver</th>
-                            <th>Keterangan</th>
+                            <th>Supplier</th>
+                            <th>No. BL</th>
+                            <th>Catatan</th>
+                            <th>Total</th>
                             <th style="width:30px"></th>
                         </tr>
                     </thead>
                     <tbody id="hasil">
-                  
+                        @foreach ($data as $item)
+                            <tr>
+                                <td>{{ $item->getCustomer->nama }}</td>
+                                <td>{{ $item->getSupplier->nama }}</td>
+                                <td>{{ $item->no_bl }}</td>
+                                <td>{{ $item->catatan }}</td>
+                                <td>{{ $item->jaminan->nominal }}</td>
+                                <td><button id="{{ $item }}" class="btn btn-primary radiusSendiri showModal"> <i class="fas fa-dollar-sign"> </i> <i class="fa fa-reply-all" ></i> </button></td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modal" tabindex='-1'>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title">Detail</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <form id='form_add_detail'>
+                        <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_sewa --}}
+
+                        <div class='row'>
+                            <div class="col-lg-12">
+                                <div class="row">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <label for="sewa">Customer</label>
+                                        <input type="text" class="form-control" id="customer" readonly>
+                                    </div>   
+
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <label for="sewa">Supplier</label>
+                                        <input type="text" class="form-control" id="supplier" readonly>
+                                    </div>   
+                                    
+                                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                        <label for="sewa">Catatan</label>
+                                        <input type="text" class="form-control" id="catatan" readonly>
+                                    </div>   
+
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <label for="">No. Kontainer</label>
+                                        <input  type="text" class="form-control" maxlength="50" id="no_kontainer"> 
+                                    </div>
+
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <label for="">Seal Pelayaran</label>
+                                        <input  type="text" class="form-control" maxlength="50" id="no_seal"> 
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">BATAL</button>
+                    <button type="button" class="btn btn-sm btn-success save_detail" id="" style='width:85px'>OK</button> 
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script>
     $(document).ready(function() {
+        $(".showModal").click(function () {
+            $("#modal").modal("show");
+        });
 
         function showTable(status){
             $.ajax({

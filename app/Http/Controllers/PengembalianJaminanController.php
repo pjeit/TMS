@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobOrder;
 use Illuminate\Http\Request;
 
 class PengembalianJaminanController extends Controller
@@ -13,8 +14,10 @@ class PengembalianJaminanController extends Controller
      */
     public function index()
     {
+        $data = JobOrder::where('is_aktif', 'Y')->get();
         return view('pages.finance.pengembalian_jaminan.index',[
             'judul' => 'Pengembalian Jaminan',
+            'data' => $data,
         ]);
     }
 
