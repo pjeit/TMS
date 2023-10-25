@@ -1,11 +1,15 @@
+<style>
+
+</style>
+
 <aside class="main-sidebar sidebar-dark-primary elevation-4 ">
 {{-- <aside class="main-sidebar elevation-4 sidebar-light-primary"> --}}
 
   <!-- Brand Logo -->
 
-  <a href="/home" class="brand-link d-flex align-items-center " style="background-color: #0071BD;">
+  <a href="/home" class="brand-link d-flex align-items-center " style="background: linear-gradient(to bottom, #0071BD, #00BFFF);">
     <img src="{{ asset('img/LOGO_PJE_CLEAR.png') }}" alt="PJE Logo" class="brand-image img-circle ">
-    <span class="brand-text mx-2 text-bold" ><b>PRIMATRANS</b></span>
+    <span class="brand-text mx-2 text-bold font-italic" ><b>PRIMATRANS</b></span>
   </a>
 
   <!-- Sidebar -->
@@ -38,7 +42,7 @@
         <!-- =================================================== -->
 
         <li class="nav-item">
-          <a href="#" class="nav-link" style="font-weight: 700;">
+          <a href="#" class="nav-link hover-item" style="font-weight: 700;">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
               DASHBOARD
@@ -146,7 +150,7 @@
                     request()->is('mutasi_kendaraan*')||
                     request()->is('grup*')
                 ? 'menu-is-opening menu-open' : '' }}">
-                <a href="#" class="nav-link" style="font-weight: 700; font-size: 15px;">
+                <a href="#" class="nav-link hover-item" style="font-weight: 700; font-size: 15px;">
                   <i class="nav-icon fas fa-key"></i>
                   <p>MASTER 
                     <i class="fas fa-angle-left right"></i>
@@ -159,7 +163,7 @@
                 request()->is('customer*')||
                 request()->is('grup_tujuan*')
                 ? 'menu-is-opening menu-open' : '' }}">
-                  <a href="#" class="nav-link">
+                  <a href="#" class="nav-link hover-item">
                     <i class="far fa-circle nav-icon"></i>
                     <p style="font-weight: 500;" >
                       Master Grup
@@ -211,7 +215,7 @@
                               request()->is('mutasi_kendaraan*')||
                               request()->is('chassis*')
                               ? 'menu-is-opening menu-open' : '' }}">
-                  <a href="#" class="nav-link">
+                  <a href="#" class="nav-link hover-item">
                     <i class="far nav-icon fa fa-truck"></i>
                     <p style="font-weight: 500;" >
                       Master Truck
@@ -322,7 +326,7 @@
               request()->is('storage_demurage*')||
               request()->is('unloading_plan*')
               ? 'menu-is-opening menu-open' : '' }}">
-              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+              <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-shipping-fast"></i>
                 <p>
                   INBOUND ORDER <i class="fas fa-angle-left right"></i>
@@ -365,7 +369,7 @@
             <li class="nav-item {{ request()->is('booking*')||
               request()->is('dalam_perjalanan*') ||
               request()->is('truck_order*')? 'menu-is-opening menu-open' : '' }}">
-              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+              <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 {{-- <i class="nav-icon fas fa-shipping-fast"></i> --}}
                 <i class="nav-icon fas fa-solid fa-truck"></i>
                 <p>
@@ -427,7 +431,7 @@
               request()->is('pencairan_komisi_driver*')||
                 request()->is('pencairan_komisi_customer*')
               ? 'menu-is-opening menu-open' : '' }}">
-              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+              <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-dollar-sign"></i>
                 <p>FINANCE 
                   <i class="fas fa-angle-left right"></i>
@@ -451,6 +455,17 @@
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Biaya Operasional
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('klaim_supir.index')}}" class="nav-link {{request()->url() === route('klaim_supir.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Klaim Supir
                     </p>
                   </a>
                 </li>
@@ -564,7 +579,7 @@
               request()->is('pembayaran_invoice*') ||
               request()->is('cetak_invoice*') 
                 ? 'menu-is-opening menu-open' : '' }}">
-              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+              <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="fas nav-icon fa-solid fa-file-invoice"></i>
                 {{-- <i class=""></i> --}}
                 <p>INVOICE
@@ -614,7 +629,7 @@
 
             {{-- Rollback --}}
             <li class="nav-item {{ request()->is('revisi_uang_jalan*')  ? 'menu-is-opening menu-open' : '' }}">
-              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+              <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="fas nav-icon fa-solid fa fa-undo"></i>
                 {{-- <i class=""></i> --}}
                 <p>Revisi
@@ -663,7 +678,7 @@
             {{-- LAPORAN FINANCE --}}
             <li class="nav-item {{ request()->is('laporan_kas*') ||
                 request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">
-              <a href="#" class="nav-link" style="font-weight: 700;font-size: 15px;">
+              <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-dollar-sign"></i>
                 <p>LAPORAN FINANCE
                   <i class="fas fa-angle-left right"></i>
