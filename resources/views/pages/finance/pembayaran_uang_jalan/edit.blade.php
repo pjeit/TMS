@@ -26,30 +26,30 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="form-group col-lg-4 col-md-4 col-sm-12">
-                            <label for="no_akun">Customer</label>
-                            <input type="text" id="customer" name="customer" class="form-control" value="[{{ $sewa->getCustomer->kode }}] {{ $sewa->getCustomer->nama }}" readonly>                         
-                        </div>  
-
-                        <div class="form-group col-lg-4 col-md-4 col-sm-12">
-                            <label for="no_akun">Tujuan</label>
-                            <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{ $sewa->nama_tujuan }}" readonly>                         
-                        </div>  
-
-                        <div class="form-group col-lg-4 col-md-4 col-sm-12">
-                            <label for="select_customer">No. Sewa<span style="color:red">*</span></label>
-                            <select class="form-control select2" style="width: 100%;" id='select_sewa' name="select_sewa" disabled>
-                                <option  selected value="{{$sewa->id_sewa}}">{{ $sewa->no_sewa }} ({{ \Carbon\Carbon::parse($sewa->tanggal_berangkat)->format('d-M-Y') }}) </option>
-                            </select>
-                            <input type="hidden" value="{{$sewa->no_sewa}}" id="no_sewa" name="no_sewa">
-                            <input type="hidden" value="{{$sewa->id_sewa}}" id="id_sewa_defaulth" name="id_sewa_defaulth">
-                        </div>
-
-                    </div>
-                    <div class="row">
                         <div class="col-lg-8 col-md-8 col-sm-12">
                             <div class="row">
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="no_akun">Customer</label>
+                                    <input type="text" id="customer" name="customer" class="form-control" value="[{{ $sewa->getCustomer->kode }}] {{ $sewa->getCustomer->nama }}" readonly>                         
+                                </div>  
+        
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="no_akun">Tujuan</label>
+                                    <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{ $sewa->nama_tujuan }}" readonly>                         
+                                </div>  
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                    <label for="select_customer">No. Sewa<span style="color:red">*</span></label>
+                                    <select class="form-control select2" style="width: 100%;" id='select_sewa' name="select_sewa" disabled>
+                                        <option  selected value="{{$sewa->id_sewa}}">{{ $sewa->no_sewa }} ({{ \Carbon\Carbon::parse($sewa->tanggal_berangkat)->format('d-M-Y') }}) </option>
+                                    </select>
+                                    <input type="hidden" value="{{$sewa->no_sewa}}" id="no_sewa" name="no_sewa">
+                                    <input type="hidden" value="{{$sewa->id_sewa}}" id="id_sewa_defaulth" name="id_sewa_defaulth">
+                                </div>
+
+                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
                                     <label for="tanggal_pencairan">Tanggal Berangkat<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -59,7 +59,7 @@
                                     </div>
                                 </div>  
         
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
                                     <label for="tanggal_pencairan">Tanggal Pencairan<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -121,9 +121,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="col-lg-4 col-md-4 col-sm-12 bg-gray-light">
                             <div class="row">
-
+   
+        
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="no_akun">Kendaraan</label>
                                     <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="" readonly>                         
@@ -136,9 +137,9 @@
                                 </div> 
     
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                    <label for="">PILIH PEMBAYARAN</label>      
-                                    <select class="form-control select2" style="width: 100%;" id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                        <option value="">--PILIH KAS--</option>
+                                    <label for="">Metode Pembayaran<span class="text-red">*</span></label>      
+                                    <select class="form-control select2" required style="width: 100%;" id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                        <option value="">──PILIH KAS──</option>
                                         @foreach ($dataKas as $kas)
                                             <option value="{{$kas->id}}" {{$kas->id == 1? 'selected':''}}>{{ $kas->nama }}</option>
                                         @endforeach
@@ -146,7 +147,7 @@
                                 </div>  
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="no_akun">Catatan</label>
-                                    <textarea type="text" id="catatan" name="catatan" rows="3" class="form-control" value="" > </textarea>                        
+                                    <textarea type="text" id="catatan" name="catatan" rows="1" class="form-control" value="" > </textarea>                        
                                 </div> 
                             </div>
                         </div>
