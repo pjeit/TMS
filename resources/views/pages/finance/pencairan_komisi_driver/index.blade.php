@@ -31,105 +31,104 @@
     <form id="post_data" action="{{ route('pencairan_komisi_driver.store') }}" method="post">
         @csrf
         <div class="card radiusSendiri">
-                <div class="card-header " >
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
                         <div class="row">
-                            <div class="col-6">
-                                <div class="form-group">
-                                            <label for="tanggal_pencairan">Tanggal Pencairan</label>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                </div>
-                                            <input type="text" name="tanggal_pencairan" autocomplete="off" class="date form-control" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}" disabled>  
-                                            </div>
-                                        </div>
-                                <div class="form-group">
-                                    <label for="karyawan">Driver<span class="text-red">*</span></label>
-                                    <select class="form-control select2" name="karyawan" id="karyawan" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                        <option value="">── Pilih Driver ──</option>
-                                        @foreach ($dataDriver as $data)
-                                            <option value="{{$data->id}}" valueDriver="{{ $data->nama_panggilan }} - ({{$data->telp1}})">{{ $data->nama_panggilan }} - ({{$data->telp1}})</option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" name="valueDriver" id="valueDriver">
-                                    
-                                </div>
-                                <div class="row" >
-                                    <div class="col-5">
-                                        <div class="form-group">
-                                            <label for="periode">Tanggal Berangkat</label>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                </div>
-                                            <input type="text" name="tanggal_awal" autocomplete="off" class="date form-control" id="tanggal_awal" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}">  
-                                            <span style="margin-left: 20px;">-</span>   
-                                            {{-- <label style="margin-left: 20px;">&nbsp; s/d &nbsp;</label> --}}
-                                            </div>
-                                        </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="tanggal_pencairan">Tanggal Pencairan</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                    <div class="col-5">
-                                        <div class="form-group">
-                                            <label for="periode" style="opacity: 0%;">Tanggal Akhir</label>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                </div>
-                                                <input type="text" name="tanggal_akhir" autocomplete="off" class="date  form-control" id="tanggal_akhir" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}">  
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-2" style="margin-top: 33px;">
-                                        <button type="button" id="btnFilter" class="btn btn-primary radiusSendiri" ><i class="fas fa-search"></i> <b> Filter</b></button>
-
-                                    </div>
-                                
+                                <input type="text" name="tanggal_pencairan" autocomplete="off" class="date form-control" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}" disabled>  
                                 </div>
                             </div>
-                            <div class="col-6 radiusSendiri p-3" style="background-color: rgb(230, 230, 232);">
-                                <label for="Total">Total</label>
-                                <ul class="list-group mb-1">
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <span>Total (IDR)</span>
-                                        <input type="hidden" name="total_komisi_driver" value="">
-                                        <strong id="html_komisi_driver"></strong>
-                                    </li>
-                                </ul>
-                                  
-                                <label for="pembayaran">Pilih Kas/Bank</label>
-                                <div class="input-group" style="gap: 10px;">
-                                    <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                        @foreach ($kasBank as $kb)
-                                            <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
-                                        @endforeach
-                                    </select>
-                                    <button type="submit" class="btn btn-success radiusSendiri" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true"></i> Pencairan</button>
-                                </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="karyawan">Driver<span class="text-red">*</span></label>
+                                <select class="form-control select2" name="karyawan" id="karyawan" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                    <option value="">── Pilih Driver ──</option>
+                                    @foreach ($dataDriver as $data)
+                                        <option value="{{$data->id}}" valueDriver="{{ $data->nama_panggilan }} - ({{$data->telp1}})">{{ $data->nama_panggilan }} - ({{$data->telp1}})</option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" name="valueDriver" id="valueDriver">
                             </div>
                         </div>
-                </div><!-- /.card-header -->
-                <div class="card-body" style="overflow: auto;">
-                    <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;">
-                        <thead>
-                            <tr>
-                                <th style="width:1px; white-space: nowrap;">Tgl. Berangkat</th>
-                                <th>Nama Tujuan</th>
-                                <th>Alamat Tujuan</th>
-                                <th style="width:1px; white-space: nowrap; text-align:right;">Komisi Driver</th>
-                            </tr>
-                        </thead>
-                        <tbody id="dataTabel">
-                            <tr id="loading-spinner" style="display: none;">
-                                <td colspan="4"><i class="fas fa-spinner fa-spin"></i> Harap tunggu data sedang di proses...</td>
-                            </tr>
-                            {{-- <tr >
-                                <th colspan="3"> Total (IDR)</th>
-                                <th colspan="1" style="text-align: right;"> Rp.20.000</th>
-                            </tr> --}}
-                        </tbody>
-                    </table>
+                        <div class="row">
+                            <div class="form-group col-lg-5 col-md-5 col-sm-12">
+                                <label for="periode">Tanggal Berangkat</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                <input type="text" name="tanggal_awal" autocomplete="off" class="date form-control" id="tanggal_awal" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}">  
+                                <span style="margin-left: 20px;">-</span>   
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="periode" style="opacity: 0%;">Tanggal Akhir</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        <input type="text" name="tanggal_akhir" autocomplete="off" class="date  form-control" id="tanggal_akhir" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}">  
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 33px;">
+                                <button type="button" id="btnFilter" class="btn btn-primary radiusSendiri" ><i class="fas fa-search"></i> <b> Filter</b></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12 radiusSendiri p-3" style="background-color: rgb(230, 230, 232);">
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                            <label for="Total">Total</label>
+                            <ul class="list-group mb-1">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Total (IDR)</span>
+                                    <input type="hidden" name="total_komisi_driver" value="">
+                                    <strong id="html_komisi_driver"></strong>
+                                </li>
+                            </ul>
+                        </div>
+                            
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                            <label for="pembayaran">Pilih Kas/Bank</label>
+                            <div class="input-group" style="gap: 10px;">
+                                <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                    @foreach ($kasBank as $kb)
+                                        <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                    @endforeach
+                                </select>
+                                <button type="submit" class="btn btn-success radiusSendiri" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true"></i> Pencairan</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            {{-- </div> --}}
+            </div>
+            <div class="card-body" style="overflow: auto;">
+                <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;">
+                    <thead>
+                        <tr>
+                            <th style="width:1px; white-space: nowrap;">Tgl. Berangkat</th>
+                            <th>Nama Tujuan</th>
+                            <th>Alamat Tujuan</th>
+                            <th style="width:1px; white-space: nowrap; text-align:right;">Komisi Driver</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTabel">
+                        <tr id="loading-spinner" style="display: none;">
+                            <td colspan="4"><i class="fas fa-spinner fa-spin"></i> Harap tunggu data sedang di proses...</td>
+                        </tr>
+                        {{-- <tr >
+                            <th colspan="3"> Total (IDR)</th>
+                            <th colspan="1" style="text-align: right;"> Rp.20.000</th>
+                        </tr> --}}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </form>
 </div>

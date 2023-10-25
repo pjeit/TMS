@@ -620,7 +620,8 @@
 
                 <li class="nav-item">
                   <a href="{{route('revisi_uang_jalan.index')}}" class="nav-link {{request()->url() === route('revisi_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+
                     <p>
                       Rev. Uang Jalan
                     </p>
@@ -628,7 +629,7 @@
                 </li>
                 <li class="nav-item">
                   <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       <span style="font-size: 0.9em;">Rev. Biaya Operasional</span>
                     </p>
@@ -636,7 +637,7 @@
                 </li>
                 <li class="nav-item">
                   <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i> 
                     <p>
                       Rev. Belum Invoice
                     </p>
@@ -644,7 +645,7 @@
                 </li>
                 <li class="nav-item">
                   <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       <span style="font-size: 0.84em;">Rev. Pembayaran Invoice</span>
                     </p>
@@ -666,7 +667,8 @@
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('laporan_kas.index')}}" class="nav-link {{request()->url() === route('laporan_kas.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+
                     <p>
                       Laporan Kas
                     </p>
@@ -675,7 +677,8 @@
 
                 <li class="nav-item">
                   <a href="{{route('laporan_bank.index')}}" class="nav-link {{request()->url() === route('laporan_bank.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+
                     <p>
                       Laporan Bank
                     </p>
