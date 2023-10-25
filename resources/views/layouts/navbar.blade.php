@@ -6,7 +6,7 @@
       <a class="nav-link text-white" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
-      <a  class="nav-link brand-text text-white text-bold"><b>{{strtoupper($judul) }}</b></a>
+      <a  class="nav-link brand-text text-white text-bold font-italic"><b>{{strtoupper($judul) }}</b></a>
     {{-- <span class="brand-text mx-2 text-bold" ><b>{{strtoupper($judul) }}</b></span> --}}
 
     </li>
@@ -29,7 +29,7 @@
       @endphp
       <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <!-- User image -->
-        <li class="user-header " style="background-color: #0071BD;">
+        <li class="user-header " style="background: linear-gradient(to bottom, #0071BD, #00BFFF);">
           <img src="{{ asset('img/user-1.png') }}" class="img-circle elevation-2 bg-white" alt="User Image">
           <p class="text-white">
             {{ strtoupper($username) }} - {{ strtoupper($role) }}

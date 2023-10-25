@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\KlaimSupir;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class KlaimSupirController extends Controller
 {
     /**
@@ -15,6 +15,20 @@ class KlaimSupirController extends Controller
     public function index()
     {
         //
+         $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            // ->paginate(10);
+            ->get();
+
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        return view('pages.finance.klaim_supir.index',[
+                'judul'=>"Klaim Supir",
+            'dataKas' => $dataKas,
+        ]);
     }
 
     /**
