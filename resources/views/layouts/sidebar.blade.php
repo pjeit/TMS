@@ -47,6 +47,12 @@
           </a>
           <ul class="nav nav-treeview">
             <li class="nav-item">
+              <a href="{{route('dashboard.reset')}}" class="nav-link">
+                <i class="far fa-check-circle nav-icon"></i>
+                <p>Reset Data</p>
+              </a>
+            </li>
+            <li class="nav-item">
               <a href="../../index.html" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                 <p>Dashboard v1</p>

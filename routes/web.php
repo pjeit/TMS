@@ -8,6 +8,7 @@ use App\Http\Controllers\KasBankController;
 use App\Http\Controllers\HeadController;
 use App\Http\Controllers\ChassisController;
 use App\Http\Controllers\CustomAuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\SupplierController;
 use App\Models\Karyawan;
@@ -51,6 +52,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['is_admin','is_superadmin'])->group(function () {
         // ===================================MASTER=========================================================
+        Route::get('/dashboard/reset', [App\Http\Controllers\DashboardController::class, 'reset'])->name('dashboard.reset');
+
         Route::resource('coa', 'App\Http\Controllers\CoaController');
 
         Route::get('/mutasi_kendaraan/filter', [App\Http\Controllers\MutasiKendaraanController::class, 'filterMutasi'])->name('filterMutasi.cari');

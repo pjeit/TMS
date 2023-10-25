@@ -147,17 +147,11 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
 
-                            {{-- <div class="col-lg-6 col-md-12">
-                                <div class="form-group">
-                                    <label for="kas_bank_id">Jenis<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='jenis' name="jenis" required>
-                                        <option value="">── PILIH JENIS ──</option>
-                                        <option value="BELUM TRANSFER">BELUM TRANSFER</option>
-                                        <option value="SUDAH TRANSFER">SUDAH TRANSFER</option>
-                                    </select>
-                                </div>
-                            </div> --}}
+                    <div class="col-lg-5 col-md-5 col-12">
+                        <div class="row bg-gray-light">
                             <div class="col-lg-12 col-md-12">
                                 <div class="form-group">
                                     <label for="kas_bank_id">Kas / Bank<span style="color:red">*</span></label>
@@ -169,41 +163,10 @@
                                     </select>
                                 </div>
                             </div>
-                       
-
-
-                            {{-- <div class="col-lg-6 col-md-12">
-                                <div class="form-group">
-                                    <label for="total_uang_jalan">Riwayat Potong Hutang</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input readonly="" type="text" name="riwayat_potong_hutang" class="form-control numaja uang" id="riwayat_potong_hutang" placeholder="" value="{{ number_format($riwayatPotongHutang['potong_hutang']) }}">
-                                        <input type="hidden" name="id_riwayat_pot_hutang" value="{{ $riwayatPotongHutang['id'] }}">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-12">
-                                <div class="form-group">
-                                    <label for="total_uang_jalan_kembali">Potong Hutang Dikembalikan<span style="color: red;">*</span></label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input autocomplete="off" type="text" required name="potong_hutang_dikembalikan" class="form-control numaja uang" id="potong_hutang_dikembalikan" placeholder="" value="">
-                                    </div>
-                                </div>
-                            </div> --}}
-                        </div>
-                    </div>
-
-                    <div class="col-lg-5 col-md-5 col-12">
-                        <div class="row">
                             <div class="col-12 col-md-12">
                                 <div class="form-group">
                                     <label for="alasan_cancel">Alasan Batal Muat<span style="color: red;">*</span></label>
-                                    <textarea name="alasan_cancel" required class="form-control" id="alasan_cancel" rows="12" value=""></textarea>
+                                    <textarea name="alasan_cancel" required class="form-control" id="alasan_cancel" rows="5" value=""></textarea>
                                 </div>
                             </div>
                         </div>
