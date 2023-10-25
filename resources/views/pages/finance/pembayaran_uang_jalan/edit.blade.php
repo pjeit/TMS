@@ -39,13 +39,19 @@
                         <a href="{{ route('pencairan_uang_jalan_ftl.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                     </div>
                     <div class="card-body" >
+                        <div class="row">
+                            <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                <label for="no_akun">Customer</label>
+                                <input type="text" id="customer" name="customer" class="form-control" value="" readonly>                         
+                            </div>  
+
+                            <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                <label for="no_akun">Tujuan</label>
+                                <input type="text" id="tujuan" name="tujuan" class="form-control" value="" readonly>                         
+                            </div>  
+                        </div>
                         <div class="d-flex" style="gap: 20px">
                             <div class="row">
-                                 {{-- <div class="form-group col-12">
-                                    Data Sewa
-                                 <hr>
-
-                                </div> --}}
                                 <div class="form-group col-12">
                                     <label for="tanggal_pencairan">Tanggal Pencairan<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
@@ -55,15 +61,6 @@
                                         <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="">
                                     </div>
                                 </div>  
-                                {{-- <div class="form-group col-6">
-                                    <label for="tanggal_pencairan">Tanggal Pencatatan<span style="color:red">*</span></label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                        </div>
-                                        <input disabled type="text" autocomplete="off" name="tanggal_pencatatan" class="form-control date" id="tanggal_pencatatan" placeholder="dd-M-yyyy" value="">
-                                    </div>
-                                </div>     --}}
                                 <div class="form-group col-12">
                                     <label for="select_customer">No. Sewa<span style="color:red">*</span></label>
                                     <select class="form-control select2" style="width: 100%;" id='select_sewa' name="select_sewa" disabled>
@@ -95,19 +92,8 @@
                                     <label for="no_akun">Tujuan</label>
                                     <input type="text" id="tujuan" name="tujuan" class="form-control" value="" readonly>                         
                                 </div>  
-                                {{-- @if (isset($sewaBiayaTelukLamong))
-                                    <div class="form-group col-12">
-                                        <label for="no_akun" style="opacity: 0%">handle white space</label>
-                                        <input type="text" id="white" name="white" class="form-control" value="" readonly style="opacity: 0%">                         
-                                    </div>  
-                                @endif --}}
                             </div>
                             <div class="row">
-                                {{-- <div class="form-group col-12">
-                                    Data Kendaraan
-                                 <hr>
-
-                                </div> --}}
                                 <div class="form-group col-6">
                                     <label for="no_akun">Kendaraan</label>
                                     <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="" readonly>                         
@@ -118,8 +104,6 @@
                                     <input type="text" id="driver" name="driver" class="form-control" value="" readonly>     
                                     <input type="hidden" name="id_karyawan" id="id_karyawan">                    
                                 </div> 
-
-                        
 
                                 <div class="form-group col-6">
                                     <label for="total_hutang">Total Hutang</label>
