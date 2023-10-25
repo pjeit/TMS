@@ -146,6 +146,7 @@ class JobOrderController extends Controller
             $newJO->apbs = isset($data['checkbox_APBS'])? floatval(str_replace(',', '', $data['total_apbs'])):0;
             $newJO->cleaning = isset($data['checkbox_CLEANING'])? floatval(str_replace(',', '', $data['total_cleaning'])):0;
             $newJO->doc_fee = isset($data['checkbox_DOC_FEE'])? floatval(str_replace(',', '', $data['DOC_FEE'])):0;
+            $newJO->catatan = $data['catatan'];
             $newJO->created_by = $user;
             $newJO->created_at = now();
             $newJO->is_aktif = 'Y';

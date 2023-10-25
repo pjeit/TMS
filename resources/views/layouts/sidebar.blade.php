@@ -428,6 +428,7 @@
               request()->is('biaya_operasional*') ||
               request()->is('add_return_tl*') ||
               request()->is('pembayaran_sdt*') ||
+              request()->is('pengembalian_jaminan*') ||
               request()->is('pencairan_komisi_driver*')||
                 request()->is('pencairan_komisi_customer*')
               ? 'menu-is-opening menu-open' : '' }}">
@@ -503,7 +504,19 @@
                   </a>
                 </li>
               </ul>
-                 <ul class="nav nav-treeview">
+              
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pengembalian_jaminan.index')}}" class="nav-link {{request()->url() === route('pengembalian_jaminan.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 14px;">Pengembalian Jaminan</span>
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
                 <li class="nav-item   {{ 
                 request()->is('pencairan_komisi_driver*')||
                 request()->is('pencairan_komisi_customer*')
@@ -536,7 +549,8 @@
                 </li>
               
               </ul>
-{{-- 
+
+            {{-- 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
@@ -557,7 +571,8 @@
                     </p>
                   </a>
                 </li>
-              </ul> --}}
+              </ul> 
+            --}}
              
               
               {{-- <ul class="nav nav-treeview">
