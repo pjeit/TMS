@@ -32,9 +32,10 @@
         @csrf
         <div class="card radiusSendiri">
             <div class="card-header" style="border: 2px solid #bbbbbb;">
-                    <div class="row">
-                        <div class="col-6" >
-                            <div class="form-group">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12" >
+                        <div class="row">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="tanggal_pencairan">Tanggal Pencairan</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
@@ -43,7 +44,7 @@
                                 <input type="text" name="tanggal_pencairan" autocomplete="off" class="date form-control" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}" disabled>  
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="customer">Customer<span class="text-red">*</span></label>
                                 <select class="form-control select2" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                     <option value="">── Pilih Customer ──</option>
@@ -51,67 +52,67 @@
                                         <option value="{{$data->id}}" valueCustomer ="{{ $data->nama }} - ({{$data->kode}})">{{ $data->nama }} - ({{$data->kode}})</option>
                                     @endforeach
                                 </select>
-                                    <input type="hidden" name="valueCustomer" id="valueCustomer">
-
+                                <input type="hidden" name="valueCustomer" id="valueCustomer">
                             </div>
-                                <div class="row" >
-                                    <div class="col-5">
-                                        <div class="form-group">
-                                            <label for="periode">Tanggal Berangkat</label>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                </div>
-                                            <input type="text" name="tanggal_awal" autocomplete="off" class="date form-control" id="tanggal_awal" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}">  
-                                            <span style="margin-left: 20px;">-</span>   
-                                            {{-- <label style="margin-left: 20px;">&nbsp; s/d &nbsp;</label> --}}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-5">
-                                        <div class="form-group">
-                                            <label for="periode" style="opacity: 0%;">Tanggal Akhir</label>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                </div>
-                                                <input type="text" name="tanggal_akhir" autocomplete="off" class="date  form-control" id="tanggal_akhir" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}">  
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-2" style="margin-top: 33px;">
-                                        <button type="button" id="btnFilter" class="btn btn-primary radiusSendiri" ><i class="fas fa-search"></i> <b> Filter</b></button>
-
-                                    </div>
-                                
-                                </div>
                         </div>
-                        <div class="col-6 radiusSendiri p-3" style="background-color: rgb(230, 230, 232);">
-                            <label for="Total">Total</label>
-                            <ul class="list-group mb-1">
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <span>Total (IDR)</span>
-                                       <input type="hidden" name="total_komisi_customer" value="">
-                                        <strong id="html_komisi_customer"></strong>
-                                </li>
-                            </ul>
-                            <label for="pembayaran">Pilih Kas/Bank</label>
-                            <div class="input-group" style="gap: 10px;">
-                                <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                    @foreach ($kasBank as $kb)
-                                        <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
-                                    @endforeach
-                                </select>
-                                <button type="submit" class="btn btn-success radiusSendiri" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true"></i> Pencairan</button>
+                        <div class="row">
+                            <div class="form-group col-lg-5 col-md-5 col-sm-12">
+                                <label for="periode">Tanggal Berangkat</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                <input type="text" name="tanggal_awal" autocomplete="off" class="date form-control" id="tanggal_awal" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}">  
+                                <span style="margin-left: 20px;">-</span>   
+                                {{-- <label style="margin-left: 20px;">&nbsp; s/d &nbsp;</label> --}}
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                <label for="periode" style="opacity: 0%;">Tanggal Akhir</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                    <input type="text" name="tanggal_akhir" autocomplete="off" class="date  form-control" id="tanggal_akhir" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}">  
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12" style="margin-top: 33px;">
+                                <button type="button" id="btnFilter" class="btn btn-primary radiusSendiri" ><i class="fas fa-search"></i> <b> Filter</b></button>
                             </div>
                         </div>
                     </div>
-            </div><!-- /.card-header -->
+                    <div class="col-lg-6 col-md-6 col-sm-12 radiusSendiri p-3" style="background-color: rgb(230, 230, 232);">
+                        <div class="row">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12" >
+                                <label for="Total">Total</label>
+                                <ul class="list-group mb-1">
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <span>Total (IDR)</span>
+                                            <input type="hidden" name="total_komisi_customer" value="">
+                                            <strong id="html_komisi_customer"></strong>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12" >
+                                <label for="pembayaran">Pilih Kas/Bank</label>
+                                <div class="input-group" style="gap: 10px;">
+                                    <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                        @foreach ($kasBank as $kb)
+                                            <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-success radiusSendiri" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true"></i> Pencairan</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="card-body" style="overflow: auto;">
                 <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;">
                     <thead>
                         <tr>
-                            {{-- <th></th> --}}
                             <th style="width:1px; white-space: nowrap;">Tgl. Berangkat</th>
                             <th>Nama Tujuan</th>
                             <th>Alamat Tujuan</th>
