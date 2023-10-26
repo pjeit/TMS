@@ -24,8 +24,18 @@ class PencairanKomisiCustomerController extends Controller
         ->get();
 
         $dataCustomer = DB::table('customer')
-        ->where('is_aktif', 'Y')
-        ->orderBy('nama', 'asc')
+        ->select('customer.*')
+        ->distinct()
+        ->join('sewa as s', function($join) {
+                    $join->on('customer.id', '=', 's.id_customer')
+                    ->whereNull('s.id_supplier') 
+                    ->where('s.status_pencairan_customer', 'BELUM DICAIRKAN')
+                    ->where('s.status', 'SELESAI PEMBAYARAN')
+                    ->where('s.total_komisi', '!=', 0)
+                    ->where('s.is_aktif', '=', "Y");
+                })
+        ->where('customer.is_aktif', 'Y')
+        ->orderBy('customer.nama', 'asc')
         ->get();
 
         return view('pages.finance.pencairan_komisi_customer.index',[
