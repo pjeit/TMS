@@ -430,6 +430,7 @@
               request()->is('pembayaran_sdt*') ||
               request()->is('pengembalian_jaminan*') ||
               request()->is('pencairan_komisi_driver*')||
+              request()->is('klaim_supir*')||
                 request()->is('pencairan_komisi_customer*')
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
