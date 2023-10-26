@@ -48,55 +48,51 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="row">
-                                <div class="col-6">
-                                    <div class="form-group">
-                                        <label for="no_akun">No. Invoice</label>
-                                        <input type="text" id="no_invoice" name="no_invoice" class="form-control" value="" placeholder="otomatis" readonly>   
-                                    </div>  
-                                </div>
-                                <div class="col-6">
-                                        <div class="form-group">
-                                        <label for="tanggal_invoice">Tanggal Invoice<span style="color:red">*</span></label>
-                                        <div class="input-group mb-0">
-                                            <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input readonly type="text" autocomplete="off" name="tanggal_invoice" class="form-control date" id="tanggal_invoice" placeholder="dd-M-yyyy" value="">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Grup</label>
+                                    <input type="text" class="form-control" value="{{ $dataCust[0]->getGrup->nama_grup }}" readonly>                         
+                                    <input type="hidden" id="grup_id" name="grup_id" class="form-control" value="{{ $dataCust[0]->grup_id }}" readonly>                         
+                                    <input type="hidden" id="no_invoice" name="no_invoice" class="form-control" value="" placeholder="otomatis" readonly>   
+                                </div>  
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="tanggal_invoice">Tanggal Invoice<span style="color:red">*</span></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
+                                        <input readonly type="text" autocomplete="off" name="tanggal_invoice" class="form-control date" id="tanggal_invoice" placeholder="dd-M-yyyy" value="">
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="">Grup</label>
-                                <input type="text" class="form-control" value="{{ $dataCust[0]->getGrup->nama_grup }}" readonly>                         
-                                <input type="hidden" id="grup_id" name="grup_id" class="form-control" value="{{ $dataCust[0]->grup_id }}" readonly>                         
-                            </div>  
-
-                            <div class="form-group">
-                                <label for="tanggal_pencairan">Jatuh Tempo<span style="color:red">*</span></label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                            <div class="row">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="tanggal_pencairan">Jatuh Tempo<span style="color:red">*</span></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        <input name="jatuh_tempo" id="jatuh_tempo" class="form-control date" type="text" autocomplete="off" placeholder="dd-M-yyyy" value="">
                                     </div>
-                                    <input name="jatuh_tempo" id="jatuh_tempo" class="form-control date" type="text" autocomplete="off" placeholder="dd-M-yyyy" value="">
+                                </div>
+
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12" id="jatuh_tempo_pisah_kontainer">
+                                    <label for="jatuh_tempo_pisah">Jatuh Tempo Invoice Pisah<span style="color:red">*</span></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        <input name="jatuh_tempo_pisah" id="jatuh_tempo_pisah" class="form-control date" type="text" autocomplete="off" placeholder="dd-M-yyyy" value="">
+                                    </div>
                                 </div>
                             </div>
 
-                             <div class="form-group" id="jatuh_tempo_pisah_kontainer">
-                                <label for="jatuh_tempo_pisah">Jatuh Tempo Invoice Pisah<span style="color:red">*</span></label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                    </div>
-                                    <input name="jatuh_tempo_pisah" id="jatuh_tempo_pisah" class="form-control date" type="text" autocomplete="off" placeholder="dd-M-yyyy" value="">
-                                </div>
+                            <div class="row">
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="">Catatan</label>
+                                    <textarea type="text" id="catatan_invoice" name="catatan_invoice" class="form-control" rows="4"></textarea>                     
+                                </div>  
                             </div>
-
-                            <div class="form-group">
-                                <label for="">Catatan</label>
-                                <input type="text" id="catatan_invoice" name="catatan_invoice" class="form-control" value="">                         
-                            </div>  
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -146,20 +142,19 @@
                             
                             <div class="row">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                    <ul class="list-group">
-                                        <li class="list-group-item text-primary"><b>BILLING TO</b></li>
-                                        <li class="list-group-item">
+                                    <ul class="list-group ">
+                                        <li class="list-group-item bg-light text-primary border-primary"><span class="font-weight-bold">BILLING TO</span></li>
+                                        <li class="list-group-item bg-light border-primary">
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6 col-sm-12">
-                                                    <span><b>Grand Total</b></span>
+                                                    <span class="text-bold">Grand Total</span>
                                                 </div>
                                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                                     <b><span id="total_tagihan_text">Rp. 0</span></b>
-                                                    {{-- <input type="hidden" name="total_tagihan" id="total_tagihan"> --}}
                                                 </div>
                                             </div>
                                         </li>
-                                        <li class="list-group-item">
+                                        <li class="list-group-item bg-light border-primary">
                                             <div class="row">
                                                 <div class="col-12">
                                                     <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required>
@@ -499,7 +494,6 @@
         var selectedOption = $('#billingTo').find('option:selected');
         var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
         
-        console.log(ketentuan_bayar);
         if(ketentuan_bayar==undefined)
         {
             getDate(0);
@@ -538,6 +532,7 @@
                 }
                 $('#addcost_sewa').append(option);
             });
+            $("#addcost_sewa").prop("disabled", true); // instead of $("select").enable(false);
 
             showAddcostDetails(key);
             hitung();
@@ -584,7 +579,6 @@
             var selectedOption = $(this).find('option:selected');
             var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
             
-            console.log(ketentuan_bayar);
             if(ketentuan_bayar==undefined)
             {
                 getDate(0);

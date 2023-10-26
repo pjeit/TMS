@@ -442,7 +442,7 @@
                     for (var i = 0; i < data.length; i++) {
                         var row = $("<tr></tr>");
                         row.append(`<td>${data[i].nama_grup}</td>`);
-                        row.append(`<td>${data[i].nama_cust}</td>`);
+                        row.append(`<td>• ${data[i].nama_cust}</td>`);
                         row.append(`<td>${data[i].no_invoice}
                                         <input type="hidden" placeholder='id' id="id_${data[i].id_ip}" value="${data[i].id_ip}" >
                                         <input type="hidden" placeholder='invoice' id="invoice_${data[i].id_ip}" value="${data[i].no_invoice}" >

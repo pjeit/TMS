@@ -42,17 +42,6 @@
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="row">
                                 <div class="col-12">
-                                        <div class="form-group">
-                                        <label for="tanggal_pembayaran">Tanggal Pembayaran<span style="color:red">*</span></label>
-                                        <div class="input-group mb-0">
-                                            <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input type="text" autocomplete="off" name="tanggal_pembayaran" class="form-control date" id="tanggal_pembayaran" placeholder="dd-M-yyyy" value="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
                                     <div class="form-group">
                                         <label for="">Billing To</label>
                                         <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required disabled
@@ -63,6 +52,17 @@
                                         </select>
                                         <input type="hidden" name="billingTo" value="{{ $idCust }}">
                                     </div>  
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label for="tanggal_pembayaran">Tanggal Pembayaran<span style="color:red">*</span></label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="text" autocomplete="off" name="tanggal_pembayaran" class="form-control date" id="tanggal_pembayaran" placeholder="dd-M-yyyy" value="">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -132,25 +132,18 @@
                                 </div>
                             </div>
                             <div class="row" id="showTransfer">
-                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="BiayaAdminCheck" value="ya">
-                                        <label class="form-check-label" for=""><b>Biaya Admin</b></label>
-                                    </div>
-                                </div>
-                                <div class="form-group col-lg-8 col-md-8 col-sm-12">
-                                    {{-- <select name="jenis_badmin" class="select2" style="width: 100%" id="jenis_badmin" disabled>
-                                        <option value="">Pilih Metode</option>
-                                        <option value="kliring">Kliring</option>
-                                        <option value="RTGS">RTGS (Real Time Gross Settlement)</option>
-                                        <option value="RTO">RTO (Real Time Online)</option>
-                                        <option value="BIfast">BI Fast</option>
-                                    </select> --}}
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="">Biaya Admin</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
+                                            <span class="input-group-text">Rp.</span>
                                         </div>
-                                        <input type="text" id="biaya_admin" name="biaya_admin" class="form-control uang" value="" readonly >
+                                        <input type="text" id="biaya_admin" name="biaya_admin" class="form-control uang numaja" value="" readonly >
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <input class="form-check-input" type="checkbox" id="BiayaAdminCheck" value="ya">
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -268,7 +261,7 @@
                                         <select class="select2" style="width: 100%" id="modal_no_invoice" disabled>
                                             <option value="">── Pilih Invoice ──</option>
                                             @foreach ($dataInvoices as $inv)
-                                                <option value="{{ $inv->id }}">{{ $inv->no_invoice }} ({{ date("d-M-Y", strtotime($inv->tgl_invoice)) }}) - {{ number_format($inv->total_tagihan) }} </option>
+                                                <option value="{{ $inv->id }}">{{ $inv->no_invoice }} ({{ date("d-M-Y", strtotime($inv->tgl_invoice)) }}) </option>
                                             @endforeach
                                         </select>
                                     </div>   
@@ -307,12 +300,12 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        <label for="tarif">Diterima</label>
+                                        <label for="tarif">Diterima<span class="text-red">*</span> </label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" class="form-control numaja uang" id="modal_diterima" placeholder="" >
+                                            <input type="text" class="form-control numaja uang" id="modal_diterima" required>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -346,7 +339,6 @@
                     <button type="button" class="btn btn-sm btn-success save_detail" id="" style='width:85px'>OK</button> 
                 </div>
             </div>
-            <!-- /.modal-content -->
             </div>
         </div>
     </form>

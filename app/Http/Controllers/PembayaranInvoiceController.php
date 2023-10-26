@@ -112,6 +112,7 @@ class PembayaranInvoiceController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id; 
+        // dd($data);
         try {
             if($data['detail'] != null){
                 $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
@@ -126,7 +127,6 @@ class PembayaranInvoiceController extends Controller
                         $new->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
                         
                         $diterima = $value['diterima'];
-                        // dd($value['diterima']);
                         if($i == 0){
                             // kalau index pertama, dikurangi biaya admin
                             $diterima = $value['diterima']-(float)str_replace(',', '', $data['biaya_admin']);
@@ -147,10 +147,11 @@ class PembayaranInvoiceController extends Controller
                             $keterangan_transaksi .= ' #'.$invoice->no_invoice;
                             $id_invoices .= $invoice->id . ',';
                             if($invoice){
-                                $invoice->total_dibayar += $new->total_diterima + $new->total_pph23;
-                                $invoice->total_sisa -=  $invoice->total_dibayar;
+                                $invoice->total_dibayar += $invoice->total_dibayar;
                                 if($i == 0){
                                     $invoice->total_sisa = $invoice->total_tagihan - $invoice->total_dibayar - $new->biaya_admin;
+                                }else{
+                                    $invoice->total_sisa -=  $invoice->total_dibayar;
                                 }
                                 $curStatus = '';
                                 if($invoice->total_sisa == 0){
@@ -197,7 +198,7 @@ class PembayaranInvoiceController extends Controller
                         $total_bayar, //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
                         1018, //kode coa
-                        'bayar_invoice',
+                        'BAYAR_INVOICE',
                         $keterangan_transaksi, //keterangan_transaksi
                         substr($id_invoices, 0, -1),//keterangan_kode_transaksi
                         $user,//created_by

@@ -630,7 +630,7 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{request()->url() === route('pembayaran_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{ request()->is('pembayaran_invoice*')? ' active' : '' }} " style="font-weight: 500;">
                   {{-- <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i> --}}
                   <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
                     <p>
