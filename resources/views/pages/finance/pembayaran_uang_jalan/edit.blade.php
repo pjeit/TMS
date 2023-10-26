@@ -62,6 +62,26 @@
                             </div>  
                         </div>
                         <div class="row">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <label for="total_hutang">Total Hutang</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numaja" value="" readonly>                         
+                                </div>
+                            </div>
+    
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <label for="potong_hutang">Potong Hutang</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" value="" >                         
+                                </div>
+                            </div>
+                            
                             <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}">
                                 <label for="uang_jalan">Biaya Uang Jalan</label>
                                 <div class="input-group mb-0">
@@ -89,26 +109,6 @@
                                         <span class="input-group-text">Rp</span>
                                     </div>
                                     <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang " value="" readonly>                         
-                                </div>
-                            </div>
-    
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="total_hutang">Total Hutang</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang " value="" readonly>                         
-                                </div>
-                            </div>
-    
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="potong_hutang">Potong Hutang</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang " value="" >                         
                                 </div>
                             </div>
                         </div>
