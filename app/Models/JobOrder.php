@@ -57,6 +57,11 @@ class JobOrder extends Model
           return $this->hasOne(Customer::class, 'id', 'id_customer');
      }
 
+     public function jaminan()
+     {
+          return $this->hasOne(Jaminan::class, 'id_job_order', 'id');
+     }
+
      public function getCustomer()
      {
           return $this->hasOne(Customer::class, 'id', 'id_customer');

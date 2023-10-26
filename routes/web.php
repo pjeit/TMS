@@ -8,6 +8,7 @@ use App\Http\Controllers\KasBankController;
 use App\Http\Controllers\HeadController;
 use App\Http\Controllers\ChassisController;
 use App\Http\Controllers\CustomAuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\SupplierController;
 use App\Models\Karyawan;
@@ -51,6 +52,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::middleware(['is_admin','is_superadmin'])->group(function () {
         // ===================================MASTER=========================================================
+        Route::get('/dashboard/reset', [App\Http\Controllers\DashboardController::class, 'reset'])->name('dashboard.reset');
+
         Route::resource('coa', 'App\Http\Controllers\CoaController');
 
         Route::get('/mutasi_kendaraan/filter', [App\Http\Controllers\MutasiKendaraanController::class, 'filterMutasi'])->name('filterMutasi.cari');
@@ -186,6 +189,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pembayaran_invoice/bayar', [App\Http\Controllers\PembayaranInvoiceController::class, 'bayar'])->name('pembayaran_invoice.bayar');
         Route::get('/pembayaran_invoice/loadData/{status}', [App\Http\Controllers\PembayaranInvoiceController::class, 'loadData'])->name('pembayaran_invoice.loadData');
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
+
+        Route::resource('pengembalian_jaminan', 'App\Http\Controllers\PengembalianJaminanController');
 
         // ===================================INVOICE=========================================================
 
