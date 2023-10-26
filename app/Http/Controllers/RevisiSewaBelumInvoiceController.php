@@ -61,8 +61,6 @@ class RevisiSewaBelumInvoiceController extends Controller
      */
     public function edit(Sewa $revisi_sewa_invoice)
     {
-        //
-        //
         $sewa = DB::table('sewa AS s')
                     ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
