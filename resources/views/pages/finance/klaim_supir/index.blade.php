@@ -54,36 +54,7 @@
                             </tr>
                           </thead>
                         <tbody>
-                            {{-- @foreach($dataKaryawan as $d)
-                             <tr>
-                                 <td>{{$d->cabang}}</td>  
-                                 <td>{{$d->posisi}}</td>  
-                                 <td>{{$d->nama_panggilan}}</td>
-                                 <td>{{$d->telp1}}</td>  
-                                 <td>{{$d->alamat_domisili}}</td>  
-                      
-                                <td>                                    
-                                    <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-list"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a href="{{route('karyawan.edit',[$d->id])}}" class="dropdown-item">
-                                                <span class="fas fa-edit mr-3"></span> Edit
-                                            </a>
-                                            
-                                            <a href="{{ route('karyawan.destroy', $d->id) }}" class="dropdown-item" data-confirm-delete="true">
-                                                <span class="fas fa-trash mr-3"></span> Delete
-                                            </a>
-                                            
-                                        </div>
-                                    </div>
-                                </td>
-                                                   
-                                
-                               
-                            </tr>
-                            @endforeach --}}
+                           
                         </tbody>
                         
                     </table>
@@ -99,9 +70,28 @@
     <!-- /.row -->
 </div>
 <script type="text/javascript">
-    $(function () {
-     
-    });
+$(document).ready(function () {
+
+    new DataTable('#tabelInvoice', {
+        order: [
+            [0, 'asc'],
+        ],
+        rowGroup: {
+            dataSrc: [0]
+        },
+        columnDefs: [
+            {
+                targets: [0],
+                visible: false
+            },
+            {
+                "orderable": false,
+                "targets": [0,1,2,3,4,5,6,7]
+            }
+    
+        ],
+    }); 
+});
 </script>
 @endsection
 

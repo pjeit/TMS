@@ -15,10 +15,12 @@ class KlaimSupirController extends Controller
     public function index()
     {
         //
-         $dataKas = DB::table('kas_bank')
+         $dataKlaimSupir = DB::table('klaim_supir as ks')
             ->select('*')
-            ->where('is_aktif', '=', "Y")
-            // ->paginate(10);
+            ->leftJoin('karyawan as k', function($join) {
+                    $join->on('ks.karyawan_id', '=', 'k.id')->where('k.is_aktif', '=', "Y");
+                })
+            ->where('ks.is_aktif', '=', "Y")
             ->get();
 
         $title = 'Data akan dihapus!';
@@ -27,7 +29,7 @@ class KlaimSupirController extends Controller
         $cancelButtonText = "Batal";
         return view('pages.finance.klaim_supir.index',[
                 'judul'=>"Klaim Supir",
-            'dataKas' => $dataKas,
+            'dataKlaimSupir' => $dataKlaimSupir,
         ]);
     }
 
