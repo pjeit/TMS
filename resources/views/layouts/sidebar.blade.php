@@ -511,7 +511,7 @@
                   <a href="{{route('pengembalian_jaminan.index')}}" class="nav-link {{request()->url() === route('pengembalian_jaminan.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      <span style="font-size: 14px;">Pengembalian Jaminan</span>
+                      <span style="font-size: 13.9px;">Pengembalian Jaminan</span>
                     </p>
                   </a>
                 </li>

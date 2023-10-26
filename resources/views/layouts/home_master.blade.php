@@ -154,9 +154,9 @@
               }
             })
 
-            if (/^Success/.test(sessionStatus) || /^Sukses/.test(sessionStatus)) {
+            if (/^Success/.test(sessionStatus) || /^Sukses/.test(sessionStatus) || /^success/.test(sessionStatus) || /^sukses/.test(sessionStatus)) {
                 var iconData = 'success';
-            } else if (/^Error/.test(sessionStatus)) {
+            } else if (/^Error/.test(sessionStatus) || /^error/.test(sessionStatus)) {
                 var iconData = 'danger';
             }else{
                 var iconData = 'question';

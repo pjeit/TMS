@@ -278,6 +278,10 @@
   function escapeComma(val){
     return val.replace(/,/g, '');
   }
+
+  function normalize(val){
+    return parseFloat(escapeComma(val));
+  }
 </script>
 
 {{-- masking no telp --}}
