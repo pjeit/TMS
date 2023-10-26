@@ -25,9 +25,19 @@ class PencairanKomisiDriverController extends Controller
         ->get();
 
         $dataDriver = DB::table('karyawan')
-        ->where('is_aktif', 'Y')
-        ->where('role_id', 5)//5 itu driver
-        ->orderBy('nama_panggilan', 'asc')
+        ->select('karyawan.*')
+        ->distinct()
+        ->Join('sewa as s', function($join) {
+                    $join->on('karyawan.id', '=', 's.id_karyawan')
+                    ->whereNull('s.id_supplier') 
+                    ->where('s.status_pencairan_driver', 'BELUM DICAIRKAN')
+                    ->where('s.total_komisi_driver', '!=', 0)
+                    ->where('s.is_aktif', '=', "Y")
+                    ;
+                })
+        ->where('karyawan.is_aktif', 'Y')
+        ->where('karyawan.role_id', 5)//5 itu driver
+        ->orderBy('karyawan.nama_panggilan', 'asc')
         ->get();
 
         return view('pages.finance.pencairan_komisi_driver.index',[
