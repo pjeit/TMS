@@ -124,7 +124,7 @@
                                 </div>
 
                                 <div class="form-group col-5">
-                                    <label for="potong_hutang">Potong Hutang</label>
+                                    <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>

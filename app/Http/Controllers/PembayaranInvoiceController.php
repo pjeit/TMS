@@ -112,7 +112,10 @@ class PembayaranInvoiceController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id; 
+        DB::beginTransaction(); 
+        $isErr = false;
         // dd($data);
+
         try {
             if($data['detail'] != null){
                 $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
@@ -127,18 +130,17 @@ class PembayaranInvoiceController extends Controller
                         $new->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
                         
                         $diterima = $value['diterima'];
-                        if($i == 0){
+                        if($i == 0 && substr($value['no_invoice'], -2) != '/I'){
                             // kalau index pertama, dikurangi biaya admin
                             $diterima = $value['diterima']-(float)str_replace(',', '', $data['biaya_admin']);
                             $new->biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
                             $new->no_cek = isset($data['no_cek'])? $data['no_cek']:null;
                         }
-
                         $new->total_diterima = $diterima;
                         $new->total_pph23 = $value['pph23'];
                         $new->cara_pembayaran = $data['cara_pembayaran'];
                         $new->id_kas = $data['kas'];
-                        $new->no_bukti_potong = $value['no_bukti_potong'];
+                        $new->no_bukti_potong = $data['no_bukti_potong'];
                         $new->catatan = $value['catatan'];
                         $new->created_by = $user;
                         $new->created_at = now();
@@ -147,11 +149,10 @@ class PembayaranInvoiceController extends Controller
                             $keterangan_transaksi .= ' #'.$invoice->no_invoice;
                             $id_invoices .= $invoice->id . ',';
                             if($invoice){
-                                $invoice->total_dibayar += $invoice->total_dibayar;
-                                if($i == 0){
-                                    $invoice->total_sisa = $invoice->total_tagihan - $invoice->total_dibayar - $new->biaya_admin;
-                                }else{
-                                    $invoice->total_sisa -=  $invoice->total_dibayar;
+                                $invoice->total_dibayar += $value['dibayar'];
+                                $invoice->total_sisa -=  $invoice->total_dibayar;
+                                if($invoice->total_sisa < 0){
+                                    $isErr = true;
                                 }
                                 $curStatus = '';
                                 if($invoice->total_sisa == 0){
@@ -182,8 +183,12 @@ class PembayaranInvoiceController extends Controller
                                             }
                                         }
                                     }
+                                }else{
+                                    $isErr = true;
                                 }
                             }
+                        }else{
+                            $isErr = true;
                         }
                     }
                     $i++;
@@ -221,12 +226,22 @@ class PembayaranInvoiceController extends Controller
                     $cust->save();
                 }
 
-            }
+                if($isErr === true){
+                    db::rollBack();
+                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi kesalahan!']);
+                }else{
+                    DB::commit();
+                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "Success", "msg" => "Berhasil Membayar invoice!"]);
+                }
 
-            return redirect()->route('pembayaran_invoice.index')->with(['status' => "Success", "msg" => "Berhasil Membayar invoice!"]);
+            }
+     
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            // return redirect()->back()->withErrors($e->errors())->withInput();
+            db::rollBack();
+            return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi Kesalahan ketika pembayaran!']);
         }
+       
     }
 
     /**
@@ -333,7 +348,6 @@ class PembayaranInvoiceController extends Controller
                 ->where('ip.no_bukti_potong', NULL)
                 ->orderBy('i.id','ASC')
                 ->get();
-            // var_dump($data); die;
         }
         return $data;
     }

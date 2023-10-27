@@ -139,6 +139,7 @@
      $(document).ready(function() {
         var sessionStatus = "<?= session()->has('status') ? session()->get('status') : null ?>";
         var sessionMsg = "<?= session()->has('msg') ? session()->get('msg') : null ?>";
+        console.log('sessionStatus', sessionStatus);
         // console.log('sessionMsg', sessionMsg);
         if (sessionStatus != '') {
             const Toast = Swal.mixin({
@@ -157,7 +158,7 @@
             if (/^Success/.test(sessionStatus) || /^Sukses/.test(sessionStatus) || /^success/.test(sessionStatus) || /^sukses/.test(sessionStatus)) {
                 var iconData = 'success';
             } else if (/^Error/.test(sessionStatus) || /^error/.test(sessionStatus)) {
-                var iconData = 'danger';
+                var iconData = 'error';
             }else{
                 var iconData = 'question';
             }
