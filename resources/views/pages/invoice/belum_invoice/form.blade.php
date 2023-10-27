@@ -40,7 +40,7 @@
             <div class="card radiusSendiri">
                 <div class="card-header ">
                     <a href="{{ route('belum_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                     <button type="submit" class="btn btn-success radiusSendiri">
+                     <button type="button" class="btn btn-success radiusSendiri" id="btnSimpan">
                         <i class="fa fa-fw fa-save"></i> Simpan    
                     </button>
                 </div>
@@ -77,7 +77,7 @@
                                 </div>
 
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12" id="jatuh_tempo_pisah_kontainer">
-                                    <label for="">Jatuh Tempo Invoice Pisah<span style="color:red">*</span></label>
+                                    <label for="">Jatuh Tempo Invoice Reimburse<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -176,8 +176,8 @@
                 </div>
             </div> 
         </div>
-        <div style="overflow: auto;">
-            <table class="table table-hover table-bordered table-striped " width='100%' id="table_invoice">
+        <div style="overflow: auto;" class="m-3">
+            <table class="table table-hover table-bordered table-striped" width='100%' id="table_invoice">
                 <thead>
                     <tr class="bg-white">
                         <th>Customer</th>
@@ -432,6 +432,51 @@
 {{-- logic save --}}
 <script type="text/javascript">
     $(document).ready(function() {
+        $(document).on('click', '#btnSimpan', function(){ // kalau diskon berubah, hitung total 
+            var total_pisah = $('#total_pisah').val();
+            if (total_pisah>0) {
+                event.preventDefault(); // Prevent form submission
+                Swal.fire({
+                    title: 'Apakah anda yakin tanggal jatuh tempo reimburse sudah benar?',
+                    text: "Periksa kembali data anda",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonText: 'Batal',
+                    confirmButtonText: 'Ya',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#save').submit();
+                    }else{
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Batal Disimpan'
+                        })
+                        event.preventDefault();
+                    }
+                })
+                
+            }
+            else
+            {
+                $('#save').submit();
+            }
+        });
+
         $('#save').submit(function(event) {
             // set value kode_customer
                 var kodeValue = $('#billingTo option:selected').attr('kode');
@@ -488,7 +533,6 @@
             startDate: today,
         }).datepicker("setDate", today);
       
-        addCostPisah();
        
 
         var selectedOption = $('#billingTo').find('option:selected');
@@ -497,10 +541,14 @@
         if(ketentuan_bayar==undefined)
         {
             getDate(0);
+            addCostPisah(0);
+
         }
         else
         {
             getDate(parseFloat(ketentuan_bayar) );
+            addCostPisah(parseFloat(ketentuan_bayar));
+
         }
 
         calculateGrandTotal(); // pas load awal langsung hitung grand total
@@ -582,10 +630,15 @@
             if(ketentuan_bayar==undefined)
             {
                 getDate(0);
+                addCostPisah(0);
+
+
             }
             else
             {
                 getDate(parseFloat(ketentuan_bayar) );
+                addCostPisah(parseFloat(ketentuan_bayar));
+
             }
 
 		});
@@ -602,7 +655,46 @@
                 // endDate: '+0d',
                 startDate: today,
             }).datepicker("setDate", set_hari);
+
+           
         }
+        function addCostPisah(set_hari_jatuh_tempo){
+            var total = 0;
+            $(".addcost_pisah").each(function() {
+                var value = parseFloat($(this).val()) || 0;
+                total += value;
+            });
+            $("#total_pisah").val(total);
+
+            var today = new Date();
+             var set_hari = new Date(today);
+            set_hari.setDate(today.getDate() + set_hari_jatuh_tempo);
+
+            $('#jatuh_tempo_pisah').datepicker({
+                autoclose: false,
+                format: "dd-M-yyyy",
+                todayHighlight: true,
+                language: 'en',
+                // endDate: '+0d',
+                startDate: today,
+            }).datepicker("setDate", set_hari);
+            // $('#jatuh_tempo_pisah').datepicker({
+            //     autoclose: true,
+            //     format: "dd-M-yyyy",
+            //     todayHighlight: true,
+            //     language: 'en',
+            //     startDate: set_hari_jatuh_tempo,
+            // }).datepicker("setDate", set_hari_jatuh_tempo);
+            if($("#total_pisah").val()==0)
+            {
+                $('#jatuh_tempo_pisah_kontainer').hide();
+            }
+            else
+            {
+                $('#jatuh_tempo_pisah_kontainer').show();
+            }
+        }
+
         function calculateGrandTotal(){ // hitung grand total buat ditagihkan 
             var grandTotal = 0; 
             var grandTotalText = document.getElementById("total_tagihan_text");
@@ -675,6 +767,7 @@
             $('#subtotal').val(moneyMask(subtotal));
         }
 
+        
         function addCostPisah(){
             var total = 0;
             $(".addcost_pisah").each(function() {
