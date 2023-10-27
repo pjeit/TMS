@@ -38,7 +38,7 @@
                                             <option value="">­­— PILIH DATA —</option>
                                             <option value="TALLY">TALLY</option>
                                             <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                            <option value="OPERASIONAL">OPERASIONAL</option>
+                                            <option value="OPERASIONAL">ALAT</option>
                                             <option value="TIMBANG">TIMBANG</option>
                                             <option value="BURUH">BURUH</option>
                                             <option value="LEMBUR">LEMBUR</option>

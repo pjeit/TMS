@@ -638,6 +638,15 @@
                     </p>
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a href="{{route('bukti_potong.index')}}" class="nav-link {{ request()->is('bukti_potong*')? ' active' : '' }} " style="font-weight: 500;">
+                  {{-- <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i> --}}
+                  <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
+                    <p>
+                      Input Bukti Potong
+                    </p>
+                  </a>
+                </li>
             
 
               </ul>

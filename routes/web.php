@@ -160,11 +160,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/revisi_uang_jalan/kembalikan/{id_sewa}', 'App\Http\Controllers\RevisiUangJalanController@kembalikan')->name('revisi_uang_jalan.kembalikan');
         Route::get('/revisi_uang_jalan/load_data/{item}', 'App\Http\Controllers\RevisiUangJalanController@load_data')->name('revisi_uang_jalan.load_data');
         Route::resource('revisi_uang_jalan', 'App\Http\Controllers\RevisiUangJalanController');
-        // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
+
         Route::get('pencairan_komisi_customer/load_data', 'App\Http\Controllers\PencairanKomisiCustomerController@load_data')->name('pencairan_komisi_customer.load_data');
         Route::get('pencairan_komisi_driver/load_data', 'App\Http\Controllers\PencairanKomisiDriverController@load_data')->name('pencairan_komisi_driver.load_data');
         Route::resource('pencairan_komisi_driver', 'App\Http\Controllers\PencairanKomisiDriverController');
         Route::resource('pencairan_komisi_customer', 'App\Http\Controllers\PencairanKomisiCustomerController');
+        // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
 
         Route::get('/klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan'])->name('pencairan_klaim_supir.edit');
         Route::post('/klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
@@ -194,11 +195,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
 
         Route::resource('pengembalian_jaminan', 'App\Http\Controllers\PengembalianJaminanController');
+        Route::resource('bukti_potong', 'App\Http\Controllers\BuktiPotongController');
 
         // ===================================INVOICE=========================================================
-
-        
-
     });
 
     // Route::middleware(['is_admin'])->group(function () {

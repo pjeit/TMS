@@ -67,7 +67,7 @@
 
                             <div class="row">
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="tanggal_pencairan">Jatuh Tempo<span style="color:red">*</span></label>
+                                    <label for="">Jatuh Tempo<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -77,7 +77,7 @@
                                 </div>
 
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12" id="jatuh_tempo_pisah_kontainer">
-                                    <label for="jatuh_tempo_pisah">Jatuh Tempo Invoice Reimburse<span style="color:red">*</span></label>
+                                    <label for="">Jatuh Tempo Invoice Reimburse<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -768,6 +768,34 @@
         }
 
         
+        function addCostPisah(){
+            var total = 0;
+            $(".addcost_pisah").each(function() {
+                var value = parseFloat($(this).val()) || 0;
+                total += value;
+            });
+            $("#total_pisah").val(total);
+
+            var today = new Date();
+            
+            $('#jatuh_tempo_pisah').datepicker({
+                autoclose: true,
+                format: "dd-M-yyyy",
+                todayHighlight: true,
+                language: 'en',
+                startDate: today,
+            }).datepicker("setDate", today);
+            
+            if($("#total_pisah").val()==0)
+            {
+                $('#jatuh_tempo_pisah_kontainer').hide();
+            }
+            else
+            {
+                $('#jatuh_tempo_pisah_kontainer').show();
+            }
+        }
+
         function clearData(){ // clear data sebelum buka modal 
             $('#tanggal_berangkat').val('');
             $('#nama_tujuan').val('');
