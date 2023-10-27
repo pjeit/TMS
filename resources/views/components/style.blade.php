@@ -61,6 +61,26 @@
     .radiusSendiri{
       border-radius: 15px;
     }
+    .dropdown-menu{
+      /* transition: transform 0.1s; Add a transition to the 'transform' property */
+      border-radius: 15px;
+
+    }
+    /* .btn
+    {
+      transition: transform 0.5s ease; 
+    }
+    .btn:hover{
+      transform: scale(1.05);
+    } */
+/* 
+    .form-control
+    {
+      transition: transform 0.5s ease; 
+    }
+    .form-control:hover{
+      transform: scale(1.05);
+    } */
     .rubik-heading-1 {
   font-family: "Rubik" !important;
   font-style: normal !important;
