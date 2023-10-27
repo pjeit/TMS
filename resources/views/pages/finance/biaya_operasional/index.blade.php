@@ -45,8 +45,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            {{-- </li> --}}
-                            {{-- <li class="list-inline-item"> --}}
+                  
                                 <div class="col-sm-12 col-md-4 col-lg-4 bg-white pb-3">
                                     <ul class="list-group mt-4">
                                         <li class="list-group-item d-flex justify-content-between lh-sm card-outline card-primary">
@@ -58,8 +57,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                            {{-- </li> --}}
-                            {{-- <li class="list-inline-item"> --}}
+                       
                                 <div class="col-sm-12 col-md-5 col-lg-5 bg-white pb-3">
                                     <div class="input-group mt-4">
                                         <select class="form-control selectpicker" required id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
@@ -213,7 +211,6 @@
                         $("#loading-spinner").hide();
                         var item = $('#item').val();
                         var data = response.data;
-                        console.log('data', data);
     
                         $("th").remove();
                         $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
@@ -228,7 +225,7 @@
                         $("#hasil").html("");
                         var ord = 7;
                         var dataCustomer = null;
-                        console.log('data.length', data.length);
+                        console.log('data.length', data);
                         if(data.length > 0){
                             for (var i = 0; i <data.length; i++) {
                                 if(data[i].total_dicairkan == null){
@@ -270,7 +267,8 @@
                                     }else{
                                         row.append(`<td> ${nominal.toLocaleString()} </td>`);
                                     }
-                                    var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+data[i].nama_panggilan;
+                                    var driver = data[i].namaSupplier=='null'? data[i].nama_panggilan:data[i].namaSupplier;
+                                    var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
                                     var tambahanUJ = '';
     
                                     if(item == 'TAMBAHAN UJ'){
@@ -292,6 +290,7 @@
                                                     <input class='check_item check_container' id_sewa="${data[i].id_sewa}" grup_child='${data[i].grup_id}' cust_child='${data[i].id_customer}'  name="data[${data[i].id_sewa}][item]" type='checkbox'> 
                                                     <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? $('#open_' + data[i].id_sewa).val() : nominal}' class='form-control hiddenNominal' readonly>
                                                     <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
+                                                    <input type='hidden' name='data[${data[i].id_sewa}][supplier]' value='${data[i].namaSupplier}' class='form-control' readonly>
                                                     <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
                                                     <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
                                                     <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>

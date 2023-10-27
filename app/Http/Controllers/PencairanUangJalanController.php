@@ -15,7 +15,9 @@ use App\Models\KaryawanHutang;
 use App\Models\KaryawanHutangTransaction;
 use App\Models\UangJalanRiwayat;
 use App\Models\SewaOperasional;
-class PencairanUangJalanFtlController extends Controller
+use Symfony\Component\VarDumper\VarDumper;
+
+class PencairanUangJalanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -36,7 +38,7 @@ class PencairanUangJalanFtlController extends Controller
                 ->orderBy('c.id','ASC')
                 ->get();
 
-        return view('pages.finance.pembayaran_uang_jalan.index',[
+        return view('pages.finance.pencairan_uang_jalan.index',[
             'judul' => "Pencairan Uang Jalan",
             'sewa'=>$sewa,
             'dataJO' => null,
@@ -65,7 +67,7 @@ class PencairanUangJalanFtlController extends Controller
         // dd($id_sewa_defaulth);
         // session(['id_sewa' => $id_sewa]);
 
-        $sewa = DB::table('sewa AS s')
+        $sewa = Sewa::from('sewa AS s')
                     ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
@@ -81,7 +83,7 @@ class PencairanUangJalanFtlController extends Controller
             ->where('is_aktif', '=', "Y")
             ->get();
 
-        return view('pages.finance.pembayaran_uang_jalan.form',[
+        return view('pages.finance.pencairan_uang_jalan.form',[
             'judul' => "Pencairan Uang Jalan",
             'sewa'=>$sewa,
             'dataKas'=>$dataKas,
@@ -94,11 +96,6 @@ class PencairanUangJalanFtlController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try {
-            // dd($data);
-
-            // dump transaksi
-            // dd(date_create_from_format('d-M-Y', $data['tanggal_pencairan']));
-
             $ujr = new UangJalanRiwayat();
             $ujr->tanggal = now();
             $ujr->tanggal_pencatatan = now();
@@ -111,15 +108,15 @@ class PencairanUangJalanFtlController extends Controller
             $ujr->created_by = $user;
             $ujr->created_at = now();
             $ujr->is_aktif = 'Y';
-            // $ujr->save();
             if($ujr->save())
             {
-                $tl = isset($data['teluk_lamong'])? ($data['teluk_lamong'] != 0? ' #teluk_lamong:'.(isset($data['teluk_lamong'])? (float)str_replace(',', '', $data['teluk_lamong']):0):''):""; 
+                $tl = isset($data['teluk_lamong'])? ($data['teluk_lamong'] != 0? ' #TELUK LAMONG:'.(isset($data['teluk_lamong'])? (float)str_replace(',', '', $data['teluk_lamong']):0):''):""; 
+                $pothut = isset($data['potong_hutang'])? ' #POTONG HUTANG: '.(float)str_replace(',', '', $data['potong_hutang']) : ''; 
                 $refrensi_keterangan_string = 
-                    ' #uang_jalan: ' . (float)str_replace(',', '', $data['uang_jalan']) . 
-                    $tl. 
-                    ' #potongHutang: ' .(isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
-                    ' #totalDiterima: ' .(float)str_replace(',', '', $data['total_diterima']);
+                    ' #UANG JALAN: ' . (float)str_replace(',', '', $data['uang_jalan']) . 
+                    $tl. $pothut.  
+                    ' #TOTAL DITERIMA: ' .(float)str_replace(',', '', $data['total_diterima']);
+
                 $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
                 if(isset($kh)&&isset($data['potong_hutang'])){
                     $saldo_hutang= $kh->total_hutang - (float)str_replace(',', '', $data['potong_hutang']);
@@ -146,8 +143,7 @@ class PencairanUangJalanFtlController extends Controller
                     if( $data['total_diterima']!=0||$data['total_diterima']!="0")
                     {
                         if (isset($data['teluk_lamong'])) {
-                            // $nominal =(float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']);
-                            $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
+                            $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
                             $SOP = new SewaOperasional();
                             $SOP->id_sewa = $data['id_sewa_defaulth']; 
                             $SOP->deskripsi = 'TL';
@@ -162,9 +158,9 @@ class PencairanUangJalanFtlController extends Controller
                             $SOP->is_aktif = 'Y';
                             $SOP->save();
                         } else {
-                            // $nominal =(float)str_replace(',', '', $data['total_diterima']);
-                            $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN';
+                            $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN';
                         }
+                        $catatan = isset($data['catatan'])? ' #'.$data['catatan']:' ';
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
                                 $data['pembayaran'],// id kas_bank dr form
@@ -173,7 +169,7 @@ class PencairanUangJalanFtlController extends Controller
                                 (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                 1016, //kode coa
                                 'uang_jalan',
-                                $keterangan_string.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'].$refrensi_keterangan_string, //keterangan_transaksi
+                                $keterangan_string.' #'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan']. $catatan .$refrensi_keterangan_string, //keterangan_transaksi
                                 $ujr->id,//keterangan_kode_transaksi
                                 $user,//created_by
                                 now(),//created_at
@@ -214,7 +210,7 @@ class PencairanUangJalanFtlController extends Controller
                                 (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                 1016, //kode coa
                                 'uang_jalan',
-                                $keterangan_string.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'].$refrensi_keterangan_string, //keterangan_transaksi
+                                $keterangan_string.' #'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan'].' #'.$data['catatan'].$refrensi_keterangan_string, //keterangan_transaksi
                                 $ujr->id,//keterangan_kode_transaksi
                                 $user,//created_by
                                 now(),//created_at
@@ -226,20 +222,11 @@ class PencairanUangJalanFtlController extends Controller
                 }   
             }
             
-            
             $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
-            // dd($sewa);
             $sewa->status = 'PROSES DOORING';
-            // if (isset($data['teluk_lamong'])) {
-                        
-            //     $sewa->total_uang_jalan += (float)str_replace(',', '', $data['teluk_lamong']);
-                
-            // }
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             $sewa->save();
-
-            // dd((float)str_replace(',', '', $data['total_diterima']));
 
             if ((float)str_replace(',', '', $data['total_diterima']>0))
             {
@@ -248,12 +235,8 @@ class PencairanUangJalanFtlController extends Controller
                     ->where('is_aktif', '=', "Y")
                     ->where('kas_bank.id', '=', $data['pembayaran'])
                     ->first();
-    
-                // if (isset($data['teluk_lamong'])) {
-                //     $saldo_baru = $saldo->saldo_sekarang - ((float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']));
-                // } else {
-                    $saldo_baru = $saldo->saldo_sekarang - (float)str_replace(',', '', $data['total_diterima']);
-                // }
+
+                $saldo_baru = $saldo->saldo_sekarang - (float)str_replace(',', '', $data['total_diterima']);
                 
                 DB::table('kas_bank')
                     ->where('id', $data['pembayaran'])
@@ -263,14 +246,12 @@ class PencairanUangJalanFtlController extends Controller
                         'updated_by'=> $user,
                     )
                 );
-
             }
 
-            return redirect()->route('pencairan_uang_jalan_ftl.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
+            return redirect()->route('pencairan_uang_jalan.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
         } catch (ValidationException $e) {
             db::rollBack();
-            return redirect()->route('pencairan_uang_jalan_ftl.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
-            // return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->route('pencairan_uang_jalan.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
         }
     }
 
@@ -291,7 +272,7 @@ class PencairanUangJalanFtlController extends Controller
      * @param  \App\Models\Sewa  $sewa
      * @return \Illuminate\Http\Response
      */
-    public function edit(Sewa $pencairan_uang_jalan_ftl)
+    public function edit(Sewa $pencairan_uang_jalan)
     {
          $sewa = Sewa::from('sewa AS s')
                     ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
@@ -301,14 +282,14 @@ class PencairanUangJalanFtlController extends Controller
                     ->where('s.jenis_tujuan', 'like', '%FTL%')
                     ->where('s.status', 'MENUNGGU UANG JALAN')
                     ->where('s.is_aktif', '=', 'Y')
-                    ->where('s.id_sewa', '=', $pencairan_uang_jalan_ftl->id_sewa)
+                    ->where('s.id_sewa', '=', $pencairan_uang_jalan->id_sewa)
                     ->groupBy('c.id')
                     ->first();
          $sewaBiayaTelukLamong = DB::table('sewa_biaya AS sb')
                     ->select('sb.*')
                     ->where('sb.deskripsi', 'like', '%TL%')
                     ->where('sb.is_aktif', '=', 'Y')
-                    ->where('sb.id_sewa', '=', $pencairan_uang_jalan_ftl->id_sewa)
+                    ->where('sb.id_sewa', '=', $pencairan_uang_jalan->id_sewa)
                     ->first();
          $dataKas = DB::table('kas_bank')
             ->select('*')
@@ -316,7 +297,7 @@ class PencairanUangJalanFtlController extends Controller
             ->get();
         // dd($sewaBiayaTelukLamong);
 
-        return view('pages.finance.pembayaran_uang_jalan.edit',[
+        return view('pages.finance.pencairan_uang_jalan.edit',[
             'judul' => "Pencairan Uang Jalan",
             'sewa'=> $sewa,
             'sewaBiayaTelukLamong'=>$sewaBiayaTelukLamong,

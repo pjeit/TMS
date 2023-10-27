@@ -246,9 +246,9 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="select_driver">Stack TL</label>
+                                    <label for="select_driver">Stack FULL</label>
                                         <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
-                                        <option value="">── Pilih TL ──</option>
+                                        <option value="">── Pilih Stack ──</option>
                                         <option value="tl_perak">Perak</option>
                                         <option value="tl_priuk">Priuk</option>
                                         <option value="tl_teluk_lamong">Teluk Lamong</option>

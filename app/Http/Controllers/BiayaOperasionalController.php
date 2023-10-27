@@ -63,11 +63,9 @@ class BiayaOperasionalController extends Controller
             $data = $request->post();
             $item = $data['item'];
             $storeData = [];
-            // dd($data);
 
             foreach ($data['data'] as $key => $value) {
                 $keterangan = $item.' : ';
-                
                 if($value['dicairkan'] != null){
                     $nominal = floatval(str_replace(',', '', $value['nominal']));
                     $dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
@@ -110,7 +108,7 @@ class BiayaOperasionalController extends Controller
                         $sewa->save();
                     }
 
-                    if($item != 'OPERASIONAL'){
+                    if($item != 'OPERASIONAL' && $item != 'TALLY'){
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
                                 $data['pembayaran'], // id kas_bank dr form
@@ -132,20 +130,25 @@ class BiayaOperasionalController extends Controller
                 }
             }
 
-            if($item == 'OPERASIONAL'){
+            if($item == 'OPERASIONAL' || $item == 'TALLY'){
+                $i=1;
                 foreach ($data['data'] as $key => $value) {
+                    $driver = $value['supplier'] != 'null'? $value['supplier']:$value['driver'];
+
                     if($value['dicairkan'] != null){
                         if (array_key_exists($value['tujuan'], $storeData)) {
                             // If the customer already exists in $storeData, increment the "dicairkan" value
                             $storeData[$value['tujuan']]['dicairkan'] += floatval(str_replace(',', '', $value['dicairkan']));
-                            $storeData[$value['tujuan']]['driver'] .= ' #'. $value['nopol'] .' ('.$value['driver'].')';
+                            $storeData[$value['tujuan']]['driver'] .= ' #'. $value['nopol'] .' ('.$driver.')';
                             $storeData[$value['tujuan']]['id_opr'] .= ', '.$sewa_o->id;
+                            $storeData[$value['tujuan']]['index'] += 1;
                         } else {
                             // If the customer is not in $storeData, create a new entry
                             $storeData[$value['tujuan']] = [
                                 'dicairkan' => floatval(str_replace(',', '', $value['dicairkan'])),
-                                'driver' => '#'. $value['nopol'] .' ('.$value['driver'].')',
+                                'driver' => '#'. $value['nopol'] .' ('.$driver.')',
                                 'id_opr' => $sewa_o->id,
+                                'index' => $i,
                             ];
                         }
                     }
@@ -153,22 +156,22 @@ class BiayaOperasionalController extends Controller
 
                 foreach ($storeData as $key => $value) {
                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                            array(
-                                $data['pembayaran'], // id kas_bank dr form
-                                now(), //tanggal
-                                0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                $value['dicairkan'], //uang keluar (kredit)
-                                1015, //kode coa
-                                'pencairan_operasional',
-                                "OPERASIONAL : ".$key." ".$value['driver'], //keterangan_transaksi
-                                $value['id_opr'], //keterangan_kode_transaksi
-                                $user, //created_by
-                                now(), //created_at
-                                $user, //updated_by
-                                now(), //updated_at
-                                'Y'
-                            ) 
-                        );
+                        array(
+                            $data['pembayaran'], // id kas_bank dr form
+                            now(), //tanggal
+                            0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                            $value['dicairkan'], //uang keluar (kredit)
+                            1015, //kode coa
+                            'pencairan_operasional',
+                            $item.": ".$value['index'].'x ' .$key." ".$value['driver'], //keterangan_transaksi
+                            $value['id_opr'], //keterangan_kode_transaksi
+                            $user, //created_by
+                            now(), //created_at
+                            $user, //updated_by
+                            now(), //updated_at
+                            'Y'
+                        ) 
+                    );
                 }
             }
 

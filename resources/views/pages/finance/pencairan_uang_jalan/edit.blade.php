@@ -8,11 +8,11 @@
 <style >
 </style>
 <div class="container-fluid">
-    <form action="{{ route('pencairan_uang_jalan_ftl.store') }}" id="post_data" method="POST" >
+    <form action="{{ route('pencairan_uang_jalan.store') }}" id="post_data" method="POST" >
       @csrf
         <div class="card radiusSendiri">
             <div class="card-header">
-                <a href="{{ route('pencairan_uang_jalan_ftl.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                <a href="{{ route('pencairan_uang_jalan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                 <button type="submit" class="btn btn-success radiusSendiri"><i class="fa fa-credit-card" aria-hidden="true"></i> Simpan</button>
 
             </div>
@@ -41,7 +41,7 @@
                                 <input type="hidden" value="{{$sewa->id_sewa}}" id="id_sewa_defaulth" name="id_sewa_defaulth">
                             </div>
 
-                            <div class="form-group col-lg-3 col-md-6 col-sm-12">
+                            <div class="form-group col-lg-3 col-md-12 col-sm-12">
                                 <label for="tanggal_pencairan">Tanggal Berangkat<span style="color:red">*</span></label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
@@ -51,7 +51,7 @@
                                 </div>
                             </div>  
     
-                            <div class="form-group col-lg-3 col-md-6 col-sm-12">
+                            <div class="form-group col-lg-3 col-md-12 col-sm-12">
                                 <label for="tanggal_pencairan">Tanggal Pencairan<span style="color:red">*</span></label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
@@ -71,8 +71,11 @@
                                     <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numaja" value="" readonly>                         
                                 </div>
                             </div>
-    
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-0" 
+                                @if (isset($sewa->getKaryawan->getHutang) && $sewa->getKaryawan->getHutang->total_hutang > 0)
+                                    style="background: hsl(0, 100%, 93%); border: 1px red solid;"
+                                @endif>
                                 <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
@@ -81,7 +84,8 @@
                                     <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" value="" >                         
                                 </div>
                             </div>
-                            
+                        </div>
+                        <div class="row">                            
                             <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}">
                                 <label for="uang_jalan">Biaya Uang Jalan</label>
                                 <div class="input-group mb-0">
@@ -272,7 +276,7 @@
             var baseUrl = "{{ asset('') }}";
 
             $.ajax({
-                url: `${baseUrl}pencairan_uang_jalan_ftl/getDatasewaDetail/${id}`, 
+                url: `${baseUrl}pencairan_uang_jalan/getDatasewaDetail/${id}`, 
                 method: 'GET', 
                 success: function(response) {
                     if(response)

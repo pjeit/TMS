@@ -147,9 +147,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pencairan_operasional/pencairan/{id}', 'App\Http\Controllers\PencairanOperasionalController@pencairan')->name('pencairan_operasional.pencairan');
         Route::resource('pencairan_operasional', 'App\Http\Controllers\PencairanOperasionalController');
 
-        Route::get('/pencairan_uang_jalan_ftl/getDatasewaDetail/{id}', [App\Helper\SewaDataHelper::class, 'getDatasewaDetail'])->name('getDatasewaDetail.get');
-        Route::post('/pencairan_uang_jalan_ftl/form', [App\Http\Controllers\PencairanUangJalanFtlController::class, 'form'])->name('pencairan_uang_jalan_ftl.form');
-        Route::resource('pencairan_uang_jalan_ftl', 'App\Http\Controllers\PencairanUangJalanFtlController');
+        Route::get('/pencairan_uang_jalan/getDatasewaDetail/{id}', [App\Helper\SewaDataHelper::class, 'getDatasewaDetail'])->name('getDatasewaDetail.get');
+        Route::post('/pencairan_uang_jalan/form', [App\Http\Controllers\PencairanUangJalanController::class, 'form'])->name('pencairan_uang_jalan.form');
+        Route::resource('pencairan_uang_jalan', 'App\Http\Controllers\PencairanUangJalanController');
 
         Route::get('/add_return_tl/cair/{id}', [App\Http\Controllers\AddReturnTLController::class, 'cair'])->name('add_return_tl.cair');
         Route::get('/add_return_tl/refund/{id}', [App\Http\Controllers\AddReturnTLController::class, 'refund'])->name('add_return_tl.refund');

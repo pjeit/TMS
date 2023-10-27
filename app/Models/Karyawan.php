@@ -50,4 +50,10 @@ class Karyawan extends Model
       'updated_by',
       'is_aktif',
   ];
+
+  
+  public function getHutang()
+  {
+       return $this->hasOne(KaryawanHutang::class, 'id_karyawan', 'id');
+  }
 }

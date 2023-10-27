@@ -423,7 +423,7 @@
             {{-- FINANCE --}}
             <li class="nav-item {{ 
               request()->is('pembayaran_jo*') ||
-              request()->is('pencairan_uang_jalan_ftl*') ||
+              request()->is('pencairan_uang_jalan*') ||
               request()->is('pencairan_operasional*') ||
               request()->is('biaya_operasional*') ||
               request()->is('add_return_tl*') ||
@@ -497,7 +497,7 @@
   
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('pencairan_uang_jalan.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Pencairan UJ
@@ -551,41 +551,6 @@
               
               </ul>
 
-            {{-- 
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Pencairan Komisi
-                    </p>
-                  </a>
-                </li>
-              </ul>
-
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pencairan_uang_jalan_ftl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ftl.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Pencairan UJ
-                    </p>
-                  </a>
-                </li>
-              </ul> 
-            --}}
-             
-              
-              {{-- <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pencairan_operasional.index')}}" class="nav-link {{request()->is('pencairan_operasional*') ? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="fas fa-dollar-sign nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Pencairan <small><strong>Operasional</strong></small>
-                    </p>
-                  </a>
-                </li>
-              </ul> --}}
             </li>
           @endif
 
