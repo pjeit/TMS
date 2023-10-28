@@ -5,19 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class KlaimSupir extends Model
+class KlaimSupirRiawayat extends Model
 {
     use HasFactory;
-    protected $table = 'klaim_supir';
+     protected $table = 'klaim_supir_riwayat';
     protected $primaryKey='id';
     protected $fillable=[
-        'karyawan_id',
-        'kendaraan_id',
-        'tanggal_klaim',
-        'jenis_klaim',
-        'total_klaim',
+        'id_klaim',
+        'kas_bank_id',
+        'total_pencairan',
         'status_klaim',
         'keterangan_klaim',
+        'catatan_pencairan',
+        'tanggal_pencairan',
+        'kas_bank_id',
+        'alasan_tolak',
         'foto_nota',
         'foto_barang',
         'created_at',

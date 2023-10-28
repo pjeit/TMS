@@ -35,9 +35,9 @@
         @endforeach
 
     @endif
-    <form action="{{ route('klaim_supir.update',[$klaimSupir->id]) }}" method="POST" id="post" enctype="multipart/form-data">
+    <form action="{{ route('pencairan_klaim_supir.save',[$klaimSupir->id]) }}" method="POST" id="post" >
         @csrf
-        @method('PUT')
+        @method('post')
         <div class="card radiusSendiri">
             <div class="card-header">
                 <a href="{{ route('klaim_supir.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
@@ -45,20 +45,150 @@
             </div>
             <div class="card-body" >
                <ul class="nav nav-tabs mb-3 mt-3 nav-fill" id="justifyTab" role="tablist">
+                 <li class="nav-item">
+                                <a class="nav-link nav-link-tab active" id="justify-pencairan-tab" data-toggle="tab" href="#justify-pencairan" role="tab" aria-controls="justify-pencairan" aria-selected="true">Pencairan</a>
+                            </li>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-tab active" id="justify-data-tab" data-toggle="tab" href="#justify-data" role="tab" aria-controls="justify-data" aria-selected="true">Informasi Klaim</a>
+                                <a class="nav-link nav-link-tab " id="justify-data-tab" data-toggle="tab" href="#justify-data" role="tab" aria-controls="justify-data" aria-selected="false">Informasi Klaim</a>
                             </li>
                             {{-- <li class="nav-item">
                                 <a class="nav-link nav-link-tab" id="justify-foto-tab" data-toggle="tab" href="#justify-foto" role="tab" aria-controls="justify-foto" aria-selected="false">Foto</a>
                             </li> --}}
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-tab" id="justify-pencairan-tab" data-toggle="tab" href="#justify-pencairan" role="tab" aria-controls="justify-pencairan" aria-selected="false">Pencairan</a>
-                            </li>
+                           
                         </ul>
 
                         <div class="tab-content">
+                              {{-- Pencairan --}}
+                                <div class="tab-pane fade show active" id="justify-pencairan" role="tabpanel" aria-labelledby="justify-pencairan-tab">
+
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12 col-sm-12">
+                                            <div class="row">
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12">
+                                                    <label for="tanggal_klaim">Tanggal Pencairan<span style="color:red">*</span></label>
+                                                    <div class="input-group mb-0">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                        </div>
+                                                        <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date @error('tanggal_pencairan') is-invalid @enderror" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencairan',!empty($klaim_supir_riwayat->tanggal_pencairan)?\Carbon\Carbon::parse($klaim_supir_riwayat->tanggal_pencairan)->format('d-M-Y'):'')}}">
+                                                        {{-- <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date @error('tanggal_pencairan') is-invalid @enderror" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencairan')}}"> --}}
+                                                        @error('tanggal_pencairan')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-6 col-md-12 col-sm-12">
+                                                    <label for="tanggal_pencatatan">Tanggal Pencatatan<span style="color:red">*</span></label>
+                                                    <div class="input-group mb-0">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                                        </div>
+                                                        <input type="text" autocomplete="off" name="tanggal_pencatatan" class="form-control date @error('tanggal_pencatatan') is-invalid @enderror" id="tanggal_pencatatan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencatatan',!empty($klaim_supir_riwayat->tanggal_pencatatan)?\Carbon\Carbon::parse($klaim_supir_riwayat->tanggal_pencatatan)->format('d-M-Y'):'')}}">
+                                                        {{-- <input type="text" autocomplete="off" name="tanggal_pencatatan" class="form-control date @error('tanggal_pencatatan') is-invalid @enderror" id="tanggal_pencatatan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencatatan')}}"> --}}
+                                                        
+                                                        @error('tanggal_pencatatan')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="form-group" id="div_catatan_pencairan">
+                                                <label for="total_reimburse">Catatan Pencairan</label>
+                                                <div class="form-group">
+                                                    <input type="text" name="catatan_pencairan" class="form-control @error('catatan_pencairan') is-invalid @enderror" id="catatan_pencairan" placeholder="" value="{{old('catatan_pencairan',!empty($klaim_supir_riwayat->catatan_pencairan)? $klaim_supir_riwayat->catatan_pencairan:'')}}">
+                                                    {{-- <input type="text" name="catatan_pencairan" class="form-control @error('catatan_pencairan') is-invalid @enderror" id="catatan_pencairan" placeholder="" value="{{old('catatan_pencairan')}}"> --}}
+                                                    
+                                                    @error('catatan_pencairan')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div> 
+                                            <div class="form-group" id="div_alasan_tolak">
+                                                <label for="total_reimburse">Alasan Tolak</label>
+                                                <div class="form-group">
+                                                    <input type="text" name="alasan_tolak" class="form-control @error('alasan_tolak') is-invalid @enderror" id="alasan_tolak" placeholder="" value="{{old('alasan_tolak',!empty($klaim_supir_riwayat->alasan_tolak)? $klaim_supir_riwayat->alasan_tolak:'')}}">
+                                                    {{-- <input type="text" name="alasan_tolak" class="form-control @error('alasan_tolak') is-invalid @enderror" id="alasan_tolak" placeholder="" value="{{old('alasan_tolak')}}"> --}}
+
+                                                    @error('alasan_tolak')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div> 
+                                            <div class="form-group">
+                                                <label for="tipe">Status Klaim</label>
+                                                <br>
+                                                <div class="icheck-primary d-inline">
+                                                    <input id="PENDING" type="radio" name="status_klaim" value="PENDING" {{'PENDING'== $klaimSupir->status_klaim? 'checked' :'' }}>
+                                                    <label class="form-check-label" for="PENDING">Pending</label>
+                                                </div>
+                                                <div class="icheck-primary d-inline ml-3">
+                                                    <input id="ACCEPTED" type="radio" name="status_klaim" value="ACCEPTED" {{'ACCEPTED' == $klaimSupir->status_klaim? 'checked' :'' }}>
+                                                    <label class="form-check-label" for="ACCEPTED">Terima</label>
+                                                </div>
+                                                <div class="icheck-primary d-inline ml-3">
+                                                    <input id="REJECTED" type="radio" name="status_klaim" value="REJECTED" {{'REJECTED'== $klaimSupir->status_klaim? 'checked' :'' }}>
+                                                    <label class="form-check-label" for="REJECTED">Tolak</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                            <div class="form-group">
+                                                <label for="total_reimburse">Total Klaim <span style="color:red">*</span></label>
+                                                <div class="input-group mb-0">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Rp</span>
+                                                    </div>
+                                                    <input disabled type="text" name="total_klaim" class="form-control numaja uang @error('total_klaim') is-invalid @enderror" id="total_klaim" placeholder="" value="{{old('total_klaim',number_format($klaimSupir->total_klaim))}}">
+                                                    @error('total_klaim')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div> 
+                                            <div class="form-group">
+                                                <label for="total_reimburse">Jumlah Klaim Dicairkan <span style="color:red">*</span></label>
+                                                <div class="input-group mb-0">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Rp</span>
+                                                    </div>
+                                                    <input type="text" name="total_pencairan" onkeyup="cek_max_pencairan();" class="form-control numaja uang @error('total_pencairan') is-invalid @enderror" id="total_pencairan" placeholder="" value="{{old('total_pencairan',!empty($klaim_supir_riwayat->total_pencairan)? number_format($klaim_supir_riwayat->total_pencairan):'')}}">
+                                                    {{-- <input type="text" name="total_pencairan" onkeyup="cek_max_pencairan();" class="form-control numaja uang @error('total_pencairan') is-invalid @enderror" id="total_pencairan" placeholder="" value="{{old('total_pencairan')}}"> --}}
+
+                                                    @error('total_pencairan')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div> 
+                                            <div class="form-group">
+                                                <label for="">Pilih Kas<span class="text-red">*</span> </label>
+                                                <select name="kas" class="select2" style="width: 100%" id="kas" required>
+                                                    <option value="">── PILIH KAS ──</option>
+                                                    @foreach ($dataKas as $kas)
+                                                        <option value="{{ $kas->id }}" {{ $kas->id == 1? 'selected':''}}>{{ $kas->nama }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>  
+                                          
+                                        </div>
+                                    </div>
+                                  
+                                </div>
+                            {{-- end Pencairan --}}
                             {{-- data --}}
-                                <div class="tab-pane fade show active" id="justify-data" role="tabpanel" aria-labelledby="justify-data-tab">
+                                <div class="tab-pane fade " id="justify-data" role="tabpanel" aria-labelledby="justify-data-tab">
                                     <div class="row">
                                         <div class="form-group col-lg-4 col-md-12 col-sm-12">
                                             <label for="tanggal_klaim">Tanggal Klaim<span style="color:red">*</span></label>
@@ -139,8 +269,8 @@
                                         
                                         <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                             <label for="keterangan_klaim">Keterangan Klaim</label>
-                                            <input disabled type="text" class="form-control @error('total_klaim') is-invalid @enderror" id="keterangan_klaim" name="keterangan_klaim" value="{{old('keterangan_klaim',$klaimSupir->keterangan_klaim)}}">
-                                            @error('total_klaim')
+                                            <input disabled type="text" class="form-control @error('keterangan_klaim') is-invalid @enderror" id="keterangan_klaim" name="keterangan_klaim" value="{{old('keterangan_klaim',$klaimSupir->keterangan_klaim)}}">
+                                            @error('keterangan_klaim')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
                                                 </div>
@@ -165,6 +295,7 @@
                                     </div>
                                 </div>
                             {{-- end data --}}
+
                             {{-- foto --}}
                                 {{-- <div class="tab-pane fade" id="justify-foto" role="tabpanel" aria-labelledby="justify-foto-tab">
                                     <div class="row">
@@ -185,126 +316,8 @@
                                     </div>
                                 </div> --}}
                             {{-- end foto --}}
-                            {{-- Pencairan --}}
-                                <div class="tab-pane fade" id="justify-pencairan" role="tabpanel" aria-labelledby="justify-pencairan-tab">
-
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-12 col-sm-12">
-                                            <div class="row">
-                                                <div class="form-group col-lg-6 col-md-12 col-sm-12">
-                                                    <label for="tanggal_klaim">Tanggal Pencairan<span style="color:red">*</span></label>
-                                                    <div class="input-group mb-0">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                        </div>
-                                                        <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date @error('tanggal_pencairan') is-invalid @enderror" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencairan',\Carbon\Carbon::parse($klaimSupir->tanggal_pencairan)->format('d-M-Y'))}}">
-                                                        @error('tanggal_pencairan')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-lg-6 col-md-12 col-sm-12">
-                                                    <label for="tanggal_pencatatan">Tanggal Pencatatan<span style="color:red">*</span></label>
-                                                    <div class="input-group mb-0">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                        </div>
-                                                        <input type="text" autocomplete="off" name="tanggal_pencatatan" class="form-control date @error('tanggal_pencatatan') is-invalid @enderror" id="tanggal_pencatatan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencatatan',\Carbon\Carbon::parse($klaimSupir->tanggal_pencatatan)->format('d-M-Y'))}}">
-                                                        @error('tanggal_pencatatan')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="form-group">
-                                                <label for="total_reimburse">Catatan Pencairan</label>
-                                                <div class="form-group">
-                                                    <input type="text" name="catatan_pencairan" class="form-control @error('catatan_pencairan') is-invalid @enderror" id="catatan_pencairan" placeholder="" value="{{old('catatan_pencairan',$klaimSupir->catatan_pencairan)}}">
-                                                    @error('catatan_pencairan')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div> 
-                                            <div class="form-group">
-                                                <label for="total_reimburse">Alasan Tolak</label>
-                                                <div class="form-group">
-                                                    <input type="text" name="alasan_tolak" class="form-control @error('alasan_tolak') is-invalid @enderror" id="alasan_tolak" placeholder="" value="{{old('alasan_tolak',$klaimSupir->alasan_tolak)}}">
-                                                    @error('alasan_tolak')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div> 
-                                            <div class="form-group">
-                                                <label for="tipe">Status Klaim</label>
-                                                <br>
-                                                <div class="icheck-primary d-inline">
-                                                    <input id="PENDING" type="radio" name="status_klaim" value="PENDING" {{'PENDING'== $klaimSupir->status_klaim? 'checked' :'' }}>
-                                                    <label class="form-check-label" for="PENDING">Pending</label>
-                                                </div>
-                                                <div class="icheck-primary d-inline ml-3">
-                                                    <input id="ACCEPTED" type="radio" name="status_klaim" value="ACCEPTED" {{'ACCEPTED' == $klaimSupir->status_klaim? 'checked' :'' }}>
-                                                    <label class="form-check-label" for="ACCEPTED">Terima</label>
-                                                </div>
-                                                <div class="icheck-primary d-inline ml-3">
-                                                    <input id="REJECTED" type="radio" name="status_klaim" value="REJECTED" {{'REJECTED'== $klaimSupir->status_klaim? 'checked' :'' }}>
-                                                    <label class="form-check-label" for="REJECTED">Tolak</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                       
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
-                                            <div class="form-group">
-                                                <label for="total_reimburse">Total Klaim <span style="color:red">*</span></label>
-                                                <div class="input-group mb-0">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">Rp</span>
-                                                    </div>
-                                                    <input disabled type="text" name="total_klaim" class="form-control numaja uang @error('total_klaim') is-invalid @enderror" id="total_klaim" placeholder="" value="{{old('total_klaim',number_format($klaimSupir->total_klaim))}}">
-                                                    @error('total_klaim')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div> 
-                                            <div class="form-group">
-                                                <label for="total_reimburse">Jumlah Klaim Dicairkan <span style="color:red">*</span></label>
-                                                <div class="input-group mb-0">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">Rp</span>
-                                                    </div>
-                                                    <input type="text" name="total_pencairan" class="form-control numaja uang @error('total_pencairan') is-invalid @enderror" id="total_pencairan" placeholder="" value="{{old('total_pencairan',number_format($klaimSupir->total_pencairan))}}">
-                                                    @error('total_pencairan')
-                                                        <div class="invalid-feedback">
-                                                            {{ $message }}
-                                                        </div>
-                                                    @enderror
-                                                </div>
-                                            </div> 
-                                            <div class="form-group">
-                                                <label for="">Pilih Kas<span class="text-red">*</span> </label>
-                                                <select name="kas" class="select2" style="width: 100%" id="kas" required>
-                                                    <option value="">── PILIH KAS ──</option>
-                                                    @foreach ($dataKas as $kas)
-                                                        <option value="{{ $kas->id }}" {{ $kas->id == 1? 'selected':''}}>{{ $kas->nama }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>  
-                                          
-                                        </div>
-                                    </div>
-                                  
-                                </div>
-                            {{-- end Pencairan --}}
+                            
+                          
 
                         </div>
             
@@ -313,14 +326,98 @@
     </form>
 </div>
 <script>
+    function cek_max_pencairan(){
+        if($('#total_pencairan').val()!=''){
+            var total_pencairan =removePeriod($('#total_pencairan').val(),',');
+        }else{
+            var total_pencairan =0;
+        }
+        
+        var total_klaim = removePeriod($('#total_klaim').val(),',');
+        if(parseFloat(total_pencairan)>parseFloat(total_klaim)){
+            $('#total_pencairan').val(addPeriodType(total_klaim,','));
+        }else{
+            $('#total_pencairan').val(addPeriodType(total_pencairan,','));
+        }
+    }
+
+   
     $(document).ready(function() {
+
+        function cek_status_klaim(){
+            var statusMenikah = $("input[name='status_klaim']:checked").val();
+            if(statusMenikah=="PENDING")
+            {
+                $('#kas').attr('disabled',true);
+                $('#total_pencairan').attr('disabled',true);
+                $('#catatan_pencairan').attr('disabled',true);
+                $('#tanggal_pencatatan').attr('disabled',true);
+                $('#tanggal_pencatatan').val('');
+
+                $('#div_alasan_tolak').hide();
+                $('#div_catatan_pencairan').show();
+
+
+            }
+            else if(statusMenikah=="REJECTED")
+            {
+                $('#kas').attr('disabled',true);
+                $('#total_pencairan').attr('disabled',true);
+                $('#catatan_pencairan').attr('disabled',true);
+                $('#tanggal_pencatatan').attr('disabled',true);
+                $('#tanggal_pencatatan').val('');
+                $('#div_alasan_tolak').show();
+                $('#div_catatan_pencairan   ').hide();
+
+            }
+            else //ACCEPTED
+            {
+                $('#kas').attr('disabled',false);
+                $('#total_pencairan').attr('disabled',false);
+                $('#catatan_pencairan').attr('disabled',false);
+                $('#tanggal_pencatatan').attr('disabled',false);
+                $('#tanggal_pencatatan').datepicker({
+                    autoclose: true,
+                    format: "dd-M-yyyy",
+                    todayHighlight: true,
+                    language:'en',
+                    // endDate: "0d"
+                });
+
+                $('#div_alasan_tolak').hide();
+                $('#div_catatan_pencairan').show();
+            }
+
+        }
+        cek_status_klaim();
+
+        $("input[name='status_klaim']").change(function() {
+              cek_status_klaim();
+        });
         $('#tanggal_klaim').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
             language:'en',
-            // endDate: "0d"
+            startDate: "0d"
         });
+        $('#tanggal_pencairan').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language:'en',
+            // startDate: "0d",
+            endDate: "0d"
+
+        });
+        $('#tanggal_pencatatan').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language:'en',
+            // startDate: "0d"
+        });
+        
     function readURLNota(input) {
         if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -349,47 +446,47 @@
     $("#foto_nota").change(function() {
         readURLNota(this);
     });
+    $("#tanggal_pencairan").change(function() {
+        var statusMenikah = $("input[name='status_klaim']:checked").val();
+        if(statusMenikah=="ACCEPTED") //
+        {
+            // $("#tanggal_pencatatan").val($(this).val());
+            $("#tanggal_pencatatan").datepicker("setDate", $(this).val());
+        }
+        
+    });
     $(".bukakModalCreate").click(function () {
             $("#modal").modal("show");
         });
-    let isScaled1 = false; // Track the current state
-    let isScaled2 = false; // Track the current state
-    // Define a variable to track the current scale factor
+    let isScaled1 = false; 
+    let isScaled2 = false;
     $('body').on('click','#preview_foto_barang',function()
     {
-            if (isScaled1) {
-                // If the element is already scaled, reset it to normal size
-                $(this).css('transform', 'scale(1)');
-                 $('#div_foto_barang').show();
-
-            } else {
-                // If the element is not scaled, apply the scaling effect
-                $(this).css('transform', 'scale(3.5)');
-                 $('#div_foto_barang').hide();
-
-            }
-
-            // Toggle the state
-            isScaled1 = !isScaled1;
-
+        if (isScaled1)
+        {
+            $(this).css('transform', 'scale(1)');
+            $('#div_foto_barang').show();
+        } 
+        else 
+        {
+            $(this).css('transform', 'scale(3.5)');
+            $('#div_foto_barang').hide();
+        }
+        isScaled1 = !isScaled1;
     });
-     $('body').on('click','#preview_foto_nota',function()
+    $('body').on('click','#preview_foto_nota',function()
     {
-         if (isScaled2) {
-                // If the element is already scaled, reset it to normal size
-                $(this).css('transform', 'scale(1)');
-                $('#div_foto_nota').show();
-
-            } else {
-                // If the element is not scaled, apply the scaling effect
-                $(this).css('transform', 'scale(3.5)');
-                 $('#div_foto_nota').hide();
-
-            }
-
-            // Toggle the state
-            isScaled2 = !isScaled2;
-
+        if (isScaled2)
+        {
+            $(this).css('transform', 'scale(1)');
+            $('#div_foto_nota').show();
+        } 
+        else 
+        {
+            $(this).css('transform', 'scale(3.5)');
+            $('#div_foto_nota').hide();
+        }
+        isScaled2 = !isScaled2;
     });
     $('body').on('change','#select_kendaraan',function()
     {
@@ -407,6 +504,119 @@
 
     });
     $('#post').submit(function(event) {
+
+            var statusMenikah = $("input[name='status_klaim']:checked").val();
+
+            var tanggal_pencairan = $("#tanggal_pencairan").val();
+            var catatan_pencairan = $("#catatan_pencairan").val();
+            var tanggal_pencatatan = $("#tanggal_pencatatan").val();
+            var total_pencairan = $("#total_pencairan").val();
+            var kas = $("#kas").val();
+            var alasan_tolak = $("#alasan_tolak").val();
+
+            const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+            if(statusMenikah=="PENDING")
+            {
+                if(tanggal_pencairan.trim()=='')
+                {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `TANGGAL PENCAIRAN WAJIB DIISI!`,
+                    })
+                    return;
+                }
+            }
+            else if(statusMenikah=="REJECTED")
+            {
+                if(tanggal_pencairan.trim()=='')
+                {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `TANGGAL PENCAIRAN WAJIB DIISI!`,
+                    })
+                    return;
+                }
+                if(alasan_tolak.trim()=='')
+                {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `ALASAN TOLAK WAJIB DIISI!`,
+                    })
+                    return;
+                }
+
+            }
+            else //ACCEPTED
+            {
+                
+                if(tanggal_pencairan.trim()=='')
+                {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `TANGGAL PENCAIRAN WAJIB DIISI!`,
+                    })
+                    return;
+                }
+                if(total_pencairan.trim()=='')
+                {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `TOTAL PENCAIRAN WAJIB DIISI!`,
+                    })
+                    return;
+                }
+                if(total_pencairan<=0)
+                {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `TOTAL PENCAIRAN HARUS LEBIH BESAR DARI RP.0 !`,
+                    })
+                    return;
+                }
+                if(kas=='')
+                {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `KAS BANK WAJIB DIPILIH!`,
+                    })
+                    return;
+                }
+                if(tanggal_pencatatan.trim()=='')
+                {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `TANGGAL PENCATATANWAJIB DIISI!`,
+                    })
+                    return;
+                }
+                if(catatan_pencairan.trim()=='')
+                {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `CATATAN PENCAIRAN WAJIB DIISI!`,
+                    })
+                    return;
+                }
+            }
             event.preventDefault();
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar?',
