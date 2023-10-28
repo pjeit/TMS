@@ -22,7 +22,6 @@ class BiayaOperasionalController extends Controller
      */
     public function index()
     {
-
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
@@ -63,6 +62,7 @@ class BiayaOperasionalController extends Controller
             $data = $request->post();
             $item = $data['item'];
             $storeData = [];
+            // dd($data['data']);
 
             foreach ($data['data'] as $key => $value) {
                 $keterangan = $item.' : ';
@@ -108,7 +108,7 @@ class BiayaOperasionalController extends Controller
                         $sewa->save();
                     }
 
-                    if($item != 'OPERASIONAL' && $item != 'TALLY'){
+                    if($item != 'OPERASIONAL' && $item != 'TALLY' && $item != 'SEAL PELAYARAN'){
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
                                 $data['pembayaran'], // id kas_bank dr form
@@ -130,7 +130,7 @@ class BiayaOperasionalController extends Controller
                 }
             }
 
-            if($item == 'OPERASIONAL' || $item == 'TALLY'){
+            if($item == 'OPERASIONAL' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
                 $i=1;
                 foreach ($data['data'] as $key => $value) {
                     $driver = $value['supplier'] != 'null'? $value['supplier']:$value['driver'];

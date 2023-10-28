@@ -412,6 +412,7 @@
               request()->is('pengembalian_jaminan*') ||
               request()->is('pencairan_komisi_driver*')||
               request()->is('klaim_supir*')||
+              request()->is('tagihan_rekanan*')||
                 request()->is('pencairan_komisi_customer*')
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -521,6 +522,18 @@
               
               </ul>
 
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('tagihan_rekanan.index')}}" class="nav-link {{request()->url() === route('tagihan_rekanan.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span >Tagihan Rekanan</span> {{-- style="font-size: 13.9px" --}}
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+
             </li>
           @endif
 
@@ -557,7 +570,6 @@
                 </li>
                 <li class="nav-item">
                   <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{ request()->is('pembayaran_invoice*')? ' active' : '' }} " style="font-weight: 500;">
-                  {{-- <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i> --}}
                   <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
                     <p>
                       Pembayaran Invoice
@@ -566,7 +578,6 @@
                 </li>
                 <li class="nav-item">
                   <a href="{{route('bukti_potong.index')}}" class="nav-link {{ request()->is('bukti_potong*')? ' active' : '' }} " style="font-weight: 500;">
-                  {{-- <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i> --}}
                   <i class="nav-icon fas fa-file" style="font-size: 15px;"></i>
                     <p>
                       Input Bukti Potong

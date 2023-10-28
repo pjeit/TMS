@@ -206,22 +206,6 @@ class RevisiTLController extends Controller
                 $kht->save();
             }
                 $catatan = isset($data['catatan'])? ' '.$data['catatan']:'';
-                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                array(
-                    $data['pembayaran'],// id kas_bank dr form
-                    date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
-                    0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                    (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
-                    1016, //kode coa
-                    'teluk_lamong',
-                    'PENAMBAHAN TELUK LAMONG:'.$catatan.' #'.$data['no_sewa'].' #'.$data['kendaraan'].' #'.$data['driver'].' #'.$data['customer'].' #'.$data['tujuan'], //keterangan_transaksi
-                    $uang_jalan_riwayat->id,//keterangan_kode_transaksi
-                    $user,//created_by
-                    now(),//created_at
-                    $user,//updated_by
-                    now(),//updated_at
-                    'Y'
-                ));
                 
                 $saldo = DB::table('kas_bank')
                     ->select('*')
@@ -239,6 +223,25 @@ class RevisiTLController extends Controller
                         'updated_by'=> $user,
                     )
                 );
+
+                if((float)str_replace(',', '', $data['total_diterima']) != 0){
+                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                    array(
+                        $data['pembayaran'],// id kas_bank dr form
+                        date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
+                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                        (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
+                        1016, //kode coa
+                        'teluk_lamong',
+                        'PENAMBAHAN TELUK LAMONG:'.$catatan.' #'.$data['no_sewa'].' #'.$data['kendaraan'].' #'.$data['driver'].' #'.$data['customer'].' #'.$data['tujuan'], //keterangan_transaksi
+                        $uang_jalan_riwayat->id,//keterangan_kode_transaksi
+                        $user,//created_by
+                        now(),//created_at
+                        $user,//updated_by
+                        now(),//updated_at
+                        'Y'
+                    ));
+                }
         
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambah Biaya TL']);
                     
@@ -261,8 +264,8 @@ class RevisiTLController extends Controller
         $data = $request->post();
         $user = Auth::user()->id;
         try {
-             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
-             DB::table('sewa_biaya')
+            $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+            DB::table('sewa_biaya')
                 ->where('id_biaya', $data['id_sewa_biaya'])
                 ->update(array(
                     'updated_at' => now(),
@@ -328,8 +331,6 @@ class RevisiTLController extends Controller
                         $kh->is_aktif = 'Y';
                         $kh->save();
                     }
-
-                   
                 }
             }else{
                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -372,7 +373,6 @@ class RevisiTLController extends Controller
             //throw $th;
             return redirect()->back()->withErrors($th->getMessage())->withInput();
             db::rollBack();
-
         }
     }
 

@@ -267,7 +267,7 @@
                                     }else{
                                         row.append(`<td> ${nominal.toLocaleString()} </td>`);
                                     }
-                                    var driver = data[i].namaSupplier=='null'? data[i].nama_panggilan:data[i].namaSupplier;
+                                    var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
                                     var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
                                     var tambahanUJ = '';
     

@@ -290,26 +290,7 @@ class PembayaranInvoiceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function updateBuktiPotong(Request $request, $id)
-    {
-        $data = $request->post();
-        $user = Auth::user()->id; 
-        
-        $invoice = InvoicePembayaran::where('is_aktif', 'Y')->findOrFail($id);
-        if($invoice){
-            $invoice->no_bukti_potong = $data['no_bukti_potong'];
-            $invoice->catatan = $data['catatan'];
-            $invoice->updated_by = $user;
-            $invoice->updated_at = now();
-            if($invoice->save()){
-                return response()->json(['status' => 'success', 'message' => 'Data tersimpan']);
-            }else{
-                return response()->json(['status' => 'error', 'message' => 'Data tersimpan']);
-            }
-        }else{
-            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
-        }
-    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -352,4 +333,49 @@ class PembayaranInvoiceController extends Controller
         return $data;
     }
 
+    public function updateBuktiPotong(Request $request, $id)
+    {
+        $data = $request->post();
+        $user = Auth::user()->id; 
+        
+        $invoice = InvoicePembayaran::where('is_aktif', 'Y')->findOrFail($id);
+        if($invoice){
+            $invoice->no_bukti_potong = $data['no_bukti_potong'];
+            $invoice->catatan = $data['catatan'];
+            $invoice->updated_by = $user;
+            $invoice->updated_at = now();
+            if($invoice->save()){
+                return response()->json(['status' => 'success', 'message' => 'Data tersimpan']);
+            }else{
+                return response()->json(['status' => 'error', 'message' => 'Data tersimpan']);
+            }
+        }else{
+            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
+        }
+    }
+
+    public function updateResi(Request $request)
+    {
+        $data = $request->collect();
+        $user = Auth::user()->id; 
+        DB::beginTransaction(); 
+
+        try {
+            $invoice = Invoice::where('is_aktif', 'Y')->find($data['id_invoice']);
+            if($invoice){
+                $invoice->resi = $data['resi'];
+                $invoice->catatan = $data['catatan'];
+                $invoice->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
+                $invoice->updated_by = $user;
+                $invoice->updated_at = now();
+                $invoice->save();
+                DB::commit();
+                return redirect()->route('pembayaran_invoice.index')->with(['status' => 'Success', 'msg' => 'Update Resi berhasil!']);
+            }
+
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Update Resi Gagal!']);
+        }
+    }
 }

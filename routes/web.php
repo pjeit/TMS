@@ -173,6 +173,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
         Route::resource('klaim_supir', 'App\Http\Controllers\KlaimSupirController');
 
+        Route::get('/tagihan_rekanan/loadData/{id}', [App\Http\Controllers\TagihanRekananController::class, 'load_data'])->name('tagihan_rekanan.load_data');
+        Route::resource('tagihan_rekanan', 'App\Http\Controllers\TagihanRekananController');
         // ===================================FINANCE=========================================================
 
         
@@ -190,8 +192,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('cetak_invoice', 'App\Http\Controllers\CetakInvoiceController');
         Route::resource('revisi_sewa_invoice', 'App\Http\Controllers\RevisiSewaBelumInvoiceController');
 
-        Route::post('/pembayaran_invoice/set_invoice_id', [App\Http\Controllers\PembayaranInvoiceController::class, 'setInvoiceId'])->name('setInvoiceId.set');
+        Route::post('/pembayaran_invoice/update_resi', [App\Http\Controllers\PembayaranInvoiceController::class, 'updateResi'])->name('pembayaran_invoice.updateResi');
         Route::post('/pembayaran_invoice/update_bukti_potong/{id}', [App\Http\Controllers\PembayaranInvoiceController::class, 'updateBuktiPotong'])->name('pembayaran_invoice.updateBuktiPotong');
+        Route::post('/pembayaran_invoice/set_invoice_id', [App\Http\Controllers\PembayaranInvoiceController::class, 'setInvoiceId'])->name('setInvoiceId.set');
         Route::get('/pembayaran_invoice/bayar', [App\Http\Controllers\PembayaranInvoiceController::class, 'bayar'])->name('pembayaran_invoice.bayar');
         Route::get('/pembayaran_invoice/loadData/{status}', [App\Http\Controllers\PembayaranInvoiceController::class, 'loadData'])->name('pembayaran_invoice.loadData');
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');

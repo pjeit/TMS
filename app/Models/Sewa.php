@@ -39,6 +39,11 @@ class Sewa extends Model
          return $this->hasOne(Karyawan::class, 'id', 'id_karyawan');
     }
 
+    public function getSupplier()
+    {
+         return $this->hasOne(Supplier::class, 'id', 'id_supplier');
+    }
+
 
     // eloquent relation
     public function sewaOperasional()
