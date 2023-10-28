@@ -20,70 +20,58 @@
             </button>
         </div>
         <div class="card-body">
-            {{-- <div class="col-sm-12 col-md-4 col-lg-4 ">
-                <div class="form-group">
-                    <label for="">Status Invoice</label> 
-                    <select class="form-control selectpicker" required name="status" id="status" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                        <option value="BELUM LUNAS" selected>Belum Dibayar</option>
-                        <option value="LUNAS">Riwayat Pembayaran (Tanpa bukti potong)</option>
-                    </select>
-                </div>
-            </div>
-            <hr> --}}
-            <div style="overflow: auto;">
-                <table id="tabelInvoice" class="table table-bordered" width='100%'>
-                    <thead id="thead">
-                        <tr style="margin-right: 0px;">
-                            <th>Grup</th>
-                            <th>Customer</th>
-                            <th>No. Invoice</th>
-                            <th>Tgl Invoice</th>
-                            <th>Jatuh Tempo</th>
-                            <th>Sisa Tagihan</th>
-                            <th>Catatan</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="hasil">
-                        
-                    </tbody>
-                    {{-- <tbody id="hasil">
-                        @if (isset($data))
-                            @foreach($data as $item)
-                                <tr >
-                                    <td>{{ $item->nama_grup }}</td>
-                                    <td>{{ $item->nama_cust }} 
-                                        @if ($item->total_sisa != 0)
-                                            <span class="float-right">
-                                                <input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang" id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->id_grup }}">
-                                            </span> 
-                                        @endif
-                                    </td>
-                                    <td>{{ $item->no_invoice }}
-                                        <input type="hidden" id="id_{{ $item->id }}" value="{{ $item->id }}" >
-                                        <input type="hidden" id="invoice_{{ $item->id }}" value="{{ $item->no_invoice }}" >
-                                        <input type="hidden" id="bukti_potong_{{ $item->id }}" value="{{ $item->no_bukti_potong }}" >
-                                        <input type="hidden" id="catatan_{{ $item->id }}" value="{{ $item->catatan }}" >
-                                    </td>
-                                    <td>{{ date("d-M-Y", strtotime($item->tgl_invoice)) }}</td>
-                                    <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
-                                    <td class="float-right">{{ number_format($item->total_sisa) }}
-                                    <td>{{ $item->catatan }}
-                                    </td>
-                                    <td style="text-align: right;"> 
-                                        @if ($item->total_sisa != 0)
-                                            <input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="{{ $item->billing_to }}" grupId="{{ $item->id_grup }}" value="{{ $item->id }}">
-                                        @else
-                                            <btn class="btn btn-primary btn-sm radiusSendiri" id='input_bukti' idInvoice="{{ $item->id }}"> <span class="fa fa-sticky-note mr-1"></span> Input Bukti Potong</btn>
-                                        @endif
-                                        <input type="hidden" name="idGrup[]" id="idGrup">
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
-                    </tbody> --}}
-                </table>
-            </div>
+            <table id="tabelInvoice" class="table table-bordered" width='100%'>
+                <thead id="thead">
+                    <tr style="margin-right: 0px;">
+                        <th >Grup</th>
+                        <th >Customer</th>
+                        <th>No. Invoice</th>
+                        <th width='100'>Tgl Invoice</th>
+                        <th width='100'>Jatuh Tempo</th>
+                        <th>Sisa Tagihan</th>
+                        <th>Catatan</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="hasil">
+                    
+                </tbody>
+                {{-- <tbody id="hasil">
+                    @if (isset($data))
+                        @foreach($data as $item)
+                            <tr >
+                                <td>{{ $item->nama_grup }}</td>
+                                <td>{{ $item->nama_cust }} 
+                                    @if ($item->total_sisa != 0)
+                                        <span class="float-right">
+                                            <input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang" id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->id_grup }}">
+                                        </span> 
+                                    @endif
+                                </td>
+                                <td>{{ $item->no_invoice }}
+                                    <input type="hidden" id="id_{{ $item->id }}" value="{{ $item->id }}" >
+                                    <input type="hidden" id="invoice_{{ $item->id }}" value="{{ $item->no_invoice }}" >
+                                    <input type="hidden" id="bukti_potong_{{ $item->id }}" value="{{ $item->no_bukti_potong }}" >
+                                    <input type="hidden" id="catatan_{{ $item->id }}" value="{{ $item->catatan }}" >
+                                </td>
+                                <td>{{ date("d-M-Y", strtotime($item->tgl_invoice)) }}</td>
+                                <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
+                                <td class="float-right">{{ number_format($item->total_sisa) }}
+                                <td>{{ $item->catatan }}
+                                </td>
+                                <td style="text-align: right;"> 
+                                    @if ($item->total_sisa != 0)
+                                        <input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="{{ $item->billing_to }}" grupId="{{ $item->id_grup }}" value="{{ $item->id }}">
+                                    @else
+                                        <btn class="btn btn-primary btn-sm radiusSendiri" id='input_bukti' idInvoice="{{ $item->id }}"> <span class="fa fa-sticky-note mr-1"></span> Input Bukti Potong</btn>
+                                    @endif
+                                    <input type="hidden" name="idGrup[]" id="idGrup">
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                </tbody> --}}
+            </table>
         </div>
     </div>
 
@@ -388,7 +376,7 @@
         })
 
         // var status = $('#status').val();
-        showTable("BELUM LUNAS");
+        showTable("LUNAS");
 
         // $(document).on('change', '#status', function(e) {  
         //     showTable(this.value)
@@ -416,15 +404,15 @@
                     }
                     var newHeader = `
                                 <tr style="margin-right: 0px;">
-                                    <th>Grup</th>
-                                    <th>Customer</th>
+                                    <th >Grup</th>
+                                    <th >Customer</th>
                                     <th>No. Invoice</th>
                                     <th width='100'>Tgl Invoice</th>
                                     <th width='100'>Jatuh Tempo</th>
                                     `+
                                     tagihBayar
                                     +`
-                                    <th >Catatan</th>
+                                    <th>Catatan</th>
                                     <th width="5px;"></th>
                                 </tr>
                     `;
@@ -456,9 +444,9 @@
                         if(status == 'BELUM LUNAS'){
                             var jenis =  `<input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="${data[i].billing_to}" grupId="${data[i].id_grup}" value="${data[i].id}">`;
                         }else{
-                            var jenis =  `<btn class="btn btn-primary btn-sm radiusSendiri" id='input_bukti' idInvoice="${data[i].id_ip}"> <span class="fa fa-sticky-note mr-1"></span> Input Bukti Potong</btn>`;
+                            var jenis =  `<btn class="btn btn-primary btn-sm radiusSendiri align-items-center" id='input_bukti' idInvoice="${data[i].id_ip}"> <span class="fa fa-sticky-note mr-1"></span><strong>Input</strong></btn>`;
                         }
-                        row.append(`<td class='text-center' style="text-align:center">${jenis}</td>`);
+                        row.append(`<td class='text-center'>${jenis}</td>`);
                         $("#hasil").append(row);
                     }
                     new DataTable('#tabelInvoice', {

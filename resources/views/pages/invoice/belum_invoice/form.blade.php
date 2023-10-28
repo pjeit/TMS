@@ -11,32 +11,15 @@
 
 @section('content')
 <style >
+    table {
+        /* display: block;
+        overflow-x: auto;
+        white-space: nowrap; */
+    }
 </style>
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ $error }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endforeach
-    @endif
-<section class="m-2">
     <form action="{{ route('belum_invoice.store') }}" id="save" method="POST" >
         @csrf
-        {{-- sticky header --}}
-        {{-- <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
-            <div class="card radiusSendiri" style="">
-                <div class="card-header ">
-                    <a href="{{ route('invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                    <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-                    <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button> 
-                </div>
-            </div>
-        </div> --}}
-        
-        <div class="col-12">
+        <div class="container-fluid">
             <div class="card radiusSendiri">
                 <div class="card-header ">
                     <a href="{{ route('belum_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
@@ -77,7 +60,7 @@
                                 </div>
 
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12" id="jatuh_tempo_pisah_kontainer">
-                                    <label for="">Jatuh Tempo Invoice Reimburse<span style="color:red">*</span></label>
+                                    <label for="" style="font-size: 1em;">Jatuh Tempo Reimburse<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -150,7 +133,7 @@
                                                     <span class="text-bold">Grand Total</span>
                                                 </div>
                                                 <div class="col-lg-6 col-md-6 col-sm-12">
-                                                    <b><span id="total_tagihan_text">Rp. 0</span></b>
+                                                    <span id="total_tagihan_text" class="text-bold">Rp. 0</span>
                                                 </div>
                                             </div>
                                         </li>
@@ -176,20 +159,21 @@
                 </div>
             </div> 
         </div>
-        <div style="overflow: auto;" class="m-3">
+
+        <div class="m-3" style="overflow-x:auto; overflow-y:hidden"> {{-- style="overflow: auto;" --}}
             <table class="table table-hover table-bordered table-striped" width='100%' id="table_invoice">
                 <thead>
                     <tr class="bg-white">
-                        <th>Customer</th>
-                        <th>Tujuan</th>
-                        <th>Sewa</th>
-                        <th><small><b>Kontainer &amp; Segel</b></small></th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Muatan</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Tarif</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Add Cost</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Diskon</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right">Subtotal</th>
-                        <th>Catatan</th>
+                        <th style="text-align:center">Customer</th>
+                        <th style="text-align:center">Tujuan</th>
+                        <th style="text-align:center">Sewa</th>
+                        <th style="text-align:center"><span style="font-size: 0.8em;"><b>Kontainer &amp; Segel</b></span></th>
+                        <th style="text-align:center">Muatan</th>
+                        <th style="text-align:center">Tarif</th>
+                        <th style="text-align:center">Add Cost</th>
+                        <th style="text-align:center">Diskon</th>
+                        <th style="text-align:center">Subtotal</th>
+                        <th style="text-align:center">Catatan</th>
                         <th style="width:30px"></th>
                     </tr>
                 </thead>
@@ -427,7 +411,6 @@
             </div>
         </div>
     </form>
-</section>
 
 {{-- logic save --}}
 <script type="text/javascript">
@@ -523,6 +506,11 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        // $('#table_invoice').DataTable({ 
+        //     scrollX: true 
+        // }); 
+      
+
         // set value default tgl invoice
         var today = new Date();
          $('#tanggal_invoice').datepicker({
@@ -532,8 +520,6 @@
             language: 'en',
             startDate: today,
         }).datepicker("setDate", today);
-      
-       
 
         var selectedOption = $('#billingTo').find('option:selected');
         var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
@@ -542,13 +528,11 @@
         {
             getDate(0);
             addCostPisah(0);
-
         }
         else
         {
             getDate(parseFloat(ketentuan_bayar) );
             addCostPisah(parseFloat(ketentuan_bayar));
-
         }
 
         calculateGrandTotal(); // pas load awal langsung hitung grand total
@@ -604,22 +588,16 @@
 
             calculateGrandTotal(); // pas load awal langsung hitung grand total
             $('#modal_detail').modal('hide'); // close modal
-
-            // var noKontainerText = document.getElementById("no_kontainer_text_"+key);
-            // noKontainerText.textContent = $('#no_kontainer').val(); 
-            // var noSJText = document.getElementById("no_seal_text_"+key);
-            // noSJText.textContent = $('#no_seal').val(); 
-            // var catatanText = document.getElementById("catatan_text_"+key);
-            // catatanText.textContent = $('#catatan').val(); 
-            // var diskonText = document.getElementById("diskon_text_"+key);
-            // diskonText.textContent = $('#diskon').val(); 
-            // var subtotalText = document.getElementById("subtotal_text_"+key);
-            // subtotalText.textContent = $('#subtotal').val(); 
         });
 
         $(document).on('keyup', '#diskon', function(){ // kalau diskon berubah, hitung total 
             var id_sewa = $('#key').val();
             hitung(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+        });
+        $(document).on('change', '#diskon', function(){ // kalau diskon berubah, hitung total 
+            var id_sewa = $('#key').val();
+            hitung(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+            console.log('first');
         });
 
         $('body').on('change','#billingTo',function()
@@ -631,14 +609,11 @@
             {
                 getDate(0);
                 addCostPisah(0);
-
-
             }
             else
             {
                 getDate(parseFloat(ketentuan_bayar) );
                 addCostPisah(parseFloat(ketentuan_bayar));
-
             }
 
 		});
@@ -675,16 +650,9 @@
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language: 'en',
-                // endDate: '+0d',
                 startDate: today,
             }).datepicker("setDate", set_hari);
-            // $('#jatuh_tempo_pisah').datepicker({
-            //     autoclose: true,
-            //     format: "dd-M-yyyy",
-            //     todayHighlight: true,
-            //     language: 'en',
-            //     startDate: set_hari_jatuh_tempo,
-            // }).datepicker("setDate", set_hari_jatuh_tempo);
+       
             if($("#total_pisah").val()==0)
             {
                 $('#jatuh_tempo_pisah_kontainer').hide();
@@ -765,35 +733,6 @@
             var subtotal = tarif + addcost - diskon;
             calculateGrandTotal();
             $('#subtotal').val(moneyMask(subtotal));
-        }
-
-        
-        function addCostPisah(){
-            var total = 0;
-            $(".addcost_pisah").each(function() {
-                var value = parseFloat($(this).val()) || 0;
-                total += value;
-            });
-            $("#total_pisah").val(total);
-
-            var today = new Date();
-            
-            $('#jatuh_tempo_pisah').datepicker({
-                autoclose: true,
-                format: "dd-M-yyyy",
-                todayHighlight: true,
-                language: 'en',
-                startDate: today,
-            }).datepicker("setDate", today);
-            
-            if($("#total_pisah").val()==0)
-            {
-                $('#jatuh_tempo_pisah_kontainer').hide();
-            }
-            else
-            {
-                $('#jatuh_tempo_pisah_kontainer').show();
-            }
         }
 
         function clearData(){ // clear data sebelum buka modal 

@@ -53,7 +53,7 @@
                             
                                 <td>{{ $item->no_polisi}}</td>
                                 <td>{{ $item->no_sewa }}</td>
-                                <td>{{ $item->tanggal_berangkat }}</td>
+                                <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                 <td>{{ $item->nama_tujuan }}</td>
                                 @if ($item->id_supplier)
                                 <td>DRIVER REKANAN  ({{ $item->namaSupplier }})</td>
@@ -63,9 +63,9 @@
 
                                     
                                 @endif
-                                <td>
+                                <td style="text-align: center">
                                         <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-list"></i>
                                         </button>
                                         <div class="dropdown-menu" >

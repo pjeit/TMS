@@ -53,25 +53,7 @@
             <li class="nav-item">
               <a href="{{route('dashboard.reset')}}" class="nav-link">
                 <i class="far fa-check-circle nav-icon"></i>
-                <p>Reset Data</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../../index.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Dashboard v1</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../../index2.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Dashboard v2</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="../../index3.html" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Dashboard v3</p>
+                <p>Reset Data <small class="text-warning">(Dev only)</small></p>
               </a>
             </li>
           </ul>
@@ -426,7 +408,6 @@
               request()->is('pencairan_uang_jalan*') ||
               request()->is('pencairan_operasional*') ||
               request()->is('biaya_operasional*') ||
-              request()->is('add_return_tl*') ||
               request()->is('pembayaran_sdt*') ||
               request()->is('pengembalian_jaminan*') ||
               request()->is('pencairan_komisi_driver*')||
@@ -440,18 +421,7 @@
                 </p>
               </a>
 
-               <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('add_return_tl.index')}}" class="nav-link {{request()->url() === route('add_return_tl.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Add / Return TL
-                    </p>
-                  </a>
-                </li>
-              </ul>
-
-               <ul class="nav nav-treeview">
+              <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
@@ -558,28 +528,19 @@
             {{-- INVOICE --}}
             <li class="nav-item {{ request()->is('belum_invoice*') ||
               request()->is('pembayaran_invoice*') ||
+              request()->is('bukti_potong*') ||
               request()->is('cetak_invoice*') 
                 ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="fas nav-icon fa-solid fa-file-invoice"></i>
-                {{-- <i class=""></i> --}}
                 <p>INVOICE
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
 
               <ul class="nav nav-treeview">
-
-                {{-- <li class="nav-item">
-                  <a href="{{route('invoice.index')}}" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
-                    <p>
-                      Belum Invoice
-                    </p>
-                  </a>
-                </li> --}}
                 <li class="nav-item">
-                  <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->url() === route('belum_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->is('belum_invoice*')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                     <p>
                       Belum Invoice
@@ -606,7 +567,7 @@
                 <li class="nav-item">
                   <a href="{{route('bukti_potong.index')}}" class="nav-link {{ request()->is('bukti_potong*')? ' active' : '' }} " style="font-weight: 500;">
                   {{-- <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i> --}}
-                  <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
+                  <i class="nav-icon fas fa-file" style="font-size: 15px;"></i>
                     <p>
                       Input Bukti Potong
                     </p>
@@ -618,17 +579,25 @@
             </li>
 
             {{-- Rollback --}}
-            <li class="nav-item {{ request()->is('revisi_uang_jalan*')  ? 'menu-is-opening menu-open' : '' }}">
+            <li class="nav-item {{ request()->is('revisi_uang_jalan*') ||  
+                                request()->is('revisi_tl*')
+                                ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="fas nav-icon fa-solid fa fa-undo"></i>
-                {{-- <i class=""></i> --}}
                 <p>Revisi
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
 
               <ul class="nav nav-treeview">
-
+                <li class="nav-item">
+                  <a href="{{route('revisi_tl.index')}}" class="nav-link {{request()->is('revisi_tl*')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Revisi TL
+                    </p>
+                  </a>
+                </li>
                 <li class="nav-item">
                   <a href="{{route('revisi_uang_jalan.index')}}" class="nav-link {{request()->url() === route('revisi_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>

@@ -88,19 +88,10 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" id="total_pph23" name="total_pph23" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                        <input type="hidden" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="text" id="total_pph23" name="total_pph23" class="form-control uang" readonly>                         
+                                        <input type="hidden" id="total_dibayar" name="total_dibayar" class="form-control uang" readonly>                         
                                     </div>
                                 </div>
-                                {{-- <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                    <label for="">Total Bayar</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" maxlength="100" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                    </div>
-                                </div> --}}
                             </div>
 
                         </div>
@@ -186,7 +177,6 @@
                         <th>Sisa Invoice</th>
                         <th>PPh 23</th>
                         <th>Diterima</th>
-                        {{-- <th>Dibayar</th> --}}
                         <th>Catatan</th>
                         <th style="width:30px"></th>
                     </tr>
@@ -217,10 +207,6 @@
                                 <span id="text_diterima_{{ $item->id }}"></span>
                                 <input type="hidden" class="total_diterima" id="total_diterima_{{ $item->id }}" name="detail[{{ $item->id }}][diterima]" value="{{ $item->diterima }}">
                             </td>
-                            {{-- <td>
-                                <span id="text_dibayar_{{ $item->id }}"></span>
-                                <input type="hidden" class="total_dibayar" id="total_dibayar_{{ $item->id }}" name="detail[{{ $item->id }}][dibayar]" value="{{ $item->dibayar }}">
-                            </td> --}}
                             <td>
                                 <span id="text_catatan_{{ $item->id }}">{{ $item->catatan }}</span>
                                 <input type="hidden" id="catatan_{{ $item->id }}" name="detail[{{ $item->id }}][catatan]" value="{{ $item->catatan }}">
@@ -271,12 +257,6 @@
                                             @endforeach
                                         </select>
                                     </div>   
-
-                                    {{-- <div class="form-group col-lg-12 col-md-12 col-sm-12" id="hide_bukti_potong">
-                                        <label for="">No. Bukti Potong</label>
-                                        <input  type="text" class="form-control" id="modal_no_bukti_potong" > 
-                                    </div> --}}
-
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="">Catatan</label>
                                         <textarea name="modal_catatan" class="form-control" id="modal_catatan" rows="4"></textarea>
@@ -321,7 +301,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" class="form-control numaja uang" id="modal_diterima" required>
+                                            <input type="text" class="form-control numaja uang" id="modal_diterima">
                                         </div>
                                     </div>
                                 </div>
@@ -345,6 +325,7 @@
         $('#save').submit(function(event) {
             // cek total_dibayar
                 var total_dibayar = $('#total_dibayar').val();
+                console.log('total_dibayar', total_dibayar);
                 if(escapeComma(total_dibayar) == 0 || escapeComma(total_dibayar) == ''){
                     Swal.fire(
                         'Data tidak valid',
@@ -404,12 +385,6 @@
             language: 'en',
             // startDate: today,
         }).datepicker("setDate", today);
-
-        // $("#jenis_badmin").select2({
-        //     placeholder: "Pilih Metode",
-        //     initSelection: function(element, callback) {                   
-        //     }
-        // });
 
         hitungAll();
 
@@ -503,7 +478,6 @@
         // 
 
         // hide_bukti_potong
-
         $(document).on('keyup', '#modal_pph23', function(){ // kalau berubah, hitung total 
             hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
         });

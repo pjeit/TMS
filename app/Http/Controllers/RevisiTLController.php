@@ -22,7 +22,7 @@ use App\Models\KaryawanHutangTransaction;
 use App\Models\SewaOperasional;
 use App\Models\UangJalanRiwayat;
 
-class AddReturnTLController extends Controller
+class RevisiTLController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -48,15 +48,14 @@ class AddReturnTLController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('pages.finance.add_return_TL.index',[
+        return view('pages.revisi.revisi_tl.index',[
             'judul' => "ADD RETURN TL",
             'data' => $data,
         ]);
     }
 
-    public function cair(Request $request, $id)
+    public function cair($id)
     {
-        $id_sewa_default = $id;
         $pengaturan = PengaturanKeuangan::first();
 
         $sewa = Sewa::from('sewa AS s')
@@ -72,23 +71,23 @@ class AddReturnTLController extends Controller
                     ->where('s.id_sewa', $id)
                     ->groupBy('c.id')
                     ->first();
+                    
          $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
-        // dd($sewa);
-        return view('pages.finance.add_return_TL.cair',[
+
+        return view('pages.revisi.revisi_tl.cair',[
             'judul' => "Pencairan TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
             'dataKas' => $dataKas,
-            'id_sewa_defaulth' => $id_sewa_default,
+            'id_sewa' => $id,
         ]);
     }
 
-    public function refund(Request $request, $id)
+    public function refund($id)
     {
-        $id_sewa_default = $id;
         $pengaturan = PengaturanKeuangan::first();
 
         $sewa = Sewa::from('sewa AS s')
@@ -103,23 +102,23 @@ class AddReturnTLController extends Controller
                     ->where('s.id_sewa', $id)
                     ->groupBy('c.id')
                     ->first();
-         $dataKas = DB::table('kas_bank')
+        
+        $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
+
         $checkTL = SewaBiaya::where('is_aktif', 'Y')
                             ->where('deskripsi', 'TL')
                             ->where('id_sewa', $id)
                             ->first();
-        // dd($pengaturan);
-        // dd($checkTL);
 
-        return view('pages.finance.add_return_TL.refund',[
+        return view('pages.revisi.revisi_tl.refund',[
             'judul' => "Pengembalian TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
             'dataKas' => $dataKas,
-            'id_sewa_defaulth' => $id_sewa_default,
+            'id_sewa' => $id,
             'checkTL'=>$checkTL,
             'id'=>$id
         ]);
@@ -142,33 +141,24 @@ class AddReturnTLController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function save_cair(Request $request)
     {
-        //
         $user = Auth::user()->id;
         $data = $request->post();
         try {
-            //code...
-            // dd($data);
-            $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
-            // $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);                    
-            // $sewa->total_uang_jalan += (float)str_replace(',', '', $data['jumlah']);
-            // $sewa->updated_by = $user;
-            // $sewa->updated_at = now();
-            // $sewa->save();
             DB::table('sewa_biaya')
-                    ->insert(array(
-                    'id_sewa' =>  $data['id_sewa_defaulth'],
-                    'deskripsi' => 'TL',
-                    'biaya' => (float)str_replace(',', '', $data['jumlah']),
-                    'catatan' => $data['stack_tl_hidden_value'],//value combobox
-                    'created_at' => now(),
-                    'created_by' => $user,
-                    'is_aktif' => "Y",
+                ->insert(array(
+                        'id_sewa' =>  $data['id_sewa'],
+                        'deskripsi' => 'TL',
+                        'biaya' => (float)str_replace(',', '', $data['jumlah']),
+                        'catatan' => $data['stack_tl_hidden_value'],//value combobox
+                        'created_at' => now(),
+                        'created_by' => $user,
+                        'is_aktif' => "Y",
                     )
                 ); 
             $SOP = new SewaOperasional();
-            $SOP->id_sewa = $data['id_sewa_defaulth']; 
+            $SOP->id_sewa = $data['id_sewa']; 
             $SOP->deskripsi = 'TL';
             $SOP->total_operasional = (float)str_replace(',', '', $data['jumlah']);
             $SOP->total_dicairkan = (float)str_replace(',', '', $data['total_diterima']);
@@ -180,26 +170,18 @@ class AddReturnTLController extends Controller
             $SOP->created_at = now();
             $SOP->is_aktif = 'Y';
             $SOP->save();
-            $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
-                    ->select('*')
-                    ->where('is_aktif', '=', "Y")
-                    ->where('sewa_id', $data['id_sewa_defaulth'])
-                    ->first();
-            DB::table('uang_jalan_riwayat')
-                ->where('sewa_id', $data['id_sewa_defaulth'])
-                ->where('is_aktif', 'Y')
-                ->update(array(
-                    'total_tl'=> $datauang_jalan_riwayat->total_tl+= (float)str_replace(',', '', $data['jumlah']),
-                    // 'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl+= (float)str_replace(',', '', $data['jumlah']),
-                    'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang+= (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0),
-                    // 'total_diterima'=> $datauang_jalan_riwayat->total_diterima+= (float)str_replace(',', '', $data['total_diterima']),
-                    'updated_at'=> now(),
-                    'updated_by'=> $user,
-                )
-            );
-            if(isset($kh)&&isset($data['potong_hutang'])){
-                
-                
+
+            $uang_jalan_riwayat = UangJalanRiwayat::where('is_aktif', 'Y')
+                                    ->where('sewa_id', $data['id_sewa'])
+                                    ->first();
+            $uang_jalan_riwayat->total_tl += (float)str_replace(',', '', $data['jumlah']); 
+            $uang_jalan_riwayat->potong_hutang += (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0);
+            $uang_jalan_riwayat->updated_at = now();
+            $uang_jalan_riwayat->updated_by = $user;
+            $uang_jalan_riwayat->save();
+
+            $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+            if(isset($kh) && isset($data['potong_hutang'])){
                 $kh->total_hutang -=(float)str_replace(',', '', $data['potong_hutang']); 
                 $kh->updated_by = $user;
                 $kh->updated_at = now();
@@ -207,9 +189,10 @@ class AddReturnTLController extends Controller
 
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
-                $kht->refrensi_id = $datauang_jalan_riwayat->id;
-                $kht->refrensi_keterangan = 
-                '#totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
+                $kht->refrensi_id = $uang_jalan_riwayat->id;
+                $kht->refrensi_keterangan = "UANG JALAN RIWAYAT";
+                $kht->catatan = 
+                $data['catatan'] . ' #totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
                 ' #potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
                 ' #totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);
                 $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
@@ -217,38 +200,12 @@ class AddReturnTLController extends Controller
                 $kht->debit = 0;
                 $kht->kredit = ($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0;
                 $kht->kas_bank_id = NULL;
-                $kht->catatan = $data['catatan'];
                 $kht->created_by = $user;
                 $kht->created_at = now();
                 $kht->is_aktif = 'Y';
                 $kht->save();
-                
-                
-                
-                if($data['total_diterima']!=0)
-                {
-                    
-                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                    array(
-                        $data['pembayaran'],// id kas_bank dr form
-                        date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
-                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                        (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
-                        1016, //kode coa
-                        'teluk_lamong',
-                        'PENAMBAHAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                        $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
-                        $user,//created_by
-                        now(),//created_at
-                        $user,//updated_by
-                        now(),//updated_at
-                        'Y'
-                    ));
-                }
             }
-            else
-            {
-                
+                $catatan = isset($data['catatan'])? ' '.$data['catatan']:'';
                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 array(
                     $data['pembayaran'],// id kas_bank dr form
@@ -257,15 +214,14 @@ class AddReturnTLController extends Controller
                     (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
                     1016, //kode coa
                     'teluk_lamong',
-                    'PENAMBAHAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                    $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
+                    'PENAMBAHAN TELUK LAMONG:'.$catatan.' #'.$data['no_sewa'].' #'.$data['kendaraan'].' #'.$data['driver'].' #'.$data['customer'].' #'.$data['tujuan'], //keterangan_transaksi
+                    $uang_jalan_riwayat->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at
                     $user,//updated_by
                     now(),//updated_at
                     'Y'
                 ));
-    
                 
                 $saldo = DB::table('kas_bank')
                     ->select('*')
@@ -283,39 +239,14 @@ class AddReturnTLController extends Controller
                         'updated_by'=> $user,
                     )
                 );
-            }
         
-            return redirect()->route('add_return_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambah Biaya TL!!']);
+            return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambah Biaya TL']);
                     
         } catch (\Throwable $th) {
-            //throw $th;
             return redirect()->back()->withErrors($th->getMessage())->withInput();
             db::rollBack();
-
         }
           
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-       
     }
 
     /**
@@ -325,15 +256,11 @@ class AddReturnTLController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function save_refund(Request $request)
     {
         $data = $request->post();
         $user = Auth::user()->id;
-        // dd($id);
-        // dd($data);
-
         try {
-            //code...
              $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
              DB::table('sewa_biaya')
                 ->where('id_biaya', $data['id_sewa_biaya'])
@@ -344,7 +271,7 @@ class AddReturnTLController extends Controller
                 )
             );
             DB::table('sewa_operasional')
-                ->where('id_sewa', $data['id_sewa_defaulth'])
+                ->where('id_sewa', $data['id_sewa'])
                 ->where('deskripsi', 'TL')
                 ->update(array(
                     'updated_at' => now(),
@@ -355,34 +282,25 @@ class AddReturnTLController extends Controller
             $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
                     ->select('*')
                     ->where('is_aktif', '=', "Y")
-                    ->where('sewa_id', $data['id_sewa_defaulth'])
+                    ->where('sewa_id', $data['id_sewa'])
                     ->first();
             DB::table('uang_jalan_riwayat')
-                ->where('sewa_id', $data['id_sewa_defaulth'])
+                ->where('sewa_id', $data['id_sewa'])
                 ->where('is_aktif', 'Y')
                 ->update(array(
                     'total_tl'=> $datauang_jalan_riwayat->total_tl-= (float)str_replace(',', '', $data['jumlah']),
-                    // 'total_uang_jalan_tl'=> $datauang_jalan_riwayat->total_uang_jalan_tl-= (float)str_replace(',', '', $data['jumlah']),
-                    // 'potong_hutang'=> $datauang_jalan_riwayat->potong_hutang+= (isset($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0),
-                    // 'total_diterima'=> $datauang_jalan_riwayat->total_diterima-= (float)str_replace(',', '', $data['jumlah']),
                     'updated_at'=> now(),
                     'updated_by'=> $user,
                 )
             );
-            // $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);                    
-            // $sewa->total_uang_jalan -= (float)str_replace(',', '', $data['jumlah']);
-            // $sewa->updated_by = $user;
-            // $sewa->updated_at = now();
-            // $sewa->save();
-            if(/*isset($kh)&&*/$data['pembayaran']=='hutang_karyawan'){
-                
+            if($data['pembayaran']=='hutang_karyawan'){
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
                 $kht->refrensi_id =  $datauang_jalan_riwayat->id;
                 $kht->refrensi_keterangan = 
                 '#totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
-                '#potongHutang:0' . 
-                '#totalTLMasukHutang:'. (($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0);
+                ' #potongHutang:0' . 
+                ' #totalTLMasukHutang:'. (($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0);
                 $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                 $kht->tanggal = now();
                 $kht->debit = ($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0;
@@ -413,10 +331,7 @@ class AddReturnTLController extends Controller
 
                    
                 }
-            }
-          
-            else
-            {
+            }else{
                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                 array(
                     $data['pembayaran'],// id kas_bank dr form
@@ -433,7 +348,7 @@ class AddReturnTLController extends Controller
                     now(),//updated_at
                     'Y'
                 ));
-                 $saldo = DB::table('kas_bank')
+                $saldo = DB::table('kas_bank')
                     ->select('*')
                     ->where('is_aktif', '=', "Y")
                     ->where('kas_bank.id', '=', $data['pembayaran'])
@@ -451,7 +366,7 @@ class AddReturnTLController extends Controller
                 );
 
             }
-            return redirect()->route('add_return_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Mengembalikan Biaya TL!!']);
+            return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Mengembalikan Biaya TL']);
 
         } catch (\Throwable $th) {
             //throw $th;
@@ -473,7 +388,7 @@ class AddReturnTLController extends Controller
     }
 
     public function getData($status)
-     {
+    {
         // some logic to determine if the publisher is main
         
         if($status == 'Return TL'){
@@ -524,5 +439,5 @@ class AddReturnTLController extends Controller
             return null;
         }
 
-     }
+    }
 }

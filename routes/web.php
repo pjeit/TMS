@@ -151,10 +151,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pencairan_uang_jalan/form', [App\Http\Controllers\PencairanUangJalanController::class, 'form'])->name('pencairan_uang_jalan.form');
         Route::resource('pencairan_uang_jalan', 'App\Http\Controllers\PencairanUangJalanController');
 
-        Route::get('/add_return_tl/cair/{id}', [App\Http\Controllers\AddReturnTLController::class, 'cair'])->name('add_return_tl.cair');
-        Route::get('/add_return_tl/refund/{id}', [App\Http\Controllers\AddReturnTLController::class, 'refund'])->name('add_return_tl.refund');
-        Route::get('/add_return_tl/getData/{status}', [App\Http\Controllers\AddReturnTLController::class, 'getData'])->name('add_return_tl.getData');
-        Route::resource('add_return_tl', 'App\Http\Controllers\AddReturnTLController');
+        Route::get('/revisi_tl/cair/{id}', [App\Http\Controllers\RevisiTLController::class, 'cair'])->name('revisi_tl.cair');
+        Route::post('/revisi_tl/save_cair', [App\Http\Controllers\RevisiTLController::class, 'save_cair'])->name('revisi_tl.save_cair');
+        Route::get('/revisi_tl/refund/{id}', [App\Http\Controllers\RevisiTLController::class, 'refund'])->name('revisi_tl.refund');
+        Route::post('/revisi_tl/save_refund', [App\Http\Controllers\RevisiTLController::class, 'save_refund'])->name('revisi_tl.save_refund');
+        Route::get('/revisi_tl/getData/{status}', [App\Http\Controllers\RevisiTLController::class, 'getData'])->name('revisi_tl.getData');
+        Route::resource('revisi_tl', 'App\Http\Controllers\RevisiTLController');
 
         Route::get('/revisi_uang_jalan/cairkan/{id_sewa}', 'App\Http\Controllers\RevisiUangJalanController@cairkan')->name('revisi_uang_jalan.cairkan');
         Route::get('/revisi_uang_jalan/kembalikan/{id_sewa}', 'App\Http\Controllers\RevisiUangJalanController@kembalikan')->name('revisi_uang_jalan.kembalikan');

@@ -28,7 +28,7 @@
         <div class="card-body">
             <div class="col-sm-12 col-md-3 col-lg-3 ">
                 <div class="form-group">
-                    <label for="">Status TL</label> 
+                    <label for="">Jenis</label> 
                     <select class="form-control selectpicker" required name="status_tl" id="status_tl" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                         <option value="Add TL">Tambah TL</option>
                         <option value="Return TL">Kembalikan TL</option>
@@ -70,7 +70,7 @@
         function showTable(status){
             $.ajax({
                 method: 'GET',
-                url: `add_return_tl/getData/${status}`,
+                url: `revisi_tl/getData/${status}`,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,
@@ -94,11 +94,11 @@
                         row.append(`<td>${data[i].nama_driver}</td>`);
                         row.append(`<td>${data[i].status}</td>`);
                         if(status == 'Add TL'){
-                            var jenisTL =  `<a href="${baseUrl}add_return_tl/cair/${data[i].id_sewa}" class="dropdown-item">
+                            var jenisTL =  `<a href="${baseUrl}revisi_tl/cair/${data[i].id_sewa}" class="dropdown-item">
                                                 <span class="fa fa-credit-card mr-3"></span> Cairkan TL
                                             </a>`;
                         }else{
-                            var jenisTL =  `<a href="${baseUrl}add_return_tl/refund/${data[i].id_sewa}" class="dropdown-item">
+                            var jenisTL =  `<a href="${baseUrl}revisi_tl/refund/${data[i].id_sewa}" class="dropdown-item">
                                                 <span class="fa fa-credit-card mr-3"></span> Kembalikan TL
                                             </a>`;
                         }

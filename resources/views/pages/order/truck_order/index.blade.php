@@ -21,22 +21,12 @@
                         <a href="{{route('truck_order.create')}}" class="btn btn-primary btn-responsive radiusSendiri">
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Order PJE
                         </a> 
-                        <a href="{{route('truck_order_rekanan.create')}}" class="btn btn-default btn-outline-dark btn-responsive radiusSendiri">
+                        <a href="{{route('truck_order_rekanan.create')}}" class="btn btn-default btn-outline-dark btn-responsive radiusSendiri ml-3">
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Order Rekanan 
                         </a> 
                     </div>
                 </div>
                 <div class="card-body">
-                    {{-- <div class="col-sm-12 col-md-6 col-lg-4 ">
-                        <div class="form-group">
-                            <label for="">Status</label> 
-                            <select class="form-control selectpicker" required name="status_tl" id="status_tl" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                <option value="MENUNGGU UANG JALAN">MENUNGGU UANG JALAN</option>
-                                <option value="PROSES DOORING">PROSES DOORING</option>
-                            </select>
-                        </div>
-                    </div>
-                    <hr> --}}
                     <table id="datatable" class="table table-bordered table-striped" width='100%'>
                         <thead>
                             <tr>

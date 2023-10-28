@@ -68,93 +68,75 @@
 </style>
 
 <div class="container-fluid">
-
-    <div class="row">
-        <div class="col-12">
-            <div class="card radiusSendiri">
-                <div class="card-header">
-                    <div class="">
-                        {{-- <a href="{{ route("invoice.create") }}" class="btn btn-primary btn-responsive radiusSendiri"  id="sewaAdd">
-                            <i class="fa fa-plus-circle" aria-hidden="true"> </i> Buat Invoice
-                        </a>  --}}
-                          <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="sewaAdd">
-                             <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table id="tabelInvoice" class="table table-bordered table-striped" width='100%'>
-                        <thead>
-                            <tr>
-                                <th>Grup</th>
-                                <th>Customer</th>
-                                <th>No. Polisi Kendaraan</th>
-                                <th>No. Sewa</th>
-                                <th>Tgl Berangkat</th>
-                                <th>Tujuan</th>
-                                <th>Driver</th>
-                                <th></th>
-                                {{-- <th>Status</th> --}}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (isset($dataSewa))
-                                @foreach($dataSewa as $item)
-                                    <tr>
-                                        <td >{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td >{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td>{{ $item->no_polisi }}</td>
-                                        <td>{{ $item->no_sewa }}</td>
-                                        <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
-                                        <td>{{ $item->nama_tujuan }}</td>
-                                        <td>
-                                           @if ($item->id_supplier)
+    <div class="card radiusSendiri">
+        <div class="card-header">
+            <div class="">
+                    <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="sewaAdd">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="m-3" style="overflow-x:auto; overflow-y:hidden">
+                <table id="tabelBelumInvoice" class="table table-bordered table-hover" width='100%'>
+                    <thead>
+                        <tr>
+                            <th>Grup</th>
+                            <th>Customer</th>
+                            <th>No. Polisi Kendaraan</th>
+                            <th>No. Sewa</th>
+                            <th>Tgl Berangkat</th>
+                            <th>Tujuan</th>
+                            <th>Driver</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (isset($dataSewa))
+                            @foreach($dataSewa as $item)
+                                <tr>
+                                    <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
+                                    <td>► {{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
+                                    <td>{{ $item->no_polisi }}</td>
+                                    <td>{{ $item->no_sewa }}</td>
+                                    <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
+                                    <td>{{ $item->nama_tujuan }}</td>
+                                    <td>
+                                        @if ($item->id_supplier)
                                             DRIVER REKANAN  ({{ $item->namaSupplier }})
-
-                                            @else
+                                        @else
                                             {{ $item->supir }} ({{ $item->telpSupir }})
-
-                                                
-                                            @endif
-                                            <div class="btn-group dropleft float-right">
-                                                    <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="fa fa-list"></i>
+                                        @endif
+                                    </td>
+                                    <td style="text-align:center">
+                                        <div class="btn-group dropleft">
+                                            <button type="button" class="btn btn-sm btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                            <div class="dropdown-menu" >
+                                                <form action="{{route('belum_invoiceKembali.set')}}" method="POST" class="btn btn-responsive">
+                                                    @csrf
+                                                    <button class="dropdown-item" >
+                                                        <span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin
                                                     </button>
-                                                    <div class="dropdown-menu" >
-                                                        <form action="{{route('belum_invoiceKembali.set')}}" method="POST" class="btn btn-responsive">
-                                                                    @csrf
-                                                                    <button class="dropdown-item" >
-                                                                        <span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin
-                                                                    </button>
-                                                                    <input type="hidden" name="idCust[]" placeholder="idCust">
-                                                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
-                                                                    <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
-                                                                    <input type="hidden" name="idJo" value="{{$item->id_jo}}">
-                                                                    <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
-                                                        </form>  
-                                                        {{-- <a class="dropdown-item" href="{{route('perjalanan_kembali.edit',[$item->id_sewa])}}"><span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin</a> --}}
-                                                        {{-- <a class="dropdown-item" href="{{route('invoiceKembali.set')}}"><span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin</a>
-                                                        <input type="hidden" name="idCust[]" placeholder="idCust">
-                                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
-                                                        <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
-                                                        <input type="hidden" name="idJo" value="{{$item->id_jo}}">
-                                                        <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}"> --}}
-
-
-                                                    </div>
+                                                    <input type="hidden" name="idCust[]" placeholder="idCust">
+                                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                                    <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
+                                                    <input type="hidden" name="idJo" value="{{$item->id_jo}}">
+                                                    <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
+                                                </form>  
                                             </div>
-                                        
-                                        </td>
-                                        {{-- <td>{{ $item->status }}</td> --}}
-                                        <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
-                                        <input type="hidden" name="idCust[]" placeholder="idCust">
-                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
+                                    <input type="hidden" name="idCust[]" placeholder="idCust">
+                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -237,22 +219,17 @@
                 if(id_grup_semua_cekbox.attr('id_grup')==idCustParent.attr('id_customer_grup'))
                 {
                     if (id_grup_semua_cekbox.is(":checked")) {
-                            id_grup_semua_cekbox.prop('checked', true);
-    
-                        } else if (!id_grup_semua_cekbox.is(":checked")) {
-                            
-                            id_grup_semua_cekbox.prop('checked', false);
-                        }
+                        id_grup_semua_cekbox.prop('checked', true);
+                    } else if (!id_grup_semua_cekbox.is(":checked")) {
+                        id_grup_semua_cekbox.prop('checked', false);
+                    }
                 }
                 else
                 {
                     if(id_grup_semua_cekbox.attr('id_grup')!=idCustParent.attr('id_customer_grup'))
                     {
-                        
                         id_grup_semua_cekbox.prop('checked', false);
                         // idCustParent.prop('checked', false);
-
-
                     }
                 }
                 // if (id_grup_semua_cekbox.is(":checked")) {
@@ -397,15 +374,8 @@
                 custId.push($(this).attr('custId'));
                 grupId.push($(this).attr('grupId'));
             });
-            // console.log(selectedValues);
             
             if (selectedValues.length === 0) {
-                // event.preventDefault(); 
-                // Swal.fire({
-                //     icon: 'error',
-                //     text: 'Harap pilih sewa yang ingin dibuat invoice',
-                // });
-                // return;
                 const Toast = Swal.mixin({
                         toast: true,
                         position: 'top-end',
@@ -461,7 +431,7 @@
             
            
 		})
-     new DataTable('#tabelInvoice', {
+     new DataTable('#tabelBelumInvoice', {
         order: [
             [0, 'asc'],
             [1, 'asc']
@@ -496,22 +466,7 @@
     }, 1000); // Adjust the delay (in milliseconds) as needed
 </script>
 @endif
-{{-- @if (session('id_print_invoice')&&session('id_print_invoice_pisah'))
-<script>
-    window.open("/belum_invoice/print/{{ session('id_print_invoice') }}", "_blank");
 
-    // di set null biar ga open new tab terus2an 
-    setTimeout(function() {
-        sessionStorage.setItem('id_print_invoice', null);
-    }, 1000); // Adjust the delay (in milliseconds) as needed
-    window.open("/belum_invoice/print/{{ session('id_print_invoice_pisah') }}", "_blank");
-
-    // di set null biar ga open new tab terus2an 
-    setTimeout(function() {
-        sessionStorage.setItem('id_print_invoice_pisah', null);
-    }, 1000); // Adjust the delay (in milliseconds) as needed
-</script>
-@endif --}}
 @if (session('id_print_invoice_pisah'))
 <script>
     window.open("/belum_invoice/print/{{ session('id_print_invoice_pisah') }}", "_blank");
