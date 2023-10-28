@@ -446,181 +446,127 @@ class KlaimSupirController extends Controller
                                         ->where('jenis', 'klaim_supir')
                                         ->first();
                     }
-                  
-                if ($data['status_klaim']=='PENDING') {
-                    if($klaim_supir_riwayat)
-                    {
-                        
-                        if($kas_bank_transaksi)
+                    if ($data['status_klaim']=='PENDING') {
+                        if($klaim_supir_riwayat)
                         {
-                            $saldo = DB::table('kas_bank')
-                                ->select('*')
-                                ->where('is_aktif', '=', "Y")
-                                ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
-                                ->first();
-                            $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
-                            DB::table('kas_bank')
-                                ->where('id', $kas_bank_transaksi->id_kas_bank)
-                                ->update(array(
-                                    'saldo_sekarang' => $saldo_baru,
-                                    'updated_at'=> now(),
-                                    'updated_by'=> $user,
-                                )
-                            );
-                            $kas_bank_transaksi->updated_at = now();
-                            $kas_bank_transaksi->updated_by = $user;
-                            $kas_bank_transaksi->is_aktif = 'N';
-                            $kas_bank_transaksi->save();
+                            if($kas_bank_transaksi)
+                            {
+                                $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
+                                    ->first();
+                                $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
+                                DB::table('kas_bank')
+                                    ->where('id', $kas_bank_transaksi->id_kas_bank)
+                                    ->update(array(
+                                        'saldo_sekarang' => $saldo_baru,
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                                $kas_bank_transaksi->updated_at = now();
+                                $kas_bank_transaksi->updated_by = $user;
+                                $kas_bank_transaksi->is_aktif = 'N';
+                                $kas_bank_transaksi->save();
+                            }
+                            $klaim_supir_riwayat->updated_at = now();
+                            $klaim_supir_riwayat->updated_by = $user;
+                            $klaim_supir_riwayat->is_aktif = 'N';
+                            $klaim_supir_riwayat->save();
                         }
-                      
+                    }
+                    elseif ($data['status_klaim']=='REJECTED') {
+                        $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
+                        
+                        if($klaim_supir_riwayat)
+                        {
+                            if($kas_bank_transaksi)
+                            {
+                                $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
+                                    ->first();
+                                $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
+                                DB::table('kas_bank')
+                                    ->where('id', $kas_bank_transaksi->id_kas_bank)
+                                    ->update(array(
+                                        'saldo_sekarang' => $saldo_baru,
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                                $kas_bank_transaksi->updated_at = now();
+                                $kas_bank_transaksi->updated_by = $user;
+                                $kas_bank_transaksi->is_aktif = 'N';
+                                $kas_bank_transaksi->save();
+                            }
+                            $klaim_supir_riwayat->tanggal_pencairan = null;
+                            $klaim_supir_riwayat->tanggal_pencatatan = null;
+                            $klaim_supir_riwayat->total_pencairan =0;
+                            $klaim_supir_riwayat->alasan_tolak = $data['alasan_tolak'];
+                            $klaim_supir_riwayat->updated_at = now();
+                            $klaim_supir_riwayat->updated_by = $user;
+                            $klaim_supir_riwayat->save();   
+
+                        }
+                        else
+                        {
+                            $klaim_supir_riwayat_baru = new KlaimSupirRiawayat();
+                            $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
+                            $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $klaim_supir_riwayat_baru->tanggal_pencatatan = null;
+                            $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
+                            $klaim_supir_riwayat_baru->total_pencairan =0;
+                            $klaim_supir_riwayat_baru->alasan_tolak = $data['alasan_tolak'];
+                            $klaim_supir_riwayat_baru->created_at = now();
+                            $klaim_supir_riwayat_baru->created_by = $user;
+                            $klaim_supir_riwayat_baru->is_aktif = 'Y';
+                            //  $klaim_supir_riwayat_baru->save();  
                             
-                        
-                        $klaim_supir_riwayat->updated_at = now();
-                        $klaim_supir_riwayat->updated_by = $user;
-                        $klaim_supir_riwayat->is_aktif = 'N';
-                        $klaim_supir_riwayat->save();
-                        
-                    }
-                }
-                elseif ($data['status_klaim']=='REJECTED') {
-                    $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
-                    
-                    if($klaim_supir_riwayat)
-                    {
-                        if($kas_bank_transaksi)
-                        {
-                            $saldo = DB::table('kas_bank')
-                                ->select('*')
-                                ->where('is_aktif', '=', "Y")
-                                ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
-                                ->first();
-                            $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
-                            DB::table('kas_bank')
-                                ->where('id', $kas_bank_transaksi->id_kas_bank)
-                                ->update(array(
-                                    'saldo_sekarang' => $saldo_baru,
-                                    'updated_at'=> now(),
-                                    'updated_by'=> $user,
-                                )
-                            );
-                            $kas_bank_transaksi->updated_at = now();
-                            $kas_bank_transaksi->updated_by = $user;
-                            $kas_bank_transaksi->is_aktif = 'N';
-                            $kas_bank_transaksi->save();
                         }
-                        $klaim_supir_riwayat->tanggal_pencairan = null;
-                        $klaim_supir_riwayat->tanggal_pencatatan = null;
-                        $klaim_supir_riwayat->total_pencairan =0;
-                        $klaim_supir_riwayat->alasan_tolak = $data['alasan_tolak'];
-                        $klaim_supir_riwayat->updated_at = now();
-                        $klaim_supir_riwayat->updated_by = $user;
-                        $klaim_supir_riwayat->save();   
+                        
 
                     }
-                    else
-                    {
-                         $klaim_supir_riwayat_baru = new KlaimSupirRiawayat();
-                         $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
-                         $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
-                         $klaim_supir_riwayat_baru->tanggal_pencatatan = null;
-                         $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
-                         $klaim_supir_riwayat_baru->total_pencairan =0;
-                         $klaim_supir_riwayat_baru->alasan_tolak = $data['alasan_tolak'];
-                         $klaim_supir_riwayat_baru->created_at = now();
-                         $klaim_supir_riwayat_baru->created_by = $user;
-                         $klaim_supir_riwayat_baru->is_aktif = 'Y';
-                        //  $klaim_supir_riwayat_baru->save();  
-                         
-                    }
+                    elseif ($data['status_klaim']=='ACCEPTED') {
+                        $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
+                        $tanggal_pencatatan= date_create_from_format('d-M-Y', $data['tanggal_pencatatan']);
                     
-
-                }
-                elseif ($data['status_klaim']=='ACCEPTED') {
-                    $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
-                    $tanggal_pencatatan= date_create_from_format('d-M-Y', $data['tanggal_pencatatan']);
-                   
-                    if($klaim_supir_riwayat)
-                    {
-                        if($kas_bank_transaksi)
+                        if($klaim_supir_riwayat)
                         {
-                            $saldo = DB::table('kas_bank')
-                                ->select('*')
-                                ->where('is_aktif', '=', "Y")
-                                ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
-                                ->first();
-                            $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
-                            DB::table('kas_bank')
-                                ->where('id', $kas_bank_transaksi->id_kas_bank)
-                                ->update(array(
-                                    'saldo_sekarang' => $saldo_baru,
-                                    'updated_at'=> now(),
-                                    'updated_by'=> $user,
-                                )
-                            );
-                            $kas_bank_transaksi->updated_at = now();
-                            $kas_bank_transaksi->updated_by = $user;
-                            $kas_bank_transaksi->is_aktif = 'N';
-                            $kas_bank_transaksi->save();
-                        }
-                        $klaim_supir_riwayat->id_klaim = $klaim_supir->id;
-                        $klaim_supir_riwayat->kas_bank_id = $data['kas'];
-                        $klaim_supir_riwayat->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
-                        $klaim_supir_riwayat->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
-                        $klaim_supir_riwayat->total_klaim = $klaim_supir->total_klaim;
-                        $klaim_supir_riwayat->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
-                        $klaim_supir_riwayat->catatan_pencairan =$data['catatan_pencairan'];
-                        $klaim_supir_riwayat->updated_at = now();
-                        $klaim_supir_riwayat->updated_by = $user;
-                        $klaim_supir_riwayat->save();   
-                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                            array(
-                                $data['kas'],// id kas_bank dr form
-                                $tanggal_pencatatan,//tanggal
-                                0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
-                                1016, //kode coa
-                                'klaim_supir',
-                                'KETERANGAN KLAIM SUPIR', //keterangan_transaksi
-                                $klaim_supir_riwayat->id,//keterangan_kode_transaksi
-                                $user,//created_by
-                                now(),//created_at
-                                $user,//updated_by
-                                now(),//updated_at
-                                'Y'
-                            ) 
-                        );
-                    }
-                    else
-                    {
-                        $klaim_supir_riwayat_baru = new KlaimSupirRiawayat();
-                        $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
-                        $klaim_supir_riwayat_baru->kas_bank_id = $data['kas'];
-                        $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
-                        $klaim_supir_riwayat_baru->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
-                        $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
-                        $klaim_supir_riwayat_baru->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
-                        $klaim_supir_riwayat_baru->catatan_pencairan =$data['catatan_pencairan'];
-                        $klaim_supir_riwayat_baru->created_at = now();
-                        $klaim_supir_riwayat_baru->created_by = $user;
-                        $klaim_supir_riwayat_baru->is_aktif = 'Y';
-                        // $klaim_supir_riwayat_baru->save(); 
-                        if($klaim_supir_riwayat_baru->save())
-                         {
-                            $saldo = DB::table('kas_bank')
-                                ->select('*')
-                                ->where('is_aktif', '=', "Y")
-                                ->where('kas_bank.id', '=', $klaim_supir_riwayat_baru->kas_bank_id )
-                                ->first();
-                            $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
-                            DB::table('kas_bank')
-                                ->where('id', $klaim_supir_riwayat_baru->kas_bank_id)
-                                ->update(array(
-                                    'saldo_sekarang' => $saldo_baru,
-                                    'updated_at'=> now(),
-                                    'updated_by'=> $user,
-                                )
-                            );
-                                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                            if($kas_bank_transaksi)
+                            {
+                                $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
+                                    ->first();
+                                $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
+                                DB::table('kas_bank')
+                                    ->where('id', $kas_bank_transaksi->id_kas_bank)
+                                    ->update(array(
+                                        'saldo_sekarang' => $saldo_baru,
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                                $kas_bank_transaksi->updated_at = now();
+                                $kas_bank_transaksi->updated_by = $user;
+                                $kas_bank_transaksi->is_aktif = 'N';
+                                $kas_bank_transaksi->save();
+                            }
+                            $klaim_supir_riwayat->id_klaim = $klaim_supir->id;
+                            $klaim_supir_riwayat->kas_bank_id = $data['kas'];
+                            $klaim_supir_riwayat->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $klaim_supir_riwayat->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
+                            $klaim_supir_riwayat->total_klaim = $klaim_supir->total_klaim;
+                            $klaim_supir_riwayat->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
+                            $klaim_supir_riwayat->catatan_pencairan =$data['catatan_pencairan'];
+                            $klaim_supir_riwayat->updated_at = now();
+                            $klaim_supir_riwayat->updated_by = $user;
+                            $klaim_supir_riwayat->save();   
+                            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                 array(
                                     $data['kas'],// id kas_bank dr form
                                     $tanggal_pencatatan,//tanggal
@@ -629,7 +575,7 @@ class KlaimSupirController extends Controller
                                     1016, //kode coa
                                     'klaim_supir',
                                     'KETERANGAN KLAIM SUPIR', //keterangan_transaksi
-                                    $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
+                                    $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
                                     now(),//created_at
                                     $user,//updated_by
@@ -637,10 +583,58 @@ class KlaimSupirController extends Controller
                                     'Y'
                                 ) 
                             );
-                         }
-                        
+                        }
+                        else
+                        {
+                            $klaim_supir_riwayat_baru = new KlaimSupirRiawayat();
+                            $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
+                            $klaim_supir_riwayat_baru->kas_bank_id = $data['kas'];
+                            $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $klaim_supir_riwayat_baru->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
+                            $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
+                            $klaim_supir_riwayat_baru->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
+                            $klaim_supir_riwayat_baru->catatan_pencairan =$data['catatan_pencairan'];
+                            $klaim_supir_riwayat_baru->created_at = now();
+                            $klaim_supir_riwayat_baru->created_by = $user;
+                            $klaim_supir_riwayat_baru->is_aktif = 'Y';
+                            // $klaim_supir_riwayat_baru->save(); 
+                            if($klaim_supir_riwayat_baru->save())
+                            {
+                                $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $klaim_supir_riwayat_baru->kas_bank_id )
+                                    ->first();
+                                $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
+                                DB::table('kas_bank')
+                                    ->where('id', $klaim_supir_riwayat_baru->kas_bank_id)
+                                    ->update(array(
+                                        'saldo_sekarang' => $saldo_baru,
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                    array(
+                                        $data['kas'],// id kas_bank dr form
+                                        $tanggal_pencatatan,//tanggal
+                                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                        floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
+                                        1016, //kode coa
+                                        'klaim_supir',
+                                        'KETERANGAN KLAIM SUPIR', //keterangan_transaksi
+                                        $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
+                                        $user,//created_by
+                                        now(),//created_at
+                                        $user,//updated_by
+                                        now(),//updated_at
+                                        'Y'
+                                    ) 
+                                );
+                            }
+                            
+                        }
                     }
-                }
 
                 }
                
