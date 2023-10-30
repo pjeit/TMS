@@ -7,7 +7,8 @@ use App\Models\KasBank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\PencairanKomisi;
+use App\Models\PencairanKomisiDetail;
 class PencairanKomisiCustomerController extends Controller
 {
     /**
@@ -105,63 +106,87 @@ class PencairanKomisiCustomerController extends Controller
             // $tanggal_pencairan = date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
             $arr_tampungan=[];
 
-            foreach ($data['data'] as $value) {
+            $pencairan_komisi = new PencairanKomisi();
+            $pencairan_komisi->id_customer = $data['customer'];
+            $pencairan_komisi->jenis_pencairan = 'CUSTOMER';
+            $pencairan_komisi->total_komisi = floatval(str_replace(',', '', $data['total_komisi_customer']));
+            $pencairan_komisi->total_pencairan = floatval(str_replace(',', '', $data['total_pencairan']));
+            $pencairan_komisi->created_at = now();
+            $pencairan_komisi->created_by = $user;
+            $pencairan_komisi->is_aktif = 'Y';
+
+            if($pencairan_komisi->save())
+            {
+                foreach ($data['data'] as $value) {
                   $objTampungan = [
                         'Tujuan'=>$value['nama_tujuan'],
                         'Komisi' =>'Rp.'.number_format($value['komisi_customer']) ,
                     ];
                     array_push($arr_tampungan, $objTampungan);
-                DB::table('sewa')
-                ->where('id_sewa', $value['id_sewa'])
-                ->where('id_customer', $data['customer'])
-                ->update(array(
-                        'status_pencairan_customer' =>'SUDAH DICAIRKAN',
-                        // 'tanggal_pencairan_driver' =>date_format($tanggal_pencairan, 'Y-m-d'),
-                        'tanggal_pencairan_customer' =>now(),
-                        'updated_at'=> now(),
-                        'updated_by'=> $user,
-                    )
+
+                    $pencairan_komisi_detail = new PencairanKomisiDetail();
+                    $pencairan_komisi_detail->id_pencairan_komisi  = $pencairan_komisi->id;
+                    $pencairan_komisi_detail->id_sewa  =$value['id_sewa'];
+                    $pencairan_komisi_detail->created_at = now();
+                    $pencairan_komisi_detail->created_by = $user;
+                    $pencairan_komisi_detail->is_aktif = 'Y';   
+                    $pencairan_komisi_detail->save();
+
+
+                    DB::table('sewa')
+                    ->where('id_sewa', $value['id_sewa'])
+                    ->where('id_customer', $data['customer'])
+                    ->update(array(
+                            'status_pencairan_customer' =>'SUDAH DICAIRKAN',
+                            // 'tanggal_pencairan_driver' =>date_format($tanggal_pencairan, 'Y-m-d'),
+                            'tanggal_pencairan_customer' =>now(),
+                            'updated_at'=> now(),
+                            'updated_by'=> $user,
+                        )
+                    );
+                }
+                $ubahKeString = [];
+                foreach ($arr_tampungan as $item) {
+                    $ubahKeString[] = '(' . implode(', ', array_map(
+                        function ($key, $value) {
+                            return "\"$key\" = \"$value\"";
+                        },
+                        array_keys($item),
+                        $item
+                    )) . ')';
+                }
+
+                $hasil_tampungan_string = implode('|', $ubahKeString);
+                // dd($hasil_tampungan_string);
+
+                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                    array(
+                        $data['pembayaran'],// id kas_bank dr form
+                        // date_format($tanggal_pencairan, 'Y-m-d'),//tanggal
+                        now(),
+                        0,// uang masuk (debit)
+                        floatval(str_replace(',', '', $data['total_komisi_customer'])), //uang keluar (kredit)
+                        1016, //kode coa masik belum di komunikasiin
+                        'komisi_customer',
+                        'KOMISI CUSTOMER '.$data['valueCustomer'].
+                        '# RINCIAN :'.$hasil_tampungan_string.
+                        '# TOTAL KOMISI :Rp. '.$data['total_komisi_customer'],
+                        $data['customer'],// nyimpen id customer buat di sewa kalo butuh di konekin ke dump
+                        $user,//created_by
+                        now(),//created_at
+                        $user,//updated_by
+                        now(),//updated_at
+                        'Y'
+                    ) 
                 );
-            }
-            $ubahKeString = [];
-            foreach ($arr_tampungan as $item) {
-                $ubahKeString[] = '(' . implode(', ', array_map(
-                    function ($key, $value) {
-                        return "\"$key\" = \"$value\"";
-                    },
-                    array_keys($item),
-                    $item
-                )) . ')';
+                $kasbank = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
+                $kasbank->saldo_sekarang -= floatval(str_replace(',', '', $data['total_komisi_customer']));
+                $kasbank->updated_by = $user;
+                $kasbank->updated_at = now();
+                $kasbank->save();
             }
 
-            $hasil_tampungan_string = implode('|', $ubahKeString);
-            // dd($hasil_tampungan_string);
-
-            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                array(
-                    $data['pembayaran'],// id kas_bank dr form
-                    // date_format($tanggal_pencairan, 'Y-m-d'),//tanggal
-                    now(),
-                    0,// uang masuk (debit)
-                    floatval(str_replace(',', '', $data['total_komisi_customer'])), //uang keluar (kredit)
-                    1016, //kode coa masik belum di komunikasiin
-                    'komisi_customer',
-                    'KOMISI CUSTOMER '.$data['valueCustomer'].
-                    '# RINCIAN :'.$hasil_tampungan_string.
-                    '# TOTAL KOMISI :Rp. '.$data['total_komisi_customer'],
-                    $data['customer'],// nyimpen id customer buat di sewa kalo butuh di konekin ke dump
-                    $user,//created_by
-                    now(),//created_at
-                    $user,//updated_by
-                    now(),//updated_at
-                    'Y'
-                ) 
-            );
-            $kasbank = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
-            $kasbank->saldo_sekarang -= floatval(str_replace(',', '', $data['total_komisi_customer']));
-            $kasbank->updated_by = $user;
-            $kasbank->updated_at = now();
-            $kasbank->save();
+            
             DB::commit();
             return redirect()->route('pencairan_komisi_driver.index')->with(['status' => 'Success', 'msg' => 'Berhasil Mencairkan Komisi Supir']);
         } 

@@ -35,6 +35,8 @@ class DashboardController extends Controller
                 DB::statement('DELETE FROM karyawan_hutang_transaction');
                 DB::statement('DELETE FROM uang_jalan_riwayat');
                 DB::statement('DELETE FROM sewa_batal_cancel');
+                DB::statement('DELETE FROM uang_jalan_riwayat');
+
             });
         } catch (\Exception $e) {
             // Handle or log the exception

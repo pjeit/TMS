@@ -413,7 +413,8 @@
               request()->is('pencairan_komisi_driver*')||
               request()->is('klaim_supir*')||
               request()->is('tagihan_rekanan*')||
-                request()->is('pencairan_komisi_customer*')
+                request()->is('pencairan_komisi_customer*')||
+                request()->is('cetak_uang_jalan*')
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-dollar-sign"></i>
@@ -472,6 +473,17 @@
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Pencairan UJ
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('cetak_uang_jalan.index')}}" class="nav-link {{request()->url() === route('cetak_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Cetak Uang Jalan
                     </p>
                   </a>
                 </li>

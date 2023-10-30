@@ -88,12 +88,22 @@
                             <ul class="list-group mb-1">
                                 <li class="list-group-item d-flex justify-content-between">
                                     <span>Total (IDR)</span>
-                                    <input type="hidden" name="total_komisi_driver" value="">
+                                    <input type="hidden" name="total_komisi_driver" id="total_komisi_driver" value="">
                                     <strong id="html_komisi_driver"></strong>
                                 </li>
                             </ul>
                         </div>
-                            
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                            <label for="no_akun">Total Pencairan</label>
+                            <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input onkeyup="cekPenerima();" type="text" id="total_pencairan" name="total_pencairan" class="form-control uang numaja" value="">                         
+                                </div>                      
+                        </div>  
+                        
+                           
                         <div class="form-group col-lg-12 col-md-12 col-sm-12">
                             <label for="pembayaran">Pilih Kas/Bank</label>
                             <div class="input-group" style="gap: 10px;">
@@ -133,8 +143,42 @@
     </form>
 </div>
 <script>
-    $(document).ready(function() {
+    
+        function cekPenerima()
+		{
+            
+            if(total_komisi_driver!=''){
+                var total_komisi_driver=$('#total_komisi_driver').val();
+            }else{
+                var total_komisi_driver=0;
+            }
+
+            if(total_pencairan!=''){
+                var total_pencairan=escapeComma($('#total_pencairan').val());
+            }else{
+                var total_pencairan=0;
+            }
+
+            if(parseFloat(total_pencairan)>parseFloat(total_komisi_driver)){
+                $('#total_pencairan').val(moneyMask(total_komisi_driver,','));
+            }
+            else{
+                $('#total_pencairan').val(moneyMask(total_pencairan,','));
+            }
+
+		}
+        $(document).ready(function() {
         var today = new Date();
+         $('body').on('key','#karyawan',function()
+		{
+            var selectedOption = $(this).find('option:selected');
+            var valueDriver = selectedOption.attr('valueDriver');
+            
+            $('#valueDriver').val(valueDriver);
+            console.log($('#valueDriver').val());
+
+		});
+        cekPenerima();
 
         $('#tanggal_awal').datepicker({
             autoclose: true,
@@ -155,6 +199,7 @@
             language:'en',
             startDate: today,   
         });
+
         
         var baseUrl = "{{ asset('') }}";
         var Toast = Swal.mixin({
@@ -180,6 +225,7 @@
 
         HitungTotalKomisi();
         $('body').on('click','#btnFilter', function (){
+             cekPenerima();
      
             if ($('#karyawan').val()=='') {
                 event.preventDefault(); 
@@ -237,6 +283,7 @@
                                     `)
                                 }   
                                  HitungTotalKomisi();
+                                cekPenerima();
 
                             }
                             else
@@ -250,6 +297,7 @@
                                     </tr>
                                 `)
                                  HitungTotalKomisi();
+                                cekPenerima();
 
                             }
                             
