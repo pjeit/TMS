@@ -58,7 +58,7 @@
                         </ul>
 
                         <div class="tab-content">
-                              {{-- Pencairan --}}
+                            {{-- Pencairan --}}
                                 <div class="tab-pane fade show active" id="justify-pencairan" role="tabpanel" aria-labelledby="justify-pencairan-tab">
 
                                     <div class="row">
@@ -216,7 +216,6 @@
                                                         noPol='{{$kendaraan->no_polisi}}'
                                                         idDriver='{{$kendaraan->driver_id}}'
                                                         kategoriKendaraan='{{$kendaraan->kategoriKendaraan}}'
-                                                        tipeKontainerKendaraanDariChassis = '{{$kendaraan->tipeKontainerKendaraanDariChassis}}'
                                                         {{$klaimSupir->kendaraan_id==$kendaraan->kendaraanId?'selected':''}}
                                                         >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
                                                 @endforeach
@@ -503,6 +502,32 @@
         $('#select_driver').val(supir).trigger('change');
 
     });
+     $('body').on('change','#select_driver',function()
+    {
+        var selectedOption = $(this).find('option:selected');
+        var nama_driver = selectedOption.attr('nama_driver');
+        
+        $('#driver_nama').val(nama_driver);
+
+    });
+    loadData();
+    function loadData(){
+         var idKendaraan = $('#select_kendaraan').val();
+        var selectedOption = $('#select_kendaraan').find('option:selected');
+        var idChassis = selectedOption.attr('idChassis');
+        var nopol = selectedOption.attr('noPol');
+        var supir = selectedOption.attr('idDriver');
+        
+        $('#kendaraan_id').val(idKendaraan);
+        $('#no_polisi').val(nopol);
+
+
+        var selectedOption = $('#select_driver').find('option:selected');
+        var nama_driver = selectedOption.attr('nama_driver');
+        
+        $('#driver_nama').val(nama_driver);
+
+    }
     $('#post').submit(function(event) {
 
             var statusMenikah = $("input[name='status_klaim']:checked").val();

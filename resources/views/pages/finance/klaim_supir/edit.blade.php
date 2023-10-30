@@ -320,7 +320,16 @@
         $('#select_driver').val(supir).trigger('change');
 
     });
-        $('#post').submit(function(event) {
+     $('body').on('change','#select_driver',function()
+    {
+        var selectedOption = $(this).find('option:selected');
+        var nama_driver = selectedOption.attr('nama_driver');
+        
+        $('#driver_nama').val(nama_driver);
+
+    });
+    
+    $('#post').submit(function(event) {
             event.preventDefault();
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar?',

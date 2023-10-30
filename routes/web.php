@@ -175,6 +175,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/tagihan_rekanan/loadData/{id}', [App\Http\Controllers\TagihanRekananController::class, 'load_data'])->name('tagihan_rekanan.load_data');
         Route::resource('tagihan_rekanan', 'App\Http\Controllers\TagihanRekananController');
+        Route::resource('cetak_uang_jalan', 'App\Http\Controllers\CetakUangJalanController');
+
         // ===================================FINANCE=========================================================
 
         

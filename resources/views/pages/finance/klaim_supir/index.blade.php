@@ -402,6 +402,14 @@ $(document).ready(function () {
         $('#select_driver').val(supir).trigger('change');
 
     });
+     $('body').on('change','#select_driver',function()
+		{
+            var selectedOption = $(this).find('option:selected');
+            var nama_driver = selectedOption.attr('nama_driver');
+            
+            $('#driver_nama').val(nama_driver);
+
+		});
     new DataTable('#TabelKlaim', {
         order: [
             [0, 'asc'],
