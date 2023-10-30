@@ -43,29 +43,23 @@
                     </tr>
                     </thead>
                 <tbody>
-                    @if (isset($dataKlaimSupir))
-                        @foreach ($dataKlaimSupir as $item)
+                    @if (isset($data_uang_jalan))
+                        @foreach ($data_uang_jalan as $item)
                         <tr>
-                            <td>{{ $item->nama_supir}} ({{ $item->telp}})</td>
-                            <td>{{ $item->jenis_klaim}}</td>
-                            <td>{{ $item->tanggal_klaim }}</td>
-                            <td>Rp. {{number_format($item->total_klaim,2)  }}</td>
-                            <td>{{ $item->status_klaim }}</td>
-                            <td>{{ $item->keterangan_klaim }}</td>
+                            <td>{{ $item->nama_cust}} </td>
+                            <td>{{\Carbon\Carbon::parse($item->tanggal_pencatatan)->format('d-M-Y')}}</td>
+                            <td>{{ $item->no_sewa }}</td>
+                            <td>{{$item->nama_tujuan}}</td>
+                            <td>{{$item->no_polisi}} - {{ $item->supir}} ({{ $item->telpSupir}})</td>
+                            <td>Rp. {{number_format(($item->total_uang_jalan+$item->total_tl) - $item->potong_hutang,2)  }}</td>
                             <td>
                                 <div class="btn-group dropleft">
                                     <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        <a href="{{route('klaim_supir.edit',[$item->id_klaim])}}" class="dropdown-item ">
-                                            <span class="fas fa-edit mr-3"></span> Edit
-                                        </a>
-                                        <a href="{{route('pencairan_klaim_supir.edit',[$item->id_klaim])}}" class="dropdown-item ">
-                                            <span class="nav-icon fas fa-dollar-sign mr-3"></span> Pencairan
-                                        </a>
-                                        <a href="{{ route('klaim_supir.destroy', [$item->id_klaim]) }}" class="dropdown-item" data-confirm-delete="true">
-                                            <span class="fas fa-trash mr-3"></span> Delete
+                                        <a href="{{route('cetak_uang_jalan.edit',[$item->idUj])}}" class="dropdown-item" target='_blank'>
+                                            <span class="fas fa-edit mr-3"></span> Cetak
                                         </a>
                                     </div>
                                 </div>
@@ -73,11 +67,8 @@
                         </tr>
                         @endforeach
                     @endif
-                    
                 </tbody>
-                
             </table>
-
         </div>
         <!-- /.card-body -->
     </div>
