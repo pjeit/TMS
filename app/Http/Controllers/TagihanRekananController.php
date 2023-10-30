@@ -171,10 +171,15 @@ class TagihanRekananController extends Controller
     {
         $data = $request->collect();
         $user = Auth::user()->id;
-        DB::beginTransaction(); 
+        // DB::beginTransaction(); 
         // dd($data); 
-
-        try {
+        // foreach ($data['data'] as $key => $value) {
+        //     # code...
+        //     $ditagihkan = floatval(str_replace(',', '', $value['ditagihkan']));
+        //     var_dump($ditagihkan);
+        // }
+        // die;
+        // try {
             $tagihan = TagihanRekanan::where('is_aktif', 'Y')->find($data['id_tagihan']);
             if($tagihan){
                 $tagihan->tgl_nota = date_create_from_format('d-M-Y', $data['tgl_nota']);
@@ -194,7 +199,7 @@ class TagihanRekananController extends Controller
                             $detail = TagihanRekananDetail::where('is_aktif', 'Y')->find($value['id_detail']);
                             // cek apakah ada data detail
                             if($detail){
-                                if($ditagihkan != null){
+                                if($ditagihkan != 0){
                                     // jika ada datanya dan ada nilai yg ditagihkan, maka di update
                                     $detail->total_tagihan = $ditagihkan;
                                     $detail->catatan = $value['catatan'];
@@ -207,7 +212,7 @@ class TagihanRekananController extends Controller
                                     $detail->updated_at = now();
                                     $detail->is_aktif = "N";
                                     if($detail->save()){
-                                        $sewa = Sewa::where('is_aktif', 'Y')->find($key);
+                                        $sewa = Sewa::where('is_aktif', 'Y')->find($value['id_sewa']);
                                         if($sewa){
                                             // flag is_tagihan di sewa rekanan di non-aktifkan = "N"
                                             $sewa->is_tagihan = 'N';
@@ -219,39 +224,40 @@ class TagihanRekananController extends Controller
                                 }
                             }
                         }
-                        // else{
-                        //     if($ditagihkan != null){
-                        //         // kalau tidak ada data yg ditemukan, tp ada nilai yg ditagihkan, buat data baru
-                        //         $detail = new TagihanRekananDetail();
-                        //         $detail->id_tagihan_rekanan = $tagihan->id;
-                        //         $detail->id_sewa = $value['id_sewa'];
-                        //         $detail->catatan = $value['catatan'];
-                        //         $detail->total_tagihan = floatval(str_replace(',', '', $value['ditagihkan']));
-                        //         $detail->created_by = $user;
-                        //         $detail->created_at = now();
-                        //         if($detail->save()){
-                        //             $sewa = Sewa::where('is_aktif', 'Y')->find($key);
-                        //             if($sewa){
-                        //                 // flag is_tagihan di sewa rekanan di aktifkan = "Y"
-                        //                 $sewa->is_tagihan = 'Y';
-                        //                 $sewa->updated_by = $user;
-                        //                 $sewa->updated_at = now();
-                        //                 $sewa->save();
-                        //             }
-                        //         }
-                        //     }
-                        // }
+                        else{
+                            if($ditagihkan != 0){
+
+                                // kalau tidak ada data yg ditemukan, tp ada nilai yg ditagihkan, buat data baru
+                                $newDetail = new TagihanRekananDetail();
+                                $newDetail->id_tagihan_rekanan = $tagihan->id;
+                                $newDetail->id_sewa = $value['id_sewa'];
+                                $newDetail->catatan = $value['catatan'];
+                                $newDetail->total_tagihan = floatval(str_replace(',', '', $value['ditagihkan']));
+                                $newDetail->created_by = $user;
+                                $newDetail->created_at = now();
+                                if($newDetail->save()){
+                                    $sewa = Sewa::where('is_aktif', 'Y')->find($value['id_sewa']);
+                                    if($sewa){
+                                        // flag is_tagihan di sewa rekanan di aktifkan = "Y"
+                                        $sewa->is_tagihan = 'Y';
+                                        $sewa->updated_by = $user;
+                                        $sewa->updated_at = now();
+                                        $sewa->save();
+                                    }
+                                }
+                            }
+                        }
                     }
-                    DB::commit();
+                    // DB::commit();
                 }
             }
 
             return redirect()->route('tagihan_rekanan.index')->with(['status' => 'Success', 'msg' => 'Tagihan berhasil dibuat']);
 
-        } catch (ValidationException $e) {
-            db::rollBack();
-            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibuat!']);
-        }
+        // } catch (ValidationException $e) {
+        //     db::rollBack();
+        //     return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibuat!']);
+        // }
     }
 
     /**
@@ -280,18 +286,17 @@ class TagihanRekananController extends Controller
         //             ->leftJoin('sewa as s', 's.id_sewa', '=', 'trd.id_sewa')
         //             ->where('id_tagihan_rekanan', $id_tagihan)
         //             ->get();
-        $sewa = DB::select("SELECT trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa
+        $sewa = DB::select("SELECT trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
                             FROM tagihan_rekanan_detail as trd 
                             LEFT JOIN sewa as s on s.id_sewa = trd.id_sewa
                             LEFT JOIN customer as c on c.id = s.id_customer
-                            WHERE trd.id_tagihan_rekanan = $id_tagihan
+                            WHERE trd.id_tagihan_rekanan = $id_tagihan AND trd.is_aktif = 'Y' AND s.is_tagihan = 'Y'
                             UNION ALL
-                            SELECT trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa
+                            SELECT trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
                             FROM sewa as s
-                            LEFT JOIN tagihan_rekanan_detail as trd on trd.id_sewa = s.id_sewa
+                            LEFT JOIN tagihan_rekanan_detail as trd on trd.id_sewa = s.id_sewa and trd.is_aktif is null
                             LEFT JOIN customer as c on c.id = s.id_customer
-                            WHERE id_supplier = $id_supplier AND is_tagihan = 'N' 
-                            GROUP BY s.id_sewa
+                            WHERE s.id_supplier = $id_supplier AND s.is_tagihan <> 'Y' 
                             ");
 
         return $sewa;
