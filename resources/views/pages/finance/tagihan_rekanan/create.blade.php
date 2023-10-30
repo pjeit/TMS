@@ -269,13 +269,21 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-
         $(document).on('change', '#supplier', function(){
             if(this.value != null){
                 showTable(this.value);
                 console.log('this.value', this.value);
             }
         });
+        
+        var today = new Date();
+        $('#tanggal_pembayaran').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language: 'en',
+            // startDate: today,
+        }).datepicker("setDate", today);
 
         function showTable(supplier){
             $.ajax({
@@ -290,7 +298,6 @@
                     console.log('data', data);
                     $('#tabel_tagihan').DataTable().clear().destroy();
 
- 
                     for (var i = 0; i < data.length; i++) {
                         var row = $("<tr></tr>");
                         row.append(`<td>${data[i].no_sewa} - ${data[i].get_customer.nama} (${ dateMask(data[i].tanggal_berangkat)})</td>`);

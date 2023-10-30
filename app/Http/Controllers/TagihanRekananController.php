@@ -119,7 +119,7 @@ class TagihanRekananController extends Controller
         $sewa = Sewa::from('sewa as s')->with('getCustomer')->where('s.is_aktif', 'Y')
                     ->where('s.id_supplier', $id)
                     ->get();
-
+        
         return $sewa;
     }
 }
