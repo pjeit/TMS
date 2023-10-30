@@ -139,7 +139,6 @@
      $(document).ready(function() {
         var sessionStatus = "<?= session()->has('status') ? session()->get('status') : null ?>";
         var sessionMsg = "<?= session()->has('msg') ? session()->get('msg') : null ?>";
-        console.log('sessionStatus', sessionStatus);
         // console.log('sessionMsg', sessionMsg);
         if (sessionStatus != '') {
             const Toast = Swal.mixin({

@@ -23,8 +23,8 @@
         @endforeach
     @endif
 <section class="container-fluid">
-    <form action="{{ route('tagihan_rekanan.store') }}" id="save" method="POST" >
-        @csrf
+    <form action="{{ route('tagihan_rekanan.update', ['tagihan_rekanan' => $tagihan->id]) }}" id="save" method="POST" >
+        @csrf @method('PUT')
         <div class="radiusSendiri sticky-top" style="margin-bottom: -15px;">
             <div class="card radiusSendiri" style="">
                 <div class="card-header radiusSendiri">
@@ -44,7 +44,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input type="text" id="diskon" name="diskon" class="form-control uang numaja">                         
+                                    <input type="text" id="diskon" name="diskon" class="form-control uang numaja" value="{{ number_format($tagihan->diskon) }}">                         
+                                    <input type="hidden" id="id_tagihan" name="id_tagihan" value="{{ $tagihan->id }}">
                                 </div>
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -53,7 +54,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input type="text" id="ppn" name="ppn" class="form-control uang numaja">                         
+                                    <input type="text" id="ppn" name="ppn" class="form-control uang numaja" value="{{ number_format($tagihan->ppn) }}">
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -62,12 +63,12 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input type="text" id="tagihan" name="tagihan" class="form-control uang numaja" value="" readonly>                         
+                                    <input type="text" id="tagihan" name="tagihan" class="form-control uang numaja" value="{{ number_format($tagihan->total_tagihan) }}" readonly>                         
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="">Catatan</label>
-                                <textarea name="catatan" class="form-control" rows="1"></textarea>
+                                <textarea name="catatan" class="form-control" rows="1">{{ $tagihan->catatan }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -77,19 +78,20 @@
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="form-group">
                                     <label for="">Supplier<span class="text-red">*</span> </label>
-                                    <select name="supplier" class="select2" style="width: 100%" id="supplier" required>
+                                    <select name="supplier" class="select2" style="width: 100%" id="supplier" required disabled>
                                         <option value="">── PILIH SUPPLIER ──</option>
                                         @foreach ($supplier as $item)
-                                            <option value="{{ $item->getSupplier->id }}">{{ $item->getSupplier->nama }}</option>
+                                            <option value="{{ $item->getSupplier->id }}" {{ $item->id == $tagihan->id_supplier? 'selected':'' }}>{{ $item->getSupplier->nama }}</option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" name="id_supplier" value="{{ $tagihan->id_supplier }}">
                                 </div>  
                             </div>
 
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="form-group">
                                     <label for="">No. Nota<span style="color:red">*</span></label>
-                                    <input type="text" name="no_nota" id="no_nota" maxlength="25" class="form-control">
+                                    <input type="text" name="no_nota" id="no_nota" maxlength="25" class="form-control" value="{{ $tagihan->no_nota }}">
                                 </div>
                             </div>
 
@@ -100,7 +102,7 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" autocomplete="off" name="tgl_nota" class="form-control date" id="tgl_nota" required>
+                                        <input type="text" autocomplete="off" name="tgl_nota" class="form-control date" id="tgl_nota" required value="{{ date("d-M-Y", strtotime($tagihan->tgl_nota)) }}">
                                     </div>
                                 </div>
                             </div>
@@ -111,7 +113,7 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" autocomplete="off" name="jatuh_tempo" class="form-control date" id="jatuh_tempo" required>
+                                        <input type="text" autocomplete="off" name="jatuh_tempo" class="form-control date" id="jatuh_tempo" required value="{{ date("d-M-Y", strtotime($tagihan->jatuh_tempo)) }}">
                                     </div>
                                 </div>
                             </div>
@@ -126,9 +128,9 @@
                 <thead>
                     <tr>
                         <th>No. Sewa</th>
-                        <th style="width: 200px;">Tarif</th>
-                        <th style="width: 200px;">Ditagihkan</th>
-                        <th>Catatan</th>
+                        <th style="width: 150px;">Tarif</th>
+                        <th style="width: 150px;">Ditagihkan</th>
+                        <th style="width: 200px;">Catatan</th>
                         <th style="width: 50px;"></th>
                     </tr>
                 </thead>
@@ -197,12 +199,10 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $(document).on('change', '#supplier', function(){
-            if(this.value != null){
-                showTable(this.value);
-            }
-        });
-        
+        var id_tagihan = $('#id_tagihan').val();
+        var id_supplier = $('#supplier').val();
+        showTable(id_tagihan, id_supplier);
+
         var today = new Date();
         $('#tgl_nota').datepicker({
             autoclose: true,
@@ -219,30 +219,35 @@
             // startDate: today,
         });
 
-        function showTable(supplier){
+        function showTable(id_tagihan, id_supplier){
+            var baseUrl = "{{ url('tagihan_rekanan') }}";
+            var url = baseUrl+`/filteredData/${id_tagihan},${id_supplier}`;
             $.ajax({
                 method: 'GET',
-                url: `loadData/${supplier}`,
+                url: url,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,
                 processData:false,
                 success: function(response) {
                     var data = response;
-                    // console.log('data', data);
+                    console.log('data', data);
                     $('#tabel_tagihan').DataTable().clear().destroy();
 
                     for (var i = 0; i < data.length; i++) {
+                        var id_detail = data[i].id == null? null:data[i].id;
                         var row = $("<tr></tr>");
-                        row.append(`<td>${data[i].no_sewa} - ${data[i].get_customer.nama} (${ dateMask(data[i].tanggal_berangkat)})</td>`);
-                        row.append(`<td>${moneyMask(data[i].total_tarif)}</td>`)
-                        row.append(`<td>
+                        row.append(`<td>${data[i].no_sewa} - ${data[i].nama} (${ dateMask(data[i].tanggal_berangkat)})</td>`);
+                        row.append(`<td style="width: 150px;">${moneyMask(data[i].total_tarif)}</td>`)
+                        row.append(`<td style="width: 150px;">
                                         <input type="hidden" id="hidden_total_tarif_${data[i].id_sewa}" value="${data[i].total_tarif}" />
-                                        <input type="text" class="form-control ditagihkan uang numaja" name="data[${data[i].id_sewa}][ditagihkan]" id="${data[i].id_sewa}" readonly/>
+                                        <input type="hidden" name="data[${i}][id_sewa]" id="hidden_id_sewa_${data[i].id_sewa}" value="${data[i].id_sewa}" />
+                                        <input type="hidden" name="data[${i}][id_detail]" value="${id_detail}" />
+                                        <input type="text" class="form-control ditagihkan uang numaja" name="data[${i}][ditagihkan]" id="${data[i].id_sewa}" value="${data[i].total_tagihan != null? moneyMask(data[i].total_tagihan):''}" ${data[i].total_tagihan == null? 'readonly':''} />
                                     </td>`)
-                        row.append(`<td><input type="text" readonly name="data[${data[i].id_sewa}][catatan]" class="form-control" id="catatan_${data[i].id_sewa}" /></td>`)
+                        row.append(`<td style="width: 200px;"><input type="text" name="data[${i}][catatan]" class="form-control" id="catatan_${data[i].id_sewa}" value="${data[i].catatan != null? data[i].catatan:''}" ${data[i].total_tagihan == null? 'readonly':''} /></td>`)
                         row.append(`<td class='text-center' style="text-align:center">
-                                        <input type="checkbox" class="checkHitung" value="${data[i].id_sewa}">
+                                        <input type="checkbox" class="checkHitung" value="${data[i].id_sewa}" ${data[i].total_tagihan != null? 'checked':''}>
                                     </td>`);
                         $("#hasil").append(row);
                     }

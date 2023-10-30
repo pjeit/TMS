@@ -174,6 +174,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('klaim_supir', 'App\Http\Controllers\KlaimSupirController');
 
         Route::get('/tagihan_rekanan/loadData/{id}', [App\Http\Controllers\TagihanRekananController::class, 'load_data'])->name('tagihan_rekanan.load_data');
+        Route::get('/tagihan_rekanan/filteredData/{id_tagihan},{id_supplier}', [App\Http\Controllers\TagihanRekananController::class, 'filtered_data'])->name('tagihan_rekanan.filtered_data');
         Route::resource('tagihan_rekanan', 'App\Http\Controllers\TagihanRekananController');
         // ===================================FINANCE=========================================================
 
