@@ -882,10 +882,9 @@ class DalamPerjalananController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id;
-        DB::beginTransaction(); 
-        // dd($data);
         $id = $data['id_sewa_hidden'];
         $id_kas = $data['pembayaran'];
+        DB::beginTransaction(); 
 
         $sewa = Sewa::where('is_aktif', 'Y')->where('id_sewa', $id)->first();
         try {
@@ -894,16 +893,17 @@ class DalamPerjalananController extends Controller
                                         'sewa_id' => $id
                                     ])->first();
             $ujr->updated_by = $user;
-            $ujr->updated_by = now();
+            $ujr->updated_at = now();
             $ujr->is_aktif = 'N';
             if($ujr->save()){
                 $kht = KaryawanHutangTransaction::where(['is_aktif' => 'Y', 
                                                         'id_karyawan' => $sewa->id_karyawan,
                                                         'refrensi_id' => $ujr->id 
                                                         ])->first();
+
                 if($kht){
                     $kht->updated_by = $user;
-                    $kht->updated_by = now();
+                    $kht->updated_at = now();
                     $kht->is_aktif = 'N';
                     if($kht->save()){
                         $kh = KaryawanHutang::where(['is_aktif' => 'Y', 'id_karyawan' => $sewa->id_karyawan])->first();
@@ -921,21 +921,22 @@ class DalamPerjalananController extends Controller
                                                    'jenis' => 'uang_jalan',
                                                    'keterangan_kode_transaksi' => $ujr->id    
                                                 ])->first();
+
             if($riwayat){
                 $riwayat->updated_by = $user;
-                $riwayat->updated_by = now();
+                $riwayat->updated_at = now();
                 $riwayat->is_aktif = 'N';
                 if($riwayat->save()){
                     $kasbank = KasBank::where('is_aktif', 'Y')->find($id_kas);
                     $kasbank->saldo_sekarang += $riwayat->kredit;
                     $kasbank->updated_by = $user;
                     $kasbank->updated_by = now();
-                    if($kasbank->save()){
-                        DB::commit();
-                        return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
-                    }
+                    $kasbank->save();
                 }
             }
+
+            DB::commit();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
 
         } catch (ValidationException $e) {
             DB::rollBack();
