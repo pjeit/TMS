@@ -870,7 +870,7 @@ class DalamPerjalananController extends Controller
                     ->get();
 
         return view('pages.order.dalam_perjalanan.cancel_uang_jalan',[
-            'judul' => "cancel",
+            'judul' => "cancel uang jalan",
             'data' => $sewa,
             'id_sewa' => $id,
             'dataKas' => $dataKas,
