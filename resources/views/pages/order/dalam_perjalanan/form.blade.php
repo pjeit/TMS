@@ -104,7 +104,7 @@
     
                                        </div>
                                        
-                                        @if($sewa->jenis_tujuan=='FTL')
+                                        {{-- @if($sewa->jenis_tujuan=='FTL') --}}
                                             <div class="form-group">
                                                 <label for="no_akun">No. Kontainer</label>
                                                 @if ($sewa->no_kontainer_jod&&$sewa->jenis_order =="INBOUND")
@@ -113,7 +113,7 @@
                                                     <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" value="{{$sewa->no_kontainer}}" >                         
                                                 @endif
                                             </div> 
-                                        @endif
+                                        {{-- @endif --}}
                                         
                                          @if ($sewa->seal_pelayaran_jod&&$sewa->jenis_order =="INBOUND")
                                             <div class="form-group ">
@@ -135,12 +135,12 @@
                                             </div> 
                                         @endif
 
-                                        @if($sewa->jenis_tujuan=='FTL')
+                                        {{-- @if($sewa->jenis_tujuan=='FTL') --}}
                                         <div class="form-group">
                                             <label for="no_akun">No. Surat Jalan</label>
                                             <input type="text" id="surat_jalan" name="surat_jalan" class="form-control" value="{{$sewa->no_surat_jalan}}" >                         
                                         </div> 
-                                        @endif
+                                        {{-- @endif --}}
 
                                         
                                         <input type="hidden" name="id_jo_detail_hidden" id="id_jo_detail_hidden" value="{{$sewa->id_jo_detail}}">

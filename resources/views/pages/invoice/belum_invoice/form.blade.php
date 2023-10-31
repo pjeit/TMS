@@ -107,7 +107,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Kg</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="total_jumlah_muatan" name="total_jumlah_muatan" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="number" maxlength="100" id="total_jumlah_muatan" name="total_jumlah_muatan" class="form-control" value="" readonly>                         
                                     </div>
                                 </div>
     
@@ -197,7 +197,10 @@
                                 @endif
                             </td>
                             <td> <span id="no_kontainer_text_{{ $item->id_sewa }}">{{ isset($item->id_jo_detail)? $item->getJOD->no_kontainer:$item->no_kontainer }}</span> <br> <span id='no_seal_text_{{ $item->id_sewa }}'>{{ $item->seal_pelayaran }}</span> </td>
-                            <td>-</td>
+                            <td style="text-align:right" id="muatan_satuan_{{ $key }}">
+                                {{ (isset($item->jumlah_muatan ))? number_format($item->jumlah_muatan,2)  : "-" }}
+                                <input type="hidden" class="muatan_satuan" name='detail[{{ $item->id_sewa }}][muatan_satuan]' id='muatan_satuan_{{ $item->id_sewa }}' value="{{(isset($item->jumlah_muatan ))?$item->jumlah_muatan : 0}}">
+                            </td>
                             <td style="text-align:right" id="tarif_{{ $key }}">{{ number_format($item->total_tarif) }}</td>
                             <td style="text-align:right">
                                 @php
@@ -665,8 +668,17 @@
 
         function calculateGrandTotal(){ // hitung grand total buat ditagihkan 
             var grandTotal = 0; 
+            var grandTotalMuatan = 0; 
+
             var grandTotalText = document.getElementById("total_tagihan_text");
+
             var subtotals = document.querySelectorAll('.hitung_subtotal');
+            var muatan_satuan = document.querySelectorAll('.muatan_satuan');
+
+            muatan_satuan.forEach(function(muatan) {
+                grandTotalMuatan += parseFloat(muatan.value); // Convert the value to a number
+            });
+
             subtotals.forEach(function(subtotal) {
                 grandTotal += parseFloat(subtotal.value); // Convert the value to a number
             });
@@ -676,6 +688,11 @@
                 var total_sisa = grandTotal - parseFloat( total_dibayar );
                 $('#total_sisa').val( moneyMask(total_sisa) );
                 grandTotalText.textContent = "Rp. " + moneyMask(grandTotal); // Change the text content of the span
+            }
+
+            if(grandTotalMuatan && grandTotalMuatan >= 0)
+            {
+                $('#total_jumlah_muatan').val(grandTotalMuatan);
             }
         }
 
