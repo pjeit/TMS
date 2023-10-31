@@ -104,15 +104,17 @@
     
                                        </div>
                                        
-                                        <div class="form-group">
-                                            <label for="no_akun">No. Kontainer</label>
-                                            @if ($sewa->no_kontainer_jod&&$sewa->jenis_order =="INBOUND")
-                                                <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$sewa->no_kontainer_jod}}" >                         
-                                            @else
-                                                <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" value="{{$sewa->no_kontainer}}" >                         
-
-                                            @endif
-                                        </div> 
+                                        @if($sewa->jenis_tujuan=='FTL')
+                                            <div class="form-group">
+                                                <label for="no_akun">No. Kontainer</label>
+                                                @if ($sewa->no_kontainer_jod&&$sewa->jenis_order =="INBOUND")
+                                                    <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$sewa->no_kontainer_jod}}" >                         
+                                                @else
+                                                    <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" value="{{$sewa->no_kontainer}}" >                         
+                                                @endif
+                                            </div> 
+                                        @endif
+                                        
                                          @if ($sewa->seal_pelayaran_jod&&$sewa->jenis_order =="INBOUND")
                                             <div class="form-group ">
                                                 <label for="seal">Segel Kontainer</label>
@@ -133,16 +135,19 @@
                                             </div> 
                                         @endif
 
-        
+                                        @if($sewa->jenis_tujuan=='FTL')
                                         <div class="form-group">
                                             <label for="no_akun">No. Surat Jalan</label>
                                             <input type="text" id="surat_jalan" name="surat_jalan" class="form-control" value="{{$sewa->no_surat_jalan}}" >                         
                                         </div> 
+                                        @endif
+
+                                        
                                         <input type="hidden" name="id_jo_detail_hidden" id="id_jo_detail_hidden" value="{{$sewa->id_jo_detail}}">
                                         <input type="hidden" name="id_jo_hidden" id="id_jo_detail_hidden" value="{{$sewa->id_jo}}">
 
                                         <input type="hidden" name="add_cost_hidden" id="add_cost_hidden">
-                                        <input type="hidden" id='jenis_tujuan' value='{{$sewa->jenis_tujuan}}'>
+                                        <input type="hidden" name='jenis_tujuan' id='jenis_tujuan' value='{{$sewa->jenis_tujuan}}'>
 
                                         @if ($sewa->jenis_order =="OUTBOUND")
                                         <div class="row" name="div_segel" id="div_segel">
