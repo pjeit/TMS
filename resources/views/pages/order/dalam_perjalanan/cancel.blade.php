@@ -18,7 +18,7 @@
    }
 </style>
 <div class="container-fluid">
-    <form action="{{ route('dalam_perjalanan.save_cancel', [ $data['id_sewa'] ]) }}" method="POST" >
+    <form action="{{ route('dalam_perjalanan.save_cancel', [ $data['id_sewa'] ]) }}" method="POST" id="post_data">
         @csrf 
         <div class="card radiusSendiri">
             <div class="card-header">
@@ -115,35 +115,38 @@
                                 <input type="hidden" name="id_karyawan" id="id_karyawan" value="{{$data->id_karyawan}}">                    
                             </div> 
 
-                            <div class="form-group col-12">
-                                <label for="total_uang_jalan">Total Uang Jalan</label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
+                            {{-- @if ($data->jenis_tujuan =='FTL') --}}
+                                
+                                <div class="form-group col-12">
+                                    <label for="total_uang_jalan">Total Uang Jalan</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
                                     </div>
-                                    <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
                                 </div>
-                            </div>
 
-                            <div class="form-group col-12">
-                                <label for="uang_jalan_kembali">Uang Jalan Kembali<span class="text-red">*</span></label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
+                                <div class="form-group col-12">
+                                    <label for="uang_jalan_kembali">Uang Jalan Kembali<span class="text-red">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" >
                                     </div>
-                                    <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" >
                                 </div>
-                            </div>
 
-                            <div class="form-group col-12">
-                                <label for="">Kas / Bank<span class="text-red">*</span></label>
-                                <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                    @foreach ($dataKas as $kb)
-                                        <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
-                                    @endforeach
-                                        <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
-                                </select>
-                            </div>
+                                <div class="form-group col-12">
+                                    <label for="">Kas / Bank<span class="text-red">*</span></label>
+                                    <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                        @foreach ($dataKas as $kb)
+                                            <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                        @endforeach
+                                            <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
+                                    </select>
+                                </div>
+                            {{-- @endif --}}
                             
                         </div>
                     </div>

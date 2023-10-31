@@ -883,11 +883,14 @@ class DalamPerjalananController extends Controller
         $data = $request->post();
         $user = Auth::user()->id;
         $id = $data['id_sewa_hidden'];
-        $id_kas = $data['pembayaran'];
+        // $id_kas = $data['pembayaran'];
         DB::beginTransaction(); 
-
-        $sewa = Sewa::where('is_aktif', 'Y')->where('id_sewa', $id)->first();
         try {
+            $sewa = Sewa::where('is_aktif', 'Y')->where('id_sewa', $id)->first();
+            $sewa->updated_by = $user;
+            $sewa->updated_at = now();
+            $sewa->status = 'MENUNGGU UANG JALAN';
+            $sewa->save();  
             $ujr = UangJalanRiwayat::where([
                                         'is_aktif' => 'Y',
                                         'sewa_id' => $id
@@ -916,22 +919,22 @@ class DalamPerjalananController extends Controller
                     }
                 }
             }
-            
             $riwayat = KasBankTransaction::where(['is_aktif' => 'Y',
                                                    'jenis' => 'uang_jalan',
-                                                   'keterangan_kode_transaksi' => $ujr->id    
+                                                   'keterangan_kode_transaksi' => $ujr->id,    
+                                                   'tanggal' => $ujr->tanggal    
                                                 ])->first();
-
+            // dd($riwayat);
             if($riwayat){
-                $riwayat->updated_by = $user;
-                $riwayat->updated_at = now();
-                $riwayat->is_aktif = 'N';
-                if($riwayat->save()){
-                    $kasbank = KasBank::where('is_aktif', 'Y')->find($id_kas);
+                $kasbank = KasBank::where('is_aktif', 'Y')->find($riwayat->id_kas_bank);
                     $kasbank->saldo_sekarang += $riwayat->kredit;
                     $kasbank->updated_by = $user;
                     $kasbank->updated_by = now();
-                    $kasbank->save();
+                if( $kasbank->save()){
+                    $riwayat->updated_by = $user;
+                    $riwayat->updated_at = now();
+                    $riwayat->is_aktif = 'N';
+                    $riwayat->save();
                 }
             }
 

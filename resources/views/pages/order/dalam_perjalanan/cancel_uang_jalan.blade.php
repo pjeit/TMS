@@ -18,7 +18,7 @@
    }
 </style>
 <div class="container-fluid">
-    <form action="{{ route('dalam_perjalanan.save_cancel_uang_jalan', [ $data['id_sewa'] ]) }}" method="POST" >
+    <form action="{{ route('dalam_perjalanan.save_cancel_uang_jalan', [ $data['id_sewa'] ]) }}" method="POST" id="post_data">
         @csrf 
         <div class="card radiusSendiri">
             <div class="card-header">
@@ -134,16 +134,16 @@
                                     <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" >
                                 </div>
                             </div> --}}
-
+{{-- 
                             <div class="form-group col-12">
                                 <label for="">Kas / Bank<span class="text-red">*</span></label>
                                 <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                     @foreach ($dataKas as $kb)
                                         <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                     @endforeach
-                                        {{-- <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option> --}}
+                                        <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
                                 </select>
-                            </div>
+                            </div> --}}
                             
                         </div>
                     </div>
@@ -186,8 +186,8 @@ $(document).ready(function() {
             event.preventDefault();
 
             Swal.fire({
-                title: 'Apakah Anda yakin data sudah benar ?',
-                text: "Periksa kembali data anda",
+                 title: 'Apakah Anda yakin akan membatalkan uang jalan ?',
+                text: "Konfirmasi kembali",
                 icon: 'warning',
                 showCancelButton: true,
                 cancelButtonColor: '#d33',
