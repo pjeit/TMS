@@ -101,7 +101,11 @@ class SewaController extends Controller
             $sewa->id_customer = $data['customer_id'];
             $sewa->id_grup_tujuan = $data['tujuan_id'];
             $sewa->jenis_tujuan = $data['jenis_tujuan'];
-            $sewa->status = 'MENUNGGU UANG JALAN';
+            $status = 'MENUNGGU UANG JALAN';
+            if($data['jenis_tujuan'] == 'LTL'){
+                $status = 'PROSES DOORING';
+            }
+            $sewa->status = $status;
             $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
             $sewa->nama_tujuan = $data['nama_tujuan'];
             $sewa->alamat_tujuan = $data['alamat_tujuan'];
@@ -312,7 +316,6 @@ class SewaController extends Controller
         // dd($id);
         $data = $request->post();
         $user = Auth::user()->id; 
-        // dd($data);
         try {
 
             $sewa = Sewa::where('is_aktif', 'Y')

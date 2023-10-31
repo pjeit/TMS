@@ -16,15 +16,13 @@ class DashboardController extends Controller
 
     public function Reset()
     {
-
         try {
             DB::transaction(function () {
                 // Add your DELETE statements here
                 DB::statement('DELETE FROM trip_supir');
-                 DB::statement('DELETE FROM pencairan_komisi');
-                DB::statement('DELETE FROM pencairan_komisi_detail');
                 DB::statement('DELETE FROM sewa_biaya');
                 DB::statement('DELETE FROM sewa_operasional');
+                DB::statement('DELETE FROM sewa_biaya');
                 DB::statement('DELETE FROM sewa');
                 DB::statement('DELETE FROM job_order_detail_biaya');
                 DB::statement('DELETE FROM job_order_detail');
@@ -37,10 +35,9 @@ class DashboardController extends Controller
                 DB::statement('DELETE FROM karyawan_hutang_transaction');
                 DB::statement('DELETE FROM uang_jalan_riwayat');
                 DB::statement('DELETE FROM sewa_batal_cancel');
-                DB::statement('DELETE FROM uang_jalan_riwayat');
-               
-
-
+                DB::statement('DELETE FROM tagihan_rekanan');
+                DB::statement('DELETE FROM tagihan_rekanan_detail');
+                DB::statement('DELETE FROM tagihan_rekanan_pembayaran');
             });
         } catch (\Exception $e) {
             // Handle or log the exception
