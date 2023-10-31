@@ -208,6 +208,7 @@ class BelumInvoiceController extends Controller
             $invoice->tgl_invoice = date_create_from_format('d-M-Y', $data['tanggal_invoice']);
             $invoice->total_tagihan = ($data['total_tagihan'] != '')? floatval(str_replace(',', '', $data['total_tagihan'])):0;
             $invoice->total_sisa = ($data['total_sisa'] != '')? floatval(str_replace(',', '', $data['total_sisa'])):0;
+            $invoice->total_jumlah_muatan = ($data['total_jumlah_muatan'] != '')? floatval( $data['total_jumlah_muatan']):0;
             $invoice->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
             $invoice->catatan = $data['catatan_invoice'];
             $invoice->status = 'MENUNGGU PEMBAYARAN INVOICE';
@@ -241,6 +242,7 @@ class BelumInvoiceController extends Controller
                     $invoice_d->id_customer = $value['id_customer'];
                     $invoice_d->id_sewa = $key;
                     $invoice_d->tarif = $value['tarif']!=NULL? $value['tarif']:0;
+                    $invoice_d->jumlah_muatan = $value['muatan_satuan']!=NULL? $value['muatan_satuan']:0;
                     $invoice_d->add_cost = $value['addcost']!=NULL? $value['addcost']:0;
                     $invoice_d->add_cost_pisah = $value['addcost_pisah']!=NULL? $value['addcost_pisah']:0;
                     $invoice_d->diskon = $value['diskon']!=NULL? floatval(str_replace(',', '', $value['diskon'])):0;
@@ -281,6 +283,7 @@ class BelumInvoiceController extends Controller
                 $invoicePisah->tgl_invoice = date_create_from_format('d-M-Y', $data['tanggal_invoice']);
                 $invoicePisah->total_tagihan = ($data['total_pisah'] != '' || $data['total_pisah'] != 0)? floatval(str_replace(',', '', $data['total_pisah'])):0;
                 $invoicePisah->total_sisa = ($data['total_pisah'] != ''|| $data['total_pisah'] != 0)? floatval(str_replace(',', '', $data['total_pisah'])):0;
+                // $invoicePisah->total_jumlah_muatan = ($data['total_jumlah_muatan'] != '')? floatval( $data['total_jumlah_muatan']):0;
                 $invoicePisah->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo_pisah']);
                 $invoicePisah->catatan = $data['catatan_invoice'];
                 $invoicePisah->status = 'MENUNGGU PEMBAYARAN INVOICE';
@@ -300,6 +303,7 @@ class BelumInvoiceController extends Controller
                             $invoice_d_pisah->id_sewa = $key;
                             $invoice_d_pisah->add_cost_pisah = $value['addcost_pisah']!=NULL? $value['addcost_pisah']:0;
                             $invoice_d_pisah->sub_total = $value['addcost_pisah']!=NULL? $value['addcost_pisah']:0;
+                            // $invoice_d_pisah->jumlah_muatan = $value['muatan_satuan']!=NULL? $value['muatan_satuan']:0;
                             $invoice_d_pisah->catatan = $value['catatan'];
                             // $invoice_d_pisah->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
                             $invoice_d_pisah->created_by = $user;
@@ -419,7 +423,7 @@ class BelumInvoiceController extends Controller
              'Total tagihan: ' .'Rp.' .number_format($data->total_tagihan,2) 
         );
         // dd($qrcode);
-        // dd($dataJoDetail);   
+        // dd($dataOperasional!='[]');   
         $pdf = PDF::loadView('pages.invoice.belum_invoice.print',[
             'judul' => "Invoice",
             'data' => $data,

@@ -9,7 +9,7 @@
   
         :root {
             margin: 55px;
-            padding: 0;
+            padding: 2px;
             font-size: 30px;
             font-family: Arial, sans-serif;
 
@@ -70,7 +70,7 @@
             {{-- <h2 class="text" style="">INVOICE</h2> --}}
             
         {{-- </div> --}}
-        <table  autosize='1' style="width:100%;" >
+        <table  autosize='1' style="width:100%; " >
             <thead >
                 <tr>
                     <th style="width:5%;"></th>
@@ -110,6 +110,8 @@
                         {{-- <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
                         @php
                             $cekTarif = false;
+                            $cekMuatan = false;
+
                         @endphp
                         @php
                             foreach ($data->invoiceDetails as $i => $detail) {
@@ -117,6 +119,14 @@
                                 {
                                     //FLAG KALO KETEMU KELUAR LOOPING
                                     $cekTarif = true;
+                                    break;
+                                }
+                            }
+                            foreach ($data->invoiceDetails as $i => $detail) {
+                                if( $detail->jumlah_muatan > 0 )
+                                {
+                                    //FLAG KALO KETEMU KELUAR LOOPING
+                                    $cekMuatan = true;
                                     break;
                                 }
                             }
@@ -182,22 +192,23 @@
                     {{-- @foreach ($data->invoiceDetails as $i => $detail) --}}
 
                         @if ($cekTarif)
-
+                            @if ($cekTarif && $cekMuatan)
+                                <td style="border: 1px solid black; border-collapse: collapse;">JUMLAH MUATAN</td>
+                                <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
+                                <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
+                            @else
+                                <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
+                                <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
+                                <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
+                            @endif
+                        @else 
                             <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
-                            <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
-                             <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
-
-                        @else
-                            <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
-
                         @endif
-                        
                     {{-- @endforeach --}}
-               
                     <td style="border: 1px solid black; border-collapse: collapse;">SUBTOTAL</td>
                 </tr>
             </thead>
-            <tbody>
+            <tbody >
                 @php
                     $total = 0;
                 @endphp
@@ -205,7 +216,7 @@
                 @php
                     $i++;
                 @endphp
-                <tr>
+                <tr >
                     <td class="text-center">{{ $i }}</td>
                     <td>
                         {{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }}
@@ -219,49 +230,63 @@
                         <br>{{ $detail->sewa->seal_pelayaran }}
                     </td>
                     <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
-                    
+                    {{-- ini cek harga kalau ftl terus ga dipisah --}}
                     @if ($detail->tarif>0)
+                    {{-- ini cek harga kalau ltl, kalau ltl detect ada muatannya --}}
+                        @if ($detail->tarif>0&&$detail->jumlah_muatan>0)
+                            <td class="text-right">{{ $detail->jumlah_muatan }}</td>
+                            <td class="text-right">{{ number_format($detail->tarif) }}</td>
+                            <td class="text-right" {{--rowspan="27"--}}> <br>
+                            @if ($dataOperasional!='[]')
+                                @foreach ($dataOperasional as $DO)
 
-                        <td class="text-right">{{ number_format($detail->tarif) }}</td>
-                        <td class="text-right" {{--rowspan="27"--}}> <br>
-                        @if (isset($dataOperasional))
-                            @foreach ($dataOperasional as $DO)
-
-                                @if ($detail->id_sewa == $DO->id_sewa)
-                                        
+                                    @if ($detail->id_sewa == $DO->id_sewa)
+                                            
                                         <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
-                                {{-- @else
-                                        <span>0</br> --}}
 
-                                @endif
-                                
-                            @endforeach
+                                    @endif
+                                    
+                                @endforeach
 
-                        @else
-                            -
+                            @else
+                                -
+                            @endif
+                            </td>
                             
+                            {{-- ini else masuk kalau ftl biasa --}}
+                        @else
+                            <td class="text-right">{{ number_format($detail->tarif) }}</td>
+                            <td class="text-right" {{--rowspan="27"--}}> <br>
+                            @if ($dataOperasional!='[]')
+                                @foreach ($dataOperasional as $DO)
+
+                                    @if ($detail->id_sewa == $DO->id_sewa)
+                                            
+                                        <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
+
+                                    @endif
+                                    
+                                @endforeach
+
+                            @else
+                                -
+                            @endif
+                            </td>
+                            <td class="text-right">{{ number_format($detail->diskon) }}</td>
                         @endif
-
-                        </td>
-                        <td class="text-right">{{ number_format($detail->diskon) }}</td>
-
+                    {{-- ini cek harga kalau dipisah cuman addcost doang--}}
                     @else
                         <td class="text-right" {{--rowspan="27"--}}> <br>
-                        @if (isset($dataOperasional))
+                        @if ($dataOperasional!='[]')
                             @foreach ($dataOperasional as $DO)
 
                                 @if ($detail->id_sewa == $DO->id_sewa)
-                                        
-                                        <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
-                                {{-- @else
-                                        <span >0</br> --}}
-
+                                    <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </br>
                                 @endif
                                 
                             @endforeach
                         @else
                             -
-                            
                         @endif
                         </td>
                     @endif
@@ -278,7 +303,12 @@
                     {{-- @foreach ($data->invoiceDetails as $i => $detail) --}}
 
                         @if ($cekTarif)
-                            <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                           {{-- @if ($cekTarif && $cekMuatan)
+                                <td colspan="6" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                              
+                            @else --}}
+                                <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                            {{-- @endif --}}
                         @else
                             <td colspan="5" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
                         @endif
