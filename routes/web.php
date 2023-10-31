@@ -151,6 +151,9 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pencairan_uang_jalan/form', [App\Http\Controllers\PencairanUangJalanController::class, 'form'])->name('pencairan_uang_jalan.form');
         Route::resource('pencairan_uang_jalan', 'App\Http\Controllers\PencairanUangJalanController');
 
+        Route::get('pencairan_uang_jalan_ltl/getData/{item}', 'App\Http\Controllers\PencairanUangJalanLTLController@get_data')->name('pencairan_uang_jalan_ltl.get_data');
+        Route::resource('pencairan_uang_jalan_ltl', 'App\Http\Controllers\PencairanUangJalanLTLController');
+
         Route::get('/revisi_tl/cair/{id}', [App\Http\Controllers\RevisiTLController::class, 'cair'])->name('revisi_tl.cair');
         Route::post('/revisi_tl/save_cair', [App\Http\Controllers\RevisiTLController::class, 'save_cair'])->name('revisi_tl.save_cair');
         Route::get('/revisi_tl/refund/{id}', [App\Http\Controllers\RevisiTLController::class, 'refund'])->name('revisi_tl.refund');

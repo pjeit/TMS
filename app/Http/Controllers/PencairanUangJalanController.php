@@ -39,7 +39,7 @@ class PencairanUangJalanController extends Controller
                 ->get();
 
         return view('pages.finance.pencairan_uang_jalan.index',[
-            'judul' => "Pencairan Uang Jalan",
+            'judul' => "Pencairan Uang Jalan FTL",
             'sewa'=>$sewa,
             'dataJO' => null,
         ]);
@@ -90,6 +90,7 @@ class PencairanUangJalanController extends Controller
             'id_sewa_defaulth'=>$id_sewa_default,
         ]);
     }
+    
     public function store(Request $request)
     {
         $data = $request->post();

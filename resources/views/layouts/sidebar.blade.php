@@ -468,14 +468,37 @@
               </ul>
   
               <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pencairan_uang_jalan.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
+                <li class="nav-item   {{ 
+                request()->is('pencairan_uang_jalan*') ||
+                request()->is('pencairan_uang_jalan_ltl*')
+                ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p style="font-weight: 500;" >
                       Pencairan UJ
+                      <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
                     </p>
                   </a>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="{{route('pencairan_uang_jalan.index')}}" class="nav-link {{ request()->url() === route('pencairan_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
+                        <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                        <p>
+                          FTL
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{route('pencairan_uang_jalan_ltl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ltl.index')? ' active' : '' }} " style="font-weight: 500;">
+                        <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                        <p>
+                          LTL
+                        </p>
+                      </a>
+                    </li>
+                  </ul>
                 </li>
+              
               </ul>
 
               <ul class="nav nav-treeview">
