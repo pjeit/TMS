@@ -87,7 +87,11 @@
                                     <label for="">Uang Jalan</label>
                                     <input type="text" id="uang_jalan" name="uang_jalan" class="form-control uang numaja" required>
                                 </div>
-                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Total Hutan</label>
+                                    <input type="text" id="total_hutang" name="total_hutang" class="form-control uang numaja" readonly>
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Potong Hutan</label>
                                     <input type="text" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" >
                                 </div>
@@ -187,7 +191,7 @@
             if(item != ''){
                 showTable(item);
             }else{
-                $('#ltl').dataTable().fnClearTable();
+                // $('#ltl').dataTable().fnClearTable();
             }
 		});        
 
@@ -200,7 +204,16 @@
                 cache: false,
                 processData:false,
                 success: function(response) {
+                    // $("#hasil").empty();
+                    $('#ltl').dataTable().fnClearTable();
                     $("#ltl").dataTable().fnDestroy();
+
+                    $("th").remove();
+                    $("thead tr").append(`<th>Customer</th>
+                                            <th style="width:200px">No. Sewa</th>
+                                            <th style="width:200px">Tanggal Berangkat</th>
+                                            <th style="width:200px">Tujuan</th>                    
+                                        `);
 
                     var data = response.data;
                     console.log('data', data);
@@ -208,10 +221,18 @@
                         for (var i = 0; i <data.length; i++) {
                             if(data[i].total_dicairkan == null){
                                 var row = $("<tr></tr>");
+
+                                if (data[i].get_karyawan.get_hutang != null) {
+                                    hutangKaryawan = data[i].get_karyawan.get_hutang.total_hutang;
+                                } else {
+                                    hutangKaryawan = 0;
+                                }
+
                                 row.append(`<td style='background: #efefef' > 
                                         <div class="d-flex justify-content-between ">
                                             <div>
                                                 <b> <span>► ${data[i].get_customer.nama}</span> (${data[i].no_polisi}) - ${data[i].nama_driver} </b>
+                                                <input type="hidden" value="${hutangKaryawan}" id="hutang" />
                                             </div>
                                             <div>
                                                 <button class="btn btn-primary btn-sm radiusSendiri openModal" value="${data[0].id_sewa}">
@@ -226,7 +247,7 @@
                                 $("#hasil").append(row);
                             }
                         }
-                        
+
                         new DataTable('#ltl', {
                             searching: false, paging: false, info: false, ordering: false,
                             rowGroup: {
@@ -245,16 +266,16 @@
                         });
                     }
                 },error: function (xhr, status, error) {
-                    $('#ltl').dataTable().fnClearTable();
+                    // $('#ltl').dataTable().fnClearTable();
 
-                    // if ( xhr.responseJSON.result == 'error') {
-                    //     console.log("Error:", xhr.responseJSON.message);
-                    //     console.log("XHR status:", status);
-                    //     console.log("Error:", error);
-                    //     console.log("Response:", xhr.responseJSON);
-                    // } else {
-                    //     toastr.error("Terjadi kesalahan saat menerima data. " + error);
-                    // }
+                    if ( xhr.responseJSON.result == 'error') {
+                        console.log("Error:", xhr.responseJSON.message);
+                        console.log("XHR status:", status);
+                        console.log("Error:", error);
+                        console.log("Response:", xhr.responseJSON);
+                    } else {
+                        toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                    }
                 }
             });
         }
@@ -273,40 +294,9 @@
         $(document).on('click', '.openModal', function(event){
             var id = this.value;
             $('#key').val(id);
+            $('#total_hutang').val( moneyMask($('#hutang').val()) );
 
             $('#modal_detail').modal('show');
-
-            
-            // var html = `<input id="swal-input1" class="swal2-input">
-            //             <input id="id" name class="swal2-input" value="${id}">`;
-            // Swal.fire({
-            //     title: 'Uang Jalan',
-            //     html: html,
-            //     focusConfirm: false,
-            //     preConfirm: () => {
-            //         return fetch(`//api.github.com/users/${login}`)
-            //         .then(response => {
-            //             if (!response.ok) {
-            //             throw new Error(response.statusText)
-            //             }
-            //             return response.json()
-            //         })
-            //         .catch(error => {
-            //             Swal.showValidationMessage(
-            //             `Request failed: ${error}`
-            //             )
-            //         })
-            //     },
-            //     allowOutsideClick: () => !Swal.isLoading()
-            //     }).then((result) => {
-            //     if (result.isConfirmed) {
-            //         Swal.fire({
-            //             title: `${result.value.login}'s avatar`,
-            //             imageUrl: result.value.avatar_url
-            //         })
-            //     }
-            // })
-
         });
     });        
 </script>
