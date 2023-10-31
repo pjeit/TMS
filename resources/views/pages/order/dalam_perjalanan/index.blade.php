@@ -58,11 +58,8 @@
                                     <td>{{ $item->nama_tujuan }}</td>
                                     @if ($item->id_supplier)
                                     <td>DRIVER REKANAN  ({{ $item->namaSupplier }})</td>
-
                                     @else
                                     <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
-
-                                        
                                     @endif
                                     <td style="text-align: center">
                                             <div class="btn-group dropleft">
@@ -95,9 +92,9 @@
                                                         <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
                                                         </a>
-                                                        <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
+                                                        {{-- <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="fas fa-times mr-3"></span> Cancel
-                                                        </a>
+                                                        </a> --}}
                                                         
                                                     @endif
                                                     
