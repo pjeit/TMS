@@ -71,7 +71,7 @@
                             @if ($data->no_kontainer_jod && $data->jenis_order =="INBOUND")
                                 <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$data->no_kontainer_jod}}" >                         
                             @else
-                                <input type="text" id="no_kontainer" required ="no_kontainer" class="form-control" value="{{$data->no_kontainer}}" >                         
+                                <input type="text" id="no_kontainer" required ="no_kontainer" class="form-control" readonly value="{{$data->no_kontainer}}" >                         
                             @endif
                         </div> 
                             @if ($data->seal_pelayaran_jod&&$data->jenis_order =="INBOUND")
@@ -83,13 +83,13 @@
                         
                         <div class="form-group">
                             <label for="no_akun">No. Surat Jalan<span class="text-red">*</span></label>
-                            <input type="text" id="surat_jalan" required name="surat_jalan" class="form-control" value="{{$data->no_surat_jalan}}" >                         
+                            <input type="text" readonly id="surat_jalan" required name="surat_jalan" class="form-control" value="{{$data->no_surat_jalan}}" >                         
                         </div> 
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="alasan_cancel">Alasan Cancel Perjalanan<span style="color: red;">*</span></label>
                             <textarea name="alasan_cancel" required class="form-control" id="alasan_cancel" rows="5" value=""></textarea>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">
                         <div class="row">
@@ -125,7 +125,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group col-12">
+                            {{-- <div class="form-group col-12">
                                 <label for="uang_jalan_kembali">Uang Jalan Kembali<span class="text-red">*</span></label>
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -133,7 +133,7 @@
                                     </div>
                                     <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" >
                                 </div>
-                            </div>
+                            </div> --}}
 
                             <div class="form-group col-12">
                                 <label for="">Kas / Bank<span class="text-red">*</span></label>
@@ -141,7 +141,7 @@
                                     @foreach ($dataKas as $kb)
                                         <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                     @endforeach
-                                        <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
+                                        {{-- <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option> --}}
                                 </select>
                             </div>
                             

@@ -59,7 +59,27 @@
                                     <td>{{ $item->jenis_klaim}}</td>
                                     <td>{{ $item->tanggal_klaim }}</td>
                                     <td>Rp. {{number_format($item->total_klaim,2)  }}</td>
-                                    <td>{{ $item->status_klaim }}</td>
+                                    <td>
+                                        @if ($item->status_klaim == 'PENDING')
+                                         <span class="badge badge-warning">
+                                            MENUNGGU PERSETUJUAN
+                                            <i class="fas fa-solid fa-clock"></i>
+                                        </span>
+                                        @elseif($item->status_klaim == 'ACCEPTED')
+                                         <span class="badge badge-success">
+                                            DITERIMA
+                                             <i class="fas fa-regular fa-thumbs-up"></i>
+                                         </span>
+                                        @else
+                                         <span class="badge badge-danger">
+                                            DITOLAK
+                                             <i class="fas fa-regular fa-thumbs-down"></i>
+                                        
+                                        </span>
+                                            
+                                        @endif
+
+                                    </td>
                                     <td>{{ $item->keterangan_klaim }}</td>
                                     <td>
                                         <div class="btn-group dropleft">

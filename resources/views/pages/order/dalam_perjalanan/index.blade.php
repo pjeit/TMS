@@ -23,9 +23,10 @@
         </div>
         
         <div class="card-body">
-                <table id="" class="table table-bordered table-striped" width=''>
+                <table id="tabelSewa" class="table table-bordered table-striped" width=''>
                     <thead>
                         <tr>
+                            <th>Custoemer</th>
                             <th>No. Polisi</th>
                             <th>No. Sewa</th>
                             <th>Tanggal Berangkat</th>
@@ -34,77 +35,91 @@
                             <th style="width:30px"></th>
                         </tr>
                     </thead>
-                    <tbody id="hasil">
-                    @if (isset($dataSewa))
-                        @php
-                            $simpenIdCust = null; 
-                        @endphp
-                        @foreach($dataSewa as $item)
-                            
-                            @if($item->id_cust != $simpenIdCust)
-                                @php
-                                    $simpenIdCust = $item->id_cust; 
-                                @endphp
+                    <tbody id="">
+                        @if (isset($dataSewa))
+                            @php
+                                $simpenIdCust = null; 
+                            @endphp
+                            @foreach($dataSewa as $item)
+                                
+                                {{-- @if($item->id_cust != $simpenIdCust)
+                                    @php
+                                        $simpenIdCust = $item->id_cust; 
+                                    @endphp
+                                    <tr>
+                                        <th colspan="6">{{ $item->nama_cust }}</th>
+                                    </tr>
+                                @endif --}}
                                 <tr>
-                                    <th colspan="6">{{ $item->nama_cust }}</th>
-                                </tr>
-                            @endif
-                            <tr>
-                            
-                                <td>{{ $item->no_polisi}}</td>
-                                <td>{{ $item->no_sewa }}</td>
-                                <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
-                                <td>{{ $item->nama_tujuan }}</td>
-                                @if ($item->id_supplier)
-                                <td>DRIVER REKANAN  ({{ $item->namaSupplier }})</td>
+                                    <td>{{ $item->nama_cust}}</td>
+                                    <td>{{ $item->no_polisi}}</td>
+                                    <td>{{ $item->no_sewa }}</td>
+                                    <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
+                                    <td>{{ $item->nama_tujuan }}</td>
+                                    @if ($item->id_supplier)
+                                    <td>DRIVER REKANAN  ({{ $item->namaSupplier }})</td>
 
-                                @else
-                                <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
+                                    @else
+                                    <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
 
-                                    
-                                @endif
-                                <td style="text-align: center">
-                                        <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-list"></i>
-                                        </button>
-                                        <div class="dropdown-menu" >
-                                            <a href="{{route('dalam_perjalanan.edit',[$item->id_sewa])}}" class="dropdown-item">
-                                                <span class="fas fa-truck mr-3"></span> Input Kendaraan Kembali
-                                            </a>
-                                            @if ($item->id_supplier)
-                                                <a href="{{route('truck_order_rekanan.edit',[$item->id_sewa])}}" class="dropdown-item">
-                                                    <span class="fas fa-edit mr-3"></span> Edit Sewa Rekanan
+                                        
+                                    @endif
+                                    <td style="text-align: center">
+                                            <div class="btn-group dropleft">
+                                            <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                            <div class="dropdown-menu" >
+                                                <a href="{{route('dalam_perjalanan.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                    <span class="fas fa-truck mr-3"></span> Input Kendaraan Kembali
                                                 </a>
-                                            @else
-                                                <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
-                                                    <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
-                                                </a>
-                                                <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
-                                                    <span class="fas fa-undo mr-3"></span> Batal muat
-                                                </a>
-                                                <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
-                                                    <span class="fas fa-times mr-3"></span> Cancel
-                                                </a>
-                                            @endif
-                                            
+                                                @if ($item->id_supplier)
+                                                    <a href="{{route('truck_order_rekanan.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                        <span class="fas fa-edit mr-3"></span> Edit Sewa Rekanan
+                                                    </a>
+                                                @else
+                                                    @if ($item->jenis_tujuan == 'FTL')
+                                                        <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                            <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
+                                                        </a>
+                                                        <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
+                                                            <span class="fas fa-undo mr-3"></span> Batal muat
+                                                        </a>
+                                                        <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
+                                                            <span class="fas fa-times mr-3"></span> Cancel
+                                                        </a>
+                                                          <a href="{{route('dalam_perjalanan.cancel_uang_jalan',[$item->id_sewa])}}" class="dropdown-item">
+                                                            <span class="nav-icon fas fa-dollar-sign mr-3"></span> Cancel Uang Jalan
+                                                        </a>
+                                                    @else
+                                                        <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                            <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
+                                                        </a>
+                                                        <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
+                                                            <span class="fas fa-times mr-3"></span> Cancel
+                                                        </a>
+                                                        
+                                                    @endif
+                                                    
+                                                @endif
+                                                
+                                            </div>
                                         </div>
-                                    </div>
-                                    {{-- <form method="POST" action="{{ route('pencairan_uang_jalan_ftl.form') }}">
-                                        @csrf
-                                        <input type="hidden" name="id_sewa" value="{{ $item->id_sewa }}">
-                                        <button type="submit" class="btn btn-success radiusSendiri">
-                                            <i class="fas fa-credit-card"></i> Pencairan
-                                        </button>
-                                    </form> --}}
-                                    {{-- <a class="btn btn-success radiusSendiri" href="{{route('pencairan_uang_jalan_ftl.edit',[$item->id_sewa])}}">
-                                            <i class="fas fa-credit-card"></i> Pencairan
-                                    </a>   --}}
-                                    {{-- <a class="dropdown-item" href="{{ route('pencairan_uang_jalan_ftl.edit', [$item->id_sewa]) }}"><span class="fas fa-edit" style="width:24px"></span>Pencairan</a> --}}
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endif
+                                        {{-- <form method="POST" action="{{ route('pencairan_uang_jalan_ftl.form') }}">
+                                            @csrf
+                                            <input type="hidden" name="id_sewa" value="{{ $item->id_sewa }}">
+                                            <button type="submit" class="btn btn-success radiusSendiri">
+                                                <i class="fas fa-credit-card"></i> Pencairan
+                                            </button>
+                                        </form> --}}
+                                        {{-- <a class="btn btn-success radiusSendiri" href="{{route('pencairan_uang_jalan_ftl.edit',[$item->id_sewa])}}">
+                                                <i class="fas fa-credit-card"></i> Pencairan
+                                        </a>   --}}
+                                        {{-- <a class="dropdown-item" href="{{ route('pencairan_uang_jalan_ftl.edit', [$item->id_sewa]) }}"><span class="fas fa-edit" style="width:24px"></span>Pencairan</a> --}}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
         </div>
@@ -113,7 +128,7 @@
 
 <script>
 $(document).ready(function () {
-    new DataTable('#TabelKlaim', {
+    new DataTable('#tabelSewa', {
         order: [
             [0, 'asc'],
         ],
