@@ -132,8 +132,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/dalam_perjalanan/save_batal_muat/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_batal_muat'])->name('dalam_perjalanan.save_batal_muat');
         Route::post('/dalam_perjalanan/save_cancel/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_cancel'])->name('dalam_perjalanan.save_cancel');
+        Route::post('/dalam_perjalanan/save_cancel_uang_jalan/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_cancel_uang_jalan'])->name('dalam_perjalanan.save_cancel_uang_jalan');
+        
         Route::get('/dalam_perjalanan/batal_muat/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'batal_muat'])->name('dalam_perjalanan.batal_muat');
         Route::get('/dalam_perjalanan/cancel/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'cancel'])->name('dalam_perjalanan.cancel');
+        Route::get('/dalam_perjalanan/cancel_uang_jalan/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'cancel_uang_jalan'])->name('dalam_perjalanan.cancel_uang_jalan');
+        
         
         Route::resource('dalam_perjalanan', 'App\Http\Controllers\DalamPerjalananController');
 

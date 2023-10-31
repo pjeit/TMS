@@ -860,4 +860,47 @@ class DalamPerjalananController extends Controller
 
     }
 
+    public function cancel_uang_jalan($id)
+    {
+        $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
+
+        $dataKas = DB::table('kas_bank')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->get();
+
+        return view('pages.order.dalam_perjalanan.cancel_uang_jalan',[
+            'judul' => "cancel",
+            'data' => $sewa,
+            'id_sewa' => $id,
+            'dataKas' => $dataKas,
+
+        ]);
+    }
+
+     public function save_cancel_uang_jalan(Request $request, Sewa $sewa)
+    {
+        $data = $request->post();
+        $tgl_cancel = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+        $tgl_kembali = date_create_from_format('d-M-Y', $data['tanggal_kembali']);
+        $uj_kembali = floatval(str_replace(',', '', $data['uang_jalan_kembali']));
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        // dd($data);
+
+        try {
+            $sewa->status = 'PROSES DOORING';
+            // $sewa->catatan = $data['alasan_cancel'];
+            $sewa->updated_by = $user;
+            $sewa->updated_at = now();
+            $sewa->save();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
+            // return redirect()->back()->withErrors($e->getMessage())->withInput();
+        }
+
+    }
+
 }

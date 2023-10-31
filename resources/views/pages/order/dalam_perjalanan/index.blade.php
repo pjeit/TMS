@@ -112,7 +112,26 @@
 </div>
 
 <script>
-
+$(document).ready(function () {
+    new DataTable('#TabelKlaim', {
+        order: [
+            [0, 'asc'],
+        ],
+        rowGroup: {
+            dataSrc: [0]
+        },
+        columnDefs: [
+            {
+                targets: [0],
+                visible: false
+            },
+            {
+                "orderable": false,
+                "targets": [0,1,2,3,4,5,6]
+            }
+        ],
+    }); 
+});
 
 </script>
 @endsection
