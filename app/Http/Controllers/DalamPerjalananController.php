@@ -96,7 +96,7 @@ class DalamPerjalananController extends Controller
     {
         //
         $sewa = DB::table('sewa AS s')
-                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
+                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','gt.harga_per_kg','gt.min_muatan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                     ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
@@ -420,7 +420,12 @@ class DalamPerjalananController extends Controller
                 $dalam_perjalanan->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
                 $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
                 $dalam_perjalanan->is_kembali = $data['is_kembali'];
+                if ($data['jenis_tujuan']=='LTL') {
+                    $dalam_perjalanan->jumlah_muatan = $data['muatan_ltl'];
+                    $dalam_perjalanan->total_tarif = $data['total_harga_lcl'];
+                }
             }
+         
             $dalam_perjalanan->updated_by = $user;
             $dalam_perjalanan->updated_at = now();
             $dalam_perjalanan->save();
