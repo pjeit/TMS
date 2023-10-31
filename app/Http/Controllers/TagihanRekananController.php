@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KasBankTransaction;
 use App\Models\Sewa;
 use App\Models\Supplier;
 use App\Models\TagihanRekanan;
 use App\Models\TagihanRekananDetail;
+use App\Models\TagihanRekananPembayaran;
 use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -77,7 +79,6 @@ class TagihanRekananController extends Controller
 
         $data = $request->collect();
         $data_tagihan = TagihanRekanan::with('getDetails')->where('is_aktif', 'Y')->whereIn('id', $data['idTagihan'])->get();
-        // dd($data_tagihan);
         if($data_tagihan){
             return view('pages.finance.tagihan_rekanan.bayar',[
                 'judul' => "Tagihan Rekanan",
@@ -145,6 +146,78 @@ class TagihanRekananController extends Controller
         } catch (ValidationException $e) {
             db::rollBack();
             return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibuat!']);
+        }
+    }
+
+    public function bayar_save(Request $request){
+        $data = $request->collect();
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        // dd($data);
+        try {
+            $keterangan = 'TAGIHAN REKANAN: '. $data['nama_supplier'];
+            $id_tagihan = '';
+            $biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
+
+            foreach ($data['data'] as $key => $value) {
+                $tagihan = TagihanRekanan::where('is_aktif', 'Y')->find($key);
+                if($tagihan){
+                    $i = 0;
+
+                    $tagihan->tagihan_dibayarkan += $value['total_bayar'];
+                    $tagihan->sisa_tagihan -= ($value['total_bayar']+$value['ppn']);
+                    $tagihan->ppn = $value['ppn'];
+                    $tagihan->updated_by = $user;
+                    $tagihan->updated_at = now();
+                    if($tagihan->save()){
+                        $pembayaran = new TagihanRekananPembayaran();
+                        $pembayaran->id_tagihan_rekanan = $key;
+                        $pembayaran->id_supplier = $data['id_supplier'];
+                        $pembayaran->id_kas = $data['id_kas'];
+                        $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
+                        $pembayaran->bukti_potong = $value['bukti_potong'];
+                        $pembayaran->total_tagihan = $value['total_tagihan'];
+                        $pembayaran->total_bayar = $value['total_bayar'];
+                        $pembayaran->pph = $value['ppn'];
+
+                        $bayar = $value['total_bayar'];
+                        if($i == 0){
+                            $pembayaran->biaya_admin = $biaya_admin;
+                            $bayar = $value['total_bayar'] - $biaya_admin;
+                        }
+                        $pembayaran->created_by = $user;
+                        $pembayaran->created_at = now();
+                        $pembayaran->save();
+
+                        $id_tagihan .= $pembayaran .', ';
+                        $keterangan .= ' '. $value['no_nota'] . ' #TOTAL BAYAR: ' .$bayar;
+                        $i++;
+                    }
+                }
+
+                
+            }
+
+            $history = new KasBankTransaction();
+            $history->id_kas_bank = $data['id_kas'];
+            $history->tanggal = date_create_from_format('d-M-Y', $data['tgl_bayar']);
+            $history->id_kas_bank = $data['id_kas'];
+            $history->debit = floatval(str_replace(',', '', $data['total_bayar'])) - floatval(str_replace(',', '', $data['pph'])) - floatval(str_replace(',', '', $data['biaya_admin']));
+            $history->kredit = 0;
+            $history->kode_coa = 1255; // hardcode
+            $history->jenis = 'TAGIHAN_REKANAN';
+            $history->keterangan_transaksi = $keterangan;
+            $history->keterangan_kode_transaksi = $id_tagihan;
+            $history->created_by = $user;
+            $history->created_at = now();
+            if($history->save()){
+                DB::commit();
+            }
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'Success', 'msg' => 'Tagihan berhasil dibayar']);
+
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibayar!']);
         }
     }
 
