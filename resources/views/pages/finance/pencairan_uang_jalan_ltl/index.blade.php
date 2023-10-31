@@ -28,7 +28,9 @@
                                     <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                         <option value="">­­— PILIH KENDARAAN —</option>
                                         @foreach ($data as $item)
-                                            <option value="{{ $item['no_polisi'] }}">{{ $item['no_polisi'] }}</option>
+                                            @if ($item['total_uang_jalan'] == 0)
+                                                <option value="{{ $item['no_polisi'] }}">{{ $item['no_polisi'] }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -243,15 +245,16 @@
                         });
                     }
                 },error: function (xhr, status, error) {
-                    $("#loading-spinner").hide();
-                    if ( xhr.responseJSON.result == 'error') {
-                        console.log("Error:", xhr.responseJSON.message);
-                        console.log("XHR status:", status);
-                        console.log("Error:", error);
-                        console.log("Response:", xhr.responseJSON);
-                    } else {
-                        toastr.error("Terjadi kesalahan saat menerima data. " + error);
-                    }
+                    $('#ltl').dataTable().fnClearTable();
+
+                    // if ( xhr.responseJSON.result == 'error') {
+                    //     console.log("Error:", xhr.responseJSON.message);
+                    //     console.log("XHR status:", status);
+                    //     console.log("Error:", error);
+                    //     console.log("Response:", xhr.responseJSON);
+                    // } else {
+                    //     toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                    // }
                 }
             });
         }
