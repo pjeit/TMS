@@ -878,27 +878,68 @@ class DalamPerjalananController extends Controller
         ]);
     }
 
-     public function save_cancel_uang_jalan(Request $request, Sewa $sewa)
+     public function save_cancel_uang_jalan(Request $request)
     {
         $data = $request->post();
-        $tgl_cancel = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
-        $tgl_kembali = date_create_from_format('d-M-Y', $data['tanggal_kembali']);
-        $uj_kembali = floatval(str_replace(',', '', $data['uang_jalan_kembali']));
         $user = Auth::user()->id;
         DB::beginTransaction(); 
         // dd($data);
+        $id = $data['id_sewa_hidden'];
+        $id_kas = $data['pembayaran'];
 
+        $sewa = Sewa::where('is_aktif', 'Y')->where('id_sewa', $id)->first();
         try {
-            $sewa->status = 'PROSES DOORING';
-            // $sewa->catatan = $data['alasan_cancel'];
-            $sewa->updated_by = $user;
-            $sewa->updated_at = now();
-            $sewa->save();
-            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+            $ujr = UangJalanRiwayat::where([
+                                        'is_aktif' => 'Y',
+                                        'sewa_id' => $id
+                                    ])->first();
+            $ujr->updated_by = $user;
+            $ujr->updated_by = now();
+            $ujr->is_aktif = 'N';
+            if($ujr->save()){
+                $kht = KaryawanHutangTransaction::where(['is_aktif' => 'Y', 
+                                                        'id_karyawan' => $sewa->id_karyawan,
+                                                        'refrensi_id' => $ujr->id 
+                                                        ])->first();
+                if($kht){
+                    $kht->updated_by = $user;
+                    $kht->updated_by = now();
+                    $kht->is_aktif = 'N';
+                    if($kht->save()){
+                        $kh = KaryawanHutang::where(['is_aktif' => 'Y', 'id_karyawan' => $sewa->id_karyawan])->first();
+                        if($kh){
+                            $kh->total_hutang += $kht->kredit;
+                            $kh->updated_by = $user;
+                            $kh->updated_by = now();
+                            $kh->save();
+                        }
+                    }
+                }
+            }
+            
+            $riwayat = KasBankTransaction::where(['is_aktif' => 'Y',
+                                                   'jenis' => 'uang_jalan',
+                                                   'keterangan_kode_transaksi' => $ujr->id    
+                                                ])->first();
+            if($riwayat){
+                $riwayat->updated_by = $user;
+                $riwayat->updated_by = now();
+                $riwayat->is_aktif = 'N';
+                if($riwayat->save()){
+                    $kasbank = KasBank::where('is_aktif', 'Y')->find($id_kas);
+                    $kasbank->saldo_sekarang += $riwayat->kredit;
+                    $kasbank->updated_by = $user;
+                    $kasbank->updated_by = now();
+                    if($kasbank->save()){
+                        DB::commit();
+                        return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+                    }
+                }
+            }
+
         } catch (ValidationException $e) {
             DB::rollBack();
-            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
-            // return redirect()->back()->withErrors($e->getMessage())->withInput();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
         }
 
     }

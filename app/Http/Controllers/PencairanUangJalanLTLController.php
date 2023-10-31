@@ -77,6 +77,19 @@ class PencairanUangJalanLTLController extends Controller
                     $sbiaya->created_by = $user;
                     $sbiaya->created_at = now();
                     if($sbiaya->save()){
+                        $ujr = new UangJalanRiwayat();
+                        $ujr->tanggal = now();
+                        $ujr->tanggal_pencatatan = now();
+                        $ujr->sewa_id = $sewa->id_sewa;
+                        $ujr->total_uang_jalan = $diterima;
+                        $ujr->potong_hutang = $pot_hut;
+                        $ujr->kas_bank_id = $data['id_kas'];
+                        $ujr->catatan = 'UANG JALAN LTL - '.$data['catatan'];
+                        $ujr->created_by = $user;
+                        $ujr->created_at = now();
+                        $ujr->is_aktif = 'Y';
+                        $ujr->save();
+
                         if($pot_hut != 0){
                             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan',$sewa->id_karyawan)->first();
                             if($kh){
@@ -84,34 +97,20 @@ class PencairanUangJalanLTLController extends Controller
                                 $kh->updated_by = $user;
                                 $kh->updated_at = now();
                                 if($kh->save()){
-                                    $ujr = new UangJalanRiwayat();
-                                    $ujr->tanggal = now();
-                                    $ujr->tanggal_pencatatan = now();
-                                    $ujr->sewa_id = $sewa->id_sewa;
-                                    $ujr->total_uang_jalan = $uj;
-                                    $ujr->total_tl = 0;
-                                    $ujr->potong_hutang = $pot_hut;
-                                    $ujr->kas_bank_id = $data['id_kas'];
-                                    $ujr->catatan = 'UANG JALAN LTL - '.$data['catatan'];
-                                    $ujr->created_by = $user;
-                                    $ujr->created_at = now();
-                                    $ujr->is_aktif = 'Y';
-                                    if($ujr->save()){
-                                        $kht = new KaryawanHutangTransaction();
-                                        $kht->id_karyawan = $sewa->id_karyawan;
-                                        $kht->refrensi_id = $ujr->id; // id uang jalan
-                                        $kht->refrensi_keterangan = 'UANG JALAN LTL';
-                                        $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                                        $kht->tanggal = now();
-                                        $kht->debit = 0;
-                                        $kht->kredit = $pot_hut;
-                                        $kht->kas_bank_id = $data['id_kas'];
-                                        $kht->catatan = $data['catatan'];
-                                        $kht->created_by = $user;
-                                        $kht->created_at = now();
-                                        $kht->is_aktif = 'Y';
-                                        $kht->save();  
-                                    }
+                                    $kht = new KaryawanHutangTransaction();
+                                    $kht->id_karyawan = $sewa->id_karyawan;
+                                    $kht->refrensi_id = $ujr->id; // id uang jalan
+                                    $kht->refrensi_keterangan = 'UANG JALAN LTL';
+                                    $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
+                                    $kht->tanggal = now();
+                                    $kht->debit = 0;
+                                    $kht->kredit = $pot_hut;
+                                    $kht->kas_bank_id = $data['id_kas'];
+                                    $kht->catatan = $data['catatan'];
+                                    $kht->created_by = $user;
+                                    $kht->created_at = now();
+                                    $kht->is_aktif = 'Y';
+                                    $kht->save();  
                                 }
                             }else{
                                 DB::rollBack();
@@ -147,7 +146,7 @@ class PencairanUangJalanLTLController extends Controller
                                     1016, //kode coa
                                     'uang_jalan',
                                     'UJ LTL: #'.$sewa->no_polisi. ' #'.$sewa->nama_driver, //keterangan_transaksi
-                                    $sewa->id_sewa,//keterangan_kode_transaksi
+                                    $ujr->id_sewa,//keterangan_kode_transaksi
                                     $user,//created_by
                                     now(),//created_at
                                     $user,//updated_by
