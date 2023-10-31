@@ -229,11 +229,12 @@
                         {{-- <br>{{ $detail->sewa->no_surat_jalan }} --}}
                         <br>{{ $detail->sewa->seal_pelayaran }}
                     </td>
-                    <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
+                    {{-- <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td> --}}
                     {{-- ini cek harga kalau ftl terus ga dipisah --}}
                     @if ($detail->tarif>0)
                     {{-- ini cek harga kalau ltl, kalau ltl detect ada muatannya --}}
                         @if ($detail->tarif>0&&$detail->jumlah_muatan>0)
+                            <td class="text-center">{{ $detail->sewa->no_polisi }}</td>
                             <td class="text-right">{{ $detail->jumlah_muatan }}</td>
                             <td class="text-right">{{ number_format($detail->tarif) }}</td>
                             <td class="text-right" {{--rowspan="27"--}}> <br>
@@ -255,6 +256,7 @@
                             
                             {{-- ini else masuk kalau ftl biasa --}}
                         @else
+                            <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
                             <td class="text-right">{{ number_format($detail->tarif) }}</td>
                             <td class="text-right" {{--rowspan="27"--}}> <br>
                             @if ($dataOperasional!='[]')
@@ -276,6 +278,7 @@
                         @endif
                     {{-- ini cek harga kalau dipisah cuman addcost doang--}}
                     @else
+                        <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
                         <td class="text-right" {{--rowspan="27"--}}> <br>
                         @if ($dataOperasional!='[]')
                             @foreach ($dataOperasional as $DO)
