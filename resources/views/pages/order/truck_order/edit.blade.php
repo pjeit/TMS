@@ -612,8 +612,13 @@
             // }
             // select_chassis
         })
-        setKendaraan($('#tipe_kontainer').val())
-        setChassis($('#tipe_kontainer').val())
+
+        if($('#jenis_tujuan').val()=="FTL")
+        {
+             setKendaraan($('#tipe_kontainer').val())
+             setChassis($('#tipe_kontainer').val())
+        }
+       
         
         $('body').on('change','#select_kendaraan',function()
 		{
@@ -639,8 +644,24 @@
             // if ( $('#jenis_order').val()=='OUTBOND') {
             //     $('#tipe_kontainer_out').val(tipeKontainerKendaraanDariChassis).trigger('change');
             // }
-            $('#select_chassis').val(idChassis).trigger('change');
-            $('#select_driver').val(supir).trigger('change');
+            // console.log(idChassis=='');
+            if (idChassis!='') {
+                $('#select_chassis').val(idChassis).trigger('change');
+            }
+            else
+            {
+                $('#select_chassis').val('').trigger('change');
+
+            }
+            if(supir!='')
+            {
+                $('#select_driver').val(supir).trigger('change');
+            }
+            else
+            {
+                $('#select_driver').val('').trigger('change');
+
+            }
 
 		});
 

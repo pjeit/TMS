@@ -196,7 +196,7 @@ class GrupTujuanController extends Controller
                         $edit_tujuan->alamat = $value['alamat_hidden'];
                         $edit_tujuan->jenis_tujuan = $value['jenis_tujuan'];
                         $edit_tujuan->harga_per_kg = $harga_per_kg;
-                        $edit_tujuan->min_muatan = 0;
+                        $edit_tujuan->min_muatan = $value['min_muatan_hidden'];
                         $edit_tujuan->uang_jalan = $uang_jalan;
                         $edit_tujuan->tarif = $tarif;
                         $edit_tujuan->komisi = $komisi;
@@ -210,28 +210,31 @@ class GrupTujuanController extends Controller
                         $edit_tujuan->updated_by = $user;
                         $edit_tujuan->updated_at = now();
                         if($edit_tujuan->save()){
-                            $data_biaya = json_decode($value['obj_biaya'], true);
-                            foreach ($data_biaya as $key => $item) {
-                                $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
-    
-                                $new_biaya = GrupTujuanBiaya::where('is_aktif', 'Y')->find($item['id']);
-                                if($new_biaya){
-                                    $new_biaya->biaya = $biaya;
-                                    $new_biaya->deskripsi = $item['deskripsi'];
-                                    $new_biaya->catatan = $item['catatan'];
-                                    $new_biaya->updated_by = $user;
-                                    $new_biaya->updated_at = now();
-                                    $new_biaya->save();
-                                }else{
-                                    $new_biaya = new GrupTujuanBiaya();
-                                    $new_biaya->grup_id = $value['grup_hidden'];
-                                    $new_biaya->grup_tujuan_id = $edit_tujuan->id;
-                                    $new_biaya->biaya = $biaya;
-                                    $new_biaya->deskripsi = $item['deskripsi'];
-                                    $new_biaya->catatan = $item['catatan'];
-                                    $new_biaya->created_by = $user;
-                                    $new_biaya->created_at = now();
-                                    $new_biaya->save();
+                            if($value['jenis_tujuan']=="FTL")
+                            {
+                                $data_biaya = json_decode($value['obj_biaya'], true);
+                                foreach ($data_biaya as $key => $item) {
+                                    $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
+        
+                                    $new_biaya = GrupTujuanBiaya::where('is_aktif', 'Y')->find($item['id']);
+                                    if($new_biaya){
+                                        $new_biaya->biaya = $biaya;
+                                        $new_biaya->deskripsi = $item['deskripsi'];
+                                        $new_biaya->catatan = $item['catatan'];
+                                        $new_biaya->updated_by = $user;
+                                        $new_biaya->updated_at = now();
+                                        $new_biaya->save();
+                                    }else{
+                                        $new_biaya = new GrupTujuanBiaya();
+                                        $new_biaya->grup_id = $value['grup_hidden'];
+                                        $new_biaya->grup_tujuan_id = $edit_tujuan->id;
+                                        $new_biaya->biaya = $biaya;
+                                        $new_biaya->deskripsi = $item['deskripsi'];
+                                        $new_biaya->catatan = $item['catatan'];
+                                        $new_biaya->created_by = $user;
+                                        $new_biaya->created_at = now();
+                                        $new_biaya->save();
+                                    }
                                 }
                             }
                         }
@@ -267,20 +270,22 @@ class GrupTujuanController extends Controller
                     $new_tuj->created_at = now();
 
                     if($new_tuj->save()){
-                        $data_biaya = json_decode($value['obj_biaya'], true);
-
-                        foreach ($data_biaya as $key => $item) {
-                            $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
-
-                            $new_biaya = new GrupTujuanBiaya();
-                            $new_biaya->grup_id = $value['grup_hidden'];
-                            $new_biaya->grup_tujuan_id = $new_tuj->id;
-                            $new_biaya->biaya = $biaya;
-                            $new_biaya->deskripsi = $item['deskripsi'];
-                            $new_biaya->catatan = $item['catatan'];
-                            $new_biaya->created_by = $user;
-                            $new_biaya->created_at = now();
-                            $new_biaya->save();
+                        if($value['jenis_tujuan']=="FTL")
+                        {
+                            $data_biaya = json_decode($value['obj_biaya'], true);
+                            foreach ($data_biaya as $key => $item) {
+                                $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
+    
+                                $new_biaya = new GrupTujuanBiaya();
+                                $new_biaya->grup_id = $value['grup_hidden'];
+                                $new_biaya->grup_tujuan_id = $new_tuj->id;
+                                $new_biaya->biaya = $biaya;
+                                $new_biaya->deskripsi = $item['deskripsi'];
+                                $new_biaya->catatan = $item['catatan'];
+                                $new_biaya->created_by = $user;
+                                $new_biaya->created_at = now();
+                                $new_biaya->save();
+                            }
                         }
                     }
                 }

@@ -65,6 +65,8 @@
                                    <div class="form-group ">
                                        <label for="no_akun">Tujuan</label>
                                        <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$sewa->nama_tujuan}}" readonly>                         
+                                       <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" class="form-control" value="{{$sewa->jenis_tujuan}}" readonly>                         
+
                                    </div>  
    
                                     <div class="form-group ">
@@ -1267,7 +1269,7 @@
             //     $('#seal_pje').val('');
             // }
             
-            if ($("#is_kembali").val()=='Y' && $('#seal').val().trim()=='') {
+            if ($("#is_kembali").val()=='Y' && $('#seal').val().trim()=='' && $('#jenis_tujuan').val()=='FTL') {
                   event.preventDefault(); 
                   Toast.fire({
                         icon: 'error',
@@ -1275,7 +1277,7 @@
                     })
                 return;
             } 
-            if($("#is_kembali").val()=='Y' && $('#surat_jalan').val().trim()=='')
+            if($("#is_kembali").val()=='Y' && $('#surat_jalan').val().trim()==''&&$('#jenis_tujuan').val()=='FTL')
             {
                 event.preventDefault(); 
                 Toast.fire({
@@ -1284,7 +1286,7 @@
                 })
                 return;
             }
-            if($("#is_kembali").val()=='Y' && $('#no_kontainer').val().trim()=='')
+            if($("#is_kembali").val()=='Y' && $('#no_kontainer').val().trim()==''&&$('#jenis_tujuan').val()=='FTL')
             {
                 event.preventDefault(); 
                 Toast.fire({

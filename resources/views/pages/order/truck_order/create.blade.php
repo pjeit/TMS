@@ -941,8 +941,23 @@
             // if ( $('#jenis_order').val()=='OUTBOND') {
             //     $('#tipe_kontainer_out').val(tipeKontainerKendaraanDariChassis).trigger('change');
             // }
-            $('#select_chassis').val(idChassis).trigger('change');
-            $('#select_driver').val(supir).trigger('change');
+            if (idChassis!='') {
+                $('#select_chassis').val(idChassis).trigger('change');
+            }
+            else
+            {
+                $('#select_chassis').val('').trigger('change');
+
+            }
+            if(supir!='')
+            {
+                $('#select_driver').val(supir).trigger('change');
+            }
+            else
+            {
+                $('#select_driver').val('').trigger('change');
+
+            }
 
 		});
 
@@ -1096,7 +1111,7 @@
                     })
                 return;
             }
-             if($('#select_chassis').val()=='')
+             if($('#select_chassis').val()==''&& kategoriKendaraan =='Trailer')
             {
                 event.preventDefault();
                 const Toast = Swal.mixin({

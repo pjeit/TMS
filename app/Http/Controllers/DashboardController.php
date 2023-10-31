@@ -21,6 +21,8 @@ class DashboardController extends Controller
             DB::transaction(function () {
                 // Add your DELETE statements here
                 DB::statement('DELETE FROM trip_supir');
+                 DB::statement('DELETE FROM pencairan_komisi');
+                DB::statement('DELETE FROM pencairan_komisi_detail');
                 DB::statement('DELETE FROM sewa_biaya');
                 DB::statement('DELETE FROM sewa_operasional');
                 DB::statement('DELETE FROM sewa');
@@ -36,6 +38,8 @@ class DashboardController extends Controller
                 DB::statement('DELETE FROM uang_jalan_riwayat');
                 DB::statement('DELETE FROM sewa_batal_cancel');
                 DB::statement('DELETE FROM uang_jalan_riwayat');
+               
+
 
             });
         } catch (\Exception $e) {
