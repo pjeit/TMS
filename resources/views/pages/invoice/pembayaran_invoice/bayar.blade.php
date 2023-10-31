@@ -474,7 +474,6 @@
                 }
                 hitungAll();
             });
-
         // 
 
         // hide_bukti_potong

@@ -413,8 +413,8 @@
               request()->is('pencairan_komisi_driver*')||
               request()->is('klaim_supir*')||
               request()->is('tagihan_rekanan*')||
-                request()->is('pencairan_komisi_customer*')||
-                request()->is('cetak_uang_jalan*')
+              request()->is('pencairan_komisi_customer*')||
+              request()->is('cetak_uang_jalan*')
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-dollar-sign"></i>
@@ -536,7 +536,7 @@
 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{route('tagihan_rekanan.index')}}" class="nav-link {{request()->url() === request()->url('tagihan_rekanan*')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('tagihan_rekanan.index')}}" class="nav-link {{ request()->is('tagihan_rekanan*')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       <span >Tagihan Rekanan</span> {{-- style="font-size: 13.9px" --}}

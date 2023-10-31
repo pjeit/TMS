@@ -61,6 +61,35 @@ class TagihanRekananController extends Controller
         ]);
     }
 
+    public function bayar(Request $request)
+    {
+        $dataKas = DB::table('kas_bank')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->get();
+
+        $supplier = Sewa::from('sewa as s')
+                    ->leftJoin('supplier as sup', 'sup.id', '=', 's.id_supplier')
+                    ->where('s.is_aktif', 'Y')
+                    ->whereNotNull('s.id_supplier')
+                    ->groupBy('s.id_supplier')
+                    ->get();
+
+        $data = $request->collect();
+        $data_tagihan = TagihanRekanan::with('getDetails')->where('is_aktif', 'Y')->whereIn('id', $data['idTagihan'])->get();
+        // dd($data_tagihan);
+        if($data_tagihan){
+            return view('pages.finance.tagihan_rekanan.bayar',[
+                'judul' => "Tagihan Rekanan",
+                'dataKas' => $dataKas,
+                'supplier' => $supplier,
+                'data_tagihan' => $data_tagihan,
+            ]);
+        }else{
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap ulangi lagi!']);
+        }
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -171,15 +200,10 @@ class TagihanRekananController extends Controller
     {
         $data = $request->collect();
         $user = Auth::user()->id;
-        // DB::beginTransaction(); 
+        DB::beginTransaction(); 
         // dd($data); 
-        // foreach ($data['data'] as $key => $value) {
-        //     # code...
-        //     $ditagihkan = floatval(str_replace(',', '', $value['ditagihkan']));
-        //     var_dump($ditagihkan);
-        // }
-        // die;
-        // try {
+        
+        try {
             $tagihan = TagihanRekanan::where('is_aktif', 'Y')->find($data['id_tagihan']);
             if($tagihan){
                 $tagihan->tgl_nota = date_create_from_format('d-M-Y', $data['tgl_nota']);
@@ -248,16 +272,16 @@ class TagihanRekananController extends Controller
                             }
                         }
                     }
-                    // DB::commit();
+                    DB::commit();
                 }
             }
 
             return redirect()->route('tagihan_rekanan.index')->with(['status' => 'Success', 'msg' => 'Tagihan berhasil dibuat']);
 
-        // } catch (ValidationException $e) {
-        //     db::rollBack();
-        //     return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibuat!']);
-        // }
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibuat!']);
+        }
     }
 
     /**
@@ -273,7 +297,7 @@ class TagihanRekananController extends Controller
 
     public function load_data($id)
     {
-        $sewa = Sewa::from('sewa as s')->with('getCustomer')->where('s.is_aktif', 'Y')
+        $sewa = Sewa::from('sewa as s')->with('getCustomer')->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
                     ->where('s.id_supplier', $id)
                     ->get();
         
@@ -282,10 +306,6 @@ class TagihanRekananController extends Controller
 
     public function filtered_data($id_tagihan, $id_supplier)
     {
-        // $sewa = DB::table('tagihan_rekanan_detail as trd')
-        //             ->leftJoin('sewa as s', 's.id_sewa', '=', 'trd.id_sewa')
-        //             ->where('id_tagihan_rekanan', $id_tagihan)
-        //             ->get();
         $sewa = DB::select("SELECT trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
                             FROM tagihan_rekanan_detail as trd 
                             LEFT JOIN sewa as s on s.id_sewa = trd.id_sewa

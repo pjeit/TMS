@@ -173,9 +173,12 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
         Route::resource('klaim_supir', 'App\Http\Controllers\KlaimSupirController');
 
+        Route::post('tagihan_rekanan/bayar_save', [App\Http\Controllers\TagihanRekananController::class, 'bayar_save'])->name('tagihan_rekanan.bayar_save');
+        Route::post('tagihan_rekanan/bayar', [App\Http\Controllers\TagihanRekananController::class, 'bayar'])->name('tagihan_rekanan.bayar');
         Route::get('/tagihan_rekanan/loadData/{id}', [App\Http\Controllers\TagihanRekananController::class, 'load_data'])->name('tagihan_rekanan.load_data');
         Route::get('/tagihan_rekanan/filteredData/{id_tagihan},{id_supplier}', [App\Http\Controllers\TagihanRekananController::class, 'filtered_data'])->name('tagihan_rekanan.filtered_data');
         Route::resource('tagihan_rekanan', 'App\Http\Controllers\TagihanRekananController');
+
         Route::resource('cetak_uang_jalan', 'App\Http\Controllers\CetakUangJalanController');
 
         // ===================================FINANCE=========================================================

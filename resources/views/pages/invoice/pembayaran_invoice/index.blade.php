@@ -496,16 +496,16 @@
                         row.append(`<td>${data[i].catatan == null? '':data[i].catatan}</td>`);
                         var jenis =  `<input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="${data[i].billing_to}" grupId="${data[i].id_grup}" value="${data[i].id}">`;
                         row.append(`<td class='text-center' style="text-align:center">
-                            <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-list"></i>
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu" >
+                                        <button class="dropdown-item update_resi" value="${data[i].id}">
+                                            <span class="fas fa-sticky-note mr-3"></span> Update Resi
                                         </button>
-                                        <div class="dropdown-menu" >
-                                            <button class="dropdown-item update_resi" value="${data[i].id}">
-                                                <span class="fas fa-sticky-note mr-3"></span> Update Resi
-                                            </button>
-                                        </div>
                                     </div>
+                                </div>
                             </td>`);
                         row.append(`<td class='text-center' style="text-align:center">${jenis}</td>`);
                         $("#hasil").append(row);

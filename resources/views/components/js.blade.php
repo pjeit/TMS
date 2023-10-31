@@ -127,13 +127,15 @@
     $(function() {
      
       $('.daterange').daterangepicker({
-      locale: {
-          format: 'DD/MM/YYYY'
-      }
-        });
+          locale: {
+              format: 'dd-M-yyyy'
+          }
+      });
+
+      var today = new Date();
       $('.date').datepicker({
           autoclose: true,
-          format: "dd/mm/yyyy",
+          format: "dd-M-yyyy",
           todayHighlight: true,
           language:'en',
           orientation: 'bottom auto'
@@ -334,12 +336,13 @@
           scrollX: true,
           "aaSorting": []
       });
+
       $('#dt').dataTable({
           // scrollX: true,
           "aaSorting": []
       });
 
-      var datatable = document.getElementById('dataablex');
+      var datatable = document.getElementById('datatable');
       
       if(datatable != null){
         // Atur properti CSS width menjadi 100%
