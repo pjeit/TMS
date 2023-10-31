@@ -40,35 +40,38 @@
                         <tbody id="hasil">
                             @if (isset($data))
                                 @foreach($data as $key => $item)
-                                    <tr >
-                                        <td>{{ $item->getSupplier->nama }} 
-                                            @if ($item->total_sisa != 0)
-                                                <span class="float-right">
-                                                    <input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang" id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->id_grup }}">
-                                                </span> 
-                                            @endif
-                                        </td>
-                                        <td>{{ $item->no_nota }}</td>
-                                        <td>{{ date("d-M-Y", strtotime($item->tgl_nota)) }}</td>
-                                        <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
-                                        <td><span style="float: right;">{{ number_format($item->sisa_tagihan) }}</span></td>
-                                        <td>{{ $item->catatan }}</td>
-                                        <td class='text-center' style="text-align:center; width: 50px;">
-                                            <div class="btn-group dropleft">
-                                                <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fa fa-list"></i>
-                                                </button>
-                                                <div class="dropdown-menu" >
-                                                    <a href="{{ route('tagihan_rekanan.edit', [$item->id]) }}" class="dropdown-item update_resi">
-                                                        <span class="fas fa-pen-alt mr-3"></span> Edit
-                                                    </a>
+                                    @if ($item->sisa_tagihan != 0)
+                                        <tr >
+                                            <td>{{ $item->getSupplier->nama }} 
+                                                {{-- @if ($item->total_sisa != 0) --}}
+                                                    <span class="float-right">
+                                                        <input type="checkbox" style="margin-right: 0.9rem;" class="supplier_centang id_supplier_{{ $item->getSupplier->id }}" value="{{ $item->getSupplier->id }}" >
+                                                    </span> 
+                                                {{-- @endif --}}
+                                            </td>
+                                            <td>{{ $item->no_nota }}</td>
+                                            <td>{{ date("d-M-Y", strtotime($item->tgl_nota)) }}</td>
+                                            <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
+                                            <td><span style="float: right;">{{ number_format($item->sisa_tagihan) }}</span></td>
+                                            <td>{{ $item->catatan }}</td>
+                                            <td class='text-center' style="text-align:center; width: 50px;">
+                                                <div class="btn-group dropleft">
+                                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-list"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu" >
+                                                        <a href="{{ route('tagihan_rekanan.edit', [$item->id]) }}" class="dropdown-item update_resi">
+                                                            <span class="fas fa-pen-alt mr-3"></span> Edit
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td style="text-align: center; float: center;"> 
-                                            <input type="checkbox" name="idTagihan[]" class="" custId="{{ $item->id }}" value="{{ $item->id }}">
-                                        </td>
-                                    </tr>
+                                            </td>
+                                            <td style="text-align: center; float: center;"> 
+                                                <input type="checkbox" name="idTagihan[]" class="perItem item_{{ $item->getSupplier->id }}" idSupplier="{{ $item->getSupplier->id }}" value="{{ $item->id }}" >
+                                            </td>
+                                        </tr>
+                                    @endif
+
                                 @endforeach
                             @endif
                         </tbody>
@@ -114,7 +117,26 @@
             ],
         });
 
-        $(document).on('click', '#bayar_tagihan', function (event) {
+        $(document).on('click', '.supplier_centang', function (event) {
+            var id = this.value;
+
+            if ($(this).is(':checked')) {
+                $(".perItem.item_"+id).prop("checked", true);
+            } else {
+                $(".perItem.item_"+id).prop("checked", false);
+            }
+
+        });
+
+        $(document).on('click', '.perItem', function (event) {
+            var idSupplier = $(this).attr('idSupplier');
+            console.log('first', idSupplier);
+
+            if ($(this).is(':checked')) {
+            }else{
+                $(".id_supplier_"+idSupplier).prop("checked", false);
+            }
+
 
         });
     });

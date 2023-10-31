@@ -45,7 +45,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input type="text" id="tagihan" name="tagihan" class="form-control uang numaja" value="" readonly>                         
+                                    <input type="text" id="tagihan" name="total_tagihan" class="form-control uang numaja" value="" readonly>                         
                                 </div>
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -63,7 +63,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input type="text" id="pph23" name="pph23" class="form-control uang numaja" readonly>                         
+                                    <input type="text" id="pph23" name="pph" class="form-control uang numaja" readonly>                         
                                 </div>
                             </div>
                        
@@ -85,10 +85,12 @@
                                             <option value="{{ $item->getSupplier->id }}" {{ $item->getSupplier->id == $data_tagihan[0]->id_supplier? 'selected':'' }}>{{ $item->getSupplier->nama }}</option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" name="id_supplier" value="{{ $data_tagihan[0]->id_supplier }}">
+                                    <input type="hidden" name="nama_supplier" value="{{ $data_tagihan[0]->getSupplier->nama }}">
                                 </div>  
                             </div>
 
-                            <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="">Tanggal Bayar<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
@@ -97,6 +99,17 @@
                                         </div>
                                         <input type="text" autocomplete="off" name="tgl_bayar" class="form-control date" id="tgl_bayar" required>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label for="">Pilih Kas<span style="color:red">*</span></label>
+                                    <select name="id_kas" class="select2" style="width: 100%" id="id_kas" required>
+                                        <option value="">── PILIH SUPPLIER ──</option>
+                                        @foreach ($dataKas as $item)
+                                            <option value="{{ $item->id }}" {{ $item->id == 1? 'selected':'' }}>{{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -143,12 +156,12 @@
                                     <div class="d-flex justify-content-between ">
                                         <div>
                                             <span class="font-weight-normal align-content-end">No. Nota: </span> {{ $tagihan->no_nota }}  
-                                            <input type="hidden" id="no_nota_{{ $tagihan->id }}" value="{{ $tagihan->no_nota }}">
-                                            <input type="hidden" id="bukti_potong_{{ $tagihan->id }}" >
-                                            <input type="hidden" id="total_tagihan_{{ $tagihan->id }}" value="{{ $tagihan->total_tagihan }}">
-                                            <input type="hidden" class="sisa_tagihan" id="sisa_tagihan_{{ $tagihan->id }}" value="{{ $tagihan->sisa_tagihan }}">
-                                            <input type="hidden" class="ppn" id="ppn_{{ $tagihan->id }}" value="{{ $tagihan->ppn }}">
-                                            <input type="hidden" class="total_bayar" id="total_bayar_{{ $tagihan->id }}" value="0">
+                                            <input type="hidden" id="no_nota_{{ $tagihan->id }}" value="{{ $tagihan->no_nota }}" name="data[{{ $tagihan->id }}][no_nota]">
+                                            <input type="hidden" id="bukti_potong_{{ $tagihan->id }}" name="data[{{ $tagihan->id }}][bukti_potong]">
+                                            <input type="hidden" id="total_tagihan_{{ $tagihan->id }}" value="{{ $tagihan->total_tagihan }}" name="data[{{ $tagihan->id }}][total_tagihan]">
+                                            <input type="hidden" class="sisa_tagihan" id="sisa_tagihan_{{ $tagihan->id }}" value="{{ $tagihan->sisa_tagihan }}" name="data[{{ $tagihan->id }}][sisa_tagihan]">
+                                            <input type="hidden" class="ppn" id="ppn_{{ $tagihan->id }}" value="{{ $tagihan->ppn }}" name="data[{{ $tagihan->id }}][ppn]">
+                                            <input type="hidden" class="total_bayar" id="total_bayar_{{ $tagihan->id }}" name="data[{{ $tagihan->id }}][total_bayar]" value="0">
                                         </div>
 
                                         <div class="btn-group dropleft">
@@ -163,7 +176,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td style="">{{ $item->getSewa->no_sewa }} - {{ $tagihan->getSupplier->nama }} ({{ date("Y-m-d", strtotime($item->getSewa->tanggal_berangkat)) }})</td>
+                                <td style="">{{ $item->getSewa->no_sewa }} ({{ date("Y-m-d", strtotime($item->getSewa->tanggal_berangkat)) }})</td>
                                 <td style="text-align: left;">{{ number_format($item->total_tagihan) }}</td>
                                 {{-- <td style="text-align: right;">{{ number_format($tagihan->total_tagihan) }}</td> --}}
                                 {{-- <td style="text-align: right;"><span class="tot_ppn_{{ $tagihan->id }}">{{ number_format($tagihan->ppn) }}</span></td> --}}
