@@ -20,7 +20,9 @@ class PengembalianJaminanController extends Controller
      */
     public function index()
     {
-        $data = JobOrder::where('is_aktif', 'Y')->get();
+        $data = JobOrder::where('is_aktif', 'Y')
+        ->where('status', 'DIBAYARKAN')
+        ->get();
         $bank = KasBank::where('is_aktif', 'Y')->get();
         return view('pages.finance.pengembalian_jaminan.index',[
             'judul' => 'Pengembalian Jaminan',
