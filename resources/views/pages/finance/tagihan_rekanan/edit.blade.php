@@ -238,9 +238,9 @@
                         var id_detail = data[i].id == null? null:data[i].id;
                         var row = $("<tr></tr>");
                         row.append(`<td>${data[i].no_sewa} - ${data[i].nama} (${ dateMask(data[i].tanggal_berangkat)})</td>`);
-                        row.append(`<td style="width: 150px;">${moneyMask(data[i].total_tarif)}</td>`)
+                        row.append(`<td style="width: 150px;">${moneyMask(data[i].harga_jual)}</td>`)
                         row.append(`<td style="width: 150px;">
-                                        <input type="hidden" id="hidden_total_tarif_${data[i].id_sewa}" value="${data[i].total_tarif}" />
+                                        <input type="hidden" id="hidden_total_tarif_${data[i].id_sewa}" value="${data[i].harga_jual}" />
                                         <input type="hidden" name="data[${i}][id_sewa]" id="hidden_id_sewa_${data[i].id_sewa}" value="${data[i].id_sewa}" />
                                         <input type="hidden" name="data[${i}][id_detail]" value="${id_detail}" />
                                         <input type="text" class="form-control ditagihkan uang numaja" name="data[${i}][ditagihkan]" id="${data[i].id_sewa}" value="${data[i].total_tagihan != null? moneyMask(data[i].total_tagihan):''}" ${data[i].total_tagihan == null? 'readonly':''} />

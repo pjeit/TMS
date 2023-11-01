@@ -394,13 +394,13 @@ class TagihanRekananController extends Controller
 
     public function filtered_data($id_tagihan, $id_supplier)
     {
-        $sewa = DB::select("SELECT trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
+        $sewa = DB::select("SELECT s.harga_jual,trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
                             FROM tagihan_rekanan_detail as trd 
                             LEFT JOIN sewa as s on s.id_sewa = trd.id_sewa
                             LEFT JOIN customer as c on c.id = s.id_customer
                             WHERE trd.id_tagihan_rekanan = $id_tagihan AND trd.is_aktif = 'Y' AND s.is_tagihan = 'Y'
                             UNION ALL
-                            SELECT trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
+                            SELECT s.harga_jual,trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
                             FROM sewa as s
                             LEFT JOIN tagihan_rekanan_detail as trd on trd.id_sewa = s.id_sewa and trd.is_aktif is null
                             LEFT JOIN customer as c on c.id = s.id_customer
