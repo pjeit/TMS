@@ -24,9 +24,12 @@ class KlaimSupirController extends Controller
     {
         //
          $dataKlaimSupir = DB::table('klaim_supir as ks')
-            ->select('ks.*','ks.id as id_klaim','k.nama_panggilan as nama_supir','k.telp1 as telp')
+            ->select('ks.*','ks.id as id_klaim','k.nama_panggilan as nama_supir','k.telp1 as telp','ksr.total_pencairan')
             ->leftJoin('karyawan as k', function($join) {
                     $join->on('ks.karyawan_id', '=', 'k.id')->where('k.is_aktif', '=', "Y");
+                })
+             ->leftJoin('klaim_supir_riwayat as ksr', function($join) {
+                    $join->on('ks.id', '=', 'ksr.id_klaim')->where('ksr.is_aktif', '=', "Y");
                 })
             ->where('ks.is_aktif', '=', "Y")
             // ->where('ks.status_klaim','like',"%PENDING%")
@@ -36,14 +39,14 @@ class KlaimSupirController extends Controller
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
+         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         return view('pages.finance.klaim_supir.index',[
-                'judul'=>"Klaim Supir",
+             'judul'=>"Klaim Supir",
             'dataKlaimSupir' => $dataKlaimSupir,
             'dataKendaraan' => SewaDataHelper::DataKendaraan(),
             'dataDriver' => SewaDataHelper::DataDriver(),
-
-
         ]);
+        
     }
 
     /**
@@ -345,6 +348,38 @@ class KlaimSupirController extends Controller
             
         }
     }
+    public function destroy(KlaimSupir $klaimSupir)
+    {
+        $user = Auth::user()->id; 
+        // dd($klaimSupir);   
+        try{
+            // $klaim_supir_riwayat = KlaimSupirRiawayat::where('is_aktif', 'Y')
+            //                        ->where('id_klaim', $klaimSupir->id)
+            //                        ->first();
+            // dd($klaim_supir_riwayat);   
+
+            // $klaim_supir_riwayat->updated_at = now();
+            // $klaim_supir_riwayat->updated_by = $user;
+            // $klaim_supir_riwayat->is_aktif = 'N';
+            // $klaim_supir_riwayat->save();  
+
+            $klaim_supir = KlaimSupir::where('is_aktif', 'Y')
+            ->findOrFail($klaimSupir->id);
+            $klaim_supir->updated_by = $user;
+            $klaim_supir->updated_at = now();
+            $klaim_supir->is_aktif = 'N';
+            $klaim_supir->save();
+
+            
+
+            return redirect()->route('klaim_supir.index')->with(['status' => 'Success', 'msg' => 'Berhasil Menghapus Data Klaim Supir!']);
+
+
+        }
+        catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
+        }
+    }
 
     public function pencairan($id)
     {
@@ -376,10 +411,10 @@ class KlaimSupirController extends Controller
         //
         DB::beginTransaction(); 
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
-        // try {
+        try {
             $data = $request->collect();
 
-            if($data['status_klaim']=='PENDING')
+           /* if($data['status_klaim']=='PENDING')
             {
                 $pesanKustom = [
                     'tanggal_pencairan.required' => 'Tanggal Pencairan harap diisi!',
@@ -389,15 +424,15 @@ class KlaimSupirController extends Controller
                     'tanggal_pencairan' => 'required',
                 ],$pesanKustom);
             }
-            else if($data['status_klaim']=='REJECTED')
+            else*/ if($data['status_klaim']=='REJECTED')
             {
                 $pesanKustom = [
-                    'tanggal_pencairan.required' => 'Tanggal Pencairan harap diisi!',
+                    // 'tanggal_pencairan.required' => 'Tanggal Pencairan harap diisi!',
                     'alasan_tolak.required' => 'Alasan tolak harap diisi!',
                 ];
                 
                 $request->validate([
-                    'tanggal_pencairan' => 'required',
+                    // 'tanggal_pencairan' => 'required',
                     'alasan_tolak' => 'required',
                 ],$pesanKustom);
             }
@@ -422,6 +457,10 @@ class KlaimSupirController extends Controller
             }
             $klaim_supir = KlaimSupir::where('is_aktif', 'Y')
             ->findOrFail($id);
+            if($klaim_supir->status_klaim=="PENDING" &&$data['status_klaim']=="PENDING")
+            {
+                return redirect()->back()->withErrors('HARAP UBAH STATUS MENJADI TOLAK/TERIMA!!')->withInput();
+            }
             $klaim_supir->status_klaim = $data['status_klaim'];
             $klaim_supir->updated_by = $user;
             $klaim_supir->updated_at = now();
@@ -429,26 +468,23 @@ class KlaimSupirController extends Controller
             if($klaim_supir->save())
             {
                 // dd($klaim_supir->status_klaim);
-                if($klaim_supir->status_klaim=="PENDING")
-                {
-                    return redirect()->back()->withErrors('HARAP UBAH STATUS MENJADI TOLAK/TERIMA!!')->withInput();
-                }
-                else
-                {
+               
+                // else
+                // {
                     $klaim_supir_riwayat = KlaimSupirRiawayat::where('is_aktif', 'Y')
                                     ->where('id_klaim', $id)
                                         ->first();
                     // dd( $klaim_supir_riwayat);
                     // dd( $klaim_supir_riwayat);
 
-                    if($klaim_supir_riwayat)
-                    {
-                        $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
-                                        ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
-                                        ->first();
+                    // if($klaim_supir_riwayat)
+                    // {
+                    //     $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
+                    //                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
+                    //                     ->where('jenis', 'uang_klaim_supir')
+                    //                     ->first();
 
-                    }
+                    // }
                         //   dd( $kas_bank_transaksi);
 
                     if ($data['status_klaim']=='PENDING') {
@@ -456,16 +492,28 @@ class KlaimSupirController extends Controller
 
                         if($klaim_supir_riwayat)
                         {
+                            $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
+                                        ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
+                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->first();
+                            //  dd($kas_bank_transaksi);
+
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
                             {
+                                //  dd($kas_bank_transaksi);
+
                                 //select saldo dulu buat nambah dr datayang lama kan mau di matiin dumpnya,makannya banknya saldonya ditambah
                                 $saldo = DB::table('kas_bank')
                                     ->select('*')
                                     ->where('is_aktif', '=', "Y")
                                     ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
                                     ->first();
+                                //  dd($saldo);
+                                
                                 $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
+                                //  dd($saldo_baru);
+                                
                                 DB::table('kas_bank')
                                     ->where('id', $kas_bank_transaksi->id_kas_bank)
                                     ->update(array(
@@ -475,10 +523,25 @@ class KlaimSupirController extends Controller
                                     )
                                 );
                                 //setelah saldonya udah ditambah, data dumpnya matiin kan transasksinya batal
-                                $kas_bank_transaksi->updated_at = now();
-                                $kas_bank_transaksi->updated_by = $user;
-                                $kas_bank_transaksi->is_aktif = 'N';
-                                $kas_bank_transaksi->save();
+
+                                DB::table('kas_bank_transaction')
+                                    ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
+                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('is_aktif', 'Y')
+                                    ->update(array(
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                        'is_aktif'=> 'N',
+
+                                    )
+                                );
+                                // $kas_bank_transaksi->updated_at = now();
+                                // $kas_bank_transaksi->updated_by = $user;
+                                // $kas_bank_transaksi->is_aktif = 'N';
+                                // $kas_bank_transaksi->save();
+
+                                //  dd($kas_bank_transaksi);
+
                             }
                             //terus matiin riwayatnya yang lama
                             $klaim_supir_riwayat->updated_at = now();
@@ -492,6 +555,10 @@ class KlaimSupirController extends Controller
                         //kalo ada klaim supir riwayat yang lama
                         if($klaim_supir_riwayat)
                         {
+                            $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
+                                        ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
+                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
                             {
@@ -501,6 +568,7 @@ class KlaimSupirController extends Controller
                                     ->where('is_aktif', '=', "Y")
                                     ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
                                     ->first();
+                                    // dd($saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan);
                                 $saldo_baru = $saldo->saldo_sekarang + (float)$klaim_supir_riwayat->total_pencairan;
                                 DB::table('kas_bank')
                                     ->where('id', $kas_bank_transaksi->id_kas_bank)
@@ -511,16 +579,28 @@ class KlaimSupirController extends Controller
                                     )
                                 );
                                 //setelah saldonya udah ditambah, data dumpnya matiin kan transasksinya batal
-                                $kas_bank_transaksi->updated_at = now();
-                                $kas_bank_transaksi->updated_by = $user;
-                                $kas_bank_transaksi->is_aktif = 'N';
-                                $kas_bank_transaksi->save();
+                                // $kas_bank_transaksi->updated_at = now();
+                                // $kas_bank_transaksi->updated_by = $user;
+                                // $kas_bank_transaksi->is_aktif = 'N';
+                                // $kas_bank_transaksi->save();
+                                 DB::table('kas_bank_transaction')
+                                    ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
+                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('is_aktif', 'Y')
+                                    ->update(array(
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                        'is_aktif'=> 'N',
+
+                                    )
+                                );
                             }
                             //tanggal pencairan sama pencatatan null soalnya kan kalau tolak ga ada
                             $klaim_supir_riwayat->tanggal_pencairan = null;
                             $klaim_supir_riwayat->tanggal_pencatatan = null;
                             $klaim_supir_riwayat->total_pencairan =0;
                             $klaim_supir_riwayat->alasan_tolak = $data['alasan_tolak'];
+                            $klaim_supir_riwayat->catatan_pencairan =null;
                             $klaim_supir_riwayat->updated_at = now();
                             $klaim_supir_riwayat->updated_by = $user;
                             $klaim_supir_riwayat->save();   
@@ -547,10 +627,13 @@ class KlaimSupirController extends Controller
                     elseif ($data['status_klaim']=='ACCEPTED') {
                         $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
                         $tanggal_pencatatan= date_create_from_format('d-M-Y', $data['tanggal_pencatatan']);
-                    
                         //kalo ada klaim supir riwayat yang lama
                         if($klaim_supir_riwayat)
                         {
+                            $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
+                                        ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
+                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
                             {
@@ -571,10 +654,21 @@ class KlaimSupirController extends Controller
                                 );
                                 // dd('masuk sini');
                                 //setelah saldonya udah ditambah, data dumpnya matiin kan transasksinya batal
-                                $kas_bank_transaksi->updated_at = now();
-                                $kas_bank_transaksi->updated_by = $user;
-                                $kas_bank_transaksi->is_aktif = 'N';
-                                $kas_bank_transaksi->save();
+                                // $kas_bank_transaksi->updated_at = now();
+                                // $kas_bank_transaksi->updated_by = $user;
+                                // $kas_bank_transaksi->is_aktif = 'N';
+                                // $kas_bank_transaksi->save();
+                                 DB::table('kas_bank_transaction')
+                                    ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
+                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('is_aktif', 'Y')
+                                    ->update(array(
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                        'is_aktif'=> 'N',
+
+                                    )
+                                );
                             }
                             $klaim_supir_riwayat->id_klaim = $klaim_supir->id;
                             $klaim_supir_riwayat->kas_bank_id = $data['kas'];
@@ -583,6 +677,8 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
                             $klaim_supir_riwayat->catatan_pencairan =$data['catatan_pencairan'];
+                            $klaim_supir_riwayat->alasan_tolak = null;
+
                             $klaim_supir_riwayat->updated_at = now();
                             $klaim_supir_riwayat->updated_by = $user;
                             $klaim_supir_riwayat->save();   
@@ -676,26 +772,26 @@ class KlaimSupirController extends Controller
                         }
                     }
 
-                }
+                // }
                
             }
 
             DB::commit();
             return redirect()->route('klaim_supir.index')->with(['status' => 'Success', 'msg' => 'Berhasil Mencairkan Klaim Supir!']);
 
-        // } catch (ValidationException $e) {
-        //     DB::rollBack();
-        //     // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $e->errors()]);
-        //     // return redirect()->back()->withErrors($e->getMessages())->withInput();
-        //     return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $e->errors()]);
+            // return redirect()->back()->withErrors($e->getMessages())->withInput();
+            return redirect()->back()->withErrors($e->errors())->withInput();
 
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     DB::rollBack();
-        //     // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
-        //     return redirect()->back()->withErrors($th->getMessage())->withInput();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
+            return redirect()->back()->withErrors($th->getMessage())->withInput();
 
-        // }
+        }
     }
 
     /**
@@ -704,8 +800,5 @@ class KlaimSupirController extends Controller
      * @param  \App\Models\KlaimSupir  $klaimSupir
      * @return \Illuminate\Http\Response
      */
-    public function destroy(KlaimSupir $klaimSupir)
-    {
-        //
-    }
+    
 }

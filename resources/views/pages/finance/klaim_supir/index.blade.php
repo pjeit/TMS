@@ -58,7 +58,13 @@
                                     <td>{{ $item->nama_supir}} ({{ $item->telp}})</td>
                                     <td>{{ $item->jenis_klaim}}</td>
                                     <td>{{ $item->tanggal_klaim }}</td>
-                                    <td>Rp. {{number_format($item->total_klaim,2)  }}</td>
+                                    <td>Rp. {{number_format($item->total_klaim,2)  }}
+                                        <br>
+                                        @if($item->status_klaim == 'ACCEPTED')
+                                            Total dicairkan : Rp. {{number_format($item->total_pencairan,2) }}
+                                        @endif
+
+                                    </td>
                                     <td>
                                         @if ($item->status_klaim == 'PENDING')
                                          <span class="badge badge-warning">
@@ -87,15 +93,23 @@
                                                 <i class="fa fa-list"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a href="{{route('klaim_supir.edit',[$item->id_klaim])}}" class="dropdown-item ">
-                                                    <span class="fas fa-edit mr-3"></span> Edit
-                                                </a>
-                                                <a href="{{route('pencairan_klaim_supir.edit',[$item->id_klaim])}}" class="dropdown-item ">
-                                                    <span class="nav-icon fas fa-dollar-sign mr-3"></span> Pencairan
-                                                </a>
-                                                <a href="{{ route('klaim_supir.destroy', [$item->id_klaim]) }}" class="dropdown-item" data-confirm-delete="true">
-                                                    <span class="fas fa-trash mr-3"></span> Delete
-                                                </a>
+                                               
+                                                
+                                                @if ($item->status_klaim == 'PENDING')
+                                                    <a href="{{route('klaim_supir.edit',[$item->id_klaim])}}" class="dropdown-item ">
+                                                        <span class="fas fa-edit mr-3"></span> Edit
+                                                    </a>
+                                                    <a href="{{ route('klaim_supir.destroy', [$item->id_klaim]) }}" class="dropdown-item" data-confirm-delete="true">
+                                                        <span class="fas fa-trash mr-3"></span> Hapus
+                                                    </a>
+                                                    <a href="{{route('pencairan_klaim_supir.edit',[$item->id_klaim])}}" class="dropdown-item ">
+                                                        <span class="nav-icon fas fa-dollar-sign mr-3"></span> Pencairan
+                                                    </a>
+                                                @else
+                                                    <a href="{{route('pencairan_klaim_supir.edit',[$item->id_klaim])}}" class="dropdown-item ">
+                                                        <span class="nav-icon fas fa-dollar-sign mr-3"></span> Edit Pencairan
+                                                    </a>
+                                                @endif
                                             </div>
                                         </div>
                                     </td>

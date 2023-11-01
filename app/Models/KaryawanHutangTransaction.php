@@ -10,4 +10,9 @@ class KaryawanHutangTransaction extends Model
     use HasFactory;
     protected $table = 'karyawan_hutang_transaction';
     protected $primaryKey='id';
+    protected $fillable=[
+        'updated_at',
+        'updated_by',
+        'is_aktif',
+   ];
 }
