@@ -86,7 +86,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-7 col-md-7 col-12">
-                        <div class="row">
+                        <div class="row pt-2">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <div class="row">
@@ -151,7 +151,7 @@
                     </div>
 
                     <div class="col-lg-5 col-md-5 col-12">
-                        <div class="row bg-gray-light">
+                        <div class="row bg-gray-light pt-2">
                             <div class="col-lg-12 col-md-12">
                                 <div class="form-group">
                                     <label for="kas_bank_id">Kas / Bank<span style="color:red">*</span></label>
@@ -171,7 +171,6 @@
                             </div>
                         </div>
                     </div>
-           
                 </div>
 
             </div>

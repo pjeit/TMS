@@ -246,7 +246,7 @@
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="select_driver">Stack FULL</label>
+                                    <label for="select_driver">Stack Full</label>
                                         <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                         <option value="">── Pilih Stack ──</option>
                                         <option value="tl_perak">Perak</option>

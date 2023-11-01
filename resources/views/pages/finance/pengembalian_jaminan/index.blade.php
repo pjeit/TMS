@@ -37,12 +37,12 @@
                     <tbody id="hasil">
                         @foreach ($data as $key => $item)
                             <tr>
-                                <td id="customer_{{ $item->id }}">{{ $item->getCustomer->nama }}</td>
-                                <td id="supplier_{{ $item->id }}">{{ $item->getSupplier->nama }}</td>
-                                <td id="no_bl_{{ $item->id }}">{{ $item->no_bl }}</td>
-                                <td id="catatan_{{ $item->id }}">{{ $item->catatan }}</td>
-                                <td id="total_{{ $item->id }}">{{ number_format($item->jaminan->nominal) }}</td>
-                                <td><button value="{{ $item->id }}" class="btn btn-primary radiusSendiri showModal"> <i class="fas fa-dollar-sign"> </i> <i class="fa fa-reply-all" ></i> </button></td>
+                                <td id="customer_{{ $item->id_job_order }}">{{ $item->getCustomer->nama }}</td>
+                                <td id="supplier_{{ $item->id_job_order }}">{{ $item->getSupplier->nama }}</td>
+                                <td id="no_bl_{{ $item->id_job_order }}">{{ $item->no_bl }}</td>
+                                <td id="catatan_{{ $item->id_job_order }}">{{ $item->catatan }}</td>
+                                <td id="total_{{ $item->id_job_order }}">{{ number_format($item->nominal) }}</td>
+                                <td><button value="{{ $item->id_job_order }}" class="btn btn-primary radiusSendiri showModal"> <i class="fas fa-dollar-sign"> </i> <i class="fa fa-reply-all" ></i> </button></td>
                             </tr>
                         @endforeach
                     </tbody>

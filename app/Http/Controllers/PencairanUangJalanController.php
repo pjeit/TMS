@@ -129,13 +129,13 @@ class PencairanUangJalanController extends Controller
                     $kht = new KaryawanHutangTransaction();
                     $kht->id_karyawan = $data['id_karyawan'];
                     $kht->refrensi_id = $ujr->id; // id uang jalan
-                    $kht->refrensi_keterangan = $refrensi_keterangan_string;
+                    $kht->refrensi_keterangan = 'UANG JALAN';
                     $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                     $kht->tanggal = now();
                     $kht->debit = 0;
                     $kht->kredit = ($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0;
                     $kht->kas_bank_id = $data['pembayaran'];
-                    $kht->catatan = $data['catatan'];
+                    $kht->catatan = $data['catatan'] . ' '. $refrensi_keterangan_string;
                     $kht->created_by = $user;
                     $kht->created_at = now();
                     $kht->is_aktif = 'Y';

@@ -333,8 +333,19 @@
 <script>
   $(document).ready(function() {
       $('#datatable').dataTable({
+          // scrollX: true,
+          "aaSorting": [],
+          columnDefs: [
+            { orderable: false, targets: -1 }
+          ]
+      });
+
+      $('#datatablex').dataTable({
           scrollX: true,
-          "aaSorting": []
+          "aaSorting": [],
+          columnDefs: [
+            { orderable: false, targets: -1 }
+          ]
       });
 
       $('#dt').dataTable({
@@ -346,7 +357,7 @@
       
       if(datatable != null){
         // Atur properti CSS width menjadi 100%
-        datatable.style.width = '100%';
+        // datatable.style.width = '100%';
       }
 
   });

@@ -90,38 +90,36 @@
                             </div>
                             <div class="col-lg-5 col-md-6 col-sm-12">
                                 <h4 class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-primary">Total Biaya</span>
+                                    <span class="text-primary"><b>Total Biaya</b></span>
                                     {{-- <span class="badge bg-primary rounded-pill">3</span> --}}
                                 </h4>
-                                <ul class="list-group mb-3">
-                                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                                <ul class="list-group mb-3 ">
+                                    <li class="border-primary list-group-item d-flex justify-content-between lh-sm">
                                         <div>
                                         <h6 class="my-0">Biaya Sebelum Dooring</h6>
                                         {{-- <small class="text-muted">total</small> --}}
                                         </div>
-                                        <span class="text-muted">Rp. {{number_format($TotalBiayaRev,2)}}</span>
+                                        <span class="">Rp. {{number_format($TotalBiayaRev,2)}}</span>
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between lh-sm">
+                                    <li class="border-primary list-group-item d-flex justify-content-between lh-sm">
                                         <div>
                                         <h6 class="my-0">Biaya Jaminan</h6>
                                         {{-- <small class="text-muted">total</small> --}}
                                         </div>
                                          @if($dataJaminan)
-                                        <span class="text-muted">Rp. {{number_format($dataJaminan->nominal,2)}}</span>
+                                        <span class="">Rp. {{number_format($dataJaminan->nominal,2)}}</span>
                                         @else
-                                        <span class="text-muted">Rp. {{number_format(0,2)}}</span>
+                                        <span class="">Rp. {{number_format(0,2)}}</span>
                                         
                                         @endif
                                     </li>
-                                    <li class="list-group-item d-flex justify-content-between">
+                                    <li class="border-primary list-group-item d-flex justify-content-between">
                                         <span>Total (IDR)</span>
                                          <input type="hidden" name="total_sblm_dooring" value="{{$TotalBiayaRev}}">
                                         @if($dataJaminan)
-                                             <strong>Rp. {{number_format($TotalBiayaRev+$dataJaminan->nominal,2)}}</strong>
-
+                                             <strong><b>Rp. {{number_format($TotalBiayaRev+$dataJaminan->nominal,2)}}</b></strong>
                                         @else
-                                             <strong>Rp. {{number_format($TotalBiayaRev,2)}}</strong>
-
+                                             <strong><b>Rp. {{number_format($TotalBiayaRev,2)}}</b></strong>
                                         @endif
 
                                        
@@ -134,7 +132,7 @@
                                             <option value="{{$data->id}}" {{ $data->id == 1? 'selected':'' }}>{{ $data->nama }}</option>
                                         @endforeach
                                     </select>
-                                    <button type="button" class="btn btn-success" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
+                                    <button type="button" class="btn btn-success ml-3" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
 
                                     {{-- <a href="{{ route('pembayaran_jo.index') }}"class="btn btn-success"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</a> --}}
 

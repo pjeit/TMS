@@ -42,22 +42,22 @@
                             </div>
 
                             <div class="form-group col-lg-3 col-md-12 col-sm-12">
-                                <label for="tanggal_pencairan">Tanggal Berangkat<span style="color:red">*</span></label>
+                                <label for="">Tanggal Berangkat<span style="color:red">*</span></label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                    <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="">
+                                    <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" value="">
                                 </div>
                             </div>  
     
                             <div class="form-group col-lg-3 col-md-12 col-sm-12">
-                                <label for="tanggal_pencairan">Tanggal Pencairan<span style="color:red">*</span></label>
+                                <label for="">Tanggal Pencairan<span style="color:red">*</span></label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                    <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="">
+                                    <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date" id="tanggal_pencairan" value="">
                                 </div>
                             </div>  
                         </div>
@@ -288,7 +288,7 @@
                         // console.log(biayaTL.biaya);
 
 
-                        $('#tanggal_berangkat').val( ubahTanggal(dataSewaDetail.tanggal_berangkat));
+                        $('#tanggal_berangkat').val( dateMask(dataSewaDetail.tanggal_berangkat));
                         // $('#customer').val(dataSewaDetail.nama_cust);
                         // $('#tujuan').val(dataSewaDetail.nama_tujuan);
                         $('#id_karyawan').val(dataSewaDetail.id_karyawan);

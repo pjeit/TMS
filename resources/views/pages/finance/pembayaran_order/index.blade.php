@@ -38,9 +38,9 @@
                                 <td>{{ $item->namaCustomer }}</td>
                                 <td>{{ $item->namaSupplier }}</td>
                                 <td>{{ $item->status}}</td>
-                                <td>                                    
+                                <td style="text-align: center">                                    
                                     <a class="btn btn-success radiusSendiri" href="{{route('pembayaran_jo.edit',[$item->id])}}">
-                                            <i class="fas fa-credit-card"></i> Pembayaran
+                                        <i class="fas fa-credit-card"></i> Bayar
                                     </a>   
                                 </td>
                             </tr>

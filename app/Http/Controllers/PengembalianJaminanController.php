@@ -30,6 +30,14 @@ class PengembalianJaminanController extends Controller
                     ;
                 })
         ->get();
+        // $data = JobOrder::from('job_order as jo')
+        //                     // ->with('jaminan')->where('jaminan.status', '!=', 'KEMBALI')
+        //                     // ->select('jo.id','jo.no_bl','j.catatan', 'j.nominal')
+        //                     ->leftJoin('jaminan as j', 'j.id_job_order', '=', 'jo.id')
+        //                     ->where('j.status', '!=', 'KEMBALI')
+        //                     ->where('j.is_aktif', 'Y')
+        //                     ->where('jo.is_aktif', 'Y')->get();
+        // // dd($data);
         $bank = KasBank::where('is_aktif', 'Y')->get();
         return view('pages.finance.pengembalian_jaminan.index',[
             'judul' => 'Pengembalian Jaminan',
