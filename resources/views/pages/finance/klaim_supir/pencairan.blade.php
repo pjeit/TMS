@@ -530,7 +530,7 @@
     }
     $('#post').submit(function(event) {
 
-            var statusMenikah = $("input[name='status_klaim']:checked").val();
+            var statusKlaim = $("input[name='status_klaim']:checked").val();
 
             var tanggal_pencairan = $("#tanggal_pencairan").val();
             var catatan_pencairan = $("#catatan_pencairan").val();
@@ -550,7 +550,7 @@
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
                     })
-            if(statusMenikah=="PENDING")
+            /*if(statusKlaim=="PENDING")
             {
                 if(tanggal_pencairan.trim()=='')
                 {
@@ -562,17 +562,17 @@
                     return;
                 }
             }
-            else if(statusMenikah=="REJECTED")
+            else */if(statusKlaim=="REJECTED")
             {
-                if(tanggal_pencairan.trim()=='')
-                {
-                    event.preventDefault(); 
-                    Toast.fire({
-                        icon: 'error',
-                        text: `TANGGAL PENCAIRAN WAJIB DIISI!`,
-                    })
-                    return;
-                }
+                // if(tanggal_pencairan.trim()=='')
+                // {
+                //     event.preventDefault(); 
+                //     Toast.fire({
+                //         icon: 'error',
+                //         text: `TANGGAL PENCAIRAN WAJIB DIISI!`,
+                //     })
+                //     return;
+                // }
                 if(alasan_tolak.trim()=='')
                 {
                     event.preventDefault(); 
@@ -584,7 +584,7 @@
                 }
 
             }
-            else //ACCEPTED
+            else if(statusKlaim=="ACCEPTED") //ACCEPTED
             {
                 
                 if(tanggal_pencairan.trim()=='')
@@ -601,7 +601,7 @@
                     event.preventDefault(); 
                     Toast.fire({
                         icon: 'error',
-                        text: `TOTAL PENCAIRAN WAJIB DIISI!`,
+                        text: `JUMLAH KLAIM DICAIRKAN WAJIB DIISI!`,
                     })
                     return;
                 }
