@@ -608,7 +608,7 @@ class DalamPerjalananController extends Controller
         $uj_kembali = floatval(str_replace(',', '', $data['total_uang_jalan_kembali']));
         $user = Auth::user()->id;
         DB::beginTransaction(); 
-        // dd($sewa);
+        // dd($data);
 
         try {
             $sewa->status = 'BATAL MUAT';
@@ -622,8 +622,8 @@ class DalamPerjalananController extends Controller
                 ->where('is_aktif', 'Y')
                 ->update([
                     'catatan' => 'BATAL MUAT',
-                    'updated_at' => now(),
                     'updated_by' => $user,
+                    'updated_at' => now(),
                     'is_aktif' => 'N',
                 ]); 
 
@@ -647,17 +647,17 @@ class DalamPerjalananController extends Controller
                     if($data['kasbank'] != 'HUTANG DRIVER'){
                         $kasBankTransaction = new KasBankTransaction ();
                         $kasBankTransaction->id_kas_bank = $data['kasbank'];
-                        $kasBankTransaction->tanggal = $data['tanggal_cancel'];
+                        $kasBankTransaction->tanggal = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
                         $kasBankTransaction->debit = $uj_kembali; // debit uang masuk
                         $kasBankTransaction->kredit = 0;
-                        $kasBankTransaction->jenis = 'BATAL_MUAT';
+                        $kasBankTransaction->jenis = 'BATAL MUAT';
                         $kasBankTransaction->keterangan_transaksi = 'UANG JALAN KEMBALI - ' . $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver'] ;
                         $kasBankTransaction->kode_coa = 1823; // masih hardcode
                         $kasBankTransaction->keterangan_kode_transaksi = $sewa->id_sewa;
-                        $kasBankTransaction->created_at = $user;
-                        $kasBankTransaction->created_by = now();
+                        $kasBankTransaction->created_by = $user;
+                        $kasBankTransaction->created_at = now();
                         $kasBankTransaction->is_aktif = 'Y';
-    
+                        // dd($kasBankTransaction);
                         if($kasBankTransaction->save()){
                             $kasbank = KasBank::where('is_aktif', 'Y')->find($data['kasbank']);
                             $kasbank->saldo_sekarang += $uj_kembali;
@@ -790,20 +790,19 @@ class DalamPerjalananController extends Controller
                 $cancel->is_aktif = 'Y';
 
                 if($cancel->save()){
-                    if($data['pembayaran'] != 'HUTANG DRIVER'){
+                    if($data['pembayaran'] != 'HUTANG KARYAWAN'){
                         $kasBankTransaction = new KasBankTransaction ();
                         $kasBankTransaction->id_kas_bank = $data['pembayaran'];
-                        $kasBankTransaction->tanggal = $data['tanggal_cancel'];
+                        $kasBankTransaction->tanggal = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
                         $kasBankTransaction->debit = $uj_kembali; // debit uang masuk
                         $kasBankTransaction->kredit = 0;
                         $kasBankTransaction->jenis = 'CANCEL';
                         $kasBankTransaction->keterangan_transaksi = 'UANG JALAN KEMBALI - ' . $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver'] ;
                         $kasBankTransaction->kode_coa = 1824; // masih hardcode
                         $kasBankTransaction->keterangan_kode_transaksi = $sewa->id_sewa;
-                        $kasBankTransaction->created_at = $user;
-                        $kasBankTransaction->created_by = now();
+                        $kasBankTransaction->created_by = $user;
+                        $kasBankTransaction->created_at = now();
                         $kasBankTransaction->is_aktif = 'Y';
-    
                         if($kasBankTransaction->save()){
                             $kasbank = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
                             $kasbank->saldo_sekarang += $uj_kembali;

@@ -425,6 +425,28 @@
 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                  <a href="{{route('pembayaran_jo.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pembayaran_jo*') ? 'active' : ''  }}">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Pembayaran JO
+                    </p>
+                  </a>
+                </li>
+              </ul>
+            
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{ route('pembayaran_sdt.index') === request()->url() ? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Pembayaran S/D/T
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
                   <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
@@ -445,28 +467,6 @@
                 </li>
               </ul>
             
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pembayaran_jo.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pembayaran_jo*') ? 'active' : ''  }}">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Pembayaran JO
-                    </p>
-                  </a>
-                </li>
-              </ul>
-            
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{ route('pembayaran_sdt.index') === request()->url() ? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Pembayaran S/D/T
-                    </p>
-                  </a>
-                </li>
-              </ul>
-  
               <ul class="nav nav-treeview">
                 <li class="nav-item   {{ 
                 request()->is('pencairan_uang_jalan*') ||

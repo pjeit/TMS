@@ -10,7 +10,13 @@
 
 
 <style>
-  
+  /* force semua input dan text area jadi capslock / huruf besar */
+  input{
+    text-transform: uppercase;
+  }
+  textarea{
+    text-transform: uppercase;
+  }
 
 </style>
 <body class="hold-transition sidebar-mini layout-fixed">
