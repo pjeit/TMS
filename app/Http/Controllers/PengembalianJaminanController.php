@@ -20,14 +20,24 @@ class PengembalianJaminanController extends Controller
      */
     public function index()
     {
-        $data = JobOrder::from('job_order as jo')
-                            // ->with('jaminan')->where('jaminan.status', '!=', 'KEMBALI')
-                            // ->select('jo.id','jo.no_bl','j.catatan', 'j.nominal')
-                            ->leftJoin('jaminan as j', 'j.id_job_order', '=', 'jo.id')
-                            ->where('j.status', '!=', 'KEMBALI')
-                            ->where('j.is_aktif', 'Y')
-                            ->where('jo.is_aktif', 'Y')->get();
-        // dd($data);
+        $data = JobOrder::where('job_order.is_aktif', 'Y')
+        // ->where('status', 'DIBAYARKAN')
+        ->select('job_order.*')
+         ->join('jaminan as j', function($join) {
+                    $join->on('job_order.id', '=', 'j.id_job_order')
+                    ->where('j.is_aktif', '=', "Y")
+                    ->where('j.status', 'DIBAYARKAN')
+                    ;
+                })
+        ->get();
+        // $data = JobOrder::from('job_order as jo')
+        //                     // ->with('jaminan')->where('jaminan.status', '!=', 'KEMBALI')
+        //                     // ->select('jo.id','jo.no_bl','j.catatan', 'j.nominal')
+        //                     ->leftJoin('jaminan as j', 'j.id_job_order', '=', 'jo.id')
+        //                     ->where('j.status', '!=', 'KEMBALI')
+        //                     ->where('j.is_aktif', 'Y')
+        //                     ->where('jo.is_aktif', 'Y')->get();
+        // // dd($data);
         $bank = KasBank::where('is_aktif', 'Y')->get();
         return view('pages.finance.pengembalian_jaminan.index',[
             'judul' => 'Pengembalian Jaminan',
