@@ -229,16 +229,17 @@
                 processData:false,
                 success: function(response) {
                     var data = response;
-                    // console.log('data', data);
+                    console.log('data', data);
                     $('#tabel_tagihan').DataTable().clear().destroy();
 
                     for (var i = 0; i < data.length; i++) {
                         var row = $("<tr></tr>");
                         row.append(`<td>${data[i].no_sewa} - ${data[i].get_customer.nama} (${ dateMask(data[i].tanggal_berangkat)})</td>`);
-                        row.append(`<td>${moneyMask(data[i].total_tarif)}</td>`)
+                        row.append(`<td>${moneyMask(data[i].harga_jual)}
+                            </td>`)
                         row.append(`<td>
-                                        <input type="hidden" id="hidden_total_tarif_${data[i].id_sewa}" value="${data[i].total_tarif}" />
-                                        <input type="text" class="form-control ditagihkan uang numaja" name="data[${data[i].id_sewa}][ditagihkan]" id="${data[i].id_sewa}" readonly/>
+                                <input type="hidden" id="hidden_total_tarif_${data[i].id_sewa}" value="${data[i].harga_jual}" />
+                                <input type="text" class="form-control ditagihkan uang numaja" name="data[${data[i].id_sewa}][ditagihkan]" id="${data[i].id_sewa}" readonly/>
                                     </td>`)
                         row.append(`<td><input type="text" readonly name="data[${data[i].id_sewa}][catatan]" class="form-control" id="catatan_${data[i].id_sewa}" /></td>`)
                         row.append(`<td class='text-center' style="text-align:center">
@@ -333,7 +334,7 @@
                 totalValue = totalValue - diskon;
             }
             if (!isNaN(ppn)) {
-                totalValue = totalValue - ppn;
+                totalValue = totalValue + ppn;
             }
 
 

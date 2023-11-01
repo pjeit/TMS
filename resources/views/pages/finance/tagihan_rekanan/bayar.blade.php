@@ -48,6 +48,15 @@
                                     <input type="text" id="tagihan" name="total_tagihan" class="form-control uang numaja" value="" readonly>                         
                                 </div>
                             </div>
+                            {{-- <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <label for="" class="text-danger">Diskon</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div> --}}
+                                    <input type="hidden" id="diskon" name="diskon" class="form-control uang numaja" value="" readonly>                         
+                                {{-- </div>
+                            </div> --}}
                             <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="">Total Bayar</label>
                                 <div class="input-group mb-0">
@@ -160,7 +169,10 @@
                                             <input type="hidden" id="bukti_potong_{{ $tagihan->id }}" name="data[{{ $tagihan->id }}][bukti_potong]">
                                             <input type="hidden" id="total_tagihan_{{ $tagihan->id }}" value="{{ $tagihan->total_tagihan }}" name="data[{{ $tagihan->id }}][total_tagihan]">
                                             <input type="hidden" class="sisa_tagihan" id="sisa_tagihan_{{ $tagihan->id }}" value="{{ $tagihan->sisa_tagihan }}" name="data[{{ $tagihan->id }}][sisa_tagihan]">
+                                            {{-- <input type="hidden" class="ppn" id="ppn_{{ $tagihan->id }}" value="{{ $tagihan->ppn }}" name="data[{{ $tagihan->id }}][ppn]"> --}}
                                             <input type="hidden" class="ppn" id="ppn_{{ $tagihan->id }}" value="{{ $tagihan->ppn }}" name="data[{{ $tagihan->id }}][ppn]">
+                                            <input type="hidden" class="pph23" id="pph23_{{ $tagihan->id }}" name="data[{{ $tagihan->id }}][pph]">
+                                            <input type="hidden" class="diskon" id="diskon_{{ $tagihan->id }}" value="{{ $tagihan->diskon }}" name="data[{{ $tagihan->id }}][diskon]">
                                             <input type="hidden" class="total_bayar" id="total_bayar_{{ $tagihan->id }}" name="data[{{ $tagihan->id }}][total_bayar]" value="0">
                                         </div>
 
@@ -250,6 +262,24 @@
                                         <span class="input-group-text">Rp</span>
                                     </div>
                                     <input type="text" class="form-control numaja uang" id="modal_sisa_invoice" placeholder="" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <label for="">Diskon</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="text" class="form-control numaja uang" id="modal_diskon" placeholder="" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <label for="">PPN</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="text" class="form-control numaja uang" id="modal_ppn" placeholder="" readonly>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -377,16 +407,18 @@
             $('#key').val(id);
             $('#modal_no_nota').val( $('#no_nota_'+id).val() );
             $('#modal_bukti_potong').val( $('#bukti_potong_'+id).val() );
+            $('#modal_diskon').val( moneyMask($('#diskon_'+id).val()) );
+            $('#modal_pph23').val( moneyMask($('#pph23_'+id).val()) );
             $('#modal_total_tagihan').val( moneyMask($('#total_tagihan_'+id).val()) );
             $('#modal_sisa_invoice').val( moneyMask($('#sisa_tagihan_'+id).val()) );
             var ppn = moneyMask($('#ppn_'+id).val()) == 0 || moneyMask($('#ppn_'+id).val()) == ''? '':moneyMask($('#ppn_'+id).val());
-            $('#modal_pph23').val( ppn );
+            $('#modal_ppn').val( ppn );
             var bayar = moneyMask($('#total_bayar_'+id).val()) == 0 || moneyMask($('#total_bayar_'+id).val()) == ''? '':moneyMask($('#total_bayar_'+id).val());
             $('#modal_bayar').val( bayar );
 
-            if(ppn != 0){
-                hitungPPh(ppn);
-            }
+            // if(ppn != 0){
+            //     hitungPPh(ppn);
+            // }
 
             $('#modal_detail').modal('show');
         });
@@ -397,7 +429,7 @@
             $('#bukti_potong_'+id).val( $('#modal_bukti_potong').val() );
             $('#total_tagihan_'+id).val( normalize($('#modal_total_tagihan').val()) );
             $('#sisa_tagihan_'+id).val( normalize($('#modal_sisa_invoice').val()) );
-            $('#ppn_'+id).val( normalize($('#modal_pph23').val()) );
+            $('#pph23_'+id).val( normalize($('#modal_pph23').val()) );
             $('#total_bayar_'+id).val( normalize($('#modal_bayar').val()) );
 
             var elements = document.getElementsByClassName('bukti_pot_'+id);
@@ -405,15 +437,15 @@
                 elements[i].textContent = $('#modal_bukti_potong').val();
             }
 
-            var tot_bayars = document.getElementsByClassName('tot_bayar_'+id);
-            for(var i = 0; i < tot_bayars.length; i++){
-                tot_bayars[i].textContent = $('#modal_bayar').val();
-            }
+            // var tot_bayars = document.getElementsByClassName('tot_bayar_'+id);
+            // for(var i = 0; i < tot_bayars.length; i++){
+            //     tot_bayars[i].textContent = $('#modal_bayar').val();
+            // }
 
-            var tot_ppn = document.getElementsByClassName('tot_ppn_'+id);
-            for(var i = 0; i < tot_ppn.length; i++){
-                tot_ppn[i].textContent = $('#modal_pph23').val();
-            }
+            // var tot_pph23 = document.getElementsByClassName('tot_ppn_'+id);
+            // for(var i = 0; i < tot_ppn.length; i++){
+            //     tot_pph23[i].textContent = $('#modal_pph23').val();
+            // }
 
 
             $('#modal_detail').modal('hide'); // close modal
@@ -460,11 +492,13 @@
         hitung();
         function hitung(){
             const sisa_tagihan = document.querySelectorAll(".sisa_tagihan");
-            const ppn = document.querySelectorAll(".ppn");
+            const pph23 = document.querySelectorAll(".pph23");
             const total_bayar = document.querySelectorAll(".total_bayar");
+            const total_diskon = document.querySelectorAll(".diskon");
             let total_sisa_tagihan = 0;
             let total_bayar_all = 0;
-            let total_ppn = 0;
+            let total_pph23 = 0;
+            let total_diskon_all = 0;
 
             sisa_tagihan.forEach(element => {
                 const value = parseFloat(element.value);
@@ -473,12 +507,13 @@
                 }
             });
 
-            ppn.forEach(element => {
+            pph23.forEach(element => {
                 const value = parseFloat(element.value);
                 if (!isNaN(value)) {
-                    total_ppn += value;
+                    total_pph23 += value;
                 }
             });
+
             total_bayar.forEach(element => {
                 const value = parseFloat(element.value);
                 if (!isNaN(value)) {
@@ -486,11 +521,19 @@
                 }
             });
 
+            total_diskon.forEach(element => {
+                const value = parseFloat(element.value);
+                if (!isNaN(value)) {
+                    total_diskon_all += value;
+                }
+            });
+
             var biaya_admin = !isNaN(normalize($('#biaya_admin').val()))? normalize($('#biaya_admin').val()):0;
 
             $('#total_bayar').val(moneyMask(total_bayar_all - biaya_admin));
-            $('#pph23').val(moneyMask(total_ppn));
+            $('#pph23').val(moneyMask(total_pph23));
             $('#tagihan').val(moneyMask(total_sisa_tagihan));
+            $('#diskon').val(moneyMask(total_diskon_all));
         }
 
         function clear(){

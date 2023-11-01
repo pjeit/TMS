@@ -160,7 +160,7 @@
             </div> 
         </div>
 
-        <div class="m-3" style="overflow-x:auto; overflow-y:hidden"> {{-- style="overflow: auto;" --}}
+        <div class="m-3" style="overflow-x:auto; overflow-y:hidden"> style="overflow: auto;"
             <table class="table table-hover table-bordered table-striped" width='100%' id="table_invoice">
                 <thead>
                     <tr class="bg-white">
