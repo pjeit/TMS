@@ -197,6 +197,7 @@
                                                             value='{{isset($sewa->harga_per_kg)?$sewa->harga_per_kg:''}} '>
                                                     </div>
                                                 </div>
+                                                <span style="font-size:11pt;" class="badge bg-danger float-right m-2">Minimal muatan: {{isset($sewa->min_muatan)?$sewa->min_muatan:''}} Kg, Harga per Kg: {{isset($sewa->harga_per_kg)?number_format($sewa->harga_per_kg):''}}</span>
                                             </div>
                                         </div>
                                </div>

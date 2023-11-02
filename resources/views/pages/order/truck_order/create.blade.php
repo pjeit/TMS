@@ -184,7 +184,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="kontainer_div">
                                         <div class="form-group" id="inboundDataKontainer">
                                             <label for="">Tipe Kontainer<span class="text-red">*</span></label>
                                             <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
@@ -200,7 +200,7 @@
                                         </div>
                                         <input type="hidden" name="tipe_kontainer" id="tipe_kontainer" placeholder="tipe_kontainer">
                                     </div>     
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12"  id="kendaraan_div">
                                         <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan" required>
                                             <option value="">Pilih Kendaraan</option>
@@ -222,7 +222,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" id="chassis_div">
                                     <label for="select_ekor">Chassis<span style="color:red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis">
                                         <option value="">Pilih Chassis</option>
@@ -234,7 +234,7 @@
                                     <input type="hidden" id="karoseri" name="karoseri" value="" placeholder="karoseri">
 
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" id="driver_div">
                                     <label for="select_driver">Driver<span style="color:red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required>
                                         <option value="">Pilih Driver</option>
@@ -245,7 +245,7 @@
                                     <input type="hidden" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">
                                 </div>
                                 
-                                <div class="form-group">
+                                <div class="form-group" id="stack_tl_form">
                                     <label for="select_driver">Stack Full</label>
                                         <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                         <option value="">── Pilih Stack ──</option>
@@ -283,6 +283,10 @@
         $("#outbond").addClass("aktif");
         $('#jenis_order').val('OUTBOND');
         
+        $('#select_customer').select2({
+            // allowClear: true,
+            // minimumInputLength:1
+        });
         $('body').on('click','#inbound',function()
 		{
             // console.log('pencet');
@@ -418,6 +422,8 @@
             $('#id_jo').val(idJo);
 
             var baseUrl = "{{ asset('') }}";
+            // hitungTarif();
+            hideMenuTujuan();
             $.ajax({
                 url: `${baseUrl}truck_order/getJoDetail/${idJo}`, 
                 method: 'GET', 
@@ -443,14 +449,16 @@
                                  jo_detail.append(option);
                             });
                         // }
-
+                        // hitungTarif();
+                        hideMenuTujuan();
                     }
                     else
                     {
                         $('#select_jo_detail').empty(); 
                         $('#select_jo_detail').append('<option value="">Pilih Kontainer</option>');
                         $('#select_jo_detail').attr('disabled',true).val('').trigger('change');
-
+                        // hitungTarif();
+                        hideMenuTujuan();
                     }
                     // jo_detail.trigger('change');
         
@@ -477,7 +485,8 @@
             var selectedOption = $(this).find('option:selected');
             var bookingId = selectedOption.attr('booking_id');
             var pick_up = selectedOption.attr('pick_up');
-            
+            // hitungTarif();
+            hideMenuTujuan();
             // tl_perak
             // tl_priuk
             // tl_teluk_lamong
@@ -548,7 +557,8 @@
             $('#biayaDetail').val('');
             console.log(selectedValue);
             var select_grup_tujuan = $('#select_grup_tujuan');
-
+            // hitungTarif();
+            hideMenuTujuan();
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
                 method: 'GET', 
@@ -596,7 +606,8 @@
                         }
                         // ==============================kredit=================
 
-
+                        // hitungTarif();
+                        hideMenuTujuan();
                         select_grup_tujuan.empty(); 
                         select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                         if(selectedValue!="")
@@ -604,7 +615,7 @@
                             response.dataTujuan.forEach(tujuan => {
                                 const option = document.createElement('option');
                                 option.value = tujuan.id;
-                                option.textContent = tujuan.nama_tujuan;
+                                option.textContent = tujuan.nama_tujuan+ ` ( ${tujuan.jenis_tujuan} )`;
                                 if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
                                 {
                                     if (idTujuan == tujuan.id) {
@@ -634,6 +645,8 @@
                             cred.style.color = "black";
                             select_grup_tujuan.empty(); 
                             select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
+                            // hitungTarif();
+                            hideMenuTujuan();
                     }
                     // jo_detail.trigger('change');
         
@@ -655,7 +668,8 @@
             var splitValue = selectBooking.split('-');
             var idTujuan=splitValue[2];
             var array_detail_biaya = [];
-
+            // hitungTarif();
+            hideMenuTujuan();
             // var myjson;
             //
             // customer_id
@@ -697,7 +711,8 @@
                         $('#biayaDetail').val('');
 
                         array_detail_biaya = []
-
+                        // hitungTarif();
+                        hideMenuTujuan();
                     }
                     else
                     {
@@ -723,7 +738,8 @@
                         $('#min_muatan').val(response.dataTujuan.min_muatan);
                      
                         $('#kargo').val(response.dataTujuan.kargo);
-
+                        // hitungTarif();
+                        hideMenuTujuan();
                          // console.log( response.dataTujuanBiaya);
                         var dataBiaya = response.dataTujuanBiaya;
                         for (var i in dataBiaya) {
@@ -941,13 +957,16 @@
             // if ( $('#jenis_order').val()=='OUTBOND') {
             //     $('#tipe_kontainer_out').val(tipeKontainerKendaraanDariChassis).trigger('change');
             // }
-            if (idChassis!='') {
+            console.log(idChassis);
+            if (idChassis!=''&&idChassis!="null") {
                 $('#select_chassis').val(idChassis).trigger('change');
+                console.log('masuk if');
+
             }
             else
             {
                 $('#select_chassis').val('').trigger('change');
-
+                console.log('masuk else');
             }
             if(supir!='')
             {
@@ -997,6 +1016,62 @@
                 }
 
 		});
+        // hitungTarif();
+        // function hitungTarif()
+        // {
+            
+        //     var tarif = $('#tarif').val();
+        //     var uang_jalan = $('#uang_jalan').val();
+        //     var total_uang_jalan = parseFloat(tarif)+parseFloat(uang_jalan);
+        //     console.log('tarif :'+tarif);
+        //     console.log('uang_jalan :'+uang_jalan);
+        //     console.log('total_uang_jalan :'+total_uang_jalan);
+
+        //     console.log(isNaN(total_uang_jalan));
+        //     if(isNaN(total_uang_jalan))
+        //     {
+        //       $('#harga_tujuan').val(0)
+        //     }
+        //     else
+        //     {
+        //       $('#harga_tujuan').val(moneyMask(total_uang_jalan))
+        //     }
+        // }
+        hideMenuTujuan();
+        function hideMenuTujuan(){
+            var jenisTujuan=$('#jenis_tujuan').val();
+            var jenisOrder =$('#jenis_order').val();
+            var kendaraan_div =$('#kendaraan_div');
+            console.log(jenisTujuan);
+            console.log(jenisOrder);
+            // console.log(kendaraan_div);
+
+            // if(jenisOrder=='OUTBOUND')
+            // {
+                if(jenisTujuan=='FTL' || jenisTujuan=='')
+                {
+                    $('#kontainer_div').show();
+                    $('#chassis_div').show();
+                    $('#stack_tl_form').show();
+                    kendaraan_div.removeClass('col-lg-12 col-md-12 col-sm-12');
+                    kendaraan_div.addClass('col-lg-6 col-md-6 col-sm-12');
+                }
+                else
+                {
+                    $('#kontainer_div').hide();
+                    $('#chassis_div').hide();
+                    $('#stack_tl_form').hide();
+                    kendaraan_div.removeClass('col-lg-6 col-md-6 col-sm-12');
+                    kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
+                }
+            // }
+            // else
+            // {
+            //     $('#kontainer_div').show();
+            //     $('#chassis_div').show();
+            //     $('#driver_div').show();
+            // }
+        }
 
          $('#post_data').submit(function(event) {
             var jenis_order = $('#jenis_order').val();

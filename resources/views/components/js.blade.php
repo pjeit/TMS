@@ -177,7 +177,9 @@
 
       //Initialize Select2 Elements
       $('.select2').select2({
-        // dropdownAutoWidth: true
+        // dropdownAutoWidth: true,
+          // allowClear: true,
+            // minimumInputLength:1
       })
 
       //Initialize Select2 Elements
