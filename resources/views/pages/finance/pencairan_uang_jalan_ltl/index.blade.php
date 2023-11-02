@@ -44,10 +44,10 @@
                 <table id="ltl" class="table table-bordered table-hover" width="100%">
                     <thead>
                         <tr>
-                            <th>Customer</th>
-                            <th style="width:200px">No. Sewa</th>
-                            <th style="width:200px">Tanggal Berangkat</th>
+                            <th>Suplier</th>
+                            <th style="width:200px">Customer</th>
                             <th style="width:200px">Tujuan</th>
+                            <th style="width:200px">Tanggal Berangkat</th>
                         </tr>
                     </thead>
                     <tbody id="hasil">
@@ -75,7 +75,7 @@
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="row">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                    <label for="">Kas</label>
+                                    <label for="">Kas<span class="text-red">*</span> </label>
                                     <select name="id_kas" id="id_kas" class="form-control select2" required>
                                         <option value="">── PILIH KAS ──</option>
                                         @foreach ($kas as $item)
@@ -84,14 +84,14 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                    <label for="">Uang Jalan</label>
+                                    <label for="">Uang Jalan<span class="text-red">*</span></label>
                                     <input type="text" id="uang_jalan" name="uang_jalan" class="form-control uang numaja" required>
                                 </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Total Hutan</label>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12 is_total_hutang">
+                                    <label for="">Total Hutang</label>
                                     <input type="text" id="total_hutang" name="total_hutang" class="form-control uang numaja" readonly>
                                 </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12 is_potong_hutang">
                                     <label for="">Potong Hutang</label>
                                     <input type="text" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" >
                                 </div>
@@ -210,9 +210,9 @@
 
                     $("th").remove();
                     $("thead tr").append(`<th>Customer</th>
-                                            <th style="width:200px">No. Sewa</th>
-                                            <th style="width:200px">Tanggal Berangkat</th>
+                                            <th style="width:200px">Customer</th>
                                             <th style="width:200px">Tujuan</th>                    
+                                            <th style="width:200px">Tanggal Berangkat</th>
                                         `);
 
                     var data = response.data;
@@ -235,7 +235,7 @@
                                 row.append(`<td style='background: #efefef' > 
                                         <div class="d-flex justify-content-between ">
                                             <div>
-                                                <b> <span>► ${data[i].get_customer.nama}</span> (${data[i].no_polisi}) - ${data[i].nama_driver} </b>
+                                                <b> <span>► ${data[i].get_supplier.nama}</span> (${data[i].no_polisi}) - ${data[i].nama_driver == null? 'Driver Rekanan':data[i].nama_driver} </b>
                                                 <input type="hidden" value="${hutangKaryawan}" id="hutang" />
                                             </div>
                                             <div>
@@ -244,10 +244,11 @@
                                                 </button>
                                             </div>
                                         </div>
+                                        <input type="hidden" id="driver_${data[i].id_sewa}" value="${data[i].nama_driver}" />
                                     </td>`);
-                                row.append(`<td>${data[i].no_sewa}</td>`);
-                                row.append(`<td>${dateMask(data[i].tanggal_berangkat)}</td>`);
+                                row.append(`<td>${data[i].get_customer.nama}</td>`);
                                 row.append(`<td>${data[i].nama_tujuan}</td>`);
+                                row.append(`<td>${dateMask(data[i].tanggal_berangkat)}</td>`);
                                 $("#hasil").append(row);
                             }
                         }
@@ -298,6 +299,16 @@
         $(document).on('click', '.openModal', function(event){
             var id = this.value;
             $('#key').val(id);
+            let driver = $('#driver_'+id).val();
+            if(driver == "null"){
+                $('.is_potong_hutang').hide();
+                $('.is_total_hutang').hide();
+            }else{
+                $('.is_potong_hutang').show();
+                $('.is_total_hutang').show();
+            }
+            
+
             $('#total_hutang').val( moneyMask($('#hutang').val()) );
 
             $('#modal_detail').modal('show');

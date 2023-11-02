@@ -166,7 +166,7 @@
                     <tr class="bg-white">
                         <th style="text-align:center">Customer</th>
                         <th style="text-align:center">Tujuan</th>
-                        <th style="text-align:center">Sewa</th>
+                        <th style="text-align:center">Driver</th>
                         <th style="text-align:center"><span style="font-size: 0.8em;"><b>Kontainer &amp; Segel</b></span></th>
                         <th style="text-align:center">Muatan</th>
                         <th style="text-align:center">Tarif</th>
@@ -188,8 +188,8 @@
                                 <input type="hidden" name="detail[{{ $item->id_sewa }}][id_jo_detail_hidden]" value="{{ $item->id_jo_detail }}" />
 
                             </td>
-                            <td> {{ $item->nama_tujuan }} </td>
-                            <td> {{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }} <br>
+                            <td> {{ $item->nama_tujuan }} <br> ({{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }})</td>
+                            <td>
                                 @if ($item->id_supplier)
                                         DRIVER REKANAN  ({{ $item->namaSupplier }})
                                 @else
@@ -512,7 +512,6 @@
         // $('#table_invoice').DataTable({ 
         //     scrollX: true 
         // }); 
-      
 
         // set value default tgl invoice
         var today = new Date();
