@@ -40,14 +40,12 @@
                         <tbody id="hasil">
                             @if (isset($data))
                                 @foreach($data as $key => $item)
-                                    @if ($item->sisa_tagihan != 0)
-                                        <tr >
+                                    @if ($item->sisa_tagihan != 0)              
+                                        <tr>
                                             <td>{{ $item->getSupplier->nama }} 
-                                                {{-- @if ($item->total_sisa != 0) --}}
-                                                    <span class="float-right">
-                                                        <input type="checkbox" style="margin-right: 0.9rem;" class="supplier_centang id_supplier_{{ $item->getSupplier->id }}" value="{{ $item->getSupplier->id }}" >
-                                                    </span> 
-                                                {{-- @endif --}}
+                                                <span class="float-right">
+                                                    <input type="checkbox" style="margin-right: 0.9rem;" class="supplier_centang id_supplier_{{ $item->getSupplier->id }}" value="{{ $item->getSupplier->id }}" >
+                                                </span> 
                                             </td>
                                             <td>{{ $item->no_nota }}</td>
                                             <td>{{ date("d-M-Y", strtotime($item->tgl_nota)) }}</td>
@@ -125,7 +123,6 @@
             } else {
                 $(".perItem.item_"+id).prop("checked", false);
             }
-
         });
 
         $(document).on('click', '.perItem', function (event) {
@@ -136,8 +133,6 @@
             }else{
                 $(".id_supplier_"+idSupplier).prop("checked", false);
             }
-
-
         });
     });
 </script>

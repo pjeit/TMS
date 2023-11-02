@@ -22,9 +22,19 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <a href="{{route('job_order.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
-                        <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah JO
-                    </a> 
+                    {{-- jika user yg login punya akses create JO, maka tombol akan muncul --}}
+                    {{-- jika user tidak punya akses create JO, maka tombol create akan di hide --}}
+                    {{-- @if (auth()->user()->can('create JO'))  --}}
+                        {{-- <a href="{{route('job_order.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                            <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah JO
+                        </a> 
+                    @endif --}}
+                    {{-- atau bisa pakai cara ini juga --}}
+                    @can('create JO')
+                        <a href="{{route('job_order.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                            <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah JO
+                        </a> 
+                    @endcan
                 </div>
                 <div class="card-body">
                     <table id="dt" class="table table-bordered table-striped" width='100%'>

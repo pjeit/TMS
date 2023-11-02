@@ -34,45 +34,9 @@
             </div>
         </div>
         <div class="card radiusSendiri">
-            <div class="card-body" >
+            <div class="card-body radiusSendiri" >
                 <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="row">
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="">Diskon</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" id="diskon" name="diskon" class="form-control uang numaja">                         
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="">PPN</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" id="ppn" name="ppn" class="form-control uang numaja">                         
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="" class="text-success">Total Tagihan</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" id="tagihan" name="tagihan" class="form-control uang numaja" value="" readonly>                         
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="">Catatan</label>
-                                <textarea name="catatan" class="form-control" rows="1"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-light col-lg-6 col-md-6 col-sm-12">
+                    <div class="bg-gray-light radiusSendiri col-lg-6 col-md-6 col-sm-12">
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="form-group">
@@ -89,7 +53,7 @@
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="form-group">
                                     <label for="">No. Nota<span style="color:red">*</span></label>
-                                    <input type="text" name="no_nota" id="no_nota" maxlength="25" class="form-control">
+                                    <input type="text" name="no_nota" id="no_nota" maxlength="25" class="form-control" required>
                                 </div>
                             </div>
 
@@ -117,6 +81,23 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="row">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="" class="text-success">Total Tagihan</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="text" id="tagihan" name="tagihan" class="form-control uang numaja" value="" readonly required>                         
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="">Catatan</label>
+                                <textarea name="catatan" class="form-control" rows="1"></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div> 
@@ -125,7 +106,7 @@
             <table class="table table-hover table-bordered table-striped " width='100%' id="tabel_tagihan">
                 <thead>
                     <tr>
-                        <th>No. Sewa</th>
+                        <th>Data Sewa</th>
                         <th style="width: 200px;">Tarif</th>
                         <th style="width: 200px;">Ditagihkan</th>
                         <th>Catatan</th>
@@ -234,11 +215,11 @@
 
                     for (var i = 0; i < data.length; i++) {
                         var row = $("<tr></tr>");
-                        row.append(`<td>${data[i].no_sewa} - ${data[i].get_customer.nama} (${ dateMask(data[i].tanggal_berangkat)})</td>`);
+                        row.append(`<td>${data[i].get_customer.kode} - ${data[i].nama_tujuan} - (${ dateMask(data[i].tanggal_berangkat)})</td>`);
                         row.append(`<td>${moneyMask(data[i].harga_jual)}
                             </td>`)
                         row.append(`<td>
-                                <input type="hidden" id="hidden_total_tarif_${data[i].id_sewa}" value="${data[i].harga_jual}" />
+                                <input type="hidden" id="hidden_harga_jual_${data[i].id_sewa}" value="${data[i].harga_jual}" />
                                 <input type="text" class="form-control ditagihkan uang numaja" name="data[${data[i].id_sewa}][ditagihkan]" id="${data[i].id_sewa}" readonly/>
                                     </td>`)
                         row.append(`<td><input type="text" readonly name="data[${data[i].id_sewa}][catatan]" class="form-control" id="catatan_${data[i].id_sewa}" /></td>`)
@@ -276,10 +257,12 @@
         };    
 
         $(document).on('click', '.checkHitung', function (event) {
+            const harga_jual = document.getElementById('hidden_harga_jual_'+this.value);
             const inputElement = document.getElementById(this.value);
             const catatanElement = document.getElementById("catatan_"+this.value);
-
+             
             if (this.checked) {
+                inputElement.value = moneyMask(harga_jual.value);
                 inputElement.removeAttribute("readonly");
                 catatanElement.removeAttribute("readonly");
             } else {
@@ -297,10 +280,6 @@
             hitung();
         });
 
-        $(document).on('keyup', '#diskon, #ppn', function (event) {
-            hitung();
-        });
-
         // buat make sure agar lebih akurat
         $(document).on('change', '.ditagihkan', function (event) {
             validation(this)
@@ -309,7 +288,7 @@
 
         function validation(data){
             var id = data.getAttribute("id");
-            var hiddenValue = $('#hidden_total_tarif_'+id).val();
+            var hiddenValue = $('#hidden_harga_jual_'+id).val();
             if (normalize(data.value) > parseFloat(hiddenValue)) {
                 data.value = moneyMask(parseFloat(hiddenValue)); 
             }
@@ -325,18 +304,6 @@
                     totalValue += value;
                 }
             });
-
-            // var tagihan = !isNaN(normalize($('#tagihan').val()))? normalize($('#tagihan').val()):0;
-            var diskon  = !isNaN(normalize($('#diskon').val()))? normalize($('#diskon').val()):0;
-            var ppn     = !isNaN(normalize($('#ppn').val()))? normalize($('#ppn').val()):0;
-
-            if (!isNaN(diskon)) {
-                totalValue = totalValue - diskon;
-            }
-            if (!isNaN(ppn)) {
-                totalValue = totalValue + ppn;
-            }
-
 
             $('#tagihan').val(moneyMask(totalValue));
         }

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\HtmlString;
 use App\Helper\UserHelper;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class JobOrderController extends Controller
 {
@@ -26,8 +27,19 @@ class JobOrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        // $this->middleware('can: create JO');
+        // $this->middleware('can: create JO')->only('create');
+    }
+
     public function index()
     {
+        // $this->authorize('read JO');
+        // if(!Gate::allows('read JO')){
+        //     abort(403, 'unauthorized');
+        // }
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
@@ -74,6 +86,8 @@ class JobOrderController extends Controller
      */
     public function create()
     {
+        // $this->authorize('create JO');
+
         $dataSupplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
