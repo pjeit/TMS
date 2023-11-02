@@ -110,7 +110,7 @@
                                                 @if ($sewa->no_kontainer_jod&&$sewa->jenis_order =="INBOUND")
                                                     <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$sewa->no_kontainer_jod}}" >                         
                                                 @else
-                                                    <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" value="{{$sewa->no_kontainer}}" >                         
+                                                    <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" value="{{$sewa->no_kontainer}}" >               
                                                 @endif
                                             </div> 
                                         {{-- @endif --}}
@@ -183,14 +183,14 @@
                                                 </div>
                                             </div>
                                             <div class="col-8 col-md-12 col-lg-8">
-                                                <label for="total_harga_lcl">Total Harga</label>
+                                                <label for="total_harga_ltl">Total Harga</label>
                                                 <div class="form-group">
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">Rp.</span>
                                                         </div>
-                                                        <input type="text" class="form-control numaja uang" name="total_harga_lcl"
-                                                            id="total_harga_lcl" readonly>
+                                                        <input type="text" class="form-control numaja uang" name="total_harga_ltl"
+                                                            id="total_harga_ltl" readonly>
                                                         <input type="hidden" id="min_muatan"
                                                             value='{{isset($sewa->min_muatan)?$sewa->min_muatan:''}}'>
                                                         <input type="hidden" id="harga_per_kg"
@@ -889,7 +889,7 @@
             }
 
             let total_harga = hitung_total_harga_dari_muatan(muatan.toFixed(2));
-            $('#total_harga_lcl').val(total_harga);
+            $('#total_harga_ltl').val(moneyMask(total_harga));
 
         });
         if ($('#jenis_tujuan').val() != "LTL") {

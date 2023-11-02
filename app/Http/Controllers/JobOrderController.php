@@ -127,6 +127,7 @@ class JobOrderController extends Controller
             $data = $request->post();
             $currentYear = Carbon::now()->format('y');
             $currentMonth = Carbon::now()->format('m');
+            // dd($data);
 
             $kode = DB::table('customer')
                 ->select('kode')
@@ -154,6 +155,8 @@ class JobOrderController extends Controller
             $newJO->pelabuhan_muat = $data['pelabuhan_muat'];
             $newJO->pelabuhan_bongkar = $data['pelabuhan_bongkar'];
             $newJO->no_bl = $data['no_bl'];
+            $newJO->kapal = $data['kapal'];
+            $newJO->voyage = $data['voyage'];
             $newJO->tgl_sandar = isset($data['tgl_sandar'])? date_create_from_format('d-M-Y', $data['tgl_sandar']):NULL; 
             $newJO->thc =  isset($data['checkbox_THC'])? floatval(str_replace(',', '', $data['total_thc'])):0;
             $newJO->lolo = isset($data['checkbox_LOLO'])? floatval(str_replace(',', '', $data['total_lolo'])):0;

@@ -92,7 +92,7 @@
                                     <input type="text" id="total_hutang" name="total_hutang" class="form-control uang numaja" readonly>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Potong Hutan</label>
+                                    <label for="">Potong Hutang</label>
                                     <input type="text" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" >
                                 </div>
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -222,9 +222,13 @@
                             if(data[i].total_dicairkan == null){
                                 var row = $("<tr></tr>");
 
-                                if (data[i].get_karyawan.get_hutang != null) {
+                                if (data[i] && data[i].get_karyawan && data[i].get_karyawan.get_hutang !== null) {
+                                    // The property data[i].get_karyawan.get_hutang exists and is not null
+                                    // You can perform further actions here
                                     hutangKaryawan = data[i].get_karyawan.get_hutang.total_hutang;
                                 } else {
+                                    // The property data[i].get_karyawan.get_hutang is either null or doesn't exist
+                                    // Handle this case as needed
                                     hutangKaryawan = 0;
                                 }
 

@@ -96,7 +96,9 @@ class DalamPerjalananController extends Controller
     {
         //
         $sewa = DB::table('sewa AS s')
-                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod','jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','gt.harga_per_kg','gt.min_muatan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
+                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','jod.seal as seal_pelayaran_jod',
+                            'jod.no_kontainer as no_kontainer_jod','gt.nama_tujuan','gt.harga_per_kg','gt.min_muatan',
+                            'k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                     ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                     ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
@@ -110,6 +112,7 @@ class DalamPerjalananController extends Controller
                     ->where('s.id_sewa', '=', $dalam_perjalanan->id_sewa)
                     ->groupBy('c.id')
                     ->first();
+        // dd($sewa);
         $dataJO=DB::table('job_order as jo')
             ->select('jo.*')
             ->where('jo.is_aktif', '=', "Y")
@@ -422,7 +425,7 @@ class DalamPerjalananController extends Controller
                 $dalam_perjalanan->is_kembali = $data['is_kembali'];
                 if ($data['jenis_tujuan']=='LTL') {
                     $dalam_perjalanan->jumlah_muatan = $data['muatan_ltl'];
-                    $dalam_perjalanan->total_tarif = $data['total_harga_lcl'];
+                    $dalam_perjalanan->total_tarif = floatval(str_replace(',', '', $data['total_harga_ltl']));
                 }
             }
          

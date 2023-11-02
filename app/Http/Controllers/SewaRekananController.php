@@ -73,16 +73,11 @@ class SewaRekananController extends Controller
      */
     public function store(Request $request)
     {
-        //
-         $user = Auth::user()->id; 
-        // dd($user);
         try {
+            $user = Auth::user()->id; 
             $data = $request->collect();
-            // dd((float)str_replace(',', '', $data['harga_jual']));
-            // dd($data);
-            
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
-
+            // dd($data);
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
             $booking_id = isset($data['booking_id'])? $data['booking_id']:null; 
 
@@ -126,6 +121,9 @@ class SewaRekananController extends Controller
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['kontainer']? $data['kontainer']:null;
+            if($data['jenis_tujuan'] == 'LTL'){
+                $sewa->no_kontainer = $data['no_koli'] . ' Koli';
+            }
             $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
             // $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
             $sewa->harga_jual = (float)str_replace(',', '', $data['harga_jual']);

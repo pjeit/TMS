@@ -74,13 +74,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group ">
                                     <label for="">No. BL<span class="text-red">*</span></label>
                                     <input required type="text" id="no_bl" name="no_bl" class="form-control" value="" >
                                 </div>           
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
                                     <label for="tgl_sandar">Tanggal Sandar<span class="text-red">*</span></label>
                                     <div class="input-group mb-0">
@@ -89,6 +89,18 @@
                                         </div>
                                         <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="" required>     
                                     </div>
+                                </div>           
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group ">
+                                    <label for="">Nama Kapal<span class="text-red">*</span></label>
+                                    <input required type="text" id="kapal" name="kapal" maxlength="30" class="form-control">
+                                </div>           
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group ">
+                                    <label for="">Voyage<span class="text-red">*</span></label>
+                                    <input required type="text" id="voyage" name="voyage" maxlength="5" class="form-control" placeholder="Max. 5 char">
                                 </div>           
                             </div>
                         </div>
@@ -140,34 +152,30 @@
                                 </div>              
                             </div>
                         </div>  
-                        <!-- <div class="card radiusSendiri">
-                        <div class="card-header"> -->
-                            <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2"><i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah Kontainer</button>
-                        <!-- </div> -->
-                        <!-- <div class="card-body"> -->
-                            <table class="table" id="sortable">
-                                <thead>
-                                    <tr>
-                                        <th width="350">No. Kontainer</th>
-                                        <th width="280">Seal</th>
-                                        <th width="150">Tipe</th>
-                                        <th width="150">Stripping</th>
-                                        <th width="150">Pick Up</th>
-                                        <th width="350">Tujuan</th>
-                                        <th width="200">Tgl Booking</th>
-                                        <th width="20" class="text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tb"> 
-                                    
-                                      
-                                </tbody>
-                                <tfoot>
+
+                        <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2 mt-2"><i class="fa fa-plus-circle" aria-hidden="true"></i> Tambah Kontainer</button>
+                  
+                        <table class="table table-bordered" id="sortable">
+                            <thead>
+                                <tr>
+                                    <th width="350">No. Kontainer</th>
+                                    <th width="280">Seal</th>
+                                    <th width="150">Tipe</th>
+                                    <th width="150">Stripping</th>
+                                    <th width="150">Pick Up</th>
+                                    <th width="350">Tujuan</th>
+                                    <th width="200">Tgl Booking</th>
+                                    <th width="20" class="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb"> 
                                 
-                                </tfoot>
-                            </table>
-                        <!-- </div>
-                    </div> -->  
+                                    
+                            </tbody>
+                            <tfoot>
+                            
+                            </tfoot>
+                        </table>
                     </div>
                 </div> 
             </div>
@@ -584,7 +592,7 @@
                             </td>
                             <td>
                                 <select class="form-control selectpicker pick_up" name="detail[${i}][pick_up]" id="pick_up${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value="">── PICK UP ──</option>
+                                    <option value="">─ Pick Up ─</option>
                                     <option value="TTL">TTL</option>
                                     <option value="TPS">TPS</option>
                                     <option value="DEPO">DEPO</option>
@@ -601,7 +609,7 @@
                             </td>
                         
                             <td align="center" class="text-danger">
-                                <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" class="btn btn-danger radiusSendiri hapus">
+                                <button type="button" data-toggle="tooltip" data-placement="right" title="Hapus" class="btn btn-sm btn-danger hapus">
                                     <i class="fa fa-fw fa-trash-alt"></i>
                                 </button>
                             </td>

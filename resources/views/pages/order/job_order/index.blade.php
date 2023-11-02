@@ -30,11 +30,14 @@
                         </a> 
                     @endif --}}
                     {{-- atau bisa pakai cara ini juga --}}
-                    @can('create JO')
+                    {{-- @can('create JO')
                         <a href="{{route('job_order.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah JO
                         </a> 
-                    @endcan
+                    @endcan --}}
+                    <a href="{{route('job_order.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                        <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah JO
+                    </a> 
                 </div>
                 <div class="card-body">
                     <table id="dt" class="table table-bordered table-striped" width='100%'>

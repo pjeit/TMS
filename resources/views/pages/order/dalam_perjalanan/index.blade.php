@@ -27,10 +27,9 @@
                     <thead>
                         <tr>
                             <th>Custoemer</th>
-                            <th>No. Polisi</th>
-                            <th>No. Sewa</th>
-                            <th>Tanggal Berangkat</th>
                             <th>Tujuan</th>
+                            <th>No. Polisi</th>
+                            <th>Tanggal Berangkat</th>
                             <th>Driver</th>
                             <th style="width:30px"></th>
                         </tr>
@@ -52,10 +51,9 @@
                                 @endif --}}
                                 <tr>
                                     <td>{{ $item->nama_cust}}</td>
-                                    <td>{{ $item->no_polisi}}</td>
-                                    <td>{{ $item->no_sewa }}</td>
-                                    <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                     <td>{{ $item->nama_tujuan }}</td>
+                                    <td>{{ $item->no_polisi}}</td>
+                                    <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                     @if ($item->id_supplier)
                                     <td>DRIVER REKANAN  ({{ $item->namaSupplier }})</td>
                                     @else
@@ -126,6 +124,7 @@
 <script>
 $(document).ready(function () {
     new DataTable('#tabelSewa', {
+        "ordering": false,
         order: [
             [0, 'asc'],
         ],
@@ -137,10 +136,10 @@ $(document).ready(function () {
                 targets: [0],
                 visible: false
             },
-            {
-                "orderable": false,
-                "targets": [0,1,2,3,4,5,6]
-            }
+            // {
+            //     "orderable": false,
+            //     "targets": [0,1,2,3,4,5,6]
+            // }
         ],
     }); 
 });
