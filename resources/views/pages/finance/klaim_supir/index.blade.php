@@ -23,6 +23,7 @@
   transition: transform 0.8s ease; /* Add a transition to the 'transform' property */
   border-radius: 5px;
 }
+
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -496,7 +497,7 @@ $(document).ready(function () {
 
                     setTimeout(() => {
                         this.submit();
-                    }, 1000); // 2000 milliseconds = 2 seconds
+                    }, 200); // 2000 milliseconds = 2 seconds
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,

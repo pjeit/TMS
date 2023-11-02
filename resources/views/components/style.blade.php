@@ -148,7 +148,10 @@ body{
     background: rgb(2,0,36);
     background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(0,113,189,1) 35%, rgba(31,136,206,1) 51%, rgba(0,113,189,1) 66%, rgba(2,0,36,1) 100%);
   }
-
+.nav-link.nav-link-tab.active{
+        background-color: rgb(60, 177, 255);
+        color: white; /* Set text color if needed */
+    }
   .bg-logistik{
     background: linear-gradient(
           rgba(0, 0, 0, 0.5), 

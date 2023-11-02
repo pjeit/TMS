@@ -24,7 +24,7 @@ height:100px;
 }
 </style> 
 <div id='printable'>
-            <table class='table_cetak' style='border:solid 1px black;width:600px;height:600px;border-collapse: collapse;'>
+            <table class='table_cetak' style='border:solid 1px black;width:800px;height:600px;border-collapse: collapse;margin:auto;'>
                 <tr >
                     <td colspan='3' style='text-align:center ;' id="nambah_height"><b style='font-size:16pt'>VOUCHER DRIVER</b></td>
                 </tr>
@@ -34,14 +34,14 @@ height:100px;
                     <td style='padding-right:2.5px;'>{{\Carbon\Carbon::parse($data_uang_jalan->tanggal_pencatatan)->format('d-M-Y')}}</td>
                 </tr>
                 <tr style='border-top: solid 1px lightgray;'>
-                    <td style='padding-left:2.5px;'id="nambah_height">&nbsp;No. Voucher</td>
+                    <td style='padding-left:2.5px;'id="nambah_height">&nbsp;No. Sewa</td>
                     <td>:</td>
                     <td>{{ $data_uang_jalan->no_sewa }}</td>
                 </tr>
                 <tr style='border-top: solid 1px lightgray;'>
                     <td style='padding-left:2.5px;'id="nambah_height">&nbsp;Customer</td>
                     <td>:</td>
-                    <td>{{$data_uang_jalan->nama_tujuan}}({{ $data_uang_jalan->nama_cust}})</td>
+                    <td style='padding-right:5.5px;'> {{ $data_uang_jalan->nama_cust}} ({{$data_uang_jalan->nama_tujuan}})</td>
                 </tr>
                 <tr style='border-top: solid 1px lightgray;'>
                     <td style='padding-left:2.5px;'id="nambah_height">&nbsp;No. Polisi</td>
@@ -51,7 +51,7 @@ height:100px;
                 @if (isset($data_sewa_biaya))
                         @foreach ($data_sewa_biaya as $item)
                         <tr style='border-top: solid 1px lightgray;'>
-                            <td style='padding-left:2.5px;'id="nambah_height">{{$item->deskripsi}}</td>
+                            <td style='padding-left:2.5px;'id="nambah_height">&nbsp;{{$item->deskripsi}}</td>
                             <td>:</td>
                             <td>Rp. {{number_format($item->biaya,2)  }}</td>
                         </tr>
@@ -68,7 +68,7 @@ height:100px;
                     <td style='border-top: solid 2px black'>:</td>
                     <td style='border-top: solid 2px black'>Rp. {{number_format(($data_uang_jalan->total_uang_jalan+$data_uang_jalan->total_tl) - $data_uang_jalan->potong_hutang,2)  }}</td>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td style='height:48px;padding:0px' colspan='3'>
                         <table style='width:100%;border-collapse: collapse;'>
                             <tr>
@@ -81,7 +81,7 @@ height:100px;
                             </tr>
                         </table>
                     </td>
-                </tr>
+                </tr> --}}
             </table>
         </div>
         <br>

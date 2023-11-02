@@ -441,7 +441,7 @@ class KlaimSupirController extends Controller
                 $pesanKustom = [
                     'tanggal_pencairan.required' => 'Tanggal Pencairan harap diisi!',
                     'catatan_pencairan.required' => 'Catatan Pencairan harap diisi!',
-                    'tanggal_pencatatan.required' => 'Tanggal pencatatan harap diisi!',
+                    // 'tanggal_pencatatan.required' => 'Tanggal pencatatan harap diisi!',
                     'total_pencairan.required' => 'Total Pencairan harap diisi!',
                     'kas.required' => 'Kas bank harap diisi!',
                 ];
@@ -449,7 +449,7 @@ class KlaimSupirController extends Controller
                 $request->validate([
                     'tanggal_pencairan' => 'required',
                     'catatan_pencairan' => 'required',
-                    'tanggal_pencatatan' => 'required',
+                    // 'tanggal_pencatatan' => 'required',
                     'total_pencairan' => 'required',
                     'kas' => 'required',
 
@@ -597,7 +597,7 @@ class KlaimSupirController extends Controller
                             }
                             //tanggal pencairan sama pencatatan null soalnya kan kalau tolak ga ada
                             $klaim_supir_riwayat->tanggal_pencairan = null;
-                            $klaim_supir_riwayat->tanggal_pencatatan = null;
+                            // $klaim_supir_riwayat->tanggal_pencatatan = null;
                             $klaim_supir_riwayat->total_pencairan =0;
                             $klaim_supir_riwayat->alasan_tolak = $data['alasan_tolak'];
                             $klaim_supir_riwayat->catatan_pencairan =null;
@@ -611,7 +611,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat_baru = new KlaimSupirRiawayat();
                             $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
                             $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
-                            $klaim_supir_riwayat_baru->tanggal_pencatatan = null;
+                            // $klaim_supir_riwayat_baru->tanggal_pencatatan = null;
                             $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat_baru->total_pencairan =0;
                             $klaim_supir_riwayat_baru->alasan_tolak = $data['alasan_tolak'];
@@ -626,7 +626,7 @@ class KlaimSupirController extends Controller
                     }
                     elseif ($data['status_klaim']=='ACCEPTED') {
                         $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
-                        $tanggal_pencatatan= date_create_from_format('d-M-Y', $data['tanggal_pencatatan']);
+                        // $tanggal_pencatatan= date_create_from_format('d-M-Y', $data['tanggal_pencatatan']);
                         //kalo ada klaim supir riwayat yang lama
                         if($klaim_supir_riwayat)
                         {
@@ -673,7 +673,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat->id_klaim = $klaim_supir->id;
                             $klaim_supir_riwayat->kas_bank_id = $data['kas'];
                             $klaim_supir_riwayat->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
-                            $klaim_supir_riwayat->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
+                            // $klaim_supir_riwayat->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
                             $klaim_supir_riwayat->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
                             $klaim_supir_riwayat->catatan_pencairan =$data['catatan_pencairan'];
@@ -702,7 +702,7 @@ class KlaimSupirController extends Controller
                             DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                 array(
                                     $data['kas'],// id kas_bank dr form
-                                    $tanggal_pencatatan,//tanggal
+                                    $tanggal_pencairan,//tanggal
                                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     1016, //kode coa
@@ -724,7 +724,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
                             $klaim_supir_riwayat_baru->kas_bank_id = $data['kas'];
                             $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
-                            $klaim_supir_riwayat_baru->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
+                            // $klaim_supir_riwayat_baru->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
                             $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat_baru->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
                             $klaim_supir_riwayat_baru->catatan_pencairan =$data['catatan_pencairan'];
@@ -753,7 +753,7 @@ class KlaimSupirController extends Controller
                                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                     array(
                                         $data['kas'],// id kas_bank dr form
-                                        $tanggal_pencatatan,//tanggal
+                                        $tanggal_pencairan,//tanggal
                                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         1016, //kode coa

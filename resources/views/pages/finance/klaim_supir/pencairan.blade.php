@@ -64,7 +64,7 @@
                                     <div class="row">
                                         <div class="col-lg-6 col-md-12 col-sm-12">
                                             <div class="row">
-                                                <div class="form-group col-lg-6 col-md-12 col-sm-12">
+                                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                                     <label for="tanggal_klaim">Tanggal Pencairan<span style="color:red">*</span></label>
                                                     <div class="input-group mb-0">
                                                         <div class="input-group-prepend">
@@ -79,14 +79,13 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                <div class="form-group col-lg-6 col-md-12 col-sm-12">
+                                                {{-- <div class="form-group col-lg-6 col-md-12 col-sm-12">
                                                     <label for="tanggal_pencatatan">Tanggal Pencatatan<span style="color:red">*</span></label>
                                                     <div class="input-group mb-0">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                         </div>
                                                         <input type="text" autocomplete="off" name="tanggal_pencatatan" class="form-control date @error('tanggal_pencatatan') is-invalid @enderror" id="tanggal_pencatatan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencatatan',!empty($klaim_supir_riwayat->tanggal_pencatatan)?\Carbon\Carbon::parse($klaim_supir_riwayat->tanggal_pencatatan)->format('d-M-Y'):'')}}">
-                                                        {{-- <input type="text" autocomplete="off" name="tanggal_pencatatan" class="form-control date @error('tanggal_pencatatan') is-invalid @enderror" id="tanggal_pencatatan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencatatan')}}"> --}}
                                                         
                                                         @error('tanggal_pencatatan')
                                                             <div class="invalid-feedback">
@@ -94,7 +93,7 @@
                                                             </div>
                                                         @enderror
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                             </div>
                                             
                                             <div class="form-group" id="div_catatan_pencairan">
@@ -124,17 +123,17 @@
                                                 </div>
                                             </div> 
                                             <div class="form-group">
-                                                <label for="tipe">Status Klaim</label>
-                                                <br>
-                                                <div class="icheck-primary d-inline">
+                                                <label for="tipe">Status Klaim :</label>
+                                                {{-- <br> --}}
+                                                {{-- <div class="icheck-primary d-inline">
                                                     <input id="PENDING" type="radio" name="status_klaim" value="PENDING" {{'PENDING'== $klaimSupir->status_klaim? 'checked' :'' }}>
                                                     <label class="form-check-label" for="PENDING">Pending</label>
-                                                </div>
+                                                </div> --}}
                                                 <div class="icheck-primary d-inline ml-3">
-                                                    <input id="ACCEPTED" type="radio" name="status_klaim" value="ACCEPTED" {{'ACCEPTED' == $klaimSupir->status_klaim? 'checked' :'' }}>
+                                                    <input id="ACCEPTED" type="radio" name="status_klaim" value="ACCEPTED" checked {{--{{'ACCEPTED' == $klaimSupir->status_klaim? 'checked' :'' }}--}}>
                                                     <label class="form-check-label" for="ACCEPTED">Terima</label>
                                                 </div>
-                                                <div class="icheck-primary d-inline ml-3">
+                                                <div class="icheck-danger d-inline ml-3">
                                                     <input id="REJECTED" type="radio" name="status_klaim" value="REJECTED" {{'REJECTED'== $klaimSupir->status_klaim? 'checked' :'' }}>
                                                     <label class="form-check-label" for="REJECTED">Tolak</label>
                                                 </div>
@@ -350,8 +349,8 @@
                 $('#kas').attr('disabled',true);
                 $('#total_pencairan').attr('disabled',true);
                 $('#catatan_pencairan').attr('disabled',true);
-                $('#tanggal_pencatatan').attr('disabled',true);
-                $('#tanggal_pencatatan').val('');
+                // $('#tanggal_pencatatan').attr('disabled',true);
+                // $('#tanggal_pencatatan').val('');
 
                 $('#div_alasan_tolak').hide();
                 $('#div_catatan_pencairan').show();
@@ -363,8 +362,8 @@
                 $('#kas').attr('disabled',true);
                 $('#total_pencairan').attr('disabled',true);
                 $('#catatan_pencairan').attr('disabled',true);
-                $('#tanggal_pencatatan').attr('disabled',true);
-                $('#tanggal_pencatatan').val('');
+                // $('#tanggal_pencatatan').attr('disabled',true);
+                // $('#tanggal_pencatatan').val('');
                 $('#div_alasan_tolak').show();
                 $('#div_catatan_pencairan   ').hide();
 
@@ -374,14 +373,14 @@
                 $('#kas').attr('disabled',false);
                 $('#total_pencairan').attr('disabled',false);
                 $('#catatan_pencairan').attr('disabled',false);
-                $('#tanggal_pencatatan').attr('disabled',false);
-                $('#tanggal_pencatatan').datepicker({
-                    autoclose: true,
-                    format: "dd-M-yyyy",
-                    todayHighlight: true,
-                    language:'en',
-                    // endDate: "0d"
-                });
+                // $('#tanggal_pencatatan').attr('disabled',false);
+                // $('#tanggal_pencatatan').datepicker({
+                //     autoclose: true,
+                //     format: "dd-M-yyyy",
+                //     todayHighlight: true,
+                //     language:'en',
+                //     // endDate: "0d"
+                // });
 
                 $('#div_alasan_tolak').hide();
                 $('#div_catatan_pencairan').show();
@@ -409,13 +408,13 @@
             endDate: "0d"
 
         });
-        $('#tanggal_pencatatan').datepicker({
-            autoclose: true,
-            format: "dd-M-yyyy",
-            todayHighlight: true,
-            language:'en',
-            // startDate: "0d"
-        });
+        // $('#tanggal_pencatatan').datepicker({
+        //     autoclose: true,
+        //     format: "dd-M-yyyy",
+        //     todayHighlight: true,
+        //     language:'en',
+        //     // startDate: "0d"
+        // });
         
     function readURLNota(input) {
         if (input.files && input.files[0]) {
@@ -447,11 +446,11 @@
     });
     $("#tanggal_pencairan").change(function() {
         var statusMenikah = $("input[name='status_klaim']:checked").val();
-        if(statusMenikah=="ACCEPTED") //
-        {
-            // $("#tanggal_pencatatan").val($(this).val());
-            $("#tanggal_pencatatan").datepicker("setDate", $(this).val());
-        }
+        // if(statusMenikah=="ACCEPTED") //
+        // {
+        //     // $("#tanggal_pencatatan").val($(this).val());
+        //     $("#tanggal_pencatatan").datepicker("setDate", $(this).val());
+        // }
         
     });
     $(".bukakModalCreate").click(function () {
@@ -534,7 +533,7 @@
 
             var tanggal_pencairan = $("#tanggal_pencairan").val();
             var catatan_pencairan = $("#catatan_pencairan").val();
-            var tanggal_pencatatan = $("#tanggal_pencatatan").val();
+            // var tanggal_pencatatan = $("#tanggal_pencatatan").val();
             var total_pencairan = $("#total_pencairan").val();
             var kas = $("#kas").val();
             var alasan_tolak = $("#alasan_tolak").val();
@@ -623,15 +622,15 @@
                     })
                     return;
                 }
-                if(tanggal_pencatatan.trim()=='')
-                {
-                    event.preventDefault(); 
-                    Toast.fire({
-                        icon: 'error',
-                        text: `TANGGAL PENCATATANWAJIB DIISI!`,
-                    })
-                    return;
-                }
+                // if(tanggal_pencatatan.trim()=='')
+                // {
+                //     event.preventDefault(); 
+                //     Toast.fire({
+                //         icon: 'error',
+                //         text: `TANGGAL PENCATATANWAJIB DIISI!`,
+                //     })
+                //     return;
+                // }
                 if(catatan_pencairan.trim()=='')
                 {
                     event.preventDefault(); 
@@ -674,7 +673,7 @@
 
                     setTimeout(() => {
                         this.submit();
-                    }, 1000); // 2000 milliseconds = 2 seconds
+                    }, 200); // 2000 milliseconds = 2 seconds
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
