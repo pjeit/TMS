@@ -184,9 +184,18 @@
                 <tr class="bg-gray text-center text-bold">
                     <td style="border: 1px solid black; border-collapse: collapse;">NO</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">TGL. BERANGKAT <br> TUJUAN</td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">NO. CONTAINER
+                    <td style="border: 1px solid black; border-collapse: collapse;">
+                        @if ($cekTarif && $cekMuatan)
+                                NO. KOLI
+                            <br>NO. SURAT JALAN 
+                        @else
+                          NO. CONTAINER
+                         <br>NO. SEGEL
+                        
+                        @endif
+                      
                         {{-- <br>NO. SURAT JALAN --}}
-                        <br>NO. SEGEL
+
                     </td>
                     <td style="border: 1px solid black; border-collapse: collapse;">NOPOL</td>
                     {{-- @foreach ($data->invoiceDetails as $i => $detail) --}}
@@ -222,18 +231,19 @@
                         {{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }}
                         <br>{{ $detail->sewa->nama_tujuan }}
                     </td>
-                    <td>
-                        {{-- {{ $detail->sewa->getJOD->no_kontainer }} --}}
-                        {{ $detail->sewa->no_kontainer }}
-
-                        {{-- <br>{{ $detail->sewa->no_surat_jalan }} --}}
-                        <br>{{ $detail->sewa->seal_pelayaran }}
-                    </td>
+                   
                     {{-- <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td> --}}
                     {{-- ini cek harga kalau ftl terus ga dipisah --}}
                     @if ($detail->tarif>0)
                     {{-- ini cek harga kalau ltl, kalau ltl detect ada muatannya --}}
                         @if ($detail->tarif>0&&$detail->jumlah_muatan>0)
+                            <td>
+                                {{-- DI DB EMANG NO KONTAINER, TP INI NO KOLI --}}
+                                {{ $detail->sewa->no_kontainer }}
+
+                                <br>{{ $detail->sewa->no_surat_jalan }}
+                                {{-- <br>{{ $detail->sewa->seal_pelayaran }} --}}
+                            </td>
                             <td class="text-center">{{ $detail->sewa->no_polisi }}</td>
                             <td class="text-right">{{ $detail->jumlah_muatan }}</td>
                             <td class="text-right">{{ number_format($detail->tarif) }}</td>
@@ -256,6 +266,13 @@
                             
                             {{-- ini else masuk kalau ftl biasa --}}
                         @else
+                            <td>
+                                {{-- {{ $detail->sewa->getJOD->no_kontainer }} --}}
+                                {{ $detail->sewa->no_kontainer }}
+
+                                {{-- <br>{{ $detail->sewa->no_surat_jalan }} --}}
+                                <br>{{ $detail->sewa->seal_pelayaran }}
+                            </td>
                             <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
                             <td class="text-right">{{ number_format($detail->tarif) }}</td>
                             <td class="text-right" {{--rowspan="27"--}}> <br>

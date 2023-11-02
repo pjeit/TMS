@@ -106,7 +106,11 @@
                                        
                                         {{-- @if($sewa->jenis_tujuan=='FTL') --}}
                                             <div class="form-group">
-                                                <label for="no_akun">No. Kontainer</label>
+                                                @if ($sewa->jenis_tujuan=='FTL')
+                                                    <label for="no_akun">No. Kontainer</label>
+                                                @else
+                                                    <label for="no_akun">No. Koli</label>
+                                                @endif
                                                 @if ($sewa->no_kontainer_jod&&$sewa->jenis_order =="INBOUND")
                                                     <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$sewa->no_kontainer_jod}}" >                         
                                                 @else

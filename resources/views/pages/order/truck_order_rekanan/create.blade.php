@@ -269,14 +269,14 @@
             $('#tipe_kontainer_in').val();
             $('#outbondData').hide();
             $('#garisOutbond').hide();
-            $('#select_booking').val('').trigger('change');
+            $('#select_booking').val('').select2();
             getDate();
             $('#jenis_order').val('INBOUND');
-            $('#select_jo_detail').val('').trigger('change');
-            $('#select_jo').val('').trigger('change');
+            $('#select_jo_detail').val('').select2();
+            $('#select_jo').val('').select2();
 
-            $('#select_customer').attr('disabled',true).val('').trigger('change');
-            $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
+            $('#select_customer').attr('disabled',true).val('').select2();
+            $('#select_grup_tujuan').attr('disabled',true).val('').select2();
 
             $('#tujuan_id').val('');
             $('#nama_tujuan').val('');
@@ -305,16 +305,16 @@
             $('#outbondDataKontainer').show();
             $('#tipe_kontainer').val();
 
-            $('#select_booking').val('').trigger('change');
+            $('#select_booking').val('').select2();
             $('#inboundData').hide();
             $('#garisInbound').hide();
             $('#outbondData').show();
             $('#garisOutbond').show();
-            $('#select_customer').attr('disabled',false).val('').trigger('change');
-            $('#select_grup_tujuan').attr('disabled',false).val('').trigger('change');
+            $('#select_customer').attr('disabled',false).val('').select2();
+            $('#select_grup_tujuan').attr('disabled',false).val('').select2();
             
-            $('#select_jo_detail').val('').trigger('change');
-            $('#select_jo').val('').trigger('change');
+            $('#select_jo_detail').val('').select2();
+            $('#select_jo').val('').select2();
             $('#jenis_order').val('OUTBOUND');
 
             $('#tujuan_id').val('');
