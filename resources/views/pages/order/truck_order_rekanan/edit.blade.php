@@ -43,7 +43,7 @@
         @endforeach
 
     @endif
-    <form action="{{ route('truck_order_rekanan.update', ['truck_order_rekanan' => $data]) }}" method="POST" >
+    <form action="{{ route('truck_order_rekanan.update', ['truck_order_rekanan' => $data]) }}" method="POST" id="post_data">
     @method('PUT')
     @csrf
     {{-- <div class="row">
@@ -56,7 +56,7 @@
             <div class="col">
                 <div class="card radiusSendiri card-outline card-primary">
                     <div class="card-header">
-                        <a href="{{ route('truck_order_rekanan.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <a href="{{ route('dalam_perjalanan.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
                         <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                         {{-- <button type="submit">wet</button> --}}
                     </div>
@@ -152,36 +152,48 @@
                                     <input type="hidden" id="booking_id" name="booking_id" value="" placeholder="booking_id">
                                     <input type="hidden" id="jenis_order" name="jenis_order" value="{{$data['jenis_order']}}" placeholder="jenis_order">
                                 </div>
-                                <div class="form-group">
-                                    <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" {{$data['id_booking']!=null ||$data['jenis_order']=="INBOUND"?'disabled':''}}>
-                                        @isset($data['id_grup_tujuan'])
-                                            <option value="{{$data['id_grup_tujuan']}}">{{$data->getTujuan->nama_tujuan}}</option>
-                                        @endisset
-                                    </select>
+                                <div class="row">
+                                    <div class="form-group col-lg-8 col-md-8 col-sm-12">
+                                        <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
+                                        <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" {{$data['id_booking']!=null ||$data['jenis_order']=="INBOUND"?'disabled':''}}>
+                                            @isset($data['id_grup_tujuan'])
+                                                <option value="{{$data['id_grup_tujuan']}}">{{$data->getTujuan->nama_tujuan}}</option>
+                                            @endisset
+                                        </select>
+    
+                                        <input type="hidden" id="tujuan_id" name="tujuan_id" value="{{$data['id_grup_tujuan']}}" placeholder="tujuan_id">
+                                        <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="{{!empty($data['id_jo_detail'])? $data['id_jo_detail']:''}}" placeholder="id_jo_detail">
+                                        <input type="hidden" name="id_jo" id="id_jo" value="{{!empty($data['id_jo'])?$data['id_jo']:''}}" placeholder="id_jo">
+                                        <input type="hidden" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
+                                        <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
+                                        <input type="hidden" id="tarif" name="tarif" value=""placeholder="tarif">
+                                        <input type="hidden" id="uang_jalan" name="uang_jalan" value=""placeholder="uang_jalan">
+                                        <input type="hidden" id="komisi" name="komisi" value=""placeholder="komisi">
+                                        <input type="hidden" id="komisi_driver" name="komisi_driver" value=""placeholder="komisi_driver">
+                                        <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value=""placeholder="jenis_tujuan">
+                                        <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0"placeholder="harga_per_kg">
+                                        <input type="hidden" id="min_muatan" name="min_muatan" value="0"placeholder="min_muatan">
+    
+                                        <input type="hidden" id="plastik" name="plastik" value=""placeholder="plastik">
+                                        <input type="hidden" id="tally" name="tally" value=""placeholder="tally">
+                                        <input type="hidden" id="kargo" name="kargo" value=""placeholder="kargo">
+    
+    
+                                        <input type="hidden" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
+                                    </div>
+                                     <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                        <label for="harga_jual">Harga Tujuan + UJ</label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp.</span>
+                                            </div>
+                                            <input type="text" class="form-control numaja uang" id="harga_tujuan" disabled min="0">
+                                        </div>
+                                    </div>
 
-                                    <input type="hidden" id="tujuan_id" name="tujuan_id" value="{{$data['id_grup_tujuan']}}" placeholder="tujuan_id">
-                                    <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="{{!empty($data['id_jo_detail'])? $data['id_jo_detail']:''}}" placeholder="id_jo_detail">
-                                    <input type="hidden" name="id_jo" id="id_jo" value="{{!empty($data['id_jo'])?$data['id_jo']:''}}" placeholder="id_jo">
-                                    <input type="hidden" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
-                                    <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
-                                    <input type="hidden" id="tarif" name="tarif" value=""placeholder="tarif">
-                                    <input type="hidden" id="uang_jalan" name="uang_jalan" value=""placeholder="uang_jalan">
-                                    <input type="hidden" id="komisi" name="komisi" value=""placeholder="komisi">
-                                    <input type="hidden" id="komisi_driver" name="komisi_driver" value=""placeholder="komisi_driver">
-                                    <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value=""placeholder="jenis_tujuan">
-                                    <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0"placeholder="harga_per_kg">
-                                    <input type="hidden" id="min_muatan" name="min_muatan" value="0"placeholder="min_muatan">
-
-                                    <input type="hidden" id="plastik" name="plastik" value=""placeholder="plastik">
-                                    <input type="hidden" id="tally" name="tally" value=""placeholder="tally">
-                                    <input type="hidden" id="kargo" name="kargo" value=""placeholder="kargo">
-
-
-                                    <input type="hidden" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
                                 </div>
                                 <div class="row">
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="kontainer_div">
                                         <div class="form-group" id="inboundDataKontainer">
                                             <label for="">Tipe Kontainer<span class="text-red">*</span></label>
                                             <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="{{$data['tipe_kontainer']}}">    
@@ -223,7 +235,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" id="stack_tl_form">
                                     <label for="select_driver">Stack TL</label>
                                         <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                         <option value="">Pilih TL</option>
@@ -312,7 +324,8 @@
             var selectedValue = $(this).val();
             $('#customer_id').val(selectedValue);
             var baseUrl = "{{ asset('') }}";
-
+            hitungTarif();
+            hideMenuTujuan();
             //hadle booking bug
             var selectBooking = $('#select_booking').val();
             var splitValue = selectBooking.split('-');
@@ -383,7 +396,8 @@
                         }
                         // ==============================kredit=================
 
-
+                        hitungTarif();
+                        hideMenuTujuan();
                         select_grup_tujuan.empty(); 
                         select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                         if(selectedValue!="")
@@ -411,16 +425,17 @@
                     }
                     else
                     {
-
-                            customerLoad = false;
-                            const persen = document.getElementById('persenanCredit');
-                            const cred = document.getElementById('credit_customer');
-                            persen.innerHTML = 0+"%";
-                            cred.style.width = 0+"%";
-                            cred.style.backgroundColor = "#53de02";
-                            cred.style.color = "black";
-                            select_grup_tujuan.empty(); 
-                            select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
+                        customerLoad = false;
+                        const persen = document.getElementById('persenanCredit');
+                        const cred = document.getElementById('credit_customer');
+                        persen.innerHTML = 0+"%";
+                        cred.style.width = 0+"%";
+                        cred.style.backgroundColor = "#53de02";
+                        cred.style.color = "black";
+                        select_grup_tujuan.empty(); 
+                        select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
+                        hitungTarif();
+                        hideMenuTujuan();
                     }
                     // jo_detail.trigger('change');
         
@@ -436,12 +451,13 @@
         $('body').on('change','#select_grup_tujuan',function(){
             var selectedValue = $(this).val();
             var baseUrl = "{{ asset('') }}";
-
             //hadle booking bug
             var selectBooking = $('#select_booking').val();
             var splitValue = selectBooking.split('-');
             var idTujuan=splitValue[2];
             var array_detail_biaya = [];
+            hitungTarif();
+            hideMenuTujuan();
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanBiaya/${idTujuan??selectedValue}`, 
                 method: 'GET', 
@@ -467,7 +483,8 @@
                         $('#biayaDetail').val('');
 
                         array_detail_biaya = []
-
+                        hitungTarif();
+                        hideMenuTujuan();
                     }
                     else
                     {
@@ -493,7 +510,8 @@
                         $('#min_muatan').val(response.dataTujuan.min_muatan);
                      
                         $('#kargo').val(response.dataTujuan.kargo);
-
+                        hitungTarif();
+                        hideMenuTujuan();
                          // console.log( response.dataTujuanBiaya);
                         var dataBiaya = response.dataTujuanBiaya;
                         for (var i in dataBiaya) {
@@ -545,6 +563,268 @@
                 }
 
 		});
+
+        hitungTarif();
+        function hitungTarif()
+        {
+            
+            var tarif = $('#tarif').val();
+            var uang_jalan = $('#uang_jalan').val();
+            var total_uang_jalan = parseFloat(tarif)+parseFloat(uang_jalan);
+
+            console.log('tarif :'+tarif);
+            console.log('uang_jalan :'+uang_jalan);
+            console.log('total_uang_jalan :'+total_uang_jalan);
+
+            console.log(isNaN(total_uang_jalan));
+            if(isNaN(total_uang_jalan))
+            {
+              $('#harga_tujuan').val(0)
+            }
+            else
+            {
+              $('#harga_tujuan').val(moneyMask(total_uang_jalan))
+            }
+        }
+        hideMenuTujuan();
+        function hideMenuTujuan(){
+            var jenisTujuan=$('#jenis_tujuan').val();
+            var jenisOrder =$('#jenis_order').val();
+            var no_pol_rekanan =$('#no_pol_rekanan');
+
+            // if(jenisTujuan!='')
+            // {
+                if(jenisOrder=='OUTBOUND')
+                {
+                    if(jenisTujuan=='FTL' || jenisTujuan=='')
+                    {
+                        $('#kontainer_div').show();
+                        $('#stack_tl_form').show();
+                        no_pol_rekanan.removeClass('col-lg-12 col-md-12 col-sm-12');
+                        no_pol_rekanan.addClass('col-lg-6 col-md-6 col-sm-12');
+                    }
+                    else
+                    {
+                        $('#kontainer_div').hide();
+                        $('#stack_tl_form').hide();
+                        no_pol_rekanan.removeClass('col-lg-6 col-md-6 col-sm-12');
+                        no_pol_rekanan.addClass('col-lg-12 col-md-12 col-sm-12');
+                    }
+                }
+                else
+                {
+                    $('#kontainer_div').show()
+                }
+            // }
+            // else
+            // {
+            //     if(jenisOrder=='OUTBOUND')
+            //     {
+            //         $('#outbondDataKontainer').show()
+            //         $('#stack_tl_form').show()
+            //     }
+            //     else
+            //     {
+            //         $('#outbondDataKontainer').hide()
+            //     }
+            // }
+
+        }
+        $(document).on('click', '#submitButton', function(){ // kalau diskon berubah, hitung total 
+            var harga_tujuan =$('#harga_tujuan').val();
+            var harga_jual = $('#harga_jual').val();
+
+            if (escapeComma(harga_jual)>escapeComma(harga_tujuan) ) {
+                event.preventDefault(); // Prevent form submission
+                Swal.fire({
+                    title: `Harga Jual Rekanan lebih besar dari Rp. ${harga_tujuan}`,
+                    text: "Konfirmasi kembali!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonText: 'Batal',
+                    confirmButtonText: 'Konfirmasi',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#post_data').submit();
+                    }else{
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Batal Disimpan'
+                        })
+                        event.preventDefault();
+                    }
+                })
+                
+            }
+            else
+            {
+                $('#post_data').submit();
+            }
+        }); 
+        $('#post_data').submit(function(event) {
+            var no_polisi = $('#no_polisi').val();
+            var supplier = $('#supplier').val();
+            var harga_jual = $('#harga_jual').val();
+
+            var tarif = $('#tarif').val();
+            var uang_jalan = $('#uang_jalan').val();
+             var harga_tujuan =$('#harga_tujuan').val();
+            // var total_uang_jalan = parseFloat(escapeComma(tarif))/*+parseFloat(uang_jalan)*/;
+            // if(no_polisi.trim()=='')
+            // {
+            //     event.preventDefault();
+            //     const Toast = Swal.mixin({
+            //             toast: true,
+            //             position: 'top-end',
+            //             timer: 2500,
+            //             showConfirmButton: false,
+            //             timerProgressBar: true,
+            //             didOpen: (toast) => {
+            //                 toast.addEventListener('mouseenter', Swal.stopTimer)
+            //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+            //             }
+            //         })
+
+            //         Toast.fire({
+            //             icon: 'error',
+            //             title: 'Nomor Polisi Rekanan Harus diisi!'
+            //         })
+            //     return;
+            // }
+            if(supplier.trim()=='')
+            {
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Supplier Harus dipilih!'
+                    })
+                return;
+            }
+            if(harga_jual.trim()=='')
+            {
+                event.preventDefault();
+                const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Harga Jual Rekanan Harus Diisi!'
+                    })
+                return;
+            }
+            
+            // if( escapeComma(harga_jual)>escapeComma(harga_tujuan) )
+            // {
+            //     event.preventDefault();
+            //     const Toast = Swal.mixin({
+            //             toast: true,
+            //             position: 'top-end',
+            //             timer: 2500,
+            //             showConfirmButton: false,
+            //             timerProgressBar: true,
+            //             didOpen: (toast) => {
+            //                 toast.addEventListener('mouseenter', Swal.stopTimer)
+            //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+            //             }
+            //         })
+
+            //         Toast.fire({
+            //             icon: 'warning',
+            //             title: `Harga Jual Rekanan lebih besar dari Rp. ${harga_tujuan}`
+            //         })
+            //     return;
+            // }
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar ?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Data Disimpan'
+                    })
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 800); // 2000 milliseconds = 2 seconds
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
     
         function getDate(){
             var today = new Date();
@@ -562,6 +842,7 @@
         getDefaultValueEdit();
         function getDefaultValueEdit()
         {
+            
             var baseUrl = "{{ asset('') }}";
             var customerLoad = false;
             // logic select jo jika ada
@@ -664,7 +945,8 @@
                                 cred.style.color = "black";
                             }
                             // ==============================kredit=================
-                            
+                            hitungTarif();
+                            hideMenuTujuan();
                         select_grup_tujuan.empty(); 
                         select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                         if(selectedValue!="")
@@ -691,13 +973,14 @@
 
                         }else{
                             customerLoad = false;
-                                const persen = document.getElementById('persenanCredit');
-                                const cred = document.getElementById('credit_customer');
-                                persen.innerHTML = 0+"%";
-                                cred.style.width = 0+"%";
-                                cred.style.backgroundColor = "#53de02";
-                                cred.style.color = "black";
-
+                            const persen = document.getElementById('persenanCredit');
+                            const cred = document.getElementById('credit_customer');
+                            persen.innerHTML = 0+"%";
+                            cred.style.width = 0+"%";
+                            cred.style.backgroundColor = "#53de02";
+                            cred.style.color = "black";
+                            hitungTarif();
+                            hideMenuTujuan();
                         }
             
                     },
@@ -735,7 +1018,8 @@
                             $('#tally').val('');
                             $('#kargo').val('');
                             $('#biayaDetail').val('');
-
+                            hitungTarif();
+                            hideMenuTujuan();
                             array_detail_biaya = []
 
                         }
@@ -763,7 +1047,8 @@
                             $('#min_muatan').val(response.dataTujuan.min_muatan);
                         
                             $('#kargo').val(response.dataTujuan.kargo);
-
+                            hitungTarif();
+                            hideMenuTujuan();
                             // console.log( response.dataTujuanBiaya);
                             var dataBiaya = response.dataTujuanBiaya;
                             for (var i in dataBiaya) {
@@ -809,7 +1094,8 @@
                     $('#stack_teluk_lamong_hidden').val('');
                     
                 }
-            
+                hitungTarif();
+                hideMenuTujuan();
         }
     });
    

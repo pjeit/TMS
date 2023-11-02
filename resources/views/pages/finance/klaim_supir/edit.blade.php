@@ -362,7 +362,7 @@
 
                     setTimeout(() => {
                         this.submit();
-                    }, 1000); // 2000 milliseconds = 2 seconds
+                    }, 200); // 2000 milliseconds = 2 seconds
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,

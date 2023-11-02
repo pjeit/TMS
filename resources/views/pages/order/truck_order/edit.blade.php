@@ -255,7 +255,7 @@
 
                                 <div class="form-group">
                                     <label for="select_ekor">Chassis<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
+                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
                                         <option value="">Pilih Chassis</option>
 
                                         @foreach ($dataChassis as $cha)
@@ -267,7 +267,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="select_driver">Driver<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required {{$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
+                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
                                         <option value="">Pilih Driver</option>
                                         @foreach ($dataDriver as $drvr)
                                             <option value="{{$drvr->id}}" nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})" {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
