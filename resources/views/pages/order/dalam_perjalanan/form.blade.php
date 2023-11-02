@@ -183,7 +183,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-8 col-md-12 col-lg-8">
-                                                <label for="total_harga_lcl">Total Harga</label>
+                                                <label for="total_harga_lcl">Total Harga </label>
                                                 <div class="form-group">
                                                     <div class="input-group mb-3">
                                                         <div class="input-group-prepend">
@@ -197,6 +197,7 @@
                                                             value='{{isset($sewa->harga_per_kg)?$sewa->harga_per_kg:''}} '>
                                                     </div>
                                                 </div>
+                                                <span style="font-size:11pt;" class="badge bg-danger float-right m-2">Minimal muatan: {{isset($sewa->min_muatan)?$sewa->min_muatan:''}} Kg, Harga per Kg: {{isset($sewa->harga_per_kg)?number_format($sewa->harga_per_kg):''}}</span>
                                             </div>
                                         </div>
                                </div>
@@ -889,7 +890,7 @@
             }
 
             let total_harga = hitung_total_harga_dari_muatan(muatan.toFixed(2));
-            $('#total_harga_lcl').val(total_harga);
+            $('#total_harga_lcl').val(moneyMask(total_harga));
 
         });
         if ($('#jenis_tujuan').val() != "LTL") {
