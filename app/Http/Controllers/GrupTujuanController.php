@@ -47,7 +47,7 @@ class GrupTujuanController extends Controller
     public function getMarketing($groupId)
     {
         $role = 6;
-        $roleMarketing = Role::where('is_aktif', 'Y')->where('nama', 'Marketing')->first();
+        $roleMarketing = Role::where('is_aktif', 'Y')->where('name', 'Marketing')->first();
         if(isset($roleMarketing)){
             $role = $roleMarketing->id;
         }
