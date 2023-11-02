@@ -28,11 +28,13 @@ class TagihanRekananController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
-        $data = TagihanRekanan::from('tagihan_rekanan as tr')->with('getSupplier')->where('tr.is_aktif', 'Y')
+        $data = TagihanRekanan::from('tagihan_rekanan as tr')
+                    ->with('getSupplier')
+                    ->where('tr.is_aktif', 'Y')
                     ->get();
-
+        // dd($data);
         return view('pages.finance.tagihan_rekanan.index',[
-            'judul' => "Biaya Operasional",
+            'judul' => "Tagihan Rekanan",
             'data' => $data,
         ]);
     }
@@ -49,12 +51,21 @@ class TagihanRekananController extends Controller
                     ->where('is_aktif', '=', "Y")
                     ->get();
 
+        // $supplier = Sewa::from('sewa as s')
+        //             ->leftJoin('supplier as sup', 'sup.id', '=', 's.id_supplier')
+        //             ->where('s.is_aktif', 'Y')
+        //             ->whereNotNull('s.id_supplier')
+        //             ->groupBy('s.id_supplier')
+        //             ->get();
+
         $supplier = Sewa::from('sewa as s')
-                    ->leftJoin('supplier as sup', 'sup.id', '=', 's.id_supplier')
-                    ->where('s.is_aktif', 'Y')
-                    ->whereNotNull('s.id_supplier')
+                    ->with('getCustomer')
+                    ->leftJoin('grup_tujuan as gt', 'gt.id', 's.id_grup_tujuan')
+                    ->where('gt.jenis_tujuan', 'LTL')
+                    ->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
                     ->groupBy('s.id_supplier')
                     ->get();
+                    
 
         return view('pages.finance.tagihan_rekanan.create',[
             'judul' => "Tagihan Rekanan",
@@ -79,8 +90,8 @@ class TagihanRekananController extends Controller
 
         $data = $request->collect();
         $data_tagihan = TagihanRekanan::with('getDetails')->where('is_aktif', 'Y')->whereIn('id', $data['idTagihan'])->get();
-        // dd($data_tagihan[1]['diskon']);
-
+        // dd($data_tagihan);
+        
         if($data_tagihan){
             return view('pages.finance.tagihan_rekanan.bayar',[
                 'judul' => "Tagihan Rekanan",
@@ -104,6 +115,7 @@ class TagihanRekananController extends Controller
         $data = $request->collect();
         $user = Auth::user()->id;
         DB::beginTransaction(); 
+        // dd($data);
         try {
             $tagihan = new TagihanRekanan();
             $tagihan->id_supplier = $data['supplier'];
@@ -111,8 +123,6 @@ class TagihanRekananController extends Controller
             $tagihan->tgl_nota = date_create_from_format('d-M-Y', $data['tgl_nota']);
             $tagihan->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
             $tagihan->catatan = $data['catatan'];
-            $tagihan->diskon = floatval(str_replace(',', '', $data['diskon']));
-            $tagihan->ppn = floatval(str_replace(',', '', $data['ppn']));
             $tagihan->total_tagihan = floatval(str_replace(',', '', $data['tagihan']));
             $tagihan->sisa_tagihan = floatval(str_replace(',', '', $data['tagihan']));
             $tagihan->created_by = $user;
@@ -160,21 +170,14 @@ class TagihanRekananController extends Controller
             $id_tagihan = '';
             $biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
             $total_bayar = 0;
+            $i = 0;
 
             foreach ($data['data'] as $key => $value) {
                 $tagihan = TagihanRekanan::where('is_aktif', 'Y')->find($key);
                 if($tagihan){
-                    $i = 0;
-
-                    // if($i == 0){
-                    //     $tagihan->tagihan_dibayarkan += ($value['total_bayar'] + $value['ppn'] + $biaya_admin);
-                    //     $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['ppn'] + $biaya_admin);
-                    // }else{
-                        $tagihan->tagihan_dibayarkan += ($value['total_bayar'] + $value['pph']);
-                        $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
-                    // }
-                    // $tagihan->sisa_tagihan -= ($value['total_bayar']+$value['ppn']);
-                    // $tagihan->ppn = $value['ppn'];
+              
+                    $tagihan->tagihan_dibayarkan += ($value['total_bayar'] + $value['pph']);
+                    $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
                     $tagihan->updated_by = $user;
                     $tagihan->updated_at = now();
                     if($tagihan->save()){
@@ -185,7 +188,7 @@ class TagihanRekananController extends Controller
                         $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
                         $pembayaran->bukti_potong = $value['bukti_potong'];
                         $pembayaran->total_tagihan = $value['total_tagihan'];
-                        $pembayaran->pph = $value['ppn'];
+                        $pembayaran->pph = $value['pph'];
                         if($i == 0){
                             $bayar = $value['total_bayar'] - $biaya_admin;
                             $pembayaran->biaya_admin = $biaya_admin;
@@ -204,8 +207,8 @@ class TagihanRekananController extends Controller
                         if($i == 0 && $biaya_admin != 0){
                             $keterangan .= ' #BIAYA ADMIN: '. $biaya_admin;
                         }
-                        if($value['ppn'] != 0){
-                            $keterangan .= ' #PPh23: '. $value['ppn'];
+                        if($value['pph'] != 0){
+                            $keterangan .= ' #PPh23: '. $value['pph'];
                         }
                         $total_bayar += $bayar;
                         $i++;
@@ -297,8 +300,6 @@ class TagihanRekananController extends Controller
                 $tagihan->tgl_nota = date_create_from_format('d-M-Y', $data['tgl_nota']);
                 $tagihan->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
                 $tagihan->catatan = $data['catatan'];
-                $tagihan->diskon = floatval(str_replace(',', '', $data['diskon']));
-                $tagihan->ppn = floatval(str_replace(',', '', $data['ppn']));
                 $tagihan->total_tagihan = floatval(str_replace(',', '', $data['tagihan']));
                 $tagihan->sisa_tagihan = floatval(str_replace(',', '', $data['tagihan']));
                 $tagihan->updated_by = $user;
@@ -385,9 +386,14 @@ class TagihanRekananController extends Controller
 
     public function load_data($id)
     {
-        $sewa = Sewa::from('sewa as s')->with('getCustomer')->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
-                    ->where('s.id_supplier', $id)
-                    ->get();
+    
+        $sewa = Sewa::from('sewa as s')
+            ->with('getCustomer')
+            ->leftJoin('grup_tujuan as gt', 'gt.id', 's.id_grup_tujuan')
+            ->where('gt.jenis_tujuan', 'LTL')
+            ->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
+            ->where('s.id_supplier', $id)
+            ->get();
         
         return $sewa;
     }

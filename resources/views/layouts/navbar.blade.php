@@ -20,19 +20,19 @@
    
     <li class="nav-item dropdown user-menu">
       <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
-        <img src="{{ asset('img/user-1.png') }}" class="user-image img-circle elevation-2 bg-white" alt="User Image">
+        <img src="{{ asset('img/user-1.png') }}" class="user-image img-circle elevation-3 bg-white" alt="User Image">
         {{-- <span class="d-none d-md-inline text-white">Alexander Pierce</span> --}}
       </a>
       @php
           $username = Auth::user()->username;
           $role = Auth::user()->getRole();
       @endphp
-      <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+      <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="margin-top: 8px; border-top: none;">
         <!-- User image -->
-        <li class="user-header " style="background: linear-gradient(to bottom, #0071BD, #00BFFF);">
-          <img src="{{ asset('img/user-1.png') }}" class="img-circle elevation-2 bg-white" alt="User Image">
-          <p class="text-white">
-            {{ strtoupper($username) }} - {{ strtoupper($role) }}
+        <li class="user-header " style="background: linear-gradient(to bottom, #00BFFF, #0071BD);">
+          <img src="{{ asset('img/user-1.png') }}" class="img-circle elevation-5 bg-white" alt="User Image">
+          <p class="text-white mt-4 ">
+            <strong><b>{{ strtoupper($username) }}</b></strong>
             {{-- <small>Member since Nov. 2012</small> --}}
           </p>
         </li>
