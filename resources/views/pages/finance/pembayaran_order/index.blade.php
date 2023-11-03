@@ -12,43 +12,39 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card radiusSendiri">
-                <div class="card-header">
-                    {{-- <a href="{{route('persetujuan_jo.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
-                        <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah JO
-                    </a>  --}}
-                </div>
-                <div class="card-body">
-                    <table id="datatable" class="table table-bordered table-striped" width='100%'>
-                        <thead>
-                            <tr>
-                              <th>Kode JO</th>
-                              <th>Pengirim (Customer)</th>
-                              <th>Pelayaran (Supplier)</th>
-                              <th>Status</th>
-                              <th>Aksi</th>
-                            </tr>
-                          </thead>
-                        <tbody>
-                            @foreach($data as $item)
-                                <tr>
-                                <td>{{ $item->no_jo }}</td>
-                                <td>{{ $item->namaCustomer }}</td>
-                                <td>{{ $item->namaSupplier }}</td>
-                                <td>{{ $item->status}}</td>
-                                <td style="text-align: center">                                    
-                                    <a class="btn btn-success radiusSendiri" href="{{route('pembayaran_jo.edit',[$item->id])}}">
-                                        <i class="fas fa-credit-card"></i> Bayar
-                                    </a>   
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="card radiusSendiri">
+        <div class="card-header">
+            {{-- <a href="{{route('persetujuan_jo.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah JO
+            </a>  --}}
+        </div>
+        <div class="card-body">
+            <table id="datatable" class="table table-bordered table-striped" width='100%'>
+                <thead>
+                    <tr>
+                        <th>Kode JO</th>
+                        <th>Pengirim (Customer)</th>
+                        <th>Pelayaran (Supplier)</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                    @foreach($data as $item)
+                        <tr>
+                        <td>{{ $item->no_jo }}</td>
+                        <td>{{ $item->namaCustomer }}</td>
+                        <td>{{ $item->namaSupplier }}</td>
+                        <td>{{ $item->status}}</td>
+                        <td style="text-align: center">                                    
+                            <a class="btn btn-success radiusSendiri" href="{{route('pembayaran_jo.edit',[$item->id])}}">
+                                <i class="fas fa-credit-card"></i> Bayar
+                            </a>   
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

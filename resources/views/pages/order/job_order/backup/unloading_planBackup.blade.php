@@ -1,4 +1,3 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))

@@ -214,7 +214,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pembayaran_invoice/loadData/{status}', [App\Http\Controllers\PembayaranInvoiceController::class, 'loadData'])->name('pembayaran_invoice.loadData');
         Route::resource('pembayaran_invoice', 'App\Http\Controllers\PembayaranInvoiceController');
 
+        Route::post('pengembalian_jaminan/request', [App\Http\Controllers\PengembalianJaminanController::class, 'request'])->name('pengembalian_jaminan.request');
         Route::resource('pengembalian_jaminan', 'App\Http\Controllers\PengembalianJaminanController');
+
         Route::resource('bukti_potong', 'App\Http\Controllers\BuktiPotongController');
 
         // ===================================INVOICE=========================================================
