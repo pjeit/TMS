@@ -167,7 +167,16 @@
                         <th style="text-align:center">Customer</th>
                         <th style="text-align:center">Tujuan</th>
                         <th style="text-align:center">Driver</th>
-                        <th style="text-align:center"><span style="font-size: 0.8em;"><b>Kontainer &amp; Segel</b></span></th>
+                        <th style="text-align:center">
+                            <span style="font-size: 0.8em;">
+                                @if ($checkLTL)
+                                <b>No. Koli &amp; SJ</b>
+                                @else
+                                <b>Kontainer &amp; Segel</b>
+                                @endif
+                            </span>
+                            <input type="hidden" name="" id="checkTL" value="{{ $checkLTL }}">
+                        </th>
                         <th style="text-align:center">Muatan</th>
                         <th style="text-align:center">Tarif</th>
                         <th style="text-align:center">Add Cost</th>
@@ -186,7 +195,6 @@
                                 <input type="hidden" name="detail[{{ $item->id_sewa }}][id_customer]" value="{{ ($item->id_customer) }}" />
                                 <input type="hidden" name="detail[{{ $item->id_sewa }}][id_jo_hidden]" value="{{ $item->id_jo }}" />
                                 <input type="hidden" name="detail[{{ $item->id_sewa }}][id_jo_detail_hidden]" value="{{ $item->id_jo_detail }}" />
-
                             </td>
                             <td> {{ $item->nama_tujuan }} <br> ({{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }})</td>
                             <td>
@@ -251,6 +259,7 @@
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][tgl_berangkat]' id='tgl_berangkat_hidden_{{ $item->id_sewa }}' value="{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][no_kontainer]' id='no_kontainer_hidden_{{ $item->id_sewa }}' value="{{ $item->no_kontainer }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][no_seal]' id='no_seal_hidden_{{ $item->id_sewa }}' value="{{ $item->seal_pelayaran }}">
+                                <input type="hidden" name='detail[{{ $item->id_sewa }}][no_sj]' id='no_sj_hidden_{{ $item->id_sewa }}' value="{{ $item->no_surat_jalan }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][tarif]' id='tarif_hidden_{{ $item->id_sewa }}' value="{{ $item->total_tarif }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][catatan]' id='catatan_hidden_{{ $item->id_sewa }}' value="{{ $item->catatan }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][diskon]' id='diskon_hidden_{{ $item->id_sewa }}' >
@@ -319,14 +328,26 @@
                                 
                                 <div class="row">
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        <label for="">No. Kontainer</label>
+                                        @if ($checkLTL)
+                                            <label for="">No. Koli</label>
+                                        @else
+                                            <label for="">No. Kontainer</label>
+                                        @endif
                                         <input  type="text" class="form-control" maxlength="50" id="no_kontainer"> 
                                     </div>
-    
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        <label for="">Seal Pelayaran</label>
-                                        <input  type="text" class="form-control" maxlength="50" id="no_seal"> 
-                                    </div>
+                                    @if ($checkLTL)
+                                       <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                            <label for="">Surat Jalan</label>
+                                            <input  type="text" class="form-control" maxlength="50" id="no_sj"> 
+                                        </div>
+                                    @else
+                                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                            <label for="">Seal Pelayaran</label>
+                                            <input  type="text" class="form-control" maxlength="50" id="no_seal"> 
+                                        </div>
+                                        
+                                    @endif
+                                    
                                 </div>
                             </div>
 
@@ -550,6 +571,8 @@
             $('#nama_tujuan').val( $('#nama_tujuan_hidden_'+key).val() ); 
             $('#no_kontainer').val( $('#no_kontainer_hidden_'+key).val() ); 
             $('#no_seal').val( $('#no_seal_hidden_'+key).val() ); 
+            $('#no_sj').val( $('#no_sj_hidden_'+key).val() ); 
+
             $('#catatan').val( $('#catatan_hidden_'+key).val() ); 
             $('#tarif').val( moneyMask($('#tarif_hidden_'+key).val()) ); 
             $('#addcost').val( moneyMask($('#addcost_hidden_'+key).val()) ); 
@@ -578,12 +601,13 @@
 
             $('#no_kontainer_hidden_'+key).val( $('#no_kontainer').val() );
             $('#no_seal_hidden_'+key).val( $('#no_seal').val() );
+            $('#no_sj_hidden_'+key).val( $('#no_sj').val() );
             $('#catatan_hidden_'+key).val( $('#catatan').val() );
             $('#diskon_hidden_'+key).val( $('#diskon').val() );
             $('#subtotal_hidden_'+key).val( escapeComma($('#subtotal').val()) );
 
             // Set text content using JavaScript
-            var elementIds = ["no_kontainer", "no_seal", "catatan", "diskon", "subtotal"];
+            var elementIds = ["no_kontainer", "no_seal", "no_sj","catatan", "diskon", "subtotal"];
             elementIds.forEach(function (id) {
                 document.getElementById(id + '_text_' + key).textContent = $('#' + id).val();
             });
@@ -756,6 +780,7 @@
             $('#nama_tujuan').val('');
             $('#no_kontainer').val('');
             $('#no_seal').val('');
+            $('#no_sj').val('');
             $('#catatan').val('');
             $('#tarif').val('');
             $('#addcost').val('');

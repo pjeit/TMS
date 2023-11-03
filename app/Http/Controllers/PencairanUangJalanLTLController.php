@@ -69,10 +69,19 @@ class PencairanUangJalanLTLController extends Controller
                 $sewa->updated_by = $user;
                 $sewa->updated_at = now();
                 if($sewa->save()){
+                    $sbiayaT = new SewaBiaya();
+                    $sbiayaT->id_sewa = $sewa->id_sewa;
+                    $sbiayaT->deskripsi = 'TOL';
+                    $sbiayaT->biaya = floatval(str_replace(',', '', $data['tol']));
+                    $sbiayaT->catatan = 'LTL: ' . $data['catatan'];
+                    $sbiayaT->created_by = $user;
+                    $sbiayaT->created_at = now();
+                    $sbiayaT->save();
+
                     $sbiaya = new SewaBiaya();
                     $sbiaya->id_sewa = $sewa->id_sewa;
-                    $sbiaya->deskripsi = 'UANG JALAN';
-                    $sbiaya->biaya = $uj;
+                    $sbiaya->deskripsi = 'BENSIN';
+                    $sbiaya->biaya = floatval(str_replace(',', '', $data['bensin']));
                     $sbiaya->catatan = 'LTL: ' . $data['catatan'];
                     $sbiaya->created_by = $user;
                     $sbiaya->created_at = now();
@@ -81,7 +90,7 @@ class PencairanUangJalanLTLController extends Controller
                         $ujr->tanggal = now();
                         $ujr->tanggal_pencatatan = now();
                         $ujr->sewa_id = $sewa->id_sewa;
-                        $ujr->total_uang_jalan = $diterima;
+                        $ujr->total_uang_jalan = $uj;
                         $ujr->potong_hutang = $pot_hut;
                         $ujr->kas_bank_id = $data['id_kas'];
                         $ujr->catatan = 'UANG JALAN LTL - '.$data['catatan'];
@@ -117,31 +126,32 @@ class PencairanUangJalanLTLController extends Controller
                                 return redirect()->route('pencairan_uang_jalan_ltl.index')->with(['status' => 'error', 'msg' => 'Karyawan tidak memiliki hutang!']);    
                             }
                         }
-
-                        $saldo = KasBank::where('is_aktif', 'Y')->find($data['id_kas']);
-                        $saldo->saldo_sekarang -= $diterima;
-                        $saldo->updated_by = $user;
-                        $saldo->updated_at = now();
-                        $saldo->save();
-
-                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                            array(
-                                $data['id_kas'], // id kas_bank dr form
-                                now(), //tanggal
-                                0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                $diterima, //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
-                                1016, //kode coa
-                                'uang_jalan',
-                                'UJ LTL: #'.$sewa->no_polisi. ' #'.$sewa->nama_driver, //keterangan_transaksi
-                                $ujr->id, //keterangan_kode_transaksi
-                                $user, //created_by
-                                now(), //created_at
-                                $user, //updated_by
-                                now(), //updated_at
-                                'Y'
-                            ) 
-                        );
-            
+                        if($diterima>0)
+                        {
+                            $saldo = KasBank::where('is_aktif', 'Y')->find($data['id_kas']);
+                            $saldo->saldo_sekarang -= $diterima;
+                            $saldo->updated_by = $user;
+                            $saldo->updated_at = now();
+                            $saldo->save();
+    
+                            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                array(
+                                    $data['id_kas'], // id kas_bank dr form
+                                    now(), //tanggal
+                                    0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                    $diterima, //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
+                                    1016, //kode coa
+                                    'uang_jalan',
+                                    'UJ LTL: #'.$sewa->no_polisi. ' #'.$sewa->nama_driver, //keterangan_transaksi
+                                    $ujr->id, //keterangan_kode_transaksi
+                                    $user, //created_by
+                                    now(), //created_at
+                                    $user, //updated_by
+                                    now(), //updated_at
+                                    'Y'
+                                ) 
+                            );
+                        }
                         DB::commit();
                 }
                 }
@@ -203,8 +213,11 @@ class PencairanUangJalanLTLController extends Controller
         $data = Sewa::where('is_aktif', 'Y')->where('jenis_tujuan', 'LTL')
                         ->with('getCustomer')
                         ->with('getKaryawan.getHutang')
-                        ->with('getSupplier')
-                        ->where('no_polisi', $item)->where('status', 'PROSES DOORING')->get();
+                        // ->with('getSupplier')
+                        ->where('no_polisi', $item)
+                        ->where('status', 'PROSES DOORING')
+                        ->whereNull('id_supplier')
+                        ->get();
         if($data[0]['total_uang_jalan'] != 0){
             return response()->json(["result" => "error", 'data' => null], 404);
         }else{

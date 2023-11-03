@@ -143,23 +143,20 @@ class BelumInvoiceController extends Controller
                 ->get();
             // dd($data);
             $checkBedaJenisTujuan = false;
-
+            $checkLTL = false;
+            
             for ($i=0; $i <count($data) ; $i++) { 
                 # code...
-                  if ($data[$i]->jenis_tujuan !== $data[0]->jenis_tujuan) {
+                if ($data[$i]->jenis_tujuan !== $data[0]->jenis_tujuan) {
                     $checkBedaJenisTujuan = true; 
                     break;
-
                 }
             }
-            // foreach ($data as $i => $value) {
-                
-            //     if ($data[$i]->jenis_tujuan !== $data[0]->jenis_tujuan) {
-            //         $checkBedaJenisTujuan = true; 
-            //         break;
-
-            //     }
-            // }
+           
+            if ($data[0]->jenis_tujuan == 'LTL') {
+                $checkLTL = true; 
+            }
+            
             if($checkBedaJenisTujuan)
             {
                 return redirect()->route('belum_invoice.index')
@@ -167,6 +164,7 @@ class BelumInvoiceController extends Controller
             }
             else
             {
+                //ini buat yang di dalem modal
                 $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
                         ->leftJoin('customer as c', 'c.id', 'id_customer')
                         ->where('c.grup_id', $grup[0])
@@ -190,6 +188,7 @@ class BelumInvoiceController extends Controller
                     'dataCust' => $dataCust,
                     'grup' => $grup[0],
                     'customer' => $cust[0],
+                    'checkLTL'=>$checkLTL
                 ]);
             }
             
