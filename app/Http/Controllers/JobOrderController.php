@@ -32,6 +32,7 @@ class JobOrderController extends Controller
     {
         // $this->middleware('can: create JO');
         // $this->middleware('can: create JO')->only('create');
+        // buka UserSeeder buat detailnya
     }
 
     public function index()
