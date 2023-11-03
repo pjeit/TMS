@@ -85,19 +85,60 @@
                                 </div>
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">Uang Jalan<span class="text-red">*</span></label>
-                                    <input type="text" id="uang_jalan" name="uang_jalan" class="form-control uang numaja" required>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                    <input type="text" id="uang_jalan" name="uang_jalan" class="form-control uang numaja" required readonly>
+
+                                    </div>
+                                </div>
+                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Tol<span class="text-red">*</span></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                    <input type="text" id="tol" name="tol" class="form-control uang numaja" required>
+                                    </div>
+                                </div>
+                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Bensin<span class="text-red">*</span></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                    <input type="text" id="bensin" name="bensin" class="form-control uang numaja" required>
+                                    </div>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12 is_total_hutang">
                                     <label for="">Total Hutang</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
                                     <input type="text" id="total_hutang" name="total_hutang" class="form-control uang numaja" readonly>
+
+                                    </div>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12 is_potong_hutang">
                                     <label for="">Potong Hutang</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
                                     <input type="text" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" >
+
+                                    </div>
                                 </div>
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">Diterima</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
                                     <input type="text" id="diterima" name="diterima" class="form-control uang numaja" readonly>
+                                    </div>
                                 </div>
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">Catatan</label>
@@ -235,7 +276,7 @@
                                 row.append(`<td style='background: #efefef' > 
                                         <div class="d-flex justify-content-between ">
                                             <div>
-                                                <b> <span>► ${data[i].get_supplier.nama}</span> (${data[i].no_polisi}) - ${data[i].nama_driver == null? 'Driver Rekanan':data[i].nama_driver} </b>
+                                                <b> <span>► </span> (${data[i].no_polisi}) - ${data[i].nama_driver == null? 'Driver Rekanan':data[i].nama_driver} </b>
                                                 <input type="hidden" value="${hutangKaryawan}" id="hutang" />
                                             </div>
                                             <div>
@@ -287,13 +328,75 @@
 
         $(document).on('keyup', '#uang_jalan, #potong_hutang', function(e) {  
             hitung();
-		});        
+            hitungHutangMax();
 
+		}); 
+         $(document).on('keyup', '#tol, #bensin', function(e) {  
+            
+            var tol = !isNaN(normalize($('#tol').val()))? normalize($('#tol').val()):0;
+            var bensin = !isNaN(normalize($('#bensin').val()))? normalize($('#bensin').val()):0;
+
+            $('#uang_jalan').val(moneyMask(tol+bensin));
+            hitung();
+
+		});  
         function hitung(){
             var uj = !isNaN(normalize($('#uang_jalan').val()))? normalize($('#uang_jalan').val()):0;
             var ph = !isNaN(normalize($('#potong_hutang').val()))? normalize($('#potong_hutang').val()):0;
 
-            $('#diterima').val(moneyMask(uj-ph));
+            // console.log('uj :'+uj);
+            // console.log('ph :'+ph);
+            // console.log('ph1 :'+$('#potong_hutang').val());
+
+             if($('#total_hutang').val()!=''){
+                var total_hutang =escapeComma($('#total_hutang').val());
+            }else{
+                var total_hutang =0;
+            }
+            if(parseFloat(ph)>parseFloat(total_hutang)){
+                ph = total_hutang;
+            }
+            if(parseFloat(ph)>parseFloat(uj) && parseFloat(total_hutang)>parseFloat(uj)){
+                ph = uj;
+            }
+            total_diterima=parseFloat(uj)-parseFloat(ph);
+            if(total_diterima!=0){
+                $('#diterima').val(addPeriodType(total_diterima,','));
+            }else{
+                $('#diterima').val(0);
+            }
+            // $('#diterima').val(moneyMask(uj-ph));
+        }
+        function hitungHutangMax(){
+             if($('#total_hutang').val()!=''){
+                var total_hutang =escapeComma($('#total_hutang').val());
+            }else{
+                var total_hutang =0;
+            }
+            if($('#uang_jalan').val()!=''){
+                var total_uang_jalan=escapeComma($('#uang_jalan').val());
+            }else{
+                var total_uang_jalan=0;
+            }
+            
+            if($('#potong_hutang').val()!=''){
+                var potong_hutang=escapeComma($('#potong_hutang').val());
+            }else{
+                var potong_hutang=0;
+            }
+            var potong_hutang = removePeriod($('#potong_hutang').val(),',');
+            if(parseFloat(potong_hutang)>parseFloat(total_hutang)){
+                $('#potong_hutang').val(moneyMask(total_hutang));
+            }
+            else{
+                $('#potong_hutang').val(moneyMask(potong_hutang));
+            }
+            //kalau hutang misal 500k dan uang jalannya 300k, jadi maks pencairan yang 300k bukan 500k,
+            //karena kalau 500k nanti jadi minus, kalau 300k, berarti gak tf sama sekali cuman potong hutang, gausah milih kas bank
+            if(parseFloat(potong_hutang)>parseFloat(total_uang_jalan) && parseFloat(total_hutang)>parseFloat(total_uang_jalan)){
+                $('#potong_hutang').val(moneyMask(total_uang_jalan));
+            }
+
         }
 
         $(document).on('click', '.openModal', function(event){

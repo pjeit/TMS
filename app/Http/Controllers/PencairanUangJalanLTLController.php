@@ -69,10 +69,19 @@ class PencairanUangJalanLTLController extends Controller
                 $sewa->updated_by = $user;
                 $sewa->updated_at = now();
                 if($sewa->save()){
+                    $sbiayaT = new SewaBiaya();
+                    $sbiayaT->id_sewa = $sewa->id_sewa;
+                    $sbiayaT->deskripsi = 'TOL';
+                    $sbiayaT->biaya = floatval(str_replace(',', '', $data['tol']));
+                    $sbiayaT->catatan = 'LTL: ' . $data['catatan'];
+                    $sbiayaT->created_by = $user;
+                    $sbiayaT->created_at = now();
+                    $sbiayaT->save();
+
                     $sbiaya = new SewaBiaya();
                     $sbiaya->id_sewa = $sewa->id_sewa;
-                    $sbiaya->deskripsi = 'UANG JALAN';
-                    $sbiaya->biaya = $uj;
+                    $sbiaya->deskripsi = 'BENSIN';
+                    $sbiaya->biaya = floatval(str_replace(',', '', $data['bensin']));
                     $sbiaya->catatan = 'LTL: ' . $data['catatan'];
                     $sbiaya->created_by = $user;
                     $sbiaya->created_at = now();
@@ -81,7 +90,7 @@ class PencairanUangJalanLTLController extends Controller
                         $ujr->tanggal = now();
                         $ujr->tanggal_pencatatan = now();
                         $ujr->sewa_id = $sewa->id_sewa;
-                        $ujr->total_uang_jalan = $diterima;
+                        $ujr->total_uang_jalan = $uj;
                         $ujr->potong_hutang = $pot_hut;
                         $ujr->kas_bank_id = $data['id_kas'];
                         $ujr->catatan = 'UANG JALAN LTL - '.$data['catatan'];
@@ -203,8 +212,11 @@ class PencairanUangJalanLTLController extends Controller
         $data = Sewa::where('is_aktif', 'Y')->where('jenis_tujuan', 'LTL')
                         ->with('getCustomer')
                         ->with('getKaryawan.getHutang')
-                        ->with('getSupplier')
-                        ->where('no_polisi', $item)->where('status', 'PROSES DOORING')->get();
+                        // ->with('getSupplier')
+                        ->where('no_polisi', $item)
+                        ->where('status', 'PROSES DOORING')
+                        ->whereNull('id_supplier')
+                        ->get();
         if($data[0]['total_uang_jalan'] != 0){
             return response()->json(["result" => "error", 'data' => null], 404);
         }else{
