@@ -290,7 +290,9 @@
 
 {{-- masking no telp --}}
 <script>
-   $("#telp1").on("change", function() {
+    var today = new Date();
+
+    $("#telp1").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
             inputValue = "8" + inputValue.substring(2);
@@ -303,7 +305,7 @@
             $(this).val(inputValue);
         }
     });
-   $("#telp2").on("change", function() {
+    $("#telp2").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
             inputValue = "8" + inputValue.substring(2);
@@ -316,7 +318,7 @@
             $(this).val(inputValue);
         }
     });
-   $("#nomor_kontak_darurat").on("change", function() {
+    $("#nomor_kontak_darurat").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
             inputValue = "8" + inputValue.substring(2);

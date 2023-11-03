@@ -77,7 +77,7 @@
                             <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group ">
                                     <label for="">No. BL<span class="text-red">*</span></label>
-                                    <input required type="text" id="no_bl" name="no_bl" class="form-control" value="" >
+                                    <input required type="text" id="no_bl" name="no_bl" class="form-control" maxlength="25" >
                                 </div>           
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-12">
@@ -354,31 +354,12 @@
                             event.preventDefault();
                             return false;
                         }else{
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top-end',
-                                timer: 800,
-                                showConfirmButton: false,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            })
-
-                            Toast.fire({
-                                icon: 'success',
-                                title: 'Data Disimpan'
-                            })
-
-                            setTimeout(() => {
-                                this.submit();
-                            }, 1000); // 2000 milliseconds = 2 seconds
+                            this.submit();
                         }
                     }else{
                         const Toast = Swal.mixin({
                             toast: true,
-                            position: 'top-end',
+                            position: 'top',
                             timer: 2500,
                             showConfirmButton: false,
                             timerProgressBar: true,
@@ -479,7 +460,7 @@
                 error: function(xhr, status, error) {
                     const Toast = Swal.mixin({
                         toast: true,
-                        position: 'top-end',
+                        position: 'top',
                         timer: 3000,
                         showConfirmButton: false,
                         timerProgressBar: true,
@@ -639,7 +620,7 @@
                  
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
+                position: 'top',
                 timer: 2500,
                 showConfirmButton: false,
                 timerProgressBar: true,
@@ -650,7 +631,7 @@
             })
 
             Toast.fire({
-                icon: 'success',
+                icon: 'warning',
                 title: 'Data dihapus'
             })
         });

@@ -21,14 +21,12 @@ class PengembalianJaminanController extends Controller
     public function index()
     {
         $data = JobOrder::where('job_order.is_aktif', 'Y')
-        // ->select('job_order.*', 'jaminan.nominal')
-         ->join('jaminan as j', function($join) {
-                    $join->on('job_order.id', '=', 'j.id_job_order')
+                ->where('job_order.status', 'SELESAI')
+                ->join('jaminan as j', function($join) {
+                $join->on('job_order.id', '=', 'j.id_job_order')
                     ->where('j.is_aktif', '=', "Y")
-                    ->where('j.status', 'DIBAYARKAN')
-                    ;
-                })
-        ->get();
+                    ->whereIn('j.status', ['DIBAYARKAN', 'REQUEST']);
+                })->get();
         // dd($data);
         $bank = KasBank::where('is_aktif', 'Y')->get();
         return view('pages.finance.pengembalian_jaminan.index',[
@@ -97,6 +95,32 @@ class PengembalianJaminanController extends Controller
         } catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'Error', 'msg' => 'Pengembalian gagal!']);
+        }
+    }
+
+    public function request(Request $request)
+    {
+        $user = Auth::user()->id; 
+        $data = $request->collect();
+        DB::beginTransaction(); 
+
+        try {
+            $jaminan = Jaminan::where('is_aktif', 'Y')->where('id_job_order', $data['id_jo'])->first();
+            if($jaminan){
+                $jaminan->status = 'REQUEST';
+                $jaminan->catatan = $data['catatan'];
+                $jaminan->tgl_request = date_create_from_format('d-M-Y', $data['tgl_request']);
+                $jaminan->updated_by = $user;
+                $jaminan->updated_by = now();
+                $jaminan->save();
+
+                DB::commit();
+                return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'Success', 'msg' => 'Request berhasil diajukan']);
+            }
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'Error', 'msg' => 'Request gagal!']);
         }
     }
 

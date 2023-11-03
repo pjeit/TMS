@@ -53,7 +53,7 @@
                                 <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" autocomplete="off" >
                             </div>
                         </div>
-                           <div class="form-group col-12 col-md-6 col-lg-6">
+                        <div class="form-group col-12 col-md-6 col-lg-6">
                             <label>Customer <span class="text-red">*</span></label>
                             <select class="form-control select2" style="width: 100%;" id='id_customer' name="id_customer" required>
                                 <option value="">Pilih customer</option>
