@@ -142,30 +142,57 @@ class BelumInvoiceController extends Controller
                 ->select('sewa.*','sp.nama as namaSupplier')
                 ->get();
             // dd($data);
-            $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
-                    ->leftJoin('customer as c', 'c.id', 'id_customer')
-                    ->where('c.grup_id', $grup[0])
-                    ->where('sewa.is_aktif', '=', 'Y')
-                    ->where('sewa.status', 'MENUNGGU INVOICE')
-            //          ->where(function ($query) {
-            //     $query->where('sewa.status', 'MENUNGGU INVOICE')
-            //         ->orWhere('sewa.status', 'BATAL MUAT');
-            // })
-                    ->select('sewa.*')
-                    ->get();
+            $checkBedaJenisTujuan = false;
 
-            $dataCust = Customer::where('grup_id', $grup[0])
-                    ->where('is_aktif', 'Y')
-                    ->get();
+            for ($i=0; $i <count($data) ; $i++) { 
+                # code...
+                  if ($data[$i]->jenis_tujuan !== $data[0]->jenis_tujuan) {
+                    $checkBedaJenisTujuan = true; 
+                    break;
 
-            return view('pages.invoice.belum_invoice.form',[
-                'judul'=>"BELUM INVOICE",
-                'data' => $data,
-                'dataSewa' => $dataSewa,
-                'dataCust' => $dataCust,
-                'grup' => $grup[0],
-                'customer' => $cust[0],
-        ]);
+                }
+            }
+            // foreach ($data as $i => $value) {
+                
+            //     if ($data[$i]->jenis_tujuan !== $data[0]->jenis_tujuan) {
+            //         $checkBedaJenisTujuan = true; 
+            //         break;
+
+            //     }
+            // }
+            if($checkBedaJenisTujuan)
+            {
+                return redirect()->route('belum_invoice.index')
+                    ->with(['status' => 'Gagal', 'msg' => 'Sewa yang dibuat Berbeda!']);
+            }
+            else
+            {
+                $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
+                        ->leftJoin('customer as c', 'c.id', 'id_customer')
+                        ->where('c.grup_id', $grup[0])
+                        ->where('sewa.is_aktif', '=', 'Y')
+                        ->where('sewa.status', 'MENUNGGU INVOICE')
+                //          ->where(function ($query) {
+                //     $query->where('sewa.status', 'MENUNGGU INVOICE')
+                //         ->orWhere('sewa.status', 'BATAL MUAT');
+                // })
+                        ->select('sewa.*')
+                        ->get();
+    
+                $dataCust = Customer::where('grup_id', $grup[0])
+                        ->where('is_aktif', 'Y')
+                        ->get();
+    
+                return view('pages.invoice.belum_invoice.form',[
+                    'judul'=>"BELUM INVOICE",
+                    'data' => $data,
+                    'dataSewa' => $dataSewa,
+                    'dataCust' => $dataCust,
+                    'grup' => $grup[0],
+                    'customer' => $cust[0],
+                ]);
+            }
+            
         } catch (\Throwable $th) {
             return redirect()->route('belum_invoice.index')
                     ->with(['status' => 'Gagal', 'msg' => 'Tidak ada sewa yang terpilih!']);

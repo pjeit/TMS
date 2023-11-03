@@ -404,7 +404,7 @@
                 var checkBedaJenisTujuan = false;
                 if(jenisTujuan.length != 0 )
                 {
-                    for (let i = 1; i < jenisTujuan.length; i++) {
+                    for (let i = 0; i < jenisTujuan.length; i++) {
                         if (jenisTujuan[i] !== jenisTujuan[0]) {
                             checkBedaJenisTujuan = true; 
                             break;
