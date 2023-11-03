@@ -585,43 +585,77 @@
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
-
               <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->is('belum_invoice*')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
-                    <p>
-                      Belum Invoice
+                <li class="nav-item   {{ 
+                  request()->is('pembayaran_invoice*') ||
+                  request()->is('bukti_potong*')||
+                  request()->is('cetak_invoice*') 
+                  ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p style="font-weight: 500;" >
+                      Invoice Trucking
+                      <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
                     </p>
                   </a>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->is('belum_invoice*')? ' active' : '' }} " style="font-weight: 500;">
+                      <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
+                        <p>
+                          Belum Invoice
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{route('cetak_invoice.index')}}" class="nav-link {{request()->url() === route('cetak_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                      <i class="nav-icon fas fa-print " style="font-size: 15px;"></i>
+                        <p>
+                          Cetak Invoice
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{ request()->is('pembayaran_invoice*')? ' active' : '' }} " style="font-weight: 500;">
+                      <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
+                        <p>
+                          Pembayaran Invoice
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{route('bukti_potong.index')}}" class="nav-link {{ request()->is('bukti_potong*')? ' active' : '' }} " style="font-weight: 500;">
+                      <i class="nav-icon fas fa-file" style="font-size: 15px;"></i>
+                        <p>
+                          Input Bukti Potong
+                        </p>
+                      </a>
+                    </li>
+                  </ul>
                 </li>
-                <li class="nav-item">
-                  <a href="{{route('cetak_invoice.index')}}" class="nav-link {{request()->url() === route('cetak_invoice.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="nav-icon fas fa-print " style="font-size: 15px;"></i>
-                    <p>
-                      Cetak Invoice
+                  <li class="nav-item   {{ 
+                  request()->is('pembayaran_invoice*') 
+                  ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p style="font-weight: 500;" >
+                      Invoice Karantina
+                      <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
                     </p>
                   </a>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->is('belum_invoice*')? ' active' : '' }} " style="font-weight: 500;">
+                      <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
+                        <p>
+                          Belum Invoice
+                        </p>
+                      </a>
+                    </li>
+                  </ul>
                 </li>
-                <li class="nav-item">
-                  <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{ request()->is('pembayaran_invoice*')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
-                    <p>
-                      Pembayaran Invoice
-                    </p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="{{route('bukti_potong.index')}}" class="nav-link {{ request()->is('bukti_potong*')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="nav-icon fas fa-file" style="font-size: 15px;"></i>
-                    <p>
-                      Input Bukti Potong
-                    </p>
-                  </a>
-                </li>
-            
-
               </ul>
+              
             </li>
 
             {{-- Rollback --}}

@@ -97,11 +97,11 @@
                             @foreach($dataSewa as $item)
                                 <tr>
                                     <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
-                                    <td>► {{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
+                                    <td>► {{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}" ></span> </td>
                                     <td>{{ $item->no_polisi }}</td>
                                     <td>{{ $item->no_sewa }}</td>
                                     <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
-                                    <td>{{ $item->nama_tujuan }}</td>
+                                    <td>{{ $item->nama_tujuan }} ({{ $item->jenis_tujuan }})</td>
                                     <td>
                                         @if ($item->id_supplier)
                                             DRIVER REKANAN  ({{ $item->namaSupplier }})
@@ -129,7 +129,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
+                                    <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" jenis_tujuan="{{ $item->jenis_tujuan }}"value="{{ $item->idSewanya }}"></td>
                                     <input type="hidden" name="idCust[]" placeholder="idCust">
                                     <input type="hidden" name="idGrup[]" placeholder="idGrup">
                                 </tr>
@@ -369,14 +369,9 @@
             var selectedValues = [];
             var custId = [];
             var grupId = [];
-            $(".sewa_centang[type=checkbox]:checked").each(function() {
-                selectedValues.push($(this).val());
-                custId.push($(this).attr('custId'));
-                grupId.push($(this).attr('grupId'));
-            });
-            
-            if (selectedValues.length === 0) {
-                const Toast = Swal.mixin({
+            var jenisTujuan = [];
+
+            const Toast = Swal.mixin({
                         toast: true,
                         position: 'top-end',
                         timer: 2500,
@@ -388,41 +383,78 @@
                         }
                     })
 
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Harap pilih sewa yang ingin dibuat invoice!'
-                    })
-                    event.preventDefault();
-           
+            $(".sewa_centang[type=checkbox]:checked").each(function() {
+                selectedValues.push($(this).val());
+                custId.push($(this).attr('custId'));
+                grupId.push($(this).attr('grupId'));
+                jenisTujuan.push($(this).attr('jenis_tujuan'));
+            });
+
+            
+            
+            if (selectedValues.length === 0) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Harap pilih sewa yang ingin dibuat invoice!'
+                })
+                event.preventDefault();
             }
             else
             {
-                $('#modal-loading').modal('show');
+                var checkBedaJenisTujuan = false;
+                if(jenisTujuan.length != 0 )
+                {
+                    for (let i = 1; i < jenisTujuan.length; i++) {
+                        if (jenisTujuan[i] !== jenisTujuan[0]) {
+                            checkBedaJenisTujuan = true; 
+                            break;
 
-                var baseUrl = "{{ asset('') }}";
-                $.ajax({
-                    url: `${baseUrl}belum_invoice/set_sewa_id`, 
-                    method: 'POST', 
-                    data: { 
-                        idSewa: selectedValues ,
-                        idCust: custId,
-                        idGrup: grupId,
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                    },
-                    success: function(response) {
-                        // console.log(response.status=='ok');
-                        if(response.status=='ok')
-                        {
-                            // console.log(response);
-                            window.location.href = '{{ route("belum_invoice.create") }}';
-    
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
                     }
-                });
-                // window.location.href = '{{ route("belum_invoice.create") }}';
+                    if(checkBedaJenisTujuan)
+                    {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Sewa yang dibuat Berbeda!'
+                        })
+                        event.preventDefault();
+                    }
+                    else
+                    {
+                        // Toast.fire({
+                        //     icon: 'success',
+                        //     title: 'Sewa yang dibuat sama!'
+                        // })
+                        // event.preventDefault();
+                        // $('#modal-loading').modal('show');
+
+                        var baseUrl = "{{ asset('') }}";
+                        $.ajax({
+                            url: `${baseUrl}belum_invoice/set_sewa_id`, 
+                            method: 'POST', 
+                            data: { 
+                                idSewa: selectedValues ,
+                                idCust: custId,
+                                idGrup: grupId,
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                            },
+                            success: function(response) {
+                                // console.log(response.status=='ok');
+                                if(response.status=='ok')
+                                {
+                                    // console.log(response);
+                                    window.location.href = '{{ route("belum_invoice.create") }}';
+            
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error:', error);
+                            }
+                        });
+                        window.location.href = '{{ route("belum_invoice.create") }}';
+                    }
+                }
+               
 
             }
             
