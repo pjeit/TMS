@@ -576,6 +576,7 @@
             {{-- INVOICE --}}
             <li class="nav-item {{ request()->is('belum_invoice*') ||
               request()->is('pembayaran_invoice*') ||
+              request()->is('invoice_karantina*') ||
               request()->is('bukti_potong*') ||
               request()->is('cetak_invoice*') 
                 ? 'menu-is-opening menu-open' : '' }}">
@@ -634,7 +635,7 @@
                   </ul>
                 </li>
                   <li class="nav-item   {{ 
-                  request()->is('pembayaran_invoice*') 
+                  request()->is('invoice_karantina*') 
                   ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
@@ -645,7 +646,7 @@
                   </a>
                   <ul class="nav nav-treeview">
                     <li class="nav-item">
-                      <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->is('belum_invoice*')? ' active' : '' }} " style="font-weight: 500;">
+                      <a href="{{route('invoice_karantina.index')}}" class="nav-link {{request()->is('invoice_karantina*')? ' active' : '' }} " style="font-weight: 500;">
                       <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                         <p>
                           Belum Invoice

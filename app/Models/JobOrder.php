@@ -52,6 +52,11 @@ class JobOrder extends Model
     //         return $idTuj;
     //    }
 
+     public function getDetails()
+     {
+          return $this->hasMany(JobOrderDetail::class, 'id_jo', 'id');
+     }
+
      public function getGrupId()
      {
           return $this->hasOne(Customer::class, 'id', 'id_customer');

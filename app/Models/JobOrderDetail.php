@@ -55,9 +55,7 @@ class JobOrderDetail extends Model
 
    public function getTujuan()
    {
-       $relation = $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan')->select('id', 'nama_tujuan', 'alamat');
-   
-       return $relation ? $relation : null;
+       return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan');
    }
 
    public function getSewa()
