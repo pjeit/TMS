@@ -16,6 +16,7 @@
                     <button type="submit" class="btn btn-primary btn-responsive radiusSendiri">
                         <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
                     </button>
+                    {{-- <a href="{{route('invoice_karantina.print')}}" class="btn btn-primary btn-responsive radiusSendiri float-right">debug print</a> --}}
                 </div>
             </div>
             <div class="card-body">
