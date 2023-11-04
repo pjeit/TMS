@@ -219,6 +219,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('bukti_potong', 'App\Http\Controllers\BuktiPotongController');
 
+        Route::get('invoice_karantina/print/{id}', [App\Http\Controllers\InvoiceKarantinaController::class, 'print'])->name('invoice_karantina.print');
         Route::get('invoice_karantina/load_data/{id}', [App\Http\Controllers\InvoiceKarantinaController::class, 'load_data'])->name('invoice_karantina.load_data');
         Route::resource('invoice_karantina', 'App\Http\Controllers\InvoiceKarantinaController');
 

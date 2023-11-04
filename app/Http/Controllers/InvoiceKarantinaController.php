@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 
 class InvoiceKarantinaController extends Controller
 {
@@ -119,6 +121,43 @@ class InvoiceKarantinaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    public function print($id)
+    {
+        //
+        //  $data = InvoiceKarantina::where('is_aktif', '=', "Y")
+        //     ->where('id', $id)
+        //     ->first();
+        
+        // dd($data);
+        $qrcode = QrCode::size(150)
+        // ->backgroundColor(255, 0, 0, 25)
+        ->generate(
+             'No. Invoice: ' . '$data->no_invoice' . "\n" .
+             'Total tagihan: ' .'Rp.' .'number_format($data->total_tagihan,2) '
+        );
+        $pdf = PDF::loadView('pages.invoice.invoice_karantina.print',[
+            'judul' => "Invoice",
+            // 'data' => $data,
+            'qrcode'=>$qrcode,
+            // 'dataOperasional'=>$dataOperasional
+        ]);
+        
+        $pdf->setPaper('A4', 'portrait');
+ 
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true, // Enable HTML5 parser
+            'isPhpEnabled' => true, // Enable inline PHP execution
+            'defaultFont' => 'sans-serif',
+             'dpi' => 250, // Set a high DPI for better resolution
+             'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
+        ]);
+
+        return $pdf->stream('invoice_karantina'.'.pdf'); 
+        // return view('pages.invoice.invoice_karantina.print',[
+        //     'judul'=>"Invoice",
+
+        // ]);
+    }
     public function show($id)
     {
         //

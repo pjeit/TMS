@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use Exception;
-use QrCode;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 class BelumInvoiceController extends Controller
 {
     /**
