@@ -458,7 +458,7 @@
 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{route('klaim_supir.index')}}" class="nav-link {{request()->url() === route('klaim_supir.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('klaim_supir.index')}}" class="nav-link {{request()->is('klaim_supir*')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Klaim Supir
@@ -575,7 +575,9 @@
           @if (in_array($user_role, [1,2,3]))
             {{-- INVOICE --}}
             <li class="nav-item {{ request()->is('belum_invoice*') ||
-              request()->is('pembayaran_invoice*') ||
+              request()->is('pembayaran_invoice') ||
+              request()->is('pembayaran_invoice.*') ||
+              request()->is('pembayaran_invoice_karantina*') ||
               request()->is('invoice_karantina*') ||
               request()->is('bukti_potong*') ||
               request()->is('cetak_invoice*') 
@@ -588,7 +590,10 @@
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item   {{ 
-                  request()->is('pembayaran_invoice*') ||
+                  request()->is('pembayaran_invoice') ||
+                  request()->is('pembayaran_invoice.*') ||
+                  request()->is('belum_invoice') ||
+                  request()->is('belum_invoice.*') ||
                   request()->is('bukti_potong*')||
                   request()->is('cetak_invoice*') 
                   ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
@@ -601,7 +606,7 @@
                   </a>
                   <ul class="nav nav-treeview">
                     <li class="nav-item">
-                      <a href="{{route('belum_invoice.index')}}" class="nav-link {{request()->is('belum_invoice*')? ' active' : '' }} " style="font-weight: 500;">
+                      <a href="{{route('belum_invoice.index')}}" class="nav-link {{ request()->is('belum_invoice') || request()->is('belum_invoice.*')? ' active' : '' }} " style="font-weight: 500;">
                       <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                         <p>
                           Belum Invoice
@@ -617,7 +622,7 @@
                       </a>
                     </li>
                     <li class="nav-item">
-                      <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{ request()->is('pembayaran_invoice*')? ' active' : '' }} " style="font-weight: 500;">
+                      <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{ request()->is('pembayaran_invoice.*') || request()->is('pembayaran_invoice')? ' active' : '' }} " style="font-weight: 500;">
                       <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
                         <p>
                           <span style="font-size: 0.9em;">Pembayaran Invoice</span>
@@ -635,7 +640,8 @@
                   </ul>
                 </li>
                   <li class="nav-item   {{ 
-                  request()->is('invoice_karantina*') 
+                  request()->is('invoice_karantina*') ||
+                  request()->is('pembayaran_invoice_karantina*') 
                   ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
@@ -650,6 +656,14 @@
                       <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                         <p>
                           Belum Invoice
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{route('pembayaran_invoice_karantina.index')}}" class="nav-link {{ request()->is('pembayaran_invoice_karantina*')? ' active' : '' }} " style="font-weight: 500;">
+                      <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
+                        <p>
+                          <span style="font-size: 0.9em;">Pembayaran Invoice</span>
                         </p>
                       </a>
                     </li>

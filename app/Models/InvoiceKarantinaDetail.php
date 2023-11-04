@@ -10,4 +10,8 @@ class InvoiceKarantinaDetail extends Model
     use HasFactory;
     protected $table = 'invoice_karantina_detail';
 
+    public function kontainers()
+    {
+        return $this->hasMany(InvoiceKarantinaDetailKontainer::class, 'id_invoice_k_detail', 'id');
+    }  
 }

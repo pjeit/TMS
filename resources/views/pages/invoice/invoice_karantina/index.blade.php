@@ -31,12 +31,12 @@
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-12">
-                        <label for="tanggal_invoice">Tanggal Invoice<span style="color:red">*</span></label>
+                        <label>Tanggal Invoice<span style="color:red">*</span></label>
                         <div class="input-group mb-0">
                             <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                             </div>
-                            <input readonly type="text" autocomplete="off" name="tanggal_invoice" class="form-control date" id="tanggal_invoice" placeholder="dd-M-yyyy" value="">
+                            <input type="text" autocomplete="off" name="tanggal_invoice" class="form-control date" id="tanggal_invoice" placeholder="dd-M-yyyy" required>
                             <input type="hidden" id="total_nominal" name="total_nominal" >
                         </div>
                     </div>
@@ -93,9 +93,8 @@
                 let is_ok = [];
 
                 parents.forEach(function(checkboxParent, i) {
-                    is_ok[i] = false;
-
                     if (checkboxParent.checked) {
+                        is_ok[i] = false;
                         var childrens = document.querySelectorAll('.children_of_' + checkboxParent.value);
                         childrens.forEach(function(checkboxChildren) {
                             if (checkboxChildren.checked) {
@@ -104,6 +103,7 @@
                         });
                     }
                 });
+                console.log('is_ok', is_ok);
 
                 if (is_ok.some(value => value === false)) {
                     event.preventDefault(); 
@@ -155,6 +155,7 @@
         });
     });
 </script>
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('#customer').change(function(event){
@@ -176,7 +177,7 @@
                 processData:false,
                 success: function(response) {
                     let data = response;
-                    console.log('data', data);
+                    $("#hasil").empty();
 
                     for (var i = 0; i < data.length; i++) {
                         let parent = $("<tr></tr>");
