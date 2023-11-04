@@ -620,7 +620,7 @@
                       <a href="{{route('pembayaran_invoice.index')}}" class="nav-link {{ request()->is('pembayaran_invoice*')? ' active' : '' }} " style="font-weight: 500;">
                       <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
                         <p>
-                          Pembayaran Invoice
+                          <span style="font-size: 0.9em;">Pembayaran Invoice</span>
                         </p>
                       </a>
                     </li>

@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\InvoiceKarantina;
+use App\Models\InvoiceKarantinaDetail;
+use App\Models\InvoiceKarantinaDetailKontainer;
 use App\Models\JobOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class InvoiceKarantinaController extends Controller
 {
@@ -36,9 +41,9 @@ class InvoiceKarantinaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+      
     }
 
     /**
@@ -49,8 +54,63 @@ class InvoiceKarantinaController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user()->id;
         $data = $request->collect();
-        dd($data);
+        DB::beginTransaction(); 
+        // dd($data);
+
+        try {
+            $kode = 'PJE_KRNT/'.$data['kode'].'/'.date("y").date("m");
+            $maxInvoice = DB::table('invoice')
+                ->selectRaw("ifnull(max(substr(no_invoice, -3)), 0) + 1 as max_invoice")
+                ->where('no_invoice', 'like', $kode.'%')
+                ->orderBy('no_invoice', 'DESC')
+                ->value('max_invoice');
+                
+            $newInvoiceNumber = 'PJE_KRNT/' . $data['kode'] . '/' . date("y") . date("m") . str_pad($maxInvoice, 3, '0', STR_PAD_LEFT);
+
+            if (is_null($maxInvoice)) {
+                $newInvoiceNumber = 'PJE_KRNT/' . $data['kode'] .'/'. date("y") . date("m") . '001';
+            }
+
+            $invoice = new InvoiceKarantina();
+            $invoice->id_customer = $data['customer'];
+            $invoice->no_invoice_k = $newInvoiceNumber;
+            $invoice->tgl_invoice = date("Y-m-d", strtotime($data['tanggal_invoice']));
+            $invoice->total_tagihan = $data['total_nominal'];
+            $invoice->sisa_tagihan = $data['total_nominal'];
+            $invoice->status = "MENUNGGU PEMBAYARAN";
+            $invoice->created_by = $user;
+            $invoice->created_at = now();
+            if($invoice->save()){
+                foreach ($data['data'] as $key => $value) {
+                    $detail = new InvoiceKarantinaDetail();
+                    $detail->id_invoice_k       = $invoice->id; 
+                    $detail->id_jo              = $key; 
+                    $detail->tarif_karantina    = floatval(str_replace(',', '', $value['nominal']));
+                    $detail->tarif_karantina    = $key; 
+                    $detail->created_by         = $user;
+                    $detail->created_at         = now();
+                    if($detail->save()){
+                        foreach ($value['idJOD'] as $item) {
+                            $kontainer = new InvoiceKarantinaDetailKontainer();
+                            $kontainer->id_invoice_k = $invoice->id; 
+                            $kontainer->id_invoice_k_detail = $detail->id; 
+                            $kontainer->id_jo_detail = $item; 
+                            $kontainer->created_by = $user;
+                            $kontainer->created_at = now();
+                            $kontainer->save();
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('invoice_karantina.index')->with(['status' => 'Success', 'msg'  => 'Pembayaran berhasil!']);
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('invoice_karantina.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
+        }
     }
 
     /**
