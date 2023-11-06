@@ -10,4 +10,8 @@ class InvoiceKarantinaDetailKontainer extends Model
     use HasFactory;
     protected $table = 'invoice_karantina_detail_kontainer';
 
+    public function getJOD()
+    {
+        return $this->hasOne(JobOrderDetail::class, 'id', 'id_jo_detail');
+    }
 }

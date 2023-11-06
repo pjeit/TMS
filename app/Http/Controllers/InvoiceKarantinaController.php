@@ -62,7 +62,7 @@ class InvoiceKarantinaController extends Controller
         // dd($data);
 
         try {
-            $kode = 'PJE_KRNT/'.$data['kode'].'/'.date("y").date("m");
+            $kode = 'PJE/KRNT/'.$data['kode'].'/'.date("y").date("m");
             $maxInvoice = DB::table('invoice')
                 ->selectRaw("ifnull(max(substr(no_invoice, -3)), 0) + 1 as max_invoice")
                 ->where('no_invoice', 'like', $kode.'%')
@@ -90,7 +90,6 @@ class InvoiceKarantinaController extends Controller
                     $detail->id_invoice_k       = $invoice->id; 
                     $detail->id_jo              = $key; 
                     $detail->tarif_karantina    = floatval(str_replace(',', '', $value['nominal']));
-                    $detail->tarif_karantina    = $key; 
                     $detail->created_by         = $user;
                     $detail->created_at         = now();
                     if($detail->save()){
