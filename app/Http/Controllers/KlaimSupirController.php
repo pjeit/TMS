@@ -124,7 +124,6 @@ class KlaimSupirController extends Controller
                 'foto_nota' => 'required|image|mimes:jpg,png,jpeg|max:2048',
                 'foto_barang' => 'required|image|mimes:jpg,png,jpeg|max:2048',
             ],$pesanKustom);
-            $data = $request->collect();
 
             $pathFotoNota = "";
 

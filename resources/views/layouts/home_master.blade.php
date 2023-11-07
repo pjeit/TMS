@@ -82,8 +82,8 @@
                       <div class="swal2-timer-progress-bar" style="display: flex; width: 12.0588%;">
                   </div>
                 </div>
-              </div> --}}
-              {{-- <template id="my-template">
+              </div>
+              <template id="my-template">
                 <swal-title>
                   Save changes to "Untitled 1" before closing?
                 </swal-title>
@@ -105,14 +105,14 @@
                   name="didOpen"
                   value="popup => console.log(popup)" />
               </template>
-            </div> --}}
+            </div>
 
-              {{-- <div id="toast-container" class="container">
+              <div id="toast-container" class="container">
                 Toast Should be here?
-              </div>   --}}
+              </div>  
 
 
-            {{-- <div class="swal2-show swal2-backdrop-show swal2-icon-show" style="background-color: #fff;" role="alert">
+            <div class="swal2-show swal2-backdrop-show swal2-icon-show" style="background-color: #fff;" role="alert">
               {{session('status')}}
             </div> --}}
 
