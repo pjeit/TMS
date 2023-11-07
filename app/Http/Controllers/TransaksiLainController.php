@@ -106,7 +106,6 @@ class TransaksiLainController extends Controller
                 $new_transaksi->created_at = now();
                 $new_transaksi->is_aktif = 'Y';
                 // $new_transaksi->save();
-
                 if ($new_transaksi->save()) {
                     $coa = Coa::where('is_aktif', 'Y')
                                     ->where('id', $data['select_coa'])
