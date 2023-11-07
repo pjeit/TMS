@@ -195,6 +195,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('transaksi_lain', 'App\Http\Controllers\TransaksiLainController');
         Route::resource('transfer_dana', 'App\Http\Controllers\TransferDanaController');
+
+        Route::post('tagihan_pembelian/bayar_save', [App\Http\Controllers\TagihanRekananController::class, 'bayar_save'])->name('tagihan_pembelian.bayar_save');
+        Route::post('tagihan_pembelian/bayar', [App\Http\Controllers\TagihanRekananController::class, 'bayar'])->name('tagihan_pembelian.bayar');
+        Route::get('tagihan_pembelian/loadData/{id}', [App\Http\Controllers\TagihanRekananController::class, 'load_data'])->name('tagihan_pembelian.load_data');
+        Route::get('tagihan_pembelian/filteredData/{id_tagihan},{id_supplier}', [App\Http\Controllers\TagihanRekananController::class, 'filtered_data'])->name('tagihan_pembelian.filtered_data');
+        Route::resource('tagihan_pembelian', 'App\Http\Controllers\TagihanPembelianController');
         // ===================================FINANCE=========================================================
 
         

@@ -1207,28 +1207,28 @@
                     })
                 return;
             }
-            if($('#tipe_kontainer').val()=='' && kategoriKendaraan =='Trailer')
-            {
+            // if($('#tipe_kontainer').val()=='' && kategoriKendaraan =='Trailer')
+            // {
                 
-                event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
+            //     event.preventDefault();
+            //     const Toast = Swal.mixin({
+            //             toast: true,
+            //             position: 'top',
+            //             timer: 2500,
+            //             showConfirmButton: false,
+            //             timerProgressBar: true,
+            //             didOpen: (toast) => {
+            //                 toast.addEventListener('mouseenter', Swal.stopTimer)
+            //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
+            //             }
+            //         })
 
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Tipe Kontainer Harus dipilih!'
-                    })
-                return;
-            }
+            //         Toast.fire({
+            //             icon: 'error',
+            //             title: 'Tipe Kontainer Harus dipilih!'
+            //         })
+            //     return;
+            // }
 
             event.preventDefault();
 

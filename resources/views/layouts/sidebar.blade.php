@@ -424,6 +424,7 @@
               request()->is('pencairan_komisi_driver*')||
               request()->is('klaim_supir*')||
               request()->is('tagihan_rekanan*')||
+              request()->is('tagihan_pembayaran*')||
               request()->is('pencairan_komisi_customer*')||
               request()->is('karantina*')||
               request()->is('cetak_uang_jalan*')||
@@ -554,10 +555,8 @@
                     </li>
                   </ul>
                 </li>
-              
               </ul>
-             
-              
+                           
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('pengembalian_jaminan.index')}}" class="nav-link {{request()->url() === route('pengembalian_jaminan.index')? ' active' : '' }} " style="font-weight: 500;">
@@ -569,14 +568,23 @@
                 </li>
               </ul>
 
-             
-
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('tagihan_rekanan.index')}}" class="nav-link {{ request()->is('tagihan_rekanan*')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       <span >Tagihan Rekanan</span> {{-- style="font-size: 13.9px" --}}
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('tagihan_pembelian.index')}}" class="nav-link {{ request()->is('tagihan_pembelian*')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon"></i>
+                    <p>
+                      Tagihan <span style="font-size: 0.9em;">Pembelian</span> {{-- style="font-size: 13.9px" --}}
                     </p>
                   </a>
                 </li>

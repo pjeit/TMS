@@ -25,6 +25,7 @@ class PencairanUangJalanLTLController extends Controller
     {
         $data = Sewa::where('is_aktif', 'Y')
             ->where('jenis_tujuan', 'LTL')
+            ->whereNull('id_supplier')
             ->groupBy('no_polisi')
             ->get();
         $kas = KasBank::where('is_aktif', 'Y')->get();
@@ -213,11 +214,11 @@ class PencairanUangJalanLTLController extends Controller
         $data = Sewa::where('is_aktif', 'Y')->where('jenis_tujuan', 'LTL')
                         ->with('getCustomer')
                         ->with('getKaryawan.getHutang')
-                        // ->with('getSupplier')
                         ->where('no_polisi', $item)
-                        ->where('status', 'PROSES DOORING')
+                        // ->where('status', 'PROSES DOORING')
                         ->whereNull('id_supplier')
                         ->get();
+        // dd($data);
         if($data[0]['total_uang_jalan'] != 0){
             return response()->json(["result" => "error", 'data' => null], 404);
         }else{
