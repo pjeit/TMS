@@ -36,7 +36,7 @@
 
     <!-- Sidebar Menu -->
     <nav class="mt-2 ">
-      <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent w-50" data-widget="treeview" role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
         <!-- =================================================== -->
@@ -426,7 +426,9 @@
               request()->is('tagihan_rekanan*')||
               request()->is('pencairan_komisi_customer*')||
               request()->is('karantina*')||
-              request()->is('cetak_uang_jalan*')
+              request()->is('cetak_uang_jalan*')||
+              request()->is('transaksi_lain*')||
+              request()->is('transfer_dana*')
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-dollar-sign"></i>
@@ -434,7 +436,36 @@
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
-
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Biaya Operasional
+                    </p>
+                  </a>
+                </li>
+              </ul> 
+               <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('cetak_uang_jalan.index')}}" class="nav-link {{request()->url() === route('cetak_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Cetak Uang Jalan
+                    </p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('klaim_supir.index')}}" class="nav-link {{request()->is('klaim_supir*')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Klaim Supir
+                    </p>
+                  </a>
+                </li>
+              </ul>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('pembayaran_jo.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pembayaran_jo*') ? 'active' : ''  }}">
@@ -457,27 +488,7 @@
                 </li>
               </ul>
 
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Biaya Operasional
-                    </p>
-                  </a>
-                </li>
-              </ul>
-
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('klaim_supir.index')}}" class="nav-link {{request()->is('klaim_supir*')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Klaim Supir
-                    </p>
-                  </a>
-                </li>
-              </ul>
+             
             
               <ul class="nav nav-treeview">
                 <li class="nav-item   {{ 
@@ -512,29 +523,6 @@
                 </li>
               
               </ul>
-
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('cetak_uang_jalan.index')}}" class="nav-link {{request()->url() === route('cetak_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Cetak Uang Jalan
-                    </p>
-                  </a>
-                </li>
-              </ul>
-              
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pengembalian_jaminan.index')}}" class="nav-link {{request()->url() === route('pengembalian_jaminan.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      <span style="font-size: 13.9px;">Pengembalian Jaminan</span>
-                    </p>
-                  </a>
-                </li>
-              </ul>
-
               <ul class="nav nav-treeview">
                 <li class="nav-item   {{ 
                 request()->is('pencairan_komisi_driver*')||
@@ -568,6 +556,20 @@
                 </li>
               
               </ul>
+             
+              
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pengembalian_jaminan.index')}}" class="nav-link {{request()->url() === route('pengembalian_jaminan.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 13.9px;">Pengembalian Jaminan</span>
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+             
 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
@@ -575,6 +577,28 @@
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       <span >Tagihan Rekanan</span> {{-- style="font-size: 13.9px" --}}
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('transaksi_lain.index')}}" class="nav-link {{ request()->is('transaksi_lain*')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span >Transaksi Lain</span> {{-- style="font-size: 13.9px" --}}
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('transfer_dana.index')}}" class="nav-link {{ request()->is('transfer_dana*')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span >Transfer Dana </span> {{-- style="font-size: 13.9px" --}}
                     </p>
                   </a>
                 </li>
@@ -687,7 +711,8 @@
 
             {{-- Rollback --}}
             <li class="nav-item {{ request()->is('revisi_uang_jalan*') ||  
-                                request()->is('revisi_tl*')
+                                request()->is('revisi_tl*')||
+                                request()->is('revisi_klaim_supir*')
                                 ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="fas nav-icon fa-solid fa fa-undo"></i>
@@ -711,6 +736,14 @@
 
                     <p>
                       Rev. Uang Jalan
+                    </p>
+                  </a>
+                </li>
+                 <li class="nav-item">
+                  <a href="{{route('klaim_supir_revisi.index')}}" class="nav-link {{request()->url() === route('klaim_supir_revisi.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 0.9em;">Rev. Klaim Supir</span>
                     </p>
                   </a>
                 </li>

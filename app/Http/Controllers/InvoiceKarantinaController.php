@@ -146,11 +146,24 @@ class InvoiceKarantinaController extends Controller
     public function print($id)
     {
         //
-        //  $data = InvoiceKarantina::where('is_aktif', '=', "Y")
-        //     ->where('id', $id)
-        //     ->first();
-        
-        // dd($data);
+         $dataInvoiceKarantina = InvoiceKarantina::where('invoice_karantina.is_aktif', '=', "Y")
+            ->select('invoice_karantina.*','c.nama as nama_customer')
+            ->leftJoin('customer AS c', 'invoice_karantina.id_customer', '=', 'c.id')
+            ->where('invoice_karantina.id', $id)
+            ->first();
+
+        $InvoiceKarantinaDetail = InvoiceKarantinaDetail::where('invoice_karantina_detail.is_aktif', '=', "Y")
+            ->select('invoice_karantina_detail.*','jo.kapal','jo.no_bl')
+            ->leftJoin('job_order AS jo', 'invoice_karantina_detail.id_jo', '=', 'jo.id')
+            ->where('invoice_karantina_detail.id_invoice_k', $dataInvoiceKarantina->id)
+            ->get();
+        $InvoiceKarantinaDetailKontainer = InvoiceKarantinaDetailKontainer::where('invoice_karantina_detail_kontainer.is_aktif', '=', "Y")
+            ->select('invoice_karantina_detail_kontainer.*','jod.no_kontainer','jod.seal','jod.tipe_kontainer')
+            ->leftJoin('job_order_detail AS jod', 'invoice_karantina_detail_kontainer.id_jo_detail', '=', 'jod.id')
+            ->where('invoice_karantina_detail_kontainer.id_invoice_k', $dataInvoiceKarantina->id)
+            ->get();
+
+        // dd($dataInvoiceKarantina);
         $qrcode = QrCode::size(150)
         // ->backgroundColor(255, 0, 0, 25)
         ->generate(
@@ -159,9 +172,10 @@ class InvoiceKarantinaController extends Controller
         );
         $pdf = PDF::loadView('pages.invoice.invoice_karantina.print',[
             'judul' => "Invoice",
-            // 'data' => $data,
+            'dataInvoiceKarantina' => $dataInvoiceKarantina,
+            'InvoiceKarantinaDetail' => $InvoiceKarantinaDetail,
+            'InvoiceKarantinaDetailKontainer' => $InvoiceKarantinaDetailKontainer,
             'qrcode'=>$qrcode,
-            // 'dataOperasional'=>$dataOperasional
         ]);
         
         $pdf->setPaper('A4', 'portrait');

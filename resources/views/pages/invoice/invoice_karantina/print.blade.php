@@ -96,24 +96,24 @@
                     <td></td>
                     <td width='30%'>&nbsp;</td>
                     <td style=""><b>No Invoice</b></td>
-                    <td style=""><b>:</b> [No-Invoice]</td>
+                    <td style=""><b>:</b> {{$dataInvoiceKarantina->no_invoice_k}}</td>
                 </tr>
                 <tr class="borderDebug">
-                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">[billing_to]</td>
+                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{$dataInvoiceKarantina->nama_customer}}</td>
                     <td></td>
                     <td width='30%'>&nbsp;</td>
                     <td style=""><b>Tanggal</b> </td>
-                    <td style=""><b>:</b> [Tanggal Invoice]</td>
+                    <td style=""><b>:</b> {{\Carbon\Carbon::parse($dataInvoiceKarantina->tgl_invoice)->format('d-M-Y')}}</td>
                 </tr>
-                <tr class="borderDebug">
+                {{-- <tr class="borderDebug">
                     <td style=""width='30%' colspan="2">&nbsp;</td>
                     <td style=""><b>Jatuh Tempo</b> </td>
                     <td style=""><b>:</b> [Jatuh Tempo]</td>
-                </tr>
+                </tr> --}}
                 <tr class="borderDebug">
                     <td style="" width='30%' colspan="2">&nbsp;</td>
                     <td style=" text-align:left;vertical-align:top;"><b>Catatan</b> </td>
-                    <td style=""><b>:</b> [catatan]</td>
+                    <td style=""><b>:</b> {{$dataInvoiceKarantina->catatan?$dataInvoiceKarantina->catatan:'-'}}</td>
                 </tr>
                 <tr class="borderDebug">
                     <td width='30%' colspan="2" >&nbsp;</td>
@@ -124,63 +124,32 @@
         </table>
 
 <table>
-    <tr>
-        <th colspan="4" class="header">Kapal 1</th>
-        {{-- <th colspan="3" class="header">Total Karantina : Rp.200.000,00</th> --}}
-
-    </tr>
-    <tr>
-        <th>Kontainer</th>
-        <th>Tipe Kontainer</th>
-        <th>Segel</th>
-        <th>Muatan</th>
-    </tr>
-    <tr>
-        <td>Kontainer 1</td>
-        <td>[Tipe 1]</td>
-        <td>[Segel 1]</td>
-        <td>[Muatan 1]</td>
-    </tr>
-    <tr>
-        <td>Kontainer 2</td>
-        <td>[Tipe 2]</td>
-        <td>[Segel 2]</td>
-        <td>[Muatan 2]</td>
-    </tr>
-    <tr class="subtotal">
-        <td colspan="3">Subtotal Karantina Kapal 1:</td>
-        <td>Rp.100.000,00</td>
-    </tr>
-</table>
-<br>
-<table>
-    <tr>
-        <th colspan="4" class="header">Kapal 2</th>
-        {{-- <th colspan="3" class="header">Total Karantina : Rp.200.000,00</th> --}}
-
-    </tr>
-    <tr>
-        <th>Kontainer</th>
-        <th>Tipe Kontainer</th>
-        <th>Segel</th>
-        <th>Muatan</th>
-    </tr>
-    <tr>
-        <td>Kontainer 1</td>
-        <td>[Tipe 1]</td>
-        <td>[Segel 1]</td>
-        <td>[Muatan 1]</td>
-    </tr>
-    <tr>
-        <td>Kontainer 2</td>
-        <td>[Tipe 2]</td>
-        <td>[Segel 2]</td>
-        <td>[Muatan 2]</td>
-    </tr>
-    <tr class="subtotal">
-        <td colspan="3">Subtotal Karantina Kapal 1:</td>
-        <td>Rp.100.000,00</td>
-    </tr>
+    @foreach ($InvoiceKarantinaDetail as $dataKapal)
+        <tr>
+            <th colspan="4" class="header">{{$dataKapal->kapal}} - ({{$dataKapal->no_bl}})</th>
+        </tr>
+        <tr>
+            <th>Kontainer</th>
+            <th>Tipe Kontainer</th>
+            <th>Segel</th>
+            <th>Muatan</th>
+        </tr>
+        @foreach ($InvoiceKarantinaDetailKontainer as $dataKontainer)
+          @if ($dataKapal->id==$dataKontainer->id_invoice_k_detail)
+            <tr>
+                <td>{{$dataKontainer->no_kontainer}}</td>
+                <td>{{$dataKontainer->tipe_kontainer}}"</td>
+                <td>{{$dataKontainer->seal}}</td>
+                <td>[Muatan 1]</td>
+            </tr>
+          @endif
+        @endforeach
+        <tr class="subtotal">
+            <td colspan="3">Subtotal Karantina {{$dataKapal->kapal}}:</td>
+            <td>Rp.{{number_format($dataKapal->tarif_karantina)}}</td>
+        </tr>
+        <br>
+    @endforeach
 </table>
 <br>
 <table>
@@ -221,5 +190,4 @@
             </tfoot>
         </table>
 </body>
-
 </html>

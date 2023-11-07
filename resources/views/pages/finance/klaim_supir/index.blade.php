@@ -5,9 +5,7 @@
     </div>
 @endif
 @section('pathjudul')
-<li class="breadcrumb-item"><a href="/">Home</a></li>
-<li class="breadcrumb-item">Master</li>
-<li class="breadcrumb-item"><a href="{{route('karyawan.index')}}">Karyawan</a></li>
+
 @endsection
 
 @section('content')
@@ -62,7 +60,7 @@
                                     <td>Rp. {{number_format($item->total_klaim,2)  }}
                                         <br>
                                         @if($item->status_klaim == 'ACCEPTED')
-                                            Total dicairkan : Rp. {{number_format($item->total_pencairan,2) }}
+                                           <b>Total dicairkan : Rp. {{number_format($item->total_pencairan,2) }}</b> 
                                         @endif
 
                                     </td>
@@ -272,8 +270,8 @@
                                                     
                                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                                         <label for="keterangan_klaim">Keterangan Klaim</label>
-                                                        <input type="text" class="form-control @error('total_klaim') is-invalid @enderror" id="keterangan_klaim" name="keterangan_klaim" value="{{old('keterangan_klaim')}}">
-                                                        @error('total_klaim')
+                                                        <input type="text" class="form-control @error('keterangan_klaim') is-invalid @enderror" id="keterangan_klaim" name="keterangan_klaim" value="{{old('keterangan_klaim')}}">
+                                                        @error('keterangan_klaim')
                                                             <div class="invalid-feedback">
                                                                 {{ $message }}
                                                             </div>
