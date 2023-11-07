@@ -148,9 +148,10 @@
                                                 <select class="form-control select2  @error('select_coa') is-invalid @enderror" style="width: 100%;" id='select_coa' name="select_coa">
                                                 <option value="">Pilih Jenis Transaksi</option>
                                                 @foreach ($dataCOA as $data)
-                                                    <option value="{{$data->id}}" {{old('select_coa')==$data->id?'selected':''}} >{{ $data->nama_jenis }}</option>
+                                                    <option value="{{$data->id}}" {{old('select_coa')==$data->id?'selected':''}} id_coa='{{$data->no_akun}}'>{{ $data->nama_jenis }}</option>
                                                 @endforeach
                                             </select>
+                                            <input type="hidden" name="id_coa_hidden" id="id_coa_hidden">
                                             @error('select_coa')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -272,12 +273,10 @@ $(document).ready(function () {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
                     })
-
                     Toast.fire({
                         icon: 'success',
                         title: 'Data Disimpan'
                     })
-
                     setTimeout(() => {
                         this.submit();
                     }, 200); // 2000 milliseconds = 2 seconds
@@ -293,7 +292,6 @@ $(document).ready(function () {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
                     })
-
                     Toast.fire({
                         icon: 'warning',
                         title: 'Batal Disimpan'
