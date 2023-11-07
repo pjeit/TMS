@@ -458,7 +458,7 @@
                                             @endphp
                                             
                                     @endif
-                                    @if (!$flagInap)
+                                    @if (!$flagInap && $sewa->jenis_tujuan=="FTL")
                                         <tr id="{{ $index}}">
                                             <td>
                                                 <div class="icheck-danger d-inline">

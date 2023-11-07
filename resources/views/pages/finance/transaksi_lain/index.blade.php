@@ -24,6 +24,17 @@
 
 </style>
 <div class="container-fluid">
+    @if ($errors->any())
+                                @foreach ($errors->all() as $error)
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    {{ $error }}
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                @endforeach
+
+                            @endif
     <div class="row">
         <div class="col-12">
             <div class="card radiusSendiri">
@@ -97,7 +108,7 @@
 </div>
 <div class="modal fade" id="modal_tambah" >
         <div class="modal-dialog modal-lg ">
-             <form action="{{ route('transfer_dana.store') }}" id="post_data" method="POST" >
+             <form action="{{ route('transaksi_lain.store') }}" id="post_data" method="POST" >
               @csrf
                 <div class="modal-content radiusSendiri">
                     <div class="modal-header">
@@ -148,10 +159,12 @@
                                                 <select class="form-control select2  @error('select_coa') is-invalid @enderror" style="width: 100%;" id='select_coa' name="select_coa">
                                                 <option value="">Pilih Jenis Transaksi</option>
                                                 @foreach ($dataCOA as $data)
-                                                    <option value="{{$data->id}}" {{old('select_coa')==$data->id?'selected':''}} id_coa='{{$data->no_akun}}'>{{ $data->nama_jenis }}</option>
+                                                    <option value="{{$data->id}}" {{old('select_coa')==$data->id?'selected':''}} id_coa='{{$data->no_akun}}' nama_coa='{{$data->nama_jenis}}'>{{ $data->nama_jenis }}</option>
                                                 @endforeach
                                             </select>
                                             <input type="hidden" name="id_coa_hidden" id="id_coa_hidden">
+                                            <input type="hidden" name="nama_coa_hidden" id="nama_coa_hidden">
+
                                             @error('select_coa')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -174,17 +187,14 @@
                                             @enderror   
                                         </div>
 
-                                       
-
-
                                         <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                            <label for="nominal">Nominal <span style="color:red">*</span></label>
+                                            <label for="total">Total Nominal<span style="color:red">*</span></label>
                                             <div class="input-group mb-0">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp</span>
                                                 </div>
-                                                <input type="text" name="nominal" class="form-control numaja uang @error('nominal') is-invalid @enderror" id="nominal" placeholder="" value="{{old('nominal')}}">
-                                                @error('nominal')
+                                                <input type="text" name="total" class="form-control numaja uang @error('total') is-invalid @enderror" id="total" placeholder="" value="{{old('total')}}">
+                                                @error('total')
                                                     <div class="invalid-feedback">
                                                         {{ $message }}
                                                     </div>
@@ -229,6 +239,25 @@ $(document).ready(function () {
             endDate: "0d",
 
         });
+        var cekerror= <?php echo json_encode($errors->any()); ?>;
+    
+    if (cekerror) {
+            $("#modal_tambah").modal("show");
+        
+    }
+        
+
+
+    $('body').on('change','#select_coa',function()
+    {
+        var selectedOption = $(this).find('option:selected');
+        var id_coa_dari_select = selectedOption.attr('id_coa');
+        var nama_coa_dari_select = selectedOption.attr('nama_coa');
+
+        $('#id_coa_hidden').val(id_coa_dari_select);
+        $('#nama_coa_hidden').val(nama_coa_dari_select);
+
+    });
     // new DataTable('#TabelKlaim', {
     //     order: [
     //         [0, 'asc'],
@@ -249,6 +278,57 @@ $(document).ready(function () {
     //     ],
     // }); 
     $('#post_data').submit(function(event) {
+        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+
+        if($("#tanggal_transaksi").val().trim()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `TANGGAL TRANSAKSI WAJIB DI ISI!`,
+                })
+                
+                return;
+            }
+            if($("#select_coa").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `JENIS TRANSAKSI WAJIB DI ISI!`,
+                })
+                
+                return;
+            }
+            if($("#select_bank").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `BANK WAJIB DI PILIH!`,
+                })
+                return;
+            }
+            
+            if($("#total").val().trim()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `TOTAL NOMINAL WAJIB DI ISI!`,
+                })
+                return;
+            }
             event.preventDefault();
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar?',

@@ -142,7 +142,7 @@ class DalamPerjalananController extends Controller
                     ->select('so.*')
                     ->where('so.is_aktif', '=', 'Y')
                     ->where('so.id_sewa', '=', $dalam_perjalanan->id_sewa)
-                    ->where('so.deskripsi', 'not like', '%OPERASIONAL%')
+                    ->where('so.deskripsi', 'not like', '%ALAT%')
                     ->where(function ($query) {
                         $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
                             ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
@@ -155,7 +155,7 @@ class DalamPerjalananController extends Controller
                     ->where('so.is_aktif', '=', 'Y')
                     // ->where('so.id_sewa', '=', $dalam_perjalanan->id_sewa)
                     ->where('s.id_jo', '=', $dalam_perjalanan->id_jo)
-                    ->where('so.deskripsi', 'not like', '%OPERASIONAL%')
+                    ->where('so.deskripsi', 'not like', '%ALAT%')
                     ->where(function ($query) {
                         $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
                             ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
