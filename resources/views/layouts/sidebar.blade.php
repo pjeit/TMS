@@ -304,8 +304,9 @@
             
           @if (in_array($user_role, [1,2,3]))
             {{-- BOUND ORDER --}}
-            <li class="nav-item {{ request()->is('job_order*')||
-              request()->is('storage_demurage*')||
+            <li class="nav-item {{ request()->is('job_order*') ||
+              request()->is('storage_demurage*') ||
+              request()->is('karantina*') ||
               request()->is('unloading_plan*')
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -330,6 +331,16 @@
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Input S/D/T
+                    </p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('karantina.index')}}" class="nav-link {{ request()->is('karantina*') ? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Input Karantina
                     </p>
                   </a>
                 </li>
@@ -414,6 +425,7 @@
               request()->is('klaim_supir*')||
               request()->is('tagihan_rekanan*')||
               request()->is('pencairan_komisi_customer*')||
+              request()->is('karantina*')||
               request()->is('cetak_uang_jalan*')
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">

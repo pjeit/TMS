@@ -89,15 +89,29 @@
                             <th>Tujuan</th>
                             <th>Driver</th>
                             <th></th>
-                            <th></th>
+                            <th style="width: 30px;"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @if (isset($dataSewa))
                             @foreach($dataSewa as $item)
                                 <tr>
-                                    <td>{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
-                                    <td>► {{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}" ></span> </td>
+                                    <td>
+                                        <div class="d-flex justify-content-between" style="margin-right: -13px;">
+                                            <div>{{ $item->nama_grup }}</div>
+                                            <div style="width: 55px; text-align: center;">                                            
+                                                <input type="checkbox" class="grup_centang" id_grup="{{ $item->id_grup }}">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-between" style="margin-right: -13px;">
+                                            <div>► {{ $item->nama_cust }} </div>
+                                            <div style="width: 55px; text-align: center;">                                            
+                                                <input type="checkbox" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}" >
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>{{ $item->no_polisi }}</td>
                                     <td>{{ $item->no_sewa }}</td>
                                     <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>

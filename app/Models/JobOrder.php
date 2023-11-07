@@ -57,6 +57,25 @@ class JobOrder extends Model
           return $this->hasMany(JobOrderDetail::class, 'id_jo', 'id');
      }
 
+     public function getKarantina()
+     {
+          return $this->hasMany(JobOrderDetail::class, 'id_jo', 'id')->where('is_karantina', 'N');
+     }
+
+     public function countIsKarantina()
+     {
+          return $this->hasMany(JobOrderDetail::class, 'id_jo', 'id');
+          $jobOrders = JobOrder::withCount(['countIsKarantina' => function ($query) {
+               $query->where('is_karantina', 'N');
+           }])->get();
+           
+           foreach ($jobOrders as $jobOrder) {
+               $count = $jobOrder->count_is_karantina; // Access the count as an attribute
+               // Use $count as needed
+           }
+     }
+     
+
      public function getGrupId()
      {
           return $this->hasOne(Customer::class, 'id', 'id_customer');

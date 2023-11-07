@@ -7,6 +7,8 @@ use App\Models\InvoiceKarantina;
 use App\Models\InvoiceKarantinaDetail;
 use App\Models\InvoiceKarantinaDetailKontainer;
 use App\Models\JobOrder;
+use App\Models\Karantina;
+use App\Models\Sewa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +31,7 @@ class InvoiceKarantinaController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
-        $customer = JobOrder::where('is_aktif', 'Y')->with('getCustomer')->groupBy('id_customer')->get();
+        $customer = Karantina::where('is_aktif', 'Y')->with('getCustomer')->groupBy('id_customer')->get();
 
         // dd($customer[0]->getCustomer);
         return view('pages.invoice.invoice_karantina.index',[
@@ -45,7 +47,26 @@ class InvoiceKarantinaController extends Controller
      */
     public function create(Request $request)
     {
-      
+        $req = $request->collect();
+        $cust = $req['customer']; // buat ambil session
+        // dd($request->collect());
+        
+        $data = Karantina::whereIn('id', $req['idKarantina'])
+                ->where('is_aktif', 'Y')
+                ->get();
+        // dd($data);
+
+        $dataCust = Customer::where('grup_id', $data[0]->getCustomer->grup_id)
+                ->where('is_aktif', 'Y')
+                ->get();
+        
+        return view('pages.invoice.invoice_karantina.form',[
+            'judul' => "Buat Invoice Karantina",
+            'data' => $data,
+            'dataCust' => $dataCust,
+            'grup' => NULL,
+            'customer' => $cust,
+        ]);
     }
 
     /**
@@ -63,16 +84,16 @@ class InvoiceKarantinaController extends Controller
 
         try {
             $kode = 'PJE/KRNT/'.$data['kode'].'/'.date("y").date("m");
-            $maxInvoice = DB::table('invoice')
-                ->selectRaw("ifnull(max(substr(no_invoice, -3)), 0) + 1 as max_invoice")
-                ->where('no_invoice', 'like', $kode.'%')
-                ->orderBy('no_invoice', 'DESC')
+            $maxInvoice = DB::table('invoice_karantina')
+                ->selectRaw("ifnull(max(substr(no_invoice_k, -3)), 0) + 1 as max_invoice")
+                ->where('no_invoice_k', 'like', $kode.'%')
+                ->orderBy('no_invoice_k', 'DESC')
                 ->value('max_invoice');
-                
-            $newInvoiceNumber = 'PJE_KRNT/' . $data['kode'] . '/' . date("y") . date("m") . str_pad($maxInvoice, 3, '0', STR_PAD_LEFT);
+            
+            $newInvoiceNumber = 'PJE/KRNT/' . $data['kode'] . '/' . date("y") . date("m") . str_pad($maxInvoice, 3, '0', STR_PAD_LEFT);
 
             if (is_null($maxInvoice)) {
-                $newInvoiceNumber = 'PJE_KRNT/' . $data['kode'] .'/'. date("y") . date("m") . '001';
+                $newInvoiceNumber = 'PJE/KRNT/' . $data['kode'] .'/'. date("y") . date("m") . '001';
             }
 
             $invoice = new InvoiceKarantina();
@@ -93,14 +114,16 @@ class InvoiceKarantinaController extends Controller
                     $detail->created_by         = $user;
                     $detail->created_at         = now();
                     if($detail->save()){
-                        foreach ($value['idJOD'] as $item) {
-                            $kontainer = new InvoiceKarantinaDetailKontainer();
-                            $kontainer->id_invoice_k = $invoice->id; 
-                            $kontainer->id_invoice_k_detail = $detail->id; 
-                            $kontainer->id_jo_detail = $item; 
-                            $kontainer->created_by = $user;
-                            $kontainer->created_at = now();
-                            $kontainer->save();
+                        if(isset($value['idJOD']) && $value['nominal'] != null){
+                            foreach ($value['idJOD'] as $item) {
+                                $kontainer = new InvoiceKarantinaDetailKontainer();
+                                $kontainer->id_invoice_k = $invoice->id; 
+                                $kontainer->id_invoice_k_detail = $detail->id; 
+                                $kontainer->id_jo_detail = $item; 
+                                $kontainer->created_by = $user;
+                                $kontainer->created_at = now();
+                                $kontainer->save();
+                            }
                         }
                     }
                 }
@@ -197,10 +220,7 @@ class InvoiceKarantinaController extends Controller
     }
     public function load_data($id)
     {
-        $data = JobOrder::where([
-                    'is_aktif' => 'Y',
-                    'id_customer' => $id,
-                ])->with('getDetails.getTujuan')->get();
+        $data = Karantina::where('is_aktif', 'Y')->where('id_customer', $id)->with('getCustomer.getGrup', 'getJO')->get();
 
         return $data;
     }

@@ -48,9 +48,7 @@ class JobOrderDetail extends Model
 
    public function getJO()
    {
-       $relation = $this->hasOne(JobOrder::class, 'id', 'id_jo');
-   
-       return $relation ? $relation : null;
+    return $this->hasOne(JobOrder::class, 'id', 'id_jo');
    }
 
    public function getTujuan()

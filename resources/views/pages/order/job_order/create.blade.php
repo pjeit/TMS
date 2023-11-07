@@ -108,7 +108,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                    <select class="form-control selectpicker" name="pelabuhan_muat" id="pelabuhan_muat" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                    <select class="form-control select2" name="pelabuhan_muat" id="pelabuhan_muat" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                         <option value="">── Pilih ──</option>
                                         <option value="SURABAYA">SURABAYA</option>
                                         <option value="MEDAN">MEDAN</option>
@@ -131,7 +131,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <select class="form-control selectpicker" name="pelabuhan_bongkar" id="pelabuhan_bongkar" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                    <select class="form-control select2" name="pelabuhan_bongkar" id="pelabuhan_bongkar" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                         <option value="">── Pilih ──</option>
                                         <option value="SURABAYA">SURABAYA</option>
                                         <option value="MEDAN">MEDAN</option>

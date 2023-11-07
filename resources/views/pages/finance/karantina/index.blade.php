@@ -8,12 +8,12 @@
 </style>
 
 <div class="container-fluid">
-    <form action="{{ route('invoice_karantina.create') }}" method="post" enctype="multipart/form-data" id="saveInvoice">
-        @csrf @method('GET')
+    <form action="{{ route('karantina.store') }}" method="POST" enctype="multipart/form-data" id="saveInvoice">
+        @csrf
         <div class="card radiusSendiri">
             <div class="card-header">
                 <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="buatInvoice">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Data Karantina    
                 </button>
             </div>
             <div class="card-body">
@@ -24,7 +24,7 @@
                             <select class="form-control selectpicker" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                 <option value="">─ Pilih Customer ─</option>
                                 @foreach ($customer as $item)
-                                    <option value="{{ $item->getCustomer->id }}" kode="{{ $item->getCustomer->kode }}">{{ $item->getCustomer->nama }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
                                 @endforeach
                             </select>
                             <input type="hidden" id="kode" name="kode">
@@ -37,10 +37,8 @@
                         <table id="tabel_invoice_karantina" class="table table-bordered table-hover" width='100%'>
                             <thead>
                                 <tr>
-                                    <th>Grup</th>
-                                    <th>Customer</th>
-                                    <th>No. BL</th>
-                                    <th>Kapal / Voyage</th>
+                                    <th>Tujuan</th>
+                                    <th>No. Kontainer</th>
                                     <th>Nominal</th>
                                     <th style="width: 50px"></th>
                                 </tr>
@@ -64,50 +62,50 @@
             event.preventDefault();
 
             // get total
-                // let totals = document.querySelectorAll('.total');
-                // let total = 0;
+                let totals = document.querySelectorAll('.total');
+                let total = 0;
 
-                // totals.forEach(function(input) {
-                //     let val = !isNaN(normalize(input.value)) == true? normalize(input.value):0;
-                //     total += val;
-                // });
-                // $('#total_nominal').val(total);
+                totals.forEach(function(input) {
+                    let val = !isNaN(normalize(input.value)) == true? normalize(input.value):0;
+                    total += val;
+                });
+                $('#total_nominal').val(total);
             //
 
             // get kode 
-                // const selectElement = document.getElementById('customer'); // Assuming the select element has the ID 'customer'
-                // const selectedOption = selectElement.options[selectElement.selectedIndex];
-                // const kodeAttribute = selectedOption.getAttribute('kode');
-                // $('#kode').val(kodeAttribute);
+                const selectElement = document.getElementById('customer'); // Assuming the select element has the ID 'customer'
+                const selectedOption = selectElement.options[selectElement.selectedIndex];
+                const kodeAttribute = selectedOption.getAttribute('kode');
+                $('#kode').val(kodeAttribute);
             //
 
             // cek centang
-                // let parents = document.querySelectorAll('.parent');
-                // let is_ok = [];
+                let parents = document.querySelectorAll('.parent');
+                let is_ok = [];
 
-                // parents.forEach(function(checkboxParent, i) {
-                //     if (checkboxParent.checked) {
-                //         is_ok[i] = false;
-                //         var childrens = document.querySelectorAll('.children_of_' + checkboxParent.value);
-                //         childrens.forEach(function(checkboxChildren) {
-                //             if (checkboxChildren.checked) {
-                //                 is_ok[i] = true;
-                //             }
-                //         });
-                //     }
-                // });
-                // console.log('is_ok', is_ok);
+                parents.forEach(function(checkboxParent, i) {
+                    if (checkboxParent.checked) {
+                        is_ok[i] = false;
+                        var childrens = document.querySelectorAll('.children_of_' + checkboxParent.value);
+                        childrens.forEach(function(checkboxChildren) {
+                            if (checkboxChildren.checked) {
+                                is_ok[i] = true;
+                            }
+                        });
+                    }
+                });
+                console.log('is_ok', is_ok);
 
-                // if (is_ok.some(value => value === false)) {
-                //     event.preventDefault(); 
-                //     Swal.fire({
-                //         icon: 'error',
-                //         title: 'Periksa kembali data anda!',
-                //         text: 'Nominal sudah diisi namun kontainer belum dicentang!',
-                //     });
-                //     event.preventDefault();
-                //     return;
-                // }
+                if (is_ok.some(value => value === false)) {
+                    event.preventDefault(); 
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Periksa kembali data anda!',
+                        text: 'Nominal sudah diisi namun kontainer belum dicentang!',
+                    });
+                    event.preventDefault();
+                    return;
+                }
 
             //
             
@@ -159,7 +157,8 @@
         });
 
         function showTable(id){
-            const url = 'invoice_karantina/load_data/'+id;
+            const url = 'karantina/load_data/'+id;
+            console.log('id', id);
 
             $.ajax({
                 method: 'GET',
@@ -170,65 +169,39 @@
                 processData:false,
                 success: function(response) {
                     let data = response;
-                    $("#tabel_invoice_karantina").dataTable().fnDestroy();
-
-                    $("th").remove();
-
-                    $("thead tr").append(`<th>Grup</th>
-                                          <th>Customer</th>
-                                          <th>No. BL</th>
-                                          <th>Kapal / Voyage</th>
-                                          <th>Nominal</th>
-                                          <th style="width: 50px"></th>
-                                        `);
                     $("#hasil").empty();
-
                     console.log('data', data);
                     for (var i = 0; i < data.length; i++) {
-                        let parent = $("<tr></tr>");
-                        parent.append(`<td>${data[i].get_customer.get_grup.nama_grup}</td>`);
-                        parent.append(`<td>${data[i].get_customer.nama}</td>`);
-                        parent.append(`<td>${data[i].get_j_o.no_bl}</td>`);
-                        parent.append(`<td>${data[i].get_j_o.kapal} ( ${data[i].get_j_o.voyage} )</td>`);
-                        parent.append(`<td>${moneyMask(data[i].total_dicairkan)}</td>`);
-                        parent.append(`<td style="background: #d9d9d9">
-                                          <div style="display: flex; justify-content: center; align-items: center;">
-                                             <input type="checkbox" class="form-check parent parent_${data[i].id}" name="idKarantina[]" value="${data[i].id}" />
-                                          </div>
-                                       </td>`);
+                        if(data[i].get_karantina.length > 0){
+                            let parent = $("<tr></tr>");
+                            parent.append(`<td colspan="2" style="background: #d9d9d9">${data[i].no_bl} - ${data[i].kapal} - ${data[i].voyage}</td>`);
+                            parent.append(`<td style="background: #d9d9d9"><input type="text" class="form-control numaja total uang nom_${data[i].id}" id="nom_${data[i].id}" name="data[${data[i].id}][nominal]" readonly /></td>`);
+                            parent.append(`<td style="background: #d9d9d9">
+                                            <div style="display: flex; justify-content: center; align-items: center;">
+                                                <input type="checkbox" class="form-check parent parent_${data[i].id}" value="${data[i].id}" />
+                                            </div>
+                                        </td>`);
 
-                        $("#hasil").append(parent);
-                        
-                        // for (var j = 0; j < data[i].get_details.length; j++) {
-                        //     let child = $("<tr></tr>");
-                        //     child.append(`<td>${data[i].get_details[j].get_tujuan.nama_tujuan}</td>`);
-                        //     child.append(`<td>${data[i].get_details[j].no_kontainer}</td>`);
-                        //     child.append(`<td></td>`);
-                        //     child.append(`<td>
-                        //                     <div style="display: flex; justify-content: center; align-items: center;">
-                        //                         <input type="checkbox" name="data[${data[i].id}][idJOD][]" class="form-check children children_of_${data[i].id}" parent="${data[i].id}" value="${data[i].get_details[j].id}" />
-                        //                     </div>
-                        //                 </td>`);
-
-                        //     $("#hasil").append(child);
-                        // }
+                            $("#hasil").append(parent);
+                            for (var j = 0; j < data[i].get_karantina.length; j++) {
+                                if(data[i].get_karantina[j].is_karantina == 'N'){
+                                    let child = $("<tr></tr>");
+                                    child.append(`<td>${data[i].get_karantina[j].get_tujuan.nama_tujuan}</td>`);
+                                    child.append(`<td>${data[i].get_karantina[j].no_kontainer}</td>`);
+                                    child.append(`<td></td>`);
+                                    child.append(`<td>
+                                                    <div style="display: flex; justify-content: center; align-items: center;">
+                                                        <input type="checkbox" name="data[${data[i].id}][detail][${data[i].get_karantina[j].id}]" class="form-check children children_of_${data[i].id}" parent="${data[i].id}" value="${data[i].get_karantina[j].no_kontainer}" />
+                                                    </div>
+                                                    </td>`);
+                                                    // <input type="checkbox" name="data[${data[i].id}][idJOD][]" class="form-check children children_of_${data[i].id}" parent="${data[i].id}" value="${data[i].get_karantina[j].id}" />
+                                                    // <input type="hidden" name="data[${data[i].id}][noKontainer][]" value="${data[i].get_karantina[j].no_kontainer}" />
+        
+                                    $("#hasil").append(child);
+                                }
+                            }
+                        }
                     }
-                    new DataTable('#tabel_invoice_karantina', {
-                        order: [
-                            [0, 'asc'],
-                            [1, 'asc']
-                        ],
-                        rowGroup: {
-                            dataSrc: [0,1]
-                        },
-                        columnDefs: [
-                            {
-                                targets: [0,1],
-                                visible: false
-                            },
-                            { orderable: false, targets: -1 }
-                        ]
-                    });
                 },error: function (xhr, status, error) {
                     $("#loading-spinner").hide();
                     if ( xhr.responseJSON.result == 'error') {

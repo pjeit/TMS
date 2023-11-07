@@ -44,13 +44,12 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="">Billing To</label>
-                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required disabled
+                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required
                                             <option value="">── BILLING TO ──</option>
                                             @foreach ($dataCustomers as $cust)
-                                                <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" {{ $cust->id == $idCust? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
+                                                <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" > {{ $cust->kode }} - {{ $cust->nama }}</option>
                                             @endforeach
                                         </select>
-                                        <input type="hidden" name="billingTo" value="{{ $idCust }}">
                                     </div>  
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-12">
@@ -186,8 +185,8 @@
                     @foreach ($data as $key => $item)
                         <tr id='{{ $key }}' id_sewa='{{ $item->id }}'>
                             <td> 
-                                <span id="text_no_invoice">{{ $item->no_invoice }}</span>
-                                <input type="hidden" id="no_invoice_{{ $item->id }}" name="detail[{{ $item->id }}][no_invoice]" value="{{ $item->no_invoice }}">
+                                <span id="text_no_invoice">{{ $item->no_invoice_k }}</span>
+                                <input type="hidden" id="no_invoice_{{ $item->id }}" name="detail[{{ $item->id }}][no_invoice]" value="{{ $item->no_invoice_k }}">
                                 <input type="hidden" id="no_bukti_potong_{{ $item->id }}" name="detail[{{ $item->id }}][no_bukti_potong]" value="{{ $item->no_bukti_potong }}">
                             </td>
                             <td> 
@@ -195,8 +194,8 @@
                                 <input type="hidden" class="total_tagihan" id="total_tagihan_{{ $item->id }}" name="detail[{{ $item->id }}][total_tagihan]" value="{{ $item->total_tagihan }}">
                             </td>
                             <td> 
-                                <span id="text_total_sisa_{{ $item->id }}">{{ number_format($item->total_sisa) }}</span>
-                                <input type="hidden" class="total_sisa" id="total_sisa_{{ $item->id }}" name="detail[{{ $item->id }}][total_sisa]" value="{{ $item->total_sisa }}">
+                                <span id="text_sisa_tagihan_{{ $item->id }}">{{ number_format($item->sisa_tagihan) }}</span>
+                                <input type="hidden" class="sisa_tagihan" id="sisa_tagihan_{{ $item->id }}" name="detail[{{ $item->id }}][sisa_tagihan]" value="{{ $item->sisa_tagihan }}">
                             </td>
                             <td>
                                 <span id="text_pph23_{{ $item->id }}"></span>
@@ -252,8 +251,8 @@
                                         <label for="sewa">No. Invoice <span style="color:red;">*</span></label>
                                         <select class="select2" style="width: 100%" id="modal_no_invoice" disabled>
                                             <option value="">── Pilih Invoice ──</option>
-                                            @foreach ($dataInvoices as $inv)
-                                                <option value="{{ $inv->id }}">{{ $inv->no_invoice }} ({{ date("d-M-Y", strtotime($inv->tgl_invoice)) }}) </option>
+                                            @foreach ($data as $inv)
+                                                <option value="{{ $inv->id }}">{{ $inv->no_invoice_k }} ({{ date("d-M-Y", strtotime($inv->tgl_invoice)) }}) </option>
                                             @endforeach
                                         </select>
                                     </div>   
@@ -405,7 +404,7 @@
             $('#modal_catatan').val( $('#catatan_'+key).val() );
             // $('#modal_no_bukti_potong').val( $('#no_bukti_potong_'+key).val() );
             $('#modal_total_invoice').val( moneyMask($('#total_tagihan_'+key).val()) );
-            $('#modal_sisa_invoice').val( moneyMask($('#total_sisa_'+key).val()) );
+            $('#modal_sisa_invoice').val( moneyMask($('#sisa_tagihan_'+key).val()) );
 
             var checkReimburse = $('#no_invoice_'+key).val().substr(-2);
             if(checkReimburse == '/I'){

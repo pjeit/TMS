@@ -11,6 +11,8 @@ use App\Models\Sewa;
 use App\Models\SewaOperasional;
 use App\Helper\VariableHelper;
 use App\Models\JobOrderDetail;
+use App\Models\Karantina;
+use App\Models\KarantinaDetail;
 use Carbon\Carbon;
 
 class BiayaOperasionalController extends Controller
@@ -62,63 +64,34 @@ class BiayaOperasionalController extends Controller
             $data = $request->post();
             $item = $data['item'];
             $storeData = [];
-            // dd($data['data']);
+            // dd($data);
+            if($item == 'KARANTINA'){
+                foreach ($data['data'] as $key => $value) {
+                    if($value['dicairkan'] != 0 || $value['dicairkan'] != null){
+                        $karantina = Karantina::where('is_aktif', 'Y')->find($key);
+                        $karantina->total_dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
+                        $karantina->catatan = $value['catatan'];
+                        $karantina->is_ditagihkan = 'Y';
+                        $karantina->updated_by = $user;
+                        $karantina->updated_at = now();
+                        $karantina->save();
 
-            foreach ($data['data'] as $key => $value) {
-                $keterangan = $item.' : ';
-                if($value['dicairkan'] != null){
-                    $nominal = floatval(str_replace(',', '', $value['nominal']));
-                    $dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
-                    
-                    $sewa_o = new SewaOperasional();
-                    $sewa_o->id_sewa = $key;
-                    $sewa_o->deskripsi = $item == 'OPERASIONAL' ? 'OPERASIONAL ' . ($value['pick_up'] != null? $value['pick_up']:'') :$item;
-                    $sewa_o->catatan = $value['catatan'];
-                    $sewa_o->total_operasional = $nominal;
-                    $sewa_o->total_dicairkan = $dicairkan;
-                    $sewa_o->created_by = $user;
-                    $sewa_o->status = 'SUDAH DICAIRKAN';
-                    $sewa_o->created_at = now();
-                    $sewa_o->tgl_dicairkan = now();
-                    $sewa_o->is_aktif = 'Y';
-                    $sewa_o->save();
+                        $no_kontainer = ' - No. Kontainer:';
+                        $detail = KarantinaDetail::where('is_aktif', 'Y')->where('id_karantina', $key)->get();
+                        foreach ($detail as $key => $value) {
+                            $no_kontainer .= ' #'.$value->getJOD->no_kontainer;
+                        }
 
-                    $saldo = DB::table('kas_bank')
-                                ->select('*')
-                                ->where('is_aktif', '=', "Y")
-                                ->where('kas_bank.id', '=', $data['pembayaran'])
-                                ->get();
-
-                    $saldo_baru = $saldo[0]->saldo_sekarang - $dicairkan;
-
-                    DB::table('kas_bank')
-                        ->where('id', $data['pembayaran'])
-                        ->update(array(
-                            'saldo_sekarang' => $saldo_baru,
-                            'updated_at'=> now(),
-                            'updated_by'=> $user,
-                        )
-                    );
-
-                    $sewa = Sewa::where('is_aktif', 'Y')->find($key);
-                    if($sewa){
-                        $sewa->total_uang_jalan += $dicairkan;
-                        $sewa->updated_by = $user;
-                        $sewa->updated_at = now();
-                        $sewa->save();
-                    }
-
-                    if($item != 'OPERASIONAL' && $item != 'TALLY' && $item != 'SEAL PELAYARAN'){
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
                                 $data['pembayaran'], // id kas_bank dr form
                                 now(), //tanggal
                                 0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                $sewa_o->total_dicairkan, //uang keluar (kredit)
+                                floatval(str_replace(',', '', $value['dicairkan'])), //uang keluar (kredit)
                                 1015, //kode coa
-                                'pencairan_operasional',
-                                $keterangan .= $value['keterangan'], //keterangan_transaksi
-                                $key, //keterangan_kode_transaksi
+                                'karantina',
+                                'No. BL: '.$karantina->getJO->no_bl . ' #Kapal: '.$karantina->getJO->kapal .' #Voyage: '. $karantina->getJO->voyage . $no_kontainer, //keterangan_transaksi
+                                $karantina->id, //keterangan_kode_transaksi
                                 $user, //created_by
                                 now(), //created_at
                                 $user, //updated_by
@@ -128,7 +101,74 @@ class BiayaOperasionalController extends Controller
                         );
                     }
                 }
+            }else{
+                foreach ($data['data'] as $key => $value) {
+                    $keterangan = $item.' : ';
+                    if($value['dicairkan'] != null){
+                        $nominal = floatval(str_replace(',', '', $value['nominal']));
+                        $dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
+                        
+                        $sewa_o = new SewaOperasional();
+                        $sewa_o->id_sewa = $key;
+                        $sewa_o->deskripsi = $item == 'OPERASIONAL' ? 'OPERASIONAL ' . ($value['pick_up'] != null? $value['pick_up']:'') :$item;
+                        $sewa_o->catatan = $value['catatan'];
+                        $sewa_o->total_operasional = $nominal;
+                        $sewa_o->total_dicairkan = $dicairkan;
+                        $sewa_o->created_by = $user;
+                        $sewa_o->status = 'SUDAH DICAIRKAN';
+                        $sewa_o->created_at = now();
+                        $sewa_o->tgl_dicairkan = now();
+                        $sewa_o->is_aktif = 'Y';
+                        $sewa_o->save();
+    
+                        $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $data['pembayaran'])
+                                    ->get();
+    
+                        $saldo_baru = $saldo[0]->saldo_sekarang - $dicairkan;
+    
+                        DB::table('kas_bank')
+                            ->where('id', $data['pembayaran'])
+                            ->update(array(
+                                'saldo_sekarang' => $saldo_baru,
+                                'updated_at'=> now(),
+                                'updated_by'=> $user,
+                            )
+                        );
+    
+                        $sewa = Sewa::where('is_aktif', 'Y')->find($key);
+                        if($sewa){
+                            $sewa->total_uang_jalan += $dicairkan;
+                            $sewa->updated_by = $user;
+                            $sewa->updated_at = now();
+                            $sewa->save();
+                        }
+    
+                        if($item != 'OPERASIONAL' && $item != 'TALLY' && $item != 'SEAL PELAYARAN'){
+                            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                array(
+                                    $data['pembayaran'], // id kas_bank dr form
+                                    now(), //tanggal
+                                    0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                    $sewa_o->total_dicairkan, //uang keluar (kredit)
+                                    1015, //kode coa
+                                    'pencairan_operasional',
+                                    $keterangan .= $value['keterangan'], //keterangan_transaksi
+                                    $key, //keterangan_kode_transaksi
+                                    $user, //created_by
+                                    now(), //created_at
+                                    $user, //updated_by
+                                    now(), //updated_at
+                                    'Y'
+                                ) 
+                            );
+                        }
+                    }
+                }
             }
+
 
             if($item == 'OPERASIONAL' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
                 $i=1;
@@ -235,133 +275,50 @@ class BiayaOperasionalController extends Controller
         ]);
     }
 
-    public function load_dataOldNotUsed($item){
-        try {
-
-            // query lama
-                // $data = db::table('sewa as s')
-                //         ->leftJoin('job_order_detail AS jod', function($join) {
-                //             $join->on('s.id_jo_detail', '=', 'jod.id')
-                //                 ->where('jod.is_aktif', 'Y')
-                //                 ->where('jod.status', 'PROSES DOORING');
-                //         })
-                //         ->leftJoin('grup_tujuan AS gt', function($join) {
-                //             $join->on('gt.id', '=', 's.id_grup_tujuan')
-                //                 ->where('gt.is_aktif', 'Y');
-                //         })
-                //         ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
-                //         ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
-                //         ->leftJoin('sewa_operasional as so', function ($join) use ($item) {
-                //             if($item == 'TALLY'){
-                //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
-                //                     ->where('so.is_aktif', 'Y')
-                //                     ->where('so.deskripsi', $item);
-                //             }else {
-                //                 $join->on('s.id_sewa', '=', 'so.id_sewa')
-                //                 ->where('so.is_aktif', 'Y');
-                //             }
-                //         })
-                //         ->where('s.is_aktif', 'Y')
-                //         ->where('s.id_sewa', '<>', 'NULL')
-                //         ->select('jod.*', 'gt.nama_tujuan as nama_tujuan','c.nama as customer', 'jod.status as status_jod',
-                //                 's.id_sewa as id_sewa','s.id_jo as id_jo','so.id as id_oprs', 'c.id as id_customer',
-                //                 'so.deskripsi as deskripsi_so', 's.no_polisi as no_polisi', 'k.nama_panggilan as nama_panggilan',
-                //                 's.jenis_order as jenis_order','s.tipe_kontainer as tipe_kontainer',
-                //                 DB::raw('COALESCE(gt.tally, 0) as tally'), 
-                //                 )
-                //         ->orderBy('s.id_customer', 'asc')
-                //         ->orderBy('jod.id_jo', 'asc')
-                // ->get();
-            //
-
-            $dataJO = JobOrder::from('job_order AS jo')
-                    ->leftJoin('job_order_detail AS jod', function($join) {
-                        $join->on('jo.id', '=', 'jod.id_jo')
-                            ->where('jod.is_aktif', 'Y')
-                            ->where('jod.status', 'PROSES DOORING');
-                    })
-                    ->leftJoin('grup_tujuan AS gt', function($join) {
-                        $join->on('gt.id', '=', 'jod.id_grup_tujuan')
-                            ->where('gt.is_aktif', 'Y');
-                    })
-                    ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
-                    ->leftJoin('sewa as s', 's.id_jo_detail', '=', 'jod.id')
-                    ->when($item == 'SEAL', function ($query) use ($item) {
-                        $query->leftJoin('sewa_operasional as soplyrn', function ($join) {
-                            $join->on('s.id_sewa', '=', 'soplyrn.id_sewa')
-                                ->where('soplyrn.is_aktif', 'Y')
-                                ->whereIn('soplyrn.deskripsi', 'SEAL PELAYARAN');
-                        });
-                        $query->leftJoin('sewa_operasional as sopje', function ($join) {
-                            $join->on('s.id_sewa', '=', 'sopje.id_sewa')
-                                ->where('sopje.is_aktif', 'Y')
-                                ->whereIn('sopje.deskripsi', 'SEAL PJE');
-                        });
-                    }, function ($query) use ($item) {
-                        $query->leftJoin('sewa_operasional as so', function ($join) use ($item) {
-                            $join->on('s.id_sewa', '=', 'so.id_sewa')
-                                ->where('so.is_aktif', 'Y')
-                                ->where('so.deskripsi', $item);
-                        });
-                    })
-                    ->select('jo.*', 'jod.*', 'gt.nama_tujuan as nama_tujuan','c.nama as customer', 'jod.status as status_jod',
-                            'gt.nama_tujuan', 's.id_sewa as id_sewa','jo.id as id_jo','so.id as id_oprs','so.deskripsi as deskripsi_so',
-                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), 
-                            DB::raw('COALESCE(gt.seal_pje, 0) as seal_pje'), 
-                            DB::raw('COALESCE(gt.tally, 0) as tally'), 
-                            DB::raw('COALESCE(gt.plastik, 0) as plastik'))
-                    ->orderBy('jo.id_customer', 'asc')
-                    ->orderBy('jod.id_jo', 'asc')
-                    ->get();
-                // var_dump($dataJO); die;
-            return response()->json(["result" => "success",'data' => $dataJO], 200);
-        } catch (\Throwable $th) {
-            return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
-        }
-       
-    }
-
     public function load_data($item){
         try {
-            $data = DB::table('sewa AS s')
-                    ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
-                        if($item == 'OPERASIONAL'){
-                            $join->on('s.id_sewa', '=', 'so.id_sewa')
-                                ->where('so.is_aktif', 'Y')
-                                ->where('so.deskripsi', 'like', $item.'%');
-                        }else {
-                            $join->on('s.id_sewa', '=', 'so.id_sewa')
-                                ->where('so.is_aktif', 'Y')
-                                ->where('so.deskripsi', '=', $item);
-                        }
-                    })
-                    ->where('s.status', 'PROSES DOORING')
-                    ->where(function($where) use($item){
-                        if($item == 'TAMBAHAN UJ'){
-                            $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
-                        }
-                    })
-                    ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
-                    ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
-                    ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')
-                    ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
-                    ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
-                    ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
-                    ->select(
-                        's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer', 'c.grup_id',
-                        's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
-                        'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 'so.total_dicairkan',
-                        'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
-                        DB::raw('COALESCE(gt.tally, 0) as tally'),
-                        DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), 
-                        'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
-                        'c.nama as customer',
-                        'g.nama_grup as nama_grup',
-                        'sp.nama as namaSupplier'
-                    )
-            ->get();
-            // var_dump($data); die;
-
+            if($item == 'KARANTINA'){
+                $data = Karantina::where('is_aktif', 'Y')->where('total_dicairkan', NULL)->with('details', 'getJO', 'getCustomer.getGrup')->get();
+            }else{
+                $data = DB::table('sewa AS s')
+                        ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
+                            if($item == 'OPERASIONAL'){
+                                $join->on('s.id_sewa', '=', 'so.id_sewa')
+                                    ->where('so.is_aktif', 'Y')
+                                    ->where('so.deskripsi', 'like', $item.'%');
+                            }else {
+                                $join->on('s.id_sewa', '=', 'so.id_sewa')
+                                    ->where('so.is_aktif', 'Y')
+                                    ->where('so.deskripsi', '=', $item);
+                            }
+                        })
+                        ->where('s.status', 'PROSES DOORING')
+                        ->where(function($where) use($item){
+                            if($item == 'TAMBAHAN UJ'){
+                                $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
+                            }
+                        })
+                        ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
+                        ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+                        ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')
+                        ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
+                        ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
+                        ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
+                        ->select(
+                            's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer', 'c.grup_id',
+                            's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
+                            'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 'so.total_dicairkan',
+                            'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
+                            DB::raw('COALESCE(gt.tally, 0) as tally'),
+                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), 
+                            'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
+                            'c.nama as customer',
+                            'g.nama_grup as nama_grup',
+                            'sp.nama as namaSupplier'
+                        )
+                ->get();
+            }
+            
             return response()->json(["result" => "success",'data' => $data], 200);
         } catch (\Throwable $th) {
             return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);

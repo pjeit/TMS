@@ -223,7 +223,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('invoice_karantina/load_data/{id}', [App\Http\Controllers\InvoiceKarantinaController::class, 'load_data'])->name('invoice_karantina.load_data');
         Route::resource('invoice_karantina', 'App\Http\Controllers\InvoiceKarantinaController');
 
+        Route::get('pembayaran_invoice_karantina/bayar', [App\Http\Controllers\PembayaranInvoiceKarantinaController::class, 'bayar'])->name('pembayaran_invoice_karantina.bayar');
         Route::resource('pembayaran_invoice_karantina', 'App\Http\Controllers\PembayaranInvoiceKarantinaController');
+
+        Route::get('karantina/load_data/{id}', [App\Http\Controllers\KarantinaController::class, 'load_data'])->name('karantina.load_data');
+        Route::resource('karantina', 'App\Http\Controllers\KarantinaController');
 
         // ===================================INVOICE=========================================================
     });
