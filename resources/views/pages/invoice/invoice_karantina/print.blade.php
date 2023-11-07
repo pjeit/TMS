@@ -96,14 +96,14 @@
                     <td></td>
                     <td width='30%'>&nbsp;</td>
                     <td style=""><b>No Invoice</b></td>
-                    <td style=""><b>:</b> {{$dataInvoiceKarantina->no_invoice_k}}</td>
+                    <td style=""><b>:</b> {{$invoiceKarantina->no_invoice_k}}</td>
                 </tr>
                 <tr class="borderDebug">
-                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{$dataInvoiceKarantina->nama_customer}}</td>
+                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{$invoiceKarantina->nama_customer}}</td>
                     <td></td>
                     <td width='30%'>&nbsp;</td>
                     <td style=""><b>Tanggal</b> </td>
-                    <td style=""><b>:</b> {{\Carbon\Carbon::parse($dataInvoiceKarantina->tgl_invoice)->format('d-M-Y')}}</td>
+                    <td style=""><b>:</b> {{\Carbon\Carbon::parse($invoiceKarantina->tgl_invoice)->format('d-M-Y')}}</td>
                 </tr>
                 {{-- <tr class="borderDebug">
                     <td style=""width='30%' colspan="2">&nbsp;</td>
@@ -113,7 +113,7 @@
                 <tr class="borderDebug">
                     <td style="" width='30%' colspan="2">&nbsp;</td>
                     <td style=" text-align:left;vertical-align:top;"><b>Catatan</b> </td>
-                    <td style=""><b>:</b> {{$dataInvoiceKarantina->catatan?$dataInvoiceKarantina->catatan:'-'}}</td>
+                    <td style=""><b>:</b> {{$invoiceKarantina->catatan?$invoiceKarantina->catatan:'-'}}</td>
                 </tr>
                 <tr class="borderDebug">
                     <td width='30%' colspan="2" >&nbsp;</td>
@@ -124,41 +124,44 @@
         </table>
 
 <table>
-    @foreach ($InvoiceKarantinaDetail as $dataKapal)
+    @php
+        $total = 0;
+    @endphp
+    @foreach ($invoiceKarantinaDetail as $value)
         <tr>
-            <th colspan="4" class="header">{{$dataKapal->kapal}} - ({{$dataKapal->no_bl}})</th>
+            <th colspan="3" class="header">{{$value->getKarantina->getJO->kapal}} - ({{$value->getKarantina->getJO->voyage}})</th>
         </tr>
         <tr>
             <th>Kontainer</th>
             <th>Tipe Kontainer</th>
             <th>Segel</th>
-            <th>Muatan</th>
         </tr>
-        @foreach ($InvoiceKarantinaDetailKontainer as $dataKontainer)
-          @if ($dataKapal->id==$dataKontainer->id_invoice_k_detail)
+        @foreach ($value->getKarantina->details as $detail)
+          {{-- @if ($dataKapal->id==$dataKontainer->id_invoice_k_detail) --}}
             <tr>
-                <td>{{$dataKontainer->no_kontainer}}</td>
-                <td>{{$dataKontainer->tipe_kontainer}}"</td>
-                <td>{{$dataKontainer->seal}}</td>
-                <td>[Muatan 1]</td>
+                <td>{{$detail->getJOD->no_kontainer}}</td>
+                <td>{{$detail->getJOD->tipe_kontainer}}"</td>
+                <td>{{$detail->getJOD->seal}}</td>
             </tr>
-          @endif
+          {{-- @endif --}}
         @endforeach
         <tr class="subtotal">
-            <td colspan="3">Subtotal Karantina {{$dataKapal->kapal}}:</td>
-            <td>Rp.{{number_format($dataKapal->tarif_karantina)}}</td>
+            <td colspan="2">Subtotal :</td>
+            <td><b>Rp {{number_format($value->getKarantina->total_dicairkan)}}</b></td>
+            @php
+                $total += $value->getKarantina->total_dicairkan;
+            @endphp
         </tr>
         <br>
     @endforeach
 </table>
 <br>
 <table>
-    
     <tr class="total" >
-        <td >Total Karantina : </td>
-        <td ><span style="opacity: 0%;">...............</span></td>
-        <td ><span style="opacity: 0%;">................</span></td>
-        <td >Rp.200.000,00</td>
+        <td style="font-size: 1.5em;"><b>Total Karantina :</b> </td>
+        <td><span style="opacity: 0%;">...............</span></td>
+        <td><span style="opacity: 0%;">................</span></td>
+        <td style="font-size: 1.5em;"><b>Rp {{ number_format($total); }}</b></td>
     </tr>
 </table>
 <br>
@@ -169,25 +172,27 @@
     <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b></br>
 </span>    
 
-<table class="table-bawah" style="margin-top: 50px;" class="borderDebug">
-            <tbody> 
-                <tr>
-                    <td colspan='4' >&nbsp;</td>
-                    <td class="text-right" >Hormat Kami,</td>
-                </tr>
-            </tbody>
-            <br>
-            <tfoot>
-                <tr>
-                    <td colspan='4' >&nbsp;</td>
-                    <td class="text-right" ><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" ></td>
-                </tr>
-                <tr>
-                    <td  colspan='4'>&nbsp;</td>
-                    {{-- <td class="text-right" >(..................................)</td> --}}
-                    <td class="text-right" >({{Auth::user()->username}})</td>
-                </tr>
-            </tfoot>
-        </table>
+    <table class="" style="margin-top: 50px; " class="">
+        <tbody> 
+            <tr style="">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="background: #fff; width: 20%; text-align: center">Hormat Kami,</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="background: #fff; width: 20%; text-align: center"><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" ></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style="background: #fff; width: 20%; text-align: center">({{Auth::user()->username}})</td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\InvoiceKarantina;
-use App\Models\InvoiceKarantinaDetail;
-use App\Models\InvoiceKarantinaDetailKontainer;
 use App\Models\JobOrder;
 use App\Models\JobOrderDetail;
 use App\Models\Karantina;

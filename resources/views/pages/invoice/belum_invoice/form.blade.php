@@ -609,7 +609,10 @@
             // Set text content using JavaScript
             var elementIds = ["no_kontainer", "no_seal", "no_sj","catatan", "diskon", "subtotal"];
             elementIds.forEach(function (id) {
-                document.getElementById(id + '_text_' + key).textContent = $('#' + id).val();
+                console.log(id, $('#' + id).val());
+                if($('#' + id).val() !== undefined){
+                    document.getElementById(id + '_text_' + key).textContent = $('#' + id).val();
+                }
             });
 
             calculateGrandTotal(); // pas load awal langsung hitung grand total

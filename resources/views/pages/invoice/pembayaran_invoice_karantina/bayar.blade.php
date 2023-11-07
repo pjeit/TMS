@@ -23,13 +23,13 @@
         @endforeach
     @endif
 <section class="">
-    <form action="{{ route('pembayaran_invoice.store') }}" id="save" method="POST" >
+    <form action="{{ route('pembayaran_invoice_karantina.store') }}" id="save" method="POST" >
         @csrf
         {{-- sticky header --}}
         <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
             <div class="card radiusSendiri" style="">
                 <div class="card-header radiusSendiri">
-                    <a href="{{ route('pembayaran_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                    <a href="{{ route('pembayaran_invoice_karantina.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                     <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                     {{-- <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button>  --}}
                 </div>
@@ -44,7 +44,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="">Billing To</label>
-                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required
+                                        <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required
                                             <option value="">── BILLING TO ──</option>
                                             @foreach ($dataCustomers as $cust)
                                                 <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" > {{ $cust->kode }} - {{ $cust->nama }}</option>
@@ -79,16 +79,8 @@
                                             <span class="input-group-text">Rp</span>
                                         </div>
                                         <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                    </div>
-                                </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Total PPh 23</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" id="total_pph23" name="total_pph23" class="form-control uang" readonly>                         
                                         <input type="hidden" id="total_dibayar" name="total_dibayar" class="form-control uang" readonly>                         
+
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +166,6 @@
                         <th>No Invoice</th>
                         <th>Total Tagihan</th>
                         <th>Sisa Invoice</th>
-                        <th>PPh 23</th>
                         <th>Diterima</th>
                         <th>Catatan</th>
                         <th style="width:30px"></th>
@@ -196,10 +187,6 @@
                             <td> 
                                 <span id="text_sisa_tagihan_{{ $item->id }}">{{ number_format($item->sisa_tagihan) }}</span>
                                 <input type="hidden" class="sisa_tagihan" id="sisa_tagihan_{{ $item->id }}" name="detail[{{ $item->id }}][sisa_tagihan]" value="{{ $item->sisa_tagihan }}">
-                            </td>
-                            <td>
-                                <span id="text_pph23_{{ $item->id }}"></span>
-                                <input type="hidden" class="total_pph23" id="total_pph23_{{ $item->id }}" name="detail[{{ $item->id }}][pph23]" value="{{ $item->pph23 }}">
                                 <input type="hidden" class="total_dibayar" id="total_dibayar_{{ $item->id }}" name="detail[{{ $item->id }}][dibayar]" value="{{ $item->dibayar }}">
                             </td>
                             <td>
@@ -212,7 +199,7 @@
                             </td>
                             <td>
                                 <div class="btn-group dropleft">
-                                    <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" class="btn btn-sm btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu">
@@ -282,15 +269,6 @@
                                                 <span class="input-group-text">Rp</span>
                                             </div>
                                             <input type="text" class="form-control numaja uang" id="modal_sisa_invoice" placeholder="" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                        <label for="">PPh 23</label>
-                                        <div class="input-group mb-0">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Rp</span>
-                                            </div>
-                                            <input type="text" class="form-control numaja uang" id="modal_pph23" placeholder="" >
                                             <input type="hidden" class="form-control numaja uang" id="modal_dibayar" placeholder="" readonly>
                                         </div>
                                     </div>
@@ -399,10 +377,8 @@
             $selectElement.val(key).trigger("change.select2");
 
             $('#modal_diterima').val( moneyMask($('#total_diterima_'+key).val()) );
-            $('#modal_pph23').val( moneyMask($('#total_pph23_'+key).val()) );
             $('#modal_dibayar').val( moneyMask($('#total_dibayar_'+key).val()) );
             $('#modal_catatan').val( $('#catatan_'+key).val() );
-            // $('#modal_no_bukti_potong').val( $('#no_bukti_potong_'+key).val() );
             $('#modal_total_invoice').val( moneyMask($('#total_tagihan_'+key).val()) );
             $('#modal_sisa_invoice').val( moneyMask($('#sisa_tagihan_'+key).val()) );
 
@@ -427,9 +403,6 @@
             
             $('#total_diterima_'+key).val( escapeComma($('#modal_diterima').val()) );
             document.getElementById("text_diterima_"+key).textContent = $('#modal_diterima').val();
-
-            $('#total_pph23_'+key).val( escapeComma($('#modal_pph23').val()) );
-            document.getElementById("text_pph23_"+key).textContent = $('#modal_pph23').val();
 
             $('#total_dibayar_'+key).val( escapeComma($('#modal_dibayar').val()) );
             // document.getElementById("text_dibayar_"+key).textContent = $('#modal_dibayar').val();
@@ -475,27 +448,6 @@
             });
         // 
 
-        // hide_bukti_potong
-        $(document).on('keyup', '#modal_pph23', function(){ // kalau berubah, hitung total 
-            hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
-        });
-        $(document).on('change', '#modal_pph23', function(){ // kalau berubah, hitung total 
-            hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
-        });
-
-
-        function hitungPPh(){
-            var sisaInvoice = isNaN(normalize($('#modal_sisa_invoice').val())) ? 0 : normalize($('#modal_sisa_invoice').val());
-            var pph = isNaN(normalize($('#modal_pph23').val())) ? 0 : normalize($('#modal_pph23').val());
-
-            if(pph > sisaInvoice){
-                pph = sisaInvoice;
-                $('#modal_pph23').val(moneyMask(pph));
-            }
-            $('#modal_diterima').val(moneyMask(sisaInvoice-pph));
-            dibayar();
-        }
-
         $(document).on('keyup', '#modal_diterima', function(){ // kalau berubah, hitung total 
             var sisaInvoice = parseFloat(escapeComma($('#modal_sisa_invoice').val()));
             sisaInvoice = (sisaInvoice !== null && !isNaN(sisaInvoice) && sisaInvoice !== "") ? sisaInvoice : 0;
@@ -503,9 +455,6 @@
             diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
             if(diterima > sisaInvoice){
                 $('#modal_diterima').val(moneyMask(sisaInvoice));
-                $('#modal_pph23').val(0);
-            }else{
-                $('#modal_pph23').val(moneyMask(sisaInvoice-diterima));
             }
             dibayar();
         });
@@ -524,9 +473,8 @@
         }
 
         function hitungAll(){
-            var total_diterima = total_pph23 = 0;
+            var total_diterima = 0;
             var diterima = document.getElementsByClassName("total_diterima");
-            var pph23 = document.getElementsByClassName("total_pph23");
             var biaya_admin = escapeComma($("#biaya_admin").val());
 
             for (var i = 0; i < diterima.length; i++) {
@@ -535,28 +483,19 @@
                     total_diterima += value;
                 }
             }
-            for (var i = 0; i < pph23.length; i++) {
-                var value = parseFloat(pph23[i].value); 
-                if (!isNaN(value)) {
-                    total_pph23 += value;
-                }
-            }
 
             if(biaya_admin != 0 || biaya_admin != ''){
                 total_diterima -= biaya_admin;
             }
             $('#total_diterima').val(moneyMask(total_diterima));
-            $('#total_pph23').val(moneyMask(total_pph23));
-            $('#total_dibayar').val(moneyMask(total_diterima+total_pph23));
+            $('#total_dibayar').val(moneyMask(total_diterima));
         }
      
         function dibayar(){
-            var pph = parseFloat(escapeComma($('#modal_pph23').val()));
-            pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;
             var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
             diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
 
-            var dibayar = pph+diterima;
+            var dibayar = diterima;
             $('#modal_dibayar').val(moneyMask(dibayar));
         }
 
@@ -564,7 +503,6 @@
             $('#modal_catatan').val('');
             $('#modal_total_invoice').val('');
             $('#modal_sisa_invoice').val('');
-            $('#modal_pph23').val('');
             $('#modal_diterima').val('');
             $("#hide_bukti_potong").show();
         }

@@ -65,6 +65,8 @@ class TagihanRekananController extends Controller
                     ->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
                     ->groupBy('s.id_supplier')
                     ->get();
+
+        // dd($supplier);
                     
 
         return view('pages.finance.tagihan_rekanan.create',[

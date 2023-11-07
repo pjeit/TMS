@@ -69,7 +69,7 @@
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="">Total Tagihan</label>
                                 <div class="input-group mb-0">
@@ -79,7 +79,7 @@
                                     <input type="text" maxlength="100" id="total_tagihan" name="total_tagihan" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     
                         {{-- <div class="row">
                             <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -115,6 +115,7 @@
                                             </div>
                                             <div class="col-lg-6 col-md-6 col-sm-12">
                                                 <span id="total_tagihan_text" class="text-bold">Rp. 0</span>
+                                                <input type="hidden" maxlength="100" id="total_tagihan" name="total_tagihan" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                             </div>
                                         </div>
                                     </li>
@@ -139,55 +140,58 @@
                 </div>
             </div>
         </div> 
-    </form>
 
 
-    <div class="" style="overflow-x:auto; overflow-y:hidden">
-        <table class="table table-hover table-bordered table-striped" width='100%' id="table_invoice">
-            <thead>
-                <tr class="bg-white">
-                    <th>Customer</th>
-                    <th>No. BL</th>
-                    <th>Kapal / Voyage</th>
-                    <th>No. Kontainer</th>
-                    <th>Total</th>
-                    <th style="width:30px"></th>
-                </tr>
-            </thead>
-            <tbody>
-            @isset($data)
-                @foreach ($data as $key => $item)
-                    <tr id="0">
-                        <td> {{ $item->getCustomer->nama }} </td>
-                        <td> {{ $item->getJO->no_bl }} </td>
-                        <td> {{ $item->getJO->kapal }} ( {{ $item->getJO->voyage }} ) </td>
-                        <td> @foreach ($item->details as $value)
-                                {{ '#'.$value->getJOD->no_kontainer }} <br>
-                             @endforeach
-                        </td>
-                        <td> {{ number_format($item->total_dicairkan) }} </td>
-                        <td>
-                            <input type="hidden" id="dicairkan_{{ $item->id }}" class="dicairkan" value="{{ $item->total_dicairkan }}">
-                            <div class="btn-group dropleft">
-                                <button type="button" class="btn btn-sm btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-list"></i>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <button type="button" name="detail" id="detail_{{$item->id}}" class="detail dropdown-item"> 
-                                        <span class="fas fa-edit mr-3"></span> Detail
-                                    </button>
-                                    {{-- <a href="{{ route('invoice_karantina.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
-                                        <span class="fas fa-trash mr-3"></span> Delete
-                                    </a> --}}
-                                </div>
-                            </div>
-                        </td>
+        <div class="" style="overflow-x:auto; overflow-y:hidden">
+            <table class="table table-hover table-bordered table-striped" width='100%' id="table_invoice">
+                <thead>
+                    <tr class="bg-white">
+                        <th>Customer</th>
+                        <th>No. BL</th>
+                        <th>Kapal / Voyage</th>
+                        <th>No. Kontainer</th>
+                        <th>Total</th>
+                        {{-- <th style="width:30px"></th> --}}
                     </tr>
-                @endforeach
-            @endisset
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                @isset($data)
+                    @foreach ($data as $key => $item)
+                        <tr id="0">
+                            <td> {{ $item->getCustomer->nama }} </td>
+                            <td> {{ $item->getJO->no_bl }} </td>
+                            <td> {{ $item->getJO->kapal }} ( {{ $item->getJO->voyage }} ) </td>
+                            <td> @foreach ($item->details as $value)
+                                    {{ '#'.$value->getJOD->no_kontainer }} <br>
+                                @endforeach
+                            </td>
+                            <td> 
+                                {{ number_format($item->total_dicairkan) }} 
+                                <input type="hidden" name="data[{{ $item->id }}][id_karantina]" value="{{ $item->id }}">
+                                <input type="hidden" id="dicairkan_{{ $item->id }}" class="dicairkan" value="{{ $item->total_dicairkan }}">
+                            </td>
+                            {{-- <td>
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-sm btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button type="button" name="detail" id="detail_{{$item->id}}" class="detail dropdown-item"> 
+                                            <span class="fas fa-edit mr-3"></span> Detail
+                                        </button>
+                                        <a href="{{ route('invoice_karantina.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
+                                            <span class="fas fa-trash mr-3"></span> Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            </td> --}}
+                        </tr>
+                    @endforeach
+                @endisset
+                </tbody>
+            </table>
+        </div>
+    </form>
 </div>
 
 <div class="modal fade" id="modal_detail" tabindex='-1'>

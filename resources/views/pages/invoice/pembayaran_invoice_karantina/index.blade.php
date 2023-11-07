@@ -14,7 +14,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container-fluid">
     <form action="{{ route('pembayaran_invoice_karantina.bayar') }}" method="GET" enctype="multipart/form-data">
-    @csrf @method('GET')
+    @csrf 
         <div class="card radiusSendiri">
             <div class="card-header">
                 <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
@@ -70,7 +70,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         new DataTable('#tabel_pembayaran_karantina', {
-            ordering: false,
+            // ordering: false,
             order: [
                 [0, 'asc'],
             ],
@@ -81,10 +81,11 @@
                 {
                     targets: [0], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
                     visible: false
-                },
+                }
             ],
         });
        
     });
 </script>
+
 @endsection

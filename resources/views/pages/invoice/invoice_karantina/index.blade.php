@@ -24,7 +24,7 @@
                             <select class="form-control selectpicker" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                 <option value="">─ Pilih Customer ─</option>
                                 @foreach ($customer as $item)
-                                    <option value="{{ $item->getCustomer->id }}" kode="{{ $item->getCustomer->kode }}">{{ $item->getCustomer->nama }}</option>
+                                    <option value="{{ $item->id_customer }}" >{{ $item->nama }}</option>
                                 @endforeach
                             </select>
                             <input type="hidden" id="kode" name="kode">
@@ -58,95 +58,95 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#saveInvoice').submit(function(event) {
-            // Calculate totals
-            event.preventDefault();
+    // $(document).ready(function() {
+    //     $('#saveInvoice').submit(function(event) {
+    //         // Calculate totals
+    //         event.preventDefault();
 
-            // get total
-                // let totals = document.querySelectorAll('.total');
-                // let total = 0;
+    //         // get total
+    //             // let totals = document.querySelectorAll('.total');
+    //             // let total = 0;
 
-                // totals.forEach(function(input) {
-                //     let val = !isNaN(normalize(input.value)) == true? normalize(input.value):0;
-                //     total += val;
-                // });
-                // $('#total_nominal').val(total);
-            //
+    //             // totals.forEach(function(input) {
+    //             //     let val = !isNaN(normalize(input.value)) == true? normalize(input.value):0;
+    //             //     total += val;
+    //             // });
+    //             // $('#total_nominal').val(total);
+    //         //
 
-            // get kode 
-                // const selectElement = document.getElementById('customer'); // Assuming the select element has the ID 'customer'
-                // const selectedOption = selectElement.options[selectElement.selectedIndex];
-                // const kodeAttribute = selectedOption.getAttribute('kode');
-                // $('#kode').val(kodeAttribute);
-            //
+    //         // get kode 
+    //             // const selectElement = document.getElementById('customer'); // Assuming the select element has the ID 'customer'
+    //             // const selectedOption = selectElement.options[selectElement.selectedIndex];
+    //             // const kodeAttribute = selectedOption.getAttribute('kode');
+    //             // $('#kode').val(kodeAttribute);
+    //         //
 
-            // cek centang
-                // let parents = document.querySelectorAll('.parent');
-                // let is_ok = [];
+    //         // cek centang
+    //             // let parents = document.querySelectorAll('.parent');
+    //             // let is_ok = [];
 
-                // parents.forEach(function(checkboxParent, i) {
-                //     if (checkboxParent.checked) {
-                //         is_ok[i] = false;
-                //         var childrens = document.querySelectorAll('.children_of_' + checkboxParent.value);
-                //         childrens.forEach(function(checkboxChildren) {
-                //             if (checkboxChildren.checked) {
-                //                 is_ok[i] = true;
-                //             }
-                //         });
-                //     }
-                // });
-                // console.log('is_ok', is_ok);
+    //             // parents.forEach(function(checkboxParent, i) {
+    //             //     if (checkboxParent.checked) {
+    //             //         is_ok[i] = false;
+    //             //         var childrens = document.querySelectorAll('.children_of_' + checkboxParent.value);
+    //             //         childrens.forEach(function(checkboxChildren) {
+    //             //             if (checkboxChildren.checked) {
+    //             //                 is_ok[i] = true;
+    //             //             }
+    //             //         });
+    //             //     }
+    //             // });
+    //             // console.log('is_ok', is_ok);
 
-                // if (is_ok.some(value => value === false)) {
-                //     event.preventDefault(); 
-                //     Swal.fire({
-                //         icon: 'error',
-                //         title: 'Periksa kembali data anda!',
-                //         text: 'Nominal sudah diisi namun kontainer belum dicentang!',
-                //     });
-                //     event.preventDefault();
-                //     return;
-                // }
+    //             // if (is_ok.some(value => value === false)) {
+    //             //     event.preventDefault(); 
+    //             //     Swal.fire({
+    //             //         icon: 'error',
+    //             //         title: 'Periksa kembali data anda!',
+    //             //         text: 'Nominal sudah diisi namun kontainer belum dicentang!',
+    //             //     });
+    //             //     event.preventDefault();
+    //             //     return;
+    //             // }
 
-            //
+    //         //
             
-            Swal.fire({
-                title: 'Apakah Anda yakin data sudah benar?',
-                text: "Periksa kembali data anda",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonColor: '#d33',
-                confirmButtonColor: '#3085d6',
-                cancelButtonText: 'Batal',
-                confirmButtonText: 'Ya',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.submit();
-                }else{
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
+    //         Swal.fire({
+    //             title: 'Apakah Anda yakin data sudah benar?',
+    //             text: "Periksa kembali data anda",
+    //             icon: 'warning',
+    //             showCancelButton: true,
+    //             cancelButtonColor: '#d33',
+    //             confirmButtonColor: '#3085d6',
+    //             cancelButtonText: 'Batal',
+    //             confirmButtonText: 'Ya',
+    //             reverseButtons: true
+    //         }).then((result) => {
+    //             if (result.isConfirmed) {
+    //                 this.submit();
+    //             }else{
+    //                 const Toast = Swal.mixin({
+    //                     toast: true,
+    //                     position: 'top',
+    //                     timer: 2500,
+    //                     showConfirmButton: false,
+    //                     timerProgressBar: true,
+    //                     didOpen: (toast) => {
+    //                         toast.addEventListener('mouseenter', Swal.stopTimer)
+    //                         toast.addEventListener('mouseleave', Swal.resumeTimer)
+    //                     }
+    //                 })
 
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Batal Disimpan'
-                    })
-                    event.preventDefault();
-                    // return;
-                }
-            })
-        });
-    });
+    //                 Toast.fire({
+    //                     icon: 'warning',
+    //                     title: 'Batal Disimpan'
+    //                 })
+    //                 event.preventDefault();
+    //                 // return;
+    //             }
+    //         })
+    //     });
+    // });
 </script>
 
 <script type="text/javascript">
@@ -271,5 +271,17 @@
         });
     });
 </script>
+
+@if (session()->has('id_invoice'))
+<script>
+    var idInvoiceSession = "<?= session()->has('id_invoice') ? session()->get('id_invoice') : null ?>";
+    console.log('idInvoiceSession', idInvoiceSession);
+    window.open(`/invoice_karantina/print/${idInvoiceSession}`, "_blank");
+    // di set null biar ga open new tab terus2an 
+    setTimeout(function() {
+        sessionStorage.setItem('id_invoice', null);
+    }, 1000); // Adjust the delay (in milliseconds) as needed
+</script>
+@endif
 
 @endsection

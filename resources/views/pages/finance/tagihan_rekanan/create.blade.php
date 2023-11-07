@@ -44,7 +44,9 @@
                                     <select name="supplier" class="select2" style="width: 100%" id="supplier" required>
                                         <option value="">── PILIH SUPPLIER ──</option>
                                         @foreach ($supplier as $item)
-                                            <option value="{{ $item->getSupplier->id }}">{{ $item->getSupplier->nama }}</option>
+                                            @if ($item->getSupplier)
+                                                <option  n value="{{ $item->getSupplier->id }}">{{ $item->getSupplier->nama }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>  
