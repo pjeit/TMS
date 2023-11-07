@@ -64,7 +64,6 @@ class TransferDanaController extends Controller
         DB::beginTransaction(); 
 
         try {
-            DB::commit();
         // dd(/*date_format(*/$data['tanggal_transaksi']/*,'Y-m-d')*/);
             $pesanKustom = [
                 'tanggal_transaksi.required' => 'Tanggal transaksi wajib diisi!',
@@ -81,7 +80,6 @@ class TransferDanaController extends Controller
                 // 'catatan' => 'required',
             ], $pesanKustom);
             $data= $request->collect();
-            $user = Auth::user()->id;
             if($data['select_bank_dari']==$data['select_bank_ke'])
             {
                 return redirect()->back()->withErrors('Kas/bank dari tidak boleh sama dengan tujuan!')->withInput();
@@ -157,6 +155,7 @@ class TransferDanaController extends Controller
                             );
                     }
                 }
+                DB::commit();
                 return redirect()->route('transfer_dana.index')->with(['status' => 'Success', 'msg'  => 'Transfer dana berhasil!']);
             }
 
@@ -227,7 +226,6 @@ class TransferDanaController extends Controller
         DB::beginTransaction(); 
 
         try {
-            DB::commit();
         // dd(/*date_format(*/$data['tanggal_transaksi']/*,'Y-m-d')*/);
             $pesanKustom = [
                 'tanggal_transaksi.required' => 'Tanggal transaksi wajib diisi!',
@@ -244,7 +242,6 @@ class TransferDanaController extends Controller
                 // 'catatan' => 'required',
             ], $pesanKustom);
             $data= $request->collect();
-            $user = Auth::user()->id;
             if($data['select_bank_dari']==$data['select_bank_ke'])
             {
                 return redirect()->back()->withErrors('Kas/bank dari tidak boleh sama dengan tujuan!')->withInput();
@@ -337,6 +334,7 @@ class TransferDanaController extends Controller
                                 );
                     
                 }
+                DB::commit();
                 return redirect()->route('transfer_dana.index')->with(['status' => 'Success', 'msg'  => 'Revisi Transfer dana berhasil!']);
             }
 
@@ -360,13 +358,12 @@ class TransferDanaController extends Controller
         //
         // dd($transfer_dana);
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        DB::beginTransaction(); 
+
         try{
             
             $transfer = TransferDana::where('is_aktif', 'Y')->findOrFail($transfer_dana->id);
-            $transfer->updated_at = now();
-            $transfer->updated_by = $user;
-            $transfer->is_aktif = "N";
-            $transfer->save();
+          
 
             //========== handle update logic saldo yang lama============================
             // kalau yang dari, keluar uang
@@ -408,10 +405,17 @@ class TransferDanaController extends Controller
                     )
                 );
             }
+              $transfer->updated_at = now();
+            $transfer->updated_by = $user;
+            $transfer->is_aktif = "N";
+            $transfer->save();
             //========== handle update logic saldo yang lama=============================
+
+            DB::commit();
             return redirect()->route('transfer_dana.index')->with(['status' => 'Success', 'msg' => 'Berhasil Menghapus data transfer!']);
         }
         catch (ValidationException $e) {
+            DB::rollBack();
             return redirect()->back()->withErrors($e->errors());
         }
     }
