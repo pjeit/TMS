@@ -246,6 +246,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('revisi_tagihan_rekanan/load_data', [App\Http\Controllers\RevisiTagihanRekananController::class, 'load_data'])->name('revisi_tagihan_rekanan.load_data');
         Route::resource('revisi_tagihan_rekanan', 'App\Http\Controllers\RevisiTagihanRekananController');
 
+        // ===================================HRD=========================================================
+        Route::resource('pembayaran_gaji', 'App\Http\Controllers\PembayaranGajiController');
+        Route::resource('karyawan_hutang', 'App\Http\Controllers\KaryawanHutangController');
+        // ===================================HRD=========================================================
+
+        // ===================================HRD=========================================================
+        Route::resource('status_kendaraan', 'App\Http\Controllers\StatusKendaraanController');
+        // ===================================HRD=========================================================
 
 
     });

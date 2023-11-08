@@ -5,19 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class KaryawanHutangTransaction extends Model
+class PembayaranGaji extends Model
 {
     use HasFactory;
-    protected $table = 'karyawan_hutang_transaction';
+    protected $table = 'pembayaran_gaji';
     protected $primaryKey='id';
     protected $fillable=[
-        'id_karyawan',
-        'refrensi_id',
-        'refrensi_keterangan',
-        'jenis',
         'tanggal',
-        'debit',
-        'kredit',
+        'tanggal_catat',
+        'tahun_periode',
+        'bulan_periode',
+        'nama_periode',
+        'total',
         'kas_bank_id',
         'catatan',
         'created_at',
