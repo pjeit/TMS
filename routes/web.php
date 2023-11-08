@@ -241,6 +241,18 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('karantina', 'App\Http\Controllers\KarantinaController');
 
         // ===================================INVOICE=========================================================
+
+
+        // ===================================HRD=========================================================
+        Route::resource('pembayaran_gaji', 'App\Http\Controllers\PembayaranGajiController');
+        Route::resource('karyawan_hutang', 'App\Http\Controllers\KaryawanHutangController');
+        // ===================================HRD=========================================================
+
+        // ===================================HRD=========================================================
+        Route::resource('status_kendaraan', 'App\Http\Controllers\StatusKendaraanController');
+        // ===================================HRD=========================================================
+
+
     });
 
     // Route::controller('JobOrderController::class')->group(function(){

@@ -782,6 +782,58 @@
               </ul>
             </li>
 
+             <li class="nav-item {{ request()->is('pembayaran_gaji*') ||
+                request()->is('karyawan_hutang*') ? 'menu-is-opening menu-open' : '' }}">
+              <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
+                <i class="nav-icon fas fa-solid fa-user"></i>
+                <p>HRD
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('karyawan_hutang.index')}}" class="nav-link {{request()->url() === route('karyawan_hutang.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Karyawan Hutang
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pembayaran_gaji.index')}}" class="nav-link {{request()->url() === route('pembayaran_gaji.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Pembayaran Gaji
+                    </p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+             {{-- ASSET --}}
+            <li class="nav-item {{ request()->is('status_kendaraan*') ? 'menu-is-opening menu-open' : '' }}">
+              <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
+                <i class="nav-icon fas fa-warehouse"></i>
+                <p>ASSET
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('status_kendaraan.index')}}" class="nav-link {{request()->url() === route('status_kendaraan.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Status Kendaraan
+                    </p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
             {{-- LAPORAN FINANCE --}}
             <li class="nav-item {{ request()->is('laporan_kas*') ||
                 request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">
