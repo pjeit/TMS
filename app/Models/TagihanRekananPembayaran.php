@@ -9,4 +9,19 @@ class TagihanRekananPembayaran extends Model
 {
     use HasFactory;
     protected $table = 'tagihan_rekanan_pembayaran';
+    
+    public function getSupplier()
+    {
+         return $this->hasOne(Supplier::class, 'id', 'id_supplier');
+    }
+    
+    public function getRekanan()
+    {
+         return $this->hasOne(TagihanRekanan::class, 'id', 'id_tagihan_rekanan')->where('is_aktif', 'Y');
+    }
+
+    public function getRekananDetail()
+    {
+         return $this->hasMany(TagihanRekananDetail::class, 'id_tagihan_rekanan', 'id_tagihan_rekanan')->where('is_aktif', 'Y');
+    }
 }

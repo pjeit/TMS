@@ -91,6 +91,9 @@ class TagihanRekananController extends Controller
                     ->get();
 
         $data = $request->collect();
+        if( !isset($data['idTagihan']) ){
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Harap pilih data dahulu!']);
+        }
         $data_tagihan = TagihanRekanan::with('getDetails')->where('is_aktif', 'Y')->whereIn('id', $data['idTagihan'])->get();
         // dd($data_tagihan);
         
@@ -162,7 +165,8 @@ class TagihanRekananController extends Controller
         }
     }
 
-    public function bayar_save(Request $request){
+    public function bayar_save(Request $request)
+    {
         $data = $request->collect();
         $user = Auth::user()->id;
         DB::beginTransaction(); 
@@ -180,6 +184,9 @@ class TagihanRekananController extends Controller
               
                     $tagihan->tagihan_dibayarkan += ($value['total_bayar'] + $value['pph']);
                     $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
+                    if($tagihan->sisa_tagihan == 0){
+                        $tagihan->status = 'LUNAS';
+                    }
                     $tagihan->updated_by = $user;
                     $tagihan->updated_at = now();
                     if($tagihan->save()){
@@ -217,6 +224,9 @@ class TagihanRekananController extends Controller
                     }
                 }                
             }
+
+            // dd($id_tagihan);
+
             $history = new KasBankTransaction();
             $history->id_kas_bank = $data['id_kas'];
             $history->tanggal = date_create_from_format('d-M-Y', $data['tgl_bayar']);
@@ -402,17 +412,23 @@ class TagihanRekananController extends Controller
 
     public function filtered_data($id_tagihan, $id_supplier)
     {
-        $sewa = DB::select("SELECT s.harga_jual,trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
+        $sewa = DB::select("SELECT s.harga_jual,trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan,
+                                trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, 
+                                s.is_tagihan, gt.nama_tujuan as nama_tujuan, c.kode
                             FROM tagihan_rekanan_detail as trd 
                             LEFT JOIN sewa as s on s.id_sewa = trd.id_sewa
                             LEFT JOIN customer as c on c.id = s.id_customer
+                            LEFT JOIN grup_tujuan as gt on gt.id = s.id_grup_tujuan
                             WHERE trd.id_tagihan_rekanan = $id_tagihan AND trd.is_aktif = 'Y' AND s.is_tagihan = 'Y'
                             UNION ALL
-                            SELECT s.harga_jual,trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
+                            SELECT s.harga_jual,trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, 
+                                trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, 
+                                s.is_tagihan, gt.nama_tujuan as nama_tujuan, c.kode
                             FROM sewa as s
                             LEFT JOIN tagihan_rekanan_detail as trd on trd.id_sewa = s.id_sewa and trd.is_aktif is null
                             LEFT JOIN customer as c on c.id = s.id_customer
-                            WHERE s.id_supplier = $id_supplier AND s.is_tagihan <> 'Y' 
+                            LEFT JOIN grup_tujuan as gt on gt.id = s.id_grup_tujuan
+                            WHERE s.id_supplier = $id_supplier AND s.is_tagihan <> 'Y' AND s.jenis_tujuan = 'LTL' 
                             ");
 
         return $sewa;

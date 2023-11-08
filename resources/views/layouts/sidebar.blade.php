@@ -429,6 +429,7 @@
               request()->is('karantina*')||
               request()->is('cetak_uang_jalan*')||
               request()->is('transaksi_lain*')||
+              request()->is('tagihan_pembelian*')||
               request()->is('transfer_dana*')
               ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -720,6 +721,7 @@
             {{-- Rollback --}}
             <li class="nav-item {{ request()->is('revisi_uang_jalan*') ||  
                                 request()->is('revisi_tl*')||
+                                request()->is('revisi_tagihan_rekanan*')||
                                 request()->is('revisi_klaim_supir*')
                                 ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -768,6 +770,14 @@
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i> 
                     <p>
                       Rev. Belum Invoice
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{route('revisi_tagihan_rekanan.index')}}" class="nav-link {{ request()->is('revisi_tagihan_rekanan*')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i> 
+                    <p>
+                      Rev. Inv. Tagihan Rekanan
                     </p>
                   </a>
                 </li>

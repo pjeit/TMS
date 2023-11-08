@@ -36,44 +36,7 @@
         <div class="card radiusSendiri">
             <div class="card-body" >
                 <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="row">
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="">Diskon</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" id="diskon" name="diskon" class="form-control uang numaja" value="{{ number_format($tagihan->diskon) }}">                         
-                                    <input type="hidden" id="id_tagihan" name="id_tagihan" value="{{ $tagihan->id }}">
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="">PPN</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" id="ppn" name="ppn" class="form-control uang numaja" value="{{ number_format($tagihan->ppn) }}">
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="" class="text-success">Total Tagihan</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" id="tagihan" name="tagihan" class="form-control uang numaja" value="{{ number_format($tagihan->total_tagihan) }}" readonly>                         
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="">Catatan</label>
-                                <textarea name="catatan" class="form-control" rows="1">{{ $tagihan->catatan }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-gray-light col-lg-6 col-md-6 col-sm-12">
+                    <div class="bg-gray-light radiusSendiri col-lg-6 col-md-6 col-sm-12">
                         <div class="row">
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="form-group">
@@ -85,6 +48,7 @@
                                         @endforeach
                                     </select>
                                     <input type="hidden" name="id_supplier" value="{{ $tagihan->id_supplier }}">
+                                    <input type="hidden" id="id_tagihan" name="id_tagihan" value="{{ $tagihan->id }}">
                                 </div>  
                             </div>
 
@@ -118,6 +82,25 @@
                                 </div>
                             </div>
                         </div>
+                
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                        <div class="row">
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="" class="text-success">Total Tagihan</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="text" id="tagihan" name="tagihan" class="form-control uang numaja" value="{{ number_format($tagihan->total_tagihan) }}" readonly>                         
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="">Catatan</label>
+                                <textarea name="catatan" class="form-control" rows="1">{{ $tagihan->catatan }}</textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -127,7 +110,7 @@
             <table class="table table-hover table-bordered table-striped " width='100%' id="tabel_tagihan">
                 <thead>
                     <tr>
-                        <th>No. Sewa</th>
+                        <th>Data Sewa</th>
                         <th style="width: 150px;">Tarif</th>
                         <th style="width: 150px;">Ditagihkan</th>
                         <th style="width: 200px;">Catatan</th>
@@ -237,7 +220,7 @@
                     for (var i = 0; i < data.length; i++) {
                         var id_detail = data[i].id == null? null:data[i].id;
                         var row = $("<tr></tr>");
-                        row.append(`<td>${data[i].no_sewa} - ${data[i].nama} (${ dateMask(data[i].tanggal_berangkat)})</td>`);
+                        row.append(`<td>${data[i].kode} - ${data[i].nama_tujuan} (${ dateMask(data[i].tanggal_berangkat)})</td>`);
                         row.append(`<td style="width: 150px;">${moneyMask(data[i].harga_jual)}</td>`)
                         row.append(`<td style="width: 150px;">
                                         <input type="hidden" id="hidden_total_tarif_${data[i].id_sewa}" value="${data[i].harga_jual}" />
@@ -301,10 +284,6 @@
             hitung();
         });
 
-        $(document).on('keyup', '#diskon, #ppn', function (event) {
-            hitung();
-        });
-
         // buat make sure agar lebih akurat
         $(document).on('change', '.ditagihkan', function (event) {
             validation(this)
@@ -329,18 +308,6 @@
                     totalValue += value;
                 }
             });
-
-            // var tagihan = !isNaN(normalize($('#tagihan').val()))? normalize($('#tagihan').val()):0;
-            var diskon  = !isNaN(normalize($('#diskon').val()))? normalize($('#diskon').val()):0;
-            var ppn     = !isNaN(normalize($('#ppn').val()))? normalize($('#ppn').val()):0;
-
-            if (!isNaN(diskon)) {
-                totalValue = totalValue - diskon;
-            }
-            if (!isNaN(ppn)) {
-                totalValue = totalValue - ppn;
-            }
-
 
             $('#tagihan').val(moneyMask(totalValue));
         }

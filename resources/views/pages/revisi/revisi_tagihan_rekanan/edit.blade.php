@@ -24,12 +24,12 @@
         @endforeach
     @endif
 <section class="container-fluid">
-    <form action="{{ route('tagihan_pembelian.bayar_save') }}" id="save" method="POST" >
+    <form action="{{ route('tagihan_rekanan.bayar_save') }}" id="save" method="POST" >
         @csrf
         <div class="radiusSendiri sticky-top" style="margin-bottom: -15px;">
             <div class="card radiusSendiri" style="">
                 <div class="card-header radiusSendiri">
-                    <a href="{{ route('tagihan_pembelian.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                    <a href="{{ route('tagihan_rekanan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                     <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                 </div>
             </div>
@@ -45,11 +45,11 @@
                                     <select name="supplier" class="select2" style="width: 100%" id="supplier" required disabled>
                                         <option value="">── PILIH SUPPLIER ──</option>
                                         @foreach ($supplier as $item)
-                                            <option value="{{ $item->id }}" {{ $item->id == $data_tagihan[0]->id_supplier? 'selected':'' }}>{{ $item->nama }}</option>
+                                            <option value="{{ $item->id }}" {{ $item->id == $data->id_supplier? 'selected':'' }}>{{ $item->nama }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" name="id_supplier" value="{{ $data_tagihan[0]->id_supplier }}">
-                                    <input type="hidden" name="nama_supplier" value="{{ $data_tagihan[0]->getSupplier->nama }}">
+                                    <input type="hidden" name="id_supplier" value="{{ $data->id_supplier }}">
+                                    <input type="hidden" name="nama_supplier" value="{{ $data->getSupplier->nama }}">
                                 </div>  
                             </div>
 
@@ -138,7 +138,7 @@
                 <thead >
                     <tr >
                         <th style="width: 100px;">No. Nota</th>
-                        <th style="width: 600px;">Deskripsi</th>
+                        <th style="width: 600px;">Data Sewa</th>
                         <th style="width: 150px; text-align: center;"><span style="font-size: 1.3em;"><sup>Tagihan</sup>/<sub>Sewa</sub></span></th>
                         <th style="width: 100px; text-align: center">PPh23</th>
                         <th style="width: 150px; text-align: center">Total Bayar</th>
@@ -148,7 +148,7 @@
                 </thead>
                 <tbody id="hasil">
                     @foreach ($data_tagihan as $key => $tagihan)
-                        <tr style="background: #ffffff88">
+                        <tr style="background: #ffffffc0">
                             <input type="hidden" id="no_nota_{{ $tagihan->id }}" value="{{ $tagihan->no_nota }}" name="data[{{ $tagihan->id }}][no_nota]">
                             <input type="hidden" id="bukti_potong_{{ $tagihan->id }}" name="data[{{ $tagihan->id }}][bukti_potong]">
                             <input type="hidden" id="total_tagihan_{{ $tagihan->id }}" value="{{ $tagihan->total_tagihan }}" name="data[{{ $tagihan->id }}][total_tagihan]">
@@ -156,7 +156,8 @@
                             <input type="hidden" class="pph23" id="pph23_{{ $tagihan->id }}" name="data[{{ $tagihan->id }}][pph]">
                             <input type="hidden" class="total_bayar" id="total_bayar_{{ $tagihan->id }}" name="data[{{ $tagihan->id }}][total_bayar]" value="0">
 
-                            <td colspan="3">{{ $tagihan->no_nota }}</td>
+                            <td>{{ $tagihan->no_nota }}</td>
+                            <td colspan="2"></td>
                             <td style="text-align: right;" class="font-weight-bold text-red text_pph23_{{ $tagihan->id }}">0</td>
                             <td style="text-align: right;" class="font-weight-bold text-success text_tagihan_{{ $tagihan->id }}">0</td>
                             <td class="text_bukti_potong_{{ $tagihan->id }}"></td>
@@ -176,8 +177,8 @@
                         @foreach ($tagihan['getDetails'] as $item)
                             <tr style="background: #ffffff">
                                 <td></td>
-                                <td>{{ $item->deskripsi }}</td>
-                                <td style="text-align: right;" class="font-weight-bold">{{ number_format($item->total_tagihan) }}</td>
+                                <td>{{ $item->getSewa->getCustomer->kode }} - {{ $item->getSewa->nama_tujuan }} ({{ date("Y-m-d", strtotime($item->getSewa->tanggal_berangkat)) }})</td>
+                                <td style="text-align: right;">{{ number_format($item->total_tagihan) }}</td>
                                 <td colspan="4"></td>
                             </tr>
                         @endforeach

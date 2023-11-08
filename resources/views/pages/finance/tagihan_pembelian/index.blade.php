@@ -96,6 +96,27 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        $('#bayar').submit(function(event) {
+            let checkboxes = document.querySelectorAll('input[name="idTagihan[]"]');
+            let selectedValues = [];
+            checkboxes.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    selectedValues.push(checkbox.value);
+                }
+            });
+            console.log('selectedValues', selectedValues);
+            if(!selectedValues.length){
+                Swal.fire(
+                    'Data tidak valid',
+                    'Harap pilih tagihan terlebih dahulu!',
+                    'warning'
+                )
+                return false;
+            }else{
+                this.submit();
+            }
+        });
+
         $('#tabel_tagihan').DataTable( {
             order: [
                 [0, 'asc'], // 0 = grup

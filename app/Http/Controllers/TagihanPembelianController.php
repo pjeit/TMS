@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KasBankTransaction;
 use App\Models\Sewa;
 use App\Models\Supplier;
 use App\Models\TagihanPembelian;
+use App\Models\TagihanPembelianDetail;
+use App\Models\TagihanPembelianPembayaran;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class TagihanPembelianController extends Controller
 {
@@ -63,9 +68,155 @@ class TagihanPembelianController extends Controller
     public function store(Request $request)
     {
         $data = $request->collect();
-        dd($data);
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
 
+        // dd($data); 
+        try {
+            $tagihan = new TagihanPembelian();
+            $tagihan->id_supplier = $data['supplier'];
+            $tagihan->no_nota = $data['no_nota'];
+            $tagihan->tgl_nota = date_create_from_format('d-M-Y', $data['tgl_nota']);
+            $tagihan->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
+            $tagihan->catatan = $data['catatan'];
+            $tagihan->total_tagihan = floatval(str_replace(',', '', $data['tagihan']));
+            $tagihan->sisa_tagihan = floatval(str_replace(',', '', $data['tagihan']));
+            $tagihan->created_by = $user;
+            $tagihan->created_at = now();
+            if($tagihan->save()){
+                foreach ($data['data'] as $key => $value) {
+                    $detail = new TagihanPembelianDetail();
+                    $detail->id_tagihan_pembelian = $tagihan->id;
+                    $detail->jumlah = $value['jumlah'];
+                    $detail->satuan = $value['satuan'];
+                    $detail->deskripsi = $value['deskripsi'];
+                    $detail->total_tagihan = floatval(str_replace(',', '', $value['subtotal']));
+                    $detail->created_by = $user;
+                    $detail->created_at = now();
+                    $detail->save();
+                }
+
+                DB::commit();
+            }
+
+            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'Success', 'msg' => 'Tagihan berhasil dibuat']);
+
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibuat!']);
+        }
     }
+    
+    public function bayar(Request $request)
+    {
+        $data = $request->collect();
+        if( !isset($data['idTagihan']) ){
+            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Harap pilih data dahulu!']);
+        }
+        $dataKas = DB::table('kas_bank')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->get();
+
+        $supplier = Supplier::where('is_aktif', 'Y')->get();
+
+
+        $data_tagihan = TagihanPembelian::with('getDetails')->where('is_aktif', 'Y')->whereIn('id', $data['idTagihan'])->get();
+
+        // dd($data_tagihan);
+        
+        if($data_tagihan){
+            return view('pages.finance.tagihan_pembelian.bayar',[
+                'judul' => "Tagihan Rekanan",
+                'dataKas' => $dataKas,
+                'supplier' => $supplier,
+                'data_tagihan' => $data_tagihan,
+            ]);
+        }else{
+            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap ulangi lagi!']);
+        }
+    }
+
+    public function bayar_save(Request $request){
+        $data = $request->collect();
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        // dd($data);
+        try {
+            $keterangan = 'TAGIHAN PEMBELIAN: '. $data['nama_supplier'] . ' - ';
+            $id_tagihan = '';
+            $biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
+            $total_bayar = 0;
+            $i = 0;
+
+            foreach ($data['data'] as $key => $value) {
+                $tagihan = TagihanPembelian::where('is_aktif', 'Y')->find($key);
+                if($tagihan){
+                    $tagihan->tagihan_dibayarkan += ($value['total_bayar'] + $value['pph']);
+                    $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
+                    if($tagihan->sisa_tagihan == 0){
+                        $tagihan->status = 'LUNAS';
+                    }
+                    $tagihan->updated_by = $user;
+                    $tagihan->updated_at = now();
+                    if($tagihan->save()){
+                        $pembayaran = new TagihanPembelianPembayaran();
+                        $pembayaran->id_tagihan_pembelian = $key;
+                        $pembayaran->id_kas = $data['id_kas'];
+                        $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
+                        $pembayaran->bukti_potong = $value['bukti_potong'];
+                        $pembayaran->total_tagihan = $value['total_tagihan'];
+                        $pembayaran->pph = $value['pph'];
+                        if($i == 0){
+                            $bayar = $value['total_bayar'] - $biaya_admin;
+                            $pembayaran->biaya_admin = $biaya_admin;
+                        }else{
+                            $bayar = $value['total_bayar'];
+                            $pembayaran->biaya_admin = 0;
+                        }
+                        $pembayaran->total_bayar = $bayar;
+                        $pembayaran->created_by = $user;
+                        $pembayaran->created_at = now();
+                        $pembayaran->save();
+
+                        $id_tagihan .= $pembayaran .', ';
+
+                        $keterangan .= ' #NOTA: '. $value['no_nota'] . ' #TOTAL BAYAR: ' .$bayar;
+                        if($i == 0 && $biaya_admin != 0){
+                            $keterangan .= ' #BIAYA ADMIN: '. $biaya_admin;
+                        }
+                        if($value['pph'] != 0){
+                            $keterangan .= ' #PPh23: '. $value['pph'];
+                        }
+                        $total_bayar += $bayar;
+                        $i++;
+                    }
+                }                
+            }
+            $history = new KasBankTransaction();
+            $history->id_kas_bank = $data['id_kas'];
+            $history->tanggal = date_create_from_format('d-M-Y', $data['tgl_bayar']);
+            $history->id_kas_bank = $data['id_kas'];
+            $history->debit = 0;
+            $history->kredit = floatval(str_replace(',', '', $data['total_bayar']));
+            $history->kode_coa = 1255; // hardcode
+            $history->jenis = 'TAGIHAN_PEMBELIAN';
+            $history->keterangan_transaksi = $keterangan;
+            $history->keterangan_kode_transaksi = $id_tagihan;
+            $history->created_by = $user;
+            $history->created_at = now();
+            if($history->save()){
+                DB::commit();
+            }
+            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'Success', 'msg' => 'Tagihan berhasil dibayar']);
+
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibayar!']);
+        }
+    }
+
+
 
     /**
      * Display the specified resource.
@@ -86,9 +237,22 @@ class TagihanPembelianController extends Controller
      */
     public function edit($id)
     {
-        //
-    }
+        $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
 
+        $supplier = Supplier::where('is_aktif', 'Y')->get();
+
+        $tagihan = TagihanPembelian::where('is_aktif', 'Y')->with('getDetails')->find($id);
+
+        return view('pages.finance.tagihan_pembelian.edit',[
+            'judul' => "Tagihan Rekanan",
+            'dataKas' => $dataKas,
+            'supplier' => $supplier,
+            'tagihan' => $tagihan,
+        ]);
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -98,7 +262,70 @@ class TagihanPembelianController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = Auth::user()->id;
+        $data = $request->collect();
+        DB::beginTransaction(); 
+        // dd($data);
+
+        try {
+            $tagihan = TagihanPembelian::where('is_aktif', 'Y')->find($data['id_tagihan']);
+            $tagihan->no_nota = $data['no_nota'];
+            $tagihan->tgl_nota = date("Y-m-d", strtotime($data['tgl_nota']));
+            $tagihan->jatuh_tempo = date("Y-m-d", strtotime($data['jatuh_tempo']));
+            $tagihan->total_tagihan = floatval(str_replace(',', '', $data['tagihan']));
+            $tagihan->sisa_tagihan = floatval(str_replace(',', '', $data['tagihan']));
+            $tagihan->catatan = $data['catatan']; 
+            $tagihan->updated_by = $user;
+            $tagihan->updated_at = now();
+            if($tagihan->save()){
+                // update data 
+                if(isset($data['data'])){
+                    foreach ($data['data'] as $key => $value) {
+                        $detail = TagihanPembelianDetail::where('is_aktif', 'Y')->find($key);
+                        $detail->deskripsi = $value['deskripsi'];
+                        $detail->jumlah = $value['jumlah'];
+                        $detail->satuan = $value['satuan'];
+                        $detail->total_tagihan = floatval(str_replace(',', '', $value['total_tagihan']));
+                        $detail->updated_by = $user;
+                        $detail->updated_at = now();
+                        $detail->save();
+                    }
+                }
+
+                // buat data baru
+                if(isset($data['data_baru'])){
+                    foreach ($data['data_baru'] as $key => $value) {
+                        $detail = new TagihanPembelianDetail();
+                        $detail->id_tagihan_pembelian = $data['id_tagihan'];
+                        $detail->deskripsi = $value['deskripsi'];
+                        $detail->jumlah = $value['jumlah'];
+                        $detail->satuan = $value['satuan'];
+                        $detail->total_tagihan = floatval(str_replace(',', '', $value['subtotal']));
+                        $detail->created_by = $user;
+                        $detail->created_at = now();
+                        $detail->save();
+                    }
+                }
+
+                // hapus data
+                if($data['data_deleted'] != null){
+                    $array = explode(",", $data['data_deleted']);
+                    foreach ($array as $key => $value) {
+                        $detail = TagihanPembelianDetail::where('is_aktif', 'Y')->find($value);
+                        $detail->updated_by = $user;
+                        $detail->updated_at = now();
+                        $detail->is_aktif = 'N';
+                        $detail->save();
+                    }
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'Success', 'msg'  => 'Pembayaran berhasil!']);
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
+        }
     }
 
     /**
@@ -111,4 +338,21 @@ class TagihanPembelianController extends Controller
     {
         //
     }
+
+    // public function filtered_data($id_tagihan, $id_supplier)
+    // {
+    //     $sewa = DB::select("SELECT s.harga_jual,trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_pembelian, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
+    //                         FROM tagihan_pembelian_detail as tpd 
+    //                         LEFT JOIN customer as c on c.id = s.id_customer
+    //                         WHERE trd.id_tagihan_pembelian = $id_tagihan AND trd.is_aktif = 'Y' AND s.is_tagihan = 'Y'
+    //                         UNION ALL
+    //                         SELECT s.harga_jual,trd.id, s.no_sewa, c.nama, s.tanggal_berangkat, s.total_tarif, trd.total_tagihan, trd.catatan as catatan, s.id_sewa, trd.id_tagihan_pembelian, s.id_supplier, trd.is_aktif AS trd_is_aktif, s.is_tagihan
+    //                         FROM sewa as s
+    //                         LEFT JOIN tagihan_pembelian_detail as trd on trd.id_sewa = s.id_sewa and trd.is_aktif is null
+    //                         LEFT JOIN customer as c on c.id = s.id_customer
+    //                         WHERE s.id_supplier = $id_supplier AND s.is_tagihan <> 'Y' 
+    //                         ");
+
+    //     return $sewa;
+    // }
 }

@@ -196,10 +196,10 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('transaksi_lain', 'App\Http\Controllers\TransaksiLainController');
         Route::resource('transfer_dana', 'App\Http\Controllers\TransferDanaController');
 
-        Route::post('tagihan_pembelian/bayar_save', [App\Http\Controllers\TagihanRekananController::class, 'bayar_save'])->name('tagihan_pembelian.bayar_save');
-        Route::post('tagihan_pembelian/bayar', [App\Http\Controllers\TagihanRekananController::class, 'bayar'])->name('tagihan_pembelian.bayar');
-        Route::get('tagihan_pembelian/loadData/{id}', [App\Http\Controllers\TagihanRekananController::class, 'load_data'])->name('tagihan_pembelian.load_data');
-        Route::get('tagihan_pembelian/filteredData/{id_tagihan},{id_supplier}', [App\Http\Controllers\TagihanRekananController::class, 'filtered_data'])->name('tagihan_pembelian.filtered_data');
+        Route::post('tagihan_pembelian/bayar_save', [App\Http\Controllers\TagihanPembelianController::class, 'bayar_save'])->name('tagihan_pembelian.bayar_save');
+        Route::post('tagihan_pembelian/bayar', [App\Http\Controllers\TagihanPembelianController::class, 'bayar'])->name('tagihan_pembelian.bayar');
+        Route::get('tagihan_pembelian/loadData/{id}', [App\Http\Controllers\TagihanPembelianController::class, 'load_data'])->name('tagihan_pembelian.load_data');
+        Route::get('tagihan_pembelian/filteredData/{id_tagihan},{id_supplier}', [App\Http\Controllers\TagihanPembelianController::class, 'filtered_data'])->name('tagihan_pembelian.filtered_data');
         Route::resource('tagihan_pembelian', 'App\Http\Controllers\TagihanPembelianController');
         // ===================================FINANCE=========================================================
 
@@ -241,6 +241,13 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('karantina', 'App\Http\Controllers\KarantinaController');
 
         // ===================================INVOICE=========================================================
+        
+        // ===================================REVISI=========================================================
+        Route::get('revisi_tagihan_rekanan/load_data', [App\Http\Controllers\RevisiTagihanRekananController::class, 'load_data'])->name('revisi_tagihan_rekanan.load_data');
+        Route::resource('revisi_tagihan_rekanan', 'App\Http\Controllers\RevisiTagihanRekananController');
+
+
+
     });
 
     // Route::controller('JobOrderController::class')->group(function(){
