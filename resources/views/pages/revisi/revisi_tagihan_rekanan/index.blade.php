@@ -28,8 +28,7 @@
                         <th>No. Nota</th>
                         <th>Tgl Nota</th>
                         <th>Jatuh Tempo</th>
-                        <th>Bukti Potong</th>
-                        <th>Total Tagihan</th>
+                        <th>Total Bayar</th>
                         <th width="30"></th>
                     </tr>
                 </thead>
@@ -61,8 +60,7 @@
                 {data: 'no_nota', name: 'no_nota'},
                 {data: 'tgl_nota', name: 'tgl_nota'},
                 {data: 'jatuh_tempo', name: 'jatuh_tempo'},
-                {data: 'bukti_potong', name: 'bukti_potong'},
-                {data: 'total_tagihan', name: 'total_tagihan'},
+                {data: 'total_bayar', name: 'total_bayar'},
                 {
                     data: 'action', 
                     name: 'action', 
