@@ -230,24 +230,18 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function () {
-
     $('#tanggal_transaksi').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
             language:'en',
             endDate: "0d",
-
         });
-        var cekerror= <?php echo json_encode($errors->any()); ?>;
+    var cekerror= <?php echo json_encode($errors->any()); ?>;
     
     if (cekerror) {
             $("#modal_tambah").modal("show");
-        
     }
-        
-
-
     $('body').on('change','#select_coa',function()
     {
         var selectedOption = $(this).find('option:selected');
@@ -290,7 +284,7 @@ $(document).ready(function () {
                             }
                         });
 
-        if($("#tanggal_transaksi").val().trim()=='')
+            if($("#tanggal_transaksi").val().trim()=='')
             {
                 event.preventDefault(); 
                 Toast.fire({

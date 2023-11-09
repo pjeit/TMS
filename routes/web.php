@@ -259,8 +259,6 @@ Route::middleware(['auth'])->group(function () {
         // ===================================HRD=========================================================
         Route::resource('status_kendaraan', 'App\Http\Controllers\StatusKendaraanController');
         // ===================================HRD=========================================================
-
-
     });
 
     // Route::controller('JobOrderController::class')->group(function(){

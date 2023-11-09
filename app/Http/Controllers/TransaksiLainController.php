@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use App\Models\KasBank;
 use App\Models\KasBankTransaction;
 use App\Models\Coa;
+use Exception;
 class TransaksiLainController extends Controller
 {
     /**
@@ -147,7 +148,7 @@ class TransaksiLainController extends Controller
                 }
                 DB::commit();
 
-                return redirect()->route('transaksi_lain.index')->with(['status' => 'Success', 'msg'  => 'Transfer dana berhasil!']);
+                return redirect()->route('transaksi_lain.index')->with(['status' => 'Success', 'msg'  => 'Transaksi lain berhasil dibuat!']);
 
         } catch (ValidationException $e) {
             db::rollBack();
@@ -156,6 +157,11 @@ class TransaksiLainController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
 
         }   
+        catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+        }
     }
 
     /**
@@ -267,9 +273,8 @@ class TransaksiLainController extends Controller
                     $transaksi->kas_bank_id = $data['select_bank'];
                     $transaksi->total = floatval(str_replace(',', '', $data['total']));
                     $transaksi->catatan = $data['catatan'];
-                    $transaksi->created_by = $user;
-                    $transaksi->created_at = now();
-                    $transaksi->is_aktif = 'Y';
+                    $transaksi->updated_by = $user;
+                    $transaksi->updated_at = now();
                     // $transaksi->save();
                     if ($transaksi->save()) {
                         $coa = Coa::where('is_aktif', 'Y')
@@ -315,7 +320,7 @@ class TransaksiLainController extends Controller
 
                 DB::commit();
 
-                return redirect()->route('transaksi_lain.index')->with(['status' => 'Success', 'msg'  => 'Transfer dana berhasil!']);
+                return redirect()->route('transaksi_lain.index')->with(['status' => 'Success', 'msg'  => 'Transaksi lain berhasil diubah!']);
 
         } catch (ValidationException $e) {
             db::rollBack();
@@ -324,6 +329,11 @@ class TransaksiLainController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
 
         }   
+        catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+        }
     }
 
     /**
@@ -389,6 +399,11 @@ class TransaksiLainController extends Controller
         catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->back()->withErrors($e->errors());
+        }
+        catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+            return redirect()->back()->withErrors($ex->getMessage())->withInput();
         }
        
     }

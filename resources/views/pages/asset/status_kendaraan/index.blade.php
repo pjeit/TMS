@@ -25,27 +25,22 @@
 </style>
 <div class="container-fluid">
     @if ($errors->any())
-                                @foreach ($errors->all() as $error)
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    {{ $error }}
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                @endforeach
-
-                            @endif
+        @foreach ($errors->all() as $error)
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $error }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        @endforeach
+    @endif
     <div class="row">
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-
                     <button class="btn btn-primary btn-responsive float-left radiusSendiri" data-toggle="modal" data-target="#modal_tambah">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
-
                     </button>
-                    {{-- <a href="{{route('karyawan.create')}}" >
-                    </a>  --}}
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -59,23 +54,22 @@
                             </tr>
                           </thead>
                         <tbody>
-                            @if (isset($dataKasLain))
-                                @foreach ($dataKasLain as $item)
+                            @if (isset($dataStatusKendaraan))
+                                @foreach ($dataStatusKendaraan as $item)
                                 <tr>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-Y')}} </td>
-                                    <td>{{$item->nama_jenis}}</td>
-                                    
-                                    <td>Rp. {{number_format($item->total,2)  }}</td>
+                                    <td>{{$item->no_polisi}}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d-M-Y')}}</td>
+                                    <td>{{$item->detail_perawatan}}</td>
                                     <td>
                                         <div class="btn-group dropleft">
                                             <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <i class="fa fa-list"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a href="{{route('transaksi_lain.edit',[$item->id])}}" class="dropdown-item ">
+                                                <a href="{{route('status_kendaraan.edit',[$item->id])}}" class="dropdown-item ">
                                                     <span class="fas fa-edit mr-3"></span> Edit
                                                 </a>
-                                                <a href="{{ route('transaksi_lain.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
+                                                <a href="{{ route('status_kendaraan.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
                                                     <span class="fas fa-trash mr-3"></span> Hapus
                                                 </a>
                                             </div>
@@ -103,99 +97,50 @@
                     <div class="modal-header">
                         <h5 class="modal-title">Form Data</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span></button>
-                        </div>
+                        <span aria-hidden="true">&times;</span></button>
+                    </div>
                     <div class="modal-body">
-                        <div class="tab-content">
-                            {{-- <div class='row'>
-                                <div class="col-lg-12">
-                                    <div class="row">
-                            
-                                        <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                            <label for="tanggal_transaksi">Tanggal Transaksi<span style="color:red">*</span></label>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                </div>
-                                                <input type="text" autocomplete="off" name="tanggal_transaksi" class="form-control date @error('tanggal_transaksi') is-invalid @enderror" id="tanggal_transaksi" placeholder="dd-M-yyyy" value="{{old('tanggal_transaksi')}}">
-                                                @error('tanggal_transaksi')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="row">
-
-                                        <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                            <label for="select_coa">Jenis Transaksi<span style="color:red">*</span></label>
-                                                <select class="form-control select2  @error('select_coa') is-invalid @enderror" style="width: 100%;" id='select_coa' name="select_coa">
-                                                <option value="">Pilih Jenis Transaksi</option>
-                                                @foreach ($dataCOA as $data)
-                                                    <option value="{{$data->id}}" {{old('select_coa')==$data->id?'selected':''}} id_coa='{{$data->no_akun}}' nama_coa='{{$data->nama_jenis}}'>{{ $data->nama_jenis }}</option>
-                                                @endforeach
-                                            </select>
-                                            <input type="hidden" name="id_coa_hidden" id="id_coa_hidden">
-                                            <input type="hidden" name="nama_coa_hidden" id="nama_coa_hidden">
-
-                                            @error('select_coa')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror   
-                                        </div>
-                                    
-                                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                            <label for="select_bank">Kas/Bank<span style="color:red">*</span></label>
-                                                <select class="form-control select2  @error('select_bank') is-invalid @enderror" style="width: 100%;" id='select_bank' name="select_bank">
-                                                <option value="">Pilih Kas/Bank</option>
-                                                @foreach ($dataKas as $data)
-                                                    <option value="{{$data->id}}" {{old('select_bank')==$data->id?'selected':''}} >{{ $data->nama }}</option>
-                                                @endforeach
-                                            </select>
-                                            @error('select_bank')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror   
-                                        </div>
-
-                                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                            <label for="total">Total Nominal<span style="color:red">*</span></label>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text">Rp</span>
-                                                </div>
-                                                <input type="text" name="total" class="form-control numaja uang @error('total') is-invalid @enderror" id="total" placeholder="" value="{{old('total')}}">
-                                                @error('total')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror
-                                            </div>
-                                        </div>  
-                                        
-                                        <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                            <label for="keterangan_klaim">Catatan</label>
-                                            <input type="text" class="form-control @error('catatan') is-invalid @enderror" id="catatan" name="catatan" value="{{old('catatan')}}">
-                                            @error('catatan')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                            @enderror
-                                        </div>  
-                                    </div>
+                        <div class="row">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <label for="tanggal_mulai">Tanggal Mulai<span style='color:red'>*</span></label>
+                                <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                 </div>
-
-                            </div> --}}
-                       
+                                <input type="text" autocomplete="off" name="tanggal_mulai" class="form-control" id="tanggal_mulai" placeholder="dd-M-yyyy" value="">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <label for="tanggal_selesai">Tanggal Selesai</label>
+                                <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><input type="checkbox" id="check_is_selesai" ></span>
+                                </div>
+                                <input type="hidden" id="is_selesai" name='is_selesai' value="N">
+                                <input type="text" autocomplete="off" name="tanggal_selesai" class="form-control" id="tanggal_selesai" placeholder="dd-M-yyyy"  readonly value="">
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
+                                    <select class="form-control select2  @error('select_kendaraan') is-invalid @enderror" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
+                                    <option value="">Pilih Jenis Kendaraan</option>
+                                    @foreach ($dataKendaraan as $data)
+                                        <option value="{{$data->id}}" {{old('select_kendaraan')==$data->id?'selected':''}} >{{ $data->no_polisi }} ({{$data->kategoriKendaraan}})</option>
+                                    @endforeach
+                                </select>
+                                @error('select_kendaraan')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror   
+                            </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="detail_perawatan">Detail Perawatan<span style='color:red'>*</span></label>
+                                <textarea rows="4" name="detail_perawatan" class="form-control" id="detail_perawatan" placeholder=""></textarea> 
+                            </div>
                         </div>
-                        
                     </div>
                     <div class="modal-footer">
-                    
                         <button type="button" class="btn btn-sm btn-danger radiusSendiri p-2" style='width:85px' data-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-sm btn-success radiusSendiri p-2" id="" style='width:85px'><i class="fa fa-fw fa-save"></i> Simpan</button> 
                     </div>
@@ -206,33 +151,37 @@
 <script type="text/javascript">
 $(document).ready(function () {
 
-    $('#tanggal_transaksi').datepicker({
+        var cekerror= <?php echo json_encode($errors->any()); ?>;
+        if (cekerror) {
+                $("#modal_tambah").modal("show");
+        }
+        $('#tanggal_mulai').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
             language:'en',
-            endDate: "0d",
-
+           // endDate: "0d"
         });
-        var cekerror= <?php echo json_encode($errors->any()); ?>;
-    
-    if (cekerror) {
-            $("#modal_tambah").modal("show");
-        
-    }
-        
-
-
-    $('body').on('change','#select_coa',function()
-    {
-        var selectedOption = $(this).find('option:selected');
-        var id_coa_dari_select = selectedOption.attr('id_coa');
-        var nama_coa_dari_select = selectedOption.attr('nama_coa');
-
-        $('#id_coa_hidden').val(id_coa_dari_select);
-        $('#nama_coa_hidden').val(nama_coa_dari_select);
-
-    });
+        $('#check_is_selesai').click(function(){
+            if($(this).is(":checked")){
+                $('#is_selesai').val('Y');
+                $('#tanggal_selesai').attr('readonly',false);
+                $('#tanggal_selesai').datepicker({
+                    autoclose: true,
+                    format: "dd-M-yyyy",
+                    todayHighlight: true,
+                    language:'en'
+                });
+				$('#tanggal_selesai').val(get_date_now);
+				// console.log("Checkbox is checked.");
+            }else if($(this).is(":not(:checked)")){
+                $('#is_selesai').val('N');
+                $('#tanggal_selesai').val('');
+                $('#tanggal_selesai').attr('readonly',true);
+                $('#tanggal_selesai').datepicker('destroy');
+                // console.log("Checkbox is unchecked.");
+            }
+        });
     // new DataTable('#TabelKlaim', {
     //     order: [
     //         [0, 'asc'],
@@ -253,108 +202,80 @@ $(document).ready(function () {
     //     ],
     // }); 
     $('#post_data').submit(function(event) {
-        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top',
-                            timer: 2500,
-                            showConfirmButton: false,
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                toast.addEventListener('mouseleave', Swal.resumeTimer)
-                            }
-                        });
+    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
 
-        if($("#tanggal_transaksi").val().trim()=='')
-            {
-                event.preventDefault(); 
-                Toast.fire({
-                    icon: 'error',
-                    text: `TANGGAL TRANSAKSI WAJIB DI ISI!`,
-                })
-                
-                return;
-            }
-            if($("#select_coa").val()=='')
-            {
-                event.preventDefault(); 
-                Toast.fire({
-                    icon: 'error',
-                    text: `JENIS TRANSAKSI WAJIB DI ISI!`,
-                })
-                
-                return;
-            }
-            if($("#select_bank").val()=='')
-            {
-                event.preventDefault(); 
-                Toast.fire({
-                    icon: 'error',
-                    text: `BANK WAJIB DI PILIH!`,
-                })
-                return;
-            }
-            
-            if($("#total").val().trim()=='')
-            {
-                event.preventDefault(); 
-                Toast.fire({
-                    icon: 'error',
-                    text: `TOTAL NOMINAL WAJIB DI ISI!`,
-                })
-                return;
-            }
-            event.preventDefault();
-            Swal.fire({
-                title: 'Apakah Anda yakin data sudah benar?',
-                text: "Periksa kembali data anda",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonColor: '#d33',
-                confirmButtonColor: '#3085d6',
-                cancelButtonText: 'Batal',
-                confirmButtonText: 'Ya',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'Data Disimpan'
-                    })
-                    setTimeout(() => {
-                        this.submit();
-                    }, 200); // 2000 milliseconds = 2 seconds
-                }else{
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top-end',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Batal Disimpan'
-                    })
-                    event.preventDefault();
-                }
+    if($("#select_kendaraan").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `KENDARAAN BELUM DIPILIH!`,
             })
-        });
+            
+            return;
+        }
+        
+        event.preventDefault();
+        Swal.fire({
+            title: 'Apakah Anda yakin data sudah benar?',
+            text: "Periksa kembali data anda",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonColor: '#d33',
+            confirmButtonColor: '#3085d6',
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    timer: 2500,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Data Disimpan'
+                })
+                setTimeout(() => {
+                    this.submit();
+                }, 200); // 2000 milliseconds = 2 seconds
+            }else{
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    timer: 2500,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Batal Disimpan'
+                })
+                event.preventDefault();
+            }
+        })
+    });
 });
 </script>
 @endsection
