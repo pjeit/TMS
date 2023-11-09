@@ -177,7 +177,7 @@
                         @foreach ($tagihan['getDetails'] as $item)
                             <tr style="background: #ffffff">
                                 <td></td>
-                                <td>{{ $item->getSewa->getCustomer->kode }} - {{ $item->getSewa->nama_tujuan }} ({{ date("Y-m-d", strtotime($item->getSewa->tanggal_berangkat)) }})</td>
+                                <td>{{ $item->getSewa->getCustomer->kode }} - {{ $item->getSewa->nama_tujuan }} ({{ date("d-M-Y", strtotime($item->getSewa->tanggal_berangkat)) }})</td>
                                 <td style="text-align: right;">{{ number_format($item->total_tagihan) }}</td>
                                 <td colspan="4"></td>
                             </tr>

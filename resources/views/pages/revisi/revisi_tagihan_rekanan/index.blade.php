@@ -18,7 +18,8 @@
 <div class="container-fluid">
     <div class="card radiusSendiri">
         <div class="card-header">
-
+            <input type="hidden" id="token" value="{{ csrf_token() }}">
+            {{-- <button class="deleteProduct" data-id="{{ $comment->id }}" data-token="{{  }}" >Delete Task</button> --}}
         </div>
         <div class="card-body">
             <table id="revTagihan" class="table table-bordered table-hover yajra-datatable" width="100%">
@@ -68,6 +69,62 @@
                     searchable: false
                 },
             ]
+        });
+
+        $(document).on('click', '.delete', function (event){
+            let id = this.value;
+            console.log('id', id);
+            url = `{{ url('revisi_tagihan_rekanan/delete/${id}') }}`;
+            var token = $('#token').val();
+            console.log('url', url);
+
+            Swal.fire({
+                title: 'Apakah Anda yakin menghapus data ini?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        dataType: "JSON",
+                        data: {
+                            "id": id,
+                            "_method": 'GET',
+                            "_token": token,
+                        },
+                        success: function(resp){
+                            if(resp.status == 'success'){
+                                window.location.reload();
+                            }
+                        }
+                    });
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
         });
     });
 </script>
