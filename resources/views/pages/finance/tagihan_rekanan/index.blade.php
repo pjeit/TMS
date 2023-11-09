@@ -134,6 +134,7 @@
                 $(".id_supplier_"+idSupplier).prop("checked", false);
             }
         });
+
     });
 </script>
 @endsection

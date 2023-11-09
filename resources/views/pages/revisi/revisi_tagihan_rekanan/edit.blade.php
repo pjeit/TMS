@@ -24,12 +24,12 @@
         @endforeach
     @endif
 <section class="container-fluid">
-    <form action="{{ route('tagihan_rekanan.bayar_save') }}" id="save" method="POST" >
-        @csrf
+    <form action="{{ route('revisi_tagihan_rekanan.update', ['revisi_tagihan_rekanan' => $data->id]) }}" id="save" method="POST" >
+        @csrf @method('PUT')
         <div class="radiusSendiri sticky-top" style="margin-bottom: -15px;">
             <div class="card radiusSendiri" style="">
                 <div class="card-header radiusSendiri">
-                    <a href="{{ route('tagihan_rekanan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                    <a href="{{ route('revisi_tagihan_rekanan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                     <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                 </div>
             </div>
@@ -50,6 +50,7 @@
                                     </select>
                                     <input type="hidden" name="id_supplier" value="{{ $data->id_supplier }}">
                                     <input type="hidden" name="nama_supplier" value="{{ $data->getSupplier->nama }}">
+                                    <input type="hidden" name="data_deleted" id="data_deleted">
                                 </div>  
                             </div>
 
@@ -67,17 +68,18 @@
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <div class="form-group">
                                     <label for="">Pilih Kas<span style="color:red">*</span></label>
-                                    <select name="id_kas" class="select2" style="width: 100%" id="id_kas" required>
+                                    <select class="select2" style="width: 100%" id="id_kas" required disabled>
                                         <option value="">── PILIH SUPPLIER ──</option>
                                         @foreach ($dataKas as $item)
-                                            <option value="{{ $item->id }}" {{ $item->id == 1? 'selected':'' }}>{{ $item->nama }}</option>
+                                            <option value="{{ $item->id }}" {{ $item->id == $data->id_kas? 'selected':'' }}>{{ $item->nama }}</option>
                                         @endforeach
                                     </select>
+                                    <input type="hidden" name="id_kas" value="{{ $data->id_kas }}">
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="">Catatan</label>
-                                <textarea name="catatan" class="form-control" rows="1"></textarea>
+                                <label for="">Alasan Revisi<span style="color:red">*</span></label>
+                                <textarea name="catatan" class="form-control" rows="1" required></textarea>
                             </div>
                         </div>
                     </div>
@@ -137,9 +139,10 @@
             <table class="table table-hover table-bordered " width="100%" id="tabel_tagihan">
                 <thead >
                     <tr >
-                        <th style="width: 100px;">No. Nota</th>
-                        <th style="width: 600px;">Data Rekanan</th>
-                        <th style="width: 150px; text-align: center;"><span style="font-size: 1.3em;"><sup>Tagihan</sup>/<sub>Sewa</sub></span></th>
+                        <th style="width: 200px;">No. Nota</th>
+                        <th style="width: 500px;">Data Rekanan</th>
+                        <th style="width: 150px;">Tagihan</th>
+                        {{-- <th style="width: 150px; text-align: center;"><span style="font-size: 1.3em;"><sup>Tagihan</sup>/<sub>Sewa</sub></span></th> --}}
                         <th style="width: 100px; text-align: center">PPh23</th>
                         <th style="width: 150px; text-align: center">Total Bayar</th>
                         <th style="width: 150px; text-align: left">Bukti Potong</th>
@@ -148,47 +151,43 @@
                 </thead>
                 <tbody id="hasil">
                     @foreach ($data->getRekanan as $key => $rekanan)
-                        <tr style="background: #ffffffc0">
+                        <tr style="background: #ffffffc0" class="tr_{{ $rekanan->id }}">
                             <td>{{ $rekanan->no_nota }}
-                                <input type="hidden" id="no_nota_{{ $rekanan->id }}" value="{{ $rekanan->no_nota }}" name="data[{{ $rekanan->id }}][no_nota]">
-                                <input type="hidden" id="bukti_potong_{{ $rekanan->id }}" name="data[{{ $rekanan->id }}][bukti_potong]" value="{{ $rekanan->bukti_potong }}">
-                                <input type="hidden" class="pph23" id="pph23_{{ $rekanan->id }}" value="{{ $rekanan->pph }}" name="data[{{ $rekanan->id }}][pph]">
-                                <input type="hidden" class="biaya_admin" id="biaya_admin_{{ $rekanan->id }}" value="{{ $rekanan->biaya_admin }}" name="data[{{ $rekanan->id }}][biaya_admin]">
-                                <input type="hidden" class="total_tagihan" id="total_tagihan_{{ $rekanan->id }}" value="{{ $rekanan->total_tagihan }}" name="data[{{ $rekanan->id }}][total_tagihan]">
-                                <input type="hidden" class="tagihan_dibayarkan" id="tagihan_dibayarkan_{{ $rekanan->id }}" value="{{ $rekanan->tagihan_dibayarkan }}" name="data[{{ $rekanan->id }}][tagihan_dibayarkan]">
+                                <input type="hidden" id="no_nota_{{ $key }}" value="{{ $rekanan->no_nota }}" name="data[{{ $rekanan->id }}][no_nota]">
+                                <input type="hidden" id="bukti_potong_{{ $key }}" name="data[{{ $rekanan->id }}][bukti_potong]" value="{{ $rekanan->bukti_potong }}">
+                                <input type="hidden" class="pph23" id="pph23_{{ $key }}" value="{{ $rekanan->pph }}" name="data[{{ $rekanan->id }}][pph]">
+                                <input type="hidden" class="biaya_admin" id="biaya_admin_{{ $key }}" value="{{ $rekanan->biaya_admin }}" name="data[{{ $rekanan->id }}][biaya_admin]">
+                                <input type="hidden" class="total_tagihan" id="total_tagihan_{{ $key }}" value="{{ $rekanan->total_tagihan }}" name="data[{{ $rekanan->id }}][total_tagihan]">
+                                <input type="hidden" class="tagihan_dibayarkan" id="tagihan_dibayarkan_{{ $key }}" value="{{ $rekanan->tagihan_dibayarkan }}" name="data[{{ $rekanan->id }}][tagihan_dibayarkan]">
                             </td>
                             <td colspan="2"></td>
-                            <td style="text-align: right;" class="font-weight-bold text-red text_pph23_{{ $rekanan->id }}">{{ number_format($rekanan->pph) }}</td>
-                            <td style="text-align: right;" class="font-weight-bold text-success text_tagihan_dibayarkan_{{ $rekanan->id }}">{{ number_format($rekanan->tagihan_dibayarkan) }}</td>
-                            <td class="text_bukti_potong_{{ $rekanan->id }}"></td>
+                            <td style="text-align: right;" class="font-weight-bold text-red text_pph23_{{ $key }}">{{ number_format($rekanan->pph) }}</td>
+                            <td style="text-align: right;" class="font-weight-bold text-success text_tagihan_dibayarkan_{{ $key }}">{{ number_format($rekanan->tagihan_dibayarkan) }}</td>
+                            <td class="text_bukti_potong_{{ $key }}">{{ $rekanan->bukti_potong }}</td>
                             <td>
                                 <div class="btn-group dropleft">
                                     <button class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <button class="btn dropdown-item openDetail" value="{{ $rekanan->id }}">
+                                        <button class="btn dropdown-item openDetail" value="{{ $key }}">
                                             <span class="fas fa-sticky-note mr-3"></span> Edit
+                                        </button>
+                                        <button type="button" class="btn dropdown-item delete" value="{{ $rekanan->id }}">
+                                            <span class="fas fa-trash-alt mr-3"></span> Delete
                                         </button>
                                     </div>
                                 </div>
                             </td>
                         </tr>
                         @foreach ($rekanan['getDetails'] as $item)
-                            <tr style="background: #ffffff">
+                            <tr style="background: #ffffff" class="tr_{{ $rekanan->id }}">
                                 <td></td>
-                                {{-- <td>{{ $item->catatan }}</td> --}}
-                                <td>{{ $item->getSewa->getCustomer->kode }} - {{ $item->getSewa->nama_tujuan }} ({{ date("Y-m-d", strtotime($item->getSewa->tanggal_berangkat)) }})</td>
+                                <td>{{ $item->getSewa->getCustomer->kode }} - {{ $item->getSewa->nama_tujuan }} ({{ date("d-M-Y", strtotime($item->getSewa->tanggal_berangkat)) }})</td>
                                 <td style="text-align: right;" class="total_tagihan">{{ number_format($item->total_tagihan) }}</td>
                                 <td colspan="4"></td>
                             </tr>
                         @endforeach
-                        {{-- <tr style="background: #ffffff90">
-                            <td colspan="3"></td>
-                            <td style="text-align: right;">0</td>
-                            <td style="text-align: right;">0</td>
-                            <td colspan="2"></td>
-                        </tr> --}}
                     @endforeach
                 </tbody>
             </table>
@@ -275,61 +274,6 @@
     </div>
 </div>
 
-{{-- logic save --}}
-<script type="text/javascript">
-    // $(document).ready(function() {
-    //     $('#save').submit(function(event) {
-    //         // cek total_dibayar
-    //             var total_dibayar = $('#total_dibayar').val();
-    //             console.log('total_dibayar', total_dibayar);
-    //             if(escapeComma(total_dibayar) == 0 || escapeComma(total_dibayar) == ''){
-    //                 Swal.fire(
-    //                     'Data tidak valid',
-    //                     'Total bayar masih 0, harap periksa kembali data anda!',
-    //                     'warning'
-    //                 )
-    //                 return false;
-    //             }
-    //         //
-
-    //         event.preventDefault(); // Prevent form submission
-    //         Swal.fire({
-    //             title: 'Apakah Anda yakin data sudah benar ?',
-    //             text: "Periksa kembali data anda",
-    //             icon: 'warning',
-    //             showCancelButton: true,
-    //             cancelButtonColor: '#d33',
-    //             confirmButtonColor: '#3085d6',
-    //             cancelButtonText: 'Batal',
-    //             confirmButtonText: 'Ya',
-    //             reverseButtons: true
-    //         }).then((result) => {
-    //             if (result.isConfirmed) {
-    //                 this.submit();
-    //             }else{
-    //                 const Toast = Swal.mixin({
-    //                     toast: true,
-    //                     position: 'top',
-    //                     timer: 2500,
-    //                     showConfirmButton: false,
-    //                     timerProgressBar: true,
-    //                     didOpen: (toast) => {
-    //                         toast.addEventListener('mouseenter', Swal.stopTimer)
-    //                         toast.addEventListener('mouseleave', Swal.resumeTimer)
-    //                     }
-    //                 })
-
-    //                 Toast.fire({
-    //                     icon: 'warning',
-    //                     title: 'Batal Disimpan'
-    //                 })
-    //                 event.preventDefault();
-    //             }
-    //         })
-    //     });
-    // });
-</script>
-
 <script type="text/javascript">
     $(document).ready(function() {
         // toogle check biaya admin
@@ -339,6 +283,14 @@
             } else {
                 $("#biaya_admin").val('');
                 $("#biaya_admin").attr("readonly", true);
+
+                const cek_admin = $('#biaya_admin_0').val();
+                const cek_dibayarkan = $('#tagihan_dibayarkan_0').val();
+                if(parseFloat(cek_admin) != 0){
+                    $('#biaya_admin_0').val(0);
+                    $('#tagihan_dibayarkan_0').val(parseFloat(cek_dibayarkan)+parseFloat(cek_admin))
+                    document.querySelector('.text_tagihan_dibayarkan_0').textContent = moneyMask($('#tagihan_dibayarkan_0').val());
+                }
             }
             hitung();
         });
@@ -363,14 +315,15 @@
             clear();
             event.preventDefault();
             var id = this.value;
+            var biaya_admin = !isNaN(parseFloat($('#biaya_admin_'+id).val()))? parseFloat($('#biaya_admin_'+id).val()):0;
 
             $('#key').val(id);
             $('#modal_no_nota').val( $('#no_nota_'+id).val() );
             $('#modal_bukti_potong').val( $('#bukti_potong_'+id).val() );
             $('#modal_pph23').val( moneyMask($('#pph23_'+id).val()) );
             $('#modal_total_tagihan').val( moneyMask($('#total_tagihan_'+id).val()) );
-            $('#modal_bayar').val( moneyMask($('#tagihan_dibayarkan_'+id).val()) );
-
+            var bayar = parseFloat($('#tagihan_dibayarkan_'+id).val()) + biaya_admin; 
+            $('#modal_bayar').val( moneyMask( bayar ) );
             $('#modal_detail').modal('show');
         });
 
@@ -391,11 +344,45 @@
                 elements[i].textContent = $('#modal_bukti_potong').val();
             }
 
+            if(id == 0){
+                const cek_admin = $('#biaya_admin_0').val();
+                if(parseFloat(cek_admin) != 0){
+                    $('#biaya_admin_0').val(0);
+                    document.getElementById("BiayaAdminCheck").checked = false;
+                    $("#biaya_admin").val('');
+                    $("#biaya_admin").attr("readonly", true);
+                }
+            }
+
             $('#modal_detail').modal('hide'); // close modal
             hitung();
         });
 
+        $(document).on('click', '.delete', function(event){
+            id = this.value;
+            
+            var trElements = document.querySelectorAll('tr.tr_'+id);
+            for (var i = 0; i < trElements.length; i++) {
+                trElements[i].remove();
+            }
+
+            let deleted = $('#data_deleted').val();
+            if(deleted != ''){
+                id = deleted + ','+id;
+            }
+            $('#data_deleted').val(id);
+
+            hitung()
+        });
+
         $(document).on('keyup', '#biaya_admin', function (event) {
+            const tagihan = parseFloat($('#total_tagihan_0').val());
+            const pph = parseFloat($('#pph23_0').val());
+            $('#biaya_admin_0').val(normalize(this.value));
+
+            $('#tagihan_dibayarkan_0').val( (parseFloat(tagihan) - pph) - normalize(this.value) )
+            document.querySelector('.text_tagihan_dibayarkan_0').textContent = moneyMask($('#tagihan_dibayarkan_0').val());
+
             hitung();
         });
 
@@ -451,10 +438,7 @@
                 }
             });
 
-
             var biaya_admin = !isNaN(normalize($('#biaya_admin').val()))? normalize($('#biaya_admin').val()):0;
-            console.log('total_bayar_all', total_bayar_all);
-            console.log('biaya_admin', biaya_admin);
             $('#total_bayar').val(moneyMask(total_bayar_all - biaya_admin));
             $('#pph23').val(moneyMask(total_pph23));
             $('#tagihan').val(moneyMask(total_tagihan_all));
@@ -489,11 +473,9 @@
                 }
             });
 
-
             var biaya_admin = !isNaN(normalize($('#biaya_admin').val()))? normalize($('#biaya_admin').val()):0;
-            console.log('total_bayar_all', total_bayar_all);
-            console.log('biaya_admin', biaya_admin);
-            $('#total_bayar').val(moneyMask(total_bayar_all - biaya_admin));
+          
+            $('#total_bayar').val(moneyMask(total_bayar_all));
             $('#pph23').val(moneyMask(total_pph23));
             $('#tagihan').val(moneyMask(total_tagihan_all));
         }
@@ -508,9 +490,7 @@
                     total_biaya_admin += value;
                 }
             });
-            console.log('total_biaya_admin', total_biaya_admin);
             if(total_biaya_admin > 0){
-                // $("#BiayaAdminCheck").checked('checked', 'true');
                 document.getElementById("BiayaAdminCheck").checked = true;
                 $("#biaya_admin").val(moneyMask(total_biaya_admin)).removeAttr("readonly");
             }

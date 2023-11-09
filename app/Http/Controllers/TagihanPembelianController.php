@@ -148,6 +148,7 @@ class TagihanPembelianController extends Controller
 
             $pembayaran = new TagihanPembelianPembayaran();
             $pembayaran->id_kas = $data['id_kas'];
+            $pembayaran->catatan = $data['catatan'];
             $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
             $pembayaran->total_bayar = floatval(str_replace(',', '', $data['total_bayar']));
             $pembayaran->created_by = $user;

@@ -180,6 +180,7 @@ class TagihanRekananController extends Controller
             $pembayaran = new TagihanRekananPembayaran();
             $pembayaran->id_supplier = $data['id_supplier'];
             $pembayaran->id_kas = $data['id_kas'];
+            $pembayaran->catatan = $data['catatan'];
             $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
             $pembayaran->total_bayar = floatval(str_replace(',', '', $data['total_bayar']));
             $pembayaran->save();
@@ -194,7 +195,7 @@ class TagihanRekananController extends Controller
                         $tagihan->tagihan_dibayarkan += $value['total_bayar'] - $biaya_admin;
                         $tagihan->biaya_admin = $biaya_admin;
                     }else{
-                        $tagihan->tagihan_dibayarkan += $value['total_bayar'] + $value['pph'];
+                        $tagihan->tagihan_dibayarkan += $value['total_bayar'];
 
                     }
                     if($tagihan->sisa_tagihan == 0){

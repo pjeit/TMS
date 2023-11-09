@@ -243,6 +243,7 @@ Route::middleware(['auth'])->group(function () {
         // ===================================INVOICE=========================================================
         
         // ===================================REVISI=========================================================
+        Route::get('revisi_tagihan_rekanan/delete/{id}', [App\Http\Controllers\RevisiTagihanRekananController::class, 'delete'])->name('revisi_tagihan_rekanan.delete');
         Route::get('revisi_tagihan_rekanan/load_data', [App\Http\Controllers\RevisiTagihanRekananController::class, 'load_data'])->name('revisi_tagihan_rekanan.load_data');
         Route::resource('revisi_tagihan_rekanan', 'App\Http\Controllers\RevisiTagihanRekananController');
 
