@@ -299,7 +299,7 @@
                                         row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input class='check_item check_cust' grup_child='${data[i].grup_id}' cust_parent='${data[i].id_customer}' type='checkbox'> </span> </div> </b></td>`);
                                     
                                         row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' / '+data[i].no_polisi:'' } / ${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier} </td>`);
-                                        row.append(`<td> ${data[i].tipe_kontainer}" <b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                        row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
                                         var nominal = 0;
                                         if(data[i].jenis_order == 'INBOUND'){
                                             if(data[i].tipe_kontainer=='20'){

@@ -126,28 +126,20 @@ class BelumInvoiceController extends Controller
      */
     public function create()
     {
-        //
         $sewa = session()->get('sewa'); //buat ambil session
         $cust = session()->get('cust'); //buat ambil session
         $grup = session()->get('grup'); //buat ambil session
-        // dd($sewa);
         try {
             $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                 ->leftJoin('supplier AS sp', 'sewa.id_supplier', '=', 'sp.id')
                 ->where('sewa.status', 'MENUNGGU INVOICE')
-            //      ->where(function ($query) {
-            //     $query->where('sewa.status', 'MENUNGGU INVOICE')
-            //         ->orWhere('sewa.status', 'BATAL MUAT');
-            // })
                 ->where('sewa.is_aktif', '=', 'Y')
                 ->select('sewa.*','sp.nama as namaSupplier')
                 ->get();
-            // dd($data);
             $checkBedaJenisTujuan = false;
             $checkLTL = false;
             
             for ($i=0; $i <count($data) ; $i++) { 
-                # code...
                 if ($data[$i]->jenis_tujuan !== $data[0]->jenis_tujuan) {
                     $checkBedaJenisTujuan = true; 
                     break;
@@ -171,10 +163,6 @@ class BelumInvoiceController extends Controller
                         ->where('c.grup_id', $grup[0])
                         ->where('sewa.is_aktif', '=', 'Y')
                         ->where('sewa.status', 'MENUNGGU INVOICE')
-                //          ->where(function ($query) {
-                //     $query->where('sewa.status', 'MENUNGGU INVOICE')
-                //         ->orWhere('sewa.status', 'BATAL MUAT');
-                // })
                         ->select('sewa.*')
                         ->get();
     

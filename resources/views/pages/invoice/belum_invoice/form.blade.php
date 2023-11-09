@@ -253,8 +253,7 @@
                                 <span id='subtotal_text_{{ $item->id_sewa }}'>{{ number_format($total_addcost+$item->total_tarif) }}</span>
                                 <input type="hidden" class="hitung_subtotal subtotal_hidden_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][subtotal]' id='subtotal_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost+$item->total_tarif }}">
                             </td>
-                            <td>
-                                <span id="catatan_text_{{ $item->id_sewa }}">{{ $item->catatan }}</span>
+                            <td><span id="catatan_text_{{ $item->id_sewa }}">{{ $item->catatan }}</span>
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][nama_tujuan]' id='nama_tujuan_hidden_{{ $item->id_sewa }}' value="{{ $item->nama_tujuan }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][tgl_berangkat]' id='tgl_berangkat_hidden_{{ $item->id_sewa }}' value="{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][no_kontainer]' id='no_kontainer_hidden_{{ $item->id_sewa }}' value="{{ $item->no_kontainer }}">
@@ -410,9 +409,9 @@
                                         <thead>
                                             <tr class="">
                                                 <th style="">Deskripsi</th>
-                                                <th style="">Jumlah</th>
-                                                <th style="">Ditagihkan</th>
-                                                <th style="">Dipisahkan</th>
+                                                <th style="width: 120px;">Jumlah</th>
+                                                <th style="width: 60px;">Ditagihkan</th>
+                                                <th style="width: 60px;">Dipisahkan</th>
                                                 <th style="">Catatan</th>
                                                 {{-- <th style="text-align: center; vertical-align: middle;">#</th> --}}
                                             </tr>
@@ -742,13 +741,11 @@
                                         ${item.total_operasional == null? '':moneyMask(item.total_operasional)}
                                         <input type="hidden" id="addcost_total_operasional_${index}" value="${item.total_operasional}" class="form-control numaja uang hitungBiaya" readonly />
                                     </td>
-                                    <td>
-                                        ${item.is_ditagihkan == null? '':item.is_ditagihkan}
-                                        <input type="hidden" id="addcost_is_ditagihkan_${index}" value="${item.is_ditagihkan}" class="form-control" readonly />
+                                    <td style="text-align:center;">
+                                        <input type="checkbox" id="addcost_is_ditagihkan_${index}" name="addcost_is_ditagihkan_${index}" value="${item.is_ditagihkan}" ${item.is_ditagihkan == 'Y'? 'checked':''}>
                                     </td>
-                                    <td>
-                                        ${item.is_dipisahkan == null? '':item.is_dipisahkan}
-                                        <input type="hidden" id="addcost_is_dipisahkan_${index}" value="${item.is_dipisahkan}" class="form-control" readonly />
+                                    <td style="text-align:center;">
+                                        <input type="checkbox" id="addcost_is_dipisahkan_${index}" name="addcost_is_dipisahkan_${index}" value="${item.is_dipisahkan}" ${item.is_dipisahkan == 'Y'? 'checked':''}>
                                     </td>
                                     <td>
                                         ${item.catatan == null? '':item.catatan}
@@ -757,9 +754,22 @@
                                 </tr>
                             `
                         );
+                        // <select class="select2" style="width: 100%" id="addcost_is_ditagihkan_${index}">
+                        //     <option value="Y" ${item.is_ditagihkan == 'Y'? 'selected':''}>Ya</option>
+                        //     <option value="N" ${item.is_ditagihkan == 'N'? 'selected':''}>Tidak</option>
+                        // </select>
+                        // <select class="select2" style="width: 100%" id="addcost_is_dipisahkan_${index}">
+                        //     <option value="Y" ${item.is_dipisahkan == 'Y'? 'selected':''}>Ya</option>
+                        //     <option value="N" ${item.is_dipisahkan == 'N'? 'selected':''}>Tidak</option>
+                        // </select>
+                        // <input type="hidden" id="addcost_is_ditagihkan_${index}" value="${item.is_ditagihkan}" class="form-control" readonly />
+                        // <input type="hidden" id="addcost_is_dipisahkan_${index}" value="${item.is_dipisahkan}" class="form-control" readonly />
                     }
                 });
             }
+
+            $('.select2').select2({
+            })
         }
 
         function hitung(){ // hitung tarif + addcost - diskon 

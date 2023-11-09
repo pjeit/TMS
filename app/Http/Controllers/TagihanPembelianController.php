@@ -147,6 +147,7 @@ class TagihanPembelianController extends Controller
             $i = 0;
 
             $pembayaran = new TagihanPembelianPembayaran();
+            $pembayaran->id_supplier = $data['id_supplier'];
             $pembayaran->id_kas = $data['id_kas'];
             $pembayaran->catatan = $data['catatan'];
             $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
@@ -159,14 +160,14 @@ class TagihanPembelianController extends Controller
                 $tagihan = TagihanPembelian::where('is_aktif', 'Y')->find($key);
                 if($tagihan){
                     $tagihan->id_pembayaran = $pembayaran->id;
+                    $tagihan->bukti_potong = $value['bukti_potong'];
                     $tagihan->pph = $value['pph'];
                     $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
                     if($i == 0){
                         $tagihan->tagihan_dibayarkan += $value['total_bayar'] - $biaya_admin;
                         $tagihan->biaya_admin = $biaya_admin;
                     }else{
-                        $tagihan->tagihan_dibayarkan += $value['total_bayar'] + $value['pph'];
-
+                        $tagihan->tagihan_dibayarkan += $value['total_bayar'];
                     }
                     if($tagihan->sisa_tagihan == 0){
                         $tagihan->status = 'LUNAS';
