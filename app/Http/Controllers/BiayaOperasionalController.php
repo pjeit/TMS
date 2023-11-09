@@ -110,7 +110,7 @@ class BiayaOperasionalController extends Controller
                         
                         $sewa_o = new SewaOperasional();
                         $sewa_o->id_sewa = $key;
-                        $sewa_o->deskripsi = $item == 'OPERASIONAL' ? 'OPERASIONAL ' . ($value['pick_up'] != null? $value['pick_up']:'') :$item;
+                        $sewa_o->deskripsi = $item == 'OPERASIONAL'? 'OPERASIONAL' . ($value['pick_up'] != 'null'? ' '. $value['pick_up']:'') : $item;
                         $sewa_o->catatan = $value['catatan'];
                         $sewa_o->total_operasional = $nominal;
                         $sewa_o->total_dicairkan = $dicairkan;

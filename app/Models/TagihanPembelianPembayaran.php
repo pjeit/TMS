@@ -10,5 +10,18 @@ class TagihanPembelianPembayaran extends Model
     use HasFactory;
     protected $table = 'tagihan_pembelian_pembayaran';
     
+    public function getSupplier()
+    {
+         return $this->hasOne(Supplier::class, 'id', 'id_supplier');
+    }
     
+    public function getPembelian()
+    {
+     return $this->hasMany(TagihanPembelian::class, 'id_pembayaran', 'id')->where('is_aktif', 'Y');
+    }
+
+    public function getPembelianDetail()
+    {
+         return $this->hasMany(TagihanPembelianDetail::class, 'id_tagihan_pembelian', 'id_tagihan_pembelian')->where('is_aktif', 'Y');
+    }
 }
