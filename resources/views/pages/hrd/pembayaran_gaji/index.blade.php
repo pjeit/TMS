@@ -543,7 +543,7 @@
             $('#karyawan_name').val(attr_nama);
             $('#karyawan_gaji').val(attr_gaji);
             $('#karyawan_hutang').val(attr_total_hutang);
-            $('#total_gaji').val(addPeriod(attr_gaji,','));
+            $('#total_gaji').val(attr_gaji?addPeriod(attr_gaji,','):0);
             $('#total_hutang').val(attr_total_hutang?addPeriod(attr_total_hutang,','):0);
             hitung_total();
             cek_potongan_hutang();

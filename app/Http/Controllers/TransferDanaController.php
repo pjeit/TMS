@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\KasBank;
 use App\Models\KasBankTransaction;
+use Exception;
 class TransferDanaController extends Controller
 {
     /**
@@ -166,6 +167,11 @@ class TransferDanaController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
 
         }   
+        catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+        }
     }
 
     /**
@@ -278,11 +284,9 @@ class TransferDanaController extends Controller
                 $transfer->kas_bank_id_ke = $data['select_bank_ke'];
                 $transfer->total = floatval(str_replace(',', '', $data['total']));
                 $transfer->catatan = $data['catatan'];
-                $transfer->created_by = $user;
-                $transfer->created_at = now();
-                $transfer->is_aktif = 'Y';
+                $transfer->updated_by = $user;
+                $transfer->updated_at = now();
                 // $transfer->save();
-
                 if ($transfer->save()) {
                 
                      $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
@@ -345,6 +349,11 @@ class TransferDanaController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
 
         }   
+        catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+        }
     }
 
     /**
@@ -417,6 +426,11 @@ class TransferDanaController extends Controller
         catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->back()->withErrors($e->errors());
+        }
+        catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+            return redirect()->back()->withErrors($ex->getMessage())->withInput();
         }
     }
 }
