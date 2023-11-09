@@ -222,16 +222,28 @@ class RevisiTagihanRekananController extends Controller
                     return $item->getSupplier->nama;
                 }) 
                 ->addColumn('no_nota', function($row){ // tambah kolom baru
-                    return $row->getRekanan->no_nota;
+                    $no_nota = '';
+                    foreach ($row->getRekanan as $key => $value) {
+                        $no_nota .=  " #" .$value->no_nota . '<br>';
+                    } 
+                    return substr($no_nota, 1);
                 })
                 ->addColumn('tgl_nota', function($row){ // tambah kolom baru
-                    return date("d-M-Y", strtotime($row->getRekanan->tgl_nota));
+                    $tgl_nota = '';
+                    foreach ($row->getRekanan as $key => $value) {
+                        $tgl_nota .= " #".date("d-M-Y", strtotime($value->tgl_nota)) . '<br>';
+                    } 
+                    return substr($tgl_nota, 1);
                 })
                 ->addColumn('jatuh_tempo', function($row){ // tambah kolom baru
-                    return date("d-M-Y", strtotime($row->getRekanan->jatuh_tempo));
+                    $jatuh_tempo = '';
+                    foreach ($row->getRekanan as $key => $value) {
+                        $jatuh_tempo .= " #".date("d-M-Y", strtotime($value->jatuh_tempo)) . '<br>';
+                    } 
+                    return substr($jatuh_tempo, 1);
                 })
-                ->editColumn('total_tagihan', function($item){ // edit format uang
-                    return number_format($item->total_tagihan);
+                ->editColumn('total_bayar', function($item){ // edit format uang
+                    return number_format($item->total_bayar);
                 }) 
                 ->addColumn('action', function($row){
                     $actionBtn = '
@@ -252,7 +264,7 @@ class RevisiTagihanRekananController extends Controller
                                     // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
                     return $actionBtn;
                 })
-                ->rawColumns(['action'])
+                ->rawColumns(['action', 'no_nota', 'tgl_nota', 'jatuh_tempo']) // ini buat render raw html, kalo ga pake nanti jadi text biasa
                 ->make(true);
         }
     }

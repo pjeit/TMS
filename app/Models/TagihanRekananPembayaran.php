@@ -17,7 +17,7 @@ class TagihanRekananPembayaran extends Model
     
     public function getRekanan()
     {
-         return $this->hasOne(TagihanRekanan::class, 'id', 'id_tagihan_rekanan')->where('is_aktif', 'Y');
+         return $this->hasMany(TagihanRekanan::class, 'id_pembayaran', 'id')->where('is_aktif', 'Y');
     }
 
     public function getRekananDetail()

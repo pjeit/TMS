@@ -123,8 +123,6 @@ class TagihanPembelianController extends Controller
 
         $data_tagihan = TagihanPembelian::with('getDetails')->where('is_aktif', 'Y')->whereIn('id', $data['idTagihan'])->get();
 
-        // dd($data_tagihan);
-        
         if($data_tagihan){
             return view('pages.finance.tagihan_pembelian.bayar',[
                 'judul' => "Tagihan Rekanan",
@@ -142,57 +140,51 @@ class TagihanPembelianController extends Controller
         $user = Auth::user()->id;
         DB::beginTransaction(); 
         // dd($data);
+    
         try {
             $keterangan = 'TAGIHAN PEMBELIAN: '. $data['nama_supplier'] . ' - ';
-            $id_tagihan = '';
             $biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
-            $total_bayar = 0;
             $i = 0;
+
+            $pembayaran = new TagihanPembelianPembayaran();
+            $pembayaran->id_kas = $data['id_kas'];
+            $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
+            $pembayaran->total_bayar = floatval(str_replace(',', '', $data['total_bayar']));
+            $pembayaran->created_by = $user;
+            $pembayaran->created_at = now();
+            $pembayaran->save();
 
             foreach ($data['data'] as $key => $value) {
                 $tagihan = TagihanPembelian::where('is_aktif', 'Y')->find($key);
                 if($tagihan){
-                    $tagihan->tagihan_dibayarkan += ($value['total_bayar'] + $value['pph']);
+                    $tagihan->id_pembayaran = $pembayaran->id;
+                    $tagihan->pph = $value['pph'];
                     $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
+                    if($i == 0){
+                        $tagihan->tagihan_dibayarkan += $value['total_bayar'] - $biaya_admin;
+                        $tagihan->biaya_admin = $biaya_admin;
+                    }else{
+                        $tagihan->tagihan_dibayarkan += $value['total_bayar'] + $value['pph'];
+
+                    }
                     if($tagihan->sisa_tagihan == 0){
                         $tagihan->status = 'LUNAS';
                     }
                     $tagihan->updated_by = $user;
                     $tagihan->updated_at = now();
-                    if($tagihan->save()){
-                        $pembayaran = new TagihanPembelianPembayaran();
-                        $pembayaran->id_tagihan_pembelian = $key;
-                        $pembayaran->id_kas = $data['id_kas'];
-                        $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
-                        $pembayaran->bukti_potong = $value['bukti_potong'];
-                        $pembayaran->total_tagihan = $value['total_tagihan'];
-                        $pembayaran->pph = $value['pph'];
-                        if($i == 0){
-                            $bayar = $value['total_bayar'] - $biaya_admin;
-                            $pembayaran->biaya_admin = $biaya_admin;
-                        }else{
-                            $bayar = $value['total_bayar'];
-                            $pembayaran->biaya_admin = 0;
-                        }
-                        $pembayaran->total_bayar = $bayar;
-                        $pembayaran->created_by = $user;
-                        $pembayaran->created_at = now();
-                        $pembayaran->save();
+                    $tagihan->save();     
 
-                        $id_tagihan .= $pembayaran .', ';
-
-                        $keterangan .= ' #NOTA: '. $value['no_nota'] . ' #TOTAL BAYAR: ' .$bayar;
-                        if($i == 0 && $biaya_admin != 0){
-                            $keterangan .= ' #BIAYA ADMIN: '. $biaya_admin;
-                        }
-                        if($value['pph'] != 0){
-                            $keterangan .= ' #PPh23: '. $value['pph'];
-                        }
-                        $total_bayar += $bayar;
-                        $i++;
+                    $keterangan .= ' #NOTA: '. $value['no_nota'] . ' #TOTAL BAYAR: ' . $tagihan->tagihan_dibayarkan;
+                    if($value['pph'] != 0){
+                        $keterangan .= ' #PPh23: '. $value['pph'];
                     }
+                    if($i == 0 && $biaya_admin != 0){
+                        $keterangan .= ' #BIAYA ADMIN: '. $biaya_admin;
+                    }
+                    $i++;
                 }                
             }
+
             $history = new KasBankTransaction();
             $history->id_kas_bank = $data['id_kas'];
             $history->tanggal = date_create_from_format('d-M-Y', $data['tgl_bayar']);
@@ -202,7 +194,7 @@ class TagihanPembelianController extends Controller
             $history->kode_coa = 1255; // hardcode
             $history->jenis = 'TAGIHAN_PEMBELIAN';
             $history->keterangan_transaksi = $keterangan;
-            $history->keterangan_kode_transaksi = $id_tagihan;
+            $history->keterangan_kode_transaksi = $pembayaran->id;
             $history->created_by = $user;
             $history->created_at = now();
             if($history->save()){
