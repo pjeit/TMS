@@ -120,7 +120,7 @@
                     request()->is('head*')||
                     request()->is('chassis*')||
                     request()->is('supplier*')||
-                    request()->is('karyawan*')||
+                    request()->is('karyawan') ||  request()->is('karyawan/create') || request()->is('karyawan/*/edit') ||
                     request()->is('coa*')||
                     request()->is('kas_bank*')||
                     request()->is('role*')||
@@ -250,7 +250,7 @@
                 </li>
             
                 <li class="nav-item">
-                  <a href="{{route('karyawan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('karyawan*') ? ' active' : '' }} ">
+                  <a href="{{route('karyawan.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('karyawan') ||  request()->is('karyawan/create') || request()->is('karyawan/*/edit') ? ' active' : '' }} ">
                   <i class="far nav-icon fa fa-id-card" style="font-size: 15px;"></i>
                     <p>
                       Karyawan

@@ -93,7 +93,7 @@
 </div>
 <div class="modal fade" id="modal_tambah" >
         <div class="modal-dialog modal-lg ">
-             <form action="{{ route('status_kendaraan.store') }}" id="post_data" method="POST" >
+             <form action="{{ route('karyawan_hutang.store') }}" id="post_data" method="POST" >
               @csrf
                 <div class="modal-content radiusSendiri">
                     <div class="modal-header">
@@ -104,6 +104,7 @@
                     <div class="modal-body">
                          <div class='row'>
                             <div class='col-lg-12 col-md-12 col-12'>
+                                <input type="hidden" name="dariIndex" value="{{$dariIndex}}">
                                 {{-- <div class="form-group">
                                     <label>Jenis Transaksi</label>
                                     <div class='row'>
@@ -125,11 +126,11 @@
                                     <label for="tipe">Jenis Transaksi</label>
                                     <br>
                                     <div class="icheck-primary d-inline">
-                                        <input id="jenis_hutang" type="radio" name="jenis" value="Hutang" checked>
+                                        <input id="jenis_hutang" type="radio" name="jenis" value="HUTANG" checked>
                                         <label class="form-check-label" for="jenis_hutang">Kas Bon / Hutang</label>
                                     </div>
                                     <div class="icheck-primary d-inline ml-4">
-                                        <input id="jenis_bayar" type="radio" name="jenis" value="Bayar" >
+                                        <input id="jenis_bayar" type="radio" name="jenis" value="BAYAR" >
                                         <label class="form-check-label" for="jenis_bayar">Bayar Hutang / Cicilan</label>
                                     </div>
                                  
@@ -140,7 +141,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                    <input type="text" name="tanggal" class="date form-control" id="tanggal"  placeholder="dd-M-yyyy" value="">
+                                    <input type="text" name="tanggal" class="date form-control" id="tanggal"  placeholder="dd-M-yyyy" value="" autocomplete="false">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -223,7 +224,6 @@
                                             {{ $message }}
                                         </div>
                                     @enderror   
-                                    <input type='hidden' id='karyawan_id' name='karyawan_id' value="">
                                 </div> 
                             </div>
                         </div>
@@ -340,7 +340,6 @@ $(document).ready(function () {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
                     });
-
     if($("#select_kendaraan").val()=='')
         {
             event.preventDefault(); 

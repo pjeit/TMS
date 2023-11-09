@@ -40,7 +40,8 @@
         <div class="col-12">
             <div class="card radiusSendiri">
                 <div class="card-header">
-                    <button class="btn btn-primary btn-responsive float-left radiusSendiri " data-toggle="modal" data-target="#modal_tambah" style="z-index: 10">
+                    <a href="{{ route('karyawan_hutang.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
+                    <button class="btn btn-primary btn-responsive float-right radiusSendiri " data-toggle="modal" data-target="#modal_tambah" style="z-index: 10">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
                     </button>
                 </div>
@@ -245,7 +246,7 @@
 </div>
 <div class="modal fade" id="modal_tambah" >
         <div class="modal-dialog modal-lg ">
-             <form action="{{ route('status_kendaraan.store') }}" id="post_data" method="POST" >
+             <form action="{{ route('karyawan_hutang.store') }}" id="post_data" method="POST" >
               @csrf
                 <div class="modal-content radiusSendiri">
                     <div class="modal-header">
@@ -256,6 +257,8 @@
                     <div class="modal-body">
                          <div class='row'>
                             <div class='col-lg-12 col-md-12 col-12'>
+                                <input type="hidden" name="dariIndex" value="{{$dariIndex}}">
+
                                 {{-- <div class="form-group">
                                     <label>Jenis Transaksi</label>
                                     <div class='row'>
@@ -373,7 +376,6 @@
                                             {{ $message }}
                                         </div>
                                     @enderror   
-                                    <input type='hidden' id='karyawan_id' name='karyawan_id' value="">
                                 </div> 
                             </div>
                         </div>
