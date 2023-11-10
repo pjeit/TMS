@@ -984,14 +984,10 @@
                                 var obj=JSON.parse(myjson);
         
                                 array_detail_biaya.push(obj);
-        
                                 //logic itung uang
                                 total_biaya += parseFloat($('#biaya' + id).val().replace(/,/g, "")) || 0;
                             }
         
-                            // ini buat di simpan (hidden), nanti dikirim waktu post
-                            // $('#obj_biaya'+key).val('');
-                            // console.log('key'+key+' : ', JSON.stringify(array_detail_biaya));
                             $('#obj_biaya'+key).val(JSON.stringify(array_detail_biaya));
                         });
                         // ini ngitung semua uangnya
