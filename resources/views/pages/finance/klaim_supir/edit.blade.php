@@ -330,6 +330,101 @@
     });
     
     $('#post').submit(function(event) {
+        const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+            if($("#tanggal_klaim").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `TANGGAL KLAIM BELUM DIISI!`,
+                })
+                
+                return;
+            }
+            if($("#select_kendaraan").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `KENDARAAN BELUM DIPILIH!`,
+                })
+                
+                return;
+            }
+            if($("#select_driver").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `DRVER BELUM DIPILIH!`,
+                })
+                
+                return;
+            }
+            if($("#select_klaim").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `JENIS KLAIM BELUM DIPILIH!`,
+                })
+                
+                return;
+            }
+            if($("#total_klaim").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `TOTAL KLAIM BELUM DIISI!`,
+                })
+                
+                return;
+            }
+            if($("#keterangan_klaim").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `KETERANGAN KLAIM BELUM DIISI!`,
+                })
+                
+                return;
+            }
+            var preview_foto_nota = $('#preview_foto_nota').attr('src');
+            var preview_foto_barang = $('#preview_foto_barang').attr('src');
+
+            console.log("{{asset('img/gambar_add.png')}}");
+            if(preview_foto_nota == "{{asset('img/gambar_add.png')}}")
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `FOTO NOTA TIDAK BOLEH KOSONG!`,
+                })
+                
+                return;
+            }
+            if( preview_foto_barang == "{{asset('img/gambar_add.png')}}")
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `FOTO BARANG TIDAK BOLEH KOSONG!`,
+                })
+                
+                return;
+            }
             event.preventDefault();
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar?',

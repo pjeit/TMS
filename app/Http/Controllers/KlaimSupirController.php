@@ -389,7 +389,18 @@ class KlaimSupirController extends Controller
             // $klaim_supir_riwayat->updated_by = $user;
             // $klaim_supir_riwayat->is_aktif = 'N';
             // $klaim_supir_riwayat->save();  
-
+            $fotoNotaDB = $klaimSupir->foto_nota;
+            $fotoBarangDB = $klaimSupir->foto_barang;
+            if (!empty($fotoNotaDB)) {
+                if (file_exists(public_path($fotoNotaDB))) {
+                    unlink(public_path($fotoNotaDB));
+                }
+            }
+            if (!empty($fotoBarangDB)) {
+                if (file_exists(public_path($fotoBarangDB))) {
+                    unlink(public_path($fotoBarangDB));
+                }
+            }
             $klaim_supir = KlaimSupir::where('is_aktif', 'Y')
             ->findOrFail($klaimSupir->id);
             $klaim_supir->updated_by = $user;
@@ -397,6 +408,7 @@ class KlaimSupirController extends Controller
             $klaim_supir->is_aktif = 'N';
             $klaim_supir->save();
 
+            
             
 
             return redirect()->route('klaim_supir.index')->with(['status' => 'Success', 'msg' => 'Berhasil Menghapus Data Klaim Supir!']);

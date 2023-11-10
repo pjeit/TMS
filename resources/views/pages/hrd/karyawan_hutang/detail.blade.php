@@ -59,7 +59,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp</span>
                             </div>
-                            <input type="text" class="form-control" id="default_total_hutang" value="{{number_format($dataKaryawanHutang->total_hutang)}}" readonly="">
+                            <input type="text" class="form-control" id="default_total_hutang" name="default_total_hutang" value="{{number_format($dataKaryawanHutang->total_hutang)}}" readonly>
                             </div>
                         </div>
                     </div>
@@ -281,11 +281,11 @@
                                     <br>
                                     
                                     <div class="icheck-primary d-inline">
-                                        <input id="jenis_hutang" type="radio" name="jenis" value="Hutang" checked>
+                                        <input id="jenis_hutang" type="radio" name="jenis" value="HUTANG" checked>
                                         <label class="form-check-label" for="jenis_hutang">Kas Bon / Hutang</label>
                                     </div>
                                     <div class="icheck-primary d-inline ml-4">
-                                        <input id="jenis_bayar" type="radio" name="jenis" value="Bayar" >
+                                        <input id="jenis_bayar" type="radio" name="jenis" value="BAYAR" >
                                         <label class="form-check-label" for="jenis_bayar">Bayar Hutang / Cicilan</label>
                                     </div>
                                  
@@ -296,7 +296,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                    <input type="text" name="tanggal" class="date form-control" id="tanggal"  placeholder="dd-M-yyyy" value="">
+                                    <input type="text" name="tanggal" class="date form-control" id="tanggal"  placeholder="dd-M-yyyy" value="" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -420,7 +420,7 @@
 </div>
 <div class="modal fade" id="modal_edit" >
         <div class="modal-dialog modal-lg ">
-            <form action="" id="post_data" method="POST" >
+            <form action="" id="post_data_edit" method="POST" >
             <input type="hidden" name="key" id="key">
             {{-- <form action="{{ route('karyawan_hutang.update',[$item->id_kht]) }}" id="post_data" method="POST" > --}}
                 @csrf
@@ -438,11 +438,11 @@
                                     <label for="tipe">Jenis Transaksi</label>
                                     <br>
                                     <div class="icheck-primary d-inline">
-                                        <input id="jenis_hutang_edit" type="radio" name="jenis_edit" value="Hutang" >
+                                        <input id="jenis_hutang_edit" type="radio" name="jenis_edit" value="HUTANG" >
                                         <label class="form-check-label" for="jenis_hutang_edit">Kas Bon / Hutang</label>
                                     </div>
                                     <div class="icheck-primary d-inline ml-4">
-                                        <input id="jenis_bayar_edit" type="radio" name="jenis_edit" value="Bayar">
+                                        <input id="jenis_bayar_edit" type="radio" name="jenis_edit" value="BAYAR">
                                         <label class="form-check-label" for="jenis_bayar_edit">Bayar Hutang / Cicilan</label>
                                     </div>
                                 </div>  
@@ -452,7 +452,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                    <input type="text" name="tanggal_edit" class="date form-control" id="tanggal_edit" placeholder="dd-M-yyyy" value="">
+                                    <input type="text" name="tanggal_edit" class="date form-control" id="tanggal_edit" placeholder="dd-M-yyyy" value="" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -528,8 +528,8 @@
         </div>
 </div>
 <script type="text/javascript">
-function open_detail(key){
-        
+        function open_detail(key){
+            var baseUrl = "{{ asset('') }}";
             var idx=key;
             $('#select_kas_bank_edit').val($('#hidden_kas_bank_'+idx).val()).trigger('change');
             console.log($('#hidden_jenis_transaksi_'+idx).val());
@@ -539,13 +539,16 @@ function open_detail(key){
                  $('#jenis_hutang_edit').prop('checked',true);
             }
             $('#gaji_detail_id').val($('#hidden_jenis_transaksi_'+idx).val());
-            $('#tanggal_edit').val($('#hidden_tanggal_transaksi_'+idx).val());
+            $('#tanggal_edit').datepicker("setDate", $('#hidden_tanggal_transaksi_'+idx).val());
+            // $('#tanggal_edit').val($('#hidden_tanggal_transaksi_'+idx).val());
             $('#total_hutang_edit').val(addPeriod($('#hidden_total_hutang_'+idx).val(),','));
             $('#nominal_edit').val(addPeriod($('#hidden_nominal_'+idx).val(),','));
             $('#catatan_edit').val($('#hidden_catatan_'+idx).val());
-        // }
-        $('#key').val(idx);
-        $('#modal_edit').modal('show');
+             // }
+            $('#post_data_edit').attr("action", `${baseUrl}karyawan_hutang/update/${idx}`);
+
+            $('#key').val(idx);
+            $('#modal_edit').modal('show');
     }
 $(document).ready(function () {
 
@@ -605,7 +608,7 @@ $(document).ready(function () {
         });
     
     $('#post_data').submit(function(event) {
-    const Toast = Swal.mixin({
+        const Toast = Swal.mixin({
                         toast: true,
                         position: 'top',
                         timer: 2500,
@@ -617,12 +620,199 @@ $(document).ready(function () {
                         }
                     });
 
-    if($("#select_kendaraan").val()=='')
+        var jenis_bayar = $("input[name='jenis']:checked").val();
+                    
+        if(jenis_bayar=='')
         {
             event.preventDefault(); 
             Toast.fire({
                 icon: 'error',
-                text: `KENDARAAN BELUM DIPILIH!`,
+                text: `JENIS WAJIB DIPILIH!`,
+            })
+            
+            return;
+        }
+
+        if(jenis_bayar=='BAYAR')
+        {
+            if (normalize($("#nominal").val())>normalize($("#total_hutang").val())) {
+                
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `Pembayaran nominal hutang tidak boleh melebihi jumlah hutang karyawan!`,
+                })
+                
+                return;
+            }
+        }
+        if($("#tanggal").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `TANGGAL TRANSAKSI BELUM DIISI!`,
+            })
+            
+            return;
+        }
+        if($("#karyawan_id").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `KARYAWAN BELUM DIPILIH!`,
+            })
+            
+            return;
+        }
+        if($("#nominal").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `NOMINAL BELUM DIISI`,
+            })
+            
+            return;
+        }
+         if($("#select_kas_bank").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `KAS BANK BELUM DIPILIH`,
+            })
+            
+            return;
+        }
+        event.preventDefault();
+        Swal.fire({
+            title: 'Apakah Anda yakin data sudah benar?',
+            text: "Periksa kembali data anda",
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonColor: '#d33',
+            confirmButtonColor: '#3085d6',
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    timer: 2500,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Data Disimpan'
+                })
+                setTimeout(() => {
+                    this.submit();
+                }, 200); // 2000 milliseconds = 2 seconds
+            }else{
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    timer: 2500,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'warning',
+                    title: 'Batal Disimpan'
+                })
+                event.preventDefault();
+            }
+        })
+    });
+    $('#post_data_edit').submit(function(event) {
+        const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+
+        
+        var jenis_bayar = $("input[name='jenis_edit']:checked").val();
+                    
+        if(jenis_bayar=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `JENIS WAJIB DIPILIH!`,
+            })
+            
+            return;
+        }
+
+        if(jenis_bayar=='BAYAR')
+        {
+            if (normalize($("#nominal_edit").val())>normalize($("#total_hutang_edit").val())) {
+                
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `Pembayaran nominal hutang tidak boleh melebihi jumlah hutang karyawan!`,
+                })
+                
+                return;
+            }
+        }
+        if($("#tanggal_edit").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `TANGGAL TRANSAKSI BELUM DIISI!`,
+            })
+            
+            return;
+        }
+        if($("#karyawan_id_edit").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `KARYAWAN BELUM DIPILIH!`,
+            })
+            
+            return;
+        }
+        if($("#nominal_edit").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `NOMINAL BELUM DIISI`,
+            })
+            
+            return;
+        }
+         if($("#select_kas_bank_edit").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `KAS BANK BELUM DIPILIH`,
             })
             
             return;

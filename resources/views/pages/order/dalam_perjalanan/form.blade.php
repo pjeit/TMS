@@ -881,9 +881,25 @@
 
             }
         });
+        function hitung_total_harga_dari_muatan(jum_muatan) {
+            let harga_total = 0;
+            let harga_per_kg = parseFloat($('#harga_per_kg').val());
+            let min_muatan = parseFloat($('#min_muatan').val());
+            jum_muatan = parseFloat(jum_muatan);
 
+            if (jum_muatan != '') {
+                if (min_muatan < jum_muatan) {
+                    harga_total = harga_per_kg * jum_muatan;
+                } else {
+                    harga_total = harga_per_kg * min_muatan;
+                }
+            }
+            console.log(harga_total);
+            return harga_total;
+        }
         $('#muatan_ltl').keyup(function(e) {
             let muatan = e.target.value;
+            console.log(muatan);
             const temp = muatan.split(".");
             muatan = parseFloat(muatan);
             if(temp.length > 1 ){
@@ -907,21 +923,7 @@
             // $('#div_foto_segel_pelayaran_2').hide();
             // $('#div_foto_segel_pje').hide();
         }
-        function hitung_total_harga_dari_muatan(jum_muatan) {
-            let harga_total = 0;
-            let harga_per_kg = parseFloat($('#harga_per_kg').val());
-            let min_muatan = parseFloat($('#min_muatan').val());
-            jum_muatan = parseFloat(jum_muatan);
-
-            if (jum_muatan != '') {
-                if (min_muatan < jum_muatan) {
-                    harga_total = harga_per_kg * jum_muatan;
-                } else {
-                    harga_total = harga_per_kg * min_muatan;
-                }
-            }
-            return harga_total;
-        }
+        
         function getDate(){
             var today = new Date();
             // var tomorrow = new Date(today);

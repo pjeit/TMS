@@ -625,7 +625,9 @@
               request()->is('pembayaran_invoice_karantina*') ||
               request()->is('invoice_karantina*') ||
               request()->is('bukti_potong*') ||
-              request()->is('cetak_invoice*') 
+              request()->is('cetak_invoice*') ||
+              request()->is('pemutihan_invoice*') 
+
                 ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="fas nav-icon fa-solid fa-file-invoice"></i>
@@ -640,7 +642,8 @@
                   request()->is('belum_invoice') ||
                   request()->is('belum_invoice.*') ||
                   request()->is('bukti_potong*')||
-                  request()->is('cetak_invoice*') 
+                  request()->is('cetak_invoice*') ||
+                  request()->is('pemutihan_invoice*') 
                   ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon"></i>
@@ -679,6 +682,14 @@
                       <i class="nav-icon fas fa-file" style="font-size: 15px;"></i>
                         <p>
                           Input Bukti Potong
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{route('pemutihan_invoice.index')}}" class="nav-link {{ request()->is('pemutihan_invoice.*') || request()->is('pemutihan_invoice')? ' active' : '' }} " style="font-weight: 500;">
+                      <i class="nav-icon fas fa-file-invoice" style="font-size: 15px;"></i>
+                        <p>
+                          <span >Pemutihan Invoice</span>
                         </p>
                       </a>
                     </li>
@@ -829,7 +840,7 @@
 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{route('karyawan_hutang.index')}}" class="nav-link {{request()->url() === route('karyawan_hutang.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('karyawan_hutang.index')}}" class="nav-link {{request()->is('karyawan_hutang') || request()->is('karyawan_hutang/*/edit') ? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Karyawan Hutang
