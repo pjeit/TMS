@@ -77,13 +77,16 @@
                                                         <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
                                                         </a>
+                                                        <a href="{{route('dalam_perjalanan.ubah_supir',[$item->id_sewa])}}" class="dropdown-item">
+                                                            <span class="fas fa-times mr-3"></span> Ubah Supir
+                                                        </a>
                                                         <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="fas fa-undo mr-3"></span> Batal muat
                                                         </a>
                                                         <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="fas fa-times mr-3"></span> Cancel
                                                         </a>
-                                                          <a href="{{route('dalam_perjalanan.cancel_uang_jalan',[$item->id_sewa])}}" class="dropdown-item">
+                                                        <a href="{{route('dalam_perjalanan.cancel_uang_jalan',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-dollar-sign mr-3"></span> Cancel Uang Jalan
                                                         </a>
                                                     @else

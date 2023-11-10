@@ -140,7 +140,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dalam_perjalanan/cancel/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'cancel'])->name('dalam_perjalanan.cancel');
         Route::get('/dalam_perjalanan/cancel_uang_jalan/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'cancel_uang_jalan'])->name('dalam_perjalanan.cancel_uang_jalan');
         
-        
+        Route::post('/dalam_perjalanan/save_ubah_supir/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'saveubah_supir'])->name('dalam_perjalanan.save_ubah_supir');
+        Route::get('/dalam_perjalanan/ubah_supir/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'ubah_supir'])->name('dalam_perjalanan.ubah_supir');
+
         Route::resource('dalam_perjalanan', 'App\Http\Controllers\DalamPerjalananController');
 
         // ===================================TRUCKING ORDER=========================================================
@@ -239,6 +241,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('karantina/load_data/{id}', [App\Http\Controllers\KarantinaController::class, 'load_data'])->name('karantina.load_data');
         Route::resource('karantina', 'App\Http\Controllers\KarantinaController');
+
+        Route::resource('pemutihan_invoice', 'App\Http\Controllers\PemutihanInvoiceController');
 
         // ===================================INVOICE=========================================================
         

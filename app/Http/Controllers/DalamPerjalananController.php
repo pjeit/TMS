@@ -16,7 +16,7 @@ use App\Models\KaryawanHutang;
 use App\Models\KaryawanHutangTransaction;
 use App\Models\KasBankTransaction;
 use App\Models\UangJalanRiwayat;
-
+use App\Helper\SewaDataHelper;
 class DalamPerjalananController extends Controller
 {
     /**
@@ -881,6 +881,110 @@ class DalamPerjalananController extends Controller
     }
 
      public function save_cancel_uang_jalan(Request $request)
+    {
+        $data = $request->post();
+        $user = Auth::user()->id;
+        $id = $data['id_sewa_hidden'];
+        // $id_kas = $data['pembayaran'];
+        DB::beginTransaction(); 
+        try {
+            $sewa = Sewa::where('is_aktif', 'Y')->where('id_sewa', $id)->first();
+            $sewa->updated_by = $user;
+            $sewa->updated_at = now();
+            $sewa->status = 'MENUNGGU UANG JALAN';
+            $sewa->save();  
+            $ujr = UangJalanRiwayat::where([
+                                        'is_aktif' => 'Y',
+                                        'sewa_id' => $id
+                                    ])->first();
+            $ujr->updated_by = $user;
+            $ujr->updated_at = now();
+            $ujr->is_aktif = 'N';
+            if($ujr->save()){
+                $kht = KaryawanHutangTransaction::where(['is_aktif' => 'Y', 
+                                                        'id_karyawan' => $sewa->id_karyawan,
+                                                        'refrensi_id' => $ujr->id 
+                                                        ])->first();
+
+                if($kht){
+                    $kht->updated_by = $user;
+                    $kht->updated_at = now();
+                    $kht->is_aktif = 'N';
+                    if($kht->save()){
+                        $kh = KaryawanHutang::where(['is_aktif' => 'Y', 'id_karyawan' => $sewa->id_karyawan])->first();
+                        if($kh){
+                            $kh->total_hutang += $kht->kredit;
+                            $kh->updated_by = $user;
+                            $kh->updated_by = now();
+                            $kh->save();
+                        }
+                    }
+                }
+            }
+            $riwayat = KasBankTransaction::where(['is_aktif' => 'Y',
+                                                   'jenis' => 'uang_jalan',
+                                                   'keterangan_kode_transaksi' => $ujr->id,    
+                                                   'tanggal' => $ujr->tanggal    
+                                                ])->first();
+            // dd($riwayat);
+            if($riwayat){
+                $kasbank = KasBank::where('is_aktif', 'Y')->find($riwayat->id_kas_bank);
+                    $kasbank->saldo_sekarang += $riwayat->kredit;
+                    $kasbank->updated_by = $user;
+                    $kasbank->updated_by = now();
+                if( $kasbank->save()){
+                    $riwayat->updated_by = $user;
+                    $riwayat->updated_at = now();
+                    $riwayat->is_aktif = 'N';
+                    $riwayat->save();
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil menyimpan data!"]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
+        }
+
+    }
+
+    public function ubah_supir($id)
+    {
+        $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
+
+        $dataKas = DB::table('kas_bank')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->get();
+        $dataDriver = DB::table('karyawan as k')
+            ->select('k.*','k.id as idKaryawan','k.nama_panggilan','kh.total_hutang')
+            ->leftJoin('karyawan_hutang as kh', function($join) {
+                $join->on('k.id', '=', 'kh.id_karyawan')->where('kh.is_aktif', '=', "Y");
+            })
+            ->where('k.is_aktif',"Y")
+            ->where('k.role_id', 5)
+            ->get();
+        $dataUangJalanRiwayat= DB::table('uang_jalan_riwayat as ujr')
+            ->select('ujr.*')
+            ->where('ujr.is_aktif',"Y")
+            ->where('ujr.sewa_id', $sewa->id_sewa)
+            ->get();
+        return view('pages.order.dalam_perjalanan.ubah_supir',[
+            'judul' => "ubah supir",
+            'dataDriver'=> $dataDriver,
+            'data' => $sewa,
+            'dataKas' => $dataKas,
+            'dataUangJalanRiwayat' => $dataUangJalanRiwayat,
+            'dataKendaraan'=>SewaDataHelper::DataKendaraan(),
+            'dataChassis'=>SewaDataHelper::DataChassis(),
+            'id_sewa' => $id,
+
+        ]);
+    }
+
+     public function save_ubah_supir(Request $request)
     {
         $data = $request->post();
         $user = Auth::user()->id;

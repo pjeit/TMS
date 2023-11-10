@@ -5,13 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Auth;
-use PhpParser\Node\Stmt\Return_;
-use Illuminate\Support\Facades\Session;
-use Barryvdh\DomPDF\Facade\PDF; // use PDF;
-use Carbon\Carbon;
-class CetakInvoiceController extends Controller
+
+class PemutihanInvoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,6 +15,7 @@ class CetakInvoiceController extends Controller
      */
     public function index()
     {
+        //
         //
          $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
@@ -34,14 +30,14 @@ class CetakInvoiceController extends Controller
                 ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
                 ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
                 ->where('i.is_aktif', '=', 'Y')
-                // ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
                 ->orderBy('i.id','ASC')
                 ->get();
         // dd($dataSewa);
         // dd($dataSewa);
     
-        return view('pages.invoice.cetak_invoice.index',[
-            'judul'=>"CETAK INVOICE",
+        return view('pages.invoice.pemutihan_invoice.index',[
+            'judul'=>"PEMUTIHAN INVOICE",
             'dataInvoice' => $dataInvoice,
         ]);
     }
