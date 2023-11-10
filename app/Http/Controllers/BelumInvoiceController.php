@@ -270,7 +270,6 @@ class BelumInvoiceController extends Controller
                     if($invoice_d->save()){
                         $dataAddcost = json_decode($value['addcost_details']);
                         foreach ($dataAddcost as $i => $addcost) {
-
                             if($addcost->is_ditagihkan=='Y'&&$addcost->is_dipisahkan=='N')
                             {
                                 $invoice_da = new InvoiceDetailAddcost();
@@ -291,7 +290,6 @@ class BelumInvoiceController extends Controller
             
             if($data['total_pisah']>0)
             {
-              
                 $invoicePisah = new Invoice();
                 $invoicePisah->id_grup = $data['grup_id'];
                 $invoicePisah->no_invoice = $newInvoiceNumber .'/'.'I';
