@@ -69,7 +69,7 @@
                                         @if($item->status_klaim == 'ACCEPTED')
                                             Rp. {{ number_format($item->total_pencairan,2) }}
                                         @else
-                                         -
+                                         Tidak ada pencairan
                                         @endif 
                                     </td>
                                     <td>

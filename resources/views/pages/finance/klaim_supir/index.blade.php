@@ -463,6 +463,97 @@ $(document).ready(function () {
         ],
     }); 
     $('#post_data').submit(function(event) {
+            const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+            if($("#tanggal_klaim").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `TANGGAL KLAIM BELUM DIISI!`,
+                })
+                
+                return;
+            }
+            if($("#select_kendaraan").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `KENDARAAN BELUM DIPILIH!`,
+                })
+                
+                return;
+            }
+            if($("#select_driver").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `DRVER BELUM DIPILIH!`,
+                })
+                
+                return;
+            }
+            if($("#select_klaim").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `JENIS KLAIM BELUM DIPILIH!`,
+                })
+                
+                return;
+            }
+            if($("#total_klaim").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `TOTAL KLAIM BELUM DIISI!`,
+                })
+                
+                return;
+            }
+            if($("#keterangan_klaim").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `KETERANGAN KLAIM BELUM DIISI!`,
+                })
+                
+                return;
+            }
+            if( $('#foto_nota')[0].files.length === 0)
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `FOTO NOTA TIDAK BOLEH KOSONG!`,
+                })
+                
+                return;
+            }
+            if( $('#foto_barang')[0].files.length === 0)
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `FOTO BARANG TIDAK BOLEH KOSONG!`,
+                })
+                
+                return;
+            }
             event.preventDefault();
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar?',
@@ -495,7 +586,7 @@ $(document).ready(function () {
 
                     setTimeout(() => {
                         this.submit();
-                    }, 200); // 2000 milliseconds = 2 seconds
+                    }, 20); // 2000 milliseconds = 2 seconds
                 }else{
                     const Toast = Swal.mixin({
                         toast: true,
