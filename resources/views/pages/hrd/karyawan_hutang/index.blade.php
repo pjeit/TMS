@@ -141,7 +141,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                    <input type="text" name="tanggal" class="date form-control" id="tanggal"  placeholder="dd-M-yyyy" value="" autocomplete="false">
+                                    <input type="text" name="tanggal" class="date form-control" id="tanggal" autocomplete="off" placeholder="dd-M-yyyy" value="" >
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -153,7 +153,6 @@
                                             </select>
                                             <input type='hidden' id='karyawan_id' name='karyawan_id' value="">
                                         </div> --}}
-                                        
                                         <div class="form-group col-6 col-md-6 col-lg-6">
                                             <label for="select_karyawan">Karyawan<span style="color:red">*</span></label>
                                                 <select class="form-control select2  @error('select_karyawan') is-invalid @enderror" style="width: 100%;" id='select_karyawan' name="select_karyawan">
@@ -340,12 +339,68 @@ $(document).ready(function () {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
                     });
-    if($("#select_kendaraan").val()=='')
+        var jenis_bayar = $("input[name='jenis']:checked").val();
+                    
+        if(jenis_bayar=='')
         {
             event.preventDefault(); 
             Toast.fire({
                 icon: 'error',
-                text: `KENDARAAN BELUM DIPILIH!`,
+                text: `JENIS WAJIB DIPILIH!`,
+            })
+            
+            return;
+        }
+
+        if(jenis_bayar=='BAYAR')
+        {
+            if (normalize($("#nominal").val())>normalize($("#total_hutang").val())) {
+                
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `Pembayaran nominal hutang tidak boleh melebihi jumlah hutang karyawan!`,
+                })
+                
+                return;
+            }
+        }
+        if($("#tanggal").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `TANGGAL TRANSAKSI BELUM DIISI!`,
+            })
+            
+            return;
+        }
+        if($("#karyawan_id").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `KARYAWAN BELUM DIPILIH!`,
+            })
+            
+            return;
+        }
+        if($("#nominal").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `NOMINAL BELUM DIISI`,
+            })
+            
+            return;
+        }
+         if($("#select_kas_bank").val()=='')
+        {
+            event.preventDefault(); 
+            Toast.fire({
+                icon: 'error',
+                text: `KAS BANK BELUM DIPILIH`,
             })
             
             return;

@@ -829,7 +829,7 @@
 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="{{route('karyawan_hutang.index')}}" class="nav-link {{request()->url() === route('karyawan_hutang.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('karyawan_hutang.index')}}" class="nav-link {{request()->is('karyawan_hutang') || request()->is('karyawan_hutang/*/edit') ? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Karyawan Hutang

@@ -67,7 +67,6 @@ class KaryawanHutangController extends Controller
     public function store(Request $request)
     {
         //
-        //
         $user = Auth::user()->id;
         DB::beginTransaction(); 
 
@@ -96,12 +95,23 @@ class KaryawanHutangController extends Controller
                 $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['karyawan_id'])->first();
 
                 if ($data['jenis']=='BAYAR') {
+                    if((float)str_replace(',', '', $data['nominal'])>(float)str_replace(',', '', $data['total_hutang']))
+                    {
+                        if($data['dariIndex']=='Y')
+                        {
+                            return redirect()->route('karyawan_hutang.index')->with(['status' => 'error', 'msg'  => 'Pembayaran nominal hutang tidak boleh melebihi jumlah hutang karyawan!']);
+                        }
+                        else
+                        {
+                            return redirect()->route('karyawan_hutang.edit',[$data['karyawan_id']])->with(['status' => 'error', 'msg'  => 'Pembayaran nominal hutang tidak boleh melebihi jumlah hutang karyawan!']);
+                        }
+                    }
                     $kht_b = new KaryawanHutangTransaction();
                     $kht_b->id_karyawan = $data['karyawan_id'];
                     $kht_b->refrensi_id = null; // id ga ada soalnya kan bukan dr uj/sewa
                     $kht_b->refrensi_keterangan = 'BAYAR HUTANG KARYAWAN';
                     $kht_b->jenis = 'BAYAR'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                    $kht_b->tanggal = now();
+                    $kht_b->tanggal =  date_format($tanggal, 'Y-m-d h:i:s');
                     $kht_b->debit = 0;
                     $kht_b->kredit = ($data['nominal']) ? (float)str_replace(',', '', $data['nominal']) : 0;
                     $kht_b->kas_bank_id = $data['select_kas_bank'];
@@ -165,7 +175,7 @@ class KaryawanHutangController extends Controller
                     $kht->refrensi_id = null; // id ga ada soalnya kan bukan dr uj/sewa
                     $kht->refrensi_keterangan = 'TAMBAH HUTANG KARYAWAN';
                     $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                    $kht->tanggal = now();
+                    $kht->tanggal =  date_format($tanggal, 'Y-m-d h:i:s');
                     $kht->debit = ($data['nominal']) ? (float)str_replace(',', '', $data['nominal']) : 0; // ARTINYA KAN UANG MASUK KE HUTANG (NAMBAH HUTANG KARYAWAN)
                     $kht->kredit = 0;
                     $kht->kas_bank_id = $data['select_kas_bank'];
@@ -291,7 +301,7 @@ class KaryawanHutangController extends Controller
         'kht.id as id_kht', 
         'kb.nama as nama_bank', 
         'kh.total_hutang as totalnya',
-        DB::raw('kh.total_hutang + IF(kht.debit > 0, -1 * kht.debit, kht.kredit) as total_hutang'),
+        DB::raw('GREATEST(kh.total_hutang + IF(kht.debit > 0, -1 * kht.debit, kht.kredit), 0) as total_hutang'),
         DB::raw('if(kht.debit > 0, kht.debit, kht.kredit) as nominal')
         )
         ->leftJoin('kas_bank as kb', function ($join) {
@@ -303,6 +313,7 @@ class KaryawanHutangController extends Controller
         })
         ->where('kht.is_aktif', '=', "Y")
         ->where('kht.id_karyawan',$karyawan_hutang->id)
+        ->orderByDesc('kht.tanggal')
         ->get();
         // dd($dataDetailHutang);
         return view('pages.hrd.karyawan_hutang.detail',[
@@ -311,7 +322,6 @@ class KaryawanHutangController extends Controller
             'dataKas' => $dataKas,
             'dataDetailHutang' => $dataDetailHutang,
             'dariIndex'=>'N'
-
         ]);
     }
     /**
@@ -324,6 +334,157 @@ class KaryawanHutangController extends Controller
     public function update(Request $request, KaryawanHutang $karyawanHutang)
     {
         //
+         //
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        try {
+        // dd(/*date_format(*/$data['tanggal_transaksi']/*,'Y-m-d')*/);
+            $pesanKustom = [
+                'jenis_edit.required' => 'Jenis transaksi wajib diisi!',
+                'tanggal_edit.required' => 'Tanggal Transaksi wajib dipilih!',
+                'karyawan_id_edit.required' => 'Karyawan wajib dipilih!',
+                'nominal_edit.required' => 'Total Nominal wajib diisi!',
+                // 'catatan_edit.required' => 'Total Nominal wajib diisi!',
+                'select_kas_bank_edit.required' => 'Kas Bank wajib diisi!',
+            ];
+            $request->validate([
+                'jenis_edit' => 'required',
+                'tanggal_edit' => 'required',
+                'karyawan_id_edit' => 'required',
+                'nominal_edit' => 'required',
+                // 'catatan_edit' => 'required',
+                'select_kas_bank_edit' => 'required',
+
+            ], $pesanKustom);
+                $data= $request->collect();
+                // dd($data);
+                $tanggal=date_create_from_format('d-M-Y', $data['tanggal_edit']);
+                $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['karyawan_id_edit'])->first();
+
+                    $kht_b = KaryawanHutangTransaction::where('is_aktif', 'Y')
+                    ->where('id', $data['key'])
+                    ->where('id_karyawan', $data['karyawan_id_edit'])
+                    ->first();
+
+                    if ($data['jenis_edit']=='BAYAR') {
+                        if((float)str_replace(',', '', $data['nominal_edit'])>(float)str_replace(',', '', $data['total_hutang_edit']))
+                        {
+                             return redirect()->route('karyawan_hutang.edit',[$data['karyawan_id_edit']])->with(['status' => 'error', 'msg'  => 'Pembayaran nominal hutang tidak boleh melebihi jumlah hutang karyawan!']);
+                        }
+                    }
+                    // ini untuk cek case sensitif sama aja kaya $kht_b->jenis=== "HUTANG" tapi semua huruf hutang
+                    if(strcasecmp($kht_b->jenis, "HUTANG") === 0)
+                    {
+                        //ini update data yang lama ditambah dulu (karenakan kalau hutang pje ngeluarin duit buat kasih karyawan)
+                        if(isset($kht_b->kas_bank_id))
+                        {
+                            $kas_bank_b_old = KasBank::where('is_aktif', 'Y')
+                                            ->where('id', $kht_b->kas_bank_id)
+                                            ->first();
+                            $kas_bank_b_old->saldo_sekarang +=  floatval(str_replace(',', '', $kht_b->debit));
+                            $kas_bank_b_old->updated_at = now();
+                            $kas_bank_b_old->updated_by = $user;
+                            $kas_bank_b_old->save();
+                        }
+                        if(isset($kh)){ // 
+                            $kh->total_hutang -= (float)str_replace(',', '', $kht_b->debit); 
+                            $kh->updated_by = $user;
+                            $kh->updated_at = now();
+                            $kh->save();
+                        }
+                    }
+                    else if(strcasecmp($kht_b->jenis, "BAYAR") === 0)
+                    {
+                        //ini update data yang lama dikurangin dulu (karenakan kalau BAYAR pje dapet duit dari karyawan bayar)
+                        if(isset($kht_b->kas_bank_id))
+                        {
+                            $kas_bank_b_old = KasBank::where('is_aktif', 'Y')
+                                            ->where('id', $kht_b->kas_bank_id)
+                                            ->first();
+                            $kas_bank_b_old->saldo_sekarang -=  floatval(str_replace(',', '', $kht_b->kredit));
+                            $kas_bank_b_old->updated_at = now();
+                            $kas_bank_b_old->updated_by = $user;
+                            $kas_bank_b_old->save();
+                        }
+                        if(isset($kh)){ // 
+                            $kh->total_hutang += (float)str_replace(',', '', $kht_b->kredit); 
+                            $kh->updated_by = $user;
+                            $kh->updated_at = now();
+                            $kh->save();
+                        }
+                    }
+                    $kht_b->refrensi_id = null; // id ga ada soalnya kan bukan dr uj/sewa
+                    $kht_b->refrensi_keterangan =  ($data['jenis_edit']=='BAYAR') ? 'BAYAR HUTANG KARYAWAN':'TAMBAH HUTANG KARYAWAN';
+                    $kht_b->jenis = $data['jenis_edit']=='BAYAR'?'BAYAR':'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
+                    $kht_b->tanggal =$tanggal;
+                    $kht_b->debit = ($data['jenis_edit']=='HUTANG') ? (float)str_replace(',', '', $data['nominal_edit']) : 0;
+                    $kht_b->kredit = ($data['jenis_edit']=='BAYAR') ? (float)str_replace(',', '', $data['nominal_edit']) : 0;
+                    $kht_b->kas_bank_id = $data['select_kas_bank_edit'];
+                    $kht_b->catatan = $data['catatan_edit'];
+                    $kht_b->updated_by = $user;
+                    $kht_b->updated_at = now();
+                    // $kht_b->save();
+                    if($kht_b->save())
+                    {
+                        if((float)str_replace(',', '', $data['nominal_edit'])>0)
+                        {
+                            $kas_bank = KasBank::where('is_aktif', 'Y')
+                                        ->where('id', $data['select_kas_bank_edit'])
+                                        ->first();
+                            if($data['jenis_edit']=='HUTANG')
+                            {
+                                $kas_bank->saldo_sekarang -=  floatval(str_replace(',', '', $data['nominal_edit']));
+                            }
+                            else if($data['jenis_edit']=='BAYAR')
+                            {
+                                $kas_bank->saldo_sekarang +=  floatval(str_replace(',', '', $data['nominal_edit']));
+                            }
+                            $kas_bank->updated_at = now();
+                            $kas_bank->updated_by = $user;
+                            $kas_bank->save();
+                             DB::table('kas_bank_transaction')
+                                    ->where('keterangan_kode_transaksi', $kht_b->id)
+                                    ->where('jenis', 'hutang_karyawan')
+                                    ->where('is_aktif', 'Y')
+                                    ->update(array(
+                                        'id_kas_bank'=>$data['select_kas_bank_edit'],
+                                        'debit'=>($data['jenis_edit']=='BAYAR') ? (float)str_replace(',', '', $data['nominal_edit']) : 0,
+                                        'kredit'=>($data['jenis_edit']=='HUTANG') ? (float)str_replace(',', '', $data['nominal_edit']) : 0,
+                                        'kode_coa' => ($data['jenis_edit'] == 'BAYAR') ? 1121 : (($data['jenis_edit'] == 'HUTANG') ? 1122 : 1132), // masih hardcode
+                                        'keterangan_transaksi'=> ($data['jenis_edit'] == 'BAYAR') ? 'BAYAR HUTANG'."-".$data['catatan_edit'] : (($data['jenis_edit'] == 'HUTANG') ? 'TAMBAH HUTANG'."-".$data['catatan_edit']  : $data['catatan_edit']), // masih hardcode
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                            if(isset($kh)){
+                                if($data['jenis_edit']=='HUTANG')
+                                {
+                                    $kh->total_hutang += (float)str_replace(',', '', $data['nominal_edit']); 
+                                }
+                                else if($data['jenis_edit']=='BAYAR')
+                                {
+                                    $kh->total_hutang -= (float)str_replace(',', '', $data['nominal_edit']); 
+                                }
+                                $kh->updated_by = $user;
+                                $kh->updated_at = now();
+                                $kh->save();
+                            }
+                        }
+                    }
+                DB::commit();
+                return redirect()->route('karyawan_hutang.edit',[$data['karyawan_id_edit']])->with(['status' => 'Success', 'msg'  => 'Berhasil mengubah data hutang karyawan!']);
+
+        } catch (ValidationException $e) {
+            db::rollBack();
+            // return redirect()->route('transfer_dana.index')->with(['status' => 'error', 'msg' => $e->errors()]);
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        }   
+        catch (Exception $ex) {
+            // cancel input db
+            DB::rollBack();
+            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+        }
+        
     }
 
     /**

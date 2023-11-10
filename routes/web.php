@@ -253,6 +253,7 @@ Route::middleware(['auth'])->group(function () {
 
         // ===================================HRD=========================================================
         Route::resource('pembayaran_gaji', 'App\Http\Controllers\PembayaranGajiController');
+        Route::put('karyawan_hutang/update/{id}', [App\Http\Controllers\KaryawanHutangController::class, 'update'])->name('karyawan_hutang.updates');
         Route::resource('karyawan_hutang', 'App\Http\Controllers\KaryawanHutangController');
         // ===================================HRD=========================================================
 
