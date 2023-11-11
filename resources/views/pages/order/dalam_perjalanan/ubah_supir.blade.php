@@ -1,4 +1,3 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
@@ -8,7 +7,7 @@
 @endif
 
 @section('pathjudul')
-  
+
 @endsection
 
 @section('content')
@@ -124,7 +123,6 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function() {
-
     $(document).on('keyup', '#uang_jalan_kembali', function(){ 
         var total_uang_jalan = $('#total_uang_jalan').val();
         if(parseFloat(escapeComma(this.value)) > parseFloat(escapeComma(total_uang_jalan))){
@@ -135,22 +133,18 @@ $(document).ready(function() {
         check();
     });
     // document.getElementById("uang_jalan_kembali").addEventListener("focusout", myFunction);
-
     // function myFunction() {
     //     check();
     // }
     function check(){
         var total_uang_jalan = parseFloat(escapeComma($('#total_uang_jalan').val()));
         var uang_jalan_kembali = parseFloat(escapeComma($('#uang_jalan_kembali').val()));
-
         if(uang_jalan_kembali > total_uang_jalan){
             $('#uang_jalan_kembali').val(moneyMask(total_uang_jalan));
         }
     }
-    
     $('#post_data').submit(function(event) {
             event.preventDefault();
-
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar ?',
                 text: "Periksa kembali data anda",
@@ -176,7 +170,6 @@ $(document).ready(function() {
                             toast.addEventListener('mouseleave', Swal.resumeTimer)
                         }
                     })
-
                     Toast.fire({
                         icon: 'warning',
                         title: 'Batal Disimpan'
