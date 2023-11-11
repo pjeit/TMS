@@ -198,9 +198,9 @@ class BelumInvoiceController extends Controller
      {
         $user = Auth::user()->id;
         $data = $request->post();
-        // json_decode($data['detail'][77]['addcost_details'])
-        // dd($data['detail'][77]['addcost_details_pisah']=='[]');
+        DB::beginTransaction(); 
         // dd($data);
+
         try {
             // logic nomer booking
                 $kode = 'PJE/'.$data['kode_customer'].'/'.date("y").date("m");
@@ -236,22 +236,22 @@ class BelumInvoiceController extends Controller
                     DB::table('sewa')
                         ->where('id_sewa',  $key)
                         ->update(array(
-                        'status' => 'MENUNGGU PEMBAYARAN INVOICE',
-                        'updated_at'=> now(),
-                        'updated_by'=>  $user,
-                        )
-                    );
+                            'status' => 'MENUNGGU PEMBAYARAN INVOICE',
+                            'catatan'=> $value['catatan'],
+                            'updated_at'=> now(),
+                            'updated_by'=> $user,
+                    ));
                     if(isset($value['id_jo_hidden'])&&isset($value['id_jo_detail_hidden']))
                     {
                         DB::table('job_order_detail')
-                        ->where('id',  $value['id_jo_detail_hidden'])
-                        ->update(array(
-                        'status' => 'MENUNGGU PEMBAYARAN INVOICE',
-                        'updated_at'=> now(),
-                        'updated_by'=>  $user,
-                            )
-                        ); 
+                            ->where('id', $value['id_jo_detail_hidden'])
+                            ->update(array(
+                                'status' => 'MENUNGGU PEMBAYARAN INVOICE',
+                                'updated_at'=> now(),
+                                'updated_by'=>  $user,
+                        )); 
                     }
+
                     $invoice_d = new InvoiceDetail();
                     $invoice_d->id_invoice = $invoice->id;
                     $invoice_d->id_customer = $value['id_customer'];
@@ -269,8 +269,20 @@ class BelumInvoiceController extends Controller
                     $invoice_d->is_aktif = 'Y';
                     if($invoice_d->save()){
                         $dataAddcost = json_decode($value['addcost_details']);
+                        dd($dataAddcost);
                         foreach ($dataAddcost as $i => $addcost) {
-                            if($addcost->is_ditagihkan=='Y'&&$addcost->is_dipisahkan=='N')
+                            $sewa_oprs = SewaOperasional::where('is_aktif', 'Y')
+                                                            ->where('id_sewa', $addcost->id_sewa)
+                                                            ->find($addcost->id);
+                            if($sewa_oprs){
+                                $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
+                                $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+                                $sewa_oprs->updated_by = $user;
+                                $sewa_oprs->updated_at = now();
+                                $sewa_oprs->save();
+                            }
+
+                            if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'N')
                             {
                                 $invoice_da = new InvoiceDetailAddcost();
                                 $invoice_da->id_invoice = $invoice->id;
@@ -345,12 +357,13 @@ class BelumInvoiceController extends Controller
                 }
             }
 
-        
+            // DB::commit();
             return redirect()->route('belum_invoice.index')
                     ->with('id_print_invoice', $invoice->id)
                     ->with('id_print_invoice_pisah', isset($invoicePisah->id)? $invoicePisah->id:null)
                     ->with(['status' => 'Success', 'msg' => 'Pembuatan Invoice Berhasil!']);
         } catch (ValidationException $e) {
+            db::rollBack();
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
     }
