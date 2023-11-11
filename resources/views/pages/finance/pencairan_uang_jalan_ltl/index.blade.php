@@ -320,8 +320,6 @@
                                 </tr>`
                             );
                         }
-
-                       
                     }
                 },error: function (xhr, status, error) {
                     // $('#ltl').dataTable().fnClearTable();
