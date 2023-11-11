@@ -78,7 +78,7 @@
                                                             <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
                                                         </a>
                                                         <a href="{{route('dalam_perjalanan.ubah_supir',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="fas fa-times mr-3"></span> Ubah Supir
+                                                            <span class="fas fa-solid fa-user mr-3"></span> Ubah Supir
                                                         </a>
                                                         <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="fas fa-undo mr-3"></span> Batal muat

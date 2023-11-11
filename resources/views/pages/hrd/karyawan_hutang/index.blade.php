@@ -272,15 +272,15 @@ $(document).ready(function () {
         if (cekerror) {
                 $("#modal_tambah").modal("show");
         }
-         $('body').on('change','#select_karyawan',function()
-                                        {
-                                            var id_karyawan = $(this).val();
-                                            var selectedOption = $(this).find('option:selected');
-                                            var karyawan_hutang = selectedOption.attr('karyawan_hutang');
-                                            
-                                            $('#karyawan_id').val(id_karyawan);
-                                            $('#total_hutang').val(karyawan_hutang?addPeriod(karyawan_hutang,','):0);
-                                        });
+        $('body').on('change','#select_karyawan',function()
+        {
+            var id_karyawan = $(this).val();
+            var selectedOption = $(this).find('option:selected');
+            var karyawan_hutang = selectedOption.attr('karyawan_hutang');
+            
+            $('#karyawan_id').val(id_karyawan);
+            $('#total_hutang').val(karyawan_hutang?addPeriod(karyawan_hutang,','):0);
+        });
         $('#tanggal_mulai').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",

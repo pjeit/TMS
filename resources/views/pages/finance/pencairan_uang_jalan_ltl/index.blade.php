@@ -58,7 +58,7 @@
 </div>
 
 <div class="modal fade" id="modal_detail" tabindex='-1'>
-    <form id="save" action="{{ route('pencairan_uang_jalan_ltl.store') }}" method="POST">
+    <form id="post_data" action="{{ route('pencairan_uang_jalan_ltl.store') }}" method="POST">
     @csrf
     <div class="modal-dialog modal-md">
         <div class="modal-content">
@@ -79,7 +79,7 @@
                                     <select name="id_kas" id="id_kas" class="form-control select2" required>
                                         <option value="">── PILIH KAS ──</option>
                                         @foreach ($kas as $item)
-                                            <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                            <option value="{{ $item->id }}" {{$item->id==1?'selected':''}}>{{ $item->nama }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -99,7 +99,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                    <input type="text" id="tol" name="tol" class="form-control uang numaja" required>
+                                    <input type="text" id="tol" name="tol" class="form-control uang numaja" >
                                     </div>
                                 </div>
                                  <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -108,7 +108,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                    <input type="text" id="bensin" name="bensin" class="form-control uang numaja" required>
+                                    <input type="text" id="bensin" name="bensin" class="form-control uang numaja" >
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12 is_total_hutang">
@@ -250,7 +250,7 @@
                     $("#ltl").dataTable().fnDestroy();
 
                     $("th").remove();
-                    $("thead tr").append(`<th>Customer</th>
+                    $("thead tr").append(`<th></th>
                                             <th style="width:200px">Customer</th>
                                             <th style="width:200px">Tujuan</th>                    
                                             <th style="width:200px">Tanggal Berangkat</th>
@@ -261,8 +261,6 @@
                     if(data.length > 0){
                         for (var i = 0; i <data.length; i++) {
                             if(data[i].total_dicairkan == null){
-                                var row = $("<tr></tr>");
-
                                 if (data[i] && data[i].get_karyawan && data[i].get_karyawan.get_hutang !== null) {
                                     // The property data[i].get_karyawan.get_hutang exists and is not null
                                     // You can perform further actions here
@@ -272,44 +270,58 @@
                                     // Handle this case as needed
                                     hutangKaryawan = 0;
                                 }
-
-                                row.append(`<td style='background: #efefef' > 
-                                        <div class="d-flex justify-content-between ">
-                                            <div>
-                                                <b> <span>► </span> (${data[i].no_polisi}) - ${data[i].nama_driver == null? 'Driver Rekanan':data[i].nama_driver} </b>
-                                                <input type="hidden" value="${hutangKaryawan}" id="hutang" />
+                                $("#hasil").append(
+                                    `<tr>
+                                        <td style='background: #efefef' > 
+                                            <div class="d-flex justify-content-between ">
+                                                <div>
+                                                    <b> <span>► </span> (${data[0].no_polisi}) - ${data[0].nama_driver == null? 'Driver Rekanan':data[0].nama_driver} </b>
+                                                    <input type="hidden" value="${hutangKaryawan}" id="hutang" />
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-primary btn-sm radiusSendiri openModal" value="${data[0].id_sewa}">
+                                                        <span class="fas fa-sticky-note mr-1"></span> Input UJ
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <button class="btn btn-primary btn-sm radiusSendiri openModal" value="${data[0].id_sewa}">
-                                                    <span class="fas fa-sticky-note mr-1"></span> Input UJ
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" id="driver_${data[i].id_sewa}" value="${data[i].nama_driver}" />
-                                    </td>`);
-                                row.append(`<td>${data[i].get_customer.nama}</td>`);
-                                row.append(`<td>${data[i].nama_tujuan}</td>`);
-                                row.append(`<td>${dateMask(data[i].tanggal_berangkat)}</td>`);
-                                $("#hasil").append(row);
+                                            <input type="hidden" id="driver_${data[0].id_sewa}" value="${data[0].nama_driver}" />
+                                        </td>
+                                        <td>${data[i].get_customer.nama}</td>
+                                        <td>${data[i].nama_tujuan}</td>
+                                        <td>${dateMask(data[i].tanggal_berangkat)}</td>
+                                    </tr>`
+                                );
                             }
+                             new DataTable('#ltl', {
+                                searching: false, paging: false, info: false, ordering: false,
+                                order: [
+                                        [0, 'asc'],
+                                    ],
+                                rowGroup: {
+                                    dataSrc: [0]// di order grup dulu, baru customer
+                                },
+                                columnDefs: [
+                                    {
+                                        targets: [0], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
+                                        visible: false
+                                    },
+                                    {
+                                    "targets": [0, 1, 2]
+                                        // orderable: false, // matiin sortir kolom centang
+                                    },
+                                ],
+                            });
+                        }
+                        else
+                        {
+                            $("#hasil").append(
+                                `<tr>
+                                    <td colspan='4'>Tidak ditemukan Data</td>
+                                </tr>`
+                            );
                         }
 
-                        new DataTable('#ltl', {
-                            searching: false, paging: false, info: false, ordering: false,
-                            rowGroup: {
-                                dataSrc: [0] // di order grup dulu, baru customer
-                            },
-                            columnDefs: [
-                                {
-                                    targets: [0], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
-                                    visible: false
-                                },
-                                {
-                                    // targets: [ord, ord-1],
-                                    // orderable: false, // matiin sortir kolom centang
-                                },
-                            ],
-                        });
+                       
                     }
                 },error: function (xhr, status, error) {
                     // $('#ltl').dataTable().fnClearTable();
@@ -416,6 +428,66 @@
 
             $('#modal_detail').modal('show');
         });
+        $('#post_data').submit(function(event) {
+            // uang_jalan
+            // tol
+            // bensin
+             const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+
+            if($("#uang_jalan").val().trim()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `NOMINAL UANG JALAN WAJIB TIDAK BOLEH 0 / KOSONG!`,
+                })
+                
+                return;
+            }
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar ?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+    });
     });        
 </script>
 @endsection
