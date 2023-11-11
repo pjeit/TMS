@@ -21,6 +21,7 @@ class Invoice extends Model
     {
     return $this->hasMany(invoiceDetail::class, 'id_invoice', 'id'); //id target, id sendiri
     }   
+
      public function invoiceDetailsCost()
     {
     return $this->hasMany(InvoiceDetailAddcost::class, 'id_invoice', 'id'); //id target, id sendiri
@@ -29,6 +30,11 @@ class Invoice extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'id', 'id_customer');
+    }   
+
+    public function getGroup()
+    {
+        return $this->hasOne(Grup::class, 'id', 'id_grup');
     }   
 
 }

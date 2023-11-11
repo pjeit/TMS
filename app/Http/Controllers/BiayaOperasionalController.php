@@ -59,6 +59,8 @@ class BiayaOperasionalController extends Controller
      */
     public function store(Request $request)
     {
+        DB::beginTransaction(); 
+
         try {
             $user = Auth::user()->id;
             $data = $request->post();
@@ -101,6 +103,7 @@ class BiayaOperasionalController extends Controller
                         );
                     }
                 }
+                DB::commit();
             }else{
                 foreach ($data['data'] as $key => $value) {
                     $keterangan = $item.' : ';
@@ -120,6 +123,29 @@ class BiayaOperasionalController extends Controller
                         $sewa_o->tgl_dicairkan = now();
                         $sewa_o->is_aktif = 'Y';
                         $sewa_o->save();
+
+                        if($item == 'OPERASIONAL' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
+                            $i=1;
+                            $driver = $value['supplier'] != 'null'? $value['supplier']:$value['driver'];
+        
+                            if($value['dicairkan'] != null){
+                                if (array_key_exists($value['tujuan'], $storeData)) {
+                                    // If the customer already exists in $storeData, increment the "dicairkan" value
+                                    $storeData[$value['tujuan']]['dicairkan'] += floatval(str_replace(',', '', $value['dicairkan']));
+                                    $storeData[$value['tujuan']]['driver'] .= ' #'. $value['nopol'] .' ('.$driver.')';
+                                    $storeData[$value['tujuan']]['id_opr'] .= ', '.$sewa_o->id;
+                                    $storeData[$value['tujuan']]['index'] += 1;
+                                } else {
+                                    // If the customer is not in $storeData, create a new entry
+                                    $storeData[$value['tujuan']] = [
+                                        'dicairkan' => floatval(str_replace(',', '', $value['dicairkan'])),
+                                        'driver' => '#'. $value['nopol'] .' ('.$driver.')',
+                                        'id_opr' => $sewa_o->id,
+                                        'index' => $i,
+                                    ];
+                                }
+                            }
+                        }
     
                         $saldo = DB::table('kas_bank')
                                     ->select('*')
@@ -156,7 +182,7 @@ class BiayaOperasionalController extends Controller
                                     1015, //kode coa
                                     'pencairan_operasional',
                                     $keterangan .= $value['keterangan'], //keterangan_transaksi
-                                    $key, //keterangan_kode_transaksi
+                                    $sewa_o->id, //keterangan_kode_transaksi // id_sewa_operasional
                                     $user, //created_by
                                     now(), //created_at
                                     $user, //updated_by
@@ -164,36 +190,13 @@ class BiayaOperasionalController extends Controller
                                     'Y'
                                 ) 
                             );
+                            DB::commit();
                         }
                     }
                 }
             }
 
-
             if($item == 'OPERASIONAL' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
-                $i=1;
-                foreach ($data['data'] as $key => $value) {
-                    $driver = $value['supplier'] != 'null'? $value['supplier']:$value['driver'];
-
-                    if($value['dicairkan'] != null){
-                        if (array_key_exists($value['tujuan'], $storeData)) {
-                            // If the customer already exists in $storeData, increment the "dicairkan" value
-                            $storeData[$value['tujuan']]['dicairkan'] += floatval(str_replace(',', '', $value['dicairkan']));
-                            $storeData[$value['tujuan']]['driver'] .= ' #'. $value['nopol'] .' ('.$driver.')';
-                            $storeData[$value['tujuan']]['id_opr'] .= ', '.$sewa_o->id;
-                            $storeData[$value['tujuan']]['index'] += 1;
-                        } else {
-                            // If the customer is not in $storeData, create a new entry
-                            $storeData[$value['tujuan']] = [
-                                'dicairkan' => floatval(str_replace(',', '', $value['dicairkan'])),
-                                'driver' => '#'. $value['nopol'] .' ('.$driver.')',
-                                'id_opr' => $sewa_o->id,
-                                'index' => $i,
-                            ];
-                        }
-                    }
-                }
-
                 foreach ($storeData as $key => $value) {
                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                         array(
@@ -204,7 +207,7 @@ class BiayaOperasionalController extends Controller
                             1015, //kode coa
                             'pencairan_operasional',
                             $item.": ".$value['index'].'x ' .$key." ".$value['driver'], //keterangan_transaksi
-                            $value['id_opr'], //keterangan_kode_transaksi
+                            $value['id_opr'], //keterangan_kode_transaksi // id_sewa_operasional
                             $user, //created_by
                             now(), //created_at
                             $user, //updated_by
@@ -213,10 +216,13 @@ class BiayaOperasionalController extends Controller
                         ) 
                     );
                 }
+    
+                DB::commit();
             }
 
             return redirect()->route('biaya_operasional.index')->with(['status' => 'Success', 'msg' => 'Data berhasil dicairkan!']);
         } catch (ValidationException $e) {
+            db::rollBack();
             return redirect()->back()->with(['status' => 'Error', 'msg' => 'Terjadi Kesalahan!']);
         }
 

@@ -77,7 +77,7 @@
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">Catatan</label>
                                     <textarea type="text" id="catatan_invoice" name="catatan_invoice" class="form-control" rows="4"></textarea>                     
-                                    <input type="text" id="is_pisah_invoice" name="is_pisah_invoice" value="FALSE">
+                                    <input type="hidden" id="is_pisah_invoice" name="is_pisah_invoice" value="FALSE">
                                 </div>  
                             </div>
                         </div>
@@ -202,11 +202,15 @@
                             </td>
                             <td> {{ $item->nama_tujuan }} <br> ({{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }})</td>
                             <td>
-                                @if ($item->id_supplier)
-                                        DRIVER REKANAN  ({{ $item->namaSupplier }})
-                                @else
-                                    {{ $item->no_polisi }} ({{ $item->getKaryawan->nama_panggilan }}) 
-                                @endif
+                                @php
+                                    $driver = '';
+                                    if($item->id_supplier){
+                                        $driver = 'DRIVER REKANAN ' . '('.$item->namaSupplier.')';
+                                    }else{
+                                        $driver = $item->no_polisi . ' ('.$item->getKaryawan->nama_panggilan.')'; 
+                                    }
+                                @endphp
+                                    {{ $driver }}
                             </td>
                             <td> <span id="no_kontainer_text_{{ $item->id_sewa }}">{{ isset($item->id_jo_detail)? $item->getJOD->no_kontainer:$item->no_kontainer }}</span> <br> <span id='no_seal_text_{{ $item->id_sewa }}'>{{ $item->seal_pelayaran }}</span> </td>
                             <td style="text-align:right" id="muatan_satuan_{{ $key }}">
@@ -243,9 +247,9 @@
                                     @endif --}}
                                 @endforeach
                                 <span class="text_addcost_{{ $item->id_sewa }}">{{ number_format($total_addcost) }}</span>
-                                <input type="text" class="cek_detail_addcost" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_details]" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
+                                <input type="hidden" class="cek_detail_addcost" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_details]" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
                                 {{-- <input type="text" name="detail[{{ $item->id_sewa }}][addcost_details_pisah]" id="detail_addcost_pisah_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasionalPisah) }}" /> --}}
-                                <input type="text" class="cek_detail_addcost_baru" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_baru]" id="detail_addcost_baru_{{ $item->id_sewa }}" value="" />
+                                <input type="hidden" class="cek_detail_addcost_baru" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_baru]" id="detail_addcost_baru_{{ $item->id_sewa }}" value="" />
 
                                 <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost]' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
                                 <input type="hidden" class="addcost_pisah addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">
@@ -260,6 +264,7 @@
                             </td>
                             <td><span id="catatan_text_{{ $item->id_sewa }}">{{ $item->catatan }}</span>
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][nama_tujuan]' id='nama_tujuan_hidden_{{ $item->id_sewa }}' value="{{ $item->nama_tujuan }}">
+                                <input type="hidden" name='detail[{{ $item->id_sewa }}][driver]' id='driver_hidden_{{ $item->id_sewa }}' value="{{ $driver }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][tgl_berangkat]' id='tgl_berangkat_hidden_{{ $item->id_sewa }}' value="{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][no_kontainer]' id='no_kontainer_hidden_{{ $item->id_sewa }}' value="{{ $item->no_kontainer }}">
                                 <input type="hidden" name='detail[{{ $item->id_sewa }}][no_seal]' id='no_seal_hidden_{{ $item->id_sewa }}' value="{{ $item->seal_pelayaran }}">
@@ -711,7 +716,7 @@
         $(document).on('click', '.save_detail', function(event){ // save detail
             var key = $('#key').val(); 
 
-            $('#addcost_hidden_'+key).val( $('#addcost').val() );
+            $('#addcost_hidden_'+key).val( normalize($('#addcost').val()) );
 
             document.querySelector(".text_addcost_"+key).textContent = moneyMask( $('#addcost').val() );
 
