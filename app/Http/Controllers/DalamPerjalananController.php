@@ -959,18 +959,41 @@ class DalamPerjalananController extends Controller
                     ->where('is_aktif', '=', "Y")
                     ->get();
         $dataDriver = DB::table('karyawan as k')
-            ->select('k.*','k.id as idKaryawan','k.nama_panggilan','kh.total_hutang')
+            ->select('k.*','k.id as idKaryawan','k.nama_panggilan','kh.total_hutang','ujr.potong_hutang','s.id_sewa')
             ->leftJoin('karyawan_hutang as kh', function($join) {
-                $join->on('k.id', '=', 'kh.id_karyawan')->where('kh.is_aktif', '=', "Y");
+                $join->on('k.id', '=', 'kh.id_karyawan')
+                ->where('kh.is_aktif', '=', "Y")
+                ->where('kh.is_aktif', '=', "Y");
+            })
+            ->leftJoin('sewa as s', function($join) {
+                $join->on('k.id', '=', 's.id_karyawan')->where('s.is_aktif', '=', "Y");
+            })
+            ->leftJoin('uang_jalan_riwayat as ujr', function($join) use ($id){
+                $join->on('s.id_sewa', '=', 'ujr.sewa_id')
+                //cek dulu apakah id sewa di ujr ini sama kaya id sewa yang ada,(driver di sewa sama driver di ujr)
+                ->where(function ($query)use ($id){
+                        $query->where(function ($innerQuery)use ($id) {
+                            $innerQuery->where('s.id_sewa',$id);
+                        })
+                        //yang ga ada sewa juga dimunculin (selain driver yang udah jalan)
+                        ->orWhere(function ($query) {
+                            $query->whereNull('s.id_sewa');
+                        });
+                })
+                ->where('ujr.is_aktif', '=', "Y");
             })
             ->where('k.is_aktif',"Y")
+            ->where('k.is_keluar',"N")
             ->where('k.role_id', 5)
             ->get();
+        // dd($dataDriver);
         $dataUangJalanRiwayat= DB::table('uang_jalan_riwayat as ujr')
             ->select('ujr.*')
             ->where('ujr.is_aktif',"Y")
             ->where('ujr.sewa_id', $sewa->id_sewa)
-            ->get();
+            ->first();
+        // dd($dataUangJalanRiwayat->kas_bank_id);
+
         return view('pages.order.dalam_perjalanan.ubah_supir',[
             'judul' => "ubah supir",
             'dataDriver'=> $dataDriver,
@@ -993,23 +1016,28 @@ class DalamPerjalananController extends Controller
         DB::beginTransaction(); 
         try {
             $sewa = Sewa::where('is_aktif', 'Y')->where('id_sewa', $id)->first();
+            $sewa->id_kendaraan = $data['kendaraan_id'];
+            $sewa->no_polisi = $data['no_polisi'];
+            $sewa->id_chassis = $data['select_chassis'];
+            $sewa->karoseri = $data['karoseri'];
+            $sewa->id_karyawan = $data['select_driver'];
+            $sewa->nama_driver = $data['driver_nama'];
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
-            $sewa->status = 'MENUNGGU UANG JALAN';
             $sewa->save();  
             $ujr = UangJalanRiwayat::where([
                                         'is_aktif' => 'Y',
                                         'sewa_id' => $id
                                     ])->first();
+            $ujr->potong_hutang =floatval(str_replace(',', '', $data['potong_hutang']));
+            $ujr->kas_bank_id = $data['pembayaran'];
             $ujr->updated_by = $user;
             $ujr->updated_at = now();
-            $ujr->is_aktif = 'N';
             if($ujr->save()){
                 $kht = KaryawanHutangTransaction::where(['is_aktif' => 'Y', 
                                                         'id_karyawan' => $sewa->id_karyawan,
                                                         'refrensi_id' => $ujr->id 
                                                         ])->first();
-
                 if($kht){
                     $kht->updated_by = $user;
                     $kht->updated_at = now();

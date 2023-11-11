@@ -28,8 +28,6 @@
                
                <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12" style=" border-right: 1px solid rgb(172, 172, 172);">
-                        <div class="row">
-                            <div class="col-6">
                                 <div class="form-group ">
                                     <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
@@ -41,20 +39,6 @@
                                     <input type="hidden" name="id_sewa_hidden" value="{{$id_sewa}}">
                                     <input type="hidden" name="no_sewa" value="{{$data->no_sewa}}">
                                 </div> 
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group ">
-                                    <label for="tanggal_cancel">Tanggal Cancel<span style="color:red">*</span></label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                        </div>
-                                        <input disabled type="text" autocomplete="off"  class="form-control date" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse(now())->format('d-M-Y')}}">
-                                        <input type="hidden" autocomplete="off" name="tanggal_cancel" class="form-control date" id="tanggal_cancel" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse(now())->format('d-M-Y')}}">
-                                    </div>
-                                </div> 
-                            </div>
-                        </div>
                         <div class="form-group ">
                             <label for="no_akun">Customer</label>
                             <input type="text" id="customer" name="customer" class="form-control" value="[{{$data->getCustomer->kode}}] {{$data->getCustomer->nama}}" readonly>                         
@@ -62,40 +46,118 @@
                         <div class="form-group ">
                             <label for="no_akun">Tujuan</label>
                             <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$data->nama_tujuan}}" readonly>                         
+                            <input type="hidden" id="tujuan_id" name="tujuan_id" value="{{$data->id_grup_tujuan}}" placeholder="tujuan_id">
+                            <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="{{$data->id_jo_detail}}" placeholder="id_jo_detail">
+                            <input type="hidden" name="id_jo" id="id_jo" value="{{$data->id_jo}}" placeholder="id_jo">
+                            <input type="hidden" id="nama_tujuan" name="nama_tujuan" value="{{$data->nama_tujuan}}"placeholder="nama_tujuan">
+                            <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="{{$data->alamat_tujuan}}"placeholder="alamat_tujuan">
+                            <input type="hidden" id="tarif" name="tarif" value="{{$data->total_tarif}}"placeholder="tarif">
+                            <input type="hidden" id="uang_jalan" name="uang_jalan" value="{{$data->total_uang_jalan}}"placeholder="uang_jalan">
+                            <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value="{{$data->jenis_tujuan}}"placeholder="jenis_tujuan">
                         </div>  
+                        
+                        <div class="form-group " id="driver_div">
+                            <label for="select_driver">Driver<span style="color:red">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
+                                <option value="">Pilih Driver</option>
+                                @foreach ($dataDriver as $drvr)
+                                    <option value="{{$drvr->id}}" 
+                                        nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})"
+                                        karyawan_hutang = "{{$drvr->total_hutang}}"
+                                        potong_hutang = "{{$drvr->potong_hutang}}"
+                                         {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
+                                @endforeach
+                            </select>
+                            
+                            <input type="hidden" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-3 col-md-6 col-sm-12" id="kontainer_div">
+                                <div class="form-group" id="inboundDataKontainer">
+                                    <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                    <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="{{$data['tipe_kontainer']}}">    
+                                    {{-- <input type="hidden" id="status" value=""> --}}
+                                </div>
+                                <input type="hidden" name="tipe_kontainer" id="tipe_kontainer" value="{{$data['tipe_kontainer']}}">
+                            </div> 
+                            <div class="form-group col-lg-4 col-md-6 col-sm-12" id="kendaraan_div">
+                                <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
+                                <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }}>
+                                    <option value="">Pilih Kendaraan</option>
+
+                                    @foreach ($dataKendaraan as $kendaraan)
+                                    
+                                        <option value="{{$kendaraan->kendaraanId}}"
+                                            idChassis='{{$kendaraan->chassisId}}'
+                                            noPol='{{$kendaraan->no_polisi}}'
+                                            idDriver='{{$kendaraan->driver_id}}'
+                                            kategoriKendaraan='{{$kendaraan->kategoriKendaraan}}'
+                                            tipeKontainerKendaraanDariChassis = '{{$kendaraan->tipeKontainerKendaraanDariChassis}}'
+                                            {{$kendaraan->kendaraanId == $data['id_kendaraan']? 'selected':''}}
+                                            >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="" placeholder="kendaraan_id">
+                                <input type="hidden" id="no_polisi" name="no_polisi" value="" placeholder="no_polisi">
+                                <input type="hidden" id="tipeKontainerKendaraanDariChassis" name="tipeKontainerKendaraanDariChassis" value="" placeholder="tipeKontainerKendaraanDariChassis">
+                            </div>   
+                            <div class="form-group col-lg-5 col-md-6 col-sm-12" id="chassis_div">
+                                <label for="select_ekor">Chassis<span style="color:red">*</span></label>
+                                    <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
+                                    <option value="">Pilih Chassis</option>
+                                    @foreach ($dataChassis as $cha)
+                                        <option value="{{$cha->idChassis}}" modelChassis="{{ $cha->modelChassis }}" karoseris="{{ $cha->karoseri }}" {{$cha->id==$data['id_chassis']? 'selected':''}}>{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}})</option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" id="karoseri" name="karoseri" value="" placeholder="karoseri">
+                            </div>
+                        </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">
-                        <div class="row">
-                            <div class="form-group col-12">
-                                <label for="tanggal_pencairan">Tanggal Kembali</label>
+                         <div class="row">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <label for="total_hutang" >Total Hutang</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input disabled type="text" autocomplete="off" class="form-control date" placeholder="dd-M-yyyy" value="{{\Carbon\Carbon::parse(now())->format('d-M-Y')}}">
-                                    <input type="hidden" autocomplete="off" name="tanggal_kembali" class="form-control date" id="tanggal_kembali" placeholder="dd-M-yyyy" value="{{\Carbon\Carbon::parse(now())->format('d-M-Y')}}">
+                                    <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numaja" value="" readonly>                         
                                 </div>
-                            </div> 
-                            <div class="form-group col-4">
-                                <label for="no_akun">Kendaraan</label>
-                                <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="{{$data->no_polisi}}" readonly>                         
-                            </div>  
-                            <div class="form-group col-8">
-                                <label for="no_akun">Driver</label>
-                                <input type="text" id="driver" name="driver" class="form-control" value="{{$data->nama_driver}}" readonly>     
-                                <input type="hidden" name="id_karyawan" id="id_karyawan" value="{{$data->id_karyawan}}">                    
-                            </div> 
+                            </div>
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-0" 
+                                @if (isset($sewa->getKaryawan->getHutang) && $sewa->getKaryawan->getHutang->total_hutang > 0)
+                                    style="background: hsl(0, 100%, 93%); border: 1px red solid;"
+                                @endif>
+                                <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" value="" >                         
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             {{-- @if ($data->jenis_tujuan =='FTL') --}}
-                                <div class="form-group col-12">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="total_uang_jalan">Total Uang Jalan</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                        <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $dataUangJalanRiwayat->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
                                     </div>
                                 </div>
-                                <div class="form-group col-12">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="total_diterima">Total Diberikan</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang " value="" readonly>                         
+                                    </div>
+                                </div>
+                                {{-- <div class="form-group col-12">
                                     <label for="uang_jalan_kembali">Uang Jalan Kembali<span class="text-red">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -103,15 +165,20 @@
                                         </div>
                                         <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" >
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="form-group col-12">
                                     <label for="">Kas / Bank<span class="text-red">*</span></label>
                                     <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                         @foreach ($dataKas as $kb)
-                                            <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                            <option value="{{$kb->id}}" {{ $dataUangJalanRiwayat->kas_bank_id==$kb->id ? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                         @endforeach
                                             <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
                                     </select>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label for="catatan">Catatan</label>
+                                    <input type="text" name="catatan" class="form-control" id="catatan" placeholder="" value="">
+                                    <input type="hidden" name="catatan_awal" id="catatan_awal" value=""> 
                                 </div>
                             {{-- @endif --}}
                         </div>
@@ -122,27 +189,316 @@
     </form>
 </div>
 <script type="text/javascript">
-$(document).ready(function() {
-    $(document).on('keyup', '#uang_jalan_kembali', function(){ 
-        var total_uang_jalan = $('#total_uang_jalan').val();
-        if(parseFloat(escapeComma(this.value)) > parseFloat(escapeComma(total_uang_jalan))){
-            $('#uang_jalan_kembali').val(total_uang_jalan);
+    function hitung_total(){
+        if($('#total_uang_jalan').val()!=''){
+            var total_uang_jalan=removePeriod($('#total_uang_jalan').val(),',');
+        }else{
+            var total_uang_jalan=0;
         }
-    });
-    $(document).on('focusout', '#uang_jalan_kembali', function(){ 
-        check();
-    });
-    // document.getElementById("uang_jalan_kembali").addEventListener("focusout", myFunction);
-    // function myFunction() {
-    //     check();
-    // }
-    function check(){
-        var total_uang_jalan = parseFloat(escapeComma($('#total_uang_jalan').val()));
-        var uang_jalan_kembali = parseFloat(escapeComma($('#uang_jalan_kembali').val()));
-        if(uang_jalan_kembali > total_uang_jalan){
-            $('#uang_jalan_kembali').val(moneyMask(total_uang_jalan));
+        
+        if($('#potong_hutang').val()!=''){
+            var potong_hutang=removePeriod($('#potong_hutang').val(),',');
+        }else{
+            var potong_hutang=0;
+        }
+        
+        var total_diterima=parseFloat(total_uang_jalan)-parseFloat(potong_hutang);
+        // console.table(total_uang_jalan);
+        // console.table(potong_hutang);
+        // console.table(total_diterima);
+        if(total_diterima!=0){
+            $('#total_diterima').val(addPeriod(total_diterima,','));
+        }else{
+            $('#total_diterima').val(0);
+        }
+
+        
+    }
+    function cek_potongan_hutang(){
+         if($('#total_uang_jalan').val()!=''){
+            var total_uang_jalan=removePeriod($('#total_uang_jalan').val(),',');
+        }else{
+            var total_uang_jalan=0;
+        }
+        if($('#total_hutang').val()!=''){
+            var total_hutang =removePeriod($('#total_hutang').val(),',');
+        }else{
+            var total_hutang =0;
+        }
+        
+        var potong_hutang = removePeriod($('#potong_hutang').val(),',');
+        if(parseFloat(potong_hutang)>parseFloat(total_hutang)){
+            $('#potong_hutang').val(addPeriod(total_hutang,','));
+        }else{
+            $('#potong_hutang').val(addPeriod(potong_hutang,','));
+        }
+       
+        if(parseFloat(potong_hutang)>parseFloat(total_uang_jalan) && parseFloat(total_hutang)>parseFloat(total_uang_jalan)){
+                $('#potong_hutang').val(addPeriodType(total_uang_jalan,','));
+            }
+    }
+$(document).ready(function() {
+    
+   
+    
+    
+    function selectKendaraan()
+    {
+        var idKendaraan = $('#select_kendaraan').val();
+        var selectedOption = $('#select_kendaraan').find('option:selected');
+        var idChassis = selectedOption.attr('idChassis');
+        var nopol = selectedOption.attr('noPol');
+        var supir = selectedOption.attr('idDriver');
+        // console.log(idKendaraan);
+        if(idKendaraan != '')
+        {
+            var tipeKontainerKendaraanDariChassis = selectedOption.attr('tipeKontainerKendaraanDariChassis').replace(/'/g, '');
+        }
+        $('#kendaraan_id').val(idKendaraan);
+        $('#no_polisi').val(nopol);
+        $('#tipeKontainerKendaraanDariChassis').val(tipeKontainerKendaraanDariChassis);
+        if (idChassis!=''&&idChassis!='null') {
+            $('#select_chassis').val(idChassis).trigger('change');
+        }
+        else
+        {
+            $('#select_chassis').val('').trigger('change');
+        }
+        if(supir!='')
+        {
+            $('#select_driver').val(supir).trigger('change');
+        }
+        else
+        {
+            $('#select_driver').val('').trigger('change');
         }
     }
+    function selectChasis(){
+        var selectedOption = $('#select_chassis').find('option:selected');
+            var karoseris = selectedOption.attr('karoseris');
+            
+            $('#karoseri').val(karoseris);
+    }
+    function selectDriver()
+    {
+        var id_karyawan = $('#select_driver').val();
+        var selectedOption = $('#select_driver').find('option:selected');
+        var karyawan_hutang = selectedOption.attr('karyawan_hutang');
+        var potong_hutang = selectedOption.attr('potong_hutang');
+        $('#total_hutang').val(karyawan_hutang?addPeriod(karyawan_hutang,','):0);
+        $('#potong_hutang').val(potong_hutang?addPeriod(potong_hutang,','):0);
+        console.log(potong_hutang);
+        if(potong_hutang>0)
+        {
+            $('#potong_hutang').prop('disabled',true);
+        }
+        else
+        {
+            $('#potong_hutang').prop('disabled',false);
+        }
+             hitung_total();
+        cek_potongan_hutang();
+    }
+    function hideMenuTujuan(){
+        var jenisTujuan=$('#jenis_tujuan').val();
+        var jenisOrder =$('#jenis_order').val();
+        var kendaraan_div =$('#kendaraan_div');
+        console.log(jenisTujuan);
+        console.log(jenisOrder);
+        // console.log(kendaraan_div);
+
+        // if(jenisOrder=='OUTBOUND')
+        // {
+            if(jenisTujuan=='FTL' || jenisTujuan=='')
+            {
+                $('#kontainer_div').show();
+                $('#chassis_div').show();
+                $('#stack_tl_form').show();
+                // kendaraan_div.removeClass('col-lg-12 col-md-12 col-sm-12');
+                // kendaraan_div.addClass('col-lg-4 col-md-6 col-sm-12');
+            }
+            else
+            {
+                // console.log('masuk else');
+                $('#kontainer_div').hide();
+                $('#chassis_div').hide();
+                $('#stack_tl_form').hide();
+                // kendaraan_div.removeClass('col-lg-4 col-md-6 col-sm-12');
+                // kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
+            }
+        // }
+        // else
+        // {
+        //     $('#kontainer_div').show();
+        //     $('#chassis_div').show();
+        //     $('#driver_div').show();
+        // }
+    }
+    function setKendaraan(tipeKontainer)
+    {
+        // console.log(tipeKontainer);
+        var kontainerSemua =  <?php echo json_encode($dataKendaraan); ?>;
+        var select_kendaraan = $('#select_kendaraan');
+        console.log($('#kendaraan_id').val() );
+        if(tipeKontainer==''|| tipeKontainer== undefined)
+        {
+            select_kendaraan.empty(); 
+            select_kendaraan.append('<option value="">Pilih Kendaraan</option>');
+            
+            kontainerSemua.forEach(kendaraan => {
+                const option = document.createElement('option');
+                option.value = kendaraan.kendaraanId;
+                option.setAttribute('idChassis', kendaraan.chassisId);
+                option.setAttribute('noPol', kendaraan.no_polisi);
+                option.setAttribute('idDriver', kendaraan.driver_id);
+                option.setAttribute('kategoriKendaraan', kendaraan.kategoriKendaraan);
+                option.setAttribute('tipeKontainerKendaraanDariChassis', kendaraan.tipeKontainerKendaraanDariChassis);
+                option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})` ;
+                select_kendaraan.append(option);
+            });
+            $('#kendaraan_id').val('');
+            $('#no_polisi').val('');
+            $('#tipeKontainerKendaraanDariChassis').val('');
+            $('#select_driver').val('').trigger('change');
+            $('#karoseri').val('');
+        }
+        else
+        {
+            var baseUrl = "{{ asset('') }}";
+            $.ajax({
+                url: `${baseUrl}truck_order/getDataKendaraanByModel/${tipeKontainer}`, 
+                method: 'GET', 
+                success: function(response) {
+                    if(response)
+                    {
+                        console.log(response);
+                        select_kendaraan.empty(); 
+                        select_kendaraan.append('<option value="">Pilih Kendaraan</option>');
+                        
+                            response.forEach(kendaraan => {
+                                const option = document.createElement('option');
+                                option.value = kendaraan.kendaraanId;
+                                option.setAttribute('idChassis', kendaraan.chassisId);
+                                option.setAttribute('noPol', kendaraan.no_polisi);
+                                option.setAttribute('idDriver', kendaraan.driver_id);
+                                option.setAttribute('kategoriKendaraan', kendaraan.kategoriKendaraan);
+                                option.setAttribute('tipeKontainerKendaraanDariChassis', kendaraan.tipeKontainerKendaraanDariChassis);
+
+                                option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})` ;
+                                //kendaraan_id itu yang hidden,tipe kontainer itu buat selected di tipeoutbound
+                                if ($('#kendaraan_id').val() == kendaraan.kendaraanId && tipeKontainer == $('#tipeKontainerKendaraanDariChassis').val()) {
+                                        option.selected = true;
+                                        $('#select_driver').val(kendaraan.driver_id).trigger('change');
+                                }
+                                //kendaraan_id itu yang hidden,tipe kontainer itu buat selected di tipeoutbound
+                                if($('#kendaraan_id').val() != kendaraan.kendaraanId && tipeKontainer != $('#tipeKontainerKendaraanDariChassis').val())
+                                {
+                                    console.log('masuk else');
+                                    $('#kendaraan_id').val('');
+                                    $('#no_polisi').val('');
+                                    $('#tipeKontainerKendaraanDariChassis').val('');
+                                    $('#select_driver').val('').trigger('change');
+                                    $('#karoseri').val('');
+                                }
+                                
+                                    select_kendaraan.append(option);
+                            });
+
+                    }
+        
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+
+        }
+
+    }
+    function setChassis(tipeKontainer)
+    {
+        // console.log(tipeKontainer);
+
+        var chassisSemua =  <?php echo json_encode($dataChassis); ?>;
+        var select_chassis= $('#select_chassis');
+        var selectedOption = $('#select_kendaraan').find('option:selected');
+        var idChassis = selectedOption.attr('idChassis');
+        if(tipeKontainer==''|| tipeKontainer== undefined)
+        {
+            select_chassis.empty(); 
+            select_chassis.append('<option value="">Pilih Chassis</option>');
+                        
+            chassisSemua.forEach(chassis => {
+                const option = document.createElement('option');
+                option.value = chassis.idChassis;
+                option.setAttribute('modelChassis', chassis.modelChassis);
+                option.setAttribute('karoseris', chassis.karoseri);
+                option.textContent = `${chassis.karoseri} - ${chassis.kode} (${chassis.modelChassis})` ;
+                select_chassis.append(option);
+            });
+            $('#karoseri').val('');
+
+        }
+        else
+        {
+            var baseUrl = "{{ asset('') }}";
+            $.ajax({
+                url: `${baseUrl}truck_order/getDataChassisByModel/${tipeKontainer}`, 
+                method: 'GET', 
+                success: function(response) {
+                    if(response)
+                    {
+                        
+                        select_chassis.empty(); 
+                        select_chassis.append('<option value="">Pilih Chassis</option>');
+                        // if(tipeKontainer!=""|| tipeKontainer!= undefined)
+                        // {
+                            
+                                response.forEach(chassis => {
+                                const option = document.createElement('option');
+                                option.value = chassis.idChassis;
+                                option.setAttribute('modelChassis', chassis.modelChassis);
+                                option.setAttribute('karoseris', chassis.karoseri);
+                                option.textContent = `${chassis.karoseri} - ${chassis.kode} (${chassis.modelChassis})` ;
+                                //idChassis itu ambil attribut dari kendaraan
+                                if ( idChassis == chassis.idChassis) {
+                                        option.selected = true;
+                                        $('#karoseri').val(chassis.karoseri);
+
+                                }
+                                // if (idChassis != chassis.idChassis)
+                                // {
+                                //     $('#karoseri').val('');
+                                //     select_chassis.val('').trigger('change');
+                                // }
+                                select_chassis.append(option);
+                            });
+                        // }
+                    }
+        
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+    }
+   
+    $('body').on('change','#select_driver',selectDriver);
+    $('body').on('change','#select_kendaraan',selectKendaraan);
+    $('body').on('change','#select_chassis',selectChasis);
+    if($('#jenis_tujuan').val()=="FTL")
+    {
+        setKendaraan($('#tipe_kontainer').val());
+        setChassis($('#tipe_kontainer').val());
+    }
+    hideMenuTujuan();
+    selectKendaraan();
+    selectChasis();
+    selectDriver();
+    hitung_total();
+    cek_potongan_hutang();
     $('#post_data').submit(function(event) {
             event.preventDefault();
             Swal.fire({
