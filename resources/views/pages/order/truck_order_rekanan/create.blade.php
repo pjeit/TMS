@@ -192,10 +192,10 @@
                                         </div>
                                         <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
                                     </div>                                    
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="show_no_koli">
+                                    {{-- <div class="form-group col-lg-6 col-md-6 col-sm-12" id="show_no_koli">
                                         <label>No. Koli</label>
                                         <input type="text" maxlength="3" name="no_koli" class="form-control numaja" id="no_koli"> 
-                                    </div>
+                                    </div> --}}
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12" id="no_pol_rekanan">
                                         <label for="no_polisi">No. polisi rekanan</label>
                                         <input type="text" maxlength="11" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value=""> 
@@ -247,7 +247,6 @@
 <script>
     $(document).ready(function() {
         getDate();
-        $('#show_no_koli').hide();
 
         $('#inboundData').hide();
         $('#tipe_kontainer_in').val();
@@ -258,11 +257,25 @@
         $("#outbond").addClass("aktif");
         $('#jenis_order').val('OUTBOUND');
         
+        function refreshBar(){
+            
+            let creds_now = 0;  
+            const cred = document.getElementById('credit_customer');
+            $('#persenanCredit').html('0%');
+            cred.style.width = creds_now+"%";
+            cred.style.backgroundColor = "#53de02";
+            cred.style.color = "black";
+        }
         $('body').on('click','#inbound',function()
 		{
+            hideMenuTujuan();
+            refreshBar();
+                 $('#kontainer_div').show();
+                    $('#stack_tl_form').show();
+                    $('.open_harga_tujuan').show();
             $('#inboundDataKontainer').show();
             $('#outbondDataKontainer').hide();
-
+            $('#harga_tujuan').val(0);
             $('#inboundData').show();
             $('#garisInbound').show();
             $('#tipe_kontainer').val();
@@ -301,6 +314,12 @@
         $('body').on('click','#outbond',function()
 		{
             // $(this).animate({ "color": "red" }, 1500);
+            hideMenuTujuan();
+            refreshBar();
+             $('#kontainer_div').show();
+                    $('#stack_tl_form').show();
+                    $('.open_harga_tujuan').show();
+            $('#harga_tujuan').val(0);
             $('#inboundDataKontainer').hide();
             $('#outbondDataKontainer').show();
             $('#tipe_kontainer').val();
@@ -746,76 +765,89 @@
             var jenisTujuan=$('#jenis_tujuan').val();
             var jenisOrder =$('#jenis_order').val();
             var no_pol_rekanan =$('#no_pol_rekanan');
-           
+            console.log('pencet');
             if(jenisOrder=='OUTBOUND')
             {
+                console.log('masuk if outbound');
+
                 if(jenisTujuan=='FTL' || jenisTujuan=='')
                 {
+                    console.log('masuk if ftl');
+
                     $('#kontainer_div').show();
                     $('#stack_tl_form').show();
                     $('.open_harga_tujuan').show();
-                    $('#show_no_koli').hide();
                 }
-                else
+                else if(jenisTujuan=='LTL')
                 {
+                    console.log('masuk if ltl');
+
                     $('#kontainer_div').hide();
                     $('#stack_tl_form').hide();
                     $('.open_harga_tujuan').hide();
-                    $('#show_no_koli').show();
                 }
             }
-            else
+            else if(jenisOrder=='INBOUND')
             {
-                $('#kontainer_div').show()
-            }
-           
+                console.log('masuk else luar');
 
+                $('#kontainer_div').show()
+                $('#stack_tl_form').show();
+                $('.open_harga_tujuan').show();
+            }
         }
+         $('body').on('keyup','#harga_jual',function()
+        {
+            $(this).val($(this).val());
+        });
         $(document).on('click', '#submitButton', function(){ // kalau diskon berubah, hitung total 
             var harga_tujuan =$('#harga_tujuan').val();
             var harga_jual = $('#harga_jual').val();
             const jenis_tujuan = $('#jenis_tujuan').val();
-            if(jenis_tujuan == 'FTL'){
-                if (escapeComma(harga_jual)>escapeComma(harga_tujuan) ) {
-                    event.preventDefault(); // Prevent form submission
-                    Swal.fire({
-                        title: `Harga Jual Rekanan lebih besar dari Rp. ${harga_tujuan}`,
-                        text: "Konfirmasi kembali!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        cancelButtonColor: '#d33',
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonText: 'Batal',
-                        confirmButtonText: 'Konfirmasi',
-                        reverseButtons: true
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $('#post_data').submit();
-                        }else{
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'top',
-                                timer: 2500,
-                                showConfirmButton: false,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            })
-    
-                            Toast.fire({
-                                icon: 'warning',
-                                title: 'Batal Disimpan'
-                            })
-                            event.preventDefault();
-                            return;
-                        }
-                    })
-                    
-                }
+            // console.log('harga_jual:'+normalize(harga_jual));
+            // console.log('harga_tujuan:'+normalize(harga_tujuan));
+            // console.log('jenis_tujuan:'+jenis_tujuan);
+             if (normalize(harga_jual)>normalize(harga_tujuan) &&jenis_tujuan == 'FTL') {
+                event.preventDefault(); // Prevent form submission
+                Swal.fire({
+                    title: `Harga Jual Rekanan lebih besar dari Rp. ${harga_tujuan}`,
+                    text: "Konfirmasi kembali!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonText: 'Batal',
+                    confirmButtonText: 'Konfirmasi',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#post_data').submit();
+                    }else{
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Batal Disimpan'
+                        })
+                        event.preventDefault();
+                    }
+                })
+                
             }
-            $('#post_data').submit();
+            else
+            {
+                $('#post_data').submit();
+            }
         }); 
         $('#post_data').submit(function(event) {
             var no_polisi = $('#no_polisi').val();

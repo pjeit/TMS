@@ -17,8 +17,9 @@
    }
 </style>
 <div class="container-fluid">
-    <form action="{{ route('dalam_perjalanan.save_ubah_supir', [ $data['id_sewa'] ]) }}" method="POST" id="post_data">
+    <form action="{{ route('dalam_perjalanan.save_ubah_supir', ['id' => $data['id_sewa']]) }}" method="POST" id="post_data">
         @csrf 
+        {{-- @method('POST') --}}
         <div class="card radiusSendiri">
             <div class="card-header">
                 <a href="{{ route('dalam_perjalanan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
@@ -42,6 +43,8 @@
                         <div class="form-group ">
                             <label for="no_akun">Customer</label>
                             <input type="text" id="customer" name="customer" class="form-control" value="[{{$data->getCustomer->kode}}] {{$data->getCustomer->nama}}" readonly>                         
+                            <input type="hidden" id="jenis_order" name="jenis_order" value="{{$data->jenis_order}}" placeholder="jenis_order">
+                        
                         </div>  
                         <div class="form-group ">
                             <label for="no_akun">Tujuan</label>
@@ -69,7 +72,7 @@
                                 @endforeach
                             </select>
                             
-                            <input type="hidden" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">
+                            <input type="hidden" id="driver_nama" name="driver_nama" value="{{$data->nama_driver}}" placeholder="driver_nama">
                         </div>
                         <div class="row">
                             <div class="form-group col-lg-3 col-md-6 col-sm-12" id="kontainer_div">
@@ -97,8 +100,8 @@
                                             >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="" placeholder="kendaraan_id">
-                                <input type="hidden" id="no_polisi" name="no_polisi" value="" placeholder="no_polisi">
+                                <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="{{$data->id_kendaraan}}" placeholder="kendaraan_id">
+                                <input type="hidden" id="no_polisi" name="no_polisi" value="{{$data->no_polisi}}" placeholder="no_polisi">
                                 <input type="hidden" id="tipeKontainerKendaraanDariChassis" name="tipeKontainerKendaraanDariChassis" value="" placeholder="tipeKontainerKendaraanDariChassis">
                             </div>   
                             <div class="form-group col-lg-5 col-md-6 col-sm-12" id="chassis_div">
@@ -106,10 +109,10 @@
                                     <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
                                     <option value="">Pilih Chassis</option>
                                     @foreach ($dataChassis as $cha)
-                                        <option value="{{$cha->idChassis}}" modelChassis="{{ $cha->modelChassis }}" karoseris="{{ $cha->karoseri }}" {{$cha->id==$data['id_chassis']? 'selected':''}}>{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}})</option>
+                                        <option value="{{$cha->idChassis}}" modelChassis="{{ $cha->modelChassis }}" karoseris="{{ $cha->karoseri }}" {{$cha->idChassis==$data['id_chassis']? 'selected':''}}>{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}})</option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" id="karoseri" name="karoseri" value="" placeholder="karoseri">
+                                <input type="hidden" id="karoseri" name="karoseri" value="{{$data->karoseri}}" placeholder="karoseri">
                             </div>
                         </div>
                     </div>
@@ -125,7 +128,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-0" 
-                                @if (isset($sewa->getKaryawan->getHutang) && $sewa->getKaryawan->getHutang->total_hutang > 0)
+                                @if (isset($data->getKaryawan->getHutang) && $data->getKaryawan->getHutang->total_hutang > 0)
                                     style="background: hsl(0, 100%, 93%); border: 1px red solid;"
                                 @endif>
                                 <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
@@ -168,12 +171,13 @@
                                 </div> --}}
                                 <div class="form-group col-12">
                                     <label for="">Kas / Bank<span class="text-red">*</span></label>
-                                    <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                    <select class="form-control select2" name="pembayaran" id="pembayaran" {{$dataUangJalanRiwayat->kas_bank_id? 'disabled':''}} >
                                         @foreach ($dataKas as $kb)
                                             <option value="{{$kb->id}}" {{ $dataUangJalanRiwayat->kas_bank_id==$kb->id ? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                         @endforeach
-                                            <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
+                                            {{-- <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option> --}}
                                     </select>
+                                    <input type="hidden" name="pembayaran_defaulth" value="{{$dataUangJalanRiwayat->kas_bank_id}}">
                                 </div>
                                 <div class="form-group col-12">
                                     <label for="catatan">Catatan</label>
@@ -285,9 +289,12 @@ $(document).ready(function() {
         var selectedOption = $('#select_driver').find('option:selected');
         var karyawan_hutang = selectedOption.attr('karyawan_hutang');
         var potong_hutang = selectedOption.attr('potong_hutang');
+        var nama_driver = selectedOption.attr('nama_driver');
+
+        
         $('#total_hutang').val(karyawan_hutang?addPeriod(karyawan_hutang,','):0);
         $('#potong_hutang').val(potong_hutang?addPeriod(potong_hutang,','):0);
-        console.log(potong_hutang);
+        $('#driver_nama').val(nama_driver);
         if(potong_hutang>0)
         {
             $('#potong_hutang').prop('disabled',true);
@@ -304,7 +311,6 @@ $(document).ready(function() {
         var jenisOrder =$('#jenis_order').val();
         var kendaraan_div =$('#kendaraan_div');
         console.log(jenisTujuan);
-        console.log(jenisOrder);
         // console.log(kendaraan_div);
 
         // if(jenisOrder=='OUTBOUND')
@@ -490,12 +496,12 @@ $(document).ready(function() {
     $('body').on('change','#select_chassis',selectChasis);
     if($('#jenis_tujuan').val()=="FTL")
     {
-        setKendaraan($('#tipe_kontainer').val());
-        setChassis($('#tipe_kontainer').val());
+        // setKendaraan($('#tipe_kontainer').val());
+        // setChassis($('#tipe_kontainer').val());
     }
     hideMenuTujuan();
-    selectKendaraan();
-    selectChasis();
+    // selectKendaraan();
+    // selectChasis();
     selectDriver();
     hitung_total();
     cek_potongan_hutang();

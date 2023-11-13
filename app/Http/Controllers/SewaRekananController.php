@@ -121,9 +121,9 @@ class SewaRekananController extends Controller
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['kontainer']? $data['kontainer']:null;
-            if($data['jenis_tujuan'] == 'LTL'){
-                $sewa->no_kontainer = $data['no_koli'] . ' Koli';
-            }
+            // if($data['jenis_tujuan'] == 'LTL'){
+            //     $sewa->no_kontainer = $data['no_koli'] . ' Koli';
+            // }
             $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
             // $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
             $sewa->harga_jual = (float)str_replace(',', '', $data['harga_jual']);

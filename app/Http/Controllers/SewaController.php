@@ -288,6 +288,12 @@ class SewaController extends Controller
                                 ->where('sb.is_aktif', 'Y')
                                 ->where('sb.deskripsi', 'TL')
                                 ->first();
+        $dataChassisKont=DB::table('chassis as c')
+            ->select('c.*','c.id as idChassis','m.nama as modelChassis')
+            ->leftJoin('m_model_chassis AS m', 'c.model_id', '=', 'm.id')
+            ->where('m.nama', 'like', "%$data_sewa->tipe_kontainer%")
+            ->where('c.is_aktif', "Y")
+            ->get();
         // dd($data_sewa);
         return view('pages.order.truck_order.edit',[
             'judul' => "Edit Trucking Order",
@@ -299,6 +305,7 @@ class SewaController extends Controller
             'dataKendaraan' => SewaDataHelper::DataKendaraan(),
             'dataBooking' => $dataBooking,
             'dataChassis' => SewaDataHelper::DataChassis(),
+            'dataChassisKont' => $dataChassisKont,
             'dataPengaturanKeuangan'=>SewaDataHelper::DataPengaturanBiaya()
 
         ]);

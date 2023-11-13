@@ -153,7 +153,7 @@
                                     <input type="hidden" id="jenis_order" name="jenis_order" value="{{$data['jenis_order']}}" placeholder="jenis_order">
                                 </div>
                                 <div class="row">
-                                    <div class="form-group col-lg-8 col-md-8 col-sm-12">
+                                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" {{$data['id_booking']!=null ||$data['jenis_order']=="INBOUND"?'disabled':''}}>
                                             @isset($data['id_grup_tujuan'])
@@ -181,16 +181,18 @@
     
                                         <input type="hidden" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
                                     </div>
-                                     <div class="form-group col-lg-4 col-md-4 col-sm-12">
-                                        <label for="harga_jual">Harga Tujuan + UJ</label>
-                                        <div class="input-group mb-0">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Rp.</span>
-                                            </div>
-                                            <input type="text" class="form-control numaja uang" id="harga_tujuan" disabled min="0">
-                                        </div>
-                                    </div>
+                                    
 
+                                </div>
+                                 <div class="form-group">
+                                    <label for="supplier">Supplier</label>
+                                    <select class="form-control select2" style="width: 100%;" id='supplier' name="supplier">
+                                        <option value="">Pilih Supplier</option>
+
+                                            @foreach ($supplier as $s)
+                                            <option value="{{$s->id}}" {{$s->id==$data->id_supplier?'selected':''}}>{{ $s->nama }}</option>
+                                        @endforeach 
+                                    </select>
                                 </div>
                                 <div class="row">
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12" id="kontainer_div">
@@ -214,16 +216,16 @@
                                         <input type="text" maxlength="11" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value="{{$data->no_polisi}}"> 
                                     </div>   
                                 </div>
-                                <div class="form-group">
-                                    <label for="supplier">Supplier</label>
-                                    <select class="form-control select2" style="width: 100%;" id='supplier' name="supplier">
-                                        <option value="">Pilih Supplier</option>
-
-                                            @foreach ($supplier as $s)
-                                            <option value="{{$s->id}}" {{$s->id==$data->id_supplier?'selected':''}}>{{ $s->nama }}</option>
-                                        @endforeach 
-                                    </select>
+                                <div class="form-group open_harga_tujuan ">
+                                    <label for="harga_jual">Harga Tujuan + UJ</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp.</span>
+                                        </div>
+                                        <input type="text" class="form-control numaja uang" id="harga_tujuan" disabled min="0">
+                                    </div>
                                 </div>
+                               
                                 <div class="form-group">
                                     <label for="harga_jual">Harga Jual</label>
                                     <div class="input-group mb-0">
@@ -318,7 +320,10 @@
             }
 		});
         var  customerLoad = false;
-
+        $('body').on('keyup','#harga_jual',function()
+        {
+            $(this).val($(this).val());
+        });
           $('body').on('change','#select_customer',function()
 		{
             var selectedValue = $(this).val();
@@ -405,7 +410,7 @@
                             response.dataTujuan.forEach(tujuan => {
                                 const option = document.createElement('option');
                                 option.value = tujuan.id;
-                                option.textContent = tujuan.nama_tujuan;
+                                option.textContent = tujuan.nama_tujuan + ` ( ${tujuan.jenis_tujuan} )`;
                                 if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
                                 {
                                     if (idTujuan == tujuan.id) {
@@ -588,53 +593,46 @@
         }
         hideMenuTujuan();
         function hideMenuTujuan(){
-            var jenisTujuan=$('#jenis_tujuan').val();
+           var jenisTujuan=$('#jenis_tujuan').val();
             var jenisOrder =$('#jenis_order').val();
             var no_pol_rekanan =$('#no_pol_rekanan');
+            console.log('pencet');
+            if(jenisOrder=='OUTBOUND')
+            {
+                console.log('masuk if outbound');
 
-            // if(jenisTujuan!='')
-            // {
-                if(jenisOrder=='OUTBOUND')
+                if(jenisTujuan=='FTL' || jenisTujuan=='')
                 {
-                    if(jenisTujuan=='FTL' || jenisTujuan=='')
-                    {
-                        $('#kontainer_div').show();
-                        $('#stack_tl_form').show();
-                        no_pol_rekanan.removeClass('col-lg-12 col-md-12 col-sm-12');
-                        no_pol_rekanan.addClass('col-lg-6 col-md-6 col-sm-12');
-                    }
-                    else
-                    {
-                        $('#kontainer_div').hide();
-                        $('#stack_tl_form').hide();
-                        no_pol_rekanan.removeClass('col-lg-6 col-md-6 col-sm-12');
-                        no_pol_rekanan.addClass('col-lg-12 col-md-12 col-sm-12');
-                    }
+                    console.log('masuk if ftl');
+
+                    $('#kontainer_div').show();
+                    $('#stack_tl_form').show();
+                    $('.open_harga_tujuan').show();
                 }
-                else
+                else if(jenisTujuan=='LTL')
                 {
-                    $('#kontainer_div').show()
+                    console.log('masuk if ltl');
+
+                    $('#kontainer_div').hide();
+                    $('#stack_tl_form').hide();
+                    $('.open_harga_tujuan').hide();
                 }
-            // }
-            // else
-            // {
-            //     if(jenisOrder=='OUTBOUND')
-            //     {
-            //         $('#outbondDataKontainer').show()
-            //         $('#stack_tl_form').show()
-            //     }
-            //     else
-            //     {
-            //         $('#outbondDataKontainer').hide()
-            //     }
-            // }
+            }
+            else if(jenisOrder=='INBOUND')
+            {
+                console.log('masuk else luar');
+
+                $('#kontainer_div').show()
+                $('#stack_tl_form').show();
+                $('.open_harga_tujuan').show();
+            }
 
         }
         $(document).on('click', '#submitButton', function(){ // kalau diskon berubah, hitung total 
             var harga_tujuan =$('#harga_tujuan').val();
             var harga_jual = $('#harga_jual').val();
-
-            if (escapeComma(harga_jual)>escapeComma(harga_tujuan) ) {
+            const jenis_tujuan = $('#jenis_tujuan').val();
+            if (normalize(harga_jual)>normalize(harga_tujuan) &&jenis_tujuan == 'FTL') {
                 event.preventDefault(); // Prevent form submission
                 Swal.fire({
                     title: `Harga Jual Rekanan lebih besar dari Rp. ${harga_tujuan}`,
@@ -954,7 +952,7 @@
                             response.dataTujuan.forEach(tujuan => {
                                 const option = document.createElement('option');
                                 option.value = tujuan.id;
-                                option.textContent = tujuan.nama_tujuan;
+                                option.textContent = tujuan.nama_tujuan+ ` ( ${tujuan.jenis_tujuan} )`;
                                 if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
                                 {
                                     if ($('#tujuan_id').val() == tujuan.id) {

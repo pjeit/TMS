@@ -97,10 +97,9 @@ class PencairanKomisiCustomerController extends Controller
     {
         //
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
-
+        DB::beginTransaction();
         try {
 
-            DB::beginTransaction();
             $data = $request->collect();
             // dd($data);  
             // $tanggal_pencairan = date_create_from_format('d-M-Y', $data['tanggal_pencairan']);

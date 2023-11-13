@@ -287,8 +287,25 @@
             // allowClear: true,
             // minimumInputLength:1
         });
+         function refreshBar(){
+            
+            let creds_now = 0;  
+            const cred = document.getElementById('credit_customer');
+            $('#persenanCredit').html('0%');
+            cred.style.width = creds_now+"%";
+            cred.style.backgroundColor = "#53de02";
+            cred.style.color = "black";
+        }
         $('body').on('click','#inbound',function()
 		{
+            hideMenuTujuan();
+            refreshBar();
+
+            $('#kontainer_div').show();
+            $('#chassis_div').show();
+            $('#stack_tl_form').show();
+            $('#kendaraan_div').removeClass('col-lg-12 col-md-12 col-sm-12');
+            $('#kendaraan_div').addClass('col-lg-6 col-md-6 col-sm-12');
             // console.log('pencet');
             $('#tipe_kontainer').val();
             $('#tipe_kontainer_in').val();
@@ -338,6 +355,15 @@
         $('body').on('click','#outbond',function()
 		{
             // $(this).animate({ "color": "red" }, 1500);
+            hideMenuTujuan();
+            refreshBar();
+
+            $('#kontainer_div').show();
+            $('#chassis_div').show();
+            $('#stack_tl_form').show();
+            $('#kendaraan_div').removeClass('col-lg-12 col-md-12 col-sm-12');
+            $('#kendaraan_div').addClass('col-lg-6 col-md-6 col-sm-12');
+
             $('#tipe_kontainer').val();
             $("#inbound").removeClass("aktif");
             $("#outbond").addClass("aktif");
@@ -1065,7 +1091,7 @@
                     kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
                 }
             // }
-            // else
+            // else if(jenisOrder=='INBOUND')
             // {
             //     $('#kontainer_div').show();
             //     $('#chassis_div').show();
@@ -1079,115 +1105,64 @@
             var kategoriKendaraan = selectKendaraan.attr('kategoriKendaraan');
 
 
-            if($('#select_jo').val().trim()=='' && jenis_order=='INBOUND')
+            if($('#select_jo').val() && jenis_order=='INBOUND')
             {
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
                     Toast.fire({
                         icon: 'error',
-                        title: 'Customer Harus dipilih!'
+                        title: 'Job order belum dipilih'
                     })
                 return;
             }
-            if($('#select_jo_detail').val().trim()==''&& jenis_order=='INBOUND')
+            if($('#select_jo_detail').val()&& jenis_order=='INBOUND')
             {
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
                     Toast.fire({
                         icon: 'error',
-                        title: 'Customer Harus dipilih!'
+                        title: 'No kontainer Harus dipilih!'
                     })
                 return;
             }
             if($('#customer_id').val().trim()=='')
             {
-            console.log($('#customer_id').val());
 
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Customer Harus dipilih!'
-                    })
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Customer Harus dipilih!'
+                })
                 return;
             }
             if($('#tujuan_id').val().trim()=='')
             {
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Tujuan Harus dipilih!'
-                    })
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Tujuan Harus dipilih!'
+                })
                 return;
             }
             if($('#select_kendaraan').val()=='')
             {
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Kendaraan Harus dipilih!'
-                    })
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Kendaraan Harus dipilih!'
+                })
                 return;
             }
-             if($('#select_chassis').val()==''&& kategoriKendaraan =='Trailer')
+            if($('#select_chassis').val()==''&& kategoriKendaraan =='Trailer')
             {
+                event.preventDefault();
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Chassis Harus dipilih!'
+                })
+                return;
+            }
+            if($('#tipe_kontainer').val()=='' && kategoriKendaraan =='Trailer')
+            {
+                
                 event.preventDefault();
                 const Toast = Swal.mixin({
                         toast: true,
@@ -1203,32 +1178,10 @@
 
                     Toast.fire({
                         icon: 'error',
-                        title: 'Chassis Harus dipilih!'
+                        title: 'Tipe Kontainer Harus dipilih!'
                     })
                 return;
             }
-            // if($('#tipe_kontainer').val()=='' && kategoriKendaraan =='Trailer')
-            // {
-                
-            //     event.preventDefault();
-            //     const Toast = Swal.mixin({
-            //             toast: true,
-            //             position: 'top',
-            //             timer: 2500,
-            //             showConfirmButton: false,
-            //             timerProgressBar: true,
-            //             didOpen: (toast) => {
-            //                 toast.addEventListener('mouseenter', Swal.stopTimer)
-            //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
-            //             }
-            //         })
-
-            //         Toast.fire({
-            //             icon: 'error',
-            //             title: 'Tipe Kontainer Harus dipilih!'
-            //         })
-            //     return;
-            // }
 
             event.preventDefault();
 

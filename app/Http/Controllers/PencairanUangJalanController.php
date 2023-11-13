@@ -95,7 +95,7 @@ class PencairanUangJalanController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
-
+        DB::beginTransaction(); 
         try {
             $ujr = new UangJalanRiwayat();
             $ujr->tanggal = now();
@@ -248,7 +248,7 @@ class PencairanUangJalanController extends Controller
                     )
                 );
             }
-
+            DB::commit();
             return redirect()->route('pencairan_uang_jalan.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
         } catch (ValidationException $e) {
             db::rollBack();
