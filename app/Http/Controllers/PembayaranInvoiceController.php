@@ -265,8 +265,29 @@ class PembayaranInvoiceController extends Controller
     {
         // dd($id);
         $invoice = Invoice::where('is_aktif', 'Y')->find($id);
-        $reimburse = Invoice::where('is_aktif', 'Y')->where('no_invoice', $invoice->no_invoice.'/I')->first();
-        // dd($reimburse);
+        $cek = substr($invoice->no_invoice, -2);
+        if($cek != '/I'){
+            $reimburse = Invoice::where('is_aktif', 'Y')->where('no_invoice', $invoice->no_invoice.'/I')->first();
+        }else{
+            $invoice = Invoice::where('is_aktif', 'Y')->where('no_invoice', substr($invoice->no_invoice, 0, -2))->first();
+            $reimburse = Invoice::where('is_aktif', 'Y')->where('no_invoice', $invoice->no_invoice.'/I')->first();
+        }
+        $id_invoices = [];
+        $checkLTL = false;
+
+        foreach ($invoice->invoiceDetails as $key => $value) {
+            if (!in_array($value['id_sewa'], $id_invoices)) {
+                $id_invoices[] = $value['id_sewa'];
+            }
+        }
+        if($reimburse){
+            foreach ($reimburse->invoiceDetails as $key => $value) {
+                if (!in_array($value['id_sewa'], $id_invoices)) {
+                    $id_invoices[] = $value['id_sewa'];
+                }
+            }
+        }
+
         if($invoice){
             // $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
             //         ->leftJoin('customer as c', 'c.id', 'id_customer')
@@ -276,23 +297,38 @@ class PembayaranInvoiceController extends Controller
             //         ->select('sewa.*')->with('sewaOperasional')
             //         ->get();
             $dataSewa = Sewa::
-                    // ->where('c.grup_id', $invoice->id_grup)
-                    with('sewaOperasional')
-                    ->where('sewa.is_aktif', '=', 'Y')
-                    ->where('sewa.status', 'MENUNGGU INVOICE') // jangan di filter statusnya, di join
+                    with('sewaOperasional', 'getCustomer', 'getTujuan')
+                    ->where('sewa.is_aktif', 'Y')
+                    // ->leftJoin('grup_tujuan', function($query) use($invoice){
+                    //     $query->on('sewa.id_grup_tujuan', '=', 'grup_tujuan.id')
+                    //                 ->where('grup_tujuan.grup_id', $invoice->id_grup);
+                    // })
+                    ->whereHas('getTujuan', function($query) use ($invoice) {
+                        return $query->where('grup_id', $invoice->id_grup);
+                    })
+                    ->where('sewa.status', 'MENUNGGU INVOICE') 
+                    ->orWhere(function ($query) use($id_invoices) {
+                        $query->whereIn('sewa.id_sewa', $id_invoices);
+                    })
                     ->get();
 
-            // $dataCust = Customer::where('grup_id', $grup[0])
-            //         ->where('is_aktif', 'Y')
-            //         ->get();
+            if($dataSewa[0]->jenis_tujuan == 'LTL'){
+                $checkLTL = true; 
+            }
+            // dd($dataSewa);
+
+
+            $dataCust = Customer::where('grup_id', $invoice->id_grup)
+                    ->where('is_aktif', 'Y')
+                    ->get();
 
             return view('pages.invoice.pembayaran_invoice.edit',[
                 'judul' => "Revisi Invoice",
                 'data' => $invoice,
                 'reimburse' => isset($reimburse)? $reimburse:NULL,
                 'dataSewa' => $dataSewa,
-                // 'dataCust' => $dataCust,
-                // 'grup' => $grup[0],
+                'checkLTL' => $checkLTL,
+                'dataCust' => $dataCust,
                 // 'customer' => $cust[0],
             ]);
 
@@ -300,6 +336,23 @@ class PembayaranInvoiceController extends Controller
             return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Data tidak ditemukan!']);
         }
     }
+
+    public function update(Request $request, $id){
+        $user = Auth::user()->id;
+        $data = $request->collect();
+        DB::beginTransaction(); 
+        
+        dd($data);
+
+        try {
+              DB::commit();
+              return redirect()->route('pembayaran_invoice.index')->with(['status' => 'Success', 'msg'  => 'Edit berhasil!']);
+        } catch (ValidationException $e) {
+              db::rollBack();
+              return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Edit gagal!']);
+        }
+    }
+
 
     /**
      * Update the specified resource in storage.

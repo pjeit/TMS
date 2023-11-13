@@ -77,11 +77,12 @@ class BiayaOperasionalController extends Controller
                         $karantina->updated_by = $user;
                         $karantina->updated_at = now();
                         $karantina->save();
+                        
 
                         $no_kontainer = ' - No. Kontainer:';
                         $detail = KarantinaDetail::where('is_aktif', 'Y')->where('id_karantina', $key)->get();
-                        foreach ($detail as $key => $value) {
-                            $no_kontainer .= ' #'.$value->getJOD->no_kontainer;
+                        foreach ($detail as $key => $item) {
+                            $no_kontainer .= ' #'.$item->getJOD->no_kontainer;
                         }
 
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
