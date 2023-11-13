@@ -35,7 +35,6 @@ class PemutihanInvoiceController extends Controller
                 ->get();
         // dd($dataSewa);
         // dd($dataSewa);
-    
         return view('pages.invoice.pemutihan_invoice.index',[
             'judul'=>"PEMUTIHAN INVOICE",
             'dataInvoice' => $dataInvoice,
