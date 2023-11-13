@@ -142,7 +142,7 @@ class PencairanOperasionalController extends Controller
         $data = $request->post();
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         // dd($data);
-        
+        DB::beginTransaction(); 
         try {
             foreach ($data['detail'] as $key => $value) {
                 if($value['total_dicairkan'] != null){
@@ -193,6 +193,7 @@ class PencairanOperasionalController extends Controller
                     );
                 }
             }
+            DB::commit();
             return redirect()->route('pencairan_operasional.index')->with('status', "Success!");
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();

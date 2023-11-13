@@ -145,6 +145,7 @@ class RevisiTLController extends Controller
     {
         $user = Auth::user()->id;
         $data = $request->post();
+        DB::beginTransaction(); 
         try {
             DB::table('sewa_biaya')
                 ->insert(array(
@@ -242,7 +243,8 @@ class RevisiTLController extends Controller
                         'Y'
                     ));
                 }
-        
+     
+            DB::commit();
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambah Biaya TL']);
                     
         } catch (\Throwable $th) {
@@ -263,6 +265,7 @@ class RevisiTLController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id;
+        DB::beginTransaction(); 
         try {
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
             DB::table('sewa_biaya')
@@ -367,6 +370,7 @@ class RevisiTLController extends Controller
                 );
 
             }
+            DB::commit();
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Mengembalikan Biaya TL']);
 
         } catch (\Throwable $th) {

@@ -57,7 +57,7 @@
         @endforeach
 
     @endif
-    <form action="{{ route('truck_order.update', ['truck_order' => $data]) }}" method="POST" >
+    <form action="{{ route('truck_order.update', ['truck_order' => $data]) }}" method="POST" id="post_data">
     @method('PUT')
     @csrf
     {{-- <div class="row">
@@ -236,34 +236,22 @@
                                                     >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
                                             @endforeach
                                         </select>
-                                        <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="" placeholder="kendaraan_id">
-                                        <input type="hidden" id="no_polisi" name="no_polisi" value="" placeholder="no_polisi">
+                                        <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="{{$data->id_kendaraan}}" placeholder="kendaraan_id">
+                                        <input type="hidden" id="no_polisi" name="no_polisi" value="{{$data->no_polisi}}" placeholder="no_polisi">
                                         <input type="hidden" id="tipeKontainerKendaraanDariChassis" name="tipeKontainerKendaraanDariChassis" value="" placeholder="tipeKontainerKendaraanDariChassis">
                                     </div>   
-                                    {{-- <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }}>
-                                            <option value="">Pilih Kendaraan</option>
-                                            @foreach ($dataKendaraan as $kendaraan)
-                                                <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}-{{$kendaraan->driver_id}}"  {{$kendaraan->kendaraanId == $data['id_kendaraan']? 'selected':''}}>{{ $kendaraan->no_polisi }}</option>
-                                            @endforeach
-                                        </select>
-                                        <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
-                                        <input type="hidden" id="no_polisi" name="no_polisi" value="">
-                                    </div> --}}
                                 </div>
-
                                 <div class="form-group" id="chassis_div">
                                     <label for="select_ekor">Chassis<span style="color:red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
                                         <option value="">Pilih Chassis</option>
 
-                                        @foreach ($dataChassis as $cha)
+                                        @foreach ($dataChassisKont as $cha)
                                             <option value="{{$cha->idChassis}}" modelChassis="{{ $cha->modelChassis }}" karoseris="{{ $cha->karoseri }}" {{$cha->id==$data['id_chassis']? 'selected':''}}>{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}})</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="karoseri" name="karoseri" value="" placeholder="karoseri">
-
+                                    <input type="hidden" id="defaulth_id_chasis" name="defaulth_id_chasis" value="{{$data['id_chassis']}}" placeholder="karoseri">
+                                    <input type="hidden" id="karoseri" name="karoseri" value="{{$data->karoseri}}" placeholder="karoseri">
                                 </div>
                                 <div class="form-group" id="driver_div">
                                     <label for="select_driver">Driver<span style="color:red">*</span></label>
@@ -273,9 +261,8 @@
                                             <option value="{{$drvr->id}}" nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})" {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">
+                                    <input type="hidden" id="driver_nama" name="driver_nama" value="{{$data->nama_driver}}" placeholder="driver_nama">
                                 </div>
-                              
                                 {{-- <div class="form-group">
                                     <label for="select_ekor">Chassis<span style="color:red">*</span></label>
                                         <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }} >
@@ -620,12 +607,13 @@
             // }
             // select_chassis
         })
-
-        if($('#jenis_tujuan').val()=="FTL")
-        {
-             setKendaraan($('#tipe_kontainer').val())
-             setChassis($('#tipe_kontainer').val())
-        }
+            console.log($('#jenis_tujuan').val());
+            console.log($('#tipe_kontainer').val());
+        // if($('#jenis_tujuan').val()=="FTL")
+        // {
+             setKendaraan($('#tipe_kontainer').val());
+            //  setChassis($('#tipe_kontainer').val());
+        // }
        
         
         $('body').on('change','#select_kendaraan',function()
@@ -712,27 +700,6 @@
 
 		});
         
-        // hitungTarif();
-        // function hitungTarif()
-        // {
-            
-        //     var tarif = $('#tarif').val();
-        //     var uang_jalan = $('#uang_jalan').val();
-        //     var total_uang_jalan = parseFloat(tarif)+parseFloat(uang_jalan);
-        //     console.log('tarif :'+tarif);
-        //     console.log('uang_jalan :'+uang_jalan);
-        //     console.log('total_uang_jalan :'+total_uang_jalan);
-
-        //     console.log(isNaN(total_uang_jalan));
-        //     if(isNaN(total_uang_jalan))
-        //     {
-        //       $('#harga_tujuan').val(0)
-        //     }
-        //     else
-        //     {
-        //       $('#harga_tujuan').val(moneyMask(total_uang_jalan))
-        //     }
-        // }
         hideMenuTujuan();
         function hideMenuTujuan(){
             var jenisTujuan=$('#jenis_tujuan').val();
@@ -770,16 +737,12 @@
             // }
         }
 
-         $('#post_data').submit(function(event) {
+        $('#post_data').submit(function(event) {
+            // alert('asdad');
             var jenis_order = $('#jenis_order').val();
             var selectKendaraan = $('#select_kendaraan').find('option:selected');
             var kategoriKendaraan = selectKendaraan.attr('kategoriKendaraan');
-
-
-            if($('#select_jo').val().trim()=='' && jenis_order=='INBOUND')
-            {
-                event.preventDefault();
-                const Toast = Swal.mixin({
+            const Toast = Swal.mixin({
                         toast: true,
                         position: 'top',
                         timer: 2500,
@@ -791,117 +754,59 @@
                         }
                     })
 
+            if($('#select_jo').val() && jenis_order=='INBOUND')
+            {
+                event.preventDefault();
                     Toast.fire({
                         icon: 'error',
-                        title: 'Customer Harus dipilih!'
+                        title: 'Job order belum dipilih'
                     })
                 return;
             }
-            if($('#select_jo_detail').val().trim()==''&& jenis_order=='INBOUND')
+            if($('#select_jo_detail').val()&& jenis_order=='INBOUND')
             {
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
                     Toast.fire({
                         icon: 'error',
-                        title: 'Customer Harus dipilih!'
+                        title: 'No kontainer Harus dipilih!'
                     })
                 return;
             }
             if($('#customer_id').val().trim()=='')
             {
-            console.log($('#customer_id').val());
 
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Customer Harus dipilih!'
-                    })
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Customer Harus dipilih!'
+                })
                 return;
             }
             if($('#tujuan_id').val().trim()=='')
             {
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Tujuan Harus dipilih!'
-                    })
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Tujuan Harus dipilih!'
+                })
                 return;
             }
             if($('#select_kendaraan').val()=='')
             {
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Kendaraan Harus dipilih!'
-                    })
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Kendaraan Harus dipilih!'
+                })
                 return;
             }
-             if($('#select_chassis').val()==''&& kategoriKendaraan =='Trailer')
+            if($('#select_chassis').val()==''&& kategoriKendaraan =='Trailer')
             {
                 event.preventDefault();
-                const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
-
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Chassis Harus dipilih!'
-                    })
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Chassis Harus dipilih!'
+                })
                 return;
             }
             if($('#tipe_kontainer').val()=='' && kategoriKendaraan =='Trailer')
@@ -926,9 +831,7 @@
                     })
                 return;
             }
-
             event.preventDefault();
-
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar ?',
                 text: "Periksa kembali data anda",
@@ -1033,6 +936,11 @@
                                             option.selected = true;
                                             $('#select_driver').val(kendaraan.driver_id).trigger('change');
                                     }
+                                     if ($('#kendaraan_id').val() == kendaraan.kendaraanId ) {
+                                            option.selected = true;
+                                    }
+                                    
+
                                     //kendaraan_id itu yang hidden,tipe kontainer itu buat selected di tipeoutbound
                                     if($('#kendaraan_id').val() != kendaraan.kendaraanId && tipeKontainer != $('#tipeKontainerKendaraanDariChassis').val())
                                     {
@@ -1104,11 +1012,15 @@
                                     option.setAttribute('karoseris', chassis.karoseri);
                                     option.textContent = `${chassis.karoseri} - ${chassis.kode} (${chassis.modelChassis})` ;
                                     //idChassis itu ambil attribut dari kendaraan
+                                    // if($('#defaulth_id_chasis').val()==chassis.idChassis)
+                                    // {
+                                    //     option.selected = true;
+                                    // }
                                     if ( idChassis == chassis.idChassis) {
-                                            option.selected = true;
-                                            $('#karoseri').val(chassis.karoseri);
-
+                                        option.selected = true;
+                                        $('#karoseri').val(chassis.karoseri);
                                     }
+                                    
                                     // if (idChassis != chassis.idChassis)
                                     // {
                                     //     $('#karoseri').val('');
@@ -1372,45 +1284,45 @@
                     }
                 });
             // =========================================
-            // ===============================KENDARAAN===========================================
-            var idKendaraan = $('#select_kendaraan').val();
-            var selectedOption = $('#select_kendaraan').find('option:selected');
-            var idChassis = selectedOption.attr('idChassis');
-            var nopol = selectedOption.attr('noPol');
-            var supir = selectedOption.attr('idDriver');
-            // console.log(idKendaraan);
-            if(idKendaraan != '')
-            {
-                var tipeKontainerKendaraanDariChassis = selectedOption.attr('tipeKontainerKendaraanDariChassis').replace(/'/g, '');
-            }
+            // // ===============================KENDARAAN===========================================
+            // var idKendaraan = $('#select_kendaraan').val();
+            // var selectedOption = $('#select_kendaraan').find('option:selected');
+            // var idChassis = selectedOption.attr('idChassis');
+            // var nopol = selectedOption.attr('noPol');
+            // var supir = selectedOption.attr('idDriver');
+            // // console.log(idKendaraan);
+            // if(idKendaraan != '')
+            // {
+            //     var tipeKontainerKendaraanDariChassis = selectedOption.attr('tipeKontainerKendaraanDariChassis').replace(/'/g, '');
+            // }
 
-            $('#kendaraan_id').val(idKendaraan);
-            $('#no_polisi').val(nopol);
-            $('#tipeKontainerKendaraanDariChassis').val(tipeKontainerKendaraanDariChassis);
+            // $('#kendaraan_id').val(idKendaraan);
+            // $('#no_polisi').val(nopol);
+            // $('#tipeKontainerKendaraanDariChassis').val(tipeKontainerKendaraanDariChassis);
 
-            $('#select_chassis').val(idChassis).trigger('change');
-            $('#select_driver').val(supir).trigger('change');
-            // ===============================KENDARAAN===========================================
-            // =========================================
+            // $('#select_chassis').val(idChassis).trigger('change');
+            // $('#select_driver').val(supir).trigger('change');
+            // // ===============================KENDARAAN===========================================
+            // // =========================================
 
-            // =========================================
-            // ===============================CHASSIS===========================================
+            // // =========================================
+            // // ===============================CHASSIS===========================================
 
-            var selectedOption = $('#select_chassis').find('option:selected');
-            var karoseris = selectedOption.attr('karoseris');
+            // var selectedOption = $('#select_chassis').find('option:selected');
+            // var karoseris = selectedOption.attr('karoseris');
                 
-            $('#karoseri').val(karoseris);
-            // ===============================CHASSIS===========================================
-            // =========================================
+            // $('#karoseri').val(karoseris);
+            // // ===============================CHASSIS===========================================
+            // // =========================================
 
-            // =========================================
-            // ===============================DRIVER===========================================
+            // // =========================================
+            // // ===============================DRIVER===========================================
 
-            var selectedOption = $('#select_driver').find('option:selected');
-            var nama_driver = selectedOption.attr('nama_driver');
+            // var selectedOption = $('#select_driver').find('option:selected');
+            // var nama_driver = selectedOption.attr('nama_driver');
                 
-            $('#driver_nama').val(nama_driver);
-            // ===============================DRIVER===========================================
+            // $('#driver_nama').val(nama_driver);
+            // // ===============================DRIVER===========================================
             // =========================================
             var selectedOption = $('#stack_tl').val();
             var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
