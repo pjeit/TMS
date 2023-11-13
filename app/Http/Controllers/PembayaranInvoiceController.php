@@ -264,23 +264,41 @@ class PembayaranInvoiceController extends Controller
     public function edit($id)
     {
         // dd($id);
-        $idInvoice      = session()->get('idInvoice'); 
-        $idGrup         = session()->get('idGrup'); 
-        $idCust         = session()->get('idCust'); 
-        $data           = Invoice::where('is_aktif', 'Y')->findOrFail($id);
-        // $dataInvoices   = Invoice::where('id_grup', $idGrup)->where('is_aktif', 'Y')->get();
-        
-        // $dataCustomers  = Customer::where('grup_id', $idGrup)
-        //                         ->where('is_aktif', 'Y')->get();
-        // dd($data);
-        $dataKas = KasBank::where('is_aktif', 'Y')->orderBy('nama', 'ASC')->get();
+        $invoice = Invoice::where('is_aktif', 'Y')->find($id);
+        $reimburse = Invoice::where('is_aktif', 'Y')->where('no_invoice', $invoice->no_invoice.'/I')->first();
+        // dd($reimburse);
+        if($invoice){
+            // $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
+            //         ->leftJoin('customer as c', 'c.id', 'id_customer')
+            //         ->where('c.grup_id', $invoice->id_grup)
+            //         ->where('sewa.is_aktif', '=', 'Y')
+            //         ->where('sewa.status', 'MENUNGGU INVOICE')
+            //         ->select('sewa.*')->with('sewaOperasional')
+            //         ->get();
+            $dataSewa = Sewa::
+                    // ->where('c.grup_id', $invoice->id_grup)
+                    with('sewaOperasional')
+                    ->where('sewa.is_aktif', '=', 'Y')
+                    ->where('sewa.status', 'MENUNGGU INVOICE') // jangan di filter statusnya, di join
+                    ->get();
 
-        return view('pages.invoice.pembayaran_invoice.edit',[
-            'judul' => "EDIT INVOICE",
-            'data' => $data,
-            'dataKas' => $dataKas,
-            // 'idCust' => $idCust,
-        ]);
+            // $dataCust = Customer::where('grup_id', $grup[0])
+            //         ->where('is_aktif', 'Y')
+            //         ->get();
+
+            return view('pages.invoice.pembayaran_invoice.edit',[
+                'judul' => "Revisi Invoice",
+                'data' => $invoice,
+                'reimburse' => isset($reimburse)? $reimburse:NULL,
+                'dataSewa' => $dataSewa,
+                // 'dataCust' => $dataCust,
+                // 'grup' => $grup[0],
+                // 'customer' => $cust[0],
+            ]);
+
+        }else{
+            return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Data tidak ditemukan!']);
+        }
     }
 
     /**

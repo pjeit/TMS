@@ -734,6 +734,7 @@
                                 request()->is('revisi_tl*')||
                                 request()->is('revisi_tagihan_rekanan*')||
                                 request()->is('revisi_tagihan_pembelian*')||
+                                request()->is('revisi_invoice_trucking*')||
                                 request()->is('revisi_klaim_supir*')
                                 ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -755,7 +756,6 @@
                 <li class="nav-item">
                   <a href="{{route('revisi_uang_jalan.index')}}" class="nav-link {{request()->url() === route('revisi_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-
                     <p>
                       Rev. Uang Jalan
                     </p>
@@ -778,10 +778,10 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <a href="{{route('revisi_invoice_trucking.index')}}" class="nav-link {{ request()->is('revisi_invoice_trucking*')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i> 
                     <p>
-                      Rev. Belum Invoice
+                      Rev. Invoice Trucking
                     </p>
                   </a>
                 </li>

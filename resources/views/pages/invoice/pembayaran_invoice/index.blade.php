@@ -501,6 +501,9 @@
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
+                                        <a href="pembayaran_invoice/${data[i].id}/edit" class="dropdown-item">
+                                            <span class="fas fa-pencil-alt mr-3"></span> Edit Invoice
+                                        </a>
                                         <button class="dropdown-item update_resi" value="${data[i].id}">
                                             <span class="fas fa-sticky-note mr-3"></span> Update Resi
                                         </button>
