@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\PengaturanKeuangan;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use App\Models\PemutihanInvoice;
 class PemutihanInvoiceController extends Controller
 {
     /**
@@ -82,9 +86,16 @@ class PemutihanInvoiceController extends Controller
     public function edit(Invoice $pemutihan_invoice)
     {
         //
+        $data_pengaturan = PengaturanKeuangan::where('id', 1)->first();
+        $data_customer = Customer::where('is_aktif', 'Y')
+        ->where('id', $pemutihan_invoice->billing_to)
+        ->first();
+
         return view('pages.invoice.pemutihan_invoice.form',[
             'judul'=>"PEMUTIHAN INVOICE",
             'pemutihan_invoice' => $pemutihan_invoice,
+            'data_pengaturan' => $data_pengaturan,
+            'data_customer' => $data_customer,
         ]);
     }
 
@@ -98,6 +109,33 @@ class PemutihanInvoiceController extends Controller
     public function update(Request $request, Invoice $pemutihan_invoice)
     {
         //
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        try {
+            $pesanKustom = [
+                'tanggal_pemutihan.required' => 'Tanggal pemutihan wajib diisi!',
+                'jumlah_pemutihan.required' => 'Jumlah pemutihan wajib diisi!',
+                // 'catatan_pemutihan.required' => 'Catatan pemutihan wajib diisi',
+            ];
+            $request->validate([
+                'tanggal_pemutihan' => 'required',
+                'jumlah_pemutihan' => 'required',
+                // 'catatan_pemutihan' => 'required',
+            ], $pesanKustom);
+            $data= $request->collect();
+                $pemutihan = new PemutihanInvoice();
+                $pemutihan->id_invoice = $data->id;
+                $pemutihan->id_customer = $data['id_customer'];
+                $pemutihan->created_by = $user;
+                $pemutihan->created_at = now();
+                $pemutihan->is_aktif = 'Y';
+                $pemutihan->save();
+            DB::commit();
+            return redirect()->route('controller.method')->with(['status' => 'Success', 'msg'  => 'Pemutihan Invoice berhasil!']);
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('controller.method')->with(['status' => 'error', 'msg' => 'Pemutihan Invoice gagal!']);
+        }
     }
 
     /**

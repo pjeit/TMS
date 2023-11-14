@@ -1105,8 +1105,6 @@
             // cekCheckbox();
 
         });
-       
-      
         $('#post_data').submit(function(event) {
             var deskripsi = $('.deskripsi_lain');
             var nominal_lain = $('.nominal_lain');
@@ -1124,7 +1122,7 @@
 
             var deskripsi_text = '';
 
-             const Toast = Swal.mixin({
+            const Toast = Swal.mixin({
                         toast: true,
                         position: 'top',
                         timer: 2500,
