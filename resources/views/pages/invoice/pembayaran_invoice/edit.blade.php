@@ -165,6 +165,7 @@
         {{-- style="overflow: auto;" --}}
         <div class="m-3" style="overflow-x:auto; overflow-y:hidden">
             <input type="text" name="deleted[]" id="deleted" value="" hidden/>
+            <button type="button" class="btn btn-primary mb-2" id="tambah_sewa"> <i class="fa fa-plus-square"></i> Tambah Sewa</button>
             <table class="table table-hover table-bordered table-striped" width='100%' id="table_invoice">
                 <thead>
                     <tr class="bg-white">
@@ -194,6 +195,7 @@
                 @php
                     $i = 0;
                 @endphp
+                {{-- @dd($data->invoiceDetails); --}}
                 @isset($data)
                     @foreach ($data->invoiceDetails as $key => $item_raw)
                         @php
@@ -209,6 +211,8 @@
                             </td>
                             <td> <span id="text_nama_tujuan_{{  $item->id_sewa  }}">{{ $item->nama_tujuan }}</span> <br> 
                                 ( <span id="text_tgl_berangkat_{{  $item->id_sewa  }}">{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</span> )
+                                <input type="text" name='detail[{{ $item->id_sewa }}][nama_tujuan]' id='hidden_nama_tujuan_{{ $item->id_sewa }}' value="{{ $item->nama_tujuan }}">
+                                <input type="text" name='detail[{{ $item->id_sewa }}][tgl_berangkat]' id='hidden_tgl_berangkat_{{ $item->id_sewa }}' value="{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}">
                             </td>
                             <td>
                                 @php
@@ -220,16 +224,23 @@
                                     }
                                 @endphp
                                     <span id="text_driver_{{ $item->id_sewa }}">{{ $driver }}</span>
+                                    <input type="text" name='detail[{{ $item->id_sewa }}][driver]' id='hidden_driver_{{ $item->id_sewa }}' value="{{ $driver }}">
                             </td>
                             <td>
                                 <span id="text_no_kontainer_{{ $item->id_sewa }}">{{ isset($item->id_jo_detail)? $item->getJOD->no_kontainer:$item->no_kontainer }}</span> <br> 
                                 <span id='text_seal_pelayaran_{{ $item->id_sewa }}'>{{ $item->seal_pelayaran }}</span> 
+                                <input type="text" name='detail[{{ $item->id_sewa }}][no_kontainer]' id='hidden_no_kontainer_{{ $item->id_sewa }}' value="{{ $item->no_kontainer }}">
+                                <input type="text" name='detail[{{ $item->id_sewa }}][no_seal]' id='hidden_no_seal_{{ $item->id_sewa }}' value="{{ $item->seal_pelayaran }}">
+                                <input type="text" name='detail[{{ $item->id_sewa }}][no_sj]' id='hidden_no_sj_{{ $item->id_sewa }}' value="{{ $item->no_surat_jalan }}">
                             </td>
                             <td style="text-align:right" id="muatan_satuan_{{ $item->id_sewa }}">
                                 <span id="text_jumlah_muatan_{{ $item->id_sewa }}">{{ (isset($item->jumlah_muatan ))? number_format($item->jumlah_muatan,2)  : "-" }}</span>
                                 <input type="text" class="muatan_satuan" name='detail[{{ $item->id_sewa }}][muatan_satuan]' id='muatan_satuan_{{ $item->id_sewa }}' value="{{(isset($item->jumlah_muatan ))?$item->jumlah_muatan : 0}}">
                             </td>
-                            <td style="text-align:right" id="text_tarif_{{ $item->id_sewa }}">{{ number_format($item->total_tarif) }}</td>
+                            <td style="text-align:right">
+                                <span id="text_tarif_{{ $item->id_sewa }}">{{ number_format($item->total_tarif) }}</span> 
+                                <input type="text" name='detail[{{ $item->id_sewa }}][tarif]' id='hidden_tarif_{{ $item->id_sewa }}' value="{{ $item->total_tarif }}">
+                            </td>
                             <td style="text-align:right">
                                 @php
                                     $total_addcost = 0;
@@ -258,23 +269,17 @@
                                 <input type="text" class="addcost_pisah addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">
                             </td>
                             <td style="text-align:right">
-                                <span id='text_diskon_{{ $item->id_sewa }}'></span>
+                                <span id='text_diskon_{{ $item->id_sewa }}'>{{ number_format($item_raw->diskon) }}</span>
+                                <input type="text" name='detail[{{ $item->id_sewa }}][diskon]' id='hidden_diskon_{{ $item_raw->id_sewa }}' value="{{ $item_raw->diskon }}">
                             </td>
                             <td style="text-align:right">
                                 <span id='text_subtotal_{{ $item->id_sewa }}'>{{ number_format($total_addcost+$item->total_tarif) }}</span>
                                 <input type="text" class="hitung_subtotal subtotal_hidden_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][subtotal]' id='subtotal_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost+$item->total_tarif }}">
                             </td>
                             {{-- edwin --}}
-                            <td><span id="text_catatan_{{ $item->id_sewa }}">{{ $item->catatan }}</span>
-                                <input type="text" name='detail[{{ $item->id_sewa }}][nama_tujuan]' id='hidden_nama_tujuan_{{ $item->id_sewa }}' value="{{ $item->nama_tujuan }}">
-                                <input type="text" name='detail[{{ $item->id_sewa }}][driver]' id='hidden_driver_{{ $item->id_sewa }}' value="{{ $driver }}">
-                                <input type="text" name='detail[{{ $item->id_sewa }}][tgl_berangkat]' id='hidden_tgl_berangkat_{{ $item->id_sewa }}' value="{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}">
-                                <input type="text" name='detail[{{ $item->id_sewa }}][no_kontainer]' id='hidden_no_kontainer_{{ $item->id_sewa }}' value="{{ $item->no_kontainer }}">
-                                <input type="text" name='detail[{{ $item->id_sewa }}][no_seal]' id='hidden_no_seal_{{ $item->id_sewa }}' value="{{ $item->seal_pelayaran }}">
-                                <input type="text" name='detail[{{ $item->id_sewa }}][no_sj]' id='hidden_no_sj_{{ $item->id_sewa }}' value="{{ $item->no_surat_jalan }}">
-                                <input type="text" name='detail[{{ $item->id_sewa }}][tarif]' id='hidden_tarif_{{ $item->id_sewa }}' value="{{ $item->total_tarif }}">
+                            <td>
+                                <span id="text_catatan_{{ $item->id_sewa }}">{{ $item->catatan }}</span>
                                 <input type="text" name='detail[{{ $item->id_sewa }}][catatan]' id='hidden_catatan_{{ $item->id_sewa }}' value="{{ $item->catatan }}">
-                                <input type="text" name='detail[{{ $item->id_sewa }}][diskon]' id='hidden_diskon_{{ $item->id_sewa }}' >
                             </td>
                             <td>
                                 <div class="btn-group dropleft">
@@ -314,7 +319,7 @@
                 </div>
                 <div class="modal-body">
                     <form id='form_add_detail'>
-                        <input type="hidden" id="key"> {{--* dipakai buat simpen id_sewa --}}
+                        <input type="text" id="key"> {{--* dipakai buat simpen id_sewa --}}
 
                         <div class='row'>
                             <div class="col-lg-6">
@@ -384,7 +389,7 @@
                                             </div>
                                             <input type="text" class="form-control numaja uang" id="addcost" placeholder="" readonly>
                                         </div>
-                                        <input type="hidden" class="form-control numaja uang" id="addcost_pisah" >
+                                        <input type="text" class="form-control numaja uang" id="addcost_pisah" >
                                     </div>
                                 </div>
                                 <div class="row">
@@ -447,7 +452,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">BATAL</button>
-                    <button type="button" class="btn btn-sm btn-success save_detail" id="" style='width:85px'>OK</button> 
+                    <button type="button" class="btn btn-sm btn-success save_detail" id="save_detail" style='width:85px'>OK</button> 
+                    <button type="button" class="btn btn-sm btn-success save_sewa_baru" id="save_sewa_baru" style='width:85px'>Simpan</button> 
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -689,6 +695,10 @@
             var key = button_id.replace("detail_", ""); // hapus teks detail_
             $('#key').val(key); // id key buat nge get data yg di hidden, key = id_sewa
 
+            // document.getElementById("save_detail").style.visibility = "hidden";
+            $("#save_detail").show();
+            $("#save_sewa_baru").hide();
+
             $('#tanggal_berangkat').val( $('#hidden_tgl_berangkat_'+key).val() );
             $('#nama_tujuan').val( $('#hidden_nama_tujuan_'+key).val() ); 
             $('#no_kontainer').val( $('#hidden_no_kontainer_'+key).val() ); 
@@ -728,6 +738,7 @@
             $('#modal_detail').modal('show');
         });
 
+       
         $(document).on('change', '#addcost_sewa', function(){ 
             let index = $("#addcost_sewa option:selected").attr('index');
             let selected_sewa = $("#addcost_sewa").val();
@@ -771,7 +782,6 @@
             // }
             updateSewa(key);
 
-            // $('#addcost_hidden_'+key).val( normalize($('#addcost').val()) );
 
             // document.querySelector(".text_addcost_"+key).textContent = moneyMask( $('#addcost').val() );
 
@@ -798,6 +808,156 @@
             $('#modal_detail').modal('hide'); // close modal
         });
 
+        $(document).on('click', '#tambah_sewa', function (event) {
+            clearData(); // execute clear data dulu tiap open modal
+            $('#key').val(''); // key di clear dulu
+            $('#is_berubah').val(''); // key di clear dulu
+            $("#save_detail").hide();
+            $("#save_sewa_baru").show();
+
+            var option = $('<option>');
+            option.text('─ Pilih Sewa ─');
+            option.val('');
+            option.prop('selected', true);
+            $('#addcost_sewa').append(option);
+
+            dataSewa.forEach(function(item, index) {
+                var option = $('<option>');
+                option.text(item.no_sewa + ' - ' + item.nama_tujuan + ' - (' + dateMask(item.tanggal_berangkat) + ')');
+                option.val(item.id_sewa);
+                option.attr('index', index); // Adding the 'index' attribute with the value of the index variable
+                if (item.id_sewa == key) {
+                    option.prop('selected', true);
+                }
+                
+                $('#addcost_sewa').append(option);
+            });
+            // $("#addcost_sewa").prop("disabled", true); // instead of $("select").enable(false);
+
+            hitung();
+            $('#modal_detail').modal('show');
+        });
+
+        $(document).on('click', '#save_sewa_baru', function(event){ // save detail
+            var key = $('#key').val(); 
+            var is_berubah = $('#is_berubah').val(); 
+            let index = $("#addcost_sewa option:selected").attr('index');
+            const data = dataSewa[index];
+            console.log('data', data);
+
+            let lastRow = $("#table_invoice > tbody tr:last");
+            let id = 0;
+            
+            if (lastRow.length >= 0) {
+                id = lastRow.attr("id");
+                if(id == undefined){
+                    id = 0;
+                }else{
+                    id++;
+                }
+            }
+            $('#table_invoice > tbody:last-child').append(
+                `
+                    <tr id="${id}">
+                        <td> 
+                            <span id="text_customer_${data.id_sewa}">CV. SINAR TERANG </span>
+                            <input type="text" id="hidden_id_sewa_${data.id_sewa}" name="detail[${data.id_sewa}][id_sewa]" class="all_id_sewa" value="${data.id_sewa}">
+                            <input type="text" id="hidden_id_customer_${data.id_sewa}" name="detail[${data.id_sewa}][id_customer]" value="${data.id_customer}">
+                            <input type="text" id="hidden_id_jo_${data.id_sewa}" name="detail[${data.id_sewa}][id_jo_hidden]" value="${data.id_jo}">
+                            <input type="text" id="hidden_id_jo_detail_${data.id_sewa}" name="detail[${data.id_sewa}][id_jo_detail_hidden]" value="${data.id_jo_detail}">
+                        </td>
+                        <td> <span id="text_nama_tujuan_${data.id_sewa}">${data.nama_tujuan}</span> <br> 
+                            ( <span id="text_tgl_berangkat_${data.id_sewa}">${dateMask(data.tanggal_berangkat)}</span> )
+                            <input type="text" name="detail[${data.id_sewa}][nama_tujuan]" id="hidden_nama_tujuan_${data.id_sewa}" value="${data.nama_tujuan}">
+                            <input type="text" name="detail[${data.id_sewa}][tgl_berangkat]" id="hidden_tgl_berangkat_${data.id_sewa}" value="${dateMask(data.tanggal_berangkat)}">
+                        </td>
+                        <td>
+                            <span id="text_driver_${data.id_sewa}">${data.nama_driver}</span>
+                            <input type="text" name="detail[${data.id_sewa}][driver]" id="hidden_driver_${data.id_sewa}" value="${data.nama_driver}">
+                        </td>
+                        <td>
+                            <span id="text_no_kontainer_${data.id_sewa}">${data.no_kontainer}</span> <br> 
+                            <span id="text_seal_pelayaran_${data.id_sewa}">${data.seal_pelayaran}</span> 
+                            <input type="text" name="detail[${data.id_sewa}][no_kontainer]" id="hidden_no_kontainer_${data.id_sewa}" value="${data.no_kontainer}">
+                            <input type="text" name="detail[${data.id_sewa}][no_seal]" id="hidden_no_seal_${data.id_sewa}" value="${data.seal_pelayaran}">
+                            <input type="text" name="detail[${data.id_sewa}][no_sj]" id="hidden_no_sj_${data.id_sewa}" value="${data.no_surat_jalan}">
+                        </td>
+                        <td style="text-align:right" id="muatan_satuan_${data.id_sewa}">
+                            <span id="text_jumlah_muatan_${data.id_sewa}">${ data.jumlah_muatan != null? data.jumlah_muatan:'-' }</span>
+                            <input type="text" class="muatan_satuan" name="detail[${data.id_sewa}][muatan_satuan]" id="muatan_satuan_${data.id_sewa}" value="${data.jumlah_muatan != null? data.jumlah_muatan:'-'}">
+                        </td>
+                        <td style="text-align:right">
+                            <span id="text_tarif_${data.id_sewa}">${moneyMask(data.total_tarif)}</span> 
+                            <input type="text" name="detail[${data.id_sewa}][tarif]" id="hidden_tarif_${data.id_sewa}" value="${data.total_tarif}">
+                        </td>
+                        <td style="text-align:right">
+                            <span id="text_addcost_${data.id_sewa}">xxx</span>
+                            <input type="text" class="cek_detail_addcost" id_sewa="${data.id_sewa}" name="detail[${data.id_sewa}][addcost_details]" id="detail_addcost_${data.id_sewa}" value="">
+                            <input type="text" class="cek_detail_addcost_baru" id_sewa="${data.id_sewa}" name="detail[${data.id_sewa}][addcost_baru]" id="detail_addcost_baru_${data.id_sewa}" value="">
+                            <input type="text" class="addcost_${data.id_sewa}" name='detail[${data.id_sewa}][addcost]' id='addcost_hidden_${data.id_sewa}' value="">
+                            <input type="text" class="addcost_pisah addcost_pisah_${data.id_sewa}" name="detail[${data.id_sewa}][addcost_pisah]" id="addcost_pisah_hidden_${data.id_sewa}" value="">
+                        </td>
+                        <td style="text-align:right">
+                            <span id="text_diskon_${data.id_sewa}">zzz</span>
+                            <input type="text" name="detail[${data.id_sewa}][diskon]" id="hidden_diskon_${data.id_sewa}">
+                        </td>
+                        <td style="text-align:right">
+                            <span id="text_subtotal_${data.id_sewa}">qqq</span>
+                            <input type="text" class="hitung_subtotal subtotal_hidden_${data.id_sewa} " name="detail[${data.id_sewa}][subtotal]" id="subtotal_hidden_${data.id_sewa}" value="">
+                        </td>
+                        <td><span id="text_catatan_${data.id_sewa}">rrr</span>
+                            <input type="text" name="detail[${data.id_sewa}][catatan]" id="hidden_catatan_${data.id_sewa}" value="">
+                        </td>
+                        <td>
+                            <div class="btn-group dropleft">
+                                <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-list"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button type="button" name="detail" id="detail_${data.id_sewa}" class="detail dropdown-item"> 
+                                        <span class="fas fa-edit mr-3"></span> Detail
+                                    </button>
+                                    <button type="button" class="dropdown-item deleteParent" value="${data.id_sewa}">
+                                        <span class="fas fa-trash mr-3"></span> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `
+                // <tr id="${id}" id_addcost="${item.id}">
+                //     <td>
+                //         <span id="text_customer_${id}"></span>
+                //         <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" class="form-control" />
+                //     </td>
+                //     <td>
+                //         <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_operasional)}" class="form-control numaja uang hitungBiaya hitungAddCost"  />
+                //     </td>
+                //     <td style="text-align:center;">
+                //         <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
+                //     </td>
+                //     <td style="text-align:center;">
+                //         <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} >
+                //     </td>
+                //     <td>
+                //         <input type="text" id="addcost_catatan_${item.id}" value="${item.catatan == null? '':item.catatan}" class="form-control w-auto" />
+                //     </td>
+                //     <td>
+                //         <button type="button" class="btn btn-danger delete" value="${item.id}"><i class="fa fa-trash-alt"></i></button>
+                //     </td>
+                // </tr>
+            );
+            
+            $('#addcost_hidden_'+data.id_sewa).val( normalize($('#addcost').val()) );
+            $('#addcost_pisah_hidden_'+data.id_sewa).val( normalize($('#addcost_pisah').val()) );
+            // updateSewa(key);
+            updateAddCost(data.id_sewa); //update data addcost yg berubah
+            calculateGrandTotal(); // pas load awal langsung hitung grand total
+            cekPisahInvoice();
+            clearData();
+            $('#modal_detail').modal('hide'); // close modal
+        });
+
         function updateSewa(key){
             let selected_sewa = $('#addcost_sewa').val();
             let selected_index = $("#addcost_sewa option:selected").attr('index');
@@ -817,6 +977,8 @@
             document.getElementById("text_subtotal_"+key).textContent = $('#subtotal').val();
             document.getElementById("text_catatan_"+key).textContent = $('#catatan').val();
 
+            $('#addcost_hidden_'+key).val( normalize($('#addcost').val()) );
+            $('#addcost_pisah_hidden_'+key).val( normalize($('#addcost_pisah').val()) );
             $('#hidden_id_sewa_'+key).val( data.id_sewa );
             $('#hidden_id_jo_'+key).val( data.id_jo );
             $('#hidden_id_jo_detail_'+key).val( data.id_jo_detail );
@@ -824,7 +986,7 @@
             $('#muatan_satuan_'+key).val( data.jumlah_muatan != null? data.jumlah_muatan:'0' );
             $('#hidden_nama_tujuan_'+key).val( data.nama_tujuan );
             $('#hidden_driver_'+key).val( data.nama_driver != null? data.no_polisi + ' ' + data.nama_driver:'DRIVER REKANAN' );
-            $('#hidden_tgl_berangkat_'+key).val( data.nama_tujuan );
+            $('#hidden_tgl_berangkat_'+key).val( dateMask(data.tanggal_berangkat) );
             $('#hidden_no_kontainer_'+key).val( data.no_kontainer );
             $('#hidden_no_seal_'+key).val( data.seal_pelayaran );
             $('#hidden_tarif_'+key).val( data.total_tarif );
@@ -914,7 +1076,7 @@
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
                                 </td>
                                 <td style="text-align:center;">
-                                    <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} >
+                                    <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} ${item.is_ditagihkan == 'N'? 'disabled':''}>
                                 </td>
                                 <td>
                                     <input type="text" id="addcost_catatan_${item.id}" value="${item.catatan == null? '':item.catatan}" class="form-control w-auto" />
@@ -1011,7 +1173,7 @@
                             <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_x_${id}" id_tagih="x_${id}" name="addcost_is_ditagihkan_x_${id}" >
                         </td>
                         <td style="text-align:center;">
-                            <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_x_${id}" id_pisah="x_${id}" name="addcost_is_dipisahkan_x_${id}" >
+                            <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_x_${id}" id_pisah="x_${id}" name="addcost_is_dipisahkan_x_${id}" disabled>
                         </td>
                         <td>
                             <input type="text" id="addcost_catatan_x_${id}" class="form-control w-auto" />
@@ -1075,6 +1237,7 @@
         function hitungAddCost(){
             let addCost = document.querySelectorAll('.hitungAddCost');
             let total_add_cost = 0;
+            let total_add_cost_pisah = 0;
 
             addCost.forEach(function(add_cost) {
                 var id = add_cost.getAttribute('id_add_cost');
@@ -1084,9 +1247,13 @@
                 if(di_tagih.checked == true && di_pisah.checked == false){
                     total_add_cost += normalize(add_cost);
                 }
+                if(di_tagih.checked == true && di_pisah.checked == true){
+                    total_add_cost_pisah += normalize(add_cost);
+                }
             });
             let tarif = normalize($('#tarif').val());
             $('#addcost').val(moneyMask(total_add_cost));
+            $('#addcost_pisah').val(moneyMask(total_add_cost_pisah));
             $('#subtotal').val( moneyMask(tarif+total_add_cost) );
         }
 

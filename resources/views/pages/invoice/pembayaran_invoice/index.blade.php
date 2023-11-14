@@ -481,6 +481,13 @@
 
                     for (var i = 0; i < data.length; i++) {
                         var row = $("<tr></tr>");
+                        let btn_edit = '';
+                        if(data[i].total_sisa == data[i].total_tagihan){
+                            btn_edit = `<a href="pembayaran_invoice/${data[i].id}/edit" class="dropdown-item">
+                                                <span class="fas fa-pencil-alt mr-3"></span> Edit Invoice
+                                            </a>`;
+                        }
+
                         row.append(`<td>${data[i].nama_grup}</td>`);
                         row.append(`<td>• ${data[i].nama_cust}</td>`);
                         row.append(`<td>${data[i].no_invoice}
@@ -501,9 +508,10 @@
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <a href="pembayaran_invoice/${data[i].id}/edit" class="dropdown-item">
-                                            <span class="fas fa-pencil-alt mr-3"></span> Edit Invoice
-                                        </a>
+                                        
+                                        `+
+                                            btn_edit
+                                        +`
                                         <button class="dropdown-item update_resi" value="${data[i].id}">
                                             <span class="fas fa-sticky-note mr-3"></span> Update Resi
                                         </button>
