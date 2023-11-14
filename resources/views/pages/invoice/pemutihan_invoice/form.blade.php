@@ -36,7 +36,7 @@
     @endif
     <form action="{{ route('pemutihan_invoice.update',[$pemutihan_invoice->id]) }}" method="POST" id="post" >
         @csrf
-        @method('post')
+        @method('PUT')
         <div class="card radiusSendiri">
             <div class="card-header">
                 <a href="{{ route('klaim_supir_revisi.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
@@ -111,7 +111,7 @@
                         </div>
                         <div class="form-group">
                             <label for="catatan_pemutihan">Catatan</label>
-                            <input type="text" name="catatan" class="form-control" id="catatan_pemutihan" placeholder="" value=""> 
+                            <input type="text" name="catatan_pemutihan" class="form-control" id="catatan_pemutihan" placeholder="" value=""> 
                         </div>
                     </div>
                 </div>
@@ -172,8 +172,7 @@ $(document).ready(function() {
             $('#jumlah_pemutihan').val(addPeriod($('#total_sisa').val(),','));
         }
     $('#post').submit(function(event) {
-        var statusKlaim = $("input[name='status_klaim']:checked").val();
-        var tanggal_pencairan = $("#tanggal_pencairan").val();
+        var tanggal_pemutihan = $("#tanggal_pemutihan").val();
         const Toast = Swal.mixin({
                     toast: true,
                     position: 'top',
@@ -185,18 +184,16 @@ $(document).ready(function() {
                         toast.addEventListener('mouseleave', Swal.resumeTimer)
                     }
                 })
-        if(statusKlaim=="REJECTED")
-        {
-            if(alasan_tolak.trim()=='')
+        
+            if(tanggal_pemutihan.trim()=='')
             {
                 event.preventDefault(); 
                 Toast.fire({
                     icon: 'error',
-                    text: `ALASAN TOLAK WAJIB DIISI!`,
+                    text: `TANGGAL PEMUTIHAN WAJIB DIISI!`,
                 })
                 return;
             }
-        }
         event.preventDefault();
         Swal.fire({
             title: 'Apakah Anda yakin data sudah benar?',

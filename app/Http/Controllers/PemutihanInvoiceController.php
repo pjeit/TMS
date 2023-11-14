@@ -10,6 +10,8 @@ use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\PemutihanInvoice;
+use App\Models\InvoiceDetail;
+use App\Models\Sewa;
 class PemutihanInvoiceController extends Controller
 {
     /**
@@ -109,6 +111,7 @@ class PemutihanInvoiceController extends Controller
     public function update(Request $request, Invoice $pemutihan_invoice)
     {
         //
+        
         $user = Auth::user()->id;
         DB::beginTransaction(); 
         try {
@@ -123,20 +126,55 @@ class PemutihanInvoiceController extends Controller
                 // 'catatan_pemutihan' => 'required',
             ], $pesanKustom);
             $data= $request->collect();
+            
             $pemutihan = new PemutihanInvoice();
             $pemutihan->invoice_id = $pemutihan_invoice ->id;
-            $pemutihan->tanggal = date_create_from_format('Y-m-d', $data['tanggal_kembali']);
+            $pemutihan->tanggal = date_create_from_format('Y-m-d', $data['tanggal_pemutihan']);
             $pemutihan->nominal_pemutihan = floatval(str_replace(',', '', $data['jumlah_pemutihan']));
             $pemutihan->catatan = $data['catatan_pemutihan'];
             $pemutihan->created_by = $user;
             $pemutihan->created_at = now();
             $pemutihan->is_aktif = 'Y';
             $pemutihan->save();
-
-            // if()
-
-            $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($pemutihan_invoice->id);
-
+            if($pemutihan->save())
+            {
+                $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($pemutihan_invoice->id);
+              
+                $curStatus = '';
+                $invoice->total_sisa-=floatval(str_replace(',', '', $data['jumlah_pemutihan']));
+                $invoice->total_dibayar+=floatval(str_replace(',', '', $data['jumlah_pemutihan']));
+                if($invoice->total_sisa == 0){
+                    $curStatus = 'SELESAI PEMBAYARAN INVOICE';
+                    $invoice->status = $curStatus;
+                }
+                $invoice->updated_by = $user;
+                $invoice->updated_at = now();
+                if($invoice->save()){
+                    if($curStatus == 'SELESAI PEMBAYARAN INVOICE'){
+                        $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
+                        if($invoiceDetail){
+                            foreach ($invoiceDetail as $item) {
+                                $check = InvoiceDetail::leftJoin('invoice', 'invoice.id', '=', 'invoice_detail.id_invoice')
+                                                        ->where('invoice_detail.is_aktif', 'Y')
+                                                        ->where('invoice.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                                                        ->where('id_sewa', $item->id_sewa)->get();
+                                if ($check->isEmpty()) {
+                                    $updateSewa = Sewa::where('is_aktif', 'Y')->find($item->id_sewa);
+                                    $updateSewa->status = 'SELESAI PEMBAYARAN';
+                                    $updateSewa->updated_by = $user;
+                                    $updateSewa->updated_at = now();
+                                    $updateSewa->save();
+                                    // trigger update status jo detail jika semua sewa sudah selesai
+                                    // trigger update status jo jika semua jo detail sudah selesai
+                                }
+                            }
+                        }
+                    }
+                }
+                $invoice->updated_by = $user;
+                $invoice->updated_at = now();
+                $invoice->save();
+            }
             DB::commit();
             return redirect()->route('pemutihan_invoice.index')->with(['status' => 'Success', 'msg'  => 'Pemutihan Invoice berhasil!']);
         } catch (ValidationException $e) {
