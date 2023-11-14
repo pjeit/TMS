@@ -30,7 +30,7 @@ class PemutihanInvoiceController extends Controller
                 ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
                 ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
                 ->where('i.is_aktif', '=', 'Y')
-                ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                ->where('i.total_sisa','>',0)
                 ->orderBy('i.id','ASC')
                 ->get();
         // dd($dataSewa);
@@ -79,9 +79,13 @@ class PemutihanInvoiceController extends Controller
      * @param  \App\Models\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function edit(Invoice $invoice)
+    public function edit(Invoice $pemutihan_invoice)
     {
         //
+        return view('pages.invoice.pemutihan_invoice.form',[
+            'judul'=>"PEMUTIHAN INVOICE",
+            'pemutihan_invoice' => $pemutihan_invoice,
+        ]);
     }
 
     /**
@@ -91,7 +95,7 @@ class PemutihanInvoiceController extends Controller
      * @param  \App\Models\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Invoice $invoice)
+    public function update(Request $request, Invoice $pemutihan_invoice)
     {
         //
     }

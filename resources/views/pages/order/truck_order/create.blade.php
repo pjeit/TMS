@@ -1103,9 +1103,19 @@
             var jenis_order = $('#jenis_order').val();
             var selectKendaraan = $('#select_kendaraan').find('option:selected');
             var kategoriKendaraan = selectKendaraan.attr('kategoriKendaraan');
+            const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    timer: 2500,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
 
-
-            if($('#select_jo').val() && jenis_order=='INBOUND')
+            if($('#select_jo').val()=='' && jenis_order=='INBOUND')
             {
                 event.preventDefault();
                     Toast.fire({
@@ -1114,7 +1124,7 @@
                     })
                 return;
             }
-            if($('#select_jo_detail').val()&& jenis_order=='INBOUND')
+            if($('#select_jo_detail').val()==''&& jenis_order=='INBOUND')
             {
                 event.preventDefault();
                     Toast.fire({
