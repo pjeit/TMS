@@ -123,18 +123,25 @@ class PemutihanInvoiceController extends Controller
                 // 'catatan_pemutihan' => 'required',
             ], $pesanKustom);
             $data= $request->collect();
-                $pemutihan = new PemutihanInvoice();
-                $pemutihan->id_invoice = $data->id;
-                $pemutihan->id_customer = $data['id_customer'];
-                $pemutihan->created_by = $user;
-                $pemutihan->created_at = now();
-                $pemutihan->is_aktif = 'Y';
-                $pemutihan->save();
+            $pemutihan = new PemutihanInvoice();
+            $pemutihan->invoice_id = $pemutihan_invoice ->id;
+            $pemutihan->tanggal = date_create_from_format('Y-m-d', $data['tanggal_kembali']);
+            $pemutihan->nominal_pemutihan = floatval(str_replace(',', '', $data['jumlah_pemutihan']));
+            $pemutihan->catatan = $data['catatan_pemutihan'];
+            $pemutihan->created_by = $user;
+            $pemutihan->created_at = now();
+            $pemutihan->is_aktif = 'Y';
+            $pemutihan->save();
+
+            // if()
+
+            $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($pemutihan_invoice->id);
+
             DB::commit();
-            return redirect()->route('controller.method')->with(['status' => 'Success', 'msg'  => 'Pemutihan Invoice berhasil!']);
+            return redirect()->route('pemutihan_invoice.index')->with(['status' => 'Success', 'msg'  => 'Pemutihan Invoice berhasil!']);
         } catch (ValidationException $e) {
             db::rollBack();
-            return redirect()->route('controller.method')->with(['status' => 'error', 'msg' => 'Pemutihan Invoice gagal!']);
+            return redirect()->route('pemutihan_invoice.index')->with(['status' => 'error', 'msg' => 'Pemutihan Invoice gagal!']);
         }
     }
 
