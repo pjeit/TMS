@@ -426,156 +426,49 @@ class PembayaranInvoiceController extends Controller
                 }
             }
 
-            foreach ($data['detail'] as $key => $value) {
-                DB::table('sewa')
-                    ->where('id_sewa',  $key)
-                    ->update(array(
-                        'status' => 'MENUNGGU PEMBAYARAN INVOICE',
-                        'catatan'=> $value['catatan'],
-                        'updated_at'=> now(),
-                        'updated_by'=> $user,
-                ));
-
-                if(isset($value['id_jo_hidden'])&&isset($value['id_jo_detail_hidden']))
-                {
-                    DB::table('job_order_detail')
-                        ->where('id', $value['id_jo_detail_hidden'])
+            if(isset($data['detail'])){
+                foreach ($data['detail'] as $key => $value) {
+                    DB::table('sewa')
+                        ->where('id_sewa',  $key)
                         ->update(array(
                             'status' => 'MENUNGGU PEMBAYARAN INVOICE',
+                            'catatan'=> $value['catatan'],
                             'updated_at'=> now(),
-                            'updated_by'=>  $user,
-                    )); 
-                }
-
-                $invoice_d = new InvoiceDetail();
-                $invoice_d->id_invoice = $invoice->id;
-                $invoice_d->id_customer = $value['id_customer'];
-                $invoice_d->id_sewa = $key;
-                $invoice_d->tarif = $value['tarif'];
-                $invoice_d->jumlah_muatan = $value['muatan_satuan'];
-                $invoice_d->add_cost = $value['addcost'];
-                $invoice_d->diskon = $value['diskon'];
-                $invoice_d->add_cost_pisah = $value['addcost_pisah'];
-                $invoice_d->sub_total = $value['subtotal'] - $invoice_d->diskon;
-                $invoice_d->catatan = $value['catatan'];
-                // $invoice_d->status = 'MENUNGGU PEMBAYARAN INVOICE DETAIL';
-                $invoice_d->created_by = $user;
-                $invoice_d->created_at = now();
-                $invoice_d->is_aktif = 'Y';
-                if($invoice_d->save()){
-                    $dataAddcost = json_decode($value['addcost_details']);
-                    foreach ($dataAddcost as $i => $addcost) {
-                        $sewa_oprs = SewaOperasional::where('is_aktif', 'Y')
-                                                    ->where('id_sewa', $addcost->id_sewa)
-                                                    ->find($addcost->id);
-
-                        if($sewa_oprs){
-                            $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
-                            $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
-                            $sewa_oprs->updated_by = $user;
-                            $sewa_oprs->updated_at = now();
-                            $sewa_oprs->save();
-                        }
-                        if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'N'){
-
-
-                            $invoice_da = new InvoiceDetailAddcost();
-                            $invoice_da->id_invoice = $invoice->id;
-                            $invoice_da->id_invoice_detail = $invoice_d->id;
-                            $invoice_da->id_sewa_operasional = $addcost->id;
-                            $invoice_da->catatan = $addcost->catatan;
-                            $invoice_da->created_by = $user;
-                            $invoice_da->created_at = now();
-                            $invoice_da->is_aktif = 'Y';
-                            $invoice_da->save();
-                        }
+                            'updated_by'=> $user,
+                    ));
+    
+                    if(isset($value['id_jo_hidden'])&&isset($value['id_jo_detail_hidden']))
+                    {
+                        DB::table('job_order_detail')
+                            ->where('id', $value['id_jo_detail_hidden'])
+                            ->update(array(
+                                'status' => 'MENUNGGU PEMBAYARAN INVOICE',
+                                'updated_at'=> now(),
+                                'updated_by'=>  $user,
+                        )); 
                     }
-
-                    $addcost_baru = json_decode($value['addcost_baru']);
-                    if($addcost_baru != null){
-                        foreach ($addcost_baru as $i => $addcost) {
-                            if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'N'){
-                                $sewa_oprs = new SewaOperasional();
-                                $sewa_oprs->id_sewa = $addcost->id_sewa;
-                                $sewa_oprs->deskripsi = $addcost->deskripsi;
-                                $sewa_oprs->total_operasional = $addcost->total_operasional;
-                                // $sewa_oprs->total_dicairkan = $addcost->total_operasional;
-                                $sewa_oprs->tgl_dicairkan = now();
-                                $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
-                                $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
-                                $sewa_oprs->created_by = $user;
-                                $sewa_oprs->created_at = now();
-                                $sewa_oprs->save();
-                                
-                                // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                //     array(
-                                //         $data['pembayaran'], // id kas_bank dr form
-                                //         now(), //tanggal
-                                //         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                //         $sewa_oprs->total_dicairkan, //uang keluar (kredit)
-                                //         1015, //kode coa
-                                //         'pencairan_operasional',
-                                //         'REVISI BELUM INVOICE - ' . $addcost->deskripsi . ' : '. $addcost->nama_tujuan .'/'. $addcost->driver, //keterangan_transaksi
-                                //         $sewa_oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
-                                //         $user, //created_by
-                                //         now(), //created_at
-                                //         $user, //updated_by
-                                //         now(), //updated_at
-                                //         'Y'
-                                //     ) 
-                                // );
-                                
-                                $invoice_da = new InvoiceDetailAddcost();
-                                $invoice_da->id_invoice = $invoice->id;
-                                $invoice_da->id_invoice_detail = $invoice_d->id;
-                                $invoice_da->id_sewa_operasional = $sewa_oprs->id;
-                                $invoice_da->catatan = $addcost->catatan;
-                                $invoice_da->created_by = $user;
-                                $invoice_da->created_at = now();
-                                $invoice_da->is_aktif = 'Y';
-                                $invoice_da->save();
-                            }
-                        }
-                    }
-                }
-            }
-           
-            if($data['is_pisah_invoice'] == 'TRUE'){
-                if($reimburse == null){
-                    $reimburse = new Invoice();
-                    $reimburse->id_grup = $data['grup_id'];
-                    $reimburse->no_invoice = $invoice->no_invoice . '/I';
-                    $reimburse->tgl_invoice = date_create_from_format('d-M-Y', $data['tanggal_invoice']);
-                    $reimburse->total_tagihan = $data['total_pisah'];
-                    $reimburse->total_sisa = $data['total_pisah'];
-                    $reimburse->total_jumlah_muatan = $data['total_jumlah_muatan'];
-                    $reimburse->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo_pisah']);
-                    $reimburse->catatan = $data['catatan_invoice'];
-                    $reimburse->status = 'MENUNGGU PEMBAYARAN INVOICE';
-                    $reimburse->billing_to = $data['billingTo'];
-                    $reimburse->created_by = $user;
-                    $reimburse->created_at = now();
-                    $reimburse->is_aktif = 'Y';
-                    $reimburse->save();
-                }
-
-                foreach ($data['detail'] as $key => $value) {
-                    $invoice_d_pisah = new InvoiceDetail();
-                    $invoice_d_pisah->id_invoice = $reimburse->id;
-                    $invoice_d_pisah->id_customer = $value['id_customer'];
-                    $invoice_d_pisah->id_sewa = $key;
-                    $invoice_d_pisah->add_cost_pisah = $value['addcost_pisah'];
-                    $invoice_d_pisah->sub_total = $value['addcost_pisah'];
-                    $invoice_d_pisah->catatan = $value['catatan'];
-                    $invoice_d_pisah->created_by = $user;
-                    $invoice_d_pisah->created_at = now();
-                    $invoice_d_pisah->is_aktif = 'Y';
-                    if($invoice_d_pisah->save()){
+    
+                    $invoice_d = new InvoiceDetail();
+                    $invoice_d->id_invoice = $invoice->id;
+                    $invoice_d->id_customer = $value['id_customer'];
+                    $invoice_d->id_sewa = $key;
+                    $invoice_d->tarif = $value['tarif'];
+                    $invoice_d->jumlah_muatan = $value['muatan_satuan'];
+                    $invoice_d->add_cost = $value['addcost'];
+                    $invoice_d->diskon = $value['diskon'];
+                    $invoice_d->add_cost_pisah = $value['addcost_pisah'];
+                    $invoice_d->sub_total = $value['subtotal'] - $invoice_d->diskon;
+                    $invoice_d->catatan = $value['catatan'];
+                    $invoice_d->created_by = $user;
+                    $invoice_d->created_at = now();
+                    $invoice_d->is_aktif = 'Y';
+                    if($invoice_d->save()){
                         $dataAddcost = json_decode($value['addcost_details']);
                         foreach ($dataAddcost as $i => $addcost) {
                             $sewa_oprs = SewaOperasional::where('is_aktif', 'Y')
                                                         ->where('id_sewa', $addcost->id_sewa)
                                                         ->find($addcost->id);
+    
                             if($sewa_oprs){
                                 $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                 $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
@@ -583,11 +476,12 @@ class PembayaranInvoiceController extends Controller
                                 $sewa_oprs->updated_at = now();
                                 $sewa_oprs->save();
                             }
-                            if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
+                            if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'N'){
+    
     
                                 $invoice_da = new InvoiceDetailAddcost();
-                                $invoice_da->id_invoice = $reimburse->id;
-                                $invoice_da->id_invoice_detail = $invoice_d_pisah->id;
+                                $invoice_da->id_invoice = $invoice->id;
+                                $invoice_da->id_invoice_detail = $invoice_d->id;
                                 $invoice_da->id_sewa_operasional = $addcost->id;
                                 $invoice_da->catatan = $addcost->catatan;
                                 $invoice_da->created_by = $user;
@@ -600,7 +494,7 @@ class PembayaranInvoiceController extends Controller
                         $addcost_baru = json_decode($value['addcost_baru']);
                         if($addcost_baru != null){
                             foreach ($addcost_baru as $i => $addcost) {
-                                if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
+                                if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'N'){
                                     $sewa_oprs = new SewaOperasional();
                                     $sewa_oprs->id_sewa = $addcost->id_sewa;
                                     $sewa_oprs->deskripsi = $addcost->deskripsi;
@@ -632,8 +526,8 @@ class PembayaranInvoiceController extends Controller
                                     // );
                                     
                                     $invoice_da = new InvoiceDetailAddcost();
-                                    $invoice_da->id_invoice = $reimburse->id;
-                                    $invoice_da->id_invoice_detail = $invoice_d_pisah->id;
+                                    $invoice_da->id_invoice = $invoice->id;
+                                    $invoice_da->id_invoice_detail = $invoice_d->id;
                                     $invoice_da->id_sewa_operasional = $sewa_oprs->id;
                                     $invoice_da->catatan = $addcost->catatan;
                                     $invoice_da->created_by = $user;
@@ -645,6 +539,122 @@ class PembayaranInvoiceController extends Controller
                         }
                     }
                 }
+               
+                if($data['is_pisah_invoice'] == 'TRUE'){
+                    if($reimburse == null){
+                        $reimburse = new Invoice();
+                        $reimburse->id_grup = $data['grup_id'];
+                        $reimburse->no_invoice = $invoice->no_invoice . '/I';
+                        $reimburse->tgl_invoice = date_create_from_format('d-M-Y', $data['tanggal_invoice']);
+                        $reimburse->total_tagihan = $data['total_pisah'];
+                        $reimburse->total_sisa = $data['total_pisah'];
+                        $reimburse->total_jumlah_muatan = $data['total_jumlah_muatan'];
+                        $reimburse->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo_pisah']);
+                        $reimburse->catatan = $data['catatan_invoice'];
+                        $reimburse->status = 'MENUNGGU PEMBAYARAN INVOICE';
+                        $reimburse->billing_to = $data['billingTo'];
+                        $reimburse->created_by = $user;
+                        $reimburse->created_at = now();
+                        $reimburse->is_aktif = 'Y';
+                        $reimburse->save();
+                    }else{
+                        $reimburse->catatan = $data['catatan_invoice'];
+                        $reimburse->total_tagihan = floatval(str_replace(',', '', $data['total_tagihan']));
+                        $reimburse->total_sisa = floatval(str_replace(',', '', $data['total_tagihan']));
+                        $reimburse->total_jumlah_muatan = $data['total_jumlah_muatan'];
+                        $reimburse->jatuh_tempo = date("Y-m-d", strtotime($data['jatuh_tempo_pisah']));
+                        $reimburse->billing_to = $data['billingTo'];
+                        $reimburse->save();
+                    }
+    
+                    foreach ($data['detail'] as $key => $value) {
+                        $invoice_d_pisah = new InvoiceDetail();
+                        $invoice_d_pisah->id_invoice = $reimburse->id;
+                        $invoice_d_pisah->id_customer = $value['id_customer'];
+                        $invoice_d_pisah->id_sewa = $key;
+                        $invoice_d_pisah->add_cost_pisah = $value['addcost_pisah'];
+                        $invoice_d_pisah->sub_total = $value['addcost_pisah'];
+                        $invoice_d_pisah->catatan = $value['catatan'];
+                        $invoice_d_pisah->created_by = $user;
+                        $invoice_d_pisah->created_at = now();
+                        $invoice_d_pisah->is_aktif = 'Y';
+                        if($invoice_d_pisah->save()){
+                            $dataAddcost = json_decode($value['addcost_details']);
+                            foreach ($dataAddcost as $i => $addcost) {
+                                $sewa_oprs = SewaOperasional::where('is_aktif', 'Y')
+                                                            ->where('id_sewa', $addcost->id_sewa)
+                                                            ->find($addcost->id);
+                                if($sewa_oprs){
+                                    $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
+                                    $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+                                    $sewa_oprs->updated_by = $user;
+                                    $sewa_oprs->updated_at = now();
+                                    $sewa_oprs->save();
+                                }
+                                if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
+        
+                                    $invoice_da = new InvoiceDetailAddcost();
+                                    $invoice_da->id_invoice = $reimburse->id;
+                                    $invoice_da->id_invoice_detail = $invoice_d_pisah->id;
+                                    $invoice_da->id_sewa_operasional = $addcost->id;
+                                    $invoice_da->catatan = $addcost->catatan;
+                                    $invoice_da->created_by = $user;
+                                    $invoice_da->created_at = now();
+                                    $invoice_da->is_aktif = 'Y';
+                                    $invoice_da->save();
+                                }
+                            }
+        
+                            $addcost_baru = json_decode($value['addcost_baru']);
+                            if($addcost_baru != null){
+                                foreach ($addcost_baru as $i => $addcost) {
+                                    if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
+                                        $sewa_oprs = new SewaOperasional();
+                                        $sewa_oprs->id_sewa = $addcost->id_sewa;
+                                        $sewa_oprs->deskripsi = $addcost->deskripsi;
+                                        $sewa_oprs->total_operasional = $addcost->total_operasional;
+                                        // $sewa_oprs->total_dicairkan = $addcost->total_operasional;
+                                        $sewa_oprs->tgl_dicairkan = now();
+                                        $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
+                                        $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+                                        $sewa_oprs->created_by = $user;
+                                        $sewa_oprs->created_at = now();
+                                        $sewa_oprs->save();
+                                        
+                                        // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                        //     array(
+                                        //         $data['pembayaran'], // id kas_bank dr form
+                                        //         now(), //tanggal
+                                        //         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                        //         $sewa_oprs->total_dicairkan, //uang keluar (kredit)
+                                        //         1015, //kode coa
+                                        //         'pencairan_operasional',
+                                        //         'REVISI BELUM INVOICE - ' . $addcost->deskripsi . ' : '. $addcost->nama_tujuan .'/'. $addcost->driver, //keterangan_transaksi
+                                        //         $sewa_oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
+                                        //         $user, //created_by
+                                        //         now(), //created_at
+                                        //         $user, //updated_by
+                                        //         now(), //updated_at
+                                        //         'Y'
+                                        //     ) 
+                                        // );
+                                        
+                                        $invoice_da = new InvoiceDetailAddcost();
+                                        $invoice_da->id_invoice = $reimburse->id;
+                                        $invoice_da->id_invoice_detail = $invoice_d_pisah->id;
+                                        $invoice_da->id_sewa_operasional = $sewa_oprs->id;
+                                        $invoice_da->catatan = $addcost->catatan;
+                                        $invoice_da->created_by = $user;
+                                        $invoice_da->created_at = now();
+                                        $invoice_da->is_aktif = 'Y';
+                                        $invoice_da->save();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+    
             }
 
             DB::commit();
