@@ -147,15 +147,12 @@ class BiayaOperasionalController extends Controller
                                 }
                             }
                         }
-    
                         $saldo = DB::table('kas_bank')
                                     ->select('*')
                                     ->where('is_aktif', '=', "Y")
                                     ->where('kas_bank.id', '=', $data['pembayaran'])
                                     ->get();
-    
                         $saldo_baru = $saldo[0]->saldo_sekarang - $dicairkan;
-    
                         DB::table('kas_bank')
                             ->where('id', $data['pembayaran'])
                             ->update(array(

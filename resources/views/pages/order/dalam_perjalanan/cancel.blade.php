@@ -111,11 +111,15 @@
 
                             <div class="form-group col-8">
                                 <label for="no_akun">Driver</label>
-                                <input type="text" id="driver" name="driver" class="form-control" value="{{$data->nama_driver}}" readonly>     
-                                <input type="hidden" name="id_karyawan" id="id_karyawan" value="{{$data->id_karyawan}}">                    
+                                @if ($data->id_supplier==null)
+                                    <input type="text" id="driver" name="driver" class="form-control" value="{{$data->nama_driver}}" readonly>     
+                                    <input type="hidden" name="id_karyawan" id="id_karyawan" value="{{$data->id_karyawan}}"> 
+                                @else
+                                    <input type="text" class="form-control" readonly="" name="driver" value="DRIVER REKANAN {{ $supplier->nama }}">
+                                @endif
                             </div> 
 
-                            {{-- @if ($data->jenis_tujuan =='FTL') --}}
+                            @if ($data->id_supplier==null)
                                 
                                 <div class="form-group col-12">
                                     <label for="total_uang_jalan">Total Uang Jalan</label>
@@ -146,7 +150,7 @@
                                             <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
                                     </select>
                                 </div>
-                            {{-- @endif --}}
+                            @endif
                             
                         </div>
                     </div>
