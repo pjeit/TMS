@@ -62,7 +62,7 @@
                                                         <i class="fa fa-list"></i>
                                                     </button>
                                                     <div class="dropdown-menu" >
-                                                        <a target="_blank"  class="dropdown-item" href="{{route('pemutihan_invoice.edit',[$item->id])}}"><span class="fas fa-edit" style="width:24px"></span>Pemutihan</a>
+                                                        <a /*target="_blank"*/  class="dropdown-item" href="{{route('pemutihan_invoice.edit',[$item->id])}}"><span class="fas fa-edit" style="width:24px"></span>Pemutihan</a>
                                                     </div>
                                             </div>
                                         </td>

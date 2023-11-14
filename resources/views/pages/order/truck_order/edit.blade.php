@@ -754,7 +754,7 @@
                         }
                     })
 
-            if($('#select_jo').val() && jenis_order=='INBOUND')
+            if($('#select_jo').val()=='' && jenis_order=='INBOUND')
             {
                 event.preventDefault();
                     Toast.fire({
@@ -763,7 +763,7 @@
                     })
                 return;
             }
-            if($('#select_jo_detail').val()&& jenis_order=='INBOUND')
+            if($('#select_jo_detail').val()==''&& jenis_order=='INBOUND')
             {
                 event.preventDefault();
                     Toast.fire({
