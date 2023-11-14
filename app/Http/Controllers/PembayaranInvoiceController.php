@@ -356,6 +356,14 @@ class PembayaranInvoiceController extends Controller
 
             // nonaktifin anak2an invoice (invoice details)
             if($invoice->invoiceDetails != null){
+                $invoice->catatan = $data['catatan_invoice'];
+                $invoice->total_tagihan = floatval(str_replace(',', '', $data['total_tagihan']));
+                $invoice->total_sisa = floatval(str_replace(',', '', $data['total_tagihan']));
+                $invoice->total_jumlah_muatan = $data['total_jumlah_muatan'];
+                $invoice->jatuh_tempo = date("Y-m-d", strtotime($data['jatuh_tempo']));
+                $invoice->billing_to = $data['billingTo'];
+                $invoice->save();
+
                 foreach ($invoice->invoiceDetails as $key => $value) {
                     $detail = InvoiceDetail::where('is_aktif', 'Y')->find($value->id);
                     $detail->updated_by = $user;
@@ -384,6 +392,13 @@ class PembayaranInvoiceController extends Controller
 
             // nonaktifin anak2an reimburse (invoice details)
             if(isset($reimburse) && $reimburse != null){
+                if($data['total_pisah'] == 0){
+                    $reimburse->updated_by = $user;
+                    $reimburse->updated_at = now();
+                    $reimburse->is_aktif = 'N';
+                    $reimburse->save();
+                }
+
                 if($reimburse->invoiceDetails != null){
                     foreach ($reimburse->invoiceDetails as $key => $value) {
                         $detail = InvoiceDetail::where('is_aktif', 'Y')->find($value->id);
@@ -524,9 +539,26 @@ class PembayaranInvoiceController extends Controller
                     }
                 }
             }
-
            
-           if($data['is_pisah_invoice'] == 'TRUE'){
+            if($data['is_pisah_invoice'] == 'TRUE'){
+                if($reimburse == null){
+                    $reimburse = new Invoice();
+                    $reimburse->id_grup = $data['grup_id'];
+                    $reimburse->no_invoice = $invoice->no_invoice . '/I';
+                    $reimburse->tgl_invoice = date_create_from_format('d-M-Y', $data['tanggal_invoice']);
+                    $reimburse->total_tagihan = $data['total_pisah'];
+                    $reimburse->total_sisa = $data['total_pisah'];
+                    $reimburse->total_jumlah_muatan = $data['total_jumlah_muatan'];
+                    $reimburse->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo_pisah']);
+                    $reimburse->catatan = $data['catatan_invoice'];
+                    $reimburse->status = 'MENUNGGU PEMBAYARAN INVOICE';
+                    $reimburse->billing_to = $data['billingTo'];
+                    $reimburse->created_by = $user;
+                    $reimburse->created_at = now();
+                    $reimburse->is_aktif = 'Y';
+                    $reimburse->save();
+                }
+
                 foreach ($data['detail'] as $key => $value) {
                     $invoice_d_pisah = new InvoiceDetail();
                     $invoice_d_pisah->id_invoice = $reimburse->id;
@@ -613,9 +645,7 @@ class PembayaranInvoiceController extends Controller
                         }
                     }
                 }
-           }
-
-
+            }
 
             DB::commit();
             return redirect()->route('pembayaran_invoice.index')->with(['status' => 'Success', 'msg'  => 'Edit berhasil!']);
