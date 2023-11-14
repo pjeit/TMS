@@ -287,7 +287,7 @@
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        <button type="button" name="detail" id="detail_{{$item->id_sewa}}" class="detail dropdown-item"> 
+                                        <button type="button" name="detail" id="detail_{{$item->id_sewa}}" class="detail dropdown-item" value="{{ $item->id_sewa }}"> 
                                             <span class="fas fa-edit mr-3"></span> Detail
                                         </button>
                                         <button type="button" class="dropdown-item deleteParent" value="{{ $item->id_sewa }}">
@@ -693,9 +693,11 @@
             $('#is_berubah').val(''); // key di clear dulu
             var button_id = $(this).attr("id"); // get value id
             var key = button_id.replace("detail_", ""); // hapus teks detail_
-            $('#key').val(key); // id key buat nge get data yg di hidden, key = id_sewa
+            var hidden_id_sewa = $('#hidden_id_sewa_'+this.value).val(); 
+            let thisVal = this.value.toString();
+            console.log('this.value', this.value.toString());
 
-            // document.getElementById("save_detail").style.visibility = "hidden";
+            $('#key').val(key); // id key buat nge get data yg di hidden, key = id_sewa
             $("#save_detail").show();
             $("#save_sewa_baru").hide();
 
@@ -711,21 +713,24 @@
             $('#addcost_pisah').val( moneyMask($('#addcost_pisah_hidden_'+key).val()) ); 
             $('#diskon').val( !isNaN($('#hidden_diskon_'+key).val())? moneyMask($('#hidden_diskon_'+key).val()):'' ); 
 
-            // let all_id_sewa = [];
+            let all_id_sewa = [];
 
-            // $('.all_id_sewa').each(function() {
-            //     if(key != $(this).val()){
-            //         all_id_sewa.push($(this).val());
-            //     }
-            // });
+            $('.all_id_sewa').each(function() {
+                all_id_sewa.push($(this).val());
+            });
+            console.log('all_id_sewa', all_id_sewa);
 
             dataSewa.forEach(function(item, index) {
                 var option = $('<option>');
                 option.text(item.no_sewa + ' - ' + item.nama_tujuan + ' - (' + dateMask(item.tanggal_berangkat) + ')');
                 option.val(item.id_sewa);
                 option.attr('index', index); // Adding the 'index' attribute with the value of the index variable
-                if (item.id_sewa == key) {
+                if ( all_id_sewa.includes( item.id_sewa.toString() ) ) {
+                    option.prop('disabled', true);
+                }
+                if (item.id_sewa == hidden_id_sewa) {
                     option.prop('selected', true);
+                    option.prop('disabled', false);
                 }
                 
                 $('#addcost_sewa').append(option);
@@ -800,7 +805,16 @@
             //         document.getElementById('text_' + id + '_' + key).textContent = $('#' + id).val();
             //     }
             // });
-
+            var selectedOption = $('#billingTo').find('option:selected');
+            var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
+            
+            if(ketentuan_bayar==undefined){
+                getDate(0);
+                addCostPisah(0);
+            }else{
+                getDate(parseFloat(ketentuan_bayar) );
+                addCostPisah(parseFloat(ketentuan_bayar));
+            }
             updateAddCost(key); //update data addcost yg berubah
             calculateGrandTotal(); // pas load awal langsung hitung grand total
             cekPisahInvoice();
@@ -821,18 +835,22 @@
             option.prop('selected', true);
             $('#addcost_sewa').append(option);
 
+            let all_id_sewa = [];
+            $('.all_id_sewa').each(function() {
+                all_id_sewa.push($(this).val());
+            });
+
             dataSewa.forEach(function(item, index) {
                 var option = $('<option>');
                 option.text(item.no_sewa + ' - ' + item.nama_tujuan + ' - (' + dateMask(item.tanggal_berangkat) + ')');
                 option.val(item.id_sewa);
                 option.attr('index', index); // Adding the 'index' attribute with the value of the index variable
-                if (item.id_sewa == key) {
-                    option.prop('selected', true);
+                if ( all_id_sewa.includes( item.id_sewa.toString() ) ) {
+                    option.prop('disabled', true);
                 }
                 
                 $('#addcost_sewa').append(option);
             });
-            // $("#addcost_sewa").prop("disabled", true); // instead of $("select").enable(false);
 
             hitung();
             $('#modal_detail').modal('show');
