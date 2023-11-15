@@ -298,8 +298,13 @@
         }
         $('body').on('click','#inbound',function()
 		{
+            $('#jenis_tujuan').val('');
+            $('#select_grup_tujuan').attr('disabled',true).val('').select2();
+            $('#select_grup_tujuan').empty();
+            $('#select_grup_tujuan').append('<option value="">Pilih Tujuan</option>');
             hideMenuTujuan();
             refreshBar();
+            setKendaraan('');
 
             $('#kontainer_div').show();
             $('#chassis_div').show();
@@ -323,9 +328,7 @@
             $('#jenis_order').val('INBOUND');
             $('#select_jo_detail').val('').select2();
             $('#select_jo').val('').select2();
-
             $('#select_customer').attr('disabled',true).val('').select2();
-            $('#select_grup_tujuan').attr('disabled',true).val('').select2();
             $('#tipe_kontainer_out').val('').select2();
             $('#tujuan_id').val('');
             $('#nama_tujuan').val('');
@@ -334,7 +337,6 @@
             $('#uang_jalan').val('');
             $('#komisi').val('');
             $('#komisi_driver').val('');
-            $('#jenis_tujuan').val('');
             //ltl
             $('#harga_per_kg').val('');
             $('#min_muatan').val('');
@@ -342,6 +344,7 @@
             $('#tally').val('');
             $('#kargo').val('');
             $('#biayaDetail').val('');
+            $('#select_grup_tujuan').empty();
 
             $('#kendaraan_id').val('');
             $('#no_polisi').val('');
@@ -355,8 +358,11 @@
         $('body').on('click','#outbond',function()
 		{
             // $(this).animate({ "color": "red" }, 1500);
+            $('#jenis_tujuan').val('');
+
             hideMenuTujuan();
             refreshBar();
+            setKendaraan('');
 
             $('#kontainer_div').show();
             $('#chassis_div').show();
@@ -377,6 +383,9 @@
             
             $('#select_customer').attr('disabled',false).val('').select2();
             $('#select_grup_tujuan').attr('disabled',false).val('').select2();
+            $('#select_grup_tujuan').empty();
+            $('#select_grup_tujuan').append('<option value="">Pilih Tujuan</option>');
+
             $('#tipe_kontainer_out').val('').select2();
             $('#select_jo_detail').val('').select2();
             $('#select_jo').val('').select2();
@@ -388,7 +397,6 @@
             $('#uang_jalan').val('');
             $('#komisi').val('');
             $('#komisi_driver').val('');
-            $('#jenis_tujuan').val('');
             //ltl
             $('#harga_per_kg').val('');
             $('#min_muatan').val('');
@@ -585,6 +593,7 @@
             var select_grup_tujuan = $('#select_grup_tujuan');
             // hitungTarif();
             hideMenuTujuan();
+            setKendaraan('');
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
                 method: 'GET', 
@@ -634,6 +643,7 @@
 
                         // hitungTarif();
                         hideMenuTujuan();
+                        setKendaraan('');
                         select_grup_tujuan.empty(); 
                         select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                         if(selectedValue!="")
@@ -673,6 +683,7 @@
                             select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                             // hitungTarif();
                             hideMenuTujuan();
+                            setKendaraan('');
                     }
                     // jo_detail.trigger('change');
         
@@ -696,6 +707,7 @@
             var array_detail_biaya = [];
             // hitungTarif();
             hideMenuTujuan();
+            setKendaraan('');
             // var myjson;
             //
             // customer_id
@@ -739,6 +751,7 @@
                         array_detail_biaya = []
                         // hitungTarif();
                         hideMenuTujuan();
+                        setKendaraan('');
                     }
                     else
                     {
@@ -766,6 +779,7 @@
                         $('#kargo').val(response.dataTujuan.kargo);
                         // hitungTarif();
                         hideMenuTujuan();
+                        setKendaraan('');
                          // console.log( response.dataTujuanBiaya);
                         var dataBiaya = response.dataTujuanBiaya;
                         for (var i in dataBiaya) {
@@ -816,10 +830,18 @@
             console.log($('#kendaraan_id').val() );
             if(tipeKontainer==''|| tipeKontainer== undefined)
             {
-                select_kendaraan.empty(); 
+
+                const filterKendaraan = kontainerSemua.filter(kendaraan => {
+                    if ($('#jenis_tujuan').val() === 'FTL') {
+                        return kendaraan.kategoriKendaraan.toLowerCase() === `trailer`;
+                    } else if ($('#jenis_tujuan').val() === 'LTL') {
+                        return kendaraan.kategoriKendaraan.toLowerCase() !== `trailer`;
+                    }
+                    return true; 
+                });
+                select_kendaraan.empty();
                 select_kendaraan.append('<option value="">Pilih Kendaraan</option>');
-               
-                kontainerSemua.forEach(kendaraan => {
+                filterKendaraan.forEach(kendaraan => {
                     const option = document.createElement('option');
                     option.value = kendaraan.kendaraanId;
                     option.setAttribute('idChassis', kendaraan.chassisId);
@@ -827,7 +849,7 @@
                     option.setAttribute('idDriver', kendaraan.driver_id);
                     option.setAttribute('kategoriKendaraan', kendaraan.kategoriKendaraan);
                     option.setAttribute('tipeKontainerKendaraanDariChassis', kendaraan.tipeKontainerKendaraanDariChassis);
-                    option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})` ;
+                    option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})`;
                     select_kendaraan.append(option);
                 });
                 $('#kendaraan_id').val('');

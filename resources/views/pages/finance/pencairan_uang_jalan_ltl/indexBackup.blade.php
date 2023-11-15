@@ -236,7 +236,7 @@
             }
 		});        
 
-         function showTable(item){
+        function showTable(item){
             $.ajax({
                 method: 'GET',
                 url: `pencairan_uang_jalan_ltl/getData/${item}`,
@@ -250,61 +250,76 @@
                     $("#ltl").dataTable().fnDestroy();
 
                     $("th").remove();
-                    $("thead tr").append(`<th>Customer</th>
-                                            <th style="width:200px">No. Sewa</th>
-                                            <th style="width:200px">Tanggal Berangkat</th>
+                    $("thead tr").append(`<th></th>
+                                            <th style="width:200px">Customer</th>
                                             <th style="width:200px">Tujuan</th>                    
+                                            <th style="width:200px">Tanggal Berangkat</th>
                                         `);
 
                     var data = response.data;
                     console.log('data', data);
                     if(data.length > 0){
                         for (var i = 0; i <data.length; i++) {
-                            if(data[i].total_dicairkan == null){
-                                var row = $("<tr></tr>");
-
-                                if (data[i].get_karyawan.get_hutang != null) {
-                                    hutangKaryawan = data[i].get_karyawan.get_hutang.total_hutang;
+                            if(data[0].total_dicairkan == null){
+                                if (data[0] && data[0].get_karyawan && data[0].get_karyawan.get_hutang !== null) {
+                                    // The property data[i].get_karyawan.get_hutang exists and is not null
+                                    // You can perform further actions here
+                                    hutangKaryawan = data[0].get_karyawan.get_hutang.total_hutang;
                                 } else {
+                                    // The property data[i].get_karyawan.get_hutang is either null or doesn't exist
+                                    // Handle this case as needed
                                     hutangKaryawan = 0;
                                 }
-
-                                row.append(`<td style='background: #efefef' > 
-                                        <div class="d-flex justify-content-between ">
-                                            <div>
-                                                <b> <span>► ${data[i].get_customer.nama}</span> (${data[i].no_polisi}) - ${data[i].nama_driver} </b>
-                                                <input type="hidden" value="${hutangKaryawan}" id="hutang" />
+                                $("#hasil").append(
+                                    `<tr>
+                                        <td style='background: #efefef' > 
+                                            <div class="d-flex justify-content-between ">
+                                                <div>
+                                                    <b> <span>► </span> (${data[0].no_polisi}) - ${data[0].nama_driver} </b>
+                                                    <input type="hidden" value="${hutangKaryawan}" id="hutang" />
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-primary btn-sm radiusSendiri openModal" value="${data[0].id_sewa}">
+                                                        <span class="fas fa-sticky-note mr-1"></span> Input UJ
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <button class="btn btn-primary btn-sm radiusSendiri openModal" value="${data[0].id_sewa}">
-                                                    <span class="fas fa-sticky-note mr-1"></span> Input UJ
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </td>`);
-                                row.append(`<td>${data[i].no_sewa}</td>`);
-                                row.append(`<td>${dateMask(data[i].tanggal_berangkat)}</td>`);
-                                row.append(`<td>${data[i].nama_tujuan}</td>`);
-                                $("#hasil").append(row);
+                                            <input type="hidden" id="driver_${data[0].id_sewa}" value="${data[0].nama_driver}" />
+                                        </td>
+                                        <td>${data[i].get_customer.nama}</td>
+                                        <td>${data[i].nama_tujuan}</td>
+                                        <td>${dateMask(data[i].tanggal_berangkat)}</td>
+                                    </tr>`
+                                );
                             }
+                             new DataTable('#ltl', {
+                                searching: false, paging: false, info: false, ordering: false,
+                                order: [
+                                        [0, 'asc'],
+                                    ],
+                                rowGroup: {
+                                    dataSrc: [0]// di order grup dulu, baru customer
+                                },
+                                columnDefs: [
+                                    {
+                                        targets: [0], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
+                                        visible: false
+                                    },
+                                    {
+                                    "targets": [0]
+                                        // orderable: false, // matiin sortir kolom centang
+                                    },
+                                ],
+                            });
                         }
-
-                        new DataTable('#ltl', {
-                            searching: false, paging: false, info: false, ordering: false,
-                            rowGroup: {
-                                dataSrc: [0] // di order grup dulu, baru customer
-                            },
-                            columnDefs: [
-                                {
-                                    targets: [0], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
-                                    visible: false
-                                },
-                                {
-                                    // targets: [ord, ord-1],
-                                    // orderable: false, // matiin sortir kolom centang
-                                },
-                            ],
-                        });
+                        // else
+                        // {
+                        //     $("#hasil").append(
+                        //         `<tr>
+                        //             <td colspan='4'>Tidak ditemukan Data</td>
+                        //         </tr>`
+                        //     );
+                        // }
                     }
                 },error: function (xhr, status, error) {
                     // $('#ltl').dataTable().fnClearTable();

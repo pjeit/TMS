@@ -34,7 +34,7 @@ class DalamPerjalananController extends Controller
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
     $dataSewa =  DB::table('sewa AS s')
-                ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
+                ->select('s.*','s.jenis_tujuan','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                 ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
@@ -743,6 +743,7 @@ class DalamPerjalananController extends Controller
     {
         $sewa = Sewa::with('customer')
         ->where('is_aktif', 'Y')->find($id);
+        // dd($sewa->id_supplier);
         $supplier = DB::table('supplier as s')
             ->select('s.*')
             ->where('s.is_aktif', '=', "Y")
@@ -750,7 +751,7 @@ class DalamPerjalananController extends Controller
             ->first();
         $kasbank = KasBank::where('is_aktif', 'Y')->get();
         $riwayatPotongHutang = UangJalanRiwayat::where('is_aktif', 'Y')->where('sewa_id', $id)->first();
-
+        
         return view('pages.order.dalam_perjalanan.batal_muat',[
             'judul' => "batal muat",
             'data' => $sewa,
@@ -774,12 +775,18 @@ class DalamPerjalananController extends Controller
             ->where('s.is_aktif', '=', "Y")
             ->where('s.id', '=', $sewa->id_supplier)
             ->first();
+              $ujr = UangJalanRiwayat::where([
+                                        'is_aktif' => 'Y',
+                                        'sewa_id' => $id
+                                    ])->first();
         return view('pages.order.dalam_perjalanan.cancel',[
             'judul' => "cancel",
             'data' => $sewa,
             'id_sewa' => $id,
             'dataKas' => $dataKas,
             'supplier' => $supplier,
+            'ujr' => $ujr,
+
         ]);
     }
 
@@ -920,12 +927,17 @@ class DalamPerjalananController extends Controller
                     ->select('*')
                     ->where('is_aktif', '=', "Y")
                     ->get();
-
+        $ujr = UangJalanRiwayat::where([
+                                        'is_aktif' => 'Y',
+                                        'sewa_id' => $id
+                                    ])->first();
         return view('pages.order.dalam_perjalanan.cancel_uang_jalan',[
             'judul' => "cancel uang jalan",
             'data' => $sewa,
             'id_sewa' => $id,
             'dataKas' => $dataKas,
+            'ujr' => $ujr,
+
 
         ]);
     }

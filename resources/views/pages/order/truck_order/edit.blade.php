@@ -327,6 +327,7 @@
             $('#garisInbound').show();
             $('#outboundData').hide();
             $('#garisOutbound').hide();
+
         } else {
             $("#inbound").removeClass("aktif");
              $('#inboundDataKontainer').hide();
@@ -340,6 +341,7 @@
             $('#garisInbound').hide();
             $('#outboundData').show();
             $('#garisOutbound').show();
+
         }
         
         $('body').on('change','#select_booking',function()
@@ -397,6 +399,7 @@
             var select_grup_tujuan = $('#select_grup_tujuan');
             // hitungTarif();
             hideMenuTujuan();
+            setKendaraan('');
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
                 method: 'GET', 
@@ -445,6 +448,7 @@
                         // ==============================kredit=================
                         // hitungTarif();
                         hideMenuTujuan();
+                        setKendaraan('');
 
                         select_grup_tujuan.empty(); 
                         select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
@@ -485,6 +489,7 @@
                             select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                             // hitungTarif();
                             hideMenuTujuan();
+                            setKendaraan('');
                     }
                     // jo_detail.trigger('change');
         
@@ -508,6 +513,7 @@
             var array_detail_biaya = [];
             // hitungTarif();
             hideMenuTujuan();
+            setKendaraan('');
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanBiaya/${idTujuan??selectedValue}`, 
                 method: 'GET', 
@@ -535,6 +541,8 @@
                         array_detail_biaya = []
                         // hitungTarif();
                         hideMenuTujuan();
+                        setKendaraan('');
+
                     }
                     else
                     {
@@ -583,6 +591,8 @@
                         $('#biayaDetail').val(JSON.stringify(array_detail_biaya));
                         // hitungTarif();
                         hideMenuTujuan();
+                        setKendaraan('');
+
                     }
          
                 },
@@ -611,7 +621,7 @@
             console.log($('#tipe_kontainer').val());
         // if($('#jenis_tujuan').val()=="FTL")
         // {
-             setKendaraan($('#tipe_kontainer').val());
+            //  setKendaraan($('#tipe_kontainer').val());
             //  setChassis($('#tipe_kontainer').val());
         // }
        
@@ -888,10 +898,17 @@
             console.log($('#kendaraan_id').val() );
             if(tipeKontainer==''|| tipeKontainer== undefined)
             {
-                select_kendaraan.empty(); 
+                const filterKendaraan = kontainerSemua.filter(kendaraan => {
+                    if ($('#jenis_tujuan').val() === 'FTL') {
+                        return kendaraan.kategoriKendaraan.toLowerCase() === `trailer`;
+                    } else if ($('#jenis_tujuan').val() === 'LTL') {
+                        return kendaraan.kategoriKendaraan.toLowerCase() !== `trailer`;
+                    }
+                    return true; 
+                });
+                select_kendaraan.empty();
                 select_kendaraan.append('<option value="">Pilih Kendaraan</option>');
-               
-                kontainerSemua.forEach(kendaraan => {
+                filterKendaraan.forEach(kendaraan => {
                     const option = document.createElement('option');
                     option.value = kendaraan.kendaraanId;
                     option.setAttribute('idChassis', kendaraan.chassisId);
@@ -899,7 +916,7 @@
                     option.setAttribute('idDriver', kendaraan.driver_id);
                     option.setAttribute('kategoriKendaraan', kendaraan.kategoriKendaraan);
                     option.setAttribute('tipeKontainerKendaraanDariChassis', kendaraan.tipeKontainerKendaraanDariChassis);
-                    option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})` ;
+                    option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})`;
                     select_kendaraan.append(option);
                 });
                 $('#kendaraan_id').val('');
