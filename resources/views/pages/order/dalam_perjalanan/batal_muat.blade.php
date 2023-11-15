@@ -18,7 +18,7 @@
    }
 </style>
 <div class="container-fluid">
-    <form action="{{ route('dalam_perjalanan.save_batal_muat', [ $data['id_sewa'] ]) }}" method="POST" >
+    <form action="{{ route('dalam_perjalanan.save_batal_muat', [ $data['id_sewa'] ]) }}" method="POST" id="post_data">
         @csrf
         <div class="card radiusSendiri">
             <div class="card-header">
@@ -49,8 +49,13 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
-                            <label for="no_kontainer">No. Kontainer<span style="color:red">*</span></label>
-                            <input type="text" required name="no_kontainer" class="form-control" id="no_kontainer" placeholder="" value="{{ $data['no_kontainer'] }}">
+                            <label for="no_kontainer">{{$data->jenis_tujuan == "FTL"?'No. Kontainer':'No. Koli'}}<span style="color:red">*</span></label>
+                             @if ($data->no_kontainer_jod && $data->jenis_order =="INBOUND")
+                                <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$data->no_kontainer_jod}}" >                         
+                            @else
+                                <input type="text" id="no_kontainer" required ="no_kontainer" class="form-control" value="{{$data->no_kontainer}}" >                         
+                            @endif
+                            {{-- <input type="text" required name="no_kontainer" class="form-control" id="no_kontainer" placeholder="" value="{{ $data['no_kontainer'] }}"> --}}
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-12">
@@ -59,7 +64,6 @@
                             <input type="text" required name="no_surat_jalan" class="form-control" id="no_surat_jalan" placeholder="" value="{{ $data['no_surat_jalan'] }}">
                         </div>
                     </div>
-
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label for="tanggal_cancel">Tanggal Batal Muat<span style="color:red">*</span></label>
@@ -96,8 +100,12 @@
                                         </div>
                                         <div class="col-8 col-md-8 col-lg-8">
                                             <label for="driver">Driver</label>
-                                            <input type="text" class="form-control" readonly="" name="driver" value="{{ $data['nama_driver'] }}">
-                                            <input type="hidden" class="form-control" name="id_karyawan" readonly="" value="{{ $data['id_karyawan'] }}">
+                                            @if ($data->id_supplier==null)
+                                                <input type="text" class="form-control" readonly="" name="driver" value="{{ $data['nama_driver'] }}">
+                                                <input type="hidden" class="form-control" name="id_karyawan" readonly="" value="{{ $data['id_karyawan'] }}">
+                                            @else
+                                                <input type="text" class="form-control" readonly="" name="driver" value="DRIVER REKANAN {{ $supplier->nama }}">
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -105,12 +113,19 @@
 
                             <div class="col-md-12 col-lg-6">
                                 <div class="form-group">
+                                    {{-- <label for="">{{$data->id_supplier==null?'Total Tarif':'Harga Jual'}}</label> --}}
                                     <label for="">Total Tarif</label>
+
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input readonly="" type="text" name="total_tarif" class="form-control numaja uang" id="total_tarif" placeholder="" value="{{ number_format($data['total_tarif']) }}">
+                                        {{-- @if ($data->id_supplier==null) --}}
+                                            <input readonly="" type="text" name="total_tarif" class="form-control numaja uang" id="total_tarif" placeholder="" value="{{ number_format($data['total_tarif']) }}">
+                                        {{-- @else
+                                            <input readonly="" type="text" name="total_tarif" class="form-control numaja uang" id="total_tarif" placeholder="" value="{{ number_format($data['harga_jual']) }}">
+                                        @endif --}}
+
                                     </div>
                                 </div>
                             </div>
@@ -125,44 +140,52 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-md-12">
-                                <div class="form-group">
-                                    <label for="total_uang_jalan">Total Uang Jalan</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
+                            @if ($data->id_supplier==null)
+                                @if (isset($riwayatPotongHutang))
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="total_uang_jalan">Total Uang Jalan</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp</span>
+                                                </div>
+                                                <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}">
+                                            </div>
                                         </div>
-                                        <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}">
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-12">
-                                <div class="form-group">
-                                    <label for="total_uang_jalan_kembali">Total Uang Jalan Kembali<span style="color: red;">*</span></label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="form-group">
+                                            <label for="total_uang_jalan_kembali">Total Uang Jalan Kembali<span style="color: red;">*</span></label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp</span>
+                                                </div>
+                                                <input autocomplete="off" type="text" required name="total_uang_jalan_kembali" class="form-control numaja uang" id="total_uang_jalan_kembali" placeholder="" value="">
+                                            </div>
                                         </div>
-                                        <input autocomplete="off" type="text" required name="total_uang_jalan_kembali" class="form-control numaja uang" id="total_uang_jalan_kembali" placeholder="" value="">
                                     </div>
-                                </div>
-                            </div>
+                                @endif
+                            @endif
                         </div>
                     </div>
 
                     <div class="col-lg-5 col-md-5 col-12">
                         <div class="row bg-gray-light pt-2">
-                            <div class="col-lg-12 col-md-12">
-                                <div class="form-group">
-                                    <label for="kas_bank_id">Kas / Bank<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='kasbank' name="kasbank" required>
-                                        @foreach ($kasbank as $item)
-                                            <option value="{{ $item->id }}">{{ $item->nama }}</option>
-                                        @endforeach
-                                            <option value="HUTANG DRIVER">HUTANG DRIVER</option>
-                                    </select>
-                                </div>
-                            </div>
+                            @if ($data->id_supplier==null)
+                                @if (isset($riwayatPotongHutang))
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="form-group">
+                                            <label for="kas_bank_id">Kas / Bank<span style="color:red">*</span></label>
+                                            <select class="form-control select2" style="width: 100%;" id='kasbank' name="kasbank" required>
+                                                @foreach ($kasbank as $item)
+                                                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                                @endforeach
+                                                    <option value="HUTANG DRIVER">HUTANG DRIVER</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endif
                             <div class="col-12 col-md-12">
                                 <div class="form-group">
                                     <label for="alasan_cancel">Alasan Batal Muat<span style="color: red;">*</span></label>
@@ -233,6 +256,43 @@
                 $('#total_uang_jalan_kembali').val(moneyMask(total_uang_jalan));
             }
         }
+         $('#post_data').submit(function(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar ?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
     });
 </script>
 

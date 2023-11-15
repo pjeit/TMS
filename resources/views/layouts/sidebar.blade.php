@@ -769,14 +769,14 @@
                     </p>
                   </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                   <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
                       <span style="font-size: 0.9em;">Rev. Biaya Operasional</span>
                     </p>
                   </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                   <a href="{{route('revisi_invoice_trucking.index')}}" class="nav-link {{ request()->is('revisi_invoice_trucking*')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i> 

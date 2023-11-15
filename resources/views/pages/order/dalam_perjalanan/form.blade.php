@@ -883,10 +883,10 @@
         });
         function hitung_total_harga_dari_muatan(jum_muatan) {
             let harga_total = 0;
-            let harga_per_kg = parseFloat($('#harga_per_kg').val());
-            let min_muatan = parseFloat($('#min_muatan').val());
-            jum_muatan = parseFloat(jum_muatan);
-
+            let harga_per_kg = normalize($('#harga_per_kg').val());
+            let min_muatan = normalize($('#min_muatan').val());
+            jum_muatan = normalize(jum_muatan);
+            console.log(jum_muatan);
             if (jum_muatan != '') {
                 if (min_muatan < jum_muatan) {
                     harga_total = harga_per_kg * jum_muatan;
@@ -894,7 +894,7 @@
                     harga_total = harga_per_kg * min_muatan;
                 }
             }
-            console.log(harga_total);
+            // console.log(harga_total);
             return harga_total;
         }
         $('#muatan_ltl').keyup(function(e) {
@@ -909,8 +909,9 @@
                 }
             }
 
+            //to fixed itu pembulatan
             let total_harga = hitung_total_harga_dari_muatan(muatan.toFixed(2));
-            $('#total_harga_ltl').val(moneyMask(total_harga));
+            $('#total_harga_ltl').val(moneyMask(parseFloat(total_harga.toFixed(2))));
 
         });
         if ($('#jenis_tujuan').val() != "LTL") {
@@ -1017,9 +1018,8 @@
                             <input type="hidden" id="id_sewa_operasional_data_${maxID}"  class="id_operasional" name="dataLain[${maxID}][id_sewa_operasional_data]" value="">
                         </td>
                         <td id="deskripsi_tabel_${maxID}" >
-                                <input type="text" readonly name="dataLain[${maxID}][deskripsi_data]" id="deskripsi_data_${maxID}" value="" class="form-control deskripsi_lain ambil_text_deskripsi">
-                                <span class="badge badge-primary">Data Lain-lain</span>
-                        
+                            <input type="text" readonly name="dataLain[${maxID}][deskripsi_data]" id="deskripsi_data_${maxID}" value="" class="form-control deskripsi_lain ambil_text_deskripsi">
+                            <span class="badge badge-primary">Data Lain-lain</span>
                         </td>
                         <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_${maxID}">
                                 <input type="text" readonly name="dataLain[${maxID}][nominal_data]" id="nominal_data_${maxID}" value="" class="form-control uang numaja nominal_lain">
@@ -1105,8 +1105,6 @@
             // cekCheckbox();
 
         });
-       
-      
         $('#post_data').submit(function(event) {
             var deskripsi = $('.deskripsi_lain');
             var nominal_lain = $('.nominal_lain');
@@ -1124,7 +1122,7 @@
 
             var deskripsi_text = '';
 
-             const Toast = Swal.mixin({
+            const Toast = Swal.mixin({
                         toast: true,
                         position: 'top',
                         timer: 2500,

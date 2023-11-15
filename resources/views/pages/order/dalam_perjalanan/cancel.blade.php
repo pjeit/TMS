@@ -67,7 +67,7 @@
                             <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$data->nama_tujuan}}" readonly>                         
                         </div>  
                         <div class="form-group">
-                            <label for="no_akun">No. Kontainer<span class="text-red">*</span></label>
+                            <label for="no_akun">{{$data->jenis_tujuan == "FTL"?'No. Kontainer':'No. Koli'}}<span class="text-red">*</span></label>
                             @if ($data->no_kontainer_jod && $data->jenis_order =="INBOUND")
                                 <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$data->no_kontainer_jod}}" >                         
                             @else
@@ -111,42 +111,49 @@
 
                             <div class="form-group col-8">
                                 <label for="no_akun">Driver</label>
-                                <input type="text" id="driver" name="driver" class="form-control" value="{{$data->nama_driver}}" readonly>     
-                                <input type="hidden" name="id_karyawan" id="id_karyawan" value="{{$data->id_karyawan}}">                    
+                                @if ($data->id_supplier==null)
+                                    <input type="text" id="driver" name="driver" class="form-control" value="{{$data->nama_driver}}" readonly>     
+                                    <input type="hidden" name="id_karyawan" id="id_karyawan" value="{{$data->id_karyawan}}"> 
+                                @else
+                                    <input type="text" class="form-control" readonly="" name="driver" value="DRIVER REKANAN {{ $supplier->nama }}">
+                                @endif
                             </div> 
 
-                            {{-- @if ($data->jenis_tujuan =='FTL') --}}
-                                
-                                <div class="form-group col-12">
-                                    <label for="total_uang_jalan">Total Uang Jalan</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
-                                    </div>
-                                </div>
+                            @if ($data->id_supplier==null)
+                                @if (isset($ujr))
 
-                                <div class="form-group col-12">
-                                    <label for="uang_jalan_kembali">Uang Jalan Kembali<span class="text-red">*</span></label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
+                                    <div class="form-group col-12">
+                                        <label for="total_uang_jalan">Total Uang Jalan</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
                                         </div>
-                                        <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" >
                                     </div>
-                                </div>
 
-                                <div class="form-group col-12">
-                                    <label for="">Kas / Bank<span class="text-red">*</span></label>
-                                    <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                        @foreach ($dataKas as $kb)
-                                            <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
-                                        @endforeach
-                                            <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
-                                    </select>
-                                </div>
-                            {{-- @endif --}}
+                                    <div class="form-group col-12">
+                                        <label for="uang_jalan_kembali">Uang Jalan Kembali<span class="text-red">*</span></label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" >
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-12">
+                                        <label for="">Kas / Bank<span class="text-red">*</span></label>
+                                        <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                            @foreach ($dataKas as $kb)
+                                                <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                            @endforeach
+                                                <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
+                                        </select>
+                                    </div>
+
+                                @endif
+                            @endif
                             
                         </div>
                     </div>

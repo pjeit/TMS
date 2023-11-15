@@ -5,17 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PencairanKomisi extends Model
+class PemutihanInvoice extends Model
 {
     use HasFactory;
-    protected $table = 'pencairan_komisi';
+    protected $table = 'pemutihan_invoice';
     protected $primaryKey='id';
     protected $fillable=[
-       'jenis_pencairan',
-       'id_driver',
-       'id_customer',
-       'total_komisi',
-       'total_pencairan',
+       'invoice_Id',
+       'tanggal',
+       'nominal_pemutihan',
+       'catatan',
        'created_by',
        'created_at',
        'updated_by',

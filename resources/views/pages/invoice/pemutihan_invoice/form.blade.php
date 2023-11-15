@@ -36,7 +36,7 @@
     @endif
     <form action="{{ route('pemutihan_invoice.update',[$pemutihan_invoice->id]) }}" method="POST" id="post" >
         @csrf
-        @method('post')
+        @method('PUT')
         <div class="card radiusSendiri">
             <div class="card-header">
                 <a href="{{ route('klaim_supir_revisi.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
@@ -52,11 +52,10 @@
                       
                         <div class="form-group">
                             <label for="customer_id">Customer<span style='color:red'>*</span></label>
-                            <select disabled id="select_customer" style="width:100%" data-placeholder="Pilih Customer">
-                                <option value=''></option>
-                                <option value="121" selected="selected">Bapak Adi</option>
+                            <select class="select2" disabled id="select_customer" style="width:100%" data-placeholder="Pilih Customer">
+                                <option value="{{$data_customer->id}}" >{{$data_customer->nama}}</option>
                             </select>
-                            <input type='hidden' id='customer_id' name='customer_id' value="121">
+                            <input type='hidden' id='customer_id' name='customer_id' value="{{$data_customer->id}}">
                         </div>
                         <div class="form-group">
                             <div class='row'>
@@ -101,7 +100,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="jumlah_pemutihan">Jumlah Pemutihan<span style='color:red'>*</span></label>
+                            <input type="hidden" name="maks_pemutihan" id="maks_pemutihan" value="{{$data_pengaturan->batas_pemutihan}}">
+                            <label for="jumlah_pemutihan">Jumlah Pemutihan<span style='color:red'>*</span> <span class="badge badge-danger">Maksimal Jumlah pemutihan Rp. {{number_format($data_pengaturan->batas_pemutihan)}}</span></label>
                             <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp</span>
@@ -111,7 +111,7 @@
                         </div>
                         <div class="form-group">
                             <label for="catatan_pemutihan">Catatan</label>
-                            <input type="text" name="catatan" class="form-control" id="catatan_pemutihan" placeholder="" value=""> 
+                            <input type="text" name="catatan_pemutihan" class="form-control" id="catatan_pemutihan" placeholder="" value=""> 
                         </div>
                     </div>
                 </div>
@@ -129,9 +129,22 @@
             var total_sisa =0;
         }
         var jumlah_pemutihan = removePeriod($('#jumlah_pemutihan').val(),',');
-        if(parseFloat(jumlah_pemutihan)>parseFloat(total_sisa)){
-            $('#jumlah_pemutihan').val(addPeriod(total_sisa,','));
-        }else{
+        var maks_pemutihan = removePeriod($('#maks_pemutihan').val(),',');
+
+        // if(parseFloat(total_sisa)>parseFloat(maks_pemutihan)){
+        //     $('#jumlah_pemutihan').val(addPeriod(maks_pemutihan,','));
+        // }else{
+        //     $('#jumlah_pemutihan').val(addPeriod(total_sisa,','));
+        // }
+        //  if(parseFloat(jumlah_pemutihan)>parseFloat(total_sisa)){
+        //     $('#jumlah_pemutihan').val(addPeriod(total_sisa,','));
+        // }else{
+        //     $('#jumlah_pemutihan').val(addPeriod(jumlah_pemutihan,','));
+        // }
+         if(parseFloat(jumlah_pemutihan)>parseFloat(maks_pemutihan)){
+            $('#jumlah_pemutihan').val(addPeriod(maks_pemutihan,','));
+        }
+        else{
             $('#jumlah_pemutihan').val(addPeriod(jumlah_pemutihan,','));
         }
     }    
@@ -151,10 +164,15 @@ $(document).ready(function() {
             language:'en',
             endDate: "0d"
         });
-		$('#jumlah_pemutihan').val(addPeriod($('#total_sisa').val(),','));
+        
+        if (normalize($('#total_sisa').val())>normalize($('#maks_pemutihan').val())) {
+            $('#jumlah_pemutihan').val(addPeriod($('#maks_pemutihan').val(),','));
+            
+        } else {
+            $('#jumlah_pemutihan').val(addPeriod($('#total_sisa').val(),','));
+        }
     $('#post').submit(function(event) {
-        var statusKlaim = $("input[name='status_klaim']:checked").val();
-        var tanggal_pencairan = $("#tanggal_pencairan").val();
+        var tanggal_pemutihan = $("#tanggal_pemutihan").val();
         const Toast = Swal.mixin({
                     toast: true,
                     position: 'top',
@@ -166,18 +184,16 @@ $(document).ready(function() {
                         toast.addEventListener('mouseleave', Swal.resumeTimer)
                     }
                 })
-        if(statusKlaim=="REJECTED")
-        {
-            if(alasan_tolak.trim()=='')
+        
+            if(tanggal_pemutihan.trim()=='')
             {
                 event.preventDefault(); 
                 Toast.fire({
                     icon: 'error',
-                    text: `ALASAN TOLAK WAJIB DIISI!`,
+                    text: `TANGGAL PEMUTIHAN WAJIB DIISI!`,
                 })
                 return;
             }
-        }
         event.preventDefault();
         Swal.fire({
             title: 'Apakah Anda yakin data sudah benar?',
