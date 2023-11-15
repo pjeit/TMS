@@ -122,8 +122,8 @@
                                             <span class="input-group-text">Rp</span>
                                         </div>
                                         <input type="text" id="total_sisa" name="total_sisa" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                        <input type="hidden" id="total_pisah" name="total_pisah" class="form-control uang numajaMinDesimal" value="" placeholder="total_pisah" readonly>                         
                                     </div>
+                                    <input type="hidden" id="total_pisah" name="total_pisah" class="form-control uang numajaMinDesimal" value="" placeholder="total_pisah" readonly>                         
                                 </div>
                             </div>
                             
@@ -247,16 +247,14 @@
                                     $total_addcost_pisah = 0;
                                 @endphp
                                 @foreach ($item->sewaOperasional as $i => $oprs)
-                                    @if ($oprs->is_aktif == 'Y' && 
-                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N'||
-                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N')
+                                    @if ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y' && $oprs->is_dipisahkan == 'N')
                                         <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
                                         @php
                                             $total_addcost += $oprs->total_operasional;
                                         @endphp
-                                    @elseif ($oprs->is_aktif == 'Y' && 
-                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y'||
-                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y')
+                                        {{-- SUDAH DICAIRKAN --}}
+                                        {{-- TAGIHKAN DI INVOICE --}}
+                                    @elseif ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y' && $oprs->is_dipisahkan == 'Y')
                                         @php
                                             $total_addcost_pisah += $oprs->total_operasional;
                                         @endphp
@@ -715,10 +713,8 @@
             let all_id_sewa = [];
 
             $('.all_id_sewa').each(function() {
-                console.log('arrPush', $(this).val());
                 all_id_sewa.push($(this).val());
             });
-            console.log('all_id_sewa', all_id_sewa);
             
             dataSewa.forEach(function(item, index) {
                 var option = $('<option>');
@@ -728,7 +724,6 @@
                 if ( all_id_sewa.includes( item.id_sewa.toString() ) ) {
                     option.prop('disabled', true);
                 }
-                console.log('hidden_id_sewa', hidden_id_sewa);
                 if (item.id_sewa == hidden_id_sewa) {
                     option.prop('selected', true);
                     option.prop('disabled', false);
@@ -761,7 +756,6 @@
         });
 
         function updateDetail(index){
-            console.log('selected sewa', dataSewa[index]);
             const data = dataSewa[index];
 
             $('#tanggal_berangkat').val( dateMask(data.tanggal_berangkat) );
@@ -786,30 +780,24 @@
             var addcost_sewa = $('#addcost_sewa').val();
 
             if(addcost_sewa != key){
-                // delete dan buat data baru
-                // var closestTR = $('#hidden_id_sewa_'+key).closest('tr');
-                // closestTR.empty();
-                // closestTR.remove();
                 save_sewa('edit', key);
-            }else{
-                // update data yg ada
-                updateSewa(key);
-    
-                var selectedOption = $('#billingTo').find('option:selected');
-                var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
-                
-                if(ketentuan_bayar==undefined){
-                    getDate(0);
-                    addCostPisah(0);
-                }else{
-                    getDate(parseFloat(ketentuan_bayar) );
-                    addCostPisah(parseFloat(ketentuan_bayar));
-                }
-                updateAddCost(key); //update data addcost yg berubah
-                calculateGrandTotal(); // pas load awal langsung hitung grand total
-                cekPisahInvoice();
-                clearData();
             }
+            var selectedOption = $('#billingTo').find('option:selected');
+            var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
+            
+            if(ketentuan_bayar==undefined){
+                getDate(0);
+                addCostPisah(0);
+            }else{
+                console.log('ketentuan_bayar', ketentuan_bayar);
+                getDate(parseFloat(ketentuan_bayar) );
+                addCostPisah(parseFloat(ketentuan_bayar));
+            }
+            updateSewa(key);
+            updateAddCost(key); //update data addcost yg berubah
+            calculateGrandTotal(); // pas load awal langsung hitung grand total
+            cekPisahInvoice();
+            clearData();
 
             $('#modal_detail').modal('hide'); // close modal
         });
@@ -850,6 +838,7 @@
 
         $(document).on('click', '#save_sewa_baru', function(event){ // save detail
             save_sewa('baru', null);
+
             $('#modal_detail').modal('hide'); // close modal
         });
 
@@ -880,57 +869,56 @@
                 // const newTd = $('<td>New Data</td>');
                 // trElement.append(newTd);
             }
-
             
             var td = `
                         <td> 
                             <span id="text_customer_${data.id_sewa}">CV. SINAR TERANG </span>
-                            <input type="text" id="hidden_id_sewa_${data.id_sewa}" name="detail[${data.id_sewa}][id_sewa]" class="all_id_sewa" value="${data.id_sewa}">
-                            <input type="text" id="hidden_id_customer_${data.id_sewa}" name="detail[${data.id_sewa}][id_customer]" value="${data.id_customer}">
-                            <input type="text" id="hidden_id_jo_${data.id_sewa}" name="detail[${data.id_sewa}][id_jo_hidden]" value="${data.id_jo}">
-                            <input type="text" id="hidden_id_jo_detail_${data.id_sewa}" name="detail[${data.id_sewa}][id_jo_detail_hidden]" value="${data.id_jo_detail}">
+                            <input type="hidden" id="hidden_id_sewa_${data.id_sewa}" name="detail[${data.id_sewa}][id_sewa]" class="all_id_sewa" value="${data.id_sewa}">
+                            <input type="hidden" id="hidden_id_customer_${data.id_sewa}" name="detail[${data.id_sewa}][id_customer]" value="${data.id_customer}">
+                            <input type="hidden" id="hidden_id_jo_${data.id_sewa}" name="detail[${data.id_sewa}][id_jo_hidden]" value="${data.id_jo}">
+                            <input type="hidden" id="hidden_id_jo_detail_${data.id_sewa}" name="detail[${data.id_sewa}][id_jo_detail_hidden]" value="${data.id_jo_detail}">
                         </td>
                         <td> <span id="text_nama_tujuan_${data.id_sewa}">${data.nama_tujuan}</span> <br> 
                             ( <span id="text_tgl_berangkat_${data.id_sewa}">${dateMask(data.tanggal_berangkat)}</span> )
-                            <input type="text" name="detail[${data.id_sewa}][nama_tujuan]" id="hidden_nama_tujuan_${data.id_sewa}" value="${data.nama_tujuan}">
-                            <input type="text" name="detail[${data.id_sewa}][tgl_berangkat]" id="hidden_tgl_berangkat_${data.id_sewa}" value="${dateMask(data.tanggal_berangkat)}">
+                            <input type="hidden" name="detail[${data.id_sewa}][nama_tujuan]" id="hidden_nama_tujuan_${data.id_sewa}" value="${data.nama_tujuan}">
+                            <input type="hidden" name="detail[${data.id_sewa}][tgl_berangkat]" id="hidden_tgl_berangkat_${data.id_sewa}" value="${dateMask(data.tanggal_berangkat)}">
                         </td>
                         <td>
                             <span id="text_driver_${data.id_sewa}">${data.nama_driver}</span>
-                            <input type="text" name="detail[${data.id_sewa}][driver]" id="hidden_driver_${data.id_sewa}" value="${data.nama_driver}">
+                            <input type="hidden" name="detail[${data.id_sewa}][driver]" id="hidden_driver_${data.id_sewa}" value="${data.nama_driver}">
                         </td>
                         <td>
                             <span id="text_no_kontainer_${data.id_sewa}">${data.no_kontainer}</span> <br> 
                             <span id="text_seal_pelayaran_${data.id_sewa}">${data.seal_pelayaran}</span> 
-                            <input type="text" name="detail[${data.id_sewa}][no_kontainer]" id="hidden_no_kontainer_${data.id_sewa}" value="${data.no_kontainer}">
-                            <input type="text" name="detail[${data.id_sewa}][no_seal]" id="hidden_no_seal_${data.id_sewa}" value="${data.seal_pelayaran}">
-                            <input type="text" name="detail[${data.id_sewa}][no_sj]" id="hidden_no_sj_${data.id_sewa}" value="${data.no_surat_jalan}">
+                            <input type="hidden" name="detail[${data.id_sewa}][no_kontainer]" id="hidden_no_kontainer_${data.id_sewa}" value="${data.no_kontainer}">
+                            <input type="hidden" name="detail[${data.id_sewa}][no_seal]" id="hidden_no_seal_${data.id_sewa}" value="${data.seal_pelayaran}">
+                            <input type="hidden" name="detail[${data.id_sewa}][no_sj]" id="hidden_no_sj_${data.id_sewa}" value="${data.no_surat_jalan}">
                         </td>
                         <td style="text-align:right" id="muatan_satuan_${data.id_sewa}">
                             <span id="text_jumlah_muatan_${data.id_sewa}">${ data.jumlah_muatan != null? data.jumlah_muatan:'-' }</span>
-                            <input type="text" class="muatan_satuan" name="detail[${data.id_sewa}][muatan_satuan]" id="muatan_satuan_${data.id_sewa}" value="${data.jumlah_muatan != null? data.jumlah_muatan:'-'}">
+                            <input type="hidden" class="muatan_satuan" name="detail[${data.id_sewa}][muatan_satuan]" id="muatan_satuan_${data.id_sewa}" value="${data.jumlah_muatan != null? data.jumlah_muatan:'-'}">
                         </td>
                         <td style="text-align:right">
                             <span id="text_tarif_${data.id_sewa}">${moneyMask(data.total_tarif)}</span> 
-                            <input type="text" name="detail[${data.id_sewa}][tarif]" id="hidden_tarif_${data.id_sewa}" value="${data.total_tarif}">
+                            <input type="hidden" name="detail[${data.id_sewa}][tarif]" id="hidden_tarif_${data.id_sewa}" value="${data.total_tarif}">
                         </td>
                         <td style="text-align:right">
-                            <span id="text_addcost_${data.id_sewa}">xxx</span>
-                            <input type="text" class="cek_detail_addcost" id_sewa="${data.id_sewa}" name="detail[${data.id_sewa}][addcost_details]" id="detail_addcost_${data.id_sewa}" value="">
-                            <input type="text" class="cek_detail_addcost_baru" id_sewa="${data.id_sewa}" name="detail[${data.id_sewa}][addcost_baru]" id="detail_addcost_baru_${data.id_sewa}" value="">
-                            <input type="text" class="addcost_${data.id_sewa}" name='detail[${data.id_sewa}][addcost]' id='addcost_hidden_${data.id_sewa}' value="">
-                            <input type="text" class="addcost_pisah addcost_pisah_${data.id_sewa}" name="detail[${data.id_sewa}][addcost_pisah]" id="addcost_pisah_hidden_${data.id_sewa}" value="">
+                            <span id="text_addcost_${data.id_sewa}">${ $('#addcost').val() }</span>
+                            <input type="hidden" class="cek_detail_addcost" id_sewa="${data.id_sewa}" name="detail[${data.id_sewa}][addcost_details]" id="detail_addcost_${data.id_sewa}" value="">
+                            <input type="hidden" class="cek_detail_addcost_baru" id_sewa="${data.id_sewa}" name="detail[${data.id_sewa}][addcost_baru]" id="detail_addcost_baru_${data.id_sewa}" value="">
+                            <input type="hidden" class="addcost_${data.id_sewa}" name='detail[${data.id_sewa}][addcost]' id='addcost_hidden_${data.id_sewa}' value="">
+                            <input type="hidden" class="addcost_pisah addcost_pisah_${data.id_sewa}" name="detail[${data.id_sewa}][addcost_pisah]" id="addcost_pisah_hidden_${data.id_sewa}" value="">
                         </td>
                         <td style="text-align:right">
-                            <span id="text_diskon_${data.id_sewa}">zzz</span>
-                            <input type="text" name="detail[${data.id_sewa}][diskon]" id="hidden_diskon_${data.id_sewa}">
+                            <span id="text_diskon_${data.id_sewa}">${ $('#diskon').val() }</span>
+                            <input type="hidden" name="detail[${data.id_sewa}][diskon]" id="hidden_diskon_${data.id_sewa}">
                         </td>
                         <td style="text-align:right">
-                            <span id="text_subtotal_${data.id_sewa}">qqq</span>
-                            <input type="text" class="hitung_subtotal subtotal_hidden_${data.id_sewa} " name="detail[${data.id_sewa}][subtotal]" id="subtotal_hidden_${data.id_sewa}" value="">
+                            <span id="text_subtotal_${data.id_sewa}">${ $('#subtotal').val() }</span>
+                            <input type="hidden" class="hitung_subtotal subtotal_hidden_${data.id_sewa} " name="detail[${data.id_sewa}][subtotal]" id="subtotal_hidden_${data.id_sewa}" value="">
                         </td>
-                        <td><span id="text_catatan_${data.id_sewa}">rrr</span>
-                            <input type="text" name="detail[${data.id_sewa}][catatan]" id="hidden_catatan_${data.id_sewa}" value="">
+                        <td><span id="text_catatan_${data.id_sewa}"> ${ $('#catatan').val() } </span>
+                            <input type="hidden" name="detail[${data.id_sewa}][catatan]" id="hidden_catatan_${data.id_sewa}" value="">
                         </td>
                         <td>
                             <div class="btn-group dropleft">
@@ -966,8 +954,13 @@
 
             $('#addcost_hidden_'+data.id_sewa).val( normalize($('#addcost').val()) );
             $('#addcost_pisah_hidden_'+data.id_sewa).val( normalize($('#addcost_pisah').val()) );
-
-            
+                   
+            let total = 0;
+            $(".addcost_pisah").each(function() {
+                var value = parseFloat($(this).val()) || 0;
+                total += value;
+            });
+            $("#total_pisah").val(total);
 
             updateAddCost(data.id_sewa); //update data addcost yg berubah
             calculateGrandTotal(); // pas load awal langsung hitung grand total
@@ -1107,10 +1100,8 @@
 
         function showAddcostDetailsBaru(key){
             var details = $('#detail_addcost_baru_'+key).val(); 
-            // console.log('details', details);
             if (details && (details != null)) { // cek apakah ada isi detail addcost
                 JSON.parse(details).forEach(function(item, index) {
-                    console.log('item', item);
                     $('#tabel_addcost > tbody:last-child').append(
                         `
                             <tr id="${item.id.substring(2)}" id_addcost="${item.id}">
@@ -1313,7 +1304,6 @@
                     parsed.forEach((element, index)  => {
                         if(element.is_ditagihkan == 'Y' && element.is_dipisahkan == 'Y'){
                             $('#is_pisah_invoice').val('TRUE');
-                            console.log('SECOND', data.length);
                         }
                     });
                 }

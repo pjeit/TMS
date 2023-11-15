@@ -255,6 +255,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('revisi_tagihan_pembelian', 'App\Http\Controllers\RevisiTagihanPembelianController');
 
         Route::get('revisi_invoice_trucking/delete/{id}', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'delete'])->name('revisi_invoice_trucking.delete');
+        Route::get('revisi_invoice_trucking/edit-pembayaran/{id}', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'editPembayaran'])->name('revisi_invoice_trucking.editPembayaran');
         Route::get('revisi_invoice_trucking/load_data', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'load_data'])->name('revisi_invoice_trucking.load_data');
         Route::resource('revisi_invoice_trucking', 'App\Http\Controllers\RevisiInvoiceTruckingController');
         // ===================================HRD=========================================================

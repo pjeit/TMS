@@ -36,17 +36,18 @@ class PembayaranInvoiceController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
-        // Session::flush();
-        $data =  DB::table('invoice AS i')
-                ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
-                        ,'g.id as id_grup','ip.no_bukti_potong', 'ip.catatan')
-                ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
-                ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
-                ->leftJoin('invoice_pembayaran AS ip', 'i.id', '=', 'ip.id_invoice')
-                ->where('i.is_aktif', '=', 'Y')
-                // ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
-                ->orderBy('i.id','ASC')
-                ->get();
+        // $data =  DB::table('invoice AS i')
+        //         ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
+        //                 ,'g.id as id_grup','ip.no_bukti_potong', 'ip.catatan')
+        //         ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
+        //         ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
+        //         ->leftJoin('invoice_pembayaran AS ip', 'i.id', '=', 'ip.id_invoice')
+        //         ->where('i.is_aktif', '=', 'Y')
+        //         // ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
+        //         ->orderBy('i.id','ASC')
+        //         ->get();
+
+        $data = Invoice::where('is_aktif', 'Y')->get();
     
         return view('pages.invoice.pembayaran_invoice.index',[
             'judul' => "PEMBAYARAN INVOICE",
@@ -109,13 +110,14 @@ class PembayaranInvoiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeV2NotUsed(Request $request)
     {
         $data = $request->post();
         $user = Auth::user()->id; 
         DB::beginTransaction(); 
         $isErr = false;
-        // dd($data);
+        dd($data);
+        // simpan data per invoice
 
         try {
             if($data['detail'] != null){
@@ -155,15 +157,15 @@ class PembayaranInvoiceController extends Controller
                                 if($invoice->total_sisa < 0){
                                     $isErr = true;
                                 }
-                                $curStatus = '';
+                                $currentStatus = '';
                                 if($invoice->total_sisa == 0){
-                                    $curStatus = 'SELESAI PEMBAYARAN INVOICE';
-                                    $invoice->status = $curStatus;
+                                    $currentStatus = 'SELESAI PEMBAYARAN INVOICE';
+                                    $invoice->status = $currentStatus;
                                 }
                                 $invoice->updated_by = $user;
                                 $invoice->updated_at = now();
                                 if($invoice->save()){
-                                    if($curStatus == 'SELESAI PEMBAYARAN INVOICE'){
+                                    if($currentStatus == 'SELESAI PEMBAYARAN INVOICE'){
                                         $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
                                         if($invoiceDetail){
                                             foreach ($invoiceDetail as $i => $item) {
@@ -245,6 +247,142 @@ class PembayaranInvoiceController extends Controller
        
     }
 
+    public function store(Request $request)
+    {
+        $data = $request->post();
+        $user = Auth::user()->id; 
+        DB::beginTransaction(); 
+        $isErr = false;
+        // dd($data);`
+
+        try {
+            if($data['detail'] != null){
+                $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
+                $id_invoices = '';
+                $biaya_admin = isset($data['biaya_admin'])? floatval(str_replace(',', '', $data['biaya_admin'])):0;
+                $total_pph = isset($data['total_pph23'])? floatval(str_replace(',', '', $data['total_pph23'])):0;
+                $i = 0;
+
+                $pembayaran = new InvoicePembayaran();
+                $pembayaran->id_kas = $data['kas'];
+                $pembayaran->billing_to = $data['billingTo'];
+                $pembayaran->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
+                $pembayaran->total_diterima = floatval(str_replace(',', '', $data['total_diterima']));
+                $pembayaran->total_pph = $total_pph;
+                $pembayaran->biaya_admin = $biaya_admin;
+                $pembayaran->cara_pembayaran = $data['cara_pembayaran'];
+                $pembayaran->no_cek = isset($data['no_cek'])? $data['no_cek']:null;
+                $pembayaran->no_bukti_potong = $data['no_bukti_potong'];
+                $pembayaran->catatan = $data['catatan'];
+                $pembayaran->created_by = $user;
+                $pembayaran->created_at = now();
+                if($pembayaran->save()){
+                    foreach ($data['detail'] as $key => $value) {
+                        $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($key);
+
+                        $keterangan_transaksi .= ' #'.$invoice->no_invoice;
+                        $id_invoices .= $invoice->id . ','; 
+
+                        if($invoice){
+                            $invoice->id_pembayaran = $pembayaran->id;
+                            $invoice->pph = $value['pph23'];
+                            if($i == 0){
+                                $invoice->total_dibayar += $value['diterima'] - $biaya_admin;
+                                $invoice->biaya_admin = $biaya_admin;
+                            }else{
+                                $invoice->total_dibayar += $value['diterima'];
+                            }
+                            $invoice->total_sisa -= $value['dibayar'];
+                            if($invoice->total_sisa < 0){
+                                $isErr = true;
+                            }
+                            $currentStatus = '';
+                            if($invoice->total_sisa == 0){
+                                $currentStatus = 'SELESAI PEMBAYARAN INVOICE';
+                                $invoice->status = $currentStatus;
+                            }
+                            $invoice->updated_by = $user;
+                            $invoice->updated_at = now();
+                            if($invoice->save()){
+                                if($currentStatus == 'SELESAI PEMBAYARAN INVOICE'){
+                                    $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
+                                    if($invoiceDetail){
+                                        foreach ($invoiceDetail as $i => $item) {
+                                            $check = InvoiceDetail::leftJoin('invoice', 'invoice.id', '=', 'invoice_detail.id_invoice')
+                                                                    ->where('invoice_detail.is_aktif', 'Y')
+                                                                    ->where('invoice.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                                                                    ->where('id_sewa', $item->id_sewa)->get();
+                                            if ($check->isEmpty()) {
+                                                $updateSewa = Sewa::where('is_aktif', 'Y')->find($item->id_sewa);
+                                                $updateSewa->status = 'SELESAI PEMBAYARAN';
+                                                $updateSewa->updated_by = $user;
+                                                $updateSewa->updated_at = now();
+                                                $updateSewa->save();
+
+                                                // trigger update status jo detail jika semua sewa sudah selesai 
+                                                // trigger update status jo jika semua jo detail sudah selesai 
+                                            }
+                                        }
+                                    }
+                                }
+                            }else{
+                                $isErr = true;
+                            }
+                        }
+                        $i++;
+                    }
+                }
+
+                // dump data ke dump transaction
+                $total_bayar = (float)str_replace(',', '', $data['total_diterima']);
+                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                    array(
+                        $data['kas'],// id kas_bank dr form
+                        now(),//tanggal
+                        $total_bayar, //uang masuk (debit)
+                        0,// kredit 0 soalnya kan ini uang masuk
+                        1018, //kode coa
+                        'BAYAR INVOICE',
+                        $keterangan_transaksi, //keterangan_transaksi
+                        $pembayaran->id, // keterangan_kode_transaksi - id pembayaran
+                        $user,//created_by
+                        now(),//created_at
+                        $user,//updated_by
+                        now(),//updated_at
+                        'Y'
+                    ) 
+                );
+
+                $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
+                if($cust){
+                    $kredit_sekarang = $cust->kredit_sekarang - $value['dibayar'];
+                    if($kredit_sekarang < 0){
+                        $kredit_sekarang = 0;
+                    }
+                    $cust->kredit_sekarang = $kredit_sekarang;
+                    $cust->updated_by = $user;
+                    $cust->updated_at = now();
+                    $cust->save();
+                }
+
+                if($isErr === true){
+                    db::rollBack();
+                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi kesalahan!']);
+                }else{
+                    DB::commit();
+                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "Success", "msg" => "Berhasil Membayar invoice!"]);
+                }
+
+            }
+     
+        } catch (ValidationException $e) {
+            // return redirect()->back()->withErrors($e->errors())->withInput();
+            db::rollBack();
+            return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi Kesalahan ketika pembayaran!']);
+        }
+       
+    }
+
     /**
      * Display the specified resource.
      *
@@ -273,6 +411,17 @@ class PembayaranInvoiceController extends Controller
             $invoice = Invoice::where('is_aktif', 'Y')->where('no_invoice', substr($invoice->no_invoice, 0, -2))->first();
             $reimburse = Invoice::where('is_aktif', 'Y')->where('no_invoice', $invoice->no_invoice.'/I')->first();
         }
+
+        if($invoice->total_sisa == 0){
+            return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Data invoice sudah terbayar, harap lakukan revisi Invoice untuk melakukan perubahan!']);
+        }
+        if(isset($reimburse)){
+            if($reimburse->total_sisa == 0){
+                return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Data Reimburse sudah terbayar, harap lakukan revisi Invoice untuk melakukan perubahan!']);
+            }
+        }
+
+
         $id_invoices = [];
         $checkLTL = false;
 
@@ -437,8 +586,7 @@ class PembayaranInvoiceController extends Controller
                             'updated_by'=> $user,
                     ));
     
-                    if(isset($value['id_jo_hidden'])&&isset($value['id_jo_detail_hidden']))
-                    {
+                    if(isset($value['id_jo_hidden']) && isset($value['id_jo_detail_hidden'])){
                         DB::table('job_order_detail')
                             ->where('id', $value['id_jo_detail_hidden'])
                             ->update(array(
@@ -447,7 +595,17 @@ class PembayaranInvoiceController extends Controller
                                 'updated_by'=>  $user,
                         )); 
                     }
-    
+
+                    $invoice->total_tagihan = floatval(str_replace(',', '', $data['total_tagihan']));
+                    $invoice->total_sisa = floatval(str_replace(',', '', $data['total_tagihan']));
+                    $invoice->total_dibayar = 0;
+                    $invoice->catatan = $data['catatan_invoice'];
+                    $invoice->total_jumlah_muatan = $data['total_jumlah_muatan'];
+                    $invoice->jatuh_tempo = date("Y-m-d", strtotime($data['jatuh_tempo_pisah']));
+                    $invoice->billing_to = $data['billingTo'];
+                    $invoice->save();
+
+                    // dd($data);
                     $invoice_d = new InvoiceDetail();
                     $invoice_d->id_invoice = $invoice->id;
                     $invoice_d->id_customer = $value['id_customer'];
@@ -477,8 +635,6 @@ class PembayaranInvoiceController extends Controller
                                 $sewa_oprs->save();
                             }
                             if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'N'){
-    
-    
                                 $invoice_da = new InvoiceDetailAddcost();
                                 $invoice_da->id_invoice = $invoice->id;
                                 $invoice_da->id_invoice_detail = $invoice_d->id;
@@ -559,9 +715,9 @@ class PembayaranInvoiceController extends Controller
                         $reimburse->save();
                     }else{
                         $reimburse->catatan = $data['catatan_invoice'];
-                        $reimburse->total_tagihan = floatval(str_replace(',', '', $data['total_tagihan']));
-                        $reimburse->total_sisa = floatval(str_replace(',', '', $data['total_tagihan']));
-                        $reimburse->total_jumlah_muatan = $data['total_jumlah_muatan'];
+                        $reimburse->total_tagihan = $data['total_pisah'];
+                        $reimburse->total_sisa = $data['total_pisah'];
+                        $reimburse->total_dibayar = 0;
                         $reimburse->jatuh_tempo = date("Y-m-d", strtotime($data['jatuh_tempo_pisah']));
                         $reimburse->billing_to = $data['billingTo'];
                         $reimburse->save();

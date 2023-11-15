@@ -16,9 +16,9 @@ class InvoicePembayaran extends Model
          return $this->hasOne(Customer::class, 'id', 'billing_to');
     }
   
-    public function getInvoice()
+    public function getInvoices()
     {
-         return $this->hasOne(Invoice::class, 'id', 'id_invoice');
+         return $this->hasMany(Invoice::class, 'id_pembayaran', 'id');
     }
 
 }

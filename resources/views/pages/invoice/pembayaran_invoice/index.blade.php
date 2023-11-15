@@ -452,6 +452,8 @@
                     var baseUrl = "{{ asset('') }}";
                     $("#loading-spinner").hide();
                     var data = response;
+                    console.log('data', data);
+
                     if(status == 'BELUM LUNAS'){
                         var tagihBayar = `<th>Sisa Tagihan</th>`;
                     }else{

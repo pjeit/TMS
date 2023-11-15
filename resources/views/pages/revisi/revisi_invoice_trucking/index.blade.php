@@ -26,7 +26,7 @@
                 <thead>
                     <tr>
                         <th>Billing To</th>
-                        <th>Grup</th>
+                        {{-- <th>Grup</th> --}}
                         <th style="width: 250px;">Customer</th>
                         <th>No. Invoice</th>
                         <th>Tgl Pembayaran</th>
@@ -59,7 +59,7 @@
             columns: [
                 // {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'billing_to', name: 'billing_to'},
-                {data: 'grup', name: 'grup'},
+                // {data: 'grup', name: 'grup'},
                 {data: 'customer', name: 'customer'},
                 {data: 'no_invoice', name: 'no_invoice'},
                 {data: 'tgl_pembayaran', name: 'tgl_pembayaran'},
