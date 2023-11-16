@@ -17,11 +17,12 @@
 <br>
 <style>
     /* custom range slider */
-    .irs--flat .irs-handle>i:first-child{
+    /* .irs--flat .irs-handle>i:first-child{
         background-color: #fff;
     }
     .irs--flat .irs-handle.state_hover>i:first-child, .irs--flat .irs-handle:hover>i:first-child {
         background-color: #fff;
+         font-size: 156px;
     }
     .irs--flat .irs-bar {
         background-color: #86eeff;
@@ -31,7 +32,19 @@
     }
     .irs--flat .irs-from, .irs--flat .irs-to, .irs--flat .irs-single{
         background-color: #0011ff;
-    }
+    } */
+     .irs--flat .irs-handle>i:first-child {
+    background-color: #4e73df!important;//Replace With Your color code
+}
+.irs--flat .irs-bar {
+    background-color: #4e73df!important;//Replace With Your color code
+}
+.irs--flat .irs-from, .irs--flat .irs-to, .irs--flat .irs-single {
+    background-color: #4e73df!important;//Replace With Your color code
+}
+.irs--flat .irs-from:before, .irs--flat .irs-to:before, .irs--flat .irs-single:before {
+    border-top-color: #4e73df!important;//Replace With Your color code
+}
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -132,7 +145,7 @@
                                     </div>
                 
                                     <div class="form-group col-sm-12 col-md-4 col-lg-4">
-                                        <label>Batas Pemutihan </label>
+                                        <label>Batas Pemutihan <span id="value_pemutihan" class="badge badge-dark">Rp. <?= ($data->batas_pemutihan)? $data->batas_pemutihan:0; ?></span></label>
                                         <br>
                                         <!-- <input type="number" class="form-control uang numaja" name="batas_pemutihan" id="batas_pemutihan" value="<?= isset($data->batas_pemutihan) ? $data->batas_pemutihan:null; ?>"> -->
                                         <div class="col-sm-12">
@@ -425,7 +438,12 @@ $(function () {
       step    : 1,
     //   postfix : ' mm',
       prettify: false,
-      hasGrid : true
+    //   hasGrid : true,
+        grid_num: 4,
+         onChange: function (data) {
+            $('#value_pemutihan').html('Rp. '+data.from_pretty);
+            // console.table(data.from_pretty);
+        }
     })
 });
 </script>
