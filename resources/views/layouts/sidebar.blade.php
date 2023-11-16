@@ -325,12 +325,23 @@
                   </a>
                 </li>
               </ul>
+              
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('storage_demurage.index')}}" class="nav-link {{request()->url() === route('storage_demurage.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
                     <p>
                       Input S/D/T
+                    </p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pengembalian_jaminan.index')}}" class="nav-link {{request()->url() === route('pengembalian_jaminan.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 13.9px;">Pengembalian Jaminan</span>
                     </p>
                   </a>
                 </li>
@@ -361,6 +372,7 @@
             {{-- TRUCKING ORDER --}}
             <li class="nav-item {{ request()->is('booking*')||
               request()->is('dalam_perjalanan*') ||
+              request()->is('status_kendaraan*') ||
               request()->is('truck_order*')? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 {{-- <i class="nav-icon fas fa-shipping-fast"></i> --}}
@@ -399,6 +411,16 @@
                   </a>
                 </li>
               </ul>  --}}
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('status_kendaraan.index')}}" class="nav-link {{request()->url() === route('status_kendaraan.index')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Status Kendaraan
+                    </p>
+                  </a>
+                </li>
+              </ul>
   
               <ul class="nav nav-treeview">
                 <li class="nav-item">
@@ -410,7 +432,7 @@
                   </a>
                 </li>
               </ul> 
-              
+             
             </li>
            
             {{-- FINANCE --}}
@@ -427,7 +449,6 @@
               request()->is('tagihan_pembayaran*')||
               request()->is('pencairan_komisi_customer*')||
               request()->is('karantina*')||
-              request()->is('cetak_uang_jalan*')||
               request()->is('transaksi_lain*')||
               request()->is('tagihan_pembelian*')||
               request()->is('transfer_dana*')
@@ -438,165 +459,198 @@
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Biaya Operasional
-                    </p>
-                  </a>
-                </li>
-              </ul> 
-               <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('cetak_uang_jalan.index')}}" class="nav-link {{request()->url() === route('cetak_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Cetak Uang Jalan
-                    </p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('klaim_supir.index')}}" class="nav-link {{request()->is('klaim_supir*')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Klaim Supir
-                    </p>
-                  </a>
-                </li>
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pembayaran_jo.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pembayaran_jo*') ? 'active' : ''  }}">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Pembayaran JO
-                    </p>
-                  </a>
-                </li>
-              </ul>
-            
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{ route('pembayaran_sdt.index') === request()->url() ? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Pembayaran S/D/T
-                    </p>
-                  </a>
-                </li>
-              </ul>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{route('biaya_operasional.index')}}" class="nav-link {{request()->url() === route('biaya_operasional.index')? ' active' : '' }} " style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                      <p>
+                        Biaya Operasional
+                      </p>
+                    </a>
+                  </li>
+                </ul> 
+                
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{route('klaim_supir.index')}}" class="nav-link {{request()->is('klaim_supir*')? ' active' : '' }} " style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                      <p>
+                        Klaim Supir
+                      </p>
+                    </a>
+                  </li>
+                </ul>
 
-             
-            
-              <ul class="nav nav-treeview">
-                <li class="nav-item   {{ 
-                  request()->is('pencairan_uang_jalan*') ||
-                  request()->is('pencairan_uang_jalan_ltl*')
+                <ul class="nav nav-treeview">
+                  <li class="nav-item   {{ 
+                    request()->is('pembayaran_jo*') ||
+                    request()->is('pembayaran_sdt*')
+                    ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p style="font-weight: 500;" >
+                        Pembayaran
+                        <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                          <a href="{{route('pembayaran_jo.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('pembayaran_jo*') ? 'active' : ''  }}">
+                          <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                            <p>
+                              Pembayaran JO
+                            </p>
+                          </a>
+                        </li>
+                      </ul>
+                    
+                      <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                          <a href="{{route('pembayaran_sdt.index')}}" class="nav-link {{ route('pembayaran_sdt.index') === request()->url() ? ' active' : '' }} " style="font-weight: 500;">
+                          <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                            <p>
+                              Pembayaran S/D/T
+                            </p>
+                          </a>
+                        </li>
+                      </ul>
+                    
+                  </li>
+                
+                </ul>
+
+                <ul class="nav nav-treeview">
+                  <li class="nav-item   {{ 
+                    request()->is('pembayaran_jo*') ||
+                    request()->is('pembayaran_sdt*')
+                    ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p style="font-weight: 500;" >
+                        Pencairan
+                        <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
+                      </p>
+                    </a>
+                      <ul class="nav nav-treeview">
+                  <li class="nav-item   {{ 
+                    request()->is('pencairan_uang_jalan*') ||
+                    request()->is('pencairan_uang_jalan_ltl*')
+                    ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p style="font-weight: 500;" >
+                        Pencairan UJ
+                        <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="{{route('cetak_uang_jalan.index')}}" class="nav-link {{request()->url() === route('cetak_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
+                        <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                          <p>
+                            Cetak UJ
+                          </p>
+                        </a>
+                      </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="{{route('pencairan_uang_jalan.index')}}" class="nav-link {{ request()->url() === route('pencairan_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
+                          <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                          <p>
+                            FTL
+                          </p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{{route('pencairan_uang_jalan_ltl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ltl.index')? ' active' : '' }} " style="font-weight: 500;">
+                          <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                          <p>
+                            LTL
+                          </p>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                
+                </ul>
+
+                <ul class="nav nav-treeview">
+                  <li class="nav-item   {{ 
+                  request()->is('pencairan_komisi_driver*')||
+                  request()->is('pencairan_komisi_customer*')
                   ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p style="font-weight: 500;" >
-                      Pencairan UJ
-                      <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
-                    </p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                      <a href="{{route('pencairan_uang_jalan.index')}}" class="nav-link {{ request()->url() === route('pencairan_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p style="font-weight: 500;" >
+                        Pencairan Komisi
+                        <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="{{route('pencairan_komisi_customer.index')}}" style="font-weight: 500;" class="nav-link {{ request()->is('pencairan_komisi_customer*')? ' active' : '' }} ">
                         <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
-                        <p>
-                          FTL
-                        </p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="{{route('pencairan_uang_jalan_ltl.index')}}" class="nav-link {{request()->url() === route('pencairan_uang_jalan_ltl.index')? ' active' : '' }} " style="font-weight: 500;">
+                          <p>
+                            Customer
+                          </p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{{route('pencairan_komisi_driver.index')}}" class="nav-link {{request()->is('pencairan_komisi_driver') ||  request()->is('pencairan_komisi_driver/create') || request()->is('pencairan_komisi_driver/*/edit') ? ' active' : '' }} " style="font-weight: 500;">
                         <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
-                        <p>
-                          LTL
-                        </p>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-              
-              </ul>
-              <ul class="nav nav-treeview">
-                <li class="nav-item   {{ 
-                request()->is('pencairan_komisi_driver*')||
-                request()->is('pencairan_komisi_customer*')
-                ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
-                  <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p style="font-weight: 500;" >
-                      Pencairan Komisi
-                      <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
-                    </p>
-                  </a>
-                  <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                      <a href="{{route('pencairan_komisi_customer.index')}}" style="font-weight: 500;" class="nav-link {{ request()->is('pencairan_komisi_customer*')? ' active' : '' }} ">
-                      <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
-                        <p>
-                          Customer
-                        </p>
-                      </a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="{{route('pencairan_komisi_driver.index')}}" class="nav-link {{request()->is('pencairan_komisi_driver') ||  request()->is('pencairan_komisi_driver/create') || request()->is('pencairan_komisi_driver/*/edit') ? ' active' : '' }} " style="font-weight: 500;">
-                      <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
-                        <p>
-                          Driver
-                        </p>
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-                           
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pengembalian_jaminan.index')}}" class="nav-link {{request()->url() === route('pengembalian_jaminan.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      <span style="font-size: 13.9px;">Pengembalian Jaminan</span>
-                    </p>
-                  </a>
-                </li>
-              </ul>
+                          <p>
+                            Driver
+                          </p>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
 
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('tagihan_rekanan.index')}}" class="nav-link {{ request()->is('tagihan_rekanan*')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      <span >Tagihan Rekanan</span> {{-- style="font-size: 13.9px" --}}
-                    </p>
-                  </a>
-                </li>
-              </ul>
+                
 
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('tagihan_pembelian.index')}}" class="nav-link {{ request()->is('tagihan_pembelian*')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon"></i>
-                    <p>
-                      Tagihan <span style="font-size: 0.9em;">Pembelian</span> {{-- style="font-size: 13.9px" --}}
-                    </p>
-                  </a>
                 </li>
               </ul>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item   {{ 
+                  request()->is('tagihan_pembelian*')||
+                  request()->is('tagihan_rekanan*')
+                  ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
+                    <a href="#" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p style="font-weight: 500;" >
+                        Tagihan
+                        <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
+                      </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="{{route('tagihan_rekanan.index')}}" class="nav-link {{ request()->is('tagihan_rekanan*')? ' active' : '' }} " style="font-weight: 500;">
+                        <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                          <p>
+                            <span >Tagihan Rekanan</span> {{-- style="font-size: 13.9px" --}}
+                          </p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{{route('tagihan_pembelian.index')}}" class="nav-link {{ request()->is('tagihan_pembelian*')? ' active' : '' }} " style="font-weight: 500;">
+                        <i class="far fa-circle nav-icon"></i>
+                          <p>
+                            Tagihan <span style="font-size: 0.9em;">Pembelian</span> {{-- style="font-size: 13.9px" --}}
+                          </p>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
 
               <ul class="nav nav-treeview">
                 <li class="nav-item">
                   <a href="{{route('transaksi_lain.index')}}" class="nav-link {{ request()->is('transaksi_lain*')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      <span >Transaksi Lain</span> {{-- style="font-size: 13.9px" --}}
+                      <span style="font-size: 0.7em;">Transaksi Non Operasional</span> {{-- style="font-size: 13.9px" --}}
                     </p>
                   </a>
                 </li>
@@ -612,8 +666,6 @@
                   </a>
                 </li>
               </ul>
-
-
             </li>
           @endif
 
@@ -860,27 +912,6 @@
                 </li>
               </ul>
             </li>
-             {{-- ASSET --}}
-            <li class="nav-item {{ request()->is('status_kendaraan*') ? 'menu-is-opening menu-open' : '' }}">
-              <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
-                <i class="nav-icon fas fa-warehouse"></i>
-                <p>ASSET
-                  <i class="fas fa-angle-left right"></i>
-                </p>
-              </a>
-
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('status_kendaraan.index')}}" class="nav-link {{request()->url() === route('status_kendaraan.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Status Kendaraan
-                    </p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-
             {{-- LAPORAN FINANCE --}}
             <li class="nav-item {{ request()->is('laporan_kas*') ||
                 request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">
