@@ -225,7 +225,6 @@
                                         <input type="text" class="form-control numaja uang" id="harga_tujuan" disabled min="0">
                                     </div>
                                 </div>
-                               
                                 <div class="form-group">
                                     <label for="harga_jual">Harga Jual</label>
                                     <div class="input-group mb-0">
