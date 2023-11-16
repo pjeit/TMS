@@ -28,7 +28,7 @@ class CoaHelper
       //    'coa_pencairan_uj' => $dataCOA[80]->no_akun,//5002  Biaya Sopir ( Uang Sangu )
       // ];
 
-       $dataCOA = DB::table('coa')
+      $dataCOA = DB::table('coa')
          // ->paginate(10);
          ->select('coa.*')
          ->where('coa.is_aktif', '=', "Y")
@@ -37,12 +37,10 @@ class CoaHelper
          ->first();
       if ($dataCOA) {
             return $dataCOA->no_akun;
-
       } else {
             return 'Tidak Ditemukan Data';
       }
-      
-         //aksesnya misal
+      //aksesnya misal
       
    }
    public static function DataCoaBank($idBank)
