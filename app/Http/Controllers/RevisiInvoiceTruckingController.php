@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\InvoicePembayaran;
 use App\Models\KasBank;
+use App\Models\KasBankTransaction;
 use App\Models\Sewa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -175,12 +176,19 @@ class RevisiInvoiceTruckingController extends Controller
         dd($data);
 
         try {
+            // nonaktifkan invoice pembayaran
             $oldPembayaran = InvoicePembayaran::where('is_aktif', 'Y')->find($id);
             $oldPembayaran->updated_by = $user; 
             $oldPembayaran->updated_at = now();
             $oldPembayaran->catatan = 'REVISI - '. $oldPembayaran->catatan;
             $oldPembayaran->is_aktif = 'N';
             $oldPembayaran->save();
+
+            // nonaktifkan kas bank transaction
+            $oldTransaction = KasBankTransaction::where([
+                                                        'is_aktif' => 'Y',
+                                                        'jenis' => 'BAYAR INVOICE'
+                                                        ])->first();
 
             if($data['detail'] != null){
                 $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';

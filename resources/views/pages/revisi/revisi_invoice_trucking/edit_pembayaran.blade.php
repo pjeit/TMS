@@ -29,7 +29,7 @@
         <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
             <div class="card radiusSendiri" style="">
                 <div class="card-header radiusSendiri">
-                    <a href="{{ route('pembayaran_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                    <a href="{{ route('revisi_invoice_trucking.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                     <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
                     {{-- <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Tujuan</strong></button>  --}}
                 </div>
@@ -139,7 +139,7 @@
                             <div class="row" id="showCek">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">No Cek</label>
-                                    <input type="text" name="no_cek" id='no_cek' class="form-control" required>
+                                    <input type="text" name="no_cek" id='no_cek' class="form-control" >
                                 </div>
                             </div>
 
@@ -502,13 +502,13 @@
                         var total_bayar = document.querySelector('[total_dibayar_0]');
                         var text = document.querySelector('[text_total_dibayar_0]');
                         var total_tagihan = document.querySelector('[total_tagihan_0]');
-                        console.log('total_tagihan', total_tagihan.value);
 
                         if(biaya_admin.value != 0){
                             let cek = parseFloat(total_bayar.value) + normalize($("#biaya_admin").val());
-                            if(cek > parseFloat(total_tagihan)){
-                                total_bayar.value = total_tagihan; 
-                                text.textContent = moneyMask(total_tagihan);
+
+                            if(cek > parseFloat(total_tagihan.value)){
+                                total_bayar.value = total_tagihan.value; 
+                                text.textContent = moneyMask(total_tagihan.value);
                             }else{
                                 total_bayar.value = cek; 
                                 text.textContent = moneyMask(cek);
@@ -578,48 +578,48 @@
             // console.log('total_pph', total_pph);
         }
 
-        // $(document).on('keyup', '#modal_pph23', function(){ // kalau berubah, hitung total 
-        //     hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
-        // });
-        // $(document).on('change', '#modal_pph23', function(){ // kalau berubah, hitung total 
-        //     hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
-        // });
+        $(document).on('keyup', '#modal_pph23', function(){ // kalau berubah, hitung total 
+            hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+        });
+        $(document).on('change', '#modal_pph23', function(){ // kalau berubah, hitung total 
+            hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+        });
 
-        // $(document).on('keyup', '#modal_diterima', function(){ // kalau berubah, hitung total 
-        //     var tagihan = parseFloat(escapeComma($('#modal_total_invoice').val()));
-        //     tagihan = (tagihan !== null && !isNaN(tagihan) && tagihan !== "") ? tagihan : 0;
-        //     var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
-        //     diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
-        //     if(diterima > tagihan){
-        //         $('#modal_diterima').val(moneyMask(tagihan));
-        //         $('#modal_pph23').val(0);
-        //     }else{
-        //         $('#modal_pph23').val(moneyMask(tagihan-diterima));
-        //     }
-        //     dibayar();
-        // });
+        $(document).on('keyup', '#modal_diterima', function(){ // kalau berubah, hitung total 
+            var tagihan = parseFloat(escapeComma($('#modal_total_invoice').val()));
+            tagihan = (tagihan !== null && !isNaN(tagihan) && tagihan !== "") ? tagihan : 0;
+            var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
+            diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
+            if(diterima > tagihan){
+                $('#modal_diterima').val(moneyMask(tagihan));
+                $('#modal_pph23').val(0);
+            }else{
+                $('#modal_pph23').val(moneyMask(tagihan-diterima));
+            }
+            dibayar();
+        });
      
-        // function hitungPPh(){
-        //     var tagihan = isNaN(normalize($('#modal_total_invoice').val())) ? 0 : normalize($('#modal_total_invoice').val());
-        //     var pph = isNaN(normalize($('#modal_pph23').val())) ? 0 : normalize($('#modal_pph23').val());
+        function hitungPPh(){
+            var tagihan = isNaN(normalize($('#modal_total_invoice').val())) ? 0 : normalize($('#modal_total_invoice').val());
+            var pph = isNaN(normalize($('#modal_pph23').val())) ? 0 : normalize($('#modal_pph23').val());
 
-        //     if(pph > tagihan){
-        //         pph = tagihan;
-        //         $('#modal_pph23').val(moneyMask(pph));
-        //     }
-        //     $('#modal_diterima').val(moneyMask(tagihan-pph));
-        //     dibayar();
-        // }
+            if(pph > tagihan){
+                pph = tagihan;
+                $('#modal_pph23').val(moneyMask(pph));
+            }
+            $('#modal_diterima').val(moneyMask(tagihan-pph));
+            dibayar();
+        }
 
-        // function dibayar(){
-        //     var pph = parseFloat(escapeComma($('#modal_pph23').val()));
-        //     pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;
-        //     var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
-        //     diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
+        function dibayar(){
+            var pph = parseFloat(escapeComma($('#modal_pph23').val()));
+            pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;
+            var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
+            diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
 
-        //     var dibayar = pph+diterima;
-        //     $('#modal_dibayar').val(moneyMask(dibayar));
-        // }
+            var dibayar = pph+diterima;
+            $('#modal_dibayar').val(moneyMask(dibayar));
+        }
 
         function clearModal(){
             $('#modal_catatan').val('');
