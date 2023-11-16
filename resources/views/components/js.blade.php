@@ -256,7 +256,8 @@
 <script>
   // masking uang 2 digit
   function moneyMask(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      let val = !isNaN(x)? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","):0;
+      return val;
   }
 
   var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
