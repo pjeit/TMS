@@ -44,7 +44,7 @@
                 <table id="ltl" class="table table-bordered table-hover" width="100%">
                     <thead>
                         <tr>
-                            <th>Suplier</th>
+                            <th></th>
                             <th style="width:200px">Customer</th>
                             <th style="width:200px">Tujuan</th>
                             <th style="width:200px">Tanggal Berangkat</th>
@@ -251,7 +251,7 @@
 
                     $("th").remove();
                     $("thead tr").append(`<th>Customer</th>
-                                            <th style="width:200px">No. Sewa</th>
+                                            <th style="width:200px">Customer</th>
                                             <th style="width:200px">Tanggal Berangkat</th>
                                             <th style="width:200px">Tujuan</th>                    
                                         `);
@@ -282,7 +282,7 @@
                                             </div>
                                         </div>
                                     </td>`);
-                                row.append(`<td>${data[i].no_sewa}</td>`);
+                                row.append(`<td></td>`);
                                 row.append(`<td>${dateMask(data[i].tanggal_berangkat)}</td>`);
                                 row.append(`<td>${data[i].nama_tujuan}</td>`);
                                 $("#hasil").append(row);
