@@ -30,13 +30,15 @@ class PemutihanInvoiceController extends Controller
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         // Session::flush();
         // Session::forget(['sewa', 'cust', 'grup']);
+        $dataPengaturanKeuangan = PengaturanKeuangan::where('id', 1)->first();
+
         $dataInvoice =  DB::table('invoice AS i')
                 ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
                         ,'g.id as id_grup')
                 ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
                 ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
                 ->where('i.is_aktif', '=', 'Y')
-                ->where('i.total_sisa','>',0)
+                ->where('i.total_sisa','<=',$dataPengaturanKeuangan->batas_pemutihan)
                 ->orderBy('i.id','ASC')
                 ->get();
         // dd($dataSewa);
