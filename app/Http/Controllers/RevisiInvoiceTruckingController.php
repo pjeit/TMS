@@ -171,8 +171,10 @@ class RevisiInvoiceTruckingController extends Controller
     public function update(Request $request, $id)
     {
         $user = Auth::user()->id;
-        $data= $request->collect();
+        $data = $request->collect();
+        $isErr = FALSE;
         DB::beginTransaction(); 
+        // dd($data);
 
         try {
             // nonaktifkan invoice pembayaran
@@ -189,21 +191,32 @@ class RevisiInvoiceTruckingController extends Controller
                                                         'jenis' => 'BAYAR INVOICE',
                                                         'keterangan_kode_transaksi' => $id
                                                         ])->first();
+            $oldTransaction->keterangan_transaksi = 'REVISI - '. $oldTransaction->keterangan_transaksi;
             $oldTransaction->updated_by = $user; 
             $oldTransaction->updated_at = now();
-            $oldTransaction->keterangan_transaksi = 'REVISI - '. $oldTransaction->keterangan_transaksi;
             $oldTransaction->is_aktif = 'N';
             $oldTransaction->save();
             
             // kembalikan uang ke kas bank
-            DB::table('kas_bank')
-                ->where('id', $oldTransaction->id_kas_bank)
-                ->update(['active' => true]);
+            $kasbank = KasBank::where('is_aktif', 'Y')->find($oldTransaction->id_kas_bank);
+            $kasbank->saldo_sekarang += $oldTransaction->debit;
+            $kasbank->updated_by = $user; 
+            $kasbank->updated_at = now();
+            $kasbank->save();
 
-            dd($oldTransaction);
+            // kembalikan kredit customer
+            $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
+            if($cust){
+                $cust->kredit_sekarang += $oldTransaction->debit;
+                $cust->updated_by = $user;
+                $cust->updated_at = now();
+                $cust->save();
+            }
+
+            // dd($kasbank);
 
             if($data['detail'] != null){
-                $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
+                $keterangan_transaksi = 'REVISI PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
                 $id_invoices = '';
                 $biaya_admin = isset($data['biaya_admin'])? floatval(str_replace(',', '', $data['biaya_admin'])):0;
                 $total_pph = isset($data['total_pph23'])? floatval(str_replace(',', '', $data['total_pph23'])):0;
@@ -213,7 +226,7 @@ class RevisiInvoiceTruckingController extends Controller
                 $pembayaran->id_kas = $data['kas'];
                 $pembayaran->billing_to = $data['billingTo'];
                 $pembayaran->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
-                $pembayaran->total_diterima = floatval(str_replace(',', '', $data['total_diterima']));
+                $pembayaran->total_diterima = floatval(str_replace(',', '', $data['total_dibayar']));
                 $pembayaran->total_pph = $total_pph;
                 $pembayaran->biaya_admin = $biaya_admin;
                 $pembayaran->cara_pembayaran = $data['cara_pembayaran'];
@@ -233,44 +246,25 @@ class RevisiInvoiceTruckingController extends Controller
                             $invoice->id_pembayaran = $pembayaran->id;
                             $invoice->pph = $value['pph23'];
                             if($i == 0){
-                                $invoice->total_dibayar += $value['diterima'] - $biaya_admin;
+                                $invoice->total_dibayar = $value['total_dibayar'] - $biaya_admin;
                                 $invoice->biaya_admin = $biaya_admin;
                             }else{
-                                $invoice->total_dibayar += $value['diterima'];
+                                $invoice->total_dibayar = $value['total_dibayar'];
                             }
-                            $invoice->total_sisa -= $value['dibayar'];
+                            $invoice->total_sisa = $invoice->total_tagihan; // dikembaliin jadi full dulu baru dikurangin lagi
+                            $invoice->total_sisa -= $value['total_dibayar'] + $value['pph23'];
                             if($invoice->total_sisa < 0){
-                                $isErr = true;
+                                $isErr = true; // ini error karna minus
                             }
                             $currentStatus = '';
                             if($invoice->total_sisa == 0){
                                 $currentStatus = 'SELESAI PEMBAYARAN INVOICE';
                                 $invoice->status = $currentStatus;
                             }
+                            $invoice->catatan = $value['catatan'];
                             $invoice->updated_by = $user;
                             $invoice->updated_at = now();
                             if($invoice->save()){
-                                if($currentStatus == 'SELESAI PEMBAYARAN INVOICE'){
-                                    $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
-                                    if($invoiceDetail){
-                                        foreach ($invoiceDetail as $i => $item) {
-                                            $check = InvoiceDetail::leftJoin('invoice', 'invoice.id', '=', 'invoice_detail.id_invoice')
-                                                                    ->where('invoice_detail.is_aktif', 'Y')
-                                                                    ->where('invoice.status', 'MENUNGGU PEMBAYARAN INVOICE')
-                                                                    ->where('id_sewa', $item->id_sewa)->get();
-                                            if ($check->isEmpty()) {
-                                                $updateSewa = Sewa::where('is_aktif', 'Y')->find($item->id_sewa);
-                                                $updateSewa->status = 'SELESAI PEMBAYARAN';
-                                                $updateSewa->updated_by = $user;
-                                                $updateSewa->updated_at = now();
-                                                $updateSewa->save();
-
-                                                // trigger update status jo detail jika semua sewa sudah selesai 
-                                                // trigger update status jo jika semua jo detail sudah selesai 
-                                            }
-                                        }
-                                    }
-                                }
                             }else{
                                 $isErr = true;
                             }
@@ -280,7 +274,7 @@ class RevisiInvoiceTruckingController extends Controller
                 }
 
                 // dump data ke dump transaction
-                $total_bayar = (float)str_replace(',', '', $data['total_diterima']);
+                $total_bayar = (float)str_replace(',', '', $data['total_dibayar']);
                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                     array(
                         $data['kas'],// id kas_bank dr form
@@ -301,9 +295,10 @@ class RevisiInvoiceTruckingController extends Controller
 
                 $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
                 if($cust){
-                    $kredit_sekarang = $cust->kredit_sekarang - $value['dibayar'];
+                    $kredit_sekarang = $cust->kredit_sekarang - $total_bayar;
                     if($kredit_sekarang < 0){
-                        $kredit_sekarang = 0;
+                        $isErr = true;
+                        // $kredit_sekarang = 0;
                     }
                     $cust->kredit_sekarang = $kredit_sekarang;
                     $cust->updated_by = $user;
@@ -313,10 +308,10 @@ class RevisiInvoiceTruckingController extends Controller
 
                 if($isErr === true){
                     db::rollBack();
-                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi kesalahan!']);
+                    return redirect()->route('revisi_invoice_trucking.index')->with(["status" => "error", "msg" => 'Terjadi kesalahan!']);
                 }else{
                     DB::commit();
-                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "Success", "msg" => "Berhasil Membayar invoice!"]);
+                    return redirect()->route('revisi_invoice_trucking.index')->with(["status" => "Success", "msg" => "Berhasil Membayar invoice!"]);
                 }
 
             }
@@ -387,15 +382,9 @@ class RevisiInvoiceTruckingController extends Controller
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <a href="/revisi_invoice_trucking/'.$row->id.'/edit" class="dropdown-item edit">
-                                            <span class="fas fa-pen-alt mr-3"></span> Edit 
-                                        </a>
                                         <a href="/revisi_invoice_trucking/edit-pembayaran/'.$row->id.'" class="dropdown-item edit">
                                             <span class="fas fa-pencil-alt mr-3"></span> Edit 
                                         </a>
-                                        <button type="button" class="dropdown-item delete" value="'.$row->id.'">
-                                            <span class="fas fa-trash mr-3"></span> Delete
-                                        </button>
                                     </div>
                                 </div>';
                                     // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 

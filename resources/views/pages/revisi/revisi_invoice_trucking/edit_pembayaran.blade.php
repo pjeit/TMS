@@ -44,7 +44,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="">Billing To</label>
-                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required >
+                                        <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required >
                                             <option value="">── BILLING TO ──</option>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}" {{ $customer->id == $data->billing_to? 'selected':'' }}>{{ $customer->nama }}</option>
@@ -67,7 +67,7 @@
                                 <div class="col-lg-6 col-md-6 col-sm-12">
                                     <div class="form-group">
                                         <label for="">No. Bukti Potong</label>
-                                        <input type="text" name="no_bukti_potong" class="form-control" id="no_bukti_potong">
+                                        <input type="text" name="no_bukti_potong" class="form-control" id="no_bukti_potong" value="{{ $data['no_bukti_potong'] }}">
                                     </div>
                                 </div>
                             </div>
@@ -75,7 +75,7 @@
                             <div class="row">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">Catatan</label>
-                                    <input type="text" name="catatan" class="form-control">
+                                    <input type="text" name="catatan" class="form-control" value="{{ $data['catatan'] }}">
                                     {{-- <input type="hidden" id="firstId" value="{{ isset($data)? $data[0]['id']:NULL }}"> --}}
                                     <input type="hidden" class="form-control" id="di_potong_admin" placeholder="di_potong_admin"> 
                                 </div>
@@ -197,12 +197,12 @@
                             </td>
                             <td>
                                 <span id="text_pph23_{{ $item->id }}">{{ number_format($item->pph) }}</span>
-                                <input type="text" class="total_pph" id="total_pph_{{ $item->id }}" name="detail[{{ $item->id }}][pph23]" value="{{ $item->pph }}">
+                                <input type="hidden" class="total_pph" total_pph_{{ $key }} id="total_pph_{{ $item->id }}" name="detail[{{ $item->id }}][pph23]" value="{{ $item->pph }}">
                             </td>
                             <td>
                                 <span id="text_total_dibayar_{{ $item->id }}" text_total_dibayar_{{ $key }}>{{ number_format($item->total_dibayar) }}</span>
-                                <input type="text" class="total_dibayar" total_dibayar_{{ $key }} id="total_dibayar_{{ $item->id }}" name="detail[{{ $item->id }}][total_dibayar]" value="{{ $item->total_dibayar }}">
-                                <input type="text" class="biaya_admin" biaya_admin_{{ $key }} id="biaya_admin_{{ $item->id }}" name="detail[{{ $item->id }}][biaya_admin]" value="{{ $item->biaya_admin }}">
+                                <input type="hidden" class="total_dibayar" total_dibayar_{{ $key }} id="total_dibayar_{{ $item->id }}" name="detail[{{ $item->id }}][total_dibayar]" value="{{ $item->total_dibayar }}">
+                                <input type="hidden" class="biaya_admin" biaya_admin_{{ $key }} id="biaya_admin_{{ $item->id }}" name="detail[{{ $item->id }}][biaya_admin]" value="{{ $item->biaya_admin }}">
                             </td>
                             <td>
                                 <span id="text_catatan_{{ $item->id }}">{{ $item->catatan }}</span>
@@ -217,9 +217,6 @@
                                         <button type="button" name="detail" id="detail_{{$item->id}}" class="detail dropdown-item"> 
                                             <span class="fas fa-edit mr-3"></span> Edit
                                         </button>
-                                        <a href="{{ route('pembayaran_invoice.destroy', ['pembayaran_invoice' => $item->id]) }}" class="dropdown-item" data-confirm-delete="true">
-                                            <span class="fas fa-trash mr-3"></span> Delete
-                                        </a>
                                     </div>
                                 </div>
                             </td>
@@ -272,6 +269,15 @@
                                                 <span class="input-group-text">Rp</span>
                                             </div>
                                             <input type="text" class="form-control numaja uang" id="modal_total_invoice" placeholder="" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12 col-md-12 col-sm-12 showBiayaAdmin">
+                                        <label for="">Biaya Admin</label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input type="text" class="form-control numaja uang" id="modal_biaya_admin" placeholder="" readonly>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -413,14 +419,19 @@
             var button_id = $(this).attr("id"); // get value id
             var key = button_id.replace("detail_", ""); // hapus teks detail_
             $('#key').val(key); // id key buat nge get data yg di hidden, key = id_sewa           
-            
-            // text_no_invoice_160
+            let modal_biaya_admin = $('#biaya_admin_'+key).val();
             $('#modal_no_invoice').val( document.getElementById('text_no_invoice_'+key).textContent );
             $('#modal_diterima').val( moneyMask($('#total_dibayar_'+key).val()) );
+            if(modal_biaya_admin != 0){
+                $('.showBiayaAdmin').show();
+                $('#modal_biaya_admin').val( moneyMask(modal_biaya_admin) );
+            }else{
+                $('.showBiayaAdmin').hide();
+            }
             $('#modal_pph23').val( moneyMask($('#total_pph_'+key).val()) );
             $('#modal_catatan').val( $('#catatan_'+key).val() );
-            // $('#modal_no_bukti_potong').val( $('#no_bukti_potong_'+key).val() );
-            $('#modal_total_invoice').val( moneyMask( parseFloat($('#total_dibayar_'+key).val()) + parseFloat($('#total_pph_'+key).val()) ) );
+            // $('#modal_total_invoice').val( moneyMask( parseFloat($('#total_dibayar_'+key).val()) + parseFloat($('#total_pph_'+key).val()) ) );
+            $('#modal_total_invoice').val( moneyMask($('#total_tagihan_'+key).val()) );
 
             var checkReimburse = $('#no_invoice_'+key).val().substr(-2);
             if(checkReimburse == '/I'){
@@ -527,8 +538,17 @@
         $(document).on('keyup', '#biaya_admin', function(){ // kalau berubah, hitung total 
             val = !isNaN(normalize(this.value))? normalize(this.value):0;
             var biaya_admin = document.querySelector('[biaya_admin_0]');
-            var total_dibayar = $('#total_dibayar').val();
+            // var total_dibayar = $('#total_dibayar').val();
             biaya_admin.value = val;
+
+            // edwin
+            var total_tagihan = document.querySelector('[total_tagihan_0]');
+            var total_bayar = document.querySelector('[total_dibayar_0]');
+            var total_pph = document.querySelector('[total_pph_0]');
+            var text = document.querySelector('[text_total_dibayar_0]');
+            let hitung_bayar = total_tagihan.value - total_pph.value - biaya_admin.value; 
+            total_bayar.value = hitung_bayar; 
+            text.textContent = moneyMask(hitung_bayar);
             hitungAll();
         });
 
@@ -590,28 +610,32 @@
             tagihan = (tagihan !== null && !isNaN(tagihan) && tagihan !== "") ? tagihan : 0;
             var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
             diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
+            var biaya_admin = isNaN(normalize($('#modal_biaya_admin').val())) ? 0 : normalize($('#modal_biaya_admin').val());
+
             if(diterima > tagihan){
                 $('#modal_diterima').val(moneyMask(tagihan));
                 $('#modal_pph23').val(0);
             }else{
-                $('#modal_pph23').val(moneyMask(tagihan-diterima));
+                $('#modal_pph23').val(moneyMask(tagihan-diterima-biaya_admin));
             }
             dibayar();
         });
      
         function hitungPPh(){
             var tagihan = isNaN(normalize($('#modal_total_invoice').val())) ? 0 : normalize($('#modal_total_invoice').val());
+            var biaya_admin = isNaN(normalize($('#modal_biaya_admin').val())) ? 0 : normalize($('#modal_biaya_admin').val());
             var pph = isNaN(normalize($('#modal_pph23').val())) ? 0 : normalize($('#modal_pph23').val());
 
-            if(pph > tagihan){
-                pph = tagihan;
+            if(pph > (tagihan-biaya_admin)){
+                pph = (tagihan-biaya_admin);
                 $('#modal_pph23').val(moneyMask(pph));
             }
-            $('#modal_diterima').val(moneyMask(tagihan-pph));
+            $('#modal_diterima').val(moneyMask(tagihan-biaya_admin-pph));
             dibayar();
         }
 
         function dibayar(){
+            var biaya_admin = isNaN(normalize($('#modal_biaya_admin').val())) ? 0 : normalize($('#modal_biaya_admin').val());
             var pph = parseFloat(escapeComma($('#modal_pph23').val()));
             pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;
             var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
@@ -623,6 +647,7 @@
 
         function clearModal(){
             $('#modal_catatan').val('');
+            $('#modal_biaya_admin').val('');
             $('#modal_total_invoice').val('');
             $('#modal_pph23').val('');
             $('#modal_diterima').val('');
