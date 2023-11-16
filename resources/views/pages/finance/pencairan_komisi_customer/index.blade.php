@@ -12,7 +12,6 @@
 @endsection
 
 @section('content')
-<br>
 <style>
    
 </style>

@@ -201,7 +201,7 @@ class BelumInvoiceController extends Controller
         DB::beginTransaction(); 
         // dd($data);
 
-        try {
+    try {
             // logic nomer booking
                 $kode = 'PJE/'.$data['kode_customer'].'/'.date("y").date("m");
                 $maxInvoice = DB::table('invoice')
@@ -481,9 +481,49 @@ class BelumInvoiceController extends Controller
      * @param  \App\Models\Invoice  $invoice
      * @return \Illuminate\Http\Response
      */
-    public function edit(Invoice $invoice)
+    public function edit($id)
     {
-        //
+        try {
+            $data = Sewa::where('sewa.id_sewa', $id)
+                ->leftJoin('supplier AS sp', 'sewa.id_supplier', '=', 'sp.id')
+                ->where('sewa.status', 'MENUNGGU INVOICE')
+                ->where('sewa.is_aktif', '=', 'Y')
+                ->select('sewa.*','sp.nama as namaSupplier')
+                ->first();
+
+            $checkLTL = false;
+            
+            if ($data->jenis_tujuan == 'LTL') {
+                $checkLTL = true; 
+            }
+        
+            //ini buat yang di dalem modal
+            $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
+                    ->leftJoin('customer as c', 'c.id', 'id_customer')
+                    ->where('c.grup_id', $data->getTujuan->grup_id)
+                    ->where('sewa.is_aktif', '=', 'Y')
+                    ->where('sewa.status', 'MENUNGGU INVOICE')
+                    ->select('sewa.*')
+                    ->get();
+
+            $dataCust = Customer::where('grup_id', $data->getTujuan->grup_id)
+                    ->where('is_aktif', 'Y')
+                    ->get();
+
+            return view('pages.invoice.belum_invoice.edit',[
+                'judul'=>"EDIT BELUM INVOICE",
+                'data' => $data,
+                'dataSewa' => $dataSewa,
+                'dataCust' => $dataCust,
+                'grup' => $data->getTujuan->grup_id,
+                'customer' => $data->id_customer,
+                'checkLTL'=> $checkLTL
+            ]);
+            
+        } catch (\Throwable $th) {
+            return redirect()->route('belum_invoice.index')
+                    ->with(['status' => 'Gagal', 'msg' => 'Tidak ada sewa yang terpilih!']);
+        }
     }
 
     /**

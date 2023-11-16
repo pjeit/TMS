@@ -385,7 +385,7 @@
         function showTable(status){
             $.ajax({
                 method: 'GET',
-                url: `pembayaran_invoice/loadData/${status}`,
+                url: `bukti_potong/loadData/${status}`,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,
