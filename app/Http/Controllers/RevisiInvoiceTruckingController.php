@@ -173,7 +173,6 @@ class RevisiInvoiceTruckingController extends Controller
         $user = Auth::user()->id;
         $data= $request->collect();
         DB::beginTransaction(); 
-        dd($data);
 
         try {
             // nonaktifkan invoice pembayaran
@@ -187,8 +186,21 @@ class RevisiInvoiceTruckingController extends Controller
             // nonaktifkan kas bank transaction
             $oldTransaction = KasBankTransaction::where([
                                                         'is_aktif' => 'Y',
-                                                        'jenis' => 'BAYAR INVOICE'
+                                                        'jenis' => 'BAYAR INVOICE',
+                                                        'keterangan_kode_transaksi' => $id
                                                         ])->first();
+            $oldTransaction->updated_by = $user; 
+            $oldTransaction->updated_at = now();
+            $oldTransaction->keterangan_transaksi = 'REVISI - '. $oldTransaction->keterangan_transaksi;
+            $oldTransaction->is_aktif = 'N';
+            $oldTransaction->save();
+            
+            // kembalikan uang ke kas bank
+            DB::table('kas_bank')
+                ->where('id', $oldTransaction->id_kas_bank)
+                ->update(['active' => true]);
+
+            dd($oldTransaction);
 
             if($data['detail'] != null){
                 $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
