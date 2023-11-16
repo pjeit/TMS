@@ -70,7 +70,7 @@
                         </div> 
                         <div class="form-group col-sm-12 col-md-4 col-lg-4">
                             <label for="">No. Polisi<span class="text-red">*</span></label>
-                            <input required type="text"  name="no_polisi" class="form-control" value="{{ $data->no_polisi }}" >                         
+                            <input required type="text"  name="no_polisi" id="no_polisi" class="form-control" value="{{ $data->no_polisi }}" >                         
                         </div>
                     </div>
                      <div class="row">
@@ -243,7 +243,12 @@
             language:'en',
             // endDate: "0d"
         });
-
+         $('#no_polisi').keyup(function() {
+            let inputValue = $(this).val();
+            let outputValue = inputValue.replace(/\s+/g, '-');
+            console.log(outputValue);
+            $(this).val(outputValue);
+        });
         // Submit form data via Ajax
         $("#grup_forms").on('submit', function(e){
             var array_dokumen=[];

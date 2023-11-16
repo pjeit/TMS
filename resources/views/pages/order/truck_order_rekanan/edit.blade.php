@@ -266,7 +266,12 @@
 
 <script>
     $(document).ready(function() {
-         
+          $('#no_polisi').keyup(function() {
+            let inputValue = $(this).val();
+            let outputValue = inputValue.replace(/\s+/g, '-');
+            console.log(outputValue);
+            $(this).val(outputValue);
+        });
         getDate();
         var jenis = $('#jenis_order').val();
         if(jenis == 'INBOUND'){
