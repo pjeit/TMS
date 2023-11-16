@@ -849,6 +849,12 @@
                 $('#post_data').submit();
             }
         }); 
+         $('#no_polisi').keyup(function() {
+            let inputValue = $(this).val();
+            let outputValue = inputValue.replace(/\s+/g, '-');
+            console.log(outputValue);
+            $(this).val(outputValue);
+        });
         $('#post_data').submit(function(event) {
             var no_polisi = $('#no_polisi').val();
             var supplier = $('#supplier').val();
