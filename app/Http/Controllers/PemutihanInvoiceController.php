@@ -48,7 +48,6 @@ class PemutihanInvoiceController extends Controller
             'dataInvoice' => $dataInvoice,
         ]);
     }
-
     /**
      * Show the form for creating a new resource.
      *
@@ -58,7 +57,6 @@ class PemutihanInvoiceController extends Controller
     {
         //
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -69,7 +67,6 @@ class PemutihanInvoiceController extends Controller
     {
         //
     }
-
     /**
      * Display the specified resource.
      *
