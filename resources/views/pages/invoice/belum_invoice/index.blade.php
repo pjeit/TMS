@@ -129,10 +129,10 @@
                                                 <i class="fa fa-list"></i>
                                             </button>
                                             <div class="dropdown-menu" >
-                                                <form action="{{route('belum_invoiceKembali.set')}}" method="POST" class="btn btn-responsive">
+                                                <form action="{{route('belum_invoiceKembali.set')}}" method="POST" >
                                                     @csrf
                                                     <button class="dropdown-item" >
-                                                        <span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin
+                                                        <span class="fas fa-reply" style="width:24px"></span> Kembalikan ke Admin
                                                     </button>
                                                     <input type="hidden" name="idCust[]" placeholder="idCust">
                                                     <input type="hidden" name="idGrup[]" placeholder="idGrup">
@@ -140,6 +140,9 @@
                                                     <input type="hidden" name="idJo" value="{{$item->id_jo}}">
                                                     <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
                                                 </form>  
+                                                <a href="{{ route('belum_invoice.edit', [$item->id_sewa]) }}" class="btn dropdown-item" >
+                                                    <span class="fas fa-pencil-alt" style="width:24px"></span> Edit
+                                                </a>
                                             </div>
                                         </div>
                                     </td>

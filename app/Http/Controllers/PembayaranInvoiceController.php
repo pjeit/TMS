@@ -849,7 +849,7 @@ class PembayaranInvoiceController extends Controller
         if($status === 'BELUM LUNAS'){
             $data = DB::table('invoice AS i')
                 ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
-                        ,'g.id as id_grup'/*,'ip.no_bukti_potong'*/, 'i.catatan')
+                        ,'g.id as id_grup'/*,'ip.no_bukti_potong'*/, 'i.catatan', 'c.ketentuan_bayar')
                 ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
                 ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
                 // ->leftJoin('invoice_pembayaran AS ip', 'i.id', '=', 'ip.id_invoice')

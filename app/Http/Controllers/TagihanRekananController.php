@@ -61,13 +61,12 @@ class TagihanRekananController extends Controller
         $supplier = Sewa::from('sewa as s')
                     ->with('getCustomer')
                     ->leftJoin('grup_tujuan as gt', 'gt.id', 's.id_grup_tujuan')
-                    ->where('gt.jenis_tujuan', 'LTL')
+                    // ->where('gt.jenis_tujuan', 'LTL')
                     ->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
                     ->groupBy('s.id_supplier')
                     ->get();
 
         // dd($supplier);
-                    
 
         return view('pages.finance.tagihan_rekanan.create',[
             'judul' => "Tagihan Rekanan",
@@ -233,7 +232,6 @@ class TagihanRekananController extends Controller
                 DB::commit();
             }
 
-
             return redirect()->route('tagihan_rekanan.index')->with(['status' => 'Success', 'msg' => 'Tagihan berhasil dibayar']);
 
         } catch (ValidationException $e) {
@@ -393,7 +391,7 @@ class TagihanRekananController extends Controller
         $sewa = Sewa::from('sewa as s')
             ->with('getCustomer')
             ->leftJoin('grup_tujuan as gt', 'gt.id', 's.id_grup_tujuan')
-            ->where('gt.jenis_tujuan', 'LTL')
+            // ->where('gt.jenis_tujuan', 'LTL')
             ->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
             ->where('s.id_supplier', $id)
             ->get();
@@ -419,7 +417,8 @@ class TagihanRekananController extends Controller
                             LEFT JOIN tagihan_rekanan_detail as trd on trd.id_sewa = s.id_sewa and trd.is_aktif is null
                             LEFT JOIN customer as c on c.id = s.id_customer
                             LEFT JOIN grup_tujuan as gt on gt.id = s.id_grup_tujuan
-                            WHERE s.id_supplier = $id_supplier AND s.is_tagihan <> 'Y' AND s.jenis_tujuan = 'LTL' 
+                            WHERE s.id_supplier = $id_supplier AND s.is_tagihan <> 'Y' 
+                            -- AND s.jenis_tujuan = 'LTL' 
                             ");
 
         return $sewa;

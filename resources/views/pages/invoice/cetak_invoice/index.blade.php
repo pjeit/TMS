@@ -36,8 +36,8 @@
                                 <th>Grup</th>
                                 <th>Customer</th>
                                 <th>No. Invoice</th>
-                                <th width='100'>Tgl Invoice</th>
-                                <th width='100'>Jatuh Tempo</th>
+                                <th width='120'>Tgl Invoice</th>
+                                <th width='120'>Jatuh Tempo</th>
                                 <th>Sisa Tagihan</th>
                                 <th>Catatan</th>
                                 <th></th>

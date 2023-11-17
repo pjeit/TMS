@@ -163,7 +163,7 @@
         $('body').on('click', '.update_resi', function () {
             clear();
             var idInvoice = this.value;
-            console.log('idInvoice', idInvoice);
+            var tambah_waktu = $('#ketentuan_bayar_'+idInvoice).val() != 'null'? parseFloat($('#ketentuan_bayar_'+idInvoice).val()):0;
             var no_invoice = $('#no_invoice_'+idInvoice).val() != 'null'? $('#no_invoice_'+idInvoice).val():'';
             var resi = $('#resi_'+idInvoice).val() != 'null'? $('#resi_'+idInvoice).val():'';
             var jatuh_tempo = $('#jatuh_tempo_'+idInvoice).val() != 'null'? $('#jatuh_tempo_'+idInvoice).val():'';
@@ -177,152 +177,24 @@
                 todayHighlight: true,
                 language: 'en',
                 orientation: 'bottom auto',
-            }).datepicker("setDate", dateMask(jatuh_tempo));
+            }).datepicker("setDate", dateMask(jatuh_tempo+tambah_waktu));
 
             $('#modal_detail').modal('show');
         });
         
-        // $('#simpanResi').click(function () {
-        //     var id = $('#modal_id_invoice').val();
-        //     var noInvoice = $('#modal_no_invoice').val();
-        //     var resi = $('#modal_resi').val();
-        //     var jatuhTempo = $('#modal_jatuh_tempo').val();
-        //     var catatan = $('#modal_catatan').val();
-
-        //     var token = $('meta[name="csrf-token"]').attr('content');
-        //     var baseUrl = "{{ asset('') }}";
-        //     var url = '/pembayaran_invoice/update_resi/'+id;
-        //     $.ajaxSetup({
-        //         headers: {
-        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         }
-        //     });
-
-        //     var baseUrl = "{{ asset('') }}";
-        //     var url = `${baseUrl}pembayaran_invoice/update_resi/` + id;
-        //     $.ajax({
-        //         url: url,
-        //         method: 'POST',
-        //         data: {
-        //             id: id,
-        //             noInvoice: noInvoice,
-        //             resi: resi,
-        //             jatuhTempo: jatuhTempo,
-        //             catatan: catatan,
-        //             _token: $('meta[name="csrf-token"]').attr('content'),
-        //         },
-        //         success: function (response) {
-        //             $('#modal-loading').modal('show');
-        //             console.log(response);
-        //             window.location.href = '{{ route("pembayaran_invoice.bayar") }}';
-        //         },
-        //         error: function (xhr, status, error) {
-        //             console.error('Error:', error);
-        //         }
-        //     });
-
-        //     // $.ajax({
-        //     //     type: 'PUT', // Use POST method
-        //     //     header:{
-        //     //         'X-CSRF-TOKEN': token
-        //     //     },
-        //     //     url: url, // Replace with the actual URL and someId
-        //     //     data: {
-        //     //         _method: 'POST', // Specify the HTTP method as PUT
-        //     //         id: id,
-        //     //         noInvoice: noInvoice,
-        //     //         resi: resi,
-        //     //         jatuhTempo: jatuhTempo,
-        //     //         catatan: catatan,
-        //     //         _token: token,
-        //     //     },
-        //     //     success: function (response) {
-        //     //         console.log('Response: ' + response.status);
-        //     //         if(response.status == 'success'){
-        //     //             $('#modal_detail').modal('hide');
-
-        //     //             const Toast = Swal.mixin({
-        //     //                 toast: true,
-        //     //                 position: 'top',
-        //     //                 timer: 2500,
-        //     //                 showConfirmButton: false,
-        //     //                 timerProgressBar: true,
-        //     //                 didOpen: (toast) => {
-        //     //                     toast.addEventListener('mouseenter', Swal.stopTimer)
-        //     //                     toast.addEventListener('mouseleave', Swal.resumeTimer)
-        //     //                 }
-        //     //             })
-    
-        //     //             Toast.fire({
-        //     //                 icon: 'success',
-        //     //                 title: 'Data tersimpan'
-        //     //             })
-
-        //     //             setTimeout(function() {
-        //     //                 location.reload(true);
-        //     //             }, 700); // 500 milliseconds (0.5 seconds)
-        //     //         }else{
-        //     //             $('#modal_detail').modal('hide');
-        //     //             const Toast = Swal.mixin({
-        //     //                 toast: true,
-        //     //                 position: 'top',
-        //     //                 timer: 2500,
-        //     //                 showConfirmButton: false,
-        //     //                 timerProgressBar: true,
-        //     //                 didOpen: (toast) => {
-        //     //                     toast.addEventListener('mouseenter', Swal.stopTimer)
-        //     //                     toast.addEventListener('mouseleave', Swal.resumeTimer)
-        //     //                 }
-        //     //             })
-
-        //     //             Toast.fire({
-        //     //                 icon: 'danger',
-        //     //                 title: 'Terjadi kesalahan'
-        //     //             })
-        //     //         }
-        //     //     },
-        //     //     error: function (xhr, status, error) {
-        //     //         console.log('response: ' +error);
-        //     //         $('#modal_detail').modal('hide');
-        //     //         const Toast = Swal.mixin({
-        //     //             toast: true,
-        //     //             position: 'top',
-        //     //             timer: 2500,
-        //     //             showConfirmButton: false,
-        //     //             timerProgressBar: true,
-        //     //             didOpen: (toast) => {
-        //     //                 toast.addEventListener('mouseenter', Swal.stopTimer)
-        //     //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
-        //     //             }
-        //     //         })
-
-        //     //         Toast.fire({
-        //     //             icon: 'danger',
-        //     //             title: 'Terjadi kesalahan'
-        //     //         })
-        //     //     }
-        //     // });
-        // });
-
         $('body').on('click','.customer_centang',function() {
             var idCustParent= $(this);
         
             $('.customer_centang[type=checkbox]').each(function(idx) {
                 var id_percust_semua = $(this);
                 
-                // if(id_percust_semua.attr('id_customer_grup')==idCustParent.attr('id_customer_grup'))
-                // {
-                    if(id_percust_semua.attr('id_customer')==idCustParent.attr('id_customer'))
-                    {
-                        if (idCustParent.is(":checked")) {
+                if(id_percust_semua.attr('id_customer')==idCustParent.attr('id_customer')){
+                    if (idCustParent.is(":checked")) {
                         id_percust_semua.prop('checked', true);
-                        } else if (!idCustParent.is(":checked")) {
-                            id_percust_semua.prop('checked', false);
-                        }
+                    } else if (!idCustParent.is(":checked")) {
+                        id_percust_semua.prop('checked', false);
                     }
-                // }
-                else
-                {
+                }else{
                     id_percust_semua.prop('checked', false);
                 }
             });
@@ -330,21 +202,15 @@
             
             $('.sewa_centang[type=checkbox]').each(function(idx) {
                 var id_cust_sewa = $(this);
-                // if(id_cust_sewa.attr('grupId')==idCustParent.attr('id_customer_grup'))
-                // {
-                    if(id_cust_sewa.attr('custId')==idCustParent.attr('id_customer'))
-                    {
-                        if (idCustParent.is(":checked")) {
-                            id_cust_sewa.prop('checked', true);
-    
-                        } else if (!idCustParent.is(":checked")) {
-                            
-                            id_cust_sewa.prop('checked', false);
-                        }
+                if(id_cust_sewa.attr('custId')==idCustParent.attr('id_customer')){
+                    if (idCustParent.is(":checked")) {
+                        id_cust_sewa.prop('checked', true);
+
+                    } else if (!idCustParent.is(":checked")) {
+                        
+                        id_cust_sewa.prop('checked', false);
                     }
-                // }
-                else
-                {
+                }else{
                     id_cust_sewa.prop('checked', false);
                 }
             });
@@ -433,10 +299,6 @@
         // var status = $('#status').val();
         showTable("BELUM LUNAS");
 
-        // $(document).on('change', '#status', function(e) {  
-        //     showTable(this.value)
-		// }); 
-
         function showTable(status){
             $.ajax({
                 method: 'GET',
@@ -517,6 +379,7 @@
                                         <button class="dropdown-item update_resi" value="${data[i].id}">
                                             <span class="fas fa-sticky-note mr-3"></span> Update Resi
                                         </button>
+                                        <input type="text" id="ketentuan_bayar_${data[i].id}" value="${data[i].ketentuan_bayar}" hidden />
                                     </div>
                                 </div>
                             </td>`);

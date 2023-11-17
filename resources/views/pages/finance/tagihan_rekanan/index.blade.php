@@ -40,7 +40,7 @@
                         <tbody id="hasil">
                             @if (isset($data))
                                 @foreach($data as $key => $item)
-                                    @if ($item->sisa_tagihan != 0)              
+                                    @if ($item->sisa_tagihan > 0)              
                                         <tr>
                                             <td>{{ $item->getSupplier->nama }} 
                                                 <span class="float-right">
