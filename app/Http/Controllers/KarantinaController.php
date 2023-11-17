@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-
+use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 class KarantinaController extends Controller
 {
     /**
@@ -102,13 +102,73 @@ class KarantinaController extends Controller
                     }
                 }
             }
-
             DB::commit();
-            return redirect()->route('karantina.index')->with(['status' => 'Success', 'msg'  => 'Pembayaran berhasil!']);
+            return redirect()->route('karantina.index')
+            ->with('id_print_karantina', $karantina->id)
+            ->with(['status' => 'Success', 'msg'  => 'Pembayaran berhasil!']);
         } catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->route('karantina.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
         }
+    }
+    public function print($id)
+    {
+         
+        
+         $karantinaData = DB::table('karantina as k')
+            ->select('k.*','c.nama as nama_customer','jo.kapal as nama_kapal','jo.voyage')
+            ->where('k.is_aktif', '=', "Y")
+            ->leftJoin('customer as c', function($join) {
+                    $join->on('k.id_customer', '=', 'c.id')
+                    ->where('c.is_aktif', '=', "Y");
+                })
+            ->leftJoin('job_order as jo', function($join) {
+                    $join->on('k.id_jo', '=', 'jo.id')
+                    ->where('jo.is_aktif', '=', "Y");
+                })
+            ->where('k.id', '=', $id)
+            ->first();
+        // dd($karantinaData);
+         $karantina_detail = DB::table('karantina_detail as kd')
+            ->select('kd.*','jod.no_kontainer as no_kontainer','jod.tipe_kontainer as tipe_kontainer','jod.no_kontainer as seal')
+            ->where('kd.is_aktif', '=', "Y")
+            ->leftJoin('job_order_detail as jod', function($join) {
+                    $join->on('kd.id_jo_detail', '=', 'jod.id')
+                    ->where('jod.is_aktif', '=', "Y");
+                })
+            ->where('kd.id_karantina', '=', $karantinaData->id)
+            ->get();
+        $pdf = PDF::loadView('pages.finance.karantina.print',[
+                    'judul'=>"Job Order",
+                    'karantinaData'=>$karantinaData,
+                    'karantina_detail'=>$karantina_detail,
+            ]); 
+        // dd($JobOrder);
+        // $pdf->setPaper('A5', 'landscape');
+        $pdf->setPaper('A5', 'portrait');
+
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true, // Enable HTML5 parser
+            'isPhpEnabled' => true, // Enable inline PHP execution
+            'defaultFont' => 'sans-serif',
+             'dpi' => 180, // Set a high DPI for better resolution
+            //  'isRemoteEnabled', true
+             'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
+        ]);
+        // langsung download
+        // return $pdf->download('fileCoba.pdf'); 
+        // preview dulu
+        return $pdf->stream($id.'.pdf'); 
+
+        //  return view('pages.order.job_order.print',[
+        //     'judul'=>"Job Order",
+        //     'JobOrder'=>$JobOrder,
+        //     'dataSupplier'=>$dataSupplier,
+        //     'dataCustomer'=>$dataCustomer,
+        //     'dataJoDetail'=>$dataJoDetail,
+        //     'dataJaminan'=>$dataJaminan,
+
+        // ]);
     }
 
     /**

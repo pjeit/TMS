@@ -102,6 +102,20 @@ class BiayaOperasionalController extends Controller
                                 'Y'
                             ) 
                         );
+                        $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $data['pembayaran'])
+                                    ->first();
+                        $saldo_baru = $saldo->saldo_sekarang -  floatval(str_replace(',', '', $value['dicairkan']));
+                        DB::table('kas_bank')
+                            ->where('id', $data['pembayaran'])
+                            ->update(array(
+                                'saldo_sekarang' => $saldo_baru,
+                                'updated_at'=> now(),
+                                'updated_by'=> $user,
+                            )
+                        );
                     }
                 }
                 DB::commit();
@@ -188,6 +202,20 @@ class BiayaOperasionalController extends Controller
                                     'Y'
                                 ) 
                             );
+                            $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $data['pembayaran'])
+                                    ->first();
+                            $saldo_baru = $saldo->saldo_sekarang -  floatval(str_replace(',', '', $value['dicairkan']));
+                            DB::table('kas_bank')
+                                ->where('id', $data['pembayaran'])
+                                ->update(array(
+                                    'saldo_sekarang' => $saldo_baru,
+                                    'updated_at'=> now(),
+                                    'updated_by'=> $user,
+                                )
+                            );
                             DB::commit();
                         }
                     }
@@ -212,6 +240,20 @@ class BiayaOperasionalController extends Controller
                             now(), //updated_at
                             'Y'
                         ) 
+                    );
+                    $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $data['pembayaran'])
+                                    ->first();
+                    $saldo_baru = $saldo->saldo_sekarang -  floatval(str_replace(',', '', $value['dicairkan']));
+                    DB::table('kas_bank')
+                        ->where('id', $data['pembayaran'])
+                        ->update(array(
+                            'saldo_sekarang' => $saldo_baru,
+                            'updated_at'=> now(),
+                            'updated_by'=> $user,
+                        )
                     );
                 }
     

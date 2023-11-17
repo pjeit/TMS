@@ -224,8 +224,9 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pembayaran_invoice_karantina', 'App\Http\Controllers\PembayaranInvoiceKarantinaController');
 
         Route::get('karantina/load_data/{id}', [App\Http\Controllers\KarantinaController::class, 'load_data'])->name('karantina.load_data');
+        Route::get('karantina/print/{id}', [App\Http\Controllers\KarantinaController::class, 'print'])->name('karantina.print');
         Route::resource('karantina', 'App\Http\Controllers\KarantinaController');
-
+        
         Route::resource('pemutihan_invoice', 'App\Http\Controllers\PemutihanInvoiceController');
 
         // ===================================INVOICE=========================================================

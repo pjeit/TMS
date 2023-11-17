@@ -46,7 +46,7 @@
             </div>
         </div> --}}
         <div class="col-12">
-            <div class="card radiusSendiri">
+            <div class="card radiusSendiri w-50">
             
 
                 <form action="{{ route('coa.store') }}" method="POST" id="post">
@@ -56,32 +56,46 @@
                         <button type="submit" name="save" id="save" value="save" class="btn ml-2 btn-success radiusSendiri"><strong><i class="fa fa-fw fa-save"></i> Simpan</strong></button>
                     </div>
                     <div class="card-body">
-                        <div class="row justify-content-center g-2">
-                                <div class="form-group col-md-6">
+                        {{-- <div class="row justify-content-center g-2"> --}}
+                                <div class="form-group ">
                                     <label for="nama_jenis">Nama Jenis</label>
                                     <input required type="text" maxlength="20" name="nama_jenis" class="form-control" value="{{old('nama_jenis','')}}" >                         
                                 </div>
-                                <div class="form-group col-md-6">
+                                <div class="form-group ">
                                     <label for="no_akun">No. akun</label>
                                     <input required type="number" maxlength="10" name="no_akun" class="form-control" value="{{old('no_akun','')}}" >                         
                                 </div>  
-                                <div class="form-group col-md-6">
+                                
+                                <div class="form-group ">
                                     <label for="tipe">Tipe</label>
                                     <br>
                                     <div class="icheck-primary d-inline">
-                                        <input id="setuju" type="radio" name="tipe" value="1" {{'1' == old('tipe','')? 'checked' :'' }}>
+                                        <input id="setuju" type="radio" name="tipe" value="1" checked>
                                         <label class="form-check-label" for="setuju">Pengeluaran</label>
                                     </div>
                                     <div class="icheck-primary d-inline ml-5">
-                                        <input id="tdkSetuju" type="radio" name="tipe" value="2" {{'2'== old('tipe','')? 'checked' :'' }}>
+                                        <input id="tdkSetuju" type="radio" name="tipe" value="2" >
                                         <label class="form-check-label" for="tdkSetuju">Penerimaan</label><br>
                                     </div>
                                 </div>
-                                <div class="form-group col-md-6">
+                                
+                                <div class="form-group ">
                                     <label for="catatan">Catatan</label>
                                     <input  type="text" maxlength="100" name="catatan" class="form-control" value="{{old('catatan','')}}" >                         
                                 </div>  
-                        </div>
+                                 <div class="form-group ">
+                                    <label for="tipe">Masuk dalam transaksi non operasional ?</label>
+                                    <br>
+                                    <div class="icheck-primary d-inline">
+                                        <input id="is_kas_bank_lain_Y" type="radio" name="is_kas_bank_lain" value="Y" checked>
+                                        <label class="form-check-label" for="is_kas_bank_lain_Y">Ya</label>
+                                    </div>
+                                    <div class="icheck-primary d-inline ml-5">
+                                        <input id="is_kas_bank_lain_N" type="radio" name="is_kas_bank_lain" value="N" >
+                                        <label class="form-check-label" for="is_kas_bank_lain_N">Tidak</label><br>
+                                    </div>
+                                </div>
+                        {{-- </div> --}}
                            
 
                     </div>

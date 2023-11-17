@@ -54,7 +54,17 @@
         </div>
     </form>
 </div>
+@if (session('id_print_karantina'))
+<script>
+    var baseUrl = "{{ asset('') }}";
+    window.open(`${baseUrl}karantina/print/{{ session('id_print_karantina') }}`, "_blank");
 
+    // di set null biar ga open new tab terus2an 
+    setTimeout(function() {
+        sessionStorage.setItem('id_print_karantina', null);
+    }, 1000); // Adjust the delay (in milliseconds) as needed
+</script>
+@endif
 <script>
     $(document).ready(function() {
         $('#saveInvoice').submit(function(event) {
