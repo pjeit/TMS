@@ -8,7 +8,7 @@ class CoaHelper
 {
     //=================================index================================
   
-   public static function DataCoa($jenisCoa)
+   public static function DataCoa($no_akun_variable)
    {
       // some logic to determine if the publisher is main
       // $dataCOA = DB::table('coa')
@@ -27,18 +27,21 @@ class CoaHelper
       //    'coa_biaya_operasional_alat_tally_buruh' => $dataCOA[85]->no_akun, // 5007 Biaya Alat, Krani (tally) dan Buruh
       //    'coa_pencairan_uj' => $dataCOA[80]->no_akun,//5002  Biaya Sopir ( Uang Sangu )
       // ];
+      // coa tagihan (yang kita bayar itu (tagihan pembelian, sama tagihan pembayaran)),
+      //  kalo notanya bulan ini dibayar bulan ini maka coanya biaya (yang 5000 an), 
+      //  kalo dibayar bulan depan ya yag 2010 utang usaha
 
       $dataCOA = DB::table('coa')
          // ->paginate(10);
          ->select('coa.*')
          ->where('coa.is_aktif', '=', "Y")
          // ->paginate(10);
-         ->where('coa.nama_jenis', '=',$jenisCoa)
+         ->where('coa.no_akun', $no_akun_variable)
          ->first();
       if ($dataCOA) {
             return $dataCOA->no_akun;
       } else {
-            return 'Tidak Ditemukan Data';
+            return 0000;
       }
       //aksesnya misal
       

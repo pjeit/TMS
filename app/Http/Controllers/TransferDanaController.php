@@ -116,7 +116,7 @@ class TransferDanaController extends Controller
                                     date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
                                     0,// debit 
                                     (float)str_replace(',', '', $data['total']), //kredit
-                                    1016, //kode coa
+                                    1001, //kode coa
                                     'transfer_dana',
                                     $data['catatan'], //keterangan_transaksi
                                     $new_transfer->id,//keterangan_kode_transaksi
@@ -143,7 +143,7 @@ class TransferDanaController extends Controller
                                     date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
                                     (float)str_replace(',', '', $data['total']),//debit
                                     0,//kredit
-                                    1016, //kode coa
+                                    1001, //kode coa
                                     'transfer_dana',
                                     $data['catatan'], //keterangan_transaksi
                                     $new_transfer->id,//keterangan_kode_transaksi
