@@ -11,6 +11,10 @@
 
     <title>Document</title>
     <style type="text/css">
+         :root {
+            font-family: Arial, sans-serif;
+
+        }
         .table-bawah{
             float: left;
             font-family: Arial, sans-serif;
@@ -58,11 +62,45 @@
 </head>
 <body>
     {{-- <img src="{{ asset('img/LOGO_PJE.jpg') }}" alt=""> --}}
-    <div class="kontener">
-    <img src="{{ public_path("img/LOGO_PJE.jpg") }}" alt=""  width="100" height="100" style="filter: grayscale(100%)">
-
-         <h2 class="text" style="text-align: center">BILLING JO</h2>
-    </div>
+    {{-- <img src="{{ public_path("img/LOGO_PJE.jpg") }}" alt=""  width="100" height="100" style="filter: grayscale(100%)"> --}}
+    <table  autosize='1' style="width:100%; " >
+        <thead >
+             <tr >
+                    <th style="width:5%;" class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                    <th style="width:5%;"class="borderDebug"></th>
+                </tr>
+            <tr>
+                <th colspan='3' style="text-align:left;"><img style="position: absolute;margin-top:-20px;margin-left: -40px;" src="{{ public_path("img/LOGO_PJE_DOANG1.png") }}"   width="200" height="200"></th>
+                <th colspan='11' style="text-align:left;">
+                    <h2>
+                        <span style="color:#1f55a2;font-size:15px;"> PRIMATRANS JAYA EXPRESS</span>
+                        <br>
+                        <span style="font-size:15px; font-weight:normal; margin-top:-10px;position: absolute;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
+                        <br>
+                    </h2>
+                </th>
+            </tr>
+        </thead>
+     </table>
+    <h2 class="text" style="text-align: center;margin-top:-10px;">BILLING JO</h2>
      <table class="border-table">
         <thead>
             {{-- <tr>
@@ -76,28 +114,21 @@
               <tr>
                 {{-- customer --}}
                 <td class="align-left text ">ID. Billing</td> 
-                <td >:</td>
-
-                <td class="aligh-right" style="margin-left: 20px;">
-                    {{$JobOrder->no_jo}}
-                </td>
+                <td >: {{$JobOrder->no_jo}}</td>
             </tr>
             <tr>
                 {{-- supplier --}}
                 <td class="align-left text">Pelayaran</td>
-                <td>:</td>
-                <td class="aligh-right">
-                        @if($JobOrder->id_supplier == $dataSupplier->id)
-                            {{$dataSupplier->nama}}
-                        @endif
+                <td>:
+                    @if($JobOrder->id_supplier == $dataSupplier->id)
+                        {{$dataSupplier->nama}}
+                    @endif
                 </td>
             </tr>
             <tr>
                 {{-- customer --}}
                 <td class="align-left text">Pengirim</td> 
-                <td >:</td>
-
-                <td class="aligh-right" style="margin-left: 20px;">
+                <td >:
                     @foreach ($dataCustomer as $dc)
                         @if($JobOrder->id_customer == $dc->id)
                             {{$dc->nama}}
@@ -107,31 +138,21 @@
             </tr>
             <tr>
                 <td class="align-left text">No. BL</td>
-                <td>:</td>
-
-                <td class="aligh-right">{{$JobOrder->no_bl}}</td>
+                <td>: {{$JobOrder->no_bl}}</td>
             </tr>
            
             <tr>
                 <td class="align-left text">Tanggal Sandar</td>
-                <td>:</td>
-
-                <td class="aligh-right">{{\Carbon\Carbon::parse($JobOrder->tgl_sandar)->format('d-M-Y')}}</td>
+                <td>: {{\Carbon\Carbon::parse($JobOrder->tgl_sandar)->format('d-M-Y')}}</td>
             </tr>
             <tr>
                 <td class="align-left text">Pelabuhan Muat</td>
-                <td>:</td>
-
-                <td class="aligh-right">{{$JobOrder->pelabuhan_muat}}</td>
+                <td>: {{$JobOrder->pelabuhan_muat}}</td>
             </tr>
             <tr>
                 <td class="align-left text">Pelabuhan Bongkar</td>
-                <td>:</td>
-                <td class="aligh-right">{{$JobOrder->pelabuhan_bongkar}}</td>
+                <td>: {{$JobOrder->pelabuhan_bongkar}}</td>
             </tr>
-            
-            
-            
         </tbody>
         <tfoot>
         </tfoot>
@@ -179,8 +200,7 @@
                     
                 <tr>
                     <td>THC</td>
-                    <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($JobOrder->thc,2) }}</td>
+                    <td>: Rp. {{number_format($JobOrder->thc,2) }}</td>
 
                 </tr>
                 @endif
@@ -188,8 +208,7 @@
                     
                    <tr>
                        <td>LOLO</td>
-                       <td>:</td>
-                       <td class="aligh-right">Rp. {{number_format($JobOrder->lolo,2)}}</td>
+                       <td>: Rp. {{number_format($JobOrder->lolo,2)}}</td>
    
                    </tr>
                 @endif
@@ -197,8 +216,7 @@
                     
                    <tr>
                        <td>APBS</td>
-                       <td>:</td>
-                       <td class="aligh-right">Rp. {{number_format($JobOrder->apbs,2)}}</td>
+                       <td>: Rp. {{number_format($JobOrder->apbs,2)}}</td>
    
                    </tr>
                 @endif
@@ -206,8 +224,7 @@
                     
                    <tr>
                        <td>CLEANING</td>
-                       <td>:</td>
-                       <td class="aligh-right">Rp. {{number_format($JobOrder->cleaning,2)}}</td>
+                       <td>: Rp. {{number_format($JobOrder->cleaning,2)}}</td>
    
                    </tr>
                 @endif
@@ -215,15 +232,13 @@
                     
                    <tr>
                        <td>DOC FEE</td>
-                       <td>:</td>
-                       <td class="aligh-right">Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
+                       <td>: Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
    
                    </tr>
                 @endif
                 <tr>
                     <td>SUB TOTAL</td>
-                    <td>:</td>
-                    <td class="aligh-right">Rp. {{number_format($TotalBiayaRev,2)}}</td>
+                    <td>: Rp. {{number_format($TotalBiayaRev,2)}}</td>
 
                 </tr>
             </tbody>
@@ -236,35 +251,61 @@
         @if($dataJaminan)
         
             <h3 class="text" style="margin-top: 1rem;text-align: center;" >Biaya Jaminan</h3>
-        
-            <table class="border-table td-atas" id="sortable" >
+            <table class="border-table td-atas"  id="sortable" >
                 <thead>
                     {{-- <tr>
                         <th colspan="2">Biaya Sebelum Dooring</th>
                     </tr> --}}
                 </thead>
                 <tbody > 
-                        @if($JobOrder->id == $dataJaminan->id_job_order)
+                      @if($JobOrder->id == $dataJaminan->id_job_order)
                         <tr>
-                            <td>nominal</td>
-                            <td>:</td>
                             @php $total = $dataJaminan->nominal+$TotalBiayaRev @endphp
-                            <td class="aligh-right">Rp. {{number_format($dataJaminan->nominal,2) }}</td>
+
+                            <td width='40%'>Biaya Jaminan</td>
+                            <td>: Rp. {{number_format($dataJaminan->nominal,2) }}</td>
         
                         </tr>
                         <tr>
-                            <td>Tanggal Bayar</td>
-                            <td>:</td>
-                            <td class="aligh-right">{{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
+                            <td>Tanggal Jaminan</td>
+                            <td>: {{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
+                        </tr>
+                        @endif
+                    {{-- <tr>
+                        <td><span style="opacity: 0%">SUB TOTAL</span></td>
+                        <td><span style="opacity: 0%">: Rp. {{number_format($TotalBiayaRev,2)}}</span></td>
+                    </tr> --}}
+                </tbody>
+                <tfoot>
+                </tfoot>
+        </table>
+            {{-- <table class="border-table td-atas" id="sortable" >
+                <thead>
+                    <tr>
+                        <th><span style="opacity: 0%">Biaya Sebelum Dooring</span> </th>
+                        <th><span style="opacity: 0%">Biaya Sebelum Dooring</span> </th>
+                    </tr>
+                </thead>
+                <tbody > 
+                        @if($JobOrder->id == $dataJaminan->id_job_order)
+                        <tr>
+                            @php $total = $dataJaminan->nominal+$TotalBiayaRev @endphp
+
+                            <td style="border: 1px solid black">THX</td>
+                            <td style="border: 1px solid black">: Rp. {{number_format($dataJaminan->nominal,2) }}</td>
+        
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black">ASD</td>
+                            <td style="border: 1px solid black">: {{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
                         </tr>
                         @endif
                     
                 </tbody>
                 <tfoot>
                 </tfoot>
-            </table>
+            </table> --}}
              <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
-               
         @else
              @php $total = $TotalBiayaRev @endphp
               <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
@@ -274,10 +315,6 @@
             atas nama : <b>{{$dataSupplier->rek_nama}} </b><br>
             dengan nomor {{$dataSupplier->is_virtual_acc == "Y"?'virtual account':'rekening'}} : <b><u>{{$dataSupplier->no_rek}}</u></b></p>
         @endif
-
-       
-    
-      
         {{-- <div style="display: flex; justify-content: space-between;">
             <div style="flex-basis: 49%;">
                 <p style="text-align: left;">Finance,</p>

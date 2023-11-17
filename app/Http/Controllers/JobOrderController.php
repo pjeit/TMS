@@ -245,9 +245,18 @@ class JobOrderController extends Controller
             // return redirect()->route('job_order.index')->with('status','Success!!');
             $id_print_jo = $newJO->id; // Replace with the actual value of the id
 
-            return redirect()->route('job_order.index')
+            if( $newJO->thc != 0 || $newJO->lolo != 0 || $newJO->apbs != 0 || 
+                    $newJO->cleaning != 0 || $newJO->doc_fee != 0 || 
+                    $data['tgl_bayar_jaminan'] != null || $data['total_jaminan'] != null ){
+
+                return redirect()->route('job_order.index')
                 ->with('id_print_jo', $id_print_jo)
                 ->with(['status' => 'Success', 'msg' => 'Data berhasil tersimpan']);
+            }else{
+                return redirect()->route('job_order.index')
+                ->with(['status' => 'Success', 'msg' => 'Data berhasil tersimpan']);
+            }
+            
 
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
