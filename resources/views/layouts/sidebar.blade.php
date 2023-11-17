@@ -514,6 +514,17 @@
                           </a>
                         </li>
                       </ul>
+
+                      <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                          <a href="{{route('pembayaran_gaji.index')}}" class="nav-link {{request()->url() === route('pembayaran_gaji.index')? ' active' : '' }} " style="font-weight: 500;">
+                          <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                            <p>
+                              Pembayaran Gaji
+                            </p>
+                          </a>
+                        </li>
+                      </ul>
                     
                   </li>
                 
@@ -650,7 +661,18 @@
                   <a href="{{route('transaksi_lain.index')}}" class="nav-link {{ request()->is('transaksi_lain*')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      <span style="font-size: 0.7em;">Transaksi Non Operasional</span> {{-- style="font-size: 13.9px" --}}
+                      <span style="font-size: 0.78em;">Transaksi Non Operasional</span> {{-- style="font-size: 13.9px" --}}
+                    </p>
+                  </a>
+                </li>
+              </ul>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('karyawan_hutang.index')}}" class="nav-link {{request()->is('karyawan_hutang') || request()->is('karyawan_hutang/*/edit') ? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Karyawan Hutang
                     </p>
                   </a>
                 </li>
@@ -787,6 +809,7 @@
                                 request()->is('revisi_tagihan_rekanan*')||
                                 request()->is('revisi_tagihan_pembelian*')||
                                 request()->is('revisi_invoice_trucking*')||
+                                request()->is('revisi_biaya_operasional*')||
                                 request()->is('revisi_klaim_supir*')
                                 ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -813,6 +836,14 @@
                     </p>
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a href="{{route('revisi_biaya_operasional.index')}}" class="nav-link {{ request()->is('revisi_biaya_operasional*')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 0.9em;">Rev. Biaya Operasional</span>
+                    </p>
+                  </a>
+                </li>
                  <li class="nav-item">
                   <a href="{{route('klaim_supir_revisi.index')}}" class="nav-link {{request()->url() === route('klaim_supir_revisi.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
@@ -833,7 +864,7 @@
                   <a href="{{route('revisi_invoice_trucking.index')}}" class="nav-link {{ request()->is('revisi_invoice_trucking*')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i> 
                     <p>
-                      Rev. Invoice Trucking
+                      <span style="font-size: 0.95em;">Rev. Invoice Trucking</span>
                     </p>
                   </a>
                 </li>
@@ -854,7 +885,7 @@
                       <a href="{{route('revisi_tagihan_rekanan.index')}}" class="nav-link {{ request()->is('revisi_tagihan_rekanan*')? ' active' : '' }} " style="font-weight: 500;">
                       <i class="far fa-circle nav-icon" style="font-size: 15px;"></i> 
                         <p>
-                          Invoice Tagihan Rekanan
+                          <span style="font-size: 0.85em;">Invc. Tagihan Rekanan</span>
                         </p>
                       </a>
                     </li>
@@ -862,7 +893,7 @@
                       <a href="{{route('revisi_tagihan_pembelian.index')}}" class="nav-link {{ request()->is('revisi_tagihan_pembelian*')? ' active' : '' }} " style="font-weight: 500;">
                       <i class="far fa-circle nav-icon" style="font-size: 15px;"></i> 
                         <p>
-                          Invoice Tagihan Pembelian
+                          <span style="font-size: 0.81em;">Invc. Tagihan Pembelian</span>
                         </p>
                       </a>
                     </li>
@@ -874,14 +905,14 @@
                   <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                     <p>
-                      <span style="font-size: 0.84em;">Rev. Pembayaran Invoice</span>
+                      <span style="font-size: 0.80em;">Rev. Pembayaran Invoice</span>
                     </p>
                   </a>
                 </li>
               </ul>
             </li>
 
-             <li class="nav-item {{ request()->is('pembayaran_gaji*') ||
+             {{-- <li class="nav-item {{ request()->is('pembayaran_gaji*') ||
                 request()->is('karyawan_hutang*') ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="nav-icon fas fa-solid fa-user"></i>
@@ -890,28 +921,8 @@
                 </p>
               </a>
 
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('karyawan_hutang.index')}}" class="nav-link {{request()->is('karyawan_hutang') || request()->is('karyawan_hutang/*/edit') ? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Karyawan Hutang
-                    </p>
-                  </a>
-                </li>
-              </ul>
-
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="{{route('pembayaran_gaji.index')}}" class="nav-link {{request()->url() === route('pembayaran_gaji.index')? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                    <p>
-                      Pembayaran Gaji
-                    </p>
-                  </a>
-                </li>
-              </ul>
-            </li>
+             
+            </li> --}}
             {{-- LAPORAN FINANCE --}}
             <li class="nav-item {{ request()->is('laporan_kas*') ||
                 request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">

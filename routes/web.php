@@ -161,27 +161,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pencairan_uang_jalan_ltl/getData/{item}', 'App\Http\Controllers\PencairanUangJalanLTLController@get_data')->name('pencairan_uang_jalan_ltl.get_data');
         Route::resource('pencairan_uang_jalan_ltl', 'App\Http\Controllers\PencairanUangJalanLTLController');
 
-        Route::get('/revisi_tl/cair/{id}', [App\Http\Controllers\RevisiTLController::class, 'cair'])->name('revisi_tl.cair');
-        Route::post('/revisi_tl/save_cair', [App\Http\Controllers\RevisiTLController::class, 'save_cair'])->name('revisi_tl.save_cair');
-        Route::get('/revisi_tl/refund/{id}', [App\Http\Controllers\RevisiTLController::class, 'refund'])->name('revisi_tl.refund');
-        Route::post('/revisi_tl/save_refund', [App\Http\Controllers\RevisiTLController::class, 'save_refund'])->name('revisi_tl.save_refund');
-        Route::get('/revisi_tl/getData/{status}', [App\Http\Controllers\RevisiTLController::class, 'getData'])->name('revisi_tl.getData');
-        Route::resource('revisi_tl', 'App\Http\Controllers\RevisiTLController');
-
-        Route::get('/revisi_uang_jalan/cairkan/{id_sewa}', 'App\Http\Controllers\RevisiUangJalanController@cairkan')->name('revisi_uang_jalan.cairkan');
-        Route::get('/revisi_uang_jalan/kembalikan/{id_sewa}', 'App\Http\Controllers\RevisiUangJalanController@kembalikan')->name('revisi_uang_jalan.kembalikan');
-        Route::get('/revisi_uang_jalan/load_data/{item}', 'App\Http\Controllers\RevisiUangJalanController@load_data')->name('revisi_uang_jalan.load_data');
-        Route::resource('revisi_uang_jalan', 'App\Http\Controllers\RevisiUangJalanController');
-
         Route::get('pencairan_komisi_customer/load_data', 'App\Http\Controllers\PencairanKomisiCustomerController@load_data')->name('pencairan_komisi_customer.load_data');
         Route::get('pencairan_komisi_driver/load_data', 'App\Http\Controllers\PencairanKomisiDriverController@load_data')->name('pencairan_komisi_driver.load_data');
         Route::resource('pencairan_komisi_driver', 'App\Http\Controllers\PencairanKomisiDriverController');
         Route::resource('pencairan_komisi_customer', 'App\Http\Controllers\PencairanKomisiCustomerController');
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
-        Route::get('/revisi_klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan'])->name('pencairan_klaim_supir_revisi.edit');
-        Route::post('/revisi_klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan_save'])->name('pencairan_klaim_supir_revisi.save');
-        Route::get('/revisi_klaim_supir/revisi', [App\Http\Controllers\KlaimSupirController::class, 'revisi'])->name('klaim_supir_revisi.index');
-        
+      
         Route::get('/klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan'])->name('pencairan_klaim_supir.edit');
         Route::post('/klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
         Route::resource('klaim_supir', 'App\Http\Controllers\KlaimSupirController');
@@ -217,7 +202,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/belum_invoice/invoiceKembali', [App\Http\Controllers\BelumInvoiceController::class, 'invoiceKembali'])->name('belum_invoiceKembali.set');
         Route::resource('belum_invoice', 'App\Http\Controllers\BelumInvoiceController');
         Route::resource('cetak_invoice', 'App\Http\Controllers\CetakInvoiceController');
-        Route::resource('revisi_sewa_invoice', 'App\Http\Controllers\RevisiSewaBelumInvoiceController');
 
         Route::post('/pembayaran_invoice/update_resi', [App\Http\Controllers\PembayaranInvoiceController::class, 'updateResi'])->name('pembayaran_invoice.updateResi');
         Route::post('/pembayaran_invoice/update_bukti_potong/{id}', [App\Http\Controllers\PembayaranInvoiceController::class, 'updateBuktiPotong'])->name('pembayaran_invoice.updateBuktiPotong');
@@ -247,6 +231,24 @@ Route::middleware(['auth'])->group(function () {
         // ===================================INVOICE=========================================================
         
         // ===================================REVISI=========================================================
+        Route::resource('revisi_sewa_invoice', 'App\Http\Controllers\RevisiSewaBelumInvoiceController');
+
+        Route::get('/revisi_tl/cair/{id}', [App\Http\Controllers\RevisiTLController::class, 'cair'])->name('revisi_tl.cair');
+        Route::post('/revisi_tl/save_cair', [App\Http\Controllers\RevisiTLController::class, 'save_cair'])->name('revisi_tl.save_cair');
+        Route::get('/revisi_tl/refund/{id}', [App\Http\Controllers\RevisiTLController::class, 'refund'])->name('revisi_tl.refund');
+        Route::post('/revisi_tl/save_refund', [App\Http\Controllers\RevisiTLController::class, 'save_refund'])->name('revisi_tl.save_refund');
+        Route::get('/revisi_tl/getData/{status}', [App\Http\Controllers\RevisiTLController::class, 'getData'])->name('revisi_tl.getData');
+        Route::resource('revisi_tl', 'App\Http\Controllers\RevisiTLController');
+
+        Route::get('/revisi_klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan'])->name('pencairan_klaim_supir_revisi.edit');
+        Route::post('/revisi_klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan_save'])->name('pencairan_klaim_supir_revisi.save');
+        Route::get('/revisi_klaim_supir/revisi', [App\Http\Controllers\KlaimSupirController::class, 'revisi'])->name('klaim_supir_revisi.index');
+
+        Route::get('/revisi_uang_jalan/cairkan/{id_sewa}', 'App\Http\Controllers\RevisiUangJalanController@cairkan')->name('revisi_uang_jalan.cairkan');
+        Route::get('/revisi_uang_jalan/kembalikan/{id_sewa}', 'App\Http\Controllers\RevisiUangJalanController@kembalikan')->name('revisi_uang_jalan.kembalikan');
+        Route::get('/revisi_uang_jalan/load_data/{item}', 'App\Http\Controllers\RevisiUangJalanController@load_data')->name('revisi_uang_jalan.load_data');
+        Route::resource('revisi_uang_jalan', 'App\Http\Controllers\RevisiUangJalanController');
+
         Route::get('revisi_tagihan_rekanan/delete/{id}', [App\Http\Controllers\RevisiTagihanRekananController::class, 'delete'])->name('revisi_tagihan_rekanan.delete');
         Route::get('revisi_tagihan_rekanan/load_data', [App\Http\Controllers\RevisiTagihanRekananController::class, 'load_data'])->name('revisi_tagihan_rekanan.load_data');
         Route::resource('revisi_tagihan_rekanan', 'App\Http\Controllers\RevisiTagihanRekananController');
@@ -259,6 +261,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('revisi_invoice_trucking/edit-pembayaran/{id}', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'editPembayaran'])->name('revisi_invoice_trucking.editPembayaran');
         Route::get('revisi_invoice_trucking/load_data', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'load_data'])->name('revisi_invoice_trucking.load_data');
         Route::resource('revisi_invoice_trucking', 'App\Http\Controllers\RevisiInvoiceTruckingController');
+
+        Route::get('revisi_biaya_operasional/delete/{id}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'delete'])->name('revisi_biaya_operasional.delete');
+        Route::get('revisi_biaya_operasional/edit-pembayaran/{id}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'editPembayaran'])->name('revisi_biaya_operasional.editPembayaran');
+        Route::get('revisi_biaya_operasional/load_data/{id}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'load_data'])->name('revisi_biaya_operasional.load_data');
+        Route::resource('revisi_biaya_operasional', 'App\Http\Controllers\RevisiBiayaOperasionalController');
+
         // ===================================HRD=========================================================
         Route::resource('pembayaran_gaji', 'App\Http\Controllers\PembayaranGajiController');
         Route::put('karyawan_hutang/update/{id}', [App\Http\Controllers\KaryawanHutangController::class, 'update'])->name('karyawan_hutang.updates');

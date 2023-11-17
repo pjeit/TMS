@@ -206,6 +206,7 @@
                         var item = $('#item').val();
                         var data = response.data;
                         console.log('data', data);
+                        
                         if(item == 'KARANTINA'){
                             $("th").remove();
 
@@ -275,7 +276,6 @@
                                     ]
                                 });
                         }else{
-
                             $("th").remove();
                             $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
                             if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
@@ -294,7 +294,7 @@
                                 for (var i = 0; i <data.length; i++) {
                                     if(data[i].total_dicairkan == null){
                                         var start = data[i].deskripsi_so;
-                                        var row = $("<tr class='hoverEffect'></tr>");
+                                        var row = $("<tr></tr>");
                                         row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input class='check_item check_grup' grup_parent='${data[i].grup_id}' type='checkbox'> </span> </div> </b></td>`);
                                         row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input class='check_item check_cust' grup_child='${data[i].grup_id}' cust_parent='${data[i].id_customer}' type='checkbox'> </span> </div> </b></td>`);
                                     
