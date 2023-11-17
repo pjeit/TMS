@@ -20,8 +20,8 @@
         white-space: nowrap; */
     }
 </style>
-    <form action="{{ route('belum_invoice.store') }}" id="save" method="POST" >
-        @csrf
+    <form action="{{ route('belum_invoice.update', [$data->id_sewa]) }}" id="save" method="POST" >
+        @csrf @method('PUT')
         <div class="container-fluid">
             <div class="card radiusSendiri">
                 <div class="card-header ">
@@ -40,7 +40,6 @@
                                     <input type="hidden" id="grup_id" name="grup_id" class="form-control" value="{{ $dataCust[0]->grup_id }}" readonly>                         
                                     <input type="hidden" id="no_invoice" name="no_invoice" class="form-control" value="" placeholder="otomatis" readonly>   
                                 </div>  
-                               
                             </div>
 
                             <div class="row">
@@ -76,18 +75,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Total Dibayar</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" maxlength="100" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                    </div>
-                                </div>
-                            </div>
-                        
-                            <div class="row">
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Total Jumlah Muatan</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -96,14 +83,27 @@
                                         <input type="number" maxlength="100" id="total_jumlah_muatan" name="total_jumlah_muatan" class="form-control" value="" readonly>                         
                                     </div>
                                 </div>
+                                {{-- <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Total Dibayar</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                    </div>
+                                </div> --}}
+                            </div>
+                            <div class="row">
+               
     
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">Total Sisa</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
                                         <input type="text" id="total_sisa" name="total_sisa" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                        <input type="hidden" maxlength="100" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                         <input type="hidden" id="total_pisah" name="total_pisah" class="form-control uang numajaMinDesimal" value="" placeholder="total_pisah" readonly>                         
                                     </div>
                                 </div>
@@ -669,10 +669,8 @@
         $(document).on('click', '.save_detail', function(event){ // save detail
             var key = $('#key').val(); 
 
+            document.querySelector(".text_addcost_"+key).textContent = $('#addcost').val();
             $('#addcost_hidden_'+key).val( normalize($('#addcost').val()) );
-
-            document.querySelector(".text_addcost_"+key).textContent = moneyMask( $('#addcost').val() );
-
             $('#no_kontainer_hidden_'+key).val( $('#no_kontainer').val() );
             $('#no_seal_hidden_'+key).val( $('#no_seal').val() );
             $('#no_sj_hidden_'+key).val( $('#no_sj').val() );
@@ -987,7 +985,6 @@
                     parsed.forEach((element, index)  => {
                         if(element.is_ditagihkan == 'Y' && element.is_dipisahkan == 'Y'){
                             $('#is_pisah_invoice').val('TRUE');
-                            console.log('SECOND', data.length);
                         }
                     });
                 }
