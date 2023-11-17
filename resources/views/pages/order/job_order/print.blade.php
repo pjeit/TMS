@@ -22,7 +22,8 @@
         }
         .border-table{
             width: 100%; /* Optional: Set table width */    
-            border: 1px solid #00000; /* Border around the table */
+            border: 1px solid  #ccc; /* Border around the table */
+             /* background-color: #ccc; */
         }
         /* .kontener{
             display: flex;
@@ -63,7 +64,9 @@
 <body>
     {{-- <img src="{{ asset('img/LOGO_PJE.jpg') }}" alt=""> --}}
     {{-- <img src="{{ public_path("img/LOGO_PJE.jpg") }}" alt=""  width="100" height="100" style="filter: grayscale(100%)"> --}}
-    <table  autosize='1' style="width:100%; " >
+    {{-- <hr style=" border: 10px solid rgb(54, 78, 163);margin-top: -95px;"> --}}
+    
+    <table  autosize='1' style="width:100%; margin-top:-80px;" >
         <thead >
              <tr >
                     <th style="width:5%;" class="borderDebug"></th>
@@ -88,20 +91,20 @@
                     <th style="width:5%;"class="borderDebug"></th>
                 </tr>
             <tr>
-                <th colspan='3' style="text-align:left;"><img style="position: absolute;margin-top:-20px;margin-left: -40px;" src="{{ public_path("img/LOGO_PJE_DOANG1.png") }}"   width="200" height="200"></th>
+                <th colspan='4' style="text-align:left;"><img style="position: absolute;margin-top:-20px;margin-left: -40px;" src="{{ public_path("img/LOGO_PJE_DOANG1.png") }}"   width="250" height="250"></th>
                 <th colspan='11' style="text-align:left;">
                     <h2>
-                        <span style="color:#1f55a2;font-size:15px;"> PRIMATRANS JAYA EXPRESS</span>
+                        <span style="color:#1f55a2;font-size:15px; margin-top:53px;position: absolute;"> PRIMATRANS JAYA EXPRESS</span>
                         <br>
-                        <span style="font-size:15px; font-weight:normal; margin-top:-10px;position: absolute;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
+                        <span style="font-size:15px; font-weight:normal; margin-top:15px;position: absolute;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
                         <br>
                     </h2>
                 </th>
             </tr>
         </thead>
-     </table>
-    <h2 class="text" style="text-align: center;margin-top:-10px;">BILLING JO</h2>
-     <table class="border-table">
+    </table>
+    <h2 class="text" style="text-align: center;margin-top:-10px; background-color: rgb(54, 78, 163);color:aliceblue;">BILLING JO</h2>
+    <table class="border-table">
         <thead>
             {{-- <tr>
                 <td>
@@ -188,69 +191,69 @@
         </tfoot>
     </table> --}}
 
-    <h3 class="text" style="text-align: center">Biaya pelayaran</h3>
-      <table class="border-table td-atas"  id="sortable" >
-            <thead>
-                {{-- <tr>
-                    <th colspan="2">Biaya Sebelum Dooring</th>
-                </tr> --}}
-            </thead>
-            <tbody > 
-                @if ($JobOrder->thc)
-                    
+    <h3 class="text" style="text-align: center;background-color: rgb(54, 78, 163);color:aliceblue;">Biaya pelayaran</h3>
+    <table class="border-table td-atas"  id="sortable" >
+        <thead>
+            {{-- <tr>
+                <th colspan="2">Biaya Sebelum Dooring</th>
+            </tr> --}}
+        </thead>
+        <tbody > 
+            @if ($JobOrder->thc)
+                
+            <tr>
+                <td>THC</td>
+                <td>: Rp. {{number_format($JobOrder->thc,2) }}</td>
+
+            </tr>
+            @endif
+                @if ($JobOrder->lolo)
+                
                 <tr>
-                    <td>THC</td>
-                    <td>: Rp. {{number_format($JobOrder->thc,2) }}</td>
+                    <td>LOLO</td>
+                    <td>: Rp. {{number_format($JobOrder->lolo,2)}}</td>
 
                 </tr>
-                @endif
-                   @if ($JobOrder->lolo)
-                    
-                   <tr>
-                       <td>LOLO</td>
-                       <td>: Rp. {{number_format($JobOrder->lolo,2)}}</td>
-   
-                   </tr>
-                @endif
-                   @if ($JobOrder->apbs)
-                    
-                   <tr>
-                       <td>APBS</td>
-                       <td>: Rp. {{number_format($JobOrder->apbs,2)}}</td>
-   
-                   </tr>
-                @endif
-                   @if ($JobOrder->cleaning)
-                    
-                   <tr>
-                       <td>CLEANING</td>
-                       <td>: Rp. {{number_format($JobOrder->cleaning,2)}}</td>
-   
-                   </tr>
-                @endif
-                   @if ($JobOrder->doc_fee)
-                    
-                   <tr>
-                       <td>DOC FEE</td>
-                       <td>: Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
-   
-                   </tr>
-                @endif
+            @endif
+                @if ($JobOrder->apbs)
+                
                 <tr>
-                    <td>SUB TOTAL</td>
-                    <td>: Rp. {{number_format($TotalBiayaRev,2)}}</td>
+                    <td>APBS</td>
+                    <td>: Rp. {{number_format($JobOrder->apbs,2)}}</td>
 
                 </tr>
-            </tbody>
-            <tfoot>
-            </tfoot>
-      </table>
+            @endif
+                @if ($JobOrder->cleaning)
+                
+                <tr>
+                    <td>CLEANING</td>
+                    <td>: Rp. {{number_format($JobOrder->cleaning,2)}}</td>
+
+                </tr>
+            @endif
+                @if ($JobOrder->doc_fee)
+                
+                <tr>
+                    <td>DOC FEE</td>
+                    <td>: Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
+
+                </tr>
+            @endif
+            <tr>
+                <td>SUB TOTAL</td>
+                <td>: Rp. {{number_format($TotalBiayaRev,2)}}</td>
+
+            </tr>
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
         @php
             $total = 0;
         @endphp
         @if($dataJaminan)
         
-            <h3 class="text" style="margin-top: 1rem;text-align: center;" >Biaya Jaminan</h3>
+            <h3 class="text" style="margin-top: 1rem;text-align: center;background-color: rgb(54, 78, 163); color:aliceblue;" >Biaya Jaminan</h3>
             <table class="border-table td-atas"  id="sortable" >
                 <thead>
                     {{-- <tr>
