@@ -1038,16 +1038,32 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->updated_by = $user;
                                 // $kas_bank_transaksi->is_aktif = 'N';
                                 // $kas_bank_transaksi->save();
-                                 DB::table('kas_bank_transaction')
-                                    ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
-                                    ->where('is_aktif', 'Y')
-                                    ->update(array(
-                                        'updated_at'=> now(),
-                                        'updated_by'=> $user,
-                                        'is_aktif'=> 'N',
-
-                                    )
+                                //  DB::table('kas_bank_transaction')
+                                //     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
+                                //     ->where('jenis', 'uang_klaim_supir')
+                                //     ->where('is_aktif', 'Y')
+                                //     ->update(array(
+                                //         'updated_at'=> now(),
+                                //         'updated_by'=> $user,
+                                //         'is_aktif'=> 'N',
+                                //     )
+                                // );
+                                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                    array(
+                                        $kas_bank_transaksi->id_kas_bank,// id kas_bank dr form
+                                        $tanggal_pencairan,//tanggal
+                                        $klaim_supir_riwayat->total_pencairan,// debit 
+                                        0, //uang keluar (kredit)
+                                        1016, //kode coa
+                                        'uang_klaim_supir',
+                                        'Uang kembali tolak Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'].'# Alasan revisi tolak: '.$data['alasan_tolak'], //keterangan_transaksi, //keterangan_transaksi
+                                        $klaim_supir_riwayat->id,//keterangan_kode_transaksi
+                                        $user,//created_by
+                                        now(),//created_at
+                                        $user,//updated_by
+                                        now(),//updated_at
+                                        'Y'
+                                    ) 
                                 );
                             }
                             //tanggal pencairan sama pencatatan null soalnya kan kalau tolak ga ada
@@ -1059,7 +1075,6 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat->updated_at = now();
                             $klaim_supir_riwayat->updated_by = $user;
                             $klaim_supir_riwayat->save();   
-
                         }
                         else
                         {
@@ -1074,10 +1089,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat_baru->created_by = $user;
                             $klaim_supir_riwayat_baru->is_aktif = 'Y';
                             //  $klaim_supir_riwayat_baru->save();  
-                            
                         }
-                        
-
                     }
                     elseif ($data['status_klaim']=='ACCEPTED') {
                         $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);

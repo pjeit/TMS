@@ -38,6 +38,10 @@ class InvoiceKarantinaController extends Controller
                         ->leftJoin('customer as c', 'c.id', '=', 'k.id_customer')
                         ->selectRaw('k.id_customer, c.nama, COUNT(k.is_invoice) as count_invoice')
                         ->where('k.is_invoice', 'N')
+                        ->where(function($query) {
+                            $query->where('total_dicairkan', '!=', null)
+                                ->orWhere('total_dicairkan', '!=', 0);
+                        })
                         ->groupBy('k.id_customer')
                         ->get();
         // dd($customer);
@@ -155,7 +159,9 @@ class InvoiceKarantinaController extends Controller
      */
     public function print($id)
     {
-        $invoiceKarantina = InvoiceKarantina::where('invoice_karantina.is_aktif', '=', "Y")->find($id);
+        $invoiceKarantina = InvoiceKarantina::where('invoice_karantina.is_aktif', '=', "Y")
+         ->with('getCustomer')
+        ->find($id);
 
         $invoiceKarantinaDetail = InvoiceKarantinaDetail::where('invoice_karantina_detail.is_aktif', '=', "Y")
             ->where('id_invoice_k', $invoiceKarantina->id)
@@ -230,7 +236,11 @@ class InvoiceKarantinaController extends Controller
     }
     public function load_data($id)
     {
-        $data = Karantina::where('is_aktif', 'Y')->where('id_customer', $id)->with('getCustomer.getGrup', 'getJO')->get();
+        $data = Karantina::where('is_aktif', 'Y')
+        ->where('id_customer', $id)
+        ->where('total_dicairkan','!=',null)
+        ->orWhere('total_dicairkan','!=',0)
+        ->with('getCustomer.getGrup', 'getJO')->get();
 
         return $data;
     }

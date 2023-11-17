@@ -24,7 +24,9 @@ class TransaksiLainController extends Controller
         $dataKasLain= DB::table('kas_bank_lain as ksl')
             ->select('ksl.*','c.nama_jenis')
             ->leftJoin('coa as c', function($join) {
-                    $join->on('ksl.coa_id', '=', 'c.id')->where('c.is_aktif', '=', "Y");
+                    $join->on('ksl.coa_id', '=', 'c.id')
+                    ->where('c.is_kas_bank_lain', '=', "Y")
+                    ->where('c.is_aktif', '=', "Y");
                 })
             ->where('ksl.is_aktif', '=', "Y")
             ->get();
@@ -39,6 +41,7 @@ class TransaksiLainController extends Controller
             ->select('coa.*')
             ->where('coa.is_aktif', '=', "Y")
             // ->paginate(10);
+            ->where('coa.is_kas_bank_lain', '=', "Y")
             ->get();
         
         $title = 'Data akan dihapus!';
@@ -198,6 +201,8 @@ class TransaksiLainController extends Controller
             // ->paginate(10);
             ->select('coa.*')
             ->where('coa.is_aktif', '=', "Y")
+            ->where('c.is_kas_bank_lain', '=', "Y")
+
             // ->paginate(10);
             ->get();
         

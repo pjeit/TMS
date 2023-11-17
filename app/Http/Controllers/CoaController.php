@@ -71,6 +71,8 @@ class CoaController extends Controller
                 'no_akun.required' => 'Nomor akun Harus diisi!',
                 'nama_jenis.required' => 'Jenis COA harus diisi!',
                 'tipe.required' => 'Tipe COA harap dipilih salah satu!',
+                'is_kas_bank_lain.required' => 'kategori transaksi operasional harap dipilih salah satu!',
+
                 // 'catatan.required' => 'The Catatan field is required.',
             ];
             
@@ -78,6 +80,8 @@ class CoaController extends Controller
                 'no_akun' => 'required',
                 'nama_jenis' => 'required',
                 'tipe' => 'required|in:1,2',
+                'is_kas_bank_lain' => 'required',
+
                 // 'catatan' => 'required',
             ], $pesanKustom);
     
@@ -88,6 +92,7 @@ class CoaController extends Controller
                 ->insert(array(
                     'no_akun' => strtoupper($data['no_akun']),
                     'nama_jenis' => strtoupper($data['nama_jenis']),
+                    'is_kas_bank_lain' => $data['is_kas_bank_lain'],
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
                     // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'] == null?null:$data['jenis_laporan_keuangan'],
                     'catatan' => strtoupper($data['catatan']),
@@ -159,6 +164,8 @@ class CoaController extends Controller
                 'nama_jenis.required' => 'Jenis COA harus diisi!',
                 'tipe.required' => 'Tipe COA harap dipilih salah satu!',
                 // 'catatan.required' => 'The Catatan field is required.',
+                    'is_kas_bank_lain.required' => 'kategori transaksi operasional harap dipilih salah satu!',
+
             ];
             
             $request->validate([
@@ -166,8 +173,10 @@ class CoaController extends Controller
                 'nama_jenis' => 'required',
                 'tipe' => 'required|in:1,2',
                 // 'catatan' => 'required',
+                'is_kas_bank_lain' => 'required',
+
             ], $pesanKustom);
-    
+
             $data = $request->collect();
             DB::table('COA')
                 ->where('id', $coa['id'])
@@ -175,6 +184,7 @@ class CoaController extends Controller
                   'no_akun' => strtoupper($data['no_akun']),
                     'nama_jenis' => strtoupper($data['nama_jenis']),
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
+                    'is_kas_bank_lain' => $data['is_kas_bank_lain'],
                     // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'] == null?null:$data['jenis_laporan_keuangan'],
                     'catatan' => strtoupper($data['catatan']),
                     'updated_at'=> VariableHelper::TanggalFormat(),

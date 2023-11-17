@@ -99,7 +99,7 @@
                     <td style=""><b>:</b> {{$invoiceKarantina->no_invoice_k}}</td>
                 </tr>
                 <tr class="borderDebug">
-                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{$invoiceKarantina->nama_customer}}</td>
+                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{$invoiceKarantina->getCustomer->nama}}</td>
                     <td></td>
                     <td width='30%'>&nbsp;</td>
                     <td style=""><b>Tanggal</b> </td>
