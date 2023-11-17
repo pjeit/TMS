@@ -129,7 +129,7 @@
                                                 <i class="fa fa-list"></i>
                                             </button>
                                             <div class="dropdown-menu" >
-                                                <form action="{{route('belum_invoiceKembali.set')}}" method="POST" >
+                                                {{-- <form action="{{route('belum_invoiceKembali.set')}}" method="POST" >
                                                     @csrf
                                                     <button class="dropdown-item" >
                                                         <span class="fas fa-reply" style="width:24px"></span> Kembalikan ke Admin
@@ -139,7 +139,7 @@
                                                     <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
                                                     <input type="hidden" name="idJo" value="{{$item->id_jo}}">
                                                     <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
-                                                </form>  
+                                                </form>   --}}
                                                 <a href="{{ route('belum_invoice.edit', [$item->id_sewa]) }}" class="btn dropdown-item" >
                                                     <span class="fas fa-pencil-alt" style="width:24px"></span> Edit
                                                 </a>
