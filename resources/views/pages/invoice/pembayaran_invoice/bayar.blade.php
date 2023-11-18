@@ -262,7 +262,6 @@
                                         <textarea name="modal_catatan" class="form-control" id="modal_catatan" rows="4"></textarea>
                                     </div>
                                 </div>
-                                
                             </div>
 
                             <div class="col-lg-6">
@@ -498,17 +497,17 @@
         }
 
         $(document).on('keyup', '#modal_diterima', function(){ // kalau berubah, hitung total 
-            var sisaInvoice = parseFloat(escapeComma($('#modal_sisa_invoice').val()));
-            sisaInvoice = (sisaInvoice !== null && !isNaN(sisaInvoice) && sisaInvoice !== "") ? sisaInvoice : 0;
-            var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
-            diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
-            if(diterima > sisaInvoice){
-                $('#modal_diterima').val(moneyMask(sisaInvoice));
-                $('#modal_pph23').val(0);
-            }else{
-                $('#modal_pph23').val(moneyMask(sisaInvoice-diterima));
-            }
-            dibayar();
+            // var sisaInvoice = parseFloat(escapeComma($('#modal_sisa_invoice').val()));
+            // sisaInvoice = (sisaInvoice !== null && !isNaN(sisaInvoice) && sisaInvoice !== "") ? sisaInvoice : 0;
+            // var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
+            // diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
+            // if(diterima > sisaInvoice){
+            //     $('#modal_diterima').val(moneyMask(sisaInvoice));
+            //     $('#modal_pph23').val(0);
+            // }else{
+            //     $('#modal_pph23').val(moneyMask(sisaInvoice-diterima));
+            // }
+            // dibayar();
         });
 
 

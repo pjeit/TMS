@@ -77,7 +77,6 @@ class BiayaOperasionalController extends Controller
                         $karantina->updated_by = $user;
                         $karantina->updated_at = now();
                         $karantina->save();
-                        
 
                         $no_kontainer = ' - No. Kontainer:';
                         $detail = KarantinaDetail::where('is_aktif', 'Y')->where('id_karantina', $key)->get();
@@ -102,12 +101,15 @@ class BiayaOperasionalController extends Controller
                                 'Y'
                             ) 
                         );
+
                         $saldo = DB::table('kas_bank')
                                     ->select('*')
                                     ->where('is_aktif', '=', "Y")
                                     ->where('kas_bank.id', '=', $data['pembayaran'])
                                     ->first();
+
                         $saldo_baru = $saldo->saldo_sekarang -  floatval(str_replace(',', '', $value['dicairkan']));
+
                         DB::table('kas_bank')
                             ->where('id', $data['pembayaran'])
                             ->update(array(

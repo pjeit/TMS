@@ -62,18 +62,58 @@
             <div class="card-body">
                 <section class="col-lg-12" id="show_report">
                     <table id="rowGroup" class="table table-bordered table-hover" width="100%">
-                        <thead>
+                        <thead id="theadId">
                             <tr>
                                 <th>Revisi Biaya Operasional</th>
                             </tr>
                         </thead>
-                        <tbody id="hasil">
+                        <tbody id="tbodyId">
 
                         </tbody>
                     </table>
                 </section>
             </div>
         </form>
+    </div>
+</div>
+
+
+{{-- modal edit --}}
+<div class="modal fade" id="modal_delete" tabindex='-1'>
+    <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title">Konfirmasi hapus data</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+        </div>
+        <form id="save" action="{{ route('revisi_biaya_operasional.delete') }}" method="POST">
+            @csrf 
+            <div class="modal-body">
+                <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_sewa --}}
+
+                <div class='row'>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <span>Apakah anda yakin ingin menghapus data ini?</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="">Alasan<span style="color:red">*</span></label>
+                            <textarea name="alasan" class="form-control" id="alasan" rows="2" required></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">BATAL</button>
+                <button type="submit" class="btn btn-sm btn-success save_detail" id="simpanBuktiPotong" style='width:85px'>OK</button> 
+            </div>
+        </form>
+
+    </div>
+    <!-- /.modal-content -->
     </div>
 </div>
 
@@ -99,9 +139,18 @@
                 processData:false,
                 success: function(response) {
                     $("#rowGroup").dataTable().fnDestroy();
-                    // $("#hasil").html("");
+                    // $("#tbodyId").html("");
                     // $('#rowGroup').DataTable().clear().draw();
+                    // $('#rowGroup').DataTable().clear().draw();
+                    // $('#rowGroup').DataTable().rows.add(NewlyCreatedData); // Add new data
+                    // $('#rowGroup').DataTable().columns.adjust().draw(); // Redraw the DataTable
+
+                    // $('#rowGroup').DataTable().destroy();
+                    // $('#rowGroup').find('tbody').append("<tr><td><value1></td><td><value1></td></tr>");
+                    // $('#rowGroup').DataTable().draw();
+
                     $("th").remove();
+                    $("#tbodyId").empty();
                     var item = $('#item').val();
                     var data = response.data;
 
@@ -113,15 +162,66 @@
                                                     <th>No. BL</th>
                                                     <th>Kapal / Voyage</th>
                                                     <th>Biaya</th>
-                                                    <th>Ditagihkan</th>
+                                                    <th>Dicairkan</th>
                                                     <th>Catatan</th>    
                                                     <th class='text-center' style='width: 30px;'><input id='check_all' type='checkbox'></th>
                                                 `);
+
+                            for (var i = 0; i <data.length; i++) {
+                                var row = $("<tr></tr>");
+                                row.append(`<td style='background: #efefef'>
+                                                    <b> 
+                                                        <span> ${data[i].get_customer.get_grup.nama_grup}</span> 
+                                                    </b>
+                                            </td>`);
+                                row.append(`<td style='background: #efefef'>
+                                                    <b> 
+                                                        <span>► ${data[i].get_customer.nama}</span> 
+                                                    </b>
+                                            </td>`);
+                                row.append(`<td> ${data[i].get_j_o.no_bl} </td>`);
+                                row.append(`<td> <b>${data[i].get_j_o.kapal} / ${data[i].get_j_o.voyage} </b></td>`);
+                                row.append(`<td> 
+                                                ${ data[i].total_operasional.toLocaleString() } 
+                                                <input type="text" class="uang numaja form-control" id='total_operasional_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional == null? 0:data[i].total_operasional}' />
+                                            </td>`); 
+                                row.append(`<td> 
+                                                <input type="text" class="uang numaja dicairkan form-control" id='open_${data[i].id}' idOprs="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan.toLocaleString()}' />
+                                                <input type="text" class="uang numaja form-control" name='data[${data[i].id}][dicairkan_old]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan}' />
+                                            </td>`);
+                                row.append(`<td class='text-center'> 
+                                                <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text"/> 
+                                            </td>`);
+                                row.append(`<td class='text-center'> 
+                                                <button type="button" class="btn btn-sm btn-danger delete" value="${data[i].id}"> <span class="fa fa-trash-alt"></span> </button>
+                                            </td>`);
+    
+                                $("#tbodyId").append(row);
+                            }
+
+                            new DataTable('#rowGroup', {
+                                order: [
+                                    [0, 'asc'], // 0 = grup
+                                    [1, 'asc'] // 1 = customer
+                                ],
+                                rowGroup: {
+                                    dataSrc: [0, 1] // di order grup dulu, baru customer
+                                },
+                                columnDefs: [
+                                    {
+                                        targets: [0, 1], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
+                                        visible: false
+                                    },
+                                    {
+                                        targets: [-1],
+                                        orderable: false, // matiin sortir kolom centang
+                                    },
+                                ],
+                            });
+
                         }else{
                             $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
-                            if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
-                                $("thead tr").append("<th>Total</th>");
-                            }
+                            $("thead tr").append("<th>Total</th>");
                             $("thead tr").append(`  <th>Dicairkan</th>
                                                     <th>Catatan</th>
                                                     <th class='text-center'><input id='check_all' type='checkbox'></th>`
@@ -154,15 +254,18 @@
                                             </td>`);
     
                                 row.append(`<td class='text-center'> 
-                                                <input class="form-control name='data[${data[i].id}][catatan]' value="${data[i].catatan}" type="text"/> 
+                                                <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan}" type="text"/> 
                                             </td>`);
                                 row.append(`<td class='text-center'> 
                                                 <button type="button" class="btn btn-sm btn-danger delete" value="${data[i].id}"> <span class="fa fa-trash-alt"></span> </button>
                                             </td>`);
     
-                                $("#hasil").append(row);
+                                $("#tbodyId").append(row);
                             }
 
+                            // $('#rowGroup').DataTable().draw();
+                            // $('#rowGroup').DataTable({
+                                
                             new DataTable('#rowGroup', {
                                 order: [
                                     [0, 'asc'], // 0 = grup
@@ -184,12 +287,15 @@
                             });
                         }
                     }else{
+                        console.log('else');
+                        $("thead tr").append(`<th>Revisi Biaya Operasional</th>`);
                         // $("#rowGroup").dataTable();
+                        $('#rowGroup').DataTable().draw();
+
                         // $('#rowGroup').DataTable().clear().draw();
                     }
 
                 },error: function (xhr, status, error) {
-                    $("#loading-spinner").hide();
                     if ( xhr.responseJSON.result == 'error') {
                         console.log("Error:", xhr.responseJSON.message);
                         console.log("XHR status:", status);
@@ -202,13 +308,19 @@
             });
         }
 
+        $(document).on('click', '.delete', function(e){
+            $('#key').val('');
+            $('#key').val(this.value);
+            $('#modal_delete').modal('show');
+        });
+
         $(document).on('keyup', '.dicairkan', function(){
             var idOprs = $(this).attr('idOprs');
             console.log('idOprs', idOprs);
             var inputed = parseFloat(this.value.replace(/,/g, ''));
             var max = $('#total_operasional_'+idOprs).val();
 
-            if (inputed > max && item.value != 'TIMBANG' && item.value != 'BURUH') {
+            if (inputed > max ) {
                 $('#open_'+idOprs).val(parseFloat(max).toLocaleString()); 
             }
         });

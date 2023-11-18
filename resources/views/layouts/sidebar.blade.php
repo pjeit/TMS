@@ -556,16 +556,6 @@
                     </a>
                     <ul class="nav nav-treeview">
                       <li class="nav-item">
-                        <a href="{{route('cetak_uang_jalan.index')}}" class="nav-link {{request()->url() === route('cetak_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
-                        <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                          <p>
-                            Cetak UJ
-                          </p>
-                        </a>
-                      </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
-                      <li class="nav-item">
                         <a href="{{route('pencairan_uang_jalan.index')}}" class="nav-link {{ request()->url() === route('pencairan_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
                           <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
                           <p>
@@ -578,6 +568,14 @@
                           <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
                           <p>
                             LTL
+                          </p>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{{route('cetak_uang_jalan.index')}}" class="nav-link {{request()->url() === route('cetak_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
+                        <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                          <p>
+                            Cetak UJ
                           </p>
                         </a>
                       </li>
