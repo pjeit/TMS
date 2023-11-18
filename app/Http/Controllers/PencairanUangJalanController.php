@@ -16,7 +16,7 @@ use App\Models\KaryawanHutangTransaction;
 use App\Models\UangJalanRiwayat;
 use App\Models\SewaOperasional;
 use Symfony\Component\VarDumper\VarDumper;
-
+use App\Helper\CoaHelper;
 class PencairanUangJalanController extends Controller
 {
     /**
@@ -168,7 +168,7 @@ class PencairanUangJalanController extends Controller
                                 date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
                                 0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                 (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
-                                1016, //kode coa
+                                CoaHelper::DataCoa(5002), //kode coa uang jalan
                                 'uang_jalan',
                                 $keterangan_string.' #'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan']. $catatan .$refrensi_keterangan_string, //keterangan_transaksi
                                 $ujr->id,//keterangan_kode_transaksi
@@ -209,7 +209,7 @@ class PencairanUangJalanController extends Controller
                                 date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
                                 0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                 (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
-                                1016, //kode coa
+                                CoaHelper::DataCoa(5002), //kode coa uang jalan
                                 'uang_jalan',
                                 $keterangan_string.' #'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan'].' #'.$data['catatan'].$refrensi_keterangan_string, //keterangan_transaksi
                                 $ujr->id,//keterangan_kode_transaksi

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\Facades\DataTables;
-
+use App\Helper\CoaHelper;
 class RevisiTagihanRekananController extends Controller
 {
     /**
@@ -188,7 +188,7 @@ class RevisiTagihanRekananController extends Controller
             $new_history->id_kas_bank = $data['id_kas'];
             $new_history->debit = 0;
             $new_history->kredit = floatval(str_replace(',', '', $data['total_bayar']));
-            $new_history->kode_coa = 1255; // hardcode
+            $new_history->kode_coa = CoaHelper::DataCoa(5005); // coa rekanan
             $new_history->jenis = 'TAGIHAN_REKANAN';
             $new_history->keterangan_transaksi = $keterangan . '(REVISI) - ' . $data['catatan'];
             $new_history->keterangan_kode_transaksi = $pembayaran->id;

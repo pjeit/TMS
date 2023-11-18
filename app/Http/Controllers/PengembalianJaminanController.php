@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\db;
 use Illuminate\Validation\ValidationException;
-
+use App\Helper\CoaHelper;
 class PengembalianJaminanController extends Controller
 {
     /**
@@ -77,7 +77,7 @@ class PengembalianJaminanController extends Controller
                     $kasBank->tanggal = now();
                     $kasBank->debit = $total;
                     $kasBank->kredit = 0; 
-                    $kasBank->kode_coa = 7123; 
+                    $kasBank->kode_coa =  CoaHelper::DataCoa(5003); //coa biaya pelayaran
                     $kasBank->jenis = "PENGEMBALIAN_JAMINAN"; 
                     $kasBank->keterangan_transaksi = "PENGEMBALIAN JAMINAN - " .$data['catatan'] . " - " . $data['customer'] ." - ". $data['supplier'] . $ket_potongan;
                     $kasBank->keterangan_kode_transaksi = $data['id_jo'];
