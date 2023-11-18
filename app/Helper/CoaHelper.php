@@ -48,19 +48,14 @@ class CoaHelper
    }
    public static function DataCoaBank($idBank)
    {
-      $dataCOA = DB::table('coa')
-         // ->paginate(10);
-         ->select('coa.*')
-         ->where('coa.is_aktif', '=', "Y")
-         // ->paginate(10);
-         ->get();
+      
 
       //kalo komisi customer/ driver,coanya tergantung kasbanknya apa yang dikeluarin
       $coaBank= [
-         1 => $dataCOA[81]->no_akun, // KAS BESAR[BCA]
-         2 => $dataCOA[81]->no_akun, // KAS KECIL
-         3 => $dataCOA[81]->no_akun, // BANK MAYAPADA
-         4 => $dataCOA[81]->no_akun, // KAS BESAR[MANDIRI]
+         1 => 1011, // KAS BESAR[BCA] 1011
+         2 => 1003, // KAS KECIL 1003
+         3 => 1012, // BANK MAYAPADA 1012
+         4 => 1013, // KAS BESAR[MANDIRI] 1013
       ];
       return $coaBank[$idBank];
       //aksesnya misal

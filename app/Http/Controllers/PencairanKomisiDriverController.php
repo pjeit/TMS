@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Models\PencairanKomisi;
 use App\Models\PencairanKomisiDetail;
+use App\Helper\CoaHelper;
 class PencairanKomisiDriverController extends Controller
 {
     /**
@@ -172,7 +173,7 @@ class PencairanKomisiDriverController extends Controller
                         now(),
                         0,// uang masuk (debit)
                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit)
-                        1016, //kode coa masik belum di komunikasiin
+                        CoaHelper::DataCoaBank($data['pembayaran']), //kode coa dari bank mana (parameter id bank)
                         'komisi_driver',
                         'KOMISI DRIVER '.$data['valueDriver'].
                         '# RINCIAN :'.$hasil_tampungan_string.

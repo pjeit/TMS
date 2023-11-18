@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PencairanKomisi;
 use App\Models\PencairanKomisiDetail;
+use App\Helper\CoaHelper;
 class PencairanKomisiCustomerController extends Controller
 {
     /**
@@ -165,7 +166,7 @@ class PencairanKomisiCustomerController extends Controller
                         now(),
                         0,// uang masuk (debit)
                         floatval(str_replace(',', '', $data['total_komisi_customer'])), //uang keluar (kredit)
-                        1016, //kode coa masik belum di komunikasiin
+                        CoaHelper::DataCoaBank($data['pembayaran']), //kode coa dari bank mana (parameter id bank)
                         'komisi_customer',
                         'KOMISI CUSTOMER '.$data['valueCustomer'].
                         '# RINCIAN :'.$hasil_tampungan_string.

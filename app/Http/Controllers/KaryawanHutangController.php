@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use App\Helper\CoaHelper;
 class KaryawanHutangController extends Controller
 {
     /**
@@ -137,7 +138,7 @@ class KaryawanHutangController extends Controller
                                         date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
                                         $data['jenis']=='BAYAR'?(float)str_replace(',', '', $data['nominal']):0,// debit 
                                         0, //kredit
-                                        1121, //kode coa
+                                        CoaHelper::DataCoa(1151), //kode coa piutang karyawan
                                         'hutang_karyawan',
                                         $data['catatan'], //keterangan_transaksi
                                         $kht_b->id,//keterangan_kode_transaksi
@@ -201,7 +202,7 @@ class KaryawanHutangController extends Controller
                                         date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
                                         0,// debit 
                                         $data['jenis']=='HUTANG'?(float)str_replace(',', '', $data['nominal']):0, //kredit
-                                        1121, //kode coa
+                                        CoaHelper::DataCoa(1151), //kode coa piutang karyawan
                                         'hutang_karyawan',
                                         $data['catatan'], //keterangan_transaksi
                                         $kht->id,//keterangan_kode_transaksi
@@ -366,7 +367,7 @@ class KaryawanHutangController extends Controller
                     ->where('id_karyawan', $data['karyawan_id_edit'])
                     ->first();
 
-                    if ($data['jenis_edit']=='BAYAR') {
+                    if ($data['jenis_edit']=='BAYAR') { 
                         if((float)str_replace(',', '', $data['nominal_edit'])>(float)str_replace(',', '', $data['total_hutang_edit']))
                         {
                              return redirect()->route('karyawan_hutang.edit',[$data['karyawan_id_edit']])->with(['status' => 'error', 'msg'  => 'Pembayaran nominal hutang tidak boleh melebihi jumlah hutang karyawan!']);

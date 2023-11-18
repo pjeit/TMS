@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
-
+use App\Helper\CoaHelper;
 class PembayaranGajiController extends Controller
 {
     /**
@@ -160,7 +160,7 @@ class PembayaranGajiController extends Controller
                                 date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
                                 0,// debit 
                                 (float)str_replace(',', '', $data['total']), //kredit
-                                1005, //kode coa
+                                CoaHelper::DataCoa(5021), //kode coa gaji
                                 'gaji',
                                 'Pembayaran Gaji'.' - '.$data['catatan'], //keterangan_transaksi
                                 $bayar_gaji->id,//keterangan_kode_transaksi
