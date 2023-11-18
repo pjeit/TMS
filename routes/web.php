@@ -263,7 +263,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('revisi_invoice_trucking/load_data', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'load_data'])->name('revisi_invoice_trucking.load_data');
         Route::resource('revisi_invoice_trucking', 'App\Http\Controllers\RevisiInvoiceTruckingController');
 
-        Route::get('revisi_biaya_operasional/delete/{id}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'delete'])->name('revisi_biaya_operasional.delete');
+        Route::post('revisi_biaya_operasional/delete', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'delete'])->name('revisi_biaya_operasional.delete');
         Route::get('revisi_biaya_operasional/edit-pembayaran/{id}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'editPembayaran'])->name('revisi_biaya_operasional.editPembayaran');
         Route::get('revisi_biaya_operasional/load_data/{id}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'load_data'])->name('revisi_biaya_operasional.load_data');
         Route::resource('revisi_biaya_operasional', 'App\Http\Controllers\RevisiBiayaOperasionalController');
