@@ -301,7 +301,7 @@ class InvoiceController extends Controller
         $data = Invoice::where('is_aktif', '=', "Y")
             ->where('id', $id)
             ->first();
-        dd($data);
+        // dd($data);
         $TotalBiayaRev = 0;
 
         // dd($dataJoDetail);   
@@ -323,7 +323,5 @@ class InvoiceController extends Controller
         ]);
 
         return $pdf->stream('xxxxx'.'.pdf'); 
-       
-
     }
 }

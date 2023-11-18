@@ -171,8 +171,8 @@ class PaymentSDTController extends Controller
                     now(), // tanggal
                     0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                     $data['total'], // uang keluar (kredit)
-                    1013, //kode coa
-                    'uang_SDT',
+                    CoaHelper::DataCoa(5003), //kode coa pelayaran
+                    'biaya_sdt',
                     'UANG KELUAR # BAYAR S/D/T'.'# BL:'.$data['no_bl'].'# PENGIRIM:'.$data['pengiriman'].'# PELAYARAN:'.$data['pelayaran'].'# NO.KONTAINER:'.'('.implode('-', $data['no_kontainer']).')'.'# CATATAN :'.$data['catatan'], // keterangan_transaksi
                     $data['no_bl'],//keterangan_kode_transaksi
                     $user, // created_by

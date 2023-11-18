@@ -20,7 +20,7 @@ use Carbon\Carbon;
 use App\Helper\UserHelper;
 use App\Models\SewaOperasional;
 use Symfony\Component\VarDumper\VarDumper;
-
+use App\Helper\CoaHelper;
 class PembayaranInvoiceController extends Controller
 {
     /**
@@ -205,7 +205,7 @@ class PembayaranInvoiceController extends Controller
                         now(),//tanggal
                         $total_bayar, //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
-                        1018, //kode coa
+                         CoaHelper::DataCoa(1100), //kode coa invoice
                         'BAYAR_INVOICE',
                         $keterangan_transaksi, //keterangan_transaksi
                         substr($id_invoices, 0, -1),//keterangan_kode_transaksi
@@ -216,6 +216,11 @@ class PembayaranInvoiceController extends Controller
                         'Y'
                     ) 
                 );
+                $kas_bank = KasBank::where('is_aktif','Y')->find($data['kas']);
+                $kas_bank->saldo_sekarang += floatval(str_replace(',', '', $data['total_diterima']));
+                $kas_bank->updated_by = $user;
+                $kas_bank->updated_at = now();
+                $kas_bank->save();
 
                 $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
                 if($cust){
@@ -341,7 +346,7 @@ class PembayaranInvoiceController extends Controller
                         now(),//tanggal
                         $total_bayar, //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
-                        1018, //kode coa
+                        CoaHelper::DataCoa(1100), //kode coa invoice
                         'BAYAR INVOICE',
                         $keterangan_transaksi, //keterangan_transaksi
                         $pembayaran->id, // keterangan_kode_transaksi - id pembayaran
@@ -352,7 +357,12 @@ class PembayaranInvoiceController extends Controller
                         'Y'
                     ) 
                 );
-
+                         
+                $kas_bank = KasBank::where('is_aktif','Y')->find($data['kas']);
+                $kas_bank->saldo_sekarang += floatval(str_replace(',', '', $data['total_diterima']));
+                $kas_bank->updated_by = $user;
+                $kas_bank->updated_at = now();
+                $kas_bank->save();
                 $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
                 if($cust){
                     $kredit_sekarang = $cust->kredit_sekarang - $total_bayar;

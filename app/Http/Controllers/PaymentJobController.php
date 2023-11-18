@@ -9,7 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
 use App\Helper\UserHelper;
-
+use App\Helper\CoaHelper;
 class PaymentJobController extends Controller
 {
     /**
@@ -215,7 +215,7 @@ class PaymentJobController extends Controller
                         now(),//tanggal
                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                         $data['total_sblm_dooring']+$dataJaminan->nominal, //uang keluar (kredit)
-                        $coaPelayaran->no_akun, //kode coa
+                        CoaHelper::DataCoa(5003), //kode coa pelayaran
                         'biaya_pelayaran_jaminan',
                         'UANG KELUAR # BIAYA PELAYARAN + UANG JAMINAN # '.$pembayaran_jo->no_jo.
                         '# PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.
@@ -249,7 +249,7 @@ class PaymentJobController extends Controller
                     now(),//tanggal
                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                     $data['total_sblm_dooring'], //uang keluar (kredit)
-                    $coaPelayaran->no_akun, //kode coa
+                    CoaHelper::DataCoa(5003), //kode coa pelayaran
                     'biaya_pelayaran',
                     'UANG KELUAR # BIAYA PELAYARAN # '.$pembayaran_jo->no_jo.
                     '# PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.

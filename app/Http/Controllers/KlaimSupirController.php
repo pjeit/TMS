@@ -13,6 +13,7 @@ use Buglinjo\LaravelWebp\Webp;
 use App\Models\KasBank;
 use App\Models\KlaimSupirRiawayat;
 use App\Models\KasBankTransaction;
+use App\Helper\CoaHelper;
 class KlaimSupirController extends Controller
 {
     /**
@@ -808,7 +809,7 @@ class KlaimSupirController extends Controller
                                         $tanggal_pencairan,//tanggal
                                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
-                                        1016, //kode coa
+                                        CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                         'uang_klaim_supir',
                                         'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
@@ -1054,7 +1055,7 @@ class KlaimSupirController extends Controller
                                         $tanggal_pencairan,//tanggal
                                         $klaim_supir_riwayat->total_pencairan,// debit 
                                         0, //uang keluar (kredit)
-                                        1016, //kode coa
+                                        CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                         'uang_klaim_supir',
                                         'Uang kembali tolak Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'].'# Alasan revisi tolak: '.$data['alasan_tolak'], //keterangan_transaksi, //keterangan_transaksi
                                         $klaim_supir_riwayat->id,//keterangan_kode_transaksi
@@ -1172,7 +1173,7 @@ class KlaimSupirController extends Controller
                                     $tanggal_pencairan,//tanggal
                                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
-                                    1016, //kode coa
+                                    CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                     'uang_klaim_supir',
                                     'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
                                     $klaim_supir_riwayat->id,//keterangan_kode_transaksi
@@ -1223,7 +1224,7 @@ class KlaimSupirController extends Controller
                                         $tanggal_pencairan,//tanggal
                                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
-                                        1016, //kode coa
+                                        CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                         'uang_klaim_supir',
                                         'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi

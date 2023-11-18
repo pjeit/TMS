@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException as ValidationValidationException;
-
+use App\Helper\CoaHelper;
 class PembayaranInvoiceKarantinaController extends Controller
 {
     /**
@@ -106,7 +106,7 @@ class PembayaranInvoiceKarantinaController extends Controller
                         now(),//tanggal
                         floatval(str_replace(',', '', $data['total_diterima'])), //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
-                        1018, //kode coa
+                         CoaHelper::DataCoa(1100), //kode coa invoice
                         'BAYAR_INVOICE_KARANTINA',
                         'Pembayaran invoice karantina '. $no_invoices, //keterangan_transaksi
                         substr($id_invoices, 0, -2), // keterangan_kode_transaksi // id invoices
@@ -117,6 +117,11 @@ class PembayaranInvoiceKarantinaController extends Controller
                         'Y'
                     ) 
                 );
+            $kas_bank = KasBank::where('is_aktif','Y')->find($data['kas']);
+            $kas_bank->saldo_sekarang += floatval(str_replace(',', '', $data['total_diterima']));
+            $kas_bank->updated_by = $user;
+            $kas_bank->updated_at = now();
+            $kas_bank->save();
 
 
             DB::commit();
