@@ -91,6 +91,7 @@
             @csrf 
             <div class="modal-body">
                 <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_sewa --}}
+                <input type="hidden" name="modal_item" id="modal_item"> {{--* dipakai buat simpen item --}}
 
                 <div class='row'>
                     <div class="col-12">
@@ -139,18 +140,9 @@
                 processData:false,
                 success: function(response) {
                     $("#rowGroup").dataTable().fnDestroy();
-                    // $("#tbodyId").html("");
-                    // $('#rowGroup').DataTable().clear().draw();
-                    // $('#rowGroup').DataTable().clear().draw();
-                    // $('#rowGroup').DataTable().rows.add(NewlyCreatedData); // Add new data
-                    // $('#rowGroup').DataTable().columns.adjust().draw(); // Redraw the DataTable
-
-                    // $('#rowGroup').DataTable().destroy();
-                    // $('#rowGroup').find('tbody').append("<tr><td><value1></td><td><value1></td></tr>");
-                    // $('#rowGroup').DataTable().draw();
-
                     $("th").remove();
                     $("#tbodyId").empty();
+
                     var item = $('#item').val();
                     var data = response.data;
 
@@ -164,8 +156,9 @@
                                                     <th>Biaya</th>
                                                     <th>Dicairkan</th>
                                                     <th>Catatan</th>    
-                                                    <th class='text-center' style='width: 30px;'><input id='check_all' type='checkbox'></th>
-                                                `);
+                                                    <th class='text-center' style='width: 30px;'></th>
+                                                    <th class='text-center' style='width: 30px;'></th>
+                                                `); // <input id='check_all' type='checkbox'>
 
                             for (var i = 0; i <data.length; i++) {
                                 var row = $("<tr></tr>");
@@ -180,20 +173,24 @@
                                                     </b>
                                             </td>`);
                                 row.append(`<td> ${data[i].get_j_o.no_bl} </td>`);
-                                row.append(`<td> <b>${data[i].get_j_o.kapal} / ${data[i].get_j_o.voyage} </b></td>`);
+                                row.append(`<td> <b>${data[i].get_j_o.kapal} / ${data[i].get_j_o.voyage}</b> </td>`);
                                 row.append(`<td> 
                                                 ${ data[i].total_operasional.toLocaleString() } 
                                                 <input type="text" class="uang numaja form-control" id='total_operasional_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional == null? 0:data[i].total_operasional}' />
                                             </td>`); 
                                 row.append(`<td> 
                                                 <input type="text" class="uang numaja dicairkan form-control" id='open_${data[i].id}' idOprs="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan.toLocaleString()}' />
-                                                <input type="text" class="uang numaja form-control" name='data[${data[i].id}][dicairkan_old]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan}' />
+                                                <input type="text" class="uang numaja form-control" id='hidden_open_${data[i].id}' name='data[${data[i].id}][dicairkan_old]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan}' />
                                             </td>`);
                                 row.append(`<td class='text-center'> 
                                                 <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text"/> 
+                                                <input class="form-control" id="hidden_catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text" readonly /> 
                                             </td>`);
                                 row.append(`<td class='text-center'> 
                                                 <button type="button" class="btn btn-sm btn-danger delete" value="${data[i].id}"> <span class="fa fa-trash-alt"></span> </button>
+                                            </td>`);
+                                row.append(`<td class='text-center'> 
+                                                <input type='checkbox' class="check_per_item" name="data[${data[i].id}][check]" value="${data[i].id}">
                                             </td>`);
     
                                 $("#tbodyId").append(row);
@@ -213,7 +210,7 @@
                                         visible: false
                                     },
                                     {
-                                        targets: [-1],
+                                        targets: [-1, -2],
                                         orderable: false, // matiin sortir kolom centang
                                     },
                                 ],
@@ -224,47 +221,51 @@
                             $("thead tr").append("<th>Total</th>");
                             $("thead tr").append(`  <th>Dicairkan</th>
                                                     <th>Catatan</th>
-                                                    <th class='text-center'><input id='check_all' type='checkbox'></th>`
-                                                );
-    
-                            for (var i = 0; i <data.length; i++) {
-                                var row = $("<tr></tr>");
-                                row.append(`<td style='background: #efefef'>
-                                                    <b> 
-                                                        <span> ${data[i].get_sewa.get_tujuan.get_grup.nama_grup}</span> 
-                                                    </b>
-                                            </td>`);
-                                row.append(`<td style='background: #efefef'>
-                                                    <b> 
-                                                        <span>► ${data[i].get_sewa.get_customer.nama}</span> 
-                                                    </b>
-                                            </td>`);
-                                row.append(`<td> ${data[i].get_sewa.nama_tujuan} ${ data[i].get_sewa.no_polisi != null? ' / '+data[i].get_sewa.no_polisi:'' } / ${data[i].get_sewa.nama_panggilan? data[i].get_sewa.nama_panggilan:'DRIVER REKANAN '+ data[i].get_sewa.get_customer.nama} </td>`);
-                                row.append(`<td> ${data[i].get_sewa.tipe_kontainer != null? data[i].get_sewa.tipe_kontainer+'"':''}<b> ${data[i].get_sewa.jenis_order} </b> ${ data[i].get_sewa.pick_up == null? '':'('+data[i].get_sewa.pick_up+')'} </td>`);
-                                row.append(`<td> 
-                                                ${ data[i].total_operasional.toLocaleString() } 
-                                                <input type="text" class="uang numaja form-control" id='total_operasional_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional == null? 0:data[i].total_operasional}' />
-                                            </td>`); 
-                                var driver = (data[i].get_sewa.get_supplier != undefined)? data[i].get_sewa.get_supplier.nama:data[i].get_sewa.nama_driver;
-                                var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
-                                var tambahanUJ = '';
-                                row.append(`<td> 
-                                                <input type="text" class="uang numaja dicairkan form-control" id='open_${data[i].id}' idOprs="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan.toLocaleString()}' />
-                                                <input type="text" class="uang numaja form-control" name='data[${data[i].id}][dicairkan_old]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan}' />
-                                            </td>`);
-    
-                                row.append(`<td class='text-center'> 
-                                                <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan}" type="text"/> 
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <button type="button" class="btn btn-sm btn-danger delete" value="${data[i].id}"> <span class="fa fa-trash-alt"></span> </button>
-                                            </td>`);
-    
-                                $("#tbodyId").append(row);
-                            }
-
-                            // $('#rowGroup').DataTable().draw();
-                            // $('#rowGroup').DataTable({
+                                                    <th class='text-center' style='width: 30px;'></th>
+                                                    <th class='text-center' style='width: 30px;'></th>
+                                                `); // <input id='check_all' type='checkbox'>
+                            // if(item == 'OPERASIONAL' || item == 'TALLY' || item == 'SEAL PELAYARAN'){
+                            // }else{
+                                for (var i = 0; i <data.length; i++) {
+                                    var row = $("<tr></tr>");
+                                    row.append(`<td style='background: #efefef'>
+                                                        <b> 
+                                                            <span> ${data[i].get_sewa.get_tujuan.get_grup.nama_grup}</span> 
+                                                        </b>
+                                                </td>`);
+                                    row.append(`<td style='background: #efefef'>
+                                                        <b> 
+                                                            <span>► ${data[i].get_sewa.get_customer.nama}</span> 
+                                                        </b>
+                                                </td>`);
+                                    row.append(`<td> ${data[i].get_sewa.nama_tujuan} ${ data[i].get_sewa.no_polisi != null? ' / '+data[i].get_sewa.no_polisi:'' } / ${data[i].get_sewa.nama_panggilan? data[i].get_sewa.nama_panggilan:'DRIVER REKANAN '+ data[i].get_sewa.get_customer.nama} </td>`);
+                                    row.append(`<td> ${data[i].get_sewa.tipe_kontainer != null? data[i].get_sewa.tipe_kontainer+'"':''}<b> ${data[i].get_sewa.jenis_order} </b> ${ data[i].get_sewa.pick_up == null? '':'('+data[i].get_sewa.pick_up+')'} </td>`);
+                                    row.append(`<td> 
+                                                    ${ data[i].total_operasional.toLocaleString() } 
+                                                    <input type="text" class="uang numaja form-control" id='total_operasional_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional == null? 0:data[i].total_operasional}' />
+                                                </td>`); 
+                                    var driver = (data[i].get_sewa.get_supplier != undefined)? data[i].get_sewa.get_supplier.nama:data[i].get_sewa.nama_driver;
+                                    var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
+                                    var tambahanUJ = '';
+                                    row.append(`<td> 
+                                                    <input type="text" class="uang numaja dicairkan form-control" id='open_${data[i].id}' idOprs="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan.toLocaleString()}' readonly />
+                                                    <input type="text" class="uang numaja form-control" id='hidden_open_${data[i].id}' name='data[${data[i].id}][dicairkan_old]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan}' />
+                                                </td>`);
+        
+                                    row.append(`<td class='text-center'> 
+                                                    <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text" readonly /> 
+                                                    <input class="form-control" id="hidden_catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text" readonly /> 
+                                                </td>`);
+                                    row.append(`<td class='text-center'> 
+                                                    <button type="button" class="btn btn-sm btn-danger delete" value="${data[i].id}"> <span class="fa fa-trash-alt"></span> </button>
+                                                </td>`);
+                                    row.append(`<td class='text-center'> 
+                                                    <input type='checkbox' class="check_per_item" name="data[${data[i].id}][check]" value="${data[i].id}">
+                                                </td>`);
+        
+                                    $("#tbodyId").append(row);
+                                }
+                            // }
                                 
                             new DataTable('#rowGroup', {
                                 order: [
@@ -280,7 +281,7 @@
                                         visible: false
                                     },
                                     {
-                                        targets: [-1],
+                                        targets: [-1, -2],
                                         orderable: false, // matiin sortir kolom centang
                                     },
                                 ],
@@ -308,9 +309,28 @@
             });
         }
 
+        $(document).on('click', '.check_per_item', function(e){
+            let id = this.value;
+            console.log('this.checked', this.checked);
+            
+            if(this.checked == true){
+                $('#open_'+id).prop('readonly', false);
+                $('#catatan_'+id).prop('readonly', false);
+
+            }else{
+                $('#open_'+id).prop('readonly', true);
+                $('#catatan_'+id).prop('readonly', true);
+
+                $('#open_'+id).val( moneyMask($('#hidden_open_'+id).val()) );
+                $('#catatan_'+id).val( $('#hidden_catatan_'+id).val() );
+            }
+        });
+
         $(document).on('click', '.delete', function(e){
             $('#key').val('');
+            $('#modal_item').val('');
             $('#key').val(this.value);
+            $('#modal_item').val( $('#item').val() );
             $('#modal_delete').modal('show');
         });
 

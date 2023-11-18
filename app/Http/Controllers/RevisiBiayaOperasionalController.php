@@ -58,11 +58,12 @@ class RevisiBiayaOperasionalController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        // dd($data);
+        dd($data);
 
         try {
             foreach ($data['data'] as $key => $value) {
-                if($value['dicairkan'] != $value['dicairkan_old']){
+                if(isset($data['check'])){
+                    // kalau ada data check, berarti data di centang dan dirubah
                     if($data['item'] == 'KARANTINA'){
                         $oprs = Karantina::where('is_aktif', 'Y')->find($key);
                         $jenis = 'karantina';
@@ -142,50 +143,59 @@ class RevisiBiayaOperasionalController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function delete(Request $request)
     {
+        $user = Auth::user()->id;
         $data = $request->collect();
-        dd($data);
+        DB::beginTransaction(); 
+        
+        try {
+            if($data['modal_item'] == 'KARANTINA'){
+                $oprs = Karantina::where('is_aktif', 'Y')->find($data['key']);
+                $jenis = 'karantina';
+                $coa = 1015;
+            }else{
+                $oprs = SewaOperasional::where('is_aktif', 'Y')->find($data['key']);
+                $jenis = 'pencairan_operasional';
+                $coa = 1015;
+            }
+            $oprs->catatan =  'REVISI OFF - '. $data['alasan'] . ' | ' .$oprs->catatan;
+            $oprs->updated_by = $user;
+            $oprs->updated_at = now(); 
+            $oprs->is_aktif = 'N';
+            if($oprs->save()){
+                $history = KasBankTransaction::where('is_aktif', 'Y')
+                                                ->where('jenis', $jenis)
+                                                ->where('keterangan_kode_transaksi', $oprs->id)
+                                                ->first();
+    
+                if($history){
+                    // history dump dinon-aktifkan
+                    $keterangan_transaksi = $history->keterangan_transaksi;
+                    $history->keterangan_transaksi = 'REVISI OFF - '. $data['alasan'] . ' | ' .$keterangan_transaksi;
+                    $history->updated_by = $user;
+                    $history->updated_at = now();
+                    $history->is_aktif = 'N';
+                    if($history->save()){
+                        // uang kasbank dikembalikan
+                        $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
+                        if($kasbank){
+                            $kasbank->saldo_sekarang += $history->kredit;
+                            $kasbank->updated_by = $user;
+                            $kasbank->updated_at = now();
+                            $kasbank->save();
+                        }
+                    }
+                }
+
+            }
+
+            DB::commit();
+            return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'Success', 'msg'  => 'Hapus data berhasil!']);
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Hapus data gagal!']);
+        }
     }
 
     public function load_data($item){
@@ -195,15 +205,28 @@ class RevisiBiayaOperasionalController extends Controller
                                     ->with('details', 'getJO', 'getCustomer.getGrup')
                                     ->get();
             }else{
-                $data = SewaOperasional::where('is_aktif', 'Y')
-                                            ->with('getSewa.getTujuan.getGrup')
-                                            ->with('getSewa.getCustomer')
-                                            ->with('getSewa.getSupplier')
-                                            ->whereHas('getSewa', function ($query) {
-                                                $query->where('status', 'MENUNGGU INVOICE');
-                                            })
-                                            ->where('deskripsi', $item)
-                                            ->get();
+                $data = SewaOperasional::where('sewa_operasional.is_aktif', 'Y')
+                                        ->with('getSewa.getTujuan.getGrup')
+                                        ->with('getSewa.getCustomer')
+                                        ->with('getSewa.getSupplier')
+                                        ->with('getTransaction')
+                                        ->whereHas('getSewa', function ($query) {
+                                            $query->whereIn('status', ['PROSES DOORING', 'MENUNGGU INVOICE']);
+                                        })
+                                        // ->whereHas('kas_bank_transaction', function ($query) {
+                                        //     $query->where('kas_bank_transaction.keterangan_kode_transaksi', 'like', '%'.'727'.'%');
+                                        // })
+                                        // ->leftJoin('kas_bank_transaction as kbt', 'keterangan_kode_transaksi', 'like', '%'.'sewa_operasional.id'.'%')
+                                        ->where('deskripsi', $item)
+                                        ->get();
+                                        
+                // foreach ($data as $key => $value) {
+                //     $transaction = KasBankTransaction::where('is_aktif', 'Y')
+                //                                         ->where('jenis', 'pencairan_operasional')
+                //                                         ->where('keterangan_kode_transaksi', 'like', '%'.$value->id.'%')
+                //                                         ->get();
+                // }
+                dd($data);
 
             }
             
