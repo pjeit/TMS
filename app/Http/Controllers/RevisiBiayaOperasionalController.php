@@ -58,22 +58,31 @@ class RevisiBiayaOperasionalController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        dd($data);
+        // dd($data);
 
         try {
             foreach ($data['data'] as $key => $value) {
                 if($value['dicairkan'] != $value['dicairkan_old']){
-                    $oprs = SewaOperasional::where('is_aktif', 'Y')->find($key);
+                    if($data['item'] == 'KARANTINA'){
+                        $oprs = Karantina::where('is_aktif', 'Y')->find($key);
+                        $jenis = 'karantina';
+                        $coa = 1015;
+                    }else{
+                        $oprs = SewaOperasional::where('is_aktif', 'Y')->find($key);
+                        $jenis = 'pencairan_operasional';
+                        $coa = 1015;
+                    }
 
                     if($oprs){
                         $oprs->total_operasional = $value['total_operasional'];
                         $oprs->total_dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
+                        $oprs->catatan = $value['catatan'];
                         $oprs->updated_by = $user;
                         $oprs->updated_at = now(); 
                         if($oprs->save()){
                             // find history dump
                             $history = KasBankTransaction::where('is_aktif', 'Y')
-                                                            ->where('jenis', 'pencairan_operasional')
+                                                            ->where('jenis', $jenis)
                                                             ->where('keterangan_kode_transaksi', $oprs->id)
                                                             ->first();
 
@@ -100,9 +109,9 @@ class RevisiBiayaOperasionalController extends Controller
                                             $history->tanggal, //tanggal
                                             0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                             $oprs->total_dicairkan, //uang keluar (kredit)
-                                            1015, //kode coa
-                                            'pencairan_operasional',
-                                            'REVISI -'.$keterangan_transaksi, //keterangan_transaksi
+                                            $coa, //kode coa
+                                            $jenis,
+                                            'REVISI - '.$keterangan_transaksi, //keterangan_transaksi
                                             $oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
                                             $user, //created_by
                                             now(), //created_at

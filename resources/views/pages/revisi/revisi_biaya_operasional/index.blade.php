@@ -190,7 +190,7 @@
                                                 <input type="text" class="uang numaja form-control" name='data[${data[i].id}][dicairkan_old]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan}' />
                                             </td>`);
                                 row.append(`<td class='text-center'> 
-                                                <input class="form-control name='data[${data[i].id}][catatan]' value="${data[i].catatan}" type="text"/> 
+                                                <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text"/> 
                                             </td>`);
                                 row.append(`<td class='text-center'> 
                                                 <button type="button" class="btn btn-sm btn-danger delete" value="${data[i].id}"> <span class="fa fa-trash-alt"></span> </button>
@@ -254,7 +254,7 @@
                                             </td>`);
     
                                 row.append(`<td class='text-center'> 
-                                                <input class="form-control name='data[${data[i].id}][catatan]' value="${data[i].catatan}" type="text"/> 
+                                                <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan}" type="text"/> 
                                             </td>`);
                                 row.append(`<td class='text-center'> 
                                                 <button type="button" class="btn btn-sm btn-danger delete" value="${data[i].id}"> <span class="fa fa-trash-alt"></span> </button>

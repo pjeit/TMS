@@ -83,29 +83,29 @@
                                                
                                                 @if ($item->id_supplier)
                                                     <a href="{{route('truck_order_rekanan.edit',[$item->id_sewa])}}" class="dropdown-item">
-                                                        <span class="fas fa-edit mr-3"></span> Edit Sewa Rekanan
+                                                        <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa Rekanan
                                                     </a>
                                                     {{-- @if ($item->jenis_tujuan == 'FTL') --}}
                                                         <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="fas fa-undo mr-3"></span> Batal muat Rekanan
+                                                            <span class="nav-icon fas fa-undo mr-3"></span> Batal muat Rekanan
                                                         </a>
                                                         <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="fas fa-times mr-3"></span> Cancel Rekanan
+                                                            <span class="nav-icon fas fa-times mr-3"></span> Cancel Rekanan
                                                         </a>
                                                     {{-- @endif --}}
                                                 @else
                                                 <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="fas fa-undo mr-3"></span> Batal muat
+                                                            <span class="nav-icon fas fa-undo mr-3"></span> Batal muat
                                                         </a>
                                                         <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="fas fa-times mr-3"></span> Cancel
+                                                            <span class="nav-icon fas fa-times mr-3"></span> Cancel
                                                         </a>
                                                     @if ($item->jenis_tujuan == 'FTL')
                                                         <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
+                                                            <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa PJE
                                                         </a>
                                                         <a href="{{route('dalam_perjalanan.ubah_supir',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="fas fa-solid fa-user mr-3"></span> Ubah Supir
+                                                            <span class="nav-icon fas fa-user mr-3"></span> Ubah Supir
                                                         </a>
                                                         
                                                         <a href="{{route('dalam_perjalanan.cancel_uang_jalan',[$item->id_sewa])}}" class="dropdown-item">
@@ -113,7 +113,7 @@
                                                         </a>
                                                     @else
                                                         <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="fas fa-edit mr-3"></span> Edit Sewa PJE
+                                                            <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa PJE
                                                         </a>
                                                         {{-- <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="fas fa-times mr-3"></span> Cancel
