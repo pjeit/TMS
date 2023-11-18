@@ -14,7 +14,7 @@ use App\Models\JobOrderDetail;
 use App\Models\Karantina;
 use App\Models\KarantinaDetail;
 use Carbon\Carbon;
-
+use App\Helper\CoaHelper;
 class BiayaOperasionalController extends Controller
 {
     /**
@@ -91,7 +91,7 @@ class BiayaOperasionalController extends Controller
                                 now(), //tanggal
                                 0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                 floatval(str_replace(',', '', $value['dicairkan'])), //uang keluar (kredit)
-                                1015, //kode coa
+                                CoaHelper::DataCoa(5003), //kode coa karantina
                                 'karantina',
                                 'No. BL: '.$karantina->getJO->no_bl . ' #Kapal: '.$karantina->getJO->kapal .' #Voyage: '. $karantina->getJO->voyage . $no_kontainer, //keterangan_transaksi
                                 $karantina->id, //keterangan_kode_transaksi
@@ -191,7 +191,7 @@ class BiayaOperasionalController extends Controller
                                     now(), //tanggal
                                     0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                     $sewa_o->total_dicairkan, //uang keluar (kredit)
-                                    1015, //kode coa
+                                    CoaHelper::DataCoa(5009), //kode coa
                                     'pencairan_operasional',
                                     $keterangan .= $value['keterangan'], //keterangan_transaksi
                                     $sewa_o->id, //keterangan_kode_transaksi // id_sewa_operasional
@@ -230,7 +230,7 @@ class BiayaOperasionalController extends Controller
                             now(), //tanggal
                             0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                             $value['dicairkan'], //uang keluar (kredit)
-                            1015, //kode coa
+                            CoaHelper::DataCoa(5007), //kode coa
                             'pencairan_operasional',
                             $item.": ".$value['index'].'x ' .$key." ".$value['driver'], //keterangan_transaksi
                             $value['id_opr'], //keterangan_kode_transaksi // id_sewa_operasional

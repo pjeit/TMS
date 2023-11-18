@@ -289,9 +289,7 @@ class GrupTujuanController extends Controller
                         }
                     }
                 }
-               
             }
-
             // return redirect()->route('grup_tujuan.index')->with('status','Success!!');
             return redirect('grup_tujuan')->with(['status' => 'Success', 'msg' => 'Data berhasil disimpan!']);
         } catch (ValidationException $e) {
