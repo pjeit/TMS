@@ -12,7 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-
+use App\Models\KasBank;
+use App\Helper\CoaHelper;
 class TagihanPembelianController extends Controller
 {
     /**
@@ -193,13 +194,20 @@ class TagihanPembelianController extends Controller
             $history->id_kas_bank = $data['id_kas'];
             $history->debit = 0;
             $history->kredit = floatval(str_replace(',', '', $data['total_bayar']));
-            $history->kode_coa = 1255; // hardcode
+            $history->kode_coa = CoaHelper::DataCoa(2010); // hardcode
             $history->jenis = 'TAGIHAN_PEMBELIAN';
             $history->keterangan_transaksi = $keterangan;
             $history->keterangan_kode_transaksi = $pembayaran->id;
             $history->created_by = $user;
             $history->created_at = now();
             if($history->save()){
+                $kas_bank= KasBank::where('is_aktif', 'Y')
+                                ->where('id', $data['id_kas'])
+                                ->first();
+                $kas_bank->saldo_sekarang -=  floatval(str_replace(',', '',  $data['total_bayar']));
+                $kas_bank->updated_at = now();
+                $kas_bank->updated_by = $user;
+                $kas_bank->save();
                 DB::commit();
             }
             return redirect()->route('tagihan_pembelian.index')->with(['status' => 'Success', 'msg' => 'Tagihan berhasil dibayar']);

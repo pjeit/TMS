@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-
+use App\Helper\CoaHelper;
 class PencairanUangJalanLTLController extends Controller
 {
     /**
@@ -141,7 +141,7 @@ class PencairanUangJalanLTLController extends Controller
                                     now(), //tanggal
                                     0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                     $diterima, //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
-                                    1016, //kode coa
+                                    CoaHelper::DataCoa(5002), //kode coa uang jalan
                                     'uang_jalan',
                                     'UJ LTL: #'.$sewa->no_polisi. ' #'.$sewa->nama_driver, //keterangan_transaksi
                                     $ujr->id, //keterangan_kode_transaksi

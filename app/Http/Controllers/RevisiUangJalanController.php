@@ -13,7 +13,7 @@ use App\Models\KaryawanHutangTransaction;
 use App\Models\KasBank;
 use App\Models\Sewa;
 use App\Models\UangJalanRiwayat;
-
+use App\Helper\CoaHelper;
 class RevisiUangJalanController extends Controller
 {
     /**
@@ -170,7 +170,7 @@ class RevisiUangJalanController extends Controller
                         $tgl_pencairan, //tanggal
                         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                         (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
-                        1016, //kode coa
+                        CoaHelper::DataCoa(5002), //kode coa uang jalan
                         'rev_tambahan_uang_jalan',
                         'REVISI TAMBAHAN UANG JALAN'.' - '.$data['catatan'].' #'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan'], //keterangan_transaksi
                         $old_uang_jalan_riwayat->id,//keterangan_kode_transaksi
@@ -239,7 +239,7 @@ class RevisiUangJalanController extends Controller
                                     date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
                                     (float)str_replace(',', '', $data['uang_jalan']), //uang masuk (debit)
                                     0,// kredit 0 soalnya kan ini uang masuk
-                                    1016, //kode coa
+                                    CoaHelper::DataCoa(5002), //kode coa uang jalan
                                     'uang_jalan',
                                     'UANG MASUK #PENGEMBALIAN UANG JALAN '.'#'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan'].' #'.$data['catatan'], //keterangan_transaksi
                                     $old_uang_jalan_riwayat->id,//keterangan_kode_transaksi
@@ -250,7 +250,6 @@ class RevisiUangJalanController extends Controller
                                     'Y'
                                 ) 
                             );
-                            
                             DB::commit();
                         }
                     }

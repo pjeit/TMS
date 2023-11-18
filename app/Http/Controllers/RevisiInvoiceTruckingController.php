@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\Facades\DataTables;
-
+use App\Helper\CoaHelper;
 class RevisiInvoiceTruckingController extends Controller
 {
     /**
@@ -199,7 +199,7 @@ class RevisiInvoiceTruckingController extends Controller
             
             // kembalikan uang ke kas bank
             $kasbank = KasBank::where('is_aktif', 'Y')->find($oldTransaction->id_kas_bank);
-            $kasbank->saldo_sekarang += $oldTransaction->debit;
+            $kasbank->saldo_sekarang -= $oldTransaction->debit;
             $kasbank->updated_by = $user; 
             $kasbank->updated_at = now();
             $kasbank->save();
@@ -281,7 +281,7 @@ class RevisiInvoiceTruckingController extends Controller
                         now(),//tanggal
                         $total_bayar, //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
-                        1018, //kode coa
+                        CoaHelper::DataCoa(1100), //kode coa invoice
                         'BAYAR INVOICE',
                         $keterangan_transaksi, //keterangan_transaksi
                         $pembayaran->id, // keterangan_kode_transaksi - id pembayaran
@@ -292,6 +292,11 @@ class RevisiInvoiceTruckingController extends Controller
                         'Y'
                     ) 
                 );
+                $kas_bank = KasBank::where('is_aktif','Y')->find($data['kas']);
+                $kas_bank->saldo_sekarang += floatval(str_replace(',', '', $data['total_dibayar']));
+                $kas_bank->updated_by = $user;
+                $kas_bank->updated_at = now();
+                $kas_bank->save();
 
                 $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
                 if($cust){

@@ -134,7 +134,7 @@ class KasBankController extends Controller
             // $tanggal =$tanggal[2];
             // $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
             $tgl_saldo = date_create_from_format('d-M-Y', $data['tgl_saldo']);
-
+            // dd(date_format($tgl_saldo, 'm') == "11");
             DB::table('kas_bank')
                 ->insert(array(
                     'nama' => strtoupper($data['nama']),

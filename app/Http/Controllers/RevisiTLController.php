@@ -21,7 +21,7 @@ use App\Models\KaryawanHutang;
 use App\Models\KaryawanHutangTransaction;
 use App\Models\SewaOperasional;
 use App\Models\UangJalanRiwayat;
-
+use App\Helper\CoaHelper;
 class RevisiTLController extends Controller
 {
     /**
@@ -232,7 +232,7 @@ class RevisiTLController extends Controller
                         date_create_from_format('d-M-Y', $data['tanggal_pencairan']),//tanggal
                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                         (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
-                        1016, //kode coa
+                        CoaHelper::DataCoa(5002), //kode coa
                         'teluk_lamong',
                         'PENAMBAHAN TELUK LAMONG:'.$catatan.' #'.$data['no_sewa'].' #'.$data['kendaraan'].' #'.$data['driver'].' #'.$data['customer'].' #'.$data['tujuan'], //keterangan_transaksi
                         $uang_jalan_riwayat->id,//keterangan_kode_transaksi
@@ -342,7 +342,7 @@ class RevisiTLController extends Controller
                     date_create_from_format('d-M-Y', $data['tanggal_pengembalian']),//tanggal
                     (float)str_replace(',', '', $data['jumlah']),// debit uang masuk
                     0, //uang keluar (kredit) 0 soalnya kan ini uang MASUK, ga ada uang KELUAR
-                    1016, //kode coa
+                    CoaHelper::DataCoa(5002), //kode coa
                     'teluk_lamong',
                     'PENGEMBALIAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
                      $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
