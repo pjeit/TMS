@@ -30,7 +30,7 @@ class JobOrderController extends Controller
 
     public function __construct()
     {
-        $this->middleware('can: create JO');
+        // $this->middleware('can: create JO');
         // $this->middleware('can: create JO')->only('create');
         // buka UserSeeder buat detailnya
     }
