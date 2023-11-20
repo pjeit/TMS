@@ -383,9 +383,12 @@
 		// }); 
 
         function showTable(status){
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`bukti_potong/loadData/${status}`;
+
             $.ajax({
                 method: 'GET',
-                url: `bukti_potong/loadData/${status}`,
+                url: url,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,

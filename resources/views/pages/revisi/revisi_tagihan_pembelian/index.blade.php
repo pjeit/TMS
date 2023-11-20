@@ -73,10 +73,9 @@
 
         $(document).on('click', '.delete', function (event){
             let id = this.value;
-            console.log('id', id);
-            url = `{{ url('revisi_tagihan_pembelian/delete/${id}') }}`;
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`{{ url('revisi_tagihan_pembelian/delete/${id}') }}`;
             var token = $('#token').val();
-            console.log('url', url);
 
             Swal.fire({
                 title: 'Apakah Anda yakin menghapus data ini?',

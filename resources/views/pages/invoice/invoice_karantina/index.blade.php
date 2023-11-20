@@ -159,7 +159,8 @@
         });
 
         function showTable(id){
-            const url = 'invoice_karantina/load_data/'+id;
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+'invoice_karantina/load_data/'+id;
 
             $.ajax({
                 method: 'GET',

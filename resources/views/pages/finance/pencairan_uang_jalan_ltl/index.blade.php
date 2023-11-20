@@ -237,9 +237,12 @@
 		});        
 
          function showTable(item){
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`pencairan_uang_jalan_ltl/getData/${item}`;
+
             $.ajax({
                 method: 'GET',
-                url: `pencairan_uang_jalan_ltl/getData/${item}`,
+                url: url,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,

@@ -144,9 +144,12 @@
 		});        
         
         function showTable(item){
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`revisi_biaya_operasional/load_data/${item}`;
+
             $.ajax({
                 method: 'GET',
-                url: `revisi_biaya_operasional/load_data/${item}`,
+                url: url,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,

@@ -167,8 +167,8 @@
         });
 
         function showTable(id){
-            const url = 'karantina/load_data/'+id;
-            console.log('id', id);
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+'karantina/load_data/'+id;
 
             $.ajax({
                 method: 'GET',

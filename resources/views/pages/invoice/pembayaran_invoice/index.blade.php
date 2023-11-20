@@ -300,9 +300,12 @@
         showTable("BELUM LUNAS");
 
         function showTable(status){
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`pembayaran_invoice/loadData/${status}`;
+
             $.ajax({
                 method: 'GET',
-                url: `pembayaran_invoice/loadData/${status}`,
+                url: url,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,
