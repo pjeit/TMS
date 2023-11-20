@@ -651,6 +651,32 @@ class SewaController extends Controller
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
               )
             );
+            $customer_lama = DB::table('customer as c')
+                    ->select('c.*')
+                    ->where('c.id', '=', $truck_order->id_customer)
+                    ->where('c.is_aktif', '=', "Y")
+                    ->first();
+            $grup_lama = DB::table('grup as g')
+                ->select('g.*')
+                ->where('g.id', '=', $customer_lama->grup_id)
+                ->where('g.is_aktif', '=', "Y")
+                ->first();
+                   
+                //KURANGI  KREDIT YANG LAMA,SOALNYA KAN dihapus, jadi gajadi
+            DB::table('customer')
+                ->where('id', $truck_order->id_customer)
+                ->update([
+                    'kredit_sekarang' => (float)$customer_lama->kredit_sekarang-$truck_order->total_tarif < 0 ? 0 : $customer_lama->kredit_sekarang-$truck_order->total_tarif,
+                    'updated_at' => now(),
+                    'updated_by' => $user,
+            ]);
+            DB::table('grup')
+                ->where('id', $customer_lama->grup_id)
+                ->update([
+                    'total_kredit' => (float)$grup_lama->total_kredit-$truck_order->total_tarif< 0 ? 0 : $grup_lama->total_kredit-$truck_order->total_tarif,
+                    'updated_at' => now(),
+                    'updated_by' => $user,
+            ]);
             return redirect()->route('truck_order.index')->with(['status' => 'Success', 'msg' => 'Berhasil Menghapus data!']);
 
 
