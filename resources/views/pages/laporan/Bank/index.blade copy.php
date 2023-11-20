@@ -93,10 +93,7 @@
                             @if (isset($data))
                                 <tr>
                                     {{-- <td colspan="7">KAS KECIL {{number_format($kas->saldo_sekarang)}} | DEBIT: {{number_format($sumDebit)}} | KREDIT: {{number_format($sumKredit)}} | TOT SKRG: ({{number_format($kas->saldo_sekarang + $sumDebit - $sumKredit)}})</td> --}}
-                                    @php
-                                        $saldo_sekarang = $kas->saldo_sekarang + $sumDebit - $sumKredit;
-                                    @endphp
-                                    <td colspan="6">{{$kas->nama}} (Saldo: {{number_format($saldo_sekarang)}})</td>
+                                    <td colspan="6">{{$kas->nama}} (Saldo: {{number_format($kas->saldo_sekarang, 2)}})</td>
                                 </tr>
                                 @foreach ($data as $key => $item)
                                     @php
@@ -106,20 +103,16 @@
                                     @endphp
                                 <tr>
                                     {{-- <td>{{$key}}</td> --}}
-                                    <td>{{ date('d-M-Y', strtotime($item->tanggal)) }}</td>
+                                    <td>{{ $item->keterangan_transaksi == 'Saldo Awal'? '':date('d-M-Y', strtotime($item->tanggal)) }}</td>
                                     <td>{{$item->jenis_deskripsi}}</td>
-                                    <td>{{$item->keterangan_transaksi}}</td>
-                                    <td>{{number_format($item->debit)}}</td>
-                                    <td>{{number_format($item->kredit)}}</td>
-                                    @php
-                                        if($item->kredit != 0){
-                                            $saldo_sekarang -= $item->kredit;
-                                        }elseif($item->debit != 0){
-                                            $saldo_sekarang += $item->debit;
-                                        }
-                                    @endphp
-                                    <td>{{ number_format($saldo_sekarang) }}</td>
-                                    {{-- <td>{{number_format($item->total, 2)}}</td> --}}
+                                    @if ($item->keterangan_transaksi == 'Saldo Awal')
+                                        <td><b>{{$item->keterangan_transaksi}}</b></td>                                    
+                                    @else
+                                        <td>{{$item->keterangan_transaksi}}</td>
+                                    @endif
+                                    <td>{{number_format($item->debit, 2)}}</td>
+                                    <td>{{number_format($item->kredit, 2)}}</td>
+                                    <td>{{number_format($item->total, 2)}}</td>
                                 </tr>
                                 @endforeach
                                 <tr>

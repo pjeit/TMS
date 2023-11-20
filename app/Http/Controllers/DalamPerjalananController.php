@@ -420,7 +420,7 @@ class DalamPerjalananController extends Controller
             $dalam_perjalanan->no_kontainer = isset($data['no_kontainer'])? $data['no_kontainer']:null;
             if( $dalam_perjalanan->status == 'PROSES DOORING')
             {
-                $dalam_perjalanan->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
+                $dalam_perjalanan->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('Y-m-d', $data['tanggal_kembali']):null;
                 $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
                 $dalam_perjalanan->is_kembali = $data['is_kembali'];
                 if ($data['jenis_tujuan']=='LTL') {
@@ -610,7 +610,6 @@ class DalamPerjalananController extends Controller
         $data = $request->post();
         $user = Auth::user()->id;
         DB::beginTransaction(); 
-        // dd($data);
 
         try {
             $sewa->status = 'BATAL MUAT';
@@ -637,7 +636,7 @@ class DalamPerjalananController extends Controller
                     $batal = new SewaBatalCancel();
                     $batal->id_sewa = $sewa->id_sewa;
                     $batal->jenis = 'BATAL';
-                    $batal->tgl_batal_muat_cancel = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+                    $batal->tgl_batal_muat_cancel = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
                     $batal->total_tarif_ditagihkan = floatval(str_replace(',', '', $data['total_tarif_tagih']));
                     $batal->total_uang_jalan_kembali = floatval(str_replace(',', '', $data['total_uang_jalan_kembali']));
                     if($data['kasbank'] != 'HUTANG DRIVER'){
@@ -645,7 +644,7 @@ class DalamPerjalananController extends Controller
                     }else{
                         $batal->id_karyawan_hutang = $data['id_karyawan'];
                     }
-                    $batal->tgl_kembali = date_create_from_format('d-M-Y', $data['tanggal_kembali']);
+                    $batal->tgl_kembali = date_create_from_format('Y-m-d', $data['tanggal_kembali']);
                     $batal->alasan_batal = $data['alasan_cancel'];
                     $batal->created_by = $user;
                     $batal->created_at = now();
@@ -654,7 +653,7 @@ class DalamPerjalananController extends Controller
                         if($data['kasbank'] != 'HUTANG DRIVER'){
                             $kasBankTransaction = new KasBankTransaction ();
                             $kasBankTransaction->id_kas_bank = $data['kasbank'];
-                            $kasBankTransaction->tanggal = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+                            $kasBankTransaction->tanggal = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
                             $kasBankTransaction->debit = $uj_kembali; // debit uang masuk
                             $kasBankTransaction->kredit = 0;
                             $kasBankTransaction->jenis = 'BATAL MUAT';
@@ -698,7 +697,7 @@ class DalamPerjalananController extends Controller
                             $kht->refrensi_id = $batal->id;
                             $kht->refrensi_keterangan = 'BATAL MUAT';
                             $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                            $kht->tanggal = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+                            $kht->tanggal = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
                             $kht->debit = $uj_kembali;
                             $kht->kredit = 0;
                             $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
@@ -717,9 +716,9 @@ class DalamPerjalananController extends Controller
                     $batalRekanan = new SewaBatalCancel();
                     $batalRekanan->id_sewa = $sewa->id_sewa;
                     $batalRekanan->jenis = 'BATAL';
-                    $batalRekanan->tgl_batal_muat_cancel = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+                    $batalRekanan->tgl_batal_muat_cancel = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
                     $batalRekanan->total_tarif_ditagihkan = floatval(str_replace(',', '', $data['total_tarif_tagih']));
-                    $batalRekanan->tgl_kembali = date_create_from_format('d-M-Y', $data['tanggal_kembali']);
+                    $batalRekanan->tgl_kembali = date_create_from_format('Y-m-d', $data['tanggal_kembali']);
                     $batalRekanan->alasan_batal = $data['alasan_cancel'].'[rekanan batal]';
                     $batalRekanan->created_by = $user;
                     $batalRekanan->created_at = now();
@@ -793,8 +792,8 @@ class DalamPerjalananController extends Controller
     public function save_cancel(Request $request, Sewa $sewa)
     {
         $data = $request->post();
-        $tgl_cancel = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
-        $tgl_kembali = date_create_from_format('d-M-Y', $data['tanggal_kembali']);
+        $tgl_cancel = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
+        $tgl_kembali = date_create_from_format('Y-m-d', $data['tanggal_kembali']);
         $user = Auth::user()->id;
         DB::beginTransaction(); 
         // dd($data);
@@ -838,7 +837,7 @@ class DalamPerjalananController extends Controller
                         if($data['pembayaran'] != 'HUTANG KARYAWAN'){
                             $kasBankTransaction = new KasBankTransaction ();
                             $kasBankTransaction->id_kas_bank = $data['pembayaran'];
-                            $kasBankTransaction->tanggal = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+                            $kasBankTransaction->tanggal = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
                             $kasBankTransaction->debit = $uj_kembali; // debit uang masuk
                             $kasBankTransaction->kredit = 0;
                             $kasBankTransaction->jenis = 'CANCEL';
