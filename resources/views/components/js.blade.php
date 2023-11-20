@@ -88,6 +88,10 @@
 {{-- script bikin capslock upper case --}}
 <script src="{{asset('assets/dist/js/capslock.js')}}"></script>
 
+{{-- script masking --}}
+{{-- <script src="{{asset('assets/dist/js/jquery.js')}}"></script> --}}
+<script src="{{asset('assets/dist/js/jquerymask.js')}}"></script>
+
 <script src="{{asset('assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
 <script src="{{asset('assets/plugins/bootstrap-datepicker/datepicker-locale/bootstrap-datepicker.id.min.js')}}"></script>
 

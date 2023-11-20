@@ -203,9 +203,12 @@
         });
 
         function showTable(supplier){
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`loadData/${supplier}`;
+
             $.ajax({
                 method: 'GET',
-                url: `loadData/${supplier}`,
+                url: url,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,

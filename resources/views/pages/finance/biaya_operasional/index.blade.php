@@ -194,9 +194,12 @@
                     </tbody>
                 `;
             }else{
+                var baseUrl = "{{ asset('') }}";
+                var url = baseUrl+`biaya_operasional/load_data/${item}`;
+
                 $.ajax({
                     method: 'GET',
-                    url: `biaya_operasional/load_data/${item}`,
+                    url: url,
                     dataType: 'JSON',
                     contentType: false,
                     cache: false,

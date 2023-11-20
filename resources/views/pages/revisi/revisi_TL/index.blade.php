@@ -68,9 +68,12 @@
 		});        
 
         function showTable(status){
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`revisi_tl/getData/${status}`;
+
             $.ajax({
                 method: 'GET',
-                url: `revisi_tl/getData/${status}`,
+                url: url,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,

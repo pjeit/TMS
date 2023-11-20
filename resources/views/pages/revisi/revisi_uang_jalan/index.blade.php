@@ -74,10 +74,11 @@
         
         function showTable(item){
             var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`revisi_uang_jalan/load_data/${item}`;
 
             $.ajax({
                 method: 'GET',
-                url: `revisi_uang_jalan/load_data/${item}`,
+                url: url,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,
