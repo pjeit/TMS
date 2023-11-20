@@ -6,6 +6,7 @@ use App\Models\Karantina;
 use App\Models\KasBank;
 use App\Models\KasBankTransaction;
 use App\Models\SewaOperasional;
+use App\Models\SewaOperasionalPembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -58,62 +59,164 @@ class RevisiBiayaOperasionalController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        dd($data);
+        // dd($data);
 
-        try {
-            foreach ($data['data'] as $key => $value) {
-                if(isset($data['check'])){
-                    // kalau ada data check, berarti data di centang dan dirubah
-                    if($data['item'] == 'KARANTINA'){
-                        $oprs = Karantina::where('is_aktif', 'Y')->find($key);
-                        $jenis = 'karantina';
-                        $coa = 1015;
-                    }else{
-                        $oprs = SewaOperasional::where('is_aktif', 'Y')->find($key);
-                        $jenis = 'pencairan_operasional';
-                        $coa = 1015;
+        if($data['type'] == 'save'){
+            try {
+                if($data['item'] == 'KARANTINA'){
+                    foreach ($data['data'] as $key => $karantina) {
+                        if(isset($karantina['check'])){
+                            $krnt = Karantina::where('is_aktif', 'Y')->find($key);
+                            $jenis = 'karantina';
+                            $coa = 1015;
+
+                            if($krnt){
+                                $krnt->total_dicairkan = floatval(str_replace(',', '', $karantina['dicairkan']));
+                                $krnt->catatan = $karantina['catatan'];
+                                $krnt->updated_by = $user;
+                                $krnt->updated_at = now();
+                                if($krnt->save()){
+                                    // find history dump
+                                    $history = KasBankTransaction::where('is_aktif', 'Y')
+                                                ->where('jenis', $jenis)
+                                                ->where('keterangan_kode_transaksi', $krnt->id)
+                                                ->first();
+
+                                    if($history){
+                                        $keterangan_transaksi = $history->keterangan_transaksi;
+                                        $history->keterangan_transaksi = 'REVISI OFF - ' .$keterangan_transaksi;
+                                        $history->updated_by = $user;
+                                        $history->updated_at = now();
+                                        $history->is_aktif = 'N';
+                                        if($history->save()){
+                                            // uang kasbank dikembalikan
+                                            $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
+                                            if($kasbank){
+                                                $kasbank->saldo_sekarang += $history->kredit;
+                                                $kasbank->updated_by = $user;
+                                                $kasbank->updated_at = now();
+                                                if($kasbank->save()){
+                                                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                                        array(
+                                                            $history->id_kas_bank, // id kas_bank dr form
+                                                            $history->tanggal, //tanggal
+                                                            0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                                            $krnt->total_dicairkan, //uang keluar (kredit)
+                                                            $coa, //kode coa
+                                                            $jenis,
+                                                            'REVISI - ' . $keterangan_transaksi, //keterangan_transaksi
+                                                            $krnt->id, //keterangan_kode_transaksi // id_sewa_operasional
+                                                            $user, //created_by
+                                                            now(), //created_at
+                                                            $user, //updated_by
+                                                            now(), //updated_at
+                                                            'Y'
+                                                        )
+                                                    );
+                    
+                                                    $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
+                                                    if($kasbank){
+                                                        $kasbank->saldo_sekarang -= $krnt->total_dicairkan;
+                                                        $kasbank->updated_by = $user;
+                                                        $kasbank->updated_at = now();
+                                                        $kasbank->save();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
                     }
 
-                    if($oprs){
-                        $oprs->total_operasional = $value['total_operasional'];
-                        $oprs->total_dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
-                        $oprs->catatan = $value['catatan'];
-                        $oprs->updated_by = $user;
-                        $oprs->updated_at = now(); 
-                        if($oprs->save()){
-                            // find history dump
-                            $history = KasBankTransaction::where('is_aktif', 'Y')
-                                                            ->where('jenis', $jenis)
-                                                            ->where('keterangan_kode_transaksi', $oprs->id)
-                                                            ->first();
-
-                            if($history){
-                                // history dump dinon-aktifkan
-                                $keterangan_transaksi = $history->keterangan_transaksi;
-                                $history->keterangan_transaksi = 'REVISI OFF - ' .$keterangan_transaksi;
-                                $history->updated_by = $user;
-                                $history->updated_at = now();
-                                $history->is_aktif = 'N';
-                                if($history->save()){
-                                    // uang kasbank dikembalikan
-                                    $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
-                                    if($kasbank){
-                                        $kasbank->saldo_sekarang += $history->kredit;
-                                        $kasbank->updated_by = $user;
-                                        $kasbank->updated_at = now();
-                                        $kasbank->save();
+                    DB::commit();
+                    return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'Success', 'msg'  => 'Revisi berhasil!']);
+                }else{
+                    foreach ($data['data'] as $key => $operasionals) {
+                        $total_dicairkan = 0;
+                        $is_off = false;
+                        foreach ($operasionals as $keyOprs => $value) {
+                            $jenis = 'pencairan_operasional';
+                            $coa = 1015;
+    
+                            if(isset($value['check'])){
+                                $oprs = SewaOperasional::where('is_aktif', 'Y')->find($keyOprs);
+    
+                                if($oprs){
+                                    $oprs->total_operasional = floatval(str_replace(',', '', $value['total_operasional']));
+                                    $oprs->total_dicairkan = floatval(str_replace(',', '', $value['total_dicairkan']));
+                                    $oprs->catatan = $value['catatan'];
+                                    $oprs->updated_by = $user;
+                                    $oprs->updated_at = now(); 
+                                    $oprs->save();
+    
+                                    $total_dicairkan += $oprs->total_dicairkan;
+                                }
+                                $is_off = true; //benar ada perubahan
+                            }
+                        }
+    
+                        if($is_off == true){
+                            $pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($key);
+                            $jenis = 'pencairan_operasional';
+    
+                            if($pembayaran){ 
+                                $pembayaran->catatan = 'REVISI OFF - '. $data['alasan'] .' - '. $pembayaran->catatan;
+                                $pembayaran->updated_by = $user;
+                                $pembayaran->updated_at = now();
+                                $pembayaran->is_aktif = 'N';
+                                $pembayaran->save();
+        
+                                // find history dump
+                                $history = KasBankTransaction::where('is_aktif', 'Y')
+                                            ->where('jenis', $jenis)
+                                            ->where('keterangan_kode_transaksi', $pembayaran->id)
+                                            ->first();
+        
+                                if($history){
+                                    $keterangan_transaksi = $history->keterangan_transaksi;
+                                    $history->keterangan_transaksi = 'REVISI OFF - ' .$keterangan_transaksi;
+                                    $history->updated_by = $user;
+                                    $history->updated_at = now();
+                                    $history->is_aktif = 'N';
+                                    if($history->save()){
+                                        // uang kasbank dikembalikan
+                                        $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
+                                        if($kasbank){
+                                            $kasbank->saldo_sekarang += $history->kredit;
+                                            $kasbank->updated_by = $user;
+                                            $kasbank->updated_at = now();
+                                            $kasbank->save();
+                                        }
                                     }
-
+                                }
+    
+                                $newPembayaran = new SewaOperasionalPembayaran();
+                                $newPembayaran->deskripsi = $data['item'];
+                                $newPembayaran->total_dicairkan = $total_dicairkan;
+                                $newPembayaran->catatan = 'REVISI';
+                                $newPembayaran->created_by = $user;
+                                $newPembayaran->created_at = now();
+                                if($newPembayaran->save()){
+                                    DB::table('sewa_operasional')
+                                        ->where('id_pembayaran', $pembayaran->id) 
+                                        ->where('is_aktif', 'Y')
+                                        ->update([
+                                            'id_pembayaran' => $newPembayaran->id,
+                                        ]);
+    
                                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                         array(
                                             $history->id_kas_bank, // id kas_bank dr form
                                             $history->tanggal, //tanggal
                                             0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                            $oprs->total_dicairkan, //uang keluar (kredit)
+                                            $total_dicairkan, //uang keluar (kredit)
                                             $coa, //kode coa
                                             $jenis,
-                                            'REVISI - '.$keterangan_transaksi, //keterangan_transaksi
-                                            $oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
+                                            'REVISI - ' . $keterangan_transaksi, //keterangan_transaksi
+                                            $newPembayaran->id, //keterangan_kode_transaksi // id_sewa_operasional
                                             $user, //created_by
                                             now(), //created_at
                                             $user, //updated_by
@@ -121,9 +224,177 @@ class RevisiBiayaOperasionalController extends Controller
                                             'Y'
                                         )
                                     );
+    
                                     $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
                                     if($kasbank){
-                                        $kasbank->saldo_sekarang -= $oprs->total_dicairkan;
+                                        $kasbank->saldo_sekarang -= $total_dicairkan;
+                                        $kasbank->updated_by = $user;
+                                        $kasbank->updated_at = now();
+                                        $kasbank->save();
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+                    DB::commit();
+                    return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'Success', 'msg'  => 'Revisi berhasil!']);
+                }
+    
+            } catch (ValidationException $e) {
+                db::rollBack();
+                return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Revisi gagal!']);
+            }
+        }else if($data['type'] == 'delete'){
+            try {
+                // dd($data);
+                if($data['item'] == 'KARANTINA'){
+                    foreach ($data['data'] as $key => $karantina) {
+                        if(isset($karantina['check'])){
+                            $krnt = Karantina::where('is_aktif', 'Y')->find($key);
+                            $jenis = 'karantina';
+                            $coa = 1015;
+
+                            if($krnt){
+                                $krnt->catatan = $karantina['catatan'];
+                                $krnt->updated_by = $user;
+                                $krnt->updated_at = now();
+                                $krnt->is_aktif = 'N';
+                                if($krnt->save()){
+                                    // find history dump
+                                    $history = KasBankTransaction::where('is_aktif', 'Y')
+                                                ->where('jenis', $jenis)
+                                                ->where('keterangan_kode_transaksi', $krnt->id)
+                                                ->first();
+
+                                    if($history){
+                                        $keterangan_transaksi = $history->keterangan_transaksi;
+                                        $history->keterangan_transaksi = 'REVISI OFF - ' .$keterangan_transaksi;
+                                        $history->updated_by = $user;
+                                        $history->updated_at = now();
+                                        $history->is_aktif = 'N';
+                                        if($history->save()){
+                                            // uang kasbank dikembalikan
+                                            $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
+                                            if($kasbank){
+                                                $kasbank->saldo_sekarang += $history->kredit;
+                                                $kasbank->updated_by = $user;
+                                                $kasbank->updated_at = now();
+                                                $kasbank->save();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                    DB::commit();
+                    return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'Success', 'msg'  => 'Hapus data berhasil!']);
+                }else{
+                    foreach ($data['data'] as $key => $operasionals) {
+                        $total_dicairkan = 0;
+                        $is_delete = false;
+                        foreach ($operasionals as $keyOprs => $value) {
+                            $jenis = 'pencairan_operasional';
+                            $coa = 1015;
+        
+                            if(isset($value['check'])){ // ini data yg dihapus
+                                $oprs = SewaOperasional::where('is_aktif', 'Y')->find($keyOprs);
+        
+                                if($oprs){
+                                    $oprs->catatan = $value['catatan'];
+                                    $oprs->updated_by = $user;
+                                    $oprs->updated_at = now(); 
+                                    $oprs->is_aktif = 'N';
+                                    $oprs->save();
+                                }
+                                $is_delete = true; //benar ada perubahan
+                            }else{
+                                $oprs = SewaOperasional::where('is_aktif', 'Y')->find($keyOprs);
+                                if($oprs){
+                                    $oprs->catatan = $value['catatan'];
+                                    $oprs->updated_by = $user;
+                                    $oprs->updated_at = now(); 
+                                    $oprs->save();
+        
+                                    $total_dicairkan += $oprs->total_dicairkan;
+                                }
+        
+                            }
+                        }
+        
+                        if($is_delete == true){
+                            $pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($key);
+                            $jenis = 'pencairan_operasional';
+        
+                            if($pembayaran){ 
+                                $pembayaran->catatan = 'REVISI OFF - '. $data['alasan'] .' - '. $pembayaran->catatan;
+                                $pembayaran->updated_by = $user;
+                                $pembayaran->updated_at = now();
+                                $pembayaran->is_aktif = 'N';
+                                $pembayaran->save();
+        
+                                // find history dump
+                                $history = KasBankTransaction::where('is_aktif', 'Y')
+                                            ->where('jenis', $jenis)
+                                            ->where('keterangan_kode_transaksi', $pembayaran->id)
+                                            ->first();
+        
+                                if($history){
+                                    $keterangan_transaksi = $history->keterangan_transaksi;
+                                    $history->keterangan_transaksi = 'REVISI OFF - ' .$keterangan_transaksi;
+                                    $history->updated_by = $user;
+                                    $history->updated_at = now();
+                                    $history->is_aktif = 'N';
+                                    if($history->save()){
+                                        // uang kasbank dikembalikan
+                                        $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
+                                        if($kasbank){
+                                            $kasbank->saldo_sekarang += $history->kredit;
+                                            $kasbank->updated_by = $user;
+                                            $kasbank->updated_at = now();
+                                            $kasbank->save();
+                                        }
+                                    }
+                                }
+        
+                                $newPembayaran = new SewaOperasionalPembayaran();
+                                $newPembayaran->deskripsi = $data['item'];
+                                $newPembayaran->total_dicairkan = $total_dicairkan;
+                                $newPembayaran->catatan = 'REVISI';
+                                $newPembayaran->created_by = $user;
+                                $newPembayaran->created_at = now();
+                                if($newPembayaran->save()){
+                                    DB::table('sewa_operasional')
+                                        ->where('id_pembayaran', $pembayaran->id) 
+                                        ->where('is_aktif', 'Y')
+                                        ->update([
+                                            'id_pembayaran' => $newPembayaran->id,
+                                        ]);
+        
+                                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                        array(
+                                            $history->id_kas_bank, // id kas_bank dr form
+                                            $history->tanggal, //tanggal
+                                            0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                            $total_dicairkan, //uang keluar (kredit)
+                                            $coa, //kode coa
+                                            $jenis,
+                                            'REVISI - ' . $keterangan_transaksi, //keterangan_transaksi
+                                            $newPembayaran->id, //keterangan_kode_transaksi // id_sewa_operasional
+                                            $user, //created_by
+                                            now(), //created_at
+                                            $user, //updated_by
+                                            now(), //updated_at
+                                            'Y'
+                                        )
+                                    );
+        
+                                    $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
+                                    if($kasbank){
+                                        $kasbank->saldo_sekarang -= $total_dicairkan;
                                         $kasbank->updated_by = $user;
                                         $kasbank->updated_at = now();
                                         $kasbank->save();
@@ -132,15 +403,18 @@ class RevisiBiayaOperasionalController extends Controller
                             }
                         }
                     }
+    
+                    DB::commit();
+                    return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'Success', 'msg'  => 'Hapus data berhasil!']);
                 }
+            } catch (ValidationException $e) {
+                db::rollBack();
+                return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Hapus data gagal!']);
             }
 
-            DB::commit();
-            return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'Success', 'msg'  => 'Revisi berhasil!']);
-        } catch (ValidationException $e) {
-            db::rollBack();
-            return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Revisi gagal!']);
+
         }
+
     }
 
     public function delete(Request $request)
@@ -148,7 +422,8 @@ class RevisiBiayaOperasionalController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        
+        dd($data);
+
         try {
             if($data['modal_item'] == 'KARANTINA'){
                 $oprs = Karantina::where('is_aktif', 'Y')->find($data['key']);
@@ -205,29 +480,14 @@ class RevisiBiayaOperasionalController extends Controller
                                     ->with('details', 'getJO', 'getCustomer.getGrup')
                                     ->get();
             }else{
-                $data = SewaOperasional::where('sewa_operasional.is_aktif', 'Y')
-                                        ->with('getSewa.getTujuan.getGrup')
-                                        ->with('getSewa.getCustomer')
-                                        ->with('getSewa.getSupplier')
-                                        ->with('getTransaction')
-                                        ->whereHas('getSewa', function ($query) {
-                                            $query->whereIn('status', ['PROSES DOORING', 'MENUNGGU INVOICE']);
-                                        })
-                                        // ->whereHas('kas_bank_transaction', function ($query) {
-                                        //     $query->where('kas_bank_transaction.keterangan_kode_transaksi', 'like', '%'.'727'.'%');
-                                        // })
-                                        // ->leftJoin('kas_bank_transaction as kbt', 'keterangan_kode_transaksi', 'like', '%'.'sewa_operasional.id'.'%')
+                $data = SewaOperasionalPembayaran::where('is_aktif', 'Y')
                                         ->where('deskripsi', $item)
+                                        ->with('getOperasional')
+                                        ->with('getOperasional.getSewa.getTujuan.getGrup')
+                                        ->with('getOperasional.getSewa.getKaryawan')
+                                        ->with('getOperasional.getSewa.getCustomer')
+                                        ->with('getOperasional.getSewa.getSupplier')
                                         ->get();
-                                        
-                // foreach ($data as $key => $value) {
-                //     $transaction = KasBankTransaction::where('is_aktif', 'Y')
-                //                                         ->where('jenis', 'pencairan_operasional')
-                //                                         ->where('keterangan_kode_transaksi', 'like', '%'.$value->id.'%')
-                //                                         ->get();
-                // }
-                dd($data);
-
             }
             
             return response()->json(["result" => "success",'data' => $data], 200);

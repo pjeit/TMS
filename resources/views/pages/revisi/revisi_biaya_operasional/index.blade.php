@@ -28,34 +28,36 @@
             @csrf
             <div class="card-header ">
                 <div class="card-header" style="border: 2px solid #bbbbbb;">
-                    <ul class="list-inline">
-                        <div class="row">
-                            {{-- <li class="list-inline-item"> --}}
-                                <div class="col-sm-12 col-md-3 col-lg-3 bg-white pb-3">
-                                    <div class="form-group">
-                                        <label for="">Jenis Biaya</label> 
-                                        <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                            <option value="">­­— PILIH DATA —</option>
-                                            <option value="TALLY">TALLY</option>
-                                            <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                            <option value="OPERASIONAL">ALAT</option>
-                                            <option value="TIMBANG">TIMBANG</option>
-                                            <option value="BURUH">BURUH</option>
-                                            <option value="LEMBUR">LEMBUR</option>
-                                            <option value="KARANTINA">KARANTINA</option>
-                                        </select>
-                                    </div>
-                                </div>
-                  
-                                <div class="col-sm-12 col-md-5 col-lg-5 bg-white pb-3">
-                                    <div class="form-group">
-                                        <label for="">&nbsp; </label>
-                                        <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-save" aria-hidden="true" ></i> Simpan</button>
-                                    </div>
-                                </div>
-                            {{-- </li> --}}
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
+                            <label for="">&nbsp;</label>
+                            <div class="form-group" style="width: 400px;">
+                                <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <option value="">­­— PILIH DATA —</option>
+                                    <option value="TALLY">TALLY</option>
+                                    <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
+                                    <option value="OPERASIONAL">ALAT</option>
+                                    <option value="TIMBANG">TIMBANG</option>
+                                    <option value="BURUH">BURUH</option>
+                                    <option value="LEMBUR">LEMBUR</option>
+                                    <option value="KARANTINA">KARANTINA</option>
+                                </select>
+                                <input type="hidden" id="alasan" name="alasan" value="">
+                                <input type="hidden" id="type" name="type" value="">
+                            </div>
                         </div>
-                    </ul>
+                        <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
+                            <label for="">&nbsp;</label>
+                            <div class="d-flex">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success ml-3 popUp" id="btnSave" value="save"><i class="fa fa-save" aria-hidden="true" ></i> Simpan</button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-danger ml-3 popUp" id="btnDelete" value="delete"><i class="fa fa-trash-alt" aria-hidden="true" ></i> Hapus</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         
@@ -77,49 +79,60 @@
     </div>
 </div>
 
-
-{{-- modal edit --}}
-<div class="modal fade" id="modal_delete" tabindex='-1'>
-    <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title">Konfirmasi hapus data</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-        </div>
-        <form id="save" action="{{ route('revisi_biaya_operasional.delete') }}" method="POST">
-            @csrf 
-            <div class="modal-body">
-                <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_sewa --}}
-                <input type="hidden" name="modal_item" id="modal_item"> {{--* dipakai buat simpen item --}}
-
-                <div class='row'>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <span>Apakah anda yakin ingin menghapus data ini?</span>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="">Alasan<span style="color:red">*</span></label>
-                            <textarea name="alasan" class="form-control" id="alasan" rows="2" required></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">BATAL</button>
-                <button type="submit" class="btn btn-sm btn-success save_detail" id="simpanBuktiPotong" style='width:85px'>OK</button> 
-            </div>
-        </form>
-
-    </div>
-    <!-- /.modal-content -->
-    </div>
-</div>
-
 <script>
     $(document).ready(function() {
+        // $('#save').submit(function(event) {
+        //     console.log('this.value', this.value);
+
+        //     Swal.fire({
+        //         title: 'Apakah data sudah benar?',
+        //         text: "Periksa kembali data anda",
+        //         icon: 'warning',
+        //         input: "textarea",
+        //         inputLabel: "Berikan alasan revisi",
+        //         inputPlaceholder: "...",
+        //         inputAttributes: {
+        //             "aria-label": "Type your message here"
+        //         },
+        //         showCancelButton: true,
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonText: 'Batal',
+        //         confirmButtonText: 'Ya',
+        //         reverseButtons: true
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             const revisionReason = result.value;
+        //             document.getElementById('alasan').value = revisionReason;
+
+        //             this.submit();
+        //         }else{
+        //             const Toast = Swal.mixin({
+        //                 toast: true,
+        //                 position: 'top',
+        //                 timer: 2500,
+        //                 showConfirmButton: false,
+        //                 timerProgressBar: true,
+        //                 didOpen: (toast) => {
+        //                     toast.addEventListener('mouseenter', Swal.stopTimer)
+        //                     toast.addEventListener('mouseleave', Swal.resumeTimer)
+        //                 }
+        //             })
+
+        //             Toast.fire({
+        //                 icon: 'warning',
+        //                 title: 'Batal Disimpan'
+        //             })
+        //             event.preventDefault();
+        //             // return;
+        //         }
+        //     })
+        
+            
+        //     event.preventDefault();
+        //     // this.submit();
+        // });
+
         $(document).on('change', '#item', function(e) {  
             var item = $('#item').val();
             if(item != ''){
@@ -157,7 +170,6 @@
                                                     <th>Dicairkan</th>
                                                     <th>Catatan</th>    
                                                     <th class='text-center' style='width: 30px;'></th>
-                                                    <th class='text-center' style='width: 30px;'></th>
                                                 `); // <input id='check_all' type='checkbox'>
 
                             for (var i = 0; i <data.length; i++) {
@@ -176,21 +188,18 @@
                                 row.append(`<td> <b>${data[i].get_j_o.kapal} / ${data[i].get_j_o.voyage}</b> </td>`);
                                 row.append(`<td> 
                                                 ${ data[i].total_operasional.toLocaleString() } 
-                                                <input type="text" class="uang numaja form-control" id='total_operasional_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional == null? 0:data[i].total_operasional}' />
+                                                <input type="text" class="uang numaja form-control" id='operasional_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional == null? 0:data[i].total_operasional}' readonly hidden />
                                             </td>`); 
                                 row.append(`<td> 
-                                                <input type="text" class="uang numaja dicairkan form-control" id='open_${data[i].id}' idOprs="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan.toLocaleString()}' />
-                                                <input type="text" class="uang numaja form-control" id='hidden_open_${data[i].id}' name='data[${data[i].id}][dicairkan_old]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan}' />
+                                                <input class="uang numaja dicairkan form-control" id='dicairkan_${data[i].id}' idOprs="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan.toLocaleString()}' readonly />
+                                                <input class="uang numaja form-control" id='hidden_dicairkan_${data[i].id}' name='data[${data[i].id}][dicairkan_old]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan}' readonly hidden />
                                             </td>`);
                                 row.append(`<td class='text-center'> 
-                                                <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text"/> 
-                                                <input class="form-control" id="hidden_catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text" readonly /> 
+                                                <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" readonly/> 
+                                                <input class="form-control" id="hidden_catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" readonly hidden /> 
                                             </td>`);
                                 row.append(`<td class='text-center'> 
-                                                <button type="button" class="btn btn-sm btn-danger delete" value="${data[i].id}"> <span class="fa fa-trash-alt"></span> </button>
-                                            </td>`);
-                                row.append(`<td class='text-center'> 
-                                                <input type='checkbox' class="check_per_item" name="data[${data[i].id}][check]" value="${data[i].id}">
+                                                <input type='checkbox' class="centang" name="data[${data[i].id}][check]" value="${data[i].id}">
                                             </td>`);
     
                                 $("#tbodyId").append(row);
@@ -217,52 +226,35 @@
                             });
 
                         }else{
-                            $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                            $("thead tr").append(`<th>Grup</th><th>Customer</th><th>Tujuan</th><th>Driver</th>`);
                             $("thead tr").append("<th>Total</th>");
                             $("thead tr").append(`  <th>Dicairkan</th>
                                                     <th>Catatan</th>
-                                                    <th class='text-center' style='width: 30px;'></th>
-                                                    <th class='text-center' style='width: 30px;'></th>
-                                                `); // <input id='check_all' type='checkbox'>
+                                                `);  // <th class='text-center' style='width: 30px;'></th> // <input id='check_all' type='checkbox'>
                             // if(item == 'OPERASIONAL' || item == 'TALLY' || item == 'SEAL PELAYARAN'){
-                            // }else{
                                 for (var i = 0; i <data.length; i++) {
                                     var row = $("<tr></tr>");
                                     row.append(`<td style='background: #efefef'>
                                                         <b> 
-                                                            <span> ${data[i].get_sewa.get_tujuan.get_grup.nama_grup}</span> 
+                                                            <span> ${data[i].get_operasional[0].get_sewa.get_tujuan.get_grup.nama_grup}</span> 
                                                         </b>
                                                 </td>`);
                                     row.append(`<td style='background: #efefef'>
                                                         <b> 
-                                                            <span>► ${data[i].get_sewa.get_customer.nama}</span> 
+                                                            <span>► ${data[i].get_operasional[0].get_sewa.get_customer.nama}</span> 
                                                         </b>
                                                 </td>`);
-                                    row.append(`<td> ${data[i].get_sewa.nama_tujuan} ${ data[i].get_sewa.no_polisi != null? ' / '+data[i].get_sewa.no_polisi:'' } / ${data[i].get_sewa.nama_panggilan? data[i].get_sewa.nama_panggilan:'DRIVER REKANAN '+ data[i].get_sewa.get_customer.nama} </td>`);
-                                    row.append(`<td> ${data[i].get_sewa.tipe_kontainer != null? data[i].get_sewa.tipe_kontainer+'"':''}<b> ${data[i].get_sewa.jenis_order} </b> ${ data[i].get_sewa.pick_up == null? '':'('+data[i].get_sewa.pick_up+')'} </td>`);
-                                    row.append(`<td> 
-                                                    ${ data[i].total_operasional.toLocaleString() } 
-                                                    <input type="text" class="uang numaja form-control" id='total_operasional_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional == null? 0:data[i].total_operasional}' />
-                                                </td>`); 
-                                    var driver = (data[i].get_sewa.get_supplier != undefined)? data[i].get_sewa.get_supplier.nama:data[i].get_sewa.nama_driver;
-                                    var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
-                                    var tambahanUJ = '';
-                                    row.append(`<td> 
-                                                    <input type="text" class="uang numaja dicairkan form-control" id='open_${data[i].id}' idOprs="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan.toLocaleString()}' readonly />
-                                                    <input type="text" class="uang numaja form-control" id='hidden_open_${data[i].id}' name='data[${data[i].id}][dicairkan_old]' value='${data[i].total_dicairkan == null? 0:data[i].total_dicairkan}' />
-                                                </td>`);
-        
-                                    row.append(`<td class='text-center'> 
-                                                    <input class="form-control" name='data[${data[i].id}][catatan]' id="catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text" readonly /> 
-                                                    <input class="form-control" id="hidden_catatan_${data[i].id}" value="${data[i].catatan != null? data[i].catatan:''}" type="text" readonly /> 
-                                                </td>`);
-                                    row.append(`<td class='text-center'> 
-                                                    <button type="button" class="btn btn-sm btn-danger delete" value="${data[i].id}"> <span class="fa fa-trash-alt"></span> </button>
-                                                </td>`);
-                                    row.append(`<td class='text-center'> 
-                                                    <input type='checkbox' class="check_per_item" name="data[${data[i].id}][check]" value="${data[i].id}">
-                                                </td>`);
-        
+                                    row.append(`<td> ${data[i].get_operasional[0].get_sewa.nama_tujuan} </td>`);
+                                    row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" class="form-control" title="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" readonly />`).join('<br>')}</td>`);
+                                    row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
+                                    row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
+                                                                                            <input type="hidden" value="${item.total_dicairkan}" id="hidden_dicairkan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />
+                                                                                            `).join('<br>')}</td>`);
+                                    row.append(`<td> ${data[i].get_operasional.map(item => `<div class='d-flex'>
+                                                                                                <input type="text" value="${item.catatan != null? item.catatan:''}" id="catatan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][catatan]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
+                                                                                                <input type="hidden" value="${item.catatan != null? item.catatan:''}" id="hidden_catatan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
+                                                                                                <input type="checkbox" value="${item.id}" name="data[${item.id_pembayaran}][${item.id}][check]" class="ml-3 mt-2 centang" /> 
+                                                                                            </div>`).join('<br>')}</td>`);
                                     $("#tbodyId").append(row);
                                 }
                             // }
@@ -295,7 +287,6 @@
 
                         // $('#rowGroup').DataTable().clear().draw();
                     }
-
                 },error: function (xhr, status, error) {
                     if ( xhr.responseJSON.result == 'error') {
                         console.log("Error:", xhr.responseJSON.message);
@@ -309,39 +300,139 @@
             });
         }
 
-        $(document).on('click', '.check_per_item', function(e){
+        $(document).on('click', '.centang', function(e){
             let id = this.value;
-            console.log('this.checked', this.checked);
-            
+
             if(this.checked == true){
-                $('#open_'+id).prop('readonly', false);
+                $('#dicairkan_'+id).prop('readonly', false);
                 $('#catatan_'+id).prop('readonly', false);
 
             }else{
-                $('#open_'+id).prop('readonly', true);
+                $('#dicairkan_'+id).prop('readonly', true);
                 $('#catatan_'+id).prop('readonly', true);
 
-                $('#open_'+id).val( moneyMask($('#hidden_open_'+id).val()) );
+                $('#dicairkan_'+id).val( moneyMask($('#hidden_dicairkan_'+id).val()) );
                 $('#catatan_'+id).val( $('#hidden_catatan_'+id).val() );
             }
         });
 
-        $(document).on('click', '.delete', function(e){
-            $('#key').val('');
-            $('#modal_item').val('');
-            $('#key').val(this.value);
-            $('#modal_item').val( $('#item').val() );
-            $('#modal_delete').modal('show');
+        $(document).on('click', '#btnDelete', function(e){
+            // $('#key').val('');
+            // $('#modal_item').val('');
+            // $('#key').val(this.value);
+            // $('#modal_item').val( $('#item').val() );
+            // $('#modal_delete').modal('show');
+            console.log('this.value', this.value);
+
+            Swal.fire({
+                title: 'Apakah data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                input: "textarea",
+                inputLabel: "Berikan alasan hapus",
+                inputPlaceholder: "...",
+                inputAttributes: {
+                    "aria-label": "Type your message here"
+                },
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const revisionReason = result.value;
+                    document.getElementById('alasan').value = revisionReason;
+                    document.getElementById('type').value = this.value;
+
+                    // this.submit();
+                    $('#save').submit();
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                    // return;
+                }
+            })
+        });
+
+        $(document).on('click', '#btnSave', function(e){
+            // $('#key').val('');
+            // $('#modal_item').val('');
+            // $('#key').val(this.value);
+            // $('#modal_item').val( $('#item').val() );
+            // $('#modal_save').modal('show');
+            console.log('this.value', this.value);
+            Swal.fire({
+                title: 'Apakah data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                input: "textarea",
+                inputLabel: "Berikan alasan revisi",
+                inputPlaceholder: "...",
+                inputAttributes: {
+                    "aria-label": "Type your message here"
+                },
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const revisionReason = result.value;
+                    document.getElementById('alasan').value = revisionReason;
+                    document.getElementById('type').value = this.value;
+
+                    // this.submit();
+                    $('#save').submit();
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                    // return;
+                }
+            })
         });
 
         $(document).on('keyup', '.dicairkan', function(){
             var idOprs = $(this).attr('idOprs');
-            console.log('idOprs', idOprs);
-            var inputed = parseFloat(this.value.replace(/,/g, ''));
-            var max = $('#total_operasional_'+idOprs).val();
+            var inputed = normalize(this.value);
+            var max = normalize( $('#operasional_'+idOprs).val() );
 
+            console.log('idOprs', idOprs);
             if (inputed > max ) {
-                $('#open_'+idOprs).val(parseFloat(max).toLocaleString()); 
+                $('#dicairkan_'+idOprs).val(parseFloat(max).toLocaleString()); 
             }
         });
 

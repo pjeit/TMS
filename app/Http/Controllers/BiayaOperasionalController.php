@@ -15,6 +15,9 @@ use App\Models\Karantina;
 use App\Models\KarantinaDetail;
 use Carbon\Carbon;
 use App\Helper\CoaHelper;
+use App\Models\KasBank;
+use App\Models\SewaOperasionalPembayaran;
+
 class BiayaOperasionalController extends Controller
 {
     /**
@@ -67,6 +70,7 @@ class BiayaOperasionalController extends Controller
             $item = $data['item'];
             $storeData = [];
             // dd($data);
+            
             if($item == 'KARANTINA'){
                 foreach ($data['data'] as $key => $value) {
                     if($value['dicairkan'] != 0 || $value['dicairkan'] != null){
@@ -123,14 +127,22 @@ class BiayaOperasionalController extends Controller
                 foreach ($data['data'] as $key => $value) {
                     $keterangan = $item.' : ';
                     if($value['dicairkan'] != null){
-                        $nominal = floatval(str_replace(',', '', $value['nominal']));
+                        $total_operasional = floatval(str_replace(',', '', $value['nominal']));
                         $dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
+
+                        $sewa = Sewa::where('is_aktif', 'Y')->find($key);
+                        if($sewa){
+                            $sewa->total_uang_jalan += $dicairkan;
+                            $sewa->updated_by = $user;
+                            $sewa->updated_at = now();
+                            $sewa->save();
+                        }
                         
                         $sewa_o = new SewaOperasional();
                         $sewa_o->id_sewa = $key;
                         $sewa_o->deskripsi = $item == 'OPERASIONAL'? 'OPERASIONAL' . ($value['pick_up'] != 'null'? ' '. $value['pick_up']:'') : $item;
                         $sewa_o->catatan = $value['catatan'];
-                        $sewa_o->total_operasional = $nominal;
+                        $sewa_o->total_operasional = $total_operasional;
                         $sewa_o->total_dicairkan = $dicairkan;
                         $sewa_o->created_by = $user;
                         $sewa_o->status = 'SUDAH DICAIRKAN';
@@ -139,122 +151,107 @@ class BiayaOperasionalController extends Controller
                         $sewa_o->is_aktif = 'Y';
                         $sewa_o->save();
 
+                        // dd($data['data']);
                         if($item == 'OPERASIONAL' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
                             $i=1;
                             $driver = $value['supplier'] != 'null'? $value['supplier']:$value['driver'];
         
                             if($value['dicairkan'] != null){
                                 if (array_key_exists($value['tujuan'], $storeData)) {
-                                    // If the customer already exists in $storeData, increment the "dicairkan" value
+                                    // tambah data jika tujuan sudah ada
                                     $storeData[$value['tujuan']]['dicairkan'] += floatval(str_replace(',', '', $value['dicairkan']));
                                     $storeData[$value['tujuan']]['driver'] .= ' #'. $value['nopol'] .' ('.$driver.')';
-                                    $storeData[$value['tujuan']]['id_opr'] .= ', '.$sewa_o->id;
+                                    $storeData[$value['tujuan']]['id_opr'][] = $sewa_o->id;
                                     $storeData[$value['tujuan']]['index'] += 1;
                                 } else {
-                                    // If the customer is not in $storeData, create a new entry
+                                    // buat data baru kalau data tujuan belum ada
                                     $storeData[$value['tujuan']] = [
                                         'dicairkan' => floatval(str_replace(',', '', $value['dicairkan'])),
                                         'driver' => '#'. $value['nopol'] .' ('.$driver.')',
-                                        'id_opr' => $sewa_o->id,
+                                        'id_opr' => [$sewa_o->id],
                                         'index' => $i,
                                     ];
                                 }
                             }
-                        }
-                        $saldo = DB::table('kas_bank')
-                                    ->select('*')
-                                    ->where('is_aktif', '=', "Y")
-                                    ->where('kas_bank.id', '=', $data['pembayaran'])
-                                    ->get();
-                        $saldo_baru = $saldo[0]->saldo_sekarang - $dicairkan;
-                        DB::table('kas_bank')
-                            ->where('id', $data['pembayaran'])
-                            ->update(array(
-                                'saldo_sekarang' => $saldo_baru,
-                                'updated_at'=> now(),
-                                'updated_by'=> $user,
-                            )
-                        );
-    
-                        $sewa = Sewa::where('is_aktif', 'Y')->find($key);
-                        if($sewa){
-                            $sewa->total_uang_jalan += $dicairkan;
-                            $sewa->updated_by = $user;
-                            $sewa->updated_at = now();
-                            $sewa->save();
-                        }
-    
-                        if($item != 'OPERASIONAL' && $item != 'TALLY' && $item != 'SEAL PELAYARAN'){
-                            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                array(
-                                    $data['pembayaran'], // id kas_bank dr form
-                                    now(), //tanggal
-                                    0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                    $sewa_o->total_dicairkan, //uang keluar (kredit)
-                                    CoaHelper::DataCoa(5009), //kode coa
-                                    'pencairan_operasional',
-                                    $keterangan .= $value['keterangan'], //keterangan_transaksi
-                                    $sewa_o->id, //keterangan_kode_transaksi // id_sewa_operasional
-                                    $user, //created_by
-                                    now(), //created_at
-                                    $user, //updated_by
-                                    now(), //updated_at
-                                    'Y'
-                                ) 
-                            );
-                            $saldo = DB::table('kas_bank')
-                                    ->select('*')
-                                    ->where('is_aktif', '=', "Y")
-                                    ->where('kas_bank.id', '=', $data['pembayaran'])
-                                    ->first();
-                            $saldo_baru = $saldo->saldo_sekarang -  floatval(str_replace(',', '', $value['dicairkan']));
-                            DB::table('kas_bank')
-                                ->where('id', $data['pembayaran'])
-                                ->update(array(
-                                    'saldo_sekarang' => $saldo_baru,
-                                    'updated_at'=> now(),
-                                    'updated_by'=> $user,
-                                )
-                            );
-                            DB::commit();
+                        }else{
+                            $pembayaran = new SewaOperasionalPembayaran();
+                            $pembayaran->deskripsi = $item;
+                            $pembayaran->total_dicairkan = $dicairkan;
+                            // $pembayaran->catatan = '';
+                            $pembayaran->created_by = $user;
+                            $pembayaran->created_at = now();
+                            if($pembayaran->save()){
+                                $sewa_o->id_pembayaran = $pembayaran->id;
+                                $sewa_o->save();
+
+                                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                    array(
+                                        $data['pembayaran'], // id kas_bank dr form
+                                        now(), //tanggal
+                                        0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                        $sewa_o->total_dicairkan, //uang keluar (kredit)
+                                        CoaHelper::DataCoa(5009), //kode coa
+                                        'pencairan_operasional',
+                                        $keterangan .= $value['keterangan'], //keterangan_transaksi
+                                        $pembayaran->id, //keterangan_kode_transaksi // id_sewa_operasional_pembayaran
+                                        $user, //created_by
+                                        now(), //created_at
+                                        $user, //updated_by
+                                        now(), //updated_at
+                                        'Y'
+                                    ) 
+                                );
+                                $saldo = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
+                                $saldo->saldo_sekarang -= $dicairkan;
+                                $saldo->updated_by = $user;
+                                $saldo->updated_at = now();
+                                $saldo->save();
+
+                                DB::commit(); // lakukan commit kalau bukat operasional/tally/seal
+                            }
                         }
                     }
                 }
             }
 
             if($item == 'OPERASIONAL' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
-                foreach ($storeData as $key => $value) {
-                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                        array(
-                            $data['pembayaran'], // id kas_bank dr form
-                            now(), //tanggal
-                            0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                            $value['dicairkan'], //uang keluar (kredit)
-                            CoaHelper::DataCoa(5007), //kode coa
-                            'pencairan_operasional',
-                            $item.": ".$value['index'].'x ' .$key." ".$value['driver'], //keterangan_transaksi
-                            $value['id_opr'], //keterangan_kode_transaksi // id_sewa_operasional
-                            $user, //created_by
-                            now(), //created_at
-                            $user, //updated_by
-                            now(), //updated_at
-                            'Y'
-                        ) 
-                    );
-                    $saldo = DB::table('kas_bank')
-                                    ->select('*')
-                                    ->where('is_aktif', '=', "Y")
-                                    ->where('kas_bank.id', '=', $data['pembayaran'])
-                                    ->first();
-                    $saldo_baru = $saldo->saldo_sekarang -  floatval(str_replace(',', '', $value['dicairkan']));
-                    DB::table('kas_bank')
-                        ->where('id', $data['pembayaran'])
-                        ->update(array(
-                            'saldo_sekarang' => $saldo_baru,
-                            'updated_at'=> now(),
-                            'updated_by'=> $user,
-                        )
-                    );
+                foreach ($storeData as $key => $dump) {
+
+                    $pembayaran = new SewaOperasionalPembayaran();
+                    $pembayaran->deskripsi = $item;
+                    $pembayaran->total_dicairkan = $dump['dicairkan'];
+                    // $pembayaran->catatan = '';
+                    $pembayaran->created_by = $user;
+                    $pembayaran->created_at = now();
+                    if($pembayaran->save()){
+                        SewaOperasional::whereIn('id', $dump['id_opr'])
+                                        ->where('is_aktif', 'Y')
+                                        ->update(['id_pembayaran' => $pembayaran->id]);
+
+                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                            array(
+                                $data['pembayaran'], //id kas_bank dr form
+                                now(), //tanggal
+                                0, //debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                $dump['dicairkan'], //uang keluar (kredit)
+                                CoaHelper::DataCoa(5007), //kode coa
+                                'pencairan_operasional',
+                                $item.": ".$dump['index'].'X ' .$key." ".$dump['driver'], //keterangan_transaksi
+                                $pembayaran->id, //keterangan_kode_transaksi // id_sewa_operasional_pembayaran
+                                $user, //created_by
+                                now(), //created_at
+                                $user, //updated_by
+                                now(), //updated_at
+                                'Y'
+                            ) 
+                        );
+    
+                        $saldo = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
+                        $saldo->saldo_sekarang -= $dump['dicairkan'];
+                        $saldo->updated_by = $user;
+                        $saldo->updated_at = now();
+                        $saldo->save();
+                    }
                 }
     
                 DB::commit();
