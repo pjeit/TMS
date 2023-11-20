@@ -855,6 +855,7 @@
             console.log(outputValue);
             $(this).val(outputValue);
         });
+        
         $('#post_data').submit(function(event) {
             var no_polisi = $('#no_polisi').val();
             var supplier = $('#supplier').val();
