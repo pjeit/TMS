@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Helper\CoaHelper;
 
 class RevisiBiayaOperasionalController extends Controller
 {
@@ -68,7 +69,7 @@ class RevisiBiayaOperasionalController extends Controller
                         if(isset($karantina['check'])){
                             $krnt = Karantina::where('is_aktif', 'Y')->find($key);
                             $jenis = 'karantina';
-                            $coa = 1015;
+                            $coa =  CoaHelper::DataCoa(5003);
 
                             if($krnt){
                                 $krnt->total_dicairkan = floatval(str_replace(',', '', $karantina['dicairkan']));
@@ -139,7 +140,7 @@ class RevisiBiayaOperasionalController extends Controller
                         $is_off = false;
                         foreach ($operasionals as $keyOprs => $value) {
                             $jenis = 'pencairan_operasional';
-                            $coa = 1015;
+                            $coa =  CoaHelper::DataCoa(5009);
     
                             if(isset($value['check'])){
                                 $oprs = SewaOperasional::where('is_aktif', 'Y')->find($keyOprs);

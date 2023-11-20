@@ -30,7 +30,7 @@ class JobOrderController extends Controller
 
     public function __construct()
     {
-        // $this->middleware('can: create JO');
+        $this->middleware('can: create JO');
         // $this->middleware('can: create JO')->only('create');
         // buka UserSeeder buat detailnya
     }
@@ -39,7 +39,7 @@ class JobOrderController extends Controller
     {
         // $this->authorize('read JO');
         // if(!Gate::allows('read JO')){
-        //     abort(403, 'unauthorized');
+        //     abort(403, 'Anda tidak memiliki akses ke halaman ini');
         // }
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
