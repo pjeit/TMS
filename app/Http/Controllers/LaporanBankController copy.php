@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
-use App\Models\KasBankTransaction;
-
 class LaporanBankController extends Controller
 {
     /**
@@ -34,6 +32,7 @@ class LaporanBankController extends Controller
                 ->whereBetween('tanggal', [$tgl_awal, $tgl_akhir])
                 ->orderBy('tanggal', 'ASC')
                 ->get();
+    
             // buat ngitung total, biar ngitungnya ga di frontend
                 DB::statement('set @kas_bank_id = 0');
                 DB::statement('set @subtotal = 0');
@@ -71,18 +70,18 @@ class LaporanBankController extends Controller
                         'Klaim Supir'
                 end jenis_deskripsi
                 FROM (
-                    -- SELECT 
-                    -- id, id_kas_bank, CAST(DATE_ADD('$tgl_akhir', interval 1 day) AS DATE) AS tanggal, NULL AS jenis, 
-                    -- 'Saldo Awal' AS keterangan_transaksi, NULL AS kode_coa, 
-                    -- IF(SUM(debit) - SUM(kredit) >= 0, ABS(SUM(debit) - SUM(kredit)), 0) AS debit,
-                    -- IF(SUM(debit) - SUM(kredit) >= 0, 0, ABS(SUM(debit) - SUM(kredit))) AS kredit, keterangan_kode_transaksi
-                    -- FROM kas_bank_transaction 
-                    -- WHERE id_kas_bank = '$tipe'
-                    -- AND CAST(tanggal AS DATE) BETWEEN date_add('$tgl_default', interval 1 day) 
-                    -- AND date_add('$tgl_awal', interval -1 day)
-                    -- AND is_aktif = 'Y'
-                    -- group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
-                    -- UNION ALL
+                    SELECT 
+                    id, id_kas_bank, CAST(DATE_ADD('$tgl_akhir', interval 1 day) AS DATE) AS tanggal, NULL AS jenis, 
+                    'Saldo Awal' AS keterangan_transaksi, NULL AS kode_coa, 
+                    IF(SUM(debit) - SUM(kredit) >= 0, ABS(SUM(debit) - SUM(kredit)), 0) AS debit,
+                    IF(SUM(debit) - SUM(kredit) >= 0, 0, ABS(SUM(debit) - SUM(kredit))) AS kredit,keterangan_kode_transaksi
+                    FROM kas_bank_transaction 
+                    WHERE id_kas_bank = '$tipe'
+                    AND CAST(tanggal AS DATE) BETWEEN date_add('$tgl_default', interval 1 day) 
+                    AND date_add('$tgl_awal', interval -1 day)
+                    AND is_aktif = 'Y'
+                    --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
+                    UNION ALL
                     SELECT 
                         id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                     FROM kas_bank_transaction 
@@ -93,24 +92,14 @@ class LaporanBankController extends Controller
                 ) AS d 
                 ORDER BY cast(tanggal as datetime) desc,id     
             ");
-            // dd($data);
-            
-            $kas = DB::table('kas_bank')->find($tipe);
-            $transaction = KasBankTransaction::where('is_aktif', 'Y')
-                                            ->where('id_kas_bank', $tipe)
-                                            ->whereBetween('tanggal', [$tgl_default, $tgl_awal])
-                                            ->get();
-            $sumKredit  = $transaction->sum('kredit');
-            $sumDebit   = $transaction->sum('debit');
 
+            $kas = DB::table('kas_bank')->where('id', "$tipe")->first();
             $kasBank = DB::table('kas_bank')->where('is_aktif', 'Y')->where('tipe','like' ,'%Bank%')->orderBy('nama', 'asc')->get();
     
             return view('pages.laporan.Bank.index',[
                 'judul' => "LAPORAN BANK",
                 'data' => $data,
                 'kas' => $kas,
-                'sumKredit' => $sumKredit,
-                'sumDebit' => $sumDebit,
                 'request' => $request,
                 'kasBank' => $kasBank,
             ]);
@@ -123,8 +112,6 @@ class LaporanBankController extends Controller
                 'data' => $data,
                 'request' => $request,
                 'kas' => $kas,
-                'sumKredit' => NULL,
-                'sumDebit' => NULL,
                 'kasBank' => $kasBank,
             ]);
         }
