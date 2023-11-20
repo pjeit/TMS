@@ -849,11 +849,22 @@
                 $('#post_data').submit();
             }
         }); 
+        
          $('#no_polisi').keyup(function() {
-            let inputValue = $(this).val();
-            let outputValue = inputValue.replace(/\s+/g, '-');
-            console.log(outputValue);
-            $(this).val(outputValue);
+            let cleanedInput = $(this).val().replace(/[^a-zA-Z0-9]/g, '');
+            let formattedInput = '';
+            for (let i = 0; i < cleanedInput.length; i++) {
+                if (i == 1 ) {
+                    formattedInput += '-';
+                }
+                if(cleanedInput.length>=6 && i==5)
+                {
+                    formattedInput += '-';
+                }
+                formattedInput += cleanedInput[i];
+            }
+            // Mengisi input dengan format yang telah dibuat
+            $(this).val(formattedInput.toUpperCase());
         });
         
         $('#post_data').submit(function(event) {
