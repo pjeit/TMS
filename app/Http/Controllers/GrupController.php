@@ -13,15 +13,19 @@ use Illuminate\Support\Facades\Gate;
 use Symfony\Component\VarDumper\VarDumper;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
-
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
+// use App\Models\Userl;
 class GrupController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can: create grup');
-        $this->middleware('can: read grup');
-        $this->middleware('can: edit grup');
-        $this->middleware('can: delete grup');
+        // $this->middleware('can: create grup');
+        // $this->middleware('role:SUPER ADMIN|ADMIN');
+        // $this->middleware('can: edit grup');
+        // $this->middleware('can: delete grup');
+        // $this->middleware('can: read grup');
+
         // $this->middleware('can: create grup')->only('create');
         // $this->middleware('can: read grup')->only('read');
         // buka UserSeeder buat detailnya
@@ -33,10 +37,13 @@ class GrupController extends Controller
      */
     public function index()
     {
-        $this->authorize('read grup');
-        if(!Gate::allows('read grup')){
-            abort(403, 'Anda tidak memiliki akses ke halaman ini');
-        }
+        // $ser = User::role('ADMIN')->get();
+        // dd( auth()->user()->getAllPermissions());
+        // dd(auth()->user()->getAllPermissions());
+        // $this->authorize('read grup');
+        // if(!Gate::allows('read grup')){
+        //     abort(403, 'Anda tidak memiliki akses ke halaman ini');
+        // }
         $data = DB::table('grup')
             ->where('is_aktif', '=', "Y")
             ->orderBy('nama_grup', 'ASC')

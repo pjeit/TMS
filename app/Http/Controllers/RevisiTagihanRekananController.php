@@ -263,7 +263,7 @@ class RevisiTagihanRekananController extends Controller
                 if($history->save()){
                     // kembalikan kasbank sekarang
                     $returnKas = KasBank::where('is_aktif','Y')->find($history['id_kas_bank']);
-                    $returnKas->saldo_sekarang -= floatval(str_replace(',', '', $history['kredit']));
+                    $returnKas->saldo_sekarang += floatval(str_replace(',', '', $history['kredit']));
                     $returnKas->updated_by = $user;
                     $returnKas->updated_at = now();
                     if($returnKas->save()){
