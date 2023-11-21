@@ -13,12 +13,18 @@
 </style>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="container-fluid">
-    <div class="card radiusSendiri">
-        <div class="card-header">
-            <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
-                <i class="fa fa-credit-card"></i> Bayar
-            </button>
+
+    {{-- sticky header --}}
+    <div class="sticky-top radiusSendiri" style="margin-bottom: -15px;">
+        <div class="card radiusSendiri radiusSendiri" style="">
+            <div class="card-header " style="border-bottom: none;">
+                <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
+                    <i class="fa fa-credit-card"></i> Bayar
+                </button>
+            </div>
         </div>
+    </div>
+    <div class="card radiusSendiri">
         <div class="card-body">
             {{-- <div class="col-sm-12 col-md-4 col-lg-4 ">
                 <div class="form-group">

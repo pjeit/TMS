@@ -15,9 +15,9 @@
 <div class="container-fluid">
     <div class="card radiusSendiri">
         <div class="card-header">
-            <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
+            {{-- <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
                 <i class="fa fa-credit-card"></i> Bayar
-            </button>
+            </button> --}}
         </div>
         <div class="card-body">
             <table id="tabelInvoice" class="table table-bordered" width='100%'>

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
+use App\Models\Karyawan;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
@@ -20,58 +22,17 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $dataUser = DB::table(DB::raw("(SELECT user.id, user.username as 'username', role.nama as 'role', karyawan.nama_panggilan, cabang_pje.nama as 'kota'
-                                FROM user
-                                LEFT JOIN karyawan ON user.karyawan_id = karyawan.id
-                                LEFT JOIN cabang_pje ON karyawan.cabang_id = cabang_pje.id
-                                LEFT JOIN role ON user.role_id = role.id
-                                WHERE user.is_aktif = 'Y' OR (user.is_aktif = 'Y' AND user.karyawan_id IS NULL)) AS data"))
-                ->select('data.*') // Select all columns from the subquery
-                ->paginate(10);
+        $dataUser = User::where('is_aktif', 'Y')->with('karyawan')->orderBy('created_by', 'ASC')->get();
             
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
-        //   $dataUser = DB::table('user')
-        //     ->select('user.id','role.nama as role','karyawan.nama_panggilan')
-        //     // ->select('user.id','user.username','role.nama as role','karyawan.nama_panggilan','m_kota.nama as kota')
-        //     ->leftJoin('role', 'user.role_id', '=', 'role.id')
-        //     ->leftJoin('karyawan', 'user.karyawan_id', '=', 'karyawan.id')
-        //     // ->leftJoin('m_kota','karyawan.m_kota_id','=','m_kota.id')
-        //     ->where('karyawan.is_aktif', 'Y')
-        //     ->where('karyawan.is_keluar', '=', 'N')
-        //     ->where('role.is_aktif', '=', 'Y')
-        //     ->where('user.is_aktif', '=', 'Y')
-        //     // ->orWhereNull('user.karyawan_id')
-        //     ->get();
-            // var_dump($dataUser); die;
 
-        //    $dataUser = DB::table('users')
-        //     ->select('users.*')
-        //     ->where('users.is_aktif', '=', "Y")
-        //     ->get();
-
-        // bee pakek kasih ae
-        // dd($dataUser);
-          $dataKaryawan = DB::table('karyawan')
-            ->select('karyawan.*')
-            ->where('karyawan.is_aktif', '=', "Y")
-            ->where('karyawan.is_keluar', '=', "N")
-            ->get();
-
-          $dataRole = DB::table('role')
-            ->select('role.*')
-            ->where('role.is_aktif', '=', "Y")
-            ->get();
-
-            return view('pages.master.users.index',[
+        return view('pages.master.users.index',[
             'judul' => "User",
             'dataUser' => $dataUser,
-            'dataKaryawan' => $dataKaryawan,
-            'dataRole' => $dataRole,
-
         ]);
     }
 
@@ -82,29 +43,21 @@ class UsersController extends Controller
      */
     public function create()
     {
-        
-          $dataUser = DB::table('user')
-            ->select('user.*')
-            ->where('user.is_aktif', '=', "Y")
-            ->get();
+          $dataKaryawan = Karyawan::where([
+                                        'is_aktif' => 'Y',
+                                        'is_keluar' => 'N',
+                                    ])
+                                    ->orderBy('nama_panggilan', 'ASC')
+                                    ->get();
 
-          $dataKaryawan = DB::table('karyawan')
-            ->select('karyawan.*')
-            ->where('karyawan.is_aktif', '=', "Y")
-            ->where('karyawan.is_keluar', '=', "N")
-            ->get();
-
-          $dataRole = DB::table('role')
-            ->select('role.*')
-            ->where('role.is_aktif', '=', "Y")
-            ->get();
+          $dataRole = Role::where('is_aktif', '=', "Y")->orderBy('id', 'ASC')->get();
           $dataCustomer = DB::table('customer')
             ->select('customer.*')
             ->where('customer.is_aktif', '=', "Y")
             ->get();
+
            return view('pages.master.users.create',[
             'judul' => "User",
-            'dataUser' => $dataUser,
             'dataKaryawan' => $dataKaryawan,
             'dataRole' => $dataRole,
             'dataCustomer'=>$dataCustomer
@@ -119,11 +72,11 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $data = $request->collect();
+        DB::beginTransaction();
 
         try {
-
             $pesanKustom = [
                 'username.required' => 'Username Harus diisi!',
                 'password.required' => 'Password Harus diisi!',
@@ -136,25 +89,26 @@ class UsersController extends Controller
                 'role' => 'required',
             ], $pesanKustom);
 
-            $data = $request->collect();
-            DB::table('user')
-                ->insert(array(
-                    'username' => $data['username'],
-                    // 'password' => password_hash($data['password'], PASSWORD_DEFAULT),
-                    'password' => Hash::make($data['password']),
-                    'role_id' => $data['role'],
-                    'karyawan_id' => ($data['karyawan']==null)?null:$data['karyawan'],
-                    'customer_id' => ($data['customer']==null)?null:$data['customer'],
-                    'created_at'=>VariableHelper::TanggalFormat(), 
-                    'created_by'=> $user,
-                    'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> $user,
-                    'is_aktif' => "Y",
 
-                )
-            ); 
+            $newUser = User::create([
+                'username' => $data['username'],
+                // 'password' => password_hash($data['password'], PASSWORD_DEFAULT),
+                'password' => Hash::make($data['password']),
+                'role_id' => $data['role'],
+                'karyawan_id' => ($data['karyawan']==null)?null:$data['karyawan'],
+                'customer_id' => ($data['customer']==null)?null:$data['customer'],
+                'created_at' => now(), 
+                'created_by' => $user,
+                'updated_at' => NULL,
+            ]);
+
+            $roles = Role::where('is_aktif', 'Y')->find($data['role']);
+            $newUser->assignRole($roles['name']);
+
+            DB::commit();
             return redirect()->route('users.index')->with('status','Sukses Menambahkan User Baru!!');
         } catch (ValidationException $e) {
+            DB::rollBack();
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
 
@@ -179,24 +133,19 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
-        //
-        
+        $dataKaryawan = Karyawan::where([
+                            'is_aktif' => 'Y',
+                            'is_keluar' => 'N',
+                        ])
+                        ->orderBy('nama_panggilan', 'ASC')
+                        ->get();
 
-            $dataKaryawan = DB::table('karyawan')
-            ->select('karyawan.*')
-            ->where('karyawan.is_aktif', '=', "Y")
-            ->where('karyawan.is_keluar', '=', "N")
-            ->get();
+        $dataRole = Role::where('is_aktif', '=', "Y")->orderBy('id', 'ASC')->get();
+        $dataCustomer = DB::table('customer')
+                        ->select('customer.*')
+                        ->where('customer.is_aktif', '=', "Y")
+                        ->get();
 
-        $dataRole = DB::table('role')
-            ->select('role.*')
-            ->where('role.is_aktif', '=', "Y")
-            ->get();
-            $dataCustomer = DB::table('customer')
-            ->select('customer.*')
-            ->where('customer.is_aktif', '=', "Y")
-            ->get();
-            // dd($user['password']);
         return view('pages.master.users.edit',[
             'judul' => "User",
             'user' => $user,
@@ -215,9 +164,10 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
-          //
-        $usersCrt = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $updated_by = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $data = $request->collect();
+        DB::beginTransaction();
+        // dd($data);
 
         try {
             $pesanKustom = [
@@ -232,27 +182,28 @@ class UsersController extends Controller
                 'role' => 'required',
             ], $pesanKustom);
 
-            $data = $request->collect();
-            // dd($user);
             DB::table('user')
-                 ->where('id', $user['id'])
+                ->where('id', $user['id'])
                 ->update(array(
                     'username' => $data['username'],
                     'password' => ($data['password'])?password_hash($data['password'], PASSWORD_DEFAULT):$user['password'],
                     'role_id' => $data['role'],
                     'karyawan_id' => isset($data['karyawan']) ? $data['karyawan'] : null,
                     'customer_id' => isset($data['customer']) ? $data['customer'] : null,
-                    'created_at'=>VariableHelper::TanggalFormat(), 
-                    'created_by'=> $usersCrt,
-                    'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> $usersCrt,
-                    'is_aktif' => "Y",
-
+                    'updated_by'=> $updated_by,
+                    'updated_at'=> now(),
                 )
             ); 
-            return redirect()->route('users.index')->with('status','Sukses Merubah Data User!!');
+
+            $roles = Role::where('is_aktif', 'Y')->find($data['role']);
+            $user->syncRoles($roles->name);
+
+            DB::commit();
+            return redirect()->route('users.index')->with(['status' => 'Success', 'msg' => 'Update Data Berhasil!']);
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            DB::rollBack();
+            // return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->back()->withErrors($e->errors())->with(['status' => 'Success', 'msg' => 'Update Data Gagal!']);
         }
     }
 
