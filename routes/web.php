@@ -278,7 +278,6 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('status_kendaraan', 'App\Http\Controllers\StatusKendaraanController');
         // ===================================HRD=========================================================
     });
-
     // Route::controller('JobOrderController::class')->group(function(){
     //     Route::get('/job_order', 'index');
     // });
@@ -287,7 +286,6 @@ Route::middleware(['auth'])->group(function () {
         // Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');
         // Route::post('job_order/unloading_plan/data', 'App\Http\Controllers\JobOrderController@unloading_data')->name('job_order.unloading_data');
         // Route::resource('job_order', 'App\Http\Controllers\JobOrderController');
-
     //     // storage_demurage
     //     Route::get('job_order/storage_demurage_input/{id}', 'App\Http\Controllers\JobOrderController@storage_demurage_input')->name('job_order.storage_demurage_input');
     //     Route::post('storage_demurage/load_data', 'App\Http\Controllers\StorageDemurageController@load_data')->name('storage_demurage.load_data');
@@ -295,9 +293,6 @@ Route::middleware(['auth'])->group(function () {
     // });
    
 });
-
-
-
 // ========================================== master ==================================================
 
 

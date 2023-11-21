@@ -440,9 +440,10 @@
                 var kodeValue = selectedOption.getAttribute('kode');
                 $('#kode_cust').val(kodeValue.trim());
             //
-
+            var baseUrl = "{{ asset('') }}";
+                
             $.ajax({
-                url: '/booking/getTujuan/' + selectedValue,
+                url: `${baseUrl}booking/getTujuan/${selectedValue}`,
                 method: 'GET',
                 success: function(response) { 
                     // get semua data dropdown dengan class ini trus di kosongin
@@ -526,8 +527,9 @@
             // end of logic
 
             // get tujuan
+            var baseUrl = "{{ asset('') }}";
             $.ajax({
-                url: '/booking/getTujuan/' + selectedValue,
+                url:  `${baseUrl}booking/getTujuan/${selectedValue}`,
                 method: 'GET',
                 success: function(response) {
                     response.forEach(tujuan => {

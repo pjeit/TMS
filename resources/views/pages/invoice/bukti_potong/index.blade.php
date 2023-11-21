@@ -158,7 +158,10 @@
             var catatan = $('#modal_catatan').val();
             var token = $('meta[name="csrf-token"]').attr('content');
             var baseUrl = "{{ asset('') }}";
-            var url = '/pembayaran_invoice/update_bukti_potong/'+id;
+           
+            // var url = '/pembayaran_invoice/update_bukti_potong/'+id;
+            var url =  `${baseUrl}pembayaran_invoice/update_bukti_potong/${id}` ;
+
             // console.log('url', url);
             $.ajaxSetup({
                 headers: {

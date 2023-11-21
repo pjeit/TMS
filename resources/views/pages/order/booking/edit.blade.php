@@ -105,9 +105,10 @@
         const id_tujuanSelect = document.getElementById('id_tujuan');
         var selectedValue = $('#id_customer').val();
         var datacUST = <?php echo json_encode($booking); ?>;
-
+        var baseUrl = "{{ asset('') }}";
+                
           $.ajax({
-                url: '/booking/getTujuan/'+ selectedValue, 
+                url:`${baseUrl}booking/getTujuan/${selectedValue}`, 
                 method: 'GET', 
                 success: function(response) {
                     $('#result').html(response); 
@@ -124,10 +125,8 @@
                         }
                         id_tujuanSelect.appendChild(option);
                     });
-
                     // Trigger change event to refresh select2
                     tujuanSelect.trigger('change');
-            
                     // var kode = $('#select2-id_customer-container').text();
                     // kode  = kode.substring(0, 3);
                     // //trim untuk ngilangin spasi
@@ -142,9 +141,11 @@
 
         $('#id_customer').on('change', function() {
             var selectedValue = $(this).val();
-      
+            var baseUrl = "{{ asset('') }}";
+        
+
             $.ajax({
-                url: '/booking/getTujuan/'+selectedValue, 
+                url: `${baseUrl}booking/getTujuan/${selectedValue}`, 
                 method: 'GET', 
                 success: function(response) {
                     $('#result').html(response); 
