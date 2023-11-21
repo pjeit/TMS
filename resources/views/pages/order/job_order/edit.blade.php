@@ -467,9 +467,9 @@
         $(document).on('change', '#customer', function(event) {
             // Get selected value from #customer
             var selectedValue = this.value;
-
+      
             $.ajax({
-                url: '/booking/getTujuan/' + selectedValue,
+                url: `${baseUrl}booking/getTujuan/${selectedValue}` ,
                 method: 'GET',
                 success: function(response) { 
                     // get semua data dropdown dengan class ini trus di kosongin
@@ -544,10 +544,10 @@
                 }
                 var length;
             // end of logic
-
+            var baseUrl = "{{ asset('') }}";
             // get tujuan
             $.ajax({
-                url: '/booking/getTujuan/' + selectedValue,
+                url: `${baseUrl}booking/getTujuan/${selectedValue}` ,
                 method: 'GET',
                 success: function(response) {
                     response.forEach(tujuan => {
