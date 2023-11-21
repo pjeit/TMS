@@ -9,12 +9,23 @@ use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use App\Models\GrupTujuan;
 use App\Models\GrupTujuanBiaya;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\VarDumper\VarDumper;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class GrupController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can: create grup');
+        $this->middleware('can: read grup');
+        $this->middleware('can: edit grup');
+        $this->middleware('can: delete grup');
+        // $this->middleware('can: create grup')->only('create');
+        // $this->middleware('can: read grup')->only('read');
+        // buka UserSeeder buat detailnya
+    }
     /**
      * Display a listing of the resource.
      *
@@ -22,6 +33,10 @@ class GrupController extends Controller
      */
     public function index()
     {
+        $this->authorize('read grup');
+        if(!Gate::allows('read grup')){
+            abort(403, 'Anda tidak memiliki akses ke halaman ini');
+        }
         $data = DB::table('grup')
             ->where('is_aktif', '=', "Y")
             ->orderBy('nama_grup', 'ASC')
@@ -48,6 +63,8 @@ class GrupController extends Controller
      */
     public function create()
     {
+        $this->authorize('create grup');
+
         return view('pages.master.grup.create',[
             'judul' => "Grup",
         ]);
@@ -138,6 +155,8 @@ class GrupController extends Controller
      */
     public function edit(Grup $grup)
     {
+        $this->authorize('edit grup');
+
         $data = Grup::where('is_aktif', 'Y')->findOrFail($grup->id);
         $role_id = Auth::user()->role_id;
         // dd(Auth::user());
@@ -219,6 +238,8 @@ class GrupController extends Controller
      */
     public function destroy(Grup $grup)
     {
+        $this->authorize('delete grup');
+
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies
         // var_dump($grup); die;
         $del_grup = DB::table('grup')

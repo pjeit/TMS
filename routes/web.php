@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
         ]);
     });
 
-    Route::middleware(['is_admin','is_superadmin'])->group(function () {
+    // Route::middleware(['is_','is_superadminadmin'])->group(function () {
         // ===================================MASTER=========================================================
         Route::get('/dashboard/reset', [App\Http\Controllers\DashboardController::class, 'reset'])->name('dashboard.reset');
 
@@ -277,7 +277,7 @@ Route::middleware(['auth'])->group(function () {
         // ===================================HRD=========================================================
         Route::resource('status_kendaraan', 'App\Http\Controllers\StatusKendaraanController');
         // ===================================HRD=========================================================
-    });
+    // });
 
     // Route::controller('JobOrderController::class')->group(function(){
     //     Route::get('/job_order', 'index');
