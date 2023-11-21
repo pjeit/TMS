@@ -22,9 +22,16 @@ class User extends Authenticatable
     protected $table = 'user';
 
     protected $fillable = [
-        'name',
-        'email',
+        'role_id',
+        'karyawan_id',
+        'customer_id',
+        'username',
         'password',
+        'created_by',
+        'created_at',
+        'updated_at',
+        'updated_at',
+        'is_aktif',
     ];
 
     /**
@@ -48,14 +55,19 @@ class User extends Authenticatable
 
     public function getRole(){
         $id = Auth::user()->role_id;
-        $role = Role::where('id', $id)->first();
+        $role = Role::where('is_aktif', 'Y')->find($id);
 
-        $role = $role->nama;
+        $role = $role->name;
         return $role;
+    }
+
+    public function role()
+    {
+        return $this->hasOne(Role::class, 'id', 'role_id');
     }
 
     public function karyawan()
     {
-         return $this->hasOne(Karyawan::class, 'id', 'karyawan_id');
+        return $this->hasOne(Karyawan::class, 'id', 'karyawan_id');
     }
 }

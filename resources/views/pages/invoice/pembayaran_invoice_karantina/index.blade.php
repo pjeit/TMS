@@ -15,12 +15,17 @@
 <div class="container-fluid">
     <form action="{{ route('pembayaran_invoice_karantina.bayar') }}" method="GET" enctype="multipart/form-data">
     @csrf 
-        <div class="card radiusSendiri">
-            <div class="card-header">
-                <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
-                    <i class="fa fa-credit-card"></i> Bayar
-                </button>
+        {{-- sticky header --}}
+        <div class="sticky-top radiusSendiri" style="margin-bottom: -15px;">
+            <div class="card radiusSendiri radiusSendiri" style="">
+                <div class="card-header " style="border-bottom: none;">
+                    <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
+                        <i class="fa fa-credit-card"></i> Bayar
+                    </button>
+                </div>
             </div>
+        </div>
+        <div class="card radiusSendiri">
             <div class="card-body">
                 {{-- <div style="overflow: auto;"> --}}
                     <table id="tabel_pembayaran_karantina" class="table table-bordered" width='100%'>

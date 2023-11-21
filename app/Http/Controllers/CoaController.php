@@ -91,6 +91,7 @@ class CoaController extends Controller
             DB::table('coa')
                 ->insert(array(
                     'no_akun' => strtoupper($data['no_akun']),
+                    'alias' => strtoupper($data['alias']),
                     'nama_jenis' => strtoupper($data['nama_jenis']),
                     'is_kas_bank_lain' => $data['is_kas_bank_lain'],
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
@@ -181,7 +182,8 @@ class CoaController extends Controller
             DB::table('COA')
                 ->where('id', $coa['id'])
                 ->update(array(
-                  'no_akun' => strtoupper($data['no_akun']),
+                    'no_akun' => strtoupper($data['no_akun']),
+                    'alias' => strtoupper($data['alias']),
                     'nama_jenis' => strtoupper($data['nama_jenis']),
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
                     'is_kas_bank_lain' => $data['is_kas_bank_lain'],

@@ -10,12 +10,17 @@
 <div class="container-fluid">
     <form action="{{ route('invoice_karantina.create') }}" method="post" enctype="multipart/form-data" id="saveInvoice">
         @csrf @method('GET')
-        <div class="card radiusSendiri">
-            <div class="card-header">
-                <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="buatInvoice">
-                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
-                </button>
+        {{-- sticky header --}}
+        <div class="sticky-top radiusSendiri" style="margin-bottom: -15px;">
+            <div class="card radiusSendiri radiusSendiri" style="">
+                <div class="card-header " style="border-bottom: none;">
+                    <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="buatInvoice">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
+                    </button>
+                </div>
             </div>
+        </div>
+        <div class="card radiusSendiri">
             <div class="card-body">
                 <div class="row">
                     <div class="col-lg-5 col-md-6 col-sm-12">

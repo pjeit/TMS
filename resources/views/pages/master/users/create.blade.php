@@ -37,9 +37,18 @@
                             <button type="submit" name="save" id="save" value="save" class="btn ml-2 btn-success radiusSendiri"><strong><i class="fa fa-fw fa-save"></i> Simpan</strong></button>
                     </div>
                 <div class="card-body">
+                    <div class="form-group" id="karyawanForm">
+                        <label for="karyawan_id">Karyawan</label>
+                        <select class="form-control selectpicker" name="karyawan" id="karyawan" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan">
+                            <option value="">--Pilih karyawan--</option>
+                            @foreach($dataKaryawan as $data)
+                                <option value="{{$data->id}}">{{$data->nama_panggilan}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="nama">Username<span style='color:red'>*</span></label>
-                        <input type="text" name="username" class="form-control" id="username" placeholder="" value="" required> 
+                        <input type="text" name="username" class="form-control alfanumber" id="username" placeholder="" value="" required> 
                     </div>
                     <div class="form-group">
                         <label for="nama">Password<span style='color:red'>*</span></label>
@@ -64,15 +73,7 @@
                         </div>
     
     
-                    <div class="form-group" id="karyawanForm">
-                        <label for="karyawan_id">Karyawan</label>
-                        <select class="form-control selectpicker" name="karyawan" id="karyawan" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan">
-                            <option value="">--Pilih karyawan--</option>
-                            @foreach($dataKaryawan as $data)
-                                <option value="{{$data->id}}">{{$data->nama_panggilan}}</option>
-                            @endforeach
-                        </select>
-                    </div>
+
                     <div class="form-group" id="customerForm">
                         <label for="customer_id">Customer</label>
                         <select class="form-control selectpicker" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan">
@@ -82,15 +83,15 @@
                             @endforeach
                         </select>
                     </div>
-                        <div class="form-group">
+                    <div class="form-group">
                         <label for="akses_id">Hak Akses<span style='color:red'>*</span></label>
                         <select class="form-control selectpicker" name="role" id="role" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Karyawan" required>
                             <option value="">--Pilih role--</option>
                             @foreach($dataRole as $data)
-                                <option value="{{$data->id}}">{{$data->nama}}</option>
+                                <option value="{{$data->id}}">{{$data->name}}</option>
                             @endforeach
                         </select>
-                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -158,20 +159,14 @@
 </script>
 <script type="text/javascript">
 function showpassowrd() {
-      var x = document.getElementById("password");
-      if (x.type === "password") {
-        x.type = "text";
-      } else {
-        x.type = "password";
-      }
+    var x = document.getElementById("password");
+    if (x.type === "password") {
+    x.type = "text";
+    } else {
+    x.type = "password";
     }
-// function cekDulu(){
-//       var karyawan = document.getElementById("karyawan");
-//       var customer = document.getElementById("customer");
+}
 
-//       if(karyawan.va)
-    
-// }
 $(document).ready(function(){
     $('#save').click(function(){
         if( $('#karyawan').val()==''&&$('#customer').val()=='')
@@ -212,7 +207,6 @@ $(document).ready(function(){
         $('#customerForm').show();
     
     }
-
 });
 </script>
 @endsection

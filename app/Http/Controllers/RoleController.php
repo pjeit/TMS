@@ -19,7 +19,7 @@ class RoleController extends Controller
     public function index()
     {
         //
-         $dataRole = DB::table('role')
+         $dataRole = DB::table('roles')
             ->select('*')
             ->where('is_aktif', '=', "Y")
             // ->paginate(10);

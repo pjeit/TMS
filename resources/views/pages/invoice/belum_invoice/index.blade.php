@@ -68,14 +68,17 @@
 </style>
 
 <div class="container-fluid">
-    <div class="card radiusSendiri">
-        <div class="card-header">
-            <div class="">
-                    <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="sewaAdd">
-                        <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
+    {{-- sticky header --}}
+    <div class="sticky-top radiusSendiri" style="margin-bottom: -15px;">
+        <div class="card radiusSendiri radiusSendiri" style="">
+            <div class="card-header " style="border-bottom: none;">
+                <button type="submit" class="btn btn-primary radiusSendiri" id="sewaAdd">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
                 </button>
             </div>
         </div>
+    </div>
+    <div class="card radiusSendiri">
         <div class="card-body">
             <div class="m-3" style="overflow-x:auto; overflow-y:hidden">
                 <table id="tabelBelumInvoice" class="table table-bordered table-hover" width='100%'>

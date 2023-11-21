@@ -24,8 +24,8 @@ class MarketingController extends Controller
 
         $data = DB::table('grup_member as gm')
                         ->leftJoin('grup as g', 'gm.grup_id', '=', 'g.id')
-                        ->leftJoin('role as r', 'gm.role_id', '=', 'r.id')
-                        ->select('gm.*', 'g.nama_grup as nama_grup', 'r.nama as nama_role')
+                        ->leftJoin('roles as r', 'gm.role_id', '=', 'r.id')
+                        ->select('gm.*', 'g.nama_grup as nama_grup', 'r.name as nama_role')
                         ->where('gm.is_aktif', '=', "Y")
                         ->get();
         
