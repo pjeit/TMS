@@ -12,11 +12,14 @@ use App\Models\KasBankTransaction;
 use Exception;
 class TransferDanaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_TRANSAKSI_DANA', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_TRANSAKSI_DANA', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_TRANSAKSI_DANA', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_TRANSAKSI_DANA', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //

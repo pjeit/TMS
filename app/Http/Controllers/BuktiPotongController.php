@@ -7,11 +7,14 @@ use Illuminate\Support\Facades\DB;
 
 class BuktiPotongController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_BUKTI_POTONG', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_BUKTI_POTONG', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_BUKTI_POTONG', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_BUKTI_POTONG', ['only' => ['destroy']]);  
+    }
+    
     public function index()
     {
         $title = 'Data akan dihapus!';

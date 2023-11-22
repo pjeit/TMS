@@ -22,17 +22,12 @@ use Illuminate\Support\Facades\Gate;
 
 class JobOrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
     public function __construct()
     {
-        // $this->middleware('can: create JO');
-        // $this->middleware('can: create JO')->only('create');
-        // buka UserSeeder buat detailnya
+        $this->middleware('permission:READ_JO', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_JO', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_JO', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_JO', ['only' => ['destroy']]);  
     }
 
     public function index()

@@ -14,11 +14,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Helper\CoaHelper;
 class PembayaranGajiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PEMBAYARAN_GAJI', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PEMBAYARAN_GAJI', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PEMBAYARAN_GAJI', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PEMBAYARAN_GAJI', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //

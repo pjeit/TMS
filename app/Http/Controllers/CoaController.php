@@ -12,11 +12,14 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class CoaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_COA', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_COA', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_COA', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_COA', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $dataCOA = DB::table('coa')

@@ -23,11 +23,14 @@ use Symfony\Component\VarDumper\VarDumper;
 use App\Helper\CoaHelper;
 class PembayaranInvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PEMBAYARAN_INVOICE', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PEMBAYARAN_INVOICE', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PEMBAYARAN_INVOICE', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PEMBAYARAN_INVOICE', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $title = 'Data akan dihapus!';

@@ -17,11 +17,14 @@ use App\Models\JobOrder;
 use Illuminate\Support\Carbon;
 class SewaRekananController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_ORDER_REKANAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_ORDER_REKANAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_ORDER_REKANAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_ORDER_REKANAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //

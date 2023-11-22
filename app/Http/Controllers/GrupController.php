@@ -22,10 +22,10 @@ class GrupController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:read_grup', ['only' => ['index']]);
-		$this->middleware('permission:create_grup', ['only' => ['create','store']]);
-		$this->middleware('permission:edit_grup', ['only' => ['edit','update']]);
-		$this->middleware('permission:delete_grup', ['only' => ['destroy']]);  
+        $this->middleware('permission:READ_GRUP', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_GRUP', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_GRUP', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_GRUP', ['only' => ['destroy']]);  
     }
 
     public function index()

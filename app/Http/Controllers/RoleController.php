@@ -11,11 +11,14 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_ROLE', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_ROLE', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_ROLE', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_ROLE', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //

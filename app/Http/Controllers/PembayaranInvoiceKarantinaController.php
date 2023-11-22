@@ -15,11 +15,14 @@ use Illuminate\Validation\ValidationException as ValidationValidationException;
 use App\Helper\CoaHelper;
 class PembayaranInvoiceKarantinaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PEMBAYARAN_INVOICE_KARANTINA', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PEMBAYARAN_INVOICE_KARANTINA', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PEMBAYARAN_INVOICE_KARANTINA', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PEMBAYARAN_INVOICE_KARANTINA', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = InvoiceKarantina::where('is_aktif', 'Y')->where('sisa_tagihan', '>', 0)->with('details.kontainers.getJOD')->get();

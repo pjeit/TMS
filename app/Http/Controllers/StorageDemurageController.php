@@ -17,11 +17,14 @@ use App\Models\Supplier;
 
 class StorageDemurageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_SDT', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_SDT', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_SDT', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_SDT', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $supplier = DB::table('supplier')

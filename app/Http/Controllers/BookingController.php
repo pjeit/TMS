@@ -14,11 +14,14 @@ use App\Helper\VariableHelper;
 
 class BookingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_BOOKING', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_BOOKING', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_BOOKING', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_BOOKING', ['only' => ['destroy']]);  
+    }
+    
     public function index()
     {
         $title = 'Data akan dihapus!';

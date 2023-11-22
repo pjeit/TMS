@@ -10,11 +10,12 @@ use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 
 class CetakUangJalanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_BUKTI_POTONG', ['only' => ['index']]);
+        $this->middleware('permission:EDIT_BUKTI_POTONG', ['only' => ['index']]);
+    }
+    
     public function index()
     {
         //

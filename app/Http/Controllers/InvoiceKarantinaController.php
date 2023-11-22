@@ -19,11 +19,14 @@ use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 
 class InvoiceKarantinaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_INVOICE_KARANTINA', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_INVOICE_KARANTINA', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_INVOICE_KARANTINA', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_INVOICE_KARANTINA', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $title = 'Data akan dihapus!';

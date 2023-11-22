@@ -16,11 +16,14 @@ use App\Helper\CoaHelper;
 use App\Models\KasBank;
 class TagihanRekananController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_TAGIHAN_REKANAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_TAGIHAN_REKANAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_TAGIHAN_REKANAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_TAGIHAN_REKANAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $title = 'Data akan dihapus!';

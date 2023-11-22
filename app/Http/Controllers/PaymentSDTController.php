@@ -12,11 +12,14 @@ use App\Models\JobOrderDetail;
 use App\Helper\CoaHelper;
 class PaymentSDTController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PEMBAYARAN_SDT', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PEMBAYARAN_SDT', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PEMBAYARAN_SDT', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PEMBAYARAN_SDT', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $supplier = DB::table('supplier')

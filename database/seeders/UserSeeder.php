@@ -38,12 +38,30 @@ class UserSeeder extends Seeder
         // dd(auth()->user()->getAllPermissions());
 
 
-        // $superadmin = User::create([
-        //     'username' => 'superedwin',
-        //     'karyawan_id' => 1,
-        //     'role_id' => 1,
-        //     'password' => bcrypt('123')
-        // ]);
+        $ANGUFONG = User::create([
+            'username' => 'ANGUFONG',
+            'karyawan_id' => 1,
+            'role_id' => 1,
+            'password' => bcrypt('12345678')
+        ]);
+        $FERRIYATY = User::create([
+            'username' => 'FERRIYATY',
+            'karyawan_id' => 2,
+            'role_id' => 1,
+            'password' => bcrypt('12345678')
+        ]);
+        $TIM = User::create([
+            'username' => 'TIM',
+            'karyawan_id' => 123,
+            'role_id' => 1,
+            'password' => bcrypt('12345678')
+        ]);
+        $EDWIN = User::create([
+            'username' => 'EDWIN',
+            'karyawan_id' => 124,
+            'role_id' => 1,
+            'password' => bcrypt('123123123')
+        ]);
 
         // $admin = User::create([
         //     'username' => 'supertim',
@@ -52,6 +70,10 @@ class UserSeeder extends Seeder
         //     'password' => bcrypt('123')
         // ]);
 
+        $ANGUFONG->assignRole('Super Admin');
+        $FERRIYATY->assignRole('Super Admin');
+        $TIM->assignRole('Super Admin');
+        $EDWIN->assignRole('Super Admin');
         // $superadmin->assignRole('Super Admin');
         // $admin->assignRole('Admin');
 
@@ -60,10 +82,10 @@ class UserSeeder extends Seeder
         // $permission = Permission::create(['name' => 'update JO']);
         // $permission = Permission::create(['name' => 'delete JO']);
 
-        $role_super_admin = Role::where('name', 'SUPER ADMIN')->first();
-        $role_admin = Role::where('name', 'ADMIN')->first();
-        $admin = User::where('is_aktif', 'Y')->find(2);
-        $admin->assignRole('ADMIN');
+        // $role_super_admin = Role::where('name', 'SUPER ADMIN')->first();
+        // $role_admin = Role::where('name', 'ADMIN')->first();
+        // $admin = User::where('is_aktif', 'Y')->find(2);
+        // $admin->assignRole('ADMIN');
 
         // $role_admin->givePermissionTo(['create grup', 'read grup', 'edit grup', 'delete grup']);
         // $role_admin->givePermissionTo(['create marketing', 'read marketing', 'edit marketing', 'delete marketing']);

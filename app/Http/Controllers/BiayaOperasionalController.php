@@ -20,11 +20,14 @@ use App\Models\SewaOperasionalPembayaran;
 
 class BiayaOperasionalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_BIAYA_OPERASIONAL', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_BIAYA_OPERASIONAL', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_BIAYA_OPERASIONAL', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_BIAYA_OPERASIONAL', ['only' => ['destroy']]);  
+    }
+    
     public function index()
     {
         $title = 'Data akan dihapus!';

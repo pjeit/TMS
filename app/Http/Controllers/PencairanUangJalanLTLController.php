@@ -16,11 +16,14 @@ use Illuminate\Validation\ValidationException;
 use App\Helper\CoaHelper;
 class PencairanUangJalanLTLController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PENCAIRAN_UJ_LTL', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PENCAIRAN_UJ_LTL', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PENCAIRAN_UJ_LTL', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PENCAIRAN_UJ_LTL', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = Sewa::where('is_aktif', 'Y')

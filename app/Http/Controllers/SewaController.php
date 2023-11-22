@@ -17,11 +17,14 @@ use App\Models\JobOrder;
 use Illuminate\Support\Carbon;
 class SewaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_ORDER', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_ORDER', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_ORDER', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_ORDER', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $title = 'Data akan dihapus!';

@@ -19,11 +19,14 @@ use App\Models\UangJalanRiwayat;
 use App\Helper\SewaDataHelper;
 class DalamPerjalananController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_DALAM_PERJALANAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_DALAM_PERJALANAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_DALAM_PERJALANAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_DALAM_PERJALANAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //

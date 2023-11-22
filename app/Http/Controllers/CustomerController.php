@@ -11,11 +11,14 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_CUSTOMER', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_CUSTOMER', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_CUSTOMER', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_CUSTOMER', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = Customer::where('is_aktif', 'Y')->get();

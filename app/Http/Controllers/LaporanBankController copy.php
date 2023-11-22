@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
 class LaporanBankController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_LAPORANG_BANK', ['only' => ['index']]);
+    }
+
     public function index(Request $request)
     {
         $tanggal_awal   = $request->input('tanggal_awal');

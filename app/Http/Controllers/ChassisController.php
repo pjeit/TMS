@@ -17,11 +17,14 @@ use Illuminate\Support\Facades\Auth;
 
 class ChassisController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_CHASSIS', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_CHASSIS', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_CHASSIS', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_CHASSIS', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = DB::table('chassis as a')

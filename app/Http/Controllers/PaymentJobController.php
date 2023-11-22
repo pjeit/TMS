@@ -12,11 +12,14 @@ use App\Helper\UserHelper;
 use App\Helper\CoaHelper;
 class PaymentJobController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PEMBAYARAN_JO', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PEMBAYARAN_JO', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PEMBAYARAN_JO', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PEMBAYARAN_JO', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         // use App\Helper\UserHelper;

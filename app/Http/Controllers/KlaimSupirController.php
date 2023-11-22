@@ -16,11 +16,14 @@ use App\Models\KasBankTransaction;
 use App\Helper\CoaHelper;
 class KlaimSupirController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_KLAIM_SUPIR', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_KLAIM_SUPIR', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_KLAIM_SUPIR', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_KLAIM_SUPIR', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //

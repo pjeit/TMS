@@ -12,11 +12,14 @@ use Exception;
 
 class PairKendaraanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PAIR_KENDARAAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PAIR_KENDARAAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PAIR_KENDARAAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PAIR_KENDARAAN', ['only' => ['destroy']]);  
+    }
+    
     public function index()
     {
         //

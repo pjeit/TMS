@@ -13,11 +13,14 @@ use Illuminate\Validation\ValidationException;
 use App\Helper\CoaHelper;
 class PengembalianJaminanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PENGEMBALIAN_JAMINAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PENGEMBALIAN_JAMINAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PENGEMBALIAN_JAMINAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PENGEMBALIAN_JAMINAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = JobOrder::where('job_order.is_aktif', 'Y')

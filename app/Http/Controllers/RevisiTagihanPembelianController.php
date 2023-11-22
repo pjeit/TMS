@@ -16,11 +16,14 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Helper\CoaHelper;
 class RevisiTagihanPembelianController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_REVISI_TAGIHAN_PEMBELIAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_REVISI_TAGIHAN_PEMBELIAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_REVISI_TAGIHAN_PEMBELIAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_REVISI_TAGIHAN_PEMBELIAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = TagihanPembelianPembayaran::where('is_aktif', 'Y')->get();

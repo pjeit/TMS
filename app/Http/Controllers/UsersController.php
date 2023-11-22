@@ -15,11 +15,14 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class UsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_USER', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_USER', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_USER', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_USER', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $dataUser = User::where('is_aktif', 'Y')->with('karyawan')->orderBy('created_by', 'ASC')->get();

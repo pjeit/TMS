@@ -8,11 +8,13 @@ use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        // $this->middleware('permission:READ_DASHBOARD', ['only' => ['index']]);
+		// $this->middleware('permission:CREATE_DASHBOARD', ['only' => ['create','store']]);
+		// $this->middleware('permission:EDIT_DASHBOARD', ['only' => ['edit','update']]);
+		// $this->middleware('permission:DELETE_DASHBOARD', ['only' => ['destroy']]);  
+    }
 
     public function Reset()
     {

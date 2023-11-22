@@ -16,11 +16,14 @@ use Illuminate\Support\Facades\Auth;
 
 class HeadController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_HEAD', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_HEAD', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_HEAD', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_HEAD', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = DB::table('kendaraan as a')

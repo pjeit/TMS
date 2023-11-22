@@ -16,11 +16,14 @@ use App\Models\KasBank;
 use App\Helper\CoaHelper;
 class TagihanPembelianController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_TAGIHAN_PEMBELIAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_TAGIHAN_PEMBELIAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_TAGIHAN_PEMBELIAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_TAGIHAN_PEMBELIAN', ['only' => ['destroy']]);  
+    }
+    
     public function index()
     {
         $title = 'Data akan dihapus!';

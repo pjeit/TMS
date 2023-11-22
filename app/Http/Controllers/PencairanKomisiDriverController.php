@@ -13,11 +13,14 @@ use App\Models\PencairanKomisiDetail;
 use App\Helper\CoaHelper;
 class PencairanKomisiDriverController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PENCAIRAN_KOMISI_DRIVER', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PENCAIRAN_KOMISI_DRIVER', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PENCAIRAN_KOMISI_DRIVER', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PENCAIRAN_KOMISI_DRIVER', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //

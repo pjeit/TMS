@@ -13,11 +13,11 @@ use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use Carbon\Carbon;
 class CetakInvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_CETAK_INVOICE', ['only' => ['index']]);
+    }
+    
     public function index()
     {
         //

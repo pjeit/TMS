@@ -14,11 +14,12 @@ use App\Models\InvoiceDetail;
 use App\Models\Sewa;
 class PemutihanInvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PEMUTIHAN_INVOICE', ['only' => ['index']]);
+		$this->middleware('permission:EDIT_PEMUTIHAN_INVOICE', ['only' => ['edit','update']]);
+    }
+
     public function index()
     {
         //

@@ -18,11 +18,14 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class BelumInvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_BELUM_INVOICE', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_BELUM_INVOICE', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_BELUM_INVOICE', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_BELUM_INVOICE', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $title = 'Data akan dihapus!';

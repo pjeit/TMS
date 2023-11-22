@@ -18,11 +18,14 @@ use Mockery\Undefined;
 
 class GrupTujuanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_GRUP_TUJUAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_GRUP_TUJUAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_GRUP_TUJUAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_GRUP_TUJUAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = Grup::select('grup.*', DB::raw('SUM(CASE WHEN grup_tujuan.is_aktif = "Y" THEN 1 ELSE 0 END) AS total_tujuan'))

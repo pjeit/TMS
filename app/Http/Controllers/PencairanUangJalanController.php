@@ -19,11 +19,14 @@ use Symfony\Component\VarDumper\VarDumper;
 use App\Helper\CoaHelper;
 class PencairanUangJalanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PENCAIRAN_UJ_FTL', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PENCAIRAN_UJ_FTL', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PENCAIRAN_UJ_FTL', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PENCAIRAN_UJ_FTL', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $sewa = DB::table('sewa AS s')

@@ -12,12 +12,12 @@ use App\Models\KasBankTransaction;
 
 class LaporanKasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+  public function __construct()
+  {
+      $this->middleware('permission:READ_LAPORANG_KAS', ['only' => ['index']]);
+  }
+
+  public function index(Request $request)
     {
         $tanggal_awal   = $request->input('tanggal_awal');
         $tanggal_akhir  = $request->input('tanggal_akhir');

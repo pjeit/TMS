@@ -24,11 +24,14 @@ use App\Models\UangJalanRiwayat;
 use App\Helper\CoaHelper;
 class RevisiTLController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_REVISI_TL', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_REVISI_TL', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_REVISI_TL', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_REVISI_TL', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $title = 'Data akan dihapus!';

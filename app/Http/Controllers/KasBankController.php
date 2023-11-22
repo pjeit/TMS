@@ -12,11 +12,14 @@ use DataTables;
 
 class KasBankController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_KASBANK', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_KASBANK', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_KASBANK', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_KASBANK', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
          $dataKas = DB::table('kas_bank')

@@ -15,11 +15,14 @@ use App\Helper\CoaHelper;
 
 class RevisiBiayaOperasionalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_REVISI_BIAYA_OPERASIONAL', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_REVISI_BIAYA_OPERASIONAL', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_REVISI_BIAYA_OPERASIONAL', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_REVISI_BIAYA_OPERASIONAL', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $title = 'Data akan dihapus!';

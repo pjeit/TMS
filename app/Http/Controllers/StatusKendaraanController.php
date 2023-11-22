@@ -11,11 +11,14 @@ use Illuminate\Support\Facades\Auth;
 
 class StatusKendaraanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_STATUS_KENDARAAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_STATUS_KENDARAAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_STATUS_KENDARAAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_STATUS_KENDARAAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //

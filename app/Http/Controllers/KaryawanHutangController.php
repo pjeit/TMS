@@ -14,11 +14,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Helper\CoaHelper;
 class KaryawanHutangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_KARYAWAN_HUTANG', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_KARYAWAN_HUTANG', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_KARYAWAN_HUTANG', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_KARYAWAN_HUTANG', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //
@@ -28,11 +31,11 @@ class KaryawanHutangController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         $dataKaryawanHutang = DB::table('karyawan as k')
-            ->select('k.*','k.id as idKaryawan','k.telp1','k.nama_panggilan','r.nama as namaPosisi','k.tgl_mulai_kontrak as tanggalBergabung','kh.total_hutang')
+            ->select('k.*','k.id as idKaryawan','k.telp1','k.nama_panggilan','r.name as namaPosisi','k.tgl_mulai_kontrak as tanggalBergabung','kh.total_hutang')
             ->leftJoin('karyawan_hutang as kh', function($join) {
                 $join->on('k.id', '=', 'kh.id_karyawan')->where('kh.is_aktif', '=', "Y");
             })
-            ->leftJoin('role as r', function($join) {
+            ->leftJoin('roles as r', function($join) {
                 $join->on('k.role_id', '=', 'r.id')->where('r.is_aktif', '=', "Y");
             })
             ->where('k.is_aktif',  "Y")
@@ -281,11 +284,11 @@ class KaryawanHutangController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         $dataKaryawanHutang = DB::table('karyawan as k')
-            ->select('k.*','k.id as idKaryawan','k.telp1','k.nama_panggilan','r.nama as namaPosisi','k.tgl_mulai_kontrak as tanggalBergabung','kh.total_hutang')
+            ->select('k.*','k.id as idKaryawan','k.telp1','k.nama_panggilan','r.name as namaPosisi','k.tgl_mulai_kontrak as tanggalBergabung','kh.total_hutang')
             ->leftJoin('karyawan_hutang as kh', function($join) {
                 $join->on('k.id', '=', 'kh.id_karyawan')->where('kh.is_aktif', '=', "Y");
             })
-            ->leftJoin('role as r', function($join) {
+            ->leftJoin('roles as r', function($join) {
                 $join->on('k.role_id', '=', 'r.id')->where('r.is_aktif', '=', "Y");
             })
             ->where('k.is_aktif',"Y")

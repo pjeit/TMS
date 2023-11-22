@@ -20,11 +20,14 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Helper\CoaHelper;
 class RevisiTagihanRekananController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_REVISI_TAGIHAN_REKANAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_REVISI_TAGIHAN_REKANAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_REVISI_TAGIHAN_REKANAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_REVISI_TAGIHAN_REKANAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data =  TagihanRekananPembayaran::where('is_aktif', 'Y')->get();

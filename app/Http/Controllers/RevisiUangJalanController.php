@@ -16,11 +16,14 @@ use App\Models\UangJalanRiwayat;
 use App\Helper\CoaHelper;
 class RevisiUangJalanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_UANG_JALAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_UANG_JALAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_UANG_JALAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_UANG_JALAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
 

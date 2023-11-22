@@ -15,9 +15,6 @@ use PhpParser\Node\Stmt\Return_;
 use Illuminate\Support\Facades\Session;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use Carbon\Carbon;
-
-
-
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -25,11 +22,14 @@ use BaconQrCode\Writer;
 
 class InvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_BELUM_INVOICE', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_BELUM_INVOICE', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_BELUM_INVOICE', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_BELUM_INVOICE', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //

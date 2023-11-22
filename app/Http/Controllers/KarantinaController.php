@@ -13,11 +13,14 @@ use Illuminate\Validation\ValidationException;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 class KarantinaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_KARANTINA', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_KARANTINA', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_KARANTINA', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_KARANTINA', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $title = 'Data akan dihapus!';

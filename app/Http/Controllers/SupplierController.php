@@ -12,11 +12,14 @@ use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_SUPPLIER', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_SUPPLIER', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_SUPPLIER', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_SUPPLIER', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = DB::table('supplier')

@@ -24,11 +24,14 @@ use Spatie\Permission\Models\Role;
 
 class KaryawanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_KARYAWAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_KARYAWAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_KARYAWAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_KARYAWAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
          $dataKaryawan = DB::table('karyawan')
@@ -61,8 +64,8 @@ class KaryawanController extends Controller
         //         $data = DB::table('karyawan')
         //                 ->select('karyawan.id','karyawan.nama_panggilan as nama_panggilan',
         //                     'karyawan.tempat_lahir as tempat_lahir','karyawan.alamat_domisili as alamat_domisili',
-        //                     'karyawan.telp1 as telp1','role.nama as posisi')
-        //                 ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
+        //                     'karyawan.telp1 as telp1','roles.nama as posisi')
+        //                 ->leftJoin('roles', 'karyawan.posisi_id', '=', 'roles.id')
         //                 ->where('karyawan.is_aktif', '=', "Y")
         //                 ->where('karyawan.is_keluar', '=', "N")
         //                 ->get();
@@ -83,8 +86,8 @@ class KaryawanController extends Controller
         //             ->make(true);
         //     }
         //     $dataKaryawan = DB::table('karyawan')
-        //             ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','role.nama as posisi')
-        //             ->leftJoin('role', 'karyawan.posisi_id', '=', 'role.id')
+        //             ->select('karyawan.id','karyawan.nama_panggilan','karyawan.tempat_lahir','karyawan.alamat_domisili','karyawan.telp1','roles.nama as posisi')
+        //             ->leftJoin('roles', 'karyawan.posisi_id', '=', 'roles.id')
         //             ->where('karyawan.is_aktif', '=', "Y")
         //             ->where('karyawan.is_keluar', '=', "N")
         //             ->get();
@@ -113,8 +116,8 @@ class KaryawanController extends Controller
      */
     public function create()
     {
-        $dataRole = DB::table('role')
-            ->where('role.is_aktif', '=', "Y")
+        $dataRole = DB::table('roles')
+            ->where('roles.is_aktif', '=', "Y")
             ->get();
         $dataKota = DB::table('cabang_pje')
             ->where('cabang_pje.is_aktif', '=', "Y")
@@ -129,7 +132,7 @@ class KaryawanController extends Controller
             ->get();
         return view('pages.master.karyawan.create',[
             'judul' =>"Karyawan",
-             'dataRole' => $dataRole,
+             'dataroles' => $dataRole,
              'dataKota' => $dataKota,
              'dataPtkp' => $dataPtkp,
              'dataAgama' => $dataAgama,
@@ -151,7 +154,7 @@ class KaryawanController extends Controller
         try {
             $pesanKustom = [
                 'tanggal_gabung.required' => 'Tanggal gabung Karyawan harap diisi!',
-                'role.required' => 'Posisi karyawan harap diisi!',
+                'roles.required' => 'Posisi karyawan harap diisi!',
                 'telp1.required' =>'Nomor telpon 1 harap diisi ',
                 'nama_lengkap.required' => 'Nama lengkap karyawan harap diisi!',
                 'nama_panggilan.required' => 'Nama panggilan karyawan harap diisi!',
@@ -162,7 +165,7 @@ class KaryawanController extends Controller
             $request->validate([
                 // 'telp1' =>'required|in:1,2',  // buat radio button
                 'tanggal_gabung' => 'required',
-                'role' => 'required',
+                'roles' => 'required',
                 'telp1' =>'required',
                 'nama_lengkap' => 'required',
                 'nama_panggilan' => 'required',
@@ -298,7 +301,7 @@ class KaryawanController extends Controller
                 'tgl_gabung' => date_format($tanggal_gabung, 'Y-m-d'),
                 'tgl_mulai_kontrak' => $tanggal_kontrak,
                 'tgl_selesai_kontrak' => $tanggal_selesai_kontrak,
-                'role_id' => $data['role'],
+                'role_id' => $data['roles'],
                 'cabang_id' => $data['cabang_kantor'],
                 'saldo_cuti' => $data['sisa_cuti'],
 
@@ -313,11 +316,11 @@ class KaryawanController extends Controller
                 'is_aktif' => "Y"
             ]);
 
-            // $roles = Role::where('is_aktif', 'Y')->find($data['role']);
+            // $roles = Role::where('is_aktif', 'Y')->find($data['roles']);
             // $user = User::create([
             //     'username' => $data['nama_panggilan'],
             //     'karyawan_id' => $karyawan->id,
-            //     'role_id' => $data['role'],
+            //     'role_id' => $data['roles'],
             //     'password' => bcrypt('123123123'),
             //     'created_by' => $user,
             //     'created_at' => now(),
@@ -412,8 +415,8 @@ class KaryawanController extends Controller
     public function edit(Karyawan $karyawan)
     {
         //
-        $dataRole = DB::table('role')
-            ->where('role.is_aktif', '=', "Y")
+        $dataRole = DB::table('roles')
+            ->where('roles.is_aktif', '=', "Y")
             ->get();
          $dataKota = DB::table('cabang_pje')
             ->where('cabang_pje.is_aktif', '=', "Y")

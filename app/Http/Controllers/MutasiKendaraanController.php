@@ -14,11 +14,14 @@ use Illuminate\Support\Facades\Auth;
 
 class MutasiKendaraanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_MUTASI_KENDARAAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_MUTASI_KENDARAAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_MUTASI_KENDARAAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_MUTASI_KENDARAAN', ['only' => ['destroy']]);  
+    }
+
     public function indexOld()
     {
         $dataKendaraan = DB::table('kendaraan AS k')

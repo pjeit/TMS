@@ -17,11 +17,14 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Helper\CoaHelper;
 class RevisiInvoiceTruckingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_REVISI_INVOICE_TRUCKING', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_REVISI_INVOICE_TRUCKING', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_REVISI_INVOICE_TRUCKING', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_REVISI_INVOICE_TRUCKING', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = InvoicePembayaran::where('is_aktif', 'Y')->get();
