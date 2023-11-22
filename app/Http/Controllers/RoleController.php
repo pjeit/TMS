@@ -74,9 +74,9 @@ class RoleController extends Controller
 
             $data = $request->collect();
           
-            DB::table('role')
+            DB::table('roles')
                 ->insert(array(
-                    'nama' => strtoupper($data['nama']),
+                    'name' => strtoupper($data['nama']),
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $user,
                     'updated_at'=> VariableHelper::TanggalFormat(),
@@ -146,10 +146,10 @@ class RoleController extends Controller
 
             $data = $request->collect();
           
-            DB::table('role')
+            DB::table('roles')
             ->where('id', $role['id'])
             ->update(array(
-                    'nama' => strtoupper($data['nama']),
+                    'name' => strtoupper($data['nama']),
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
                     'is_aktif' => "Y",

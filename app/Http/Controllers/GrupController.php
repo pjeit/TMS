@@ -13,7 +13,11 @@ use Illuminate\Support\Facades\Gate;
 use Symfony\Component\VarDumper\VarDumper;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
-
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
+// use App\Models\Userl;
 class GrupController extends Controller
 {
     public function __construct()
@@ -263,7 +267,7 @@ class GrupController extends Controller
                                         ));
                 }
         }
-       
+        
         return redirect()->route('grup.index')->with('status', 'Berhasil menghapus data!');
         // return response()->json([
         //     'status' => 'success',
