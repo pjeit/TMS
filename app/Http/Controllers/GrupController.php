@@ -35,7 +35,10 @@ class GrupController extends Controller
         //     abort(403, 'Anda tidak memiliki akses ke halaman ini');
         // }
         // dd( auth()->user()->getRoleNames() );
-        // dd(auth()->user()->getAllPermissions());
+        //       $userAkses=auth()->user()->getAllPermissions()->pluck('name')->toArray();
+        //   $semuaAkses = \Spatie\Permission\Models\Permission::pluck('name')->toArray();
+        //   $hasAllPermissions = count(array_diff($semuaAkses, $userAkses)) === 0;
+        // dd($hasAllPermissions);
 
         $data = DB::table('grup')
             ->where('is_aktif', '=', "Y")
