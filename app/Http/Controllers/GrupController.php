@@ -15,19 +15,23 @@ use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
 // use App\Models\Userl;
 class GrupController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware('can: create grup');
+        // $this->middleware('permission: create grup');
         // $this->middleware('role:SUPER ADMIN|ADMIN');
-        // $this->middleware('can: edit grup');
-        // $this->middleware('can: delete grup');
-        // $this->middleware('can: read grup');
+        // $this->middleware('permission: edit grup');
+        // $this->middleware('permission: delete grup');
+        // $this->middleware('permission: read grup');
 
-        // $this->middleware('can: create grup')->only('create');
-        // $this->middleware('can: read grup')->only('read');
+        // $this->middleware('can: read grup|create grup|edit grup|delete grup');
+        // $this->middleware(['role:ADMIN','permission:read grup|create grup']);
+        // $this->middleware('permission: create grup')->only('create');
+        // $this->middleware('permission: read grup')->only('read');
         // buka UserSeeder buat detailnya
     }
     /**
@@ -37,9 +41,10 @@ class GrupController extends Controller
      */
     public function index()
     {
+        // dd($this->middleware());
         // $ser = User::role('ADMIN')->get();
-        // dd( auth()->user()->getAllPermissions());
-        // dd(auth()->user()->getAllPermissions());
+        // dd( auth()->user()->getRoleNames());
+        dd(auth()->user()->getAllPermissions());
         // $this->authorize('read grup');
         // if(!Gate::allows('read grup')){
         //     abort(403, 'Anda tidak memiliki akses ke halaman ini');
@@ -70,7 +75,7 @@ class GrupController extends Controller
      */
     public function create()
     {
-        $this->authorize('create grup');
+        // $this->authorize('create grup');
 
         return view('pages.master.grup.create',[
             'judul' => "Grup",

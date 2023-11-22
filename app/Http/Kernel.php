@@ -68,7 +68,9 @@ class Kernel extends HttpKernel
         'is_superadmin' => \App\Http\Middleware\isSuperAdmin::class,
         'is_marketing' => \App\Http\Middleware\isMarketing::class,
         'is_finnance' => \App\Http\Middleware\isFinnance::class,
-        'role'=>\Spatie\Permission\Middlewares\RoleMiddleware::class
+        'role'=>\Spatie\Permission\Middlewares\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middlewares\RoleOrPermissionMiddleware::class,
         
     ];
 }

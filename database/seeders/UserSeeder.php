@@ -42,6 +42,9 @@ class UserSeeder extends Seeder
 
         $role_super_admin = Role::where('name', 'SUPER ADMIN')->first();
         $role_admin = Role::where('name', 'ADMIN')->first();
+        $admin = User::where('is_aktif', 'Y')->find(2);
+        $admin->assignRole('ADMIN');
+
         // $role_admin->givePermissionTo(['create grup', 'read grup', 'edit grup', 'delete grup']);
         // $role_admin->givePermissionTo(['create marketing', 'read marketing', 'edit marketing', 'delete marketing']);
         // $role_admin->givePermissionTo(['create customer', 'read customer', 'edit customer', 'delete customer']);
