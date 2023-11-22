@@ -113,7 +113,7 @@
         @php
             $userAkses=auth()->user()->getAllPermissions()->pluck('name')->toArray();
           $semuaAkses = \Spatie\Permission\Models\Permission::pluck('name')->toArray();
-          $hasAllPermissions = count(array_diff($semuaAkses, $userAkses)) === 0;
+          $hasAllPermissions = empty(array_diff($semuaAkses, $userAkses)) ;
         @endphp
         {{-- @php
                 $READ_REVISI_TL = auth()->user()->can('READ_REVISI_TL');
