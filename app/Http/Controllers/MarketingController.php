@@ -14,11 +14,14 @@ use Illuminate\Support\Facades\Auth;
 
 class MarketingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:read_marketing', ['only' => ['index']]);
+		$this->middleware('permission:create_marketing', ['only' => ['create','store']]);
+		$this->middleware('permission:edit_marketing', ['only' => ['edit','update']]);
+		$this->middleware('permission:delete_marketing', ['only' => ['destroy']]); 
+    }
+    
     public function index()
     {
 

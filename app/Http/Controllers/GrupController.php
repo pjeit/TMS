@@ -18,25 +18,21 @@ class GrupController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('can: create grup');
-        $this->middleware('can: read grup');
-        $this->middleware('can: edit grup');
-        $this->middleware('can: delete grup');
-        // $this->middleware('can: create grup')->only('create');
-        // $this->middleware('can: read grup')->only('read');
-        // buka UserSeeder buat detailnya
+        $this->middleware('permission:read_grup', ['only' => ['index']]);
+		$this->middleware('permission:create_grup', ['only' => ['create','store']]);
+		$this->middleware('permission:edit_grup', ['only' => ['edit','update']]);
+		$this->middleware('permission:delete_grup', ['only' => ['destroy']]);  
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        $this->authorize('read grup');
-        if(!Gate::allows('read grup')){
-            abort(403, 'Anda tidak memiliki akses ke halaman ini');
-        }
+        // $this->authorize('read_grup');
+        // if(!Gate::allows('read_grup')){
+        //     abort(403, 'Anda tidak memiliki akses ke halaman ini');
+        // }
+        // dd( auth()->user()->getRoleNames() );
+        // dd(auth()->user()->getAllPermissions());
+
         $data = DB::table('grup')
             ->where('is_aktif', '=', "Y")
             ->orderBy('nama_grup', 'ASC')
@@ -63,7 +59,7 @@ class GrupController extends Controller
      */
     public function create()
     {
-        $this->authorize('create grup');
+        // $this->authorize('create_grup');
 
         return view('pages.master.grup.create',[
             'judul' => "Grup",
@@ -155,7 +151,7 @@ class GrupController extends Controller
      */
     public function edit(Grup $grup)
     {
-        $this->authorize('edit grup');
+        // $this->authorize('edit_grup');
 
         $data = Grup::where('is_aktif', 'Y')->findOrFail($grup->id);
         $role_id = Auth::user()->role_id;
@@ -238,7 +234,7 @@ class GrupController extends Controller
      */
     public function destroy(Grup $grup)
     {
-        $this->authorize('delete grup');
+        // $this->authorize('delete_grup');
 
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies
         // var_dump($grup); die;

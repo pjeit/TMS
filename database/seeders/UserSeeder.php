@@ -17,14 +17,33 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+        // public function __construct()
+        // {
+        // $this->authorize('read_grup');
+        // $this->authorize('create_grup');
+        // $this->authorize('edit_grup');
+        // $this->authorize('delete_grup');
+        // $this->middleware('can: read_grup',   ['only' => ['index']]);
+        // $this->middleware('can: create_grup', ['only' => ['create','store']]);
+        // $this->middleware('can: edit_grup',   ['only' => ['edit','update']]);
+        // $this->middleware('can: delete_grup', ['only' => ['delete']]);
+        // }
+        
+        // controller
+        // $this->authorize('read_grup');
+        // if(!Gate::allows('read_grup')){
+        //     abort(403, 'Anda tidak memiliki akses ke halaman ini');
+        // }
+        // dd( auth()->user()->getRoleNames() );
+        // dd(auth()->user()->getAllPermissions());
+
+
         // $superadmin = User::create([
         //     'username' => 'superedwin',
         //     'karyawan_id' => 1,
         //     'role_id' => 1,
         //     'password' => bcrypt('123')
         // ]);
-
-        // $superadmin->assignRole('Super Admin');
 
         // $admin = User::create([
         //     'username' => 'supertim',
@@ -33,6 +52,7 @@ class UserSeeder extends Seeder
         //     'password' => bcrypt('123')
         // ]);
 
+        // $superadmin->assignRole('Super Admin');
         // $admin->assignRole('Admin');
 
         // $permission = Permission::create(['name' => 'create JO']);

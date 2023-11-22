@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Role;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -19,13 +20,16 @@ class isAdmin
         if (!auth()->check()) {
             return redirect()->route('login');
         }
+        // dd(auth()->user()->getAllPermissions());
+        // dd(auth()->user()->getRoleNames());
 
-        $user_role = auth()->user()->role_id;
-        if($user_role == 2 || $user_role == 1){ 
-            // admin
-            return $next($request); // artinya di bolehin 
-        }
 
-        return redirect('/')->with('error', "Access denied! (isAdmin)");
+        // $user_role = auth()->user()->role_id;
+        // if($user_role == 2 || $user_role == 1){ 
+        //     // admin
+        //     return $next($request); // artinya di bolehin 
+        // }
+
+        // return redirect('/')->with('error', "Access denied! (isAdmin)");
     }
 }
