@@ -99,8 +99,8 @@
 </div>
 @if (session('id_print_jo'))
 <script>
-    window.open("/job_order/printJob/{{ session('id_print_jo') }}", "_blank");
-
+    var baseUrl = "{{ asset('') }}";
+    window.open(`${baseUrl}job_order/printJob/{{ session('id_print_jo') }}`, "_blank");
     // di set null biar ga open new tab terus2an 
     setTimeout(function() {
         sessionStorage.setItem('id_print_jo', null);

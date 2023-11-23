@@ -282,7 +282,9 @@
 <script>
     var idInvoiceSession = "<?= session()->has('id_invoice') ? session()->get('id_invoice') : null ?>";
     console.log('idInvoiceSession', idInvoiceSession);
-    window.open(`/invoice_karantina/print/${idInvoiceSession}`, "_blank");
+    var baseUrl = "{{ asset('') }}";
+
+    window.open(`${baseUrl}invoice_karantina/print/${idInvoiceSession}`, "_blank");
     // di set null biar ga open new tab terus2an 
     setTimeout(function() {
         sessionStorage.setItem('id_invoice', null);
