@@ -19,6 +19,8 @@ use Illuminate\Support\HtmlString;
 use App\Helper\UserHelper;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
+// use Barryvdh\DomPDF\PDF;
+
 
 class JobOrderController extends Controller
 {
