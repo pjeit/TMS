@@ -51,8 +51,8 @@ class RevisiTLController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('pages.revisi.revisi_tl.index',[
-            'judul' => "ADD RETURN TL",
+        return view('pages.revisi.revisi_TL.index',[
+            'judul' => "Revisi TL",
             'data' => $data,
         ]);
     }
