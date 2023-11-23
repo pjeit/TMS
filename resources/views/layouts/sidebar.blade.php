@@ -989,7 +989,7 @@
 
             
             @php
-                $laporan_finance = [ 'READ_LAPORAN_KAS', 'READ_LAPORAN_BANK' ];
+                $laporan_finance = [ 'READ_LAPORAN_BANK', 'READ_LAPORAN_KAS' ];
             @endphp
             {{-- LAPORAN FINANCE --}}
             @if (array_intersect($laporan_finance, $userAkses) != NULL)
