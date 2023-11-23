@@ -47,8 +47,6 @@ Route::post('custom-registration', [CustomAuthController::class, 'customRegistra
 // ========================================== master ==================================================
 // Route::group(['middleware' => ['auth']], function () {
 Route::middleware(['auth'])->group(function () {
-    Route::resource('grup', 'App\Http\Controllers\GrupController');
-
     Route::get('/', function () {
         return view('home', [
             'judul'=>'Home'
@@ -79,6 +77,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('karyawan/getData/', [App\Http\Controllers\KaryawanController::class, 'index']);
         Route::resource('karyawan', 'App\Http\Controllers\KaryawanController');
     
+        Route::resource('grup', 'App\Http\Controllers\GrupController');
 
         Route::get('grup_tujuan/getMarketing/{groupId}', [App\Http\Controllers\GrupTujuanController::class, 'getMarketing']);
         Route::get('/grup_tujuan/printJob/{grup}', [App\Http\Controllers\GrupTujuanController::class, 'printDetail']);
@@ -88,6 +87,12 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('customer', 'App\Http\Controllers\CustomerController');
         
         Route::resource('role', 'App\Http\Controllers\RoleController');
+
+        Route::get('permission/delete/{id}', 'App\Http\Controllers\PermissionController@delete')->name('permission.delete');
+        Route::resource('permission', 'App\Http\Controllers\PermissionController');
+
+        Route::get('access/delete/{id}', 'App\Http\Controllers\AccessController@delete')->name('access.delete');
+        Route::resource('access', 'App\Http\Controllers\AccessController');
     
         Route::resource('users', 'App\Http\Controllers\UsersController');
     

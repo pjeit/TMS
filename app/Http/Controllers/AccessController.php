@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permissions;
 use Illuminate\Http\Request;
 
 class AccessController extends Controller
@@ -13,7 +14,12 @@ class AccessController extends Controller
      */
     public function index()
     {
-        //
+        $data = Permissions::where('is_aktif', 'Y')->get();
+
+        return view('pages.master.permission.index',[
+            'judul' => 'Permission',
+            'data' => $data,
+        ]);
     }
 
     /**

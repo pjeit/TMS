@@ -31,11 +31,10 @@
           $userAkses = $user->getAllPermissions()->pluck('name')->toArray();
           // @dd($userAkses);
           // @dd(auth()->user()->hasPermissionTo('READ_LAPORAN_BANK'))
-
         @endphp
 
             @php
-                $master = ['READ_GRUP','READ_HEAD','READ_SUPPLIER','READ_KARYAWAN','READ_COA', 'READ_KASBANK', 'READ_ROLE', 'READ_USER', 'READ_PENGATURAN_KEUANGAN'];
+                $master = ['READ_GRUP','READ_HEAD','READ_SUPPLIER','READ_KARYAWAN','READ_COA', 'READ_KASBANK', 'READ_ROLE', 'READ_USER', 'READ_PENGATURAN_KEUANGAN', 'READ_PERMISSIONS'];
             @endphp
             {{-- MASTER --}}
             @if (array_intersect($master, $userAkses) != NULL)
@@ -56,6 +55,7 @@
                       request()->is('pair_kendaraan*')||
                       request()->is('chassis*')||
                       request()->is('mutasi_kendaraan*')||
+                      request()->is('permissions*')||
                       request()->is('grup*')
                   ? 'menu-is-opening menu-open' : '' }}">
                   <a href="#" class="nav-link hover-item" style="font-weight: 700; font-size: 15px;">
@@ -238,6 +238,26 @@
                         <i class="far nav-icon fa fa-user-circle"></i>
                         <p>
                           User
+                        </p>
+                      </a> 
+                    </li>
+                  @endcan
+                  @can('READ_USER')
+                    <li class="nav-item">
+                      <a href="{{route('permission.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('permission*') ? ' active' : '' }}">
+                        <i class="far nav-icon fa fa-lock-open"></i>
+                        <p>
+                          Permission
+                        </p>
+                      </a> 
+                    </li>
+                  @endcan
+                  @can('READ_ACCESS')
+                    <li class="nav-item">
+                      <a href="{{route('access.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('access*') ? ' active' : '' }}">
+                        <i class="far nav-icon fa fa-lock-open"></i>
+                        <p>
+                          Hak Akses
                         </p>
                       </a> 
                     </li>
