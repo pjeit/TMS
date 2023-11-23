@@ -252,7 +252,7 @@
                       </a> 
                     </li>
                   @endcan
-                  @can('READ_ACCESS')
+                  @can('READ_USER')
                     <li class="nav-item">
                       <a href="{{route('access.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('access*') ? ' active' : '' }}">
                         <i class="far nav-icon fa fa-lock-open"></i>
