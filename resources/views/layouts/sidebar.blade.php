@@ -30,7 +30,7 @@
           $user = auth()->user();
           $userAkses = $user->getAllPermissions()->pluck('name')->toArray();
           // @dd($userAkses);
-          // @dd(auth()->user()->hasPermissionTo('READ_TRANSFER_DANA'))
+          // @dd(auth()->user()->hasPermissionTo('READ_LAPORAN_BANK'))
 
         @endphp
 

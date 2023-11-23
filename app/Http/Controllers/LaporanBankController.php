@@ -14,7 +14,7 @@ class LaporanBankController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:READ_LAPORAN_BANK', ['only' => ['index']]);
+        $this->middleware('permission: READ_LAPORAN_BANK', ['only' => ['index']]);
     }
     
     public function index(Request $request)
