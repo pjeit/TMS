@@ -200,6 +200,7 @@ class UsersController extends Controller
 
             $roles = Role::where('is_aktif', 'Y')->find($data['role']);
             $user->syncRoles($roles->name);
+        //  $user->assignRole('Super Admin');
 
             DB::commit();
             return redirect()->route('users.index')->with(['status' => 'Success', 'msg' => 'Update Data Berhasil!']);

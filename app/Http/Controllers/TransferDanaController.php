@@ -14,10 +14,10 @@ class TransferDanaController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:READ_TRANSAKSI_DANA', ['only' => ['index']]);
-		$this->middleware('permission:CREATE_TRANSAKSI_DANA', ['only' => ['create','store']]);
-		$this->middleware('permission:EDIT_TRANSAKSI_DANA', ['only' => ['edit','update']]);
-		$this->middleware('permission:DELETE_TRANSAKSI_DANA', ['only' => ['destroy']]);  
+        $this->middleware('permission:READ_TRANSFER_DANA', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_TRANSFER_DANA', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_TRANSFER_DANA', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_TRANSFER_DANA', ['only' => ['destroy']]);  
     }
 
     public function index()

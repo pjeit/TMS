@@ -363,13 +363,16 @@
             
             @endif
           {{-- @endif --}}
-            
+            @php
+                $inbound = ['READ_JO','READ_SDT','READ_PENGEMBALIAN_JAMINAN','READ_KARANTINA',];
+            @endphp
           {{-- @if (in_array($user_role, [1,2,3])) --}}
             {{-- INBOUND ORDER --}}
-            @if ($hasAllPermissions)
+            @if (array_intersect($userAkses, $inbound) != NULL)
               <li class="nav-item {{ request()->is('job_order*') ||
                 request()->is('storage_demurage*') ||
                 request()->is('karantina*') ||
+                request()->is('pengembalian_jaminan*') ||
                 request()->is('unloading_plan*')
                 ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -439,8 +442,10 @@
             
               </li>
             @endif
-
-            @if ($hasAllPermissions)
+            @php
+                $trucking = ['READ_BOOKING','READ_ORDER','READ_STATUS_KENDARAAN','READ_DALAM_PERJALANAN'];
+            @endphp
+            @if (array_intersect($userAkses, $trucking) != NULL)
               {{-- TRUCKING ORDER --}}
               <li class="nav-item {{ request()->is('booking*')||
                 request()->is('dalam_perjalanan*') ||
@@ -514,8 +519,26 @@
               
               </li>
             @endif
-
-            @if ($hasAllPermissions)
+            @php
+                $finance = [
+                    'READ_BIAYA_OPERASIONAL',
+                    'READ_KLAIM_SUPIR',
+                    'READ_PEMBAYARAN_JO',
+                    'READ_PEMBAYARAN_SDT',
+                    'READ_PEMBAYARAN_GAJI',
+                    'READ_PENCAIRAN_UJ_FTL',
+                    'READ_PENCAIRAN_UJ_LTL',
+                    'READ_CETAK_UJ',
+                    'READ_PENCAIRAN_KOMISI_CUSTOMER',
+                    'READ_PENCAIRAN_KOMISI_DRIVER',
+                    'READ_TAGIHAN_REKANAN',
+                    'READ_TAGIHAN_PEMBELIAN',
+                    'READ_TRANSAKSI_NON_OPERASIONAL',
+                    'READ_KARYAWAN_HUTANG',
+                    'READ_TRANSFER_DANA',
+                ];
+            @endphp
+            @if (array_intersect($userAkses, $finance) != NULL)
               {{-- FINANCE --}}
               <li class="nav-item {{ 
                 request()->is('pembayaran_jo*') ||
@@ -523,16 +546,17 @@
                 request()->is('pencairan_operasional*') ||
                 request()->is('biaya_operasional*') ||
                 request()->is('pembayaran_sdt*') ||
-                request()->is('pengembalian_jaminan*') ||
                 request()->is('pencairan_komisi_driver*')||
                 request()->is('klaim_supir*')||
                 request()->is('tagihan_rekanan*')||
                 request()->is('tagihan_pembayaran*')||
                 request()->is('pencairan_komisi_customer*')||
-                request()->is('karantina*')||
                 request()->is('transaksi_lain*')||
                 request()->is('tagihan_pembelian*')||
-                request()->is('transfer_dana*')
+                request()->is('transfer_dana*')||
+                request()->is('pembayaran_gaji*')||
+                request()->is('cetak_uang_jalan*')||
+                request()->is('karyawan_hutang*')
                 ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                   <i class="nav-icon fas fa-dollar-sign"></i>
@@ -568,7 +592,8 @@
                   <ul class="nav nav-treeview">
                     <li class="nav-item   {{ 
                       request()->is('pembayaran_jo*') ||
-                      request()->is('pembayaran_sdt*')
+                      request()->is('pembayaran_sdt*')||
+                      request()->is('pembayaran_gaji*')
                       ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                       <a href="#" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
@@ -620,8 +645,10 @@
 
                   <ul class="nav nav-treeview">
                     <li class="nav-item   {{ 
-                      request()->is('pembayaran_jo*') ||
-                      request()->is('pembayaran_sdt*')
+                      request()->is('pencairan_uang_jalan*')||
+                      request()->is('cetak_uang_jalan*') ||
+                      request()->is('pencairan_komisi_driver*')||
+                      request()->is('pencairan_komisi_customer*')
                       ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                       <a href="#" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
@@ -637,7 +664,8 @@
                     @endphp
                     <li class="nav-item   {{ 
                       request()->is('pencairan_uang_jalan*') ||
-                      request()->is('pencairan_uang_jalan_ltl*')
+                      request()->is('pencairan_uang_jalan_ltl*')||
+                      request()->is('cetak_uang_jalan*')
                       ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                       <a href="#" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
@@ -810,8 +838,18 @@
                 @endcan
               </li>
             @endif
-
-            @if ($hasAllPermissions)
+            @php
+              $invoice = [
+                'READ_BELUM_INVOICE',
+                'READ_CETAK_INVOICE',
+                'READ_PEMBAYARAN_INVOICE',
+                'READ_BUKTI_POTONG',
+                'READ_PEMUTIHAN_INVOICE',
+                'READ_INVOICE_KARANTINA',
+                'READ_PEMBAYARAN_INVOICE_KARANTINA',
+            ];
+            @endphp
+            @if (array_intersect($userAkses, $invoice) != NULL)
               {{-- @if (in_array($user_role, [1,2,3])) --}}
               {{-- INVOICE --}}
               <li class="nav-item {{ request()->is('belum_invoice*') ||
@@ -955,8 +993,19 @@
                 
               </li>
             @endif
-
-            @if ($hasAllPermissions)
+            @php
+            $revisi = [
+                'READ_REVISI_TL',
+                'READ_REVISI_UANG_JALAN',
+                'READ_REVISI_BIAYA_OPERASIONAL',
+                'READ_REVISI_KLAIM_SUPIR',
+                'READ_REVISI_INVOICE_TRUCKING',
+                'READ_REVISI_TAGIHAN_REKANAN',
+                'READ_REVISI_TAGIHAN_PEMBELIAN',
+                'READ_REVISI_PEMBAYARAN_INVOICE',
+            ];
+            @endphp
+            @if (array_intersect($userAkses, $revisi) != NULL)
               {{-- REVISI --}}
               <li class="nav-item {{ request()->is('revisi_uang_jalan*') ||  
                                   request()->is('revisi_tl*')||
@@ -1072,16 +1121,16 @@
                       </ul>
                     </li>
                   @endif
-                  @can('READ_REVISI_PEMBAYARAN_INVOICE')
-                  <li class="nav-item">
+                  {{-- @can('READ_REVISI_PEMBAYARAN_INVOICE') --}}
+                  {{-- <li class="nav-item">
                     <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} " style="font-weight: 500;">
                     <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                       <p>
                         <span style="font-size: 0.80em;">Rev. Pembayaran Invoice</span>
                       </p>
                     </a>
-                  </li>
-                  @endcan
+                  </li> --}}
+                  {{-- @endcan --}}
                 </ul>
               </li>
             @endif
@@ -1099,9 +1148,14 @@
                 $READ_LAPORAN_KAS = auth()->user()->can('READ_LAPORAN_KAS');
                 $READ_LAPORAN_BANK = auth()->user()->can('READ_LAPORAN_BANK');
             @endphp --}}
-
+            @php
+            $laporan = [
+                'READ_LAPORAN_KAS',
+                'READ_LAPORAN_BANK',
+            ];
+            @endphp
             {{-- @if($READ_LAPORAN_KAS || $READ_LAPORAN_BANK) --}}
-            @if ($hasAllPermissions)
+            @if (array_intersect($userAkses, $laporan) != NULL)
               {{-- LAPORAN FINANCE --}}
               <li class="nav-item {{ request()->is('laporan_kas*') ||
                   request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">
@@ -1135,7 +1189,6 @@
                 </ul>
               </li>
             @endif
-
             {{-- @endif --}}
           {{-- @endif --}}
         {{-- @endif --}}
