@@ -266,6 +266,7 @@
                 request()->is('storage_demurage*') ||
                 request()->is('pengembalian_jaminan*') ||
                 request()->is('karantina*') ||
+                request()->is('pengembalian_jaminan*') ||
                 request()->is('unloading_plan*')
                 ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
