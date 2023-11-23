@@ -264,6 +264,7 @@
             @if (array_intersect($inbound_order, $userAkses) != NULL)
               <li class="nav-item {{ request()->is('job_order*') ||
                 request()->is('storage_demurage*') ||
+                request()->is('pengembalian_jaminan*') ||
                 request()->is('karantina*') ||
                 request()->is('unloading_plan*')
                 ? 'menu-is-opening menu-open' : '' }}">
@@ -300,7 +301,7 @@
                 @can('READ_PENGEMBALIAN_JAMINAN')
                   <ul class="nav nav-treeview">
                     <li class="nav-item">
-                      <a href="{{route('pengembalian_jaminan.index')}}" class="nav-link {{request()->url() === route('pengembalian_jaminan.index')? ' active' : '' }} " style="font-weight: 500;">
+                      <a href="{{route('pengembalian_jaminan.index')}}" class="nav-link {{ request()->is('pengembalian_jaminan*')? ' active' : '' }} " style="font-weight: 500;">
                       <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                         <p>
                           <span style="font-size: 13.9px;">Pengembalian Jaminan</span>
@@ -405,15 +406,16 @@
                   request()->is('pencairan_operasional*') ||
                   request()->is('biaya_operasional*') ||
                   request()->is('pembayaran_sdt*') ||
-                  request()->is('pengembalian_jaminan*') ||
                   request()->is('pencairan_komisi_driver*')||
                   request()->is('klaim_supir*')||
                   request()->is('tagihan_rekanan*')||
                   request()->is('tagihan_pembayaran*')||
                   request()->is('pencairan_komisi_customer*')||
-                  request()->is('karantina*')||
                   request()->is('transaksi_lain*')||
                   request()->is('tagihan_pembelian*')||
+                  request()->is('pembayaran_gaji*')||
+                  request()->is('cetak_uang_jalan*')||
+                  request()->is('karyawan_hutang*')||
                   request()->is('transfer_dana*')
                   ? 'menu-is-opening menu-open' : '' }}">
                     <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -450,6 +452,7 @@
                     <ul class="nav nav-treeview">
                       <li class="nav-item   {{ 
                         request()->is('pembayaran_jo*') ||
+                        request()->is('pembayaran_gaji*') ||
                         request()->is('pembayaran_sdt*')
                         ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                         <a href="#" class="nav-link">
@@ -488,7 +491,7 @@
                         @can('READ_PEMBAYARAN_GAJI')
                           <ul class="nav nav-treeview">
                             <li class="nav-item">
-                              <a href="{{route('pembayaran_gaji.index')}}" class="nav-link {{request()->url() === route('pembayaran_gaji.index')? ' active' : '' }} " style="font-weight: 500;">
+                              <a href="{{route('pembayaran_gaji.index')}}" class="nav-link {{ request()->is('pembayaran_gaji*')? ' active' : '' }} " style="font-weight: 500;">
                               <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                                 <p>
                                   Pembayaran Gaji
@@ -502,8 +505,11 @@
 
                     <ul class="nav nav-treeview">
                       <li class="nav-item   {{ 
-                        request()->is('pembayaran_jo*') ||
-                        request()->is('pembayaran_sdt*')
+                        request()->is('pencairan_uang_jalan*') ||
+                        request()->is('cetak_uang_jalan*') ||
+                        request()->is('pencairan_komisi_customer*') ||
+                        request()->is('pencairan_komisi_driver*') ||
+                        request()->is('pencairan_uang_jalan_ltl*')
                         ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                         <a href="#" class="nav-link">
                           <i class="far fa-circle nav-icon"></i>
@@ -519,6 +525,7 @@
                       @endphp
                       <li class="nav-item   {{ 
                         request()->is('pencairan_uang_jalan*') ||
+                        request()->is('cetak_uang_jalan*') ||
                         request()->is('pencairan_uang_jalan_ltl*')
                         ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                         <a href="#" class="nav-link">
@@ -555,7 +562,7 @@
 
                           @can('READ_CETAK_UJ')
                             <li class="nav-item">
-                              <a href="{{route('cetak_uang_jalan.index')}}" class="nav-link {{request()->url() === route('cetak_uang_jalan.index')? ' active' : '' }} " style="font-weight: 500;">
+                              <a href="{{route('cetak_uang_jalan.index')}}" class="nav-link {{ request()->is('cetak_uang_jalan*')? ' active' : '' }} " style="font-weight: 500;">
                               <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                                 <p>
                                   Cetak UJ
