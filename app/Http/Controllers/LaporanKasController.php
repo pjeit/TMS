@@ -14,7 +14,7 @@ class LaporanKasController extends Controller
 {
   public function __construct()
   {
-      $this->middleware('permission: READ_LAPORAN_KAS', ['only' => ['index']]);
+      $this->middleware('permission:READ_LAPORAN_KAS', ['only' => ['index']]);
   }
 
   public function index(Request $request)
