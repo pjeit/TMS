@@ -200,7 +200,9 @@ class StorageDemurageController extends Controller
                     ->leftJoin('customer AS c', 'c.id', '=', 'jo.id_customer')
                     ->leftJoin('supplier AS s', 's.id', '=', 'jo.id_supplier')
                     ->join('job_order_detail AS jod', function($join){
-                            $join->on('jo.id', '=', 'jod.id_jo') ->where('jod.is_aktif',"Y");
+                            $join->on('jo.id', '=', 'jod.id_jo') 
+                            ->where('jod.status','!=',"SELESAI PEMBAYARAN")
+                            ->where('jod.is_aktif',"Y");
                     })
                     ->leftJoin('user as u', 'u.id', '=', 'jod.created_by')
                     ->leftJoin('karyawan as k', 'k.id', '=', 'u.karyawan_id')
