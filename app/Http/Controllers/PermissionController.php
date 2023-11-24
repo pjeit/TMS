@@ -10,11 +10,14 @@ use Illuminate\Validation\ValidationException;
 
 class PermissionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PERMISSION', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PERMISSION', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PERMISSION', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PERMISSION', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = Permissions::where('is_aktif', 'Y')->get();
@@ -135,11 +138,9 @@ class PermissionController extends Controller
         DB::beginTransaction(); 
         
         try {
-            $permission = Permissions::where('is_aktif', 'Y')->find($id);
-            $permission->updated_by = $user;
-            $permission->updated_at = now();
-            $permission->is_aktif = 'N';
-            if($permission->save()){
+            $permission = Permissions::where('is_aktif', 'Y')->where('id', $id)->delete();
+
+            if($permission){
                 DB::commit();
                 return redirect()->route('permission.index')->with(['status' => 'Success', 'msg'  => 'Hapus data berhasil!']);
             }

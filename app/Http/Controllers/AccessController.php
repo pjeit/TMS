@@ -13,6 +13,14 @@ use Illuminate\Validation\ValidationException;
 
 class AccessController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:READ_ACCESS', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_ACCESS', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_ACCESS', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_ACCESS', ['only' => ['destroy']]);  
+    }
+    
     public function index()
     {
         ClearCache::Clear();
@@ -87,7 +95,6 @@ class AccessController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        // dd($data['data']);
 
         try {
             if($data['data'] != null){

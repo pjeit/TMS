@@ -243,7 +243,7 @@
                       </a> 
                     </li>
                   @endcan
-                  @can('READ_USER')
+                  @can('READ_PERMISSION')
                     <li class="nav-item">
                       <a href="{{route('permission.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('permission*') ? ' active' : '' }}">
                         <i class="far nav-icon fa fa-lock-open"></i>
@@ -253,7 +253,7 @@
                       </a> 
                     </li>
                   @endcan
-                  @can('READ_USER')
+                  @can('READ_ACCESS')
                     <li class="nav-item">
                       <a href="{{route('access.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('access*') ? ' active' : '' }}">
                         <i class="far nav-icon fa fa-lock"></i>
