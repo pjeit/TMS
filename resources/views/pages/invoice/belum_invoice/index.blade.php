@@ -511,7 +511,9 @@
 
 @if (session('id_print_invoice'))
 <script>
-    window.open("/belum_invoice/print/{{ session('id_print_invoice') }}", "_blank");
+    var baseUrl = "{{ asset('') }}";
+
+    window.open(`${baseUrl}belum_invoice/print/{{ session('id_print_invoice') }}`, "_blank");
 
     // di set null biar ga open new tab terus2an 
     setTimeout(function() {
@@ -522,7 +524,9 @@
 
 @if (session('id_print_invoice_pisah'))
 <script>
-    window.open("/belum_invoice/print/{{ session('id_print_invoice_pisah') }}", "_blank");
+    var baseUrl = "{{ asset('') }}";
+
+    window.open(`${baseUrl}belum_invoice/print/{{ session('id_print_invoice_pisah') }}`, "_blank");
 
     // di set null biar ga open new tab terus2an 
     setTimeout(function() {

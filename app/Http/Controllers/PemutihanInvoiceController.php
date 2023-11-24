@@ -40,6 +40,7 @@ class PemutihanInvoiceController extends Controller
                 ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
                 ->where('i.is_aktif', '=', 'Y')
                 ->where('i.total_sisa','<=',$dataPengaturanKeuangan->batas_pemutihan)
+                ->where('i.total_sisa','!=',0)
                 ->orderBy('i.id','ASC')
                 ->get();
         // dd($dataSewa);

@@ -19,7 +19,7 @@ class Invoice extends Model
     // eloquent relation
     public function invoiceDetails()
     {
-    return $this->hasMany(invoiceDetail::class, 'id_invoice', 'id')->where('is_aktif', 'Y'); //id target, id sendiri
+    return $this->hasMany(InvoiceDetail::class, 'id_invoice', 'id')->where('is_aktif', 'Y'); //id target, id sendiri
     }   
 
      public function invoiceDetailsCost()
