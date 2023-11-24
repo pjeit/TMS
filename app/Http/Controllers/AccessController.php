@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Access;
 use App\Models\Permissions;
+use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class AccessController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $data = Permissions::where('is_aktif', 'Y')->get();
+        $data = Role::where('is_aktif', 'Y')->get();
 
-        return view('pages.master.permission.index',[
-            'judul' => 'Permission',
+        return view('pages.master.access.index',[
+            'judul' => 'Hak Akses',
             'data' => $data,
         ]);
     }
@@ -29,7 +29,7 @@ class AccessController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -62,7 +62,14 @@ class AccessController extends Controller
      */
     public function edit($id)
     {
-        //
+        $role = Role::where('is_aktif', 'Y')->find($id);
+        $permissions = Permissions::where('is_aktif', 'Y')->orderBy('menu', 'ASC')->groupBy('menu')->get();
+        
+        return view('pages.master.access.edit',[
+            'judul' => 'Permission',
+            'role' => $role,
+            'permissions' => $permissions,
+        ]);
     }
 
     /**
@@ -74,7 +81,36 @@ class AccessController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = Auth::user()->id;
+        $data = $request->collect();
+        DB::beginTransaction(); 
+        // dd($data['data']);
+
+        try {
+            if($data['data'] != null){
+                $access = Access::where('is_aktif', 'Y')->where('role_id', $id)->delete();
+    
+                foreach ($data['data'] as $menus) {
+                    foreach ($menus as $key => $permission_id) {
+                        Access::create([
+                            'permission_id' => $permission_id,
+                            'role_id' => $id,
+                            'created_by' => $user,
+                            'created_at' => now(),
+                            'updated_by' => $user,
+                            'updated_at' => now(),
+                            'is_aktif' => 'Y',
+                        ]);
+                    }
+                }
+            }
+            
+            DB::commit();
+            return redirect()->route('access.index')->with(['status' => 'Success', 'msg'  => 'Hak Akses berhasil dirubah!']);
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('access.index')->with(['status' => 'error', 'msg' => 'Hak Akses gagal dirubah!']);
+        }
     }
 
     /**

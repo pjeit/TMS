@@ -353,47 +353,49 @@
                 }
 
                     for (var i = 0; i < data.length; i++) {
-                        var row = $("<tr></tr>");
-                        let btn_edit = '';
-                        if(data[i].total_sisa == data[i].total_tagihan){
-                            btn_edit = `<a href="pembayaran_invoice/${data[i].id}/edit" class="dropdown-item">
-                                                <span class="fas fa-pencil-alt mr-3"></span> Edit Invoice
-                                            </a>`;
-                        }
-
-                        row.append(`<td>${data[i].nama_grup}</td>`);
-                        row.append(`<td>• ${data[i].nama_cust}</td>`);
-                        row.append(`<td>${data[i].no_invoice}
-                                        <input type="hidden" placeholder='id' id="id_${data[i].id}" value="${data[i].id}" >
-                                        <input type="hidden" placeholder='noInvoice' id="no_invoice_${data[i].id}" value="${data[i].no_invoice}" >
-                                        <input type="hidden" placeholder='jatuhTempo' id="jatuh_tempo_${data[i].id}" value="${data[i].jatuh_tempo}" >
-                                        <input type="hidden" placeholder='resi' id="resi_${data[i].id}" value="${data[i].resi}" >
-                                        <input type="hidden" placeholder='catatan' id="catatan_${data[i].id}" value="${data[i].catatan}" >
-                                    </td>`);
-                        row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
-                        row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
-                        row.append(`<td> ${ data[i].total_sisa.toLocaleString()}</td>`);
-                        row.append(`<td>${data[i].catatan == null? '':data[i].catatan}</td>`);
-                        var jenis =  `<input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="${data[i].billing_to}" grupId="${data[i].id_grup}" value="${data[i].id}">`;
-                        row.append(`<td class='text-center' style="text-align:center">
-                                <div class="btn-group dropleft">
-                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-list"></i>
-                                    </button>
-                                    <div class="dropdown-menu" >
-                                        
-                                        `+
-                                            btn_edit
-                                        +`
-                                        <button class="dropdown-item update_resi" value="${data[i].id}">
-                                            <span class="fas fa-sticky-note mr-3"></span> Update Resi
+                        if(data[i].total_sisa > 0){
+                            var row = $("<tr></tr>");
+                            let btn_edit = '';
+                            if(data[i].total_sisa == data[i].total_tagihan){
+                                btn_edit = `<a href="pembayaran_invoice/${data[i].id}/edit" class="dropdown-item">
+                                                    <span class="fas fa-pencil-alt mr-3"></span> Edit Invoice
+                                                </a>`;
+                            }
+    
+                            row.append(`<td>${data[i].nama_grup}</td>`);
+                            row.append(`<td>• ${data[i].nama_cust}</td>`);
+                            row.append(`<td>${data[i].no_invoice}
+                                            <input type="hidden" placeholder='id' id="id_${data[i].id}" value="${data[i].id}" >
+                                            <input type="hidden" placeholder='noInvoice' id="no_invoice_${data[i].id}" value="${data[i].no_invoice}" >
+                                            <input type="hidden" placeholder='jatuhTempo' id="jatuh_tempo_${data[i].id}" value="${data[i].jatuh_tempo}" >
+                                            <input type="hidden" placeholder='resi' id="resi_${data[i].id}" value="${data[i].resi}" >
+                                            <input type="hidden" placeholder='catatan' id="catatan_${data[i].id}" value="${data[i].catatan}" >
+                                        </td>`);
+                            row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
+                            row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
+                            row.append(`<td> ${ data[i].total_sisa.toLocaleString()}</td>`);
+                            row.append(`<td>${data[i].catatan == null? '':data[i].catatan}</td>`);
+                            var jenis =  `<input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="${data[i].billing_to}" grupId="${data[i].id_grup}" value="${data[i].id}">`;
+                            row.append(`<td class='text-center' style="text-align:center">
+                                    <div class="btn-group dropleft">
+                                        <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-list"></i>
                                         </button>
-                                        <input type="text" id="ketentuan_bayar_${data[i].id}" value="${data[i].ketentuan_bayar}" hidden />
+                                        <div class="dropdown-menu" >
+                                            
+                                            `+
+                                                btn_edit
+                                            +`
+                                            <button class="dropdown-item update_resi" value="${data[i].id}">
+                                                <span class="fas fa-sticky-note mr-3"></span> Update Resi
+                                            </button>
+                                            <input type="text" id="ketentuan_bayar_${data[i].id}" value="${data[i].ketentuan_bayar}" hidden />
+                                        </div>
                                     </div>
-                                </div>
-                            </td>`);
-                        row.append(`<td class='text-center' style="text-align:center">${jenis}</td>`);
-                        $("#hasil").append(row);
+                                </td>`);
+                            row.append(`<td class='text-center' style="text-align:center">${jenis}</td>`);
+                            $("#hasil").append(row);
+                        }
                     }
                     new DataTable('#tabelInvoice', {
                         order: [

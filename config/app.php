@@ -165,6 +165,8 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         RealRashid\SweetAlert\SweetAlertServiceProvider::class, // buat sweet alert
         'Barryvdh\DomPDF\ServiceProvider', //pdf
+        // Barryvdh\DomPDF\ServiceProvider::class,
+        // Barryvdh\DomPDF\Facade::class,
         // Intervention\Image\ImageServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class, //qr code
         Spatie\Permission\PermissionServiceProvider::class, // buat role
@@ -237,7 +239,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
-        'PDF'       => 'Barryvdh\DomPDF\Facade', //pdf
+        'Pdf' => 'Barryvdh\DomPDF\Facade', //pdf
+        // 'PDF' => Barryvdh\DomPDF\Facade::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
     ],
 

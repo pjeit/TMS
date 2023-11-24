@@ -39,6 +39,7 @@ class KarantinaController extends Controller
                         ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
                         ->selectRaw('c.id, c.nama, COUNT(jod.is_karantina) as karantina_count')
                         ->where('jod.is_karantina', 'N')
+                        ->where('jo.status', 'PROSES DOORING')
                         ->groupBy('jo.id_customer')
                         ->get();
                         

@@ -55,7 +55,8 @@
                       request()->is('pair_kendaraan*')||
                       request()->is('chassis*')||
                       request()->is('mutasi_kendaraan*')||
-                      request()->is('permissions*')||
+                      request()->is('permission*')||
+                      request()->is('access*')||
                       request()->is('grup*')
                   ? 'menu-is-opening menu-open' : '' }}">
                   <a href="#" class="nav-link hover-item" style="font-weight: 700; font-size: 15px;">
@@ -255,7 +256,7 @@
                   @can('READ_USER')
                     <li class="nav-item">
                       <a href="{{route('access.index')}}" style="font-weight: 500;" class="nav-link {{request()->is('access*') ? ' active' : '' }}">
-                        <i class="far nav-icon fa fa-lock-open"></i>
+                        <i class="far nav-icon fa fa-lock"></i>
                         <p>
                           Hak Akses
                         </p>

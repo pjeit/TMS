@@ -261,6 +261,7 @@ class PembayaranInvoiceController extends Controller
         $user = Auth::user()->id; 
         DB::beginTransaction(); 
         $isErr = false;
+        $Err = '';
         // dd($data);`
 
         try {
@@ -270,7 +271,7 @@ class PembayaranInvoiceController extends Controller
                 $biaya_admin = isset($data['biaya_admin'])? floatval(str_replace(',', '', $data['biaya_admin'])):0;
                 $total_pph = isset($data['total_pph23'])? floatval(str_replace(',', '', $data['total_pph23'])):0;
                 $i = 0;
-
+              
                 $pembayaran = new InvoicePembayaran();
                 $pembayaran->id_kas = $data['kas'];
                 $pembayaran->billing_to = $data['billingTo'];
@@ -335,6 +336,7 @@ class PembayaranInvoiceController extends Controller
                                 }
                             }else{
                                 $isErr = true;
+                                $Err = 'Gagal menyimpan Invoice';
                             }
                         }
                         $i++;
@@ -371,6 +373,7 @@ class PembayaranInvoiceController extends Controller
                     $kredit_sekarang = $cust->kredit_sekarang - $total_bayar;
                     if($kredit_sekarang < 0){
                         $isErr = true;
+                        $Err = 'Kredit Customer kurang dari 0';
                         // $kredit_sekarang = 0;
                     }
                     $cust->kredit_sekarang = $kredit_sekarang;
@@ -381,7 +384,7 @@ class PembayaranInvoiceController extends Controller
 
                 if($isErr === true){
                     db::rollBack();
-                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi kesalahan!']);
+                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi kesalahan! '. $Err]);
                 }else{
                     DB::commit();
                     return redirect()->route('pembayaran_invoice.index')->with(["status" => "Success", "msg" => "Berhasil Membayar invoice!"]);

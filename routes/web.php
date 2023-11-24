@@ -41,12 +41,12 @@ Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout')
 Route::get('dashboard', [CustomAuthController::class, 'dashboard']); 
 Route::get('registration', [CustomAuthController::class, 'registration'])->name('register-user');
 Route::post('custom-registration', [CustomAuthController::class, 'customRegistration'])->name('register.custom'); 
-Route::get('/foo', function()
-{
-    $exitCode = Artisan::call('optimize', ['--option' => 'foo']);
-    return $exitCode;
-    //
-});
+// Route::get('/foo', function()
+// {
+//     $exitCode = Artisan::call('optimize', ['--option' => 'foo']);
+//     return $exitCode;
+//     //
+// });
 ///    
 
 // ========================================== master ==================================================
