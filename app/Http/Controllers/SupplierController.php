@@ -25,7 +25,6 @@ class SupplierController extends Controller
         \Artisan::call('route:clear');
         \Artisan::call('optimize:clear');
         \Artisan::call('storage:link');
-        // git push
         $data = DB::table('supplier')
             ->select('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama as jenis','m_kota.nama as kota')
             ->join('jenis_supplier', 'supplier.jenis_supplier_id', '=', 'jenis_supplier.id')
