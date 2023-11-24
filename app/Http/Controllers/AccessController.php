@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\ClearCache;
 use App\Models\Access;
 use App\Models\Permissions;
 use App\Models\Role;
@@ -14,6 +15,8 @@ class AccessController extends Controller
 {
     public function index()
     {
+        ClearCache::Clear();
+
         $data = Role::where('is_aktif', 'Y')->get();
 
         return view('pages.master.access.index',[

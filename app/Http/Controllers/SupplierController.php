@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\ClearCache;
 use App\Models\JenisSupplier;
 use App\Models\M_Kota;
 use App\Models\Supplier;
@@ -21,10 +22,6 @@ class SupplierController extends Controller
 
     public function index()
     {
-        \Artisan::call('cache:clear');
-        \Artisan::call('route:clear');
-        \Artisan::call('optimize:clear');
-        \Artisan::call('storage:link');
         $data = DB::table('supplier')
             ->select('supplier.id','supplier.nama','supplier.alamat','supplier.telp','supplier.catatan','jenis_supplier.nama as jenis','m_kota.nama as kota')
             ->join('jenis_supplier', 'supplier.jenis_supplier_id', '=', 'jenis_supplier.id')

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\ClearCache;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,6 +26,8 @@ class UsersController extends Controller
 
     public function index()
     {
+        ClearCache::Clear();
+
         $dataUser = User::where('is_aktif', 'Y')->with('karyawan')->orderBy('created_by', 'ASC')->get();
             
         $title = 'Data akan dihapus!';

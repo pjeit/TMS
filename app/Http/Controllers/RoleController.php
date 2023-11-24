@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\ClearCache;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,8 @@ class RoleController extends Controller
 
     public function index()
     {
-        //
+        ClearCache::Clear();
+
          $dataRole = DB::table('roles')
             ->select('*')
             ->where('is_aktif', '=', "Y")
