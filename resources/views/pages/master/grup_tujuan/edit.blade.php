@@ -144,8 +144,8 @@
         
     </form>
     
-    <div class="modal fade" id="modal_detail" tabindex='-1'>
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="modal_detail" tabindex='-1' style="width: 100%;">
+        <div class="modal-dialog modal-lg" style="width: 100%;">
         <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Detail</h5>
