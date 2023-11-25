@@ -1,10 +1,9 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
@@ -14,60 +13,61 @@
 @section('content')
 <br>
 <style>
-   
+
 </style>
 <div class="container-fluid">
     <div class="card">
-        {{-- <div class="row"> --}}
-            <div class="card-header ">
-                {{-- <div class="" style="position: relative; left: 0px; top: 0px; background-color:#edf4fc;"> --}}
-                    <div class="card-header" style="border: 2px solid #bbbbbb;">
-                            <form id="form_report" action="{{ route('storage_demurage.index') }}" method="POST">
-                                @csrf
-                                <div class="row" >
-                                    <div class="col-4">
-                                        <div class="form-group">
-                                            <label for="">Pengirim</label>
-                                            <select class="form-control selectpicker" name="pengirim" id="pengirim" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">­­— SEMUA DATA —</option>
-                                                @foreach ($customer as $cust)
-                                                    <option value="{{$cust->id}}">{{$cust->nama}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                     <div class="col-4">
-                                        <div class="form-group">
-                                            <label for="">Pelayaran</label>
-                                            <select class="form-control selectpicker" name="pelayaran" id="pelayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">­­— SEMUA DATA —</option>
-                                                @foreach ($supplier as $supp)
-                                                    <option value="{{$supp->id}}">{{$supp->nama}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <label for="">&nbsp;</label>
-                                        <div class="d-flex justify-content-start col-12" style="gap: 5px;">
-                                            <button type="button" id="btnKu" class=" btn btn-primary radiusSendiri col-6" onclick=""><i class="fas fa-search"></i> <b> Filter</b></button>
-                                            <button type="button" class=" btn btn-success radiusSendiri col-6" onclick=""><i class="fas fa-file-excel"></i> <b> Excel</b></button>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                               
-                            </form>
+        <div class="card-header ">
+            <div class="card-header" style="border: 2px solid #bbbbbb;">
+                <form id="form_report" action="{{ route('storage_demurage.index') }}" method="POST">
+                    @csrf
+                    <div class="row">
+                        <div class="col-4">
                             <div class="form-group">
-                                {{-- <button type="button" class="btn btn-sm btn-success" onclick="download_report()"><i class="fas fa-file-excel"></i> Export to Excel</button> --}}
+                                <label for="">Pengirim</label>
+                                <select class="form-control selectpicker" name="pengirim" id="pengirim"
+                                    data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                    <option value="">­­— SEMUA DATA —</option>
+                                    @foreach ($customer as $cust)
+                                    <option value="{{$cust->id}}">[{{ $cust->kode }}] {{$cust->nama}}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                    </div><!-- /.card-header -->
-                {{-- </div> --}}
-            </div>
-            
-            <div class="card-body">
-               <section class="col-lg-12" id="show_report">
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="">Pelayaran</label>
+                                <select class="form-control selectpicker" name="pelayaran" id="pelayaran"
+                                    data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                    <option value="">­­— SEMUA DATA —</option>
+                                    @foreach ($supplier as $supp)
+                                    <option value="{{$supp->id}}">{{$supp->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <label for="">&nbsp;</label>
+                            <div class="d-flex justify-content-start col-12" style="gap: 5px;">
+                                <button type="button" id="btnKu" class=" btn btn-primary radiusSendiri col-6"
+                                    onclick=""><i class="fas fa-search"></i> <b> Filter</b></button>
+                                <button type="button" class=" btn btn-success radiusSendiri col-6" onclick=""><i
+                                        class="fas fa-file-excel"></i> <b> Excel</b></button>
+                            </div>
+                        </div>
 
+                    </div>
+
+                </form>
+                <div class="form-group">
+                    {{-- <button type="button" class="btn btn-sm btn-success" onclick="download_report()"><i
+                            class="fas fa-file-excel"></i> Export to Excel</button> --}}
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <section class="col-lg-12" id="show_report">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -75,20 +75,21 @@
                             <th>Pengirim</th>
                             <th>Pelayaran</th>
                             <th>Status Kontainer</th>
-                            <th style="width:30px"><div class="btn-group"></div></th>
+                            <th style="width:30px">
+                                <div class="btn-group"></div>
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="hasil">
-                         <tr id="loading-spinner" style="display: none;">
-                            <td colspan="6"><i class="fas fa-spinner fa-spin"></i> Harap tunggu data sedang di proses...</td>
+                        <tr id="loading-spinner" style="display: none;">
+                            <td colspan="6">
+                                <i class="fas fa-spinner fa-spin"></i> Harap tunggu data sedang di proses...
+                            </td>
                         </tr>
-                    
-
                     </tbody>
                 </table>
-               </section>
-            </div>
-        {{-- </div> --}}
+            </section>
+        </div>
     </div>
 </div>
 <script>
@@ -125,37 +126,15 @@
                         for (var i = 0; i < data.length; i++) {
                             if (data[i].id_jo !== nyimpenIdBapakJO) {
                                 var row = $("<tr></tr>");
-                                // row.append(`<td>
-                                //     <div class="btn-group ">
-                                //         <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                //             <i class="fa fa-list"></i>
-                                //         </button>
-                                //         <div class="dropdown-menu">
-                                //             <a href="#" class="dropdown-item">
-                                //                 <span class="fas fa-edit mr-3"></span> Edit
-                                //             </a>
-                                //             <a href="#" class="dropdown-item">
-                                //                 <span class="fas fa-edit mr-3"></span> Edit
-                                //             </a>
-                                //             <a href="#" method="get" rel="noopener" target="_blank"  class="dropdown-item">
-                                //                 <span class="fas fa-print mr-3"></span> Export PDF
-                                //             </a>
-                                //             <a href="#" class="dropdown-item" data-confirm-delete="true">
-                                //                 <span class="fas fa-trash mr-3"></span> Delete
-                                //             </a>
-                                //         </div>
-                                //     </div>
-                                // </td>`);
                                 row.append("<td colspan='5'><b>" + data[i].no_jo + "</b><br> Status Jo: " + data[i].statusJO + "</td>");
                                 $("#hasil").append(row);
                                 nyimpenIdBapakJO = data[i].id_jo;
                             }
 
                             var row = $("<tr></tr>");
-                      
                             
                             row.append("<td>" + data[i].no_kontainer + "</td>");
-                            row.append("<td>" + data[i].kode + " - " + data[i].nama_cust + "</td>");
+                            row.append("<td> [" + data[i].kode + "] " + data[i].nama_cust + "</td>");
                             row.append("<td>" + data[i].nama_supp + "</td>");
                             row.append("<td>" + data[i].statusDetail + "</td>");
                             row.append(`

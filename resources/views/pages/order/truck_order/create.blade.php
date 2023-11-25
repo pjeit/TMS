@@ -259,7 +259,6 @@
 
                                 </div>
                             </div>
-                         
 
                         </div>
                     </div>
@@ -272,7 +271,7 @@
 <script>
     $(document).ready(function() {
         getDate();
-      
+        
         // $('#select_customer').attr('disabled',true).val('').trigger('change');
         // $('#select_grup_tujuan').attr('disabled',true).val('').trigger('change');
         $('#inboundData').hide();
@@ -287,7 +286,7 @@
             // allowClear: true,
             // minimumInputLength:1
         });
-         function refreshBar(){
+        function refreshBar(){
             
             let creds_now = 0;  
             const cred = document.getElementById('credit_customer');
@@ -436,8 +435,8 @@
             // $('#tanggal_berangkat').val(gabungan);
             if(selectedValue=="")
             {
-              $('#select_customer').attr('disabled',false).val('').trigger('change');
-              $('#select_grup_tujuan').attr('disabled',false).val('').trigger('change');
+                $('#select_customer').attr('disabled',false).val('').trigger('change');
+                $('#select_grup_tujuan').attr('disabled',false).val('').trigger('change');
             }
 		});
         
@@ -480,7 +479,7 @@
                                 // if (selected_marketing == marketing.id) {
                                 //     option.selected = true;
                                 // }
-                                 jo_detail.append(option);
+                                jo_detail.append(option);
                             });
                         // }
                         // hitungTarif();
@@ -501,8 +500,6 @@
                     console.error('Error:', error);
                 }
             });
-           
-
 
 		});
 
@@ -526,21 +523,16 @@
             // tl_teluk_lamong
             if(pick_up=='TTL')
             {
-                
-                 $('#stack_tl').val('tl_teluk_lamong').trigger('change');
-
+                $('#stack_tl').val('tl_teluk_lamong').trigger('change');
             }
             else if (pick_up=='DEPO')
             {
-                 $('#stack_tl').val('tl_perak').trigger('change');
-
+                $('#stack_tl').val('tl_perak').trigger('change');
             }
             else
             {
-                 $('#stack_tl').val('').trigger('change');
-
+                $('#stack_tl').val('').trigger('change');
             }
-
 
             $('#select_grup_tujuan').val(idTujuan).trigger('change');
             $('#booking_id').val(bookingId);
@@ -559,7 +551,6 @@
             setChassis(tipe_kontainer)
         
             // });
-           
 
 		});
 
@@ -603,7 +594,6 @@
                         customerLoad = true;
 
                         // ==============================kredit=================
-           
                         let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
                         creds_now = creds_now.toFixed(1);
                         // persenanCredit
@@ -659,7 +649,7 @@
                                     }
     
                                 }
-                                 select_grup_tujuan.append(option);
+                                select_grup_tujuan.append(option);
                             });
                         }
                         // else
@@ -692,9 +682,6 @@
                     console.error('Error:', error);
                 }
             });
-           
-
-
 		});
         $('body').on('change','#select_grup_tujuan',function(){
             var selectedValue = $(this).val();
@@ -708,28 +695,11 @@
             // hitungTarif();
             hideMenuTujuan();
             setKendaraan('');
-            // var myjson;
-            //
-            // customer_id
-            // tujuan_id
-            // nama_tujuan
-            // alamat_tujuan
-            // tarif
-            // uang_jalan
-            // komisi
-            // jenis_tujuan
-            // harga_per_kg
-            // min_muatan
-            // seal_pelayaran
-            // plastik
-            // tally
-            // kargo
+
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanBiaya/${idTujuan??selectedValue}`, 
                 method: 'GET', 
                 success: function(response) {
-                    // console.log(response.dataTujuan);
-
                     if(!response.dataTujuan)
                     {
                         $('#tujuan_id').val('');
@@ -756,31 +726,20 @@
                     else
                     {
                         $('#tujuan_id').val(response.dataTujuan.id);
-                       
-
-                        // JSON.stringify(array_detail_biaya)
-
                         $('#nama_tujuan').val(response.dataTujuan.nama_tujuan);
                         $('#alamat_tujuan').val(response.dataTujuan.alamat);
-                        //   if(response.dataTujuan.jenis_tujuan =="LTL")
-                        // {
-                        //      $('#tarif').val(response.dataTujuan.min_muatan*response.dataTujuan.harga_per_kg );
-                        // }
                         $('#tarif').val(response.dataTujuan.tarif);
                         $('#uang_jalan').val(response.dataTujuan.uang_jalan);
                         $('#komisi').val(response.dataTujuan.komisi);
                         $('#komisi_driver').val(response.dataTujuan.komisi_driver);
-
                         $('#jenis_tujuan').val(response.dataTujuan.jenis_tujuan);
                         //ltl
                         $('#harga_per_kg').val(response.dataTujuan.harga_per_kg);
                         $('#min_muatan').val(response.dataTujuan.min_muatan);
-                     
                         $('#kargo').val(response.dataTujuan.kargo);
                         // hitungTarif();
                         hideMenuTujuan();
                         setKendaraan('');
-                         // console.log( response.dataTujuanBiaya);
                         var dataBiaya = response.dataTujuanBiaya;
                         for (var i in dataBiaya) {
                                 var obj = {
@@ -790,44 +749,26 @@
                                 };
                             array_detail_biaya.push(obj);
                         }
-                        
-
                         $('#plastik').val(response.dataTujuan.plastik);
                         $('#tally').val(response.dataTujuan.tally);
-
                         $('#biayaDetail').val(JSON.stringify(array_detail_biaya));
-
                     }
-         
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
                 }
             });
-           
-            console.log(array_detail_biaya);
-
 		});
         $('body').on('change','#tipe_kontainer_out', function (){
-            
-            // var return_option = $("#select_chassis").select2().find(":selected")[0];    
-            // var modelChassis = $( return_option ).attr('modelChassis');
-            // if(this.value != modelChassis){
             $('#tipe_kontainer').val(this.value);
-                setKendaraan($(this).val())
-                setChassis($(this).val())
-                // $('#select_driver').val('').trigger('change');
-                
-            // }
-            // select_chassis
+            setKendaraan($(this).val())
+            setChassis($(this).val())
         })
 
         function setKendaraan(tipeKontainer)
         {
-            // console.log(tipeKontainer);
             var kontainerSemua =  <?php echo json_encode($dataKendaraan); ?>;
             var select_kendaraan = $('#select_kendaraan');
-            console.log($('#kendaraan_id').val() );
             if(tipeKontainer==''|| tipeKontainer== undefined)
             {
 
@@ -870,51 +811,43 @@
                             console.log(response);
                             select_kendaraan.empty(); 
                             select_kendaraan.append('<option value="">Pilih Kendaraan</option>');
-                          
-                                response.forEach(kendaraan => {
-                                    const option = document.createElement('option');
-                                    option.value = kendaraan.kendaraanId;
-                                    option.setAttribute('idChassis', kendaraan.chassisId);
-                                    option.setAttribute('noPol', kendaraan.no_polisi);
-                                    option.setAttribute('idDriver', kendaraan.driver_id);
-                                    option.setAttribute('kategoriKendaraan', kendaraan.kategoriKendaraan);
-                                    option.setAttribute('tipeKontainerKendaraanDariChassis', kendaraan.tipeKontainerKendaraanDariChassis);
+                            response.forEach(kendaraan => {
+                                const option = document.createElement('option');
+                                option.value = kendaraan.kendaraanId;
+                                option.setAttribute('idChassis', kendaraan.chassisId);
+                                option.setAttribute('noPol', kendaraan.no_polisi);
+                                option.setAttribute('idDriver', kendaraan.driver_id);
+                                option.setAttribute('kategoriKendaraan', kendaraan.kategoriKendaraan);
+                                option.setAttribute('tipeKontainerKendaraanDariChassis', kendaraan.tipeKontainerKendaraanDariChassis);
 
-                                    option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})` ;
-                                    //kendaraan_id itu yang hidden,tipe kontainer itu buat selected di tipeoutbound
-                                    if ($('#kendaraan_id').val() == kendaraan.kendaraanId && tipeKontainer == $('#tipeKontainerKendaraanDariChassis').val()) {
-                                            option.selected = true;
-                                            $('#select_driver').val(kendaraan.driver_id).trigger('change');
-                                    }
-                                    //kendaraan_id itu yang hidden,tipe kontainer itu buat selected di tipeoutbound
-                                    if($('#kendaraan_id').val() != kendaraan.kendaraanId && tipeKontainer != $('#tipeKontainerKendaraanDariChassis').val())
-                                    {
-                                        console.log('masuk else');
-                                        $('#kendaraan_id').val('');
-                                        $('#no_polisi').val('');
-                                        $('#tipeKontainerKendaraanDariChassis').val('');
-                                        $('#select_driver').val('').trigger('change');
-                                        $('#karoseri').val('');
-                                    }
-                                   
-                                     select_kendaraan.append(option);
-                                });
-    
+                                option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})` ;
+                                //kendaraan_id itu yang hidden,tipe kontainer itu buat selected di tipeoutbound
+                                if ($('#kendaraan_id').val() == kendaraan.kendaraanId && tipeKontainer == $('#tipeKontainerKendaraanDariChassis').val()) {
+                                        option.selected = true;
+                                        $('#select_driver').val(kendaraan.driver_id).trigger('change');
+                                }
+                                //kendaraan_id itu yang hidden,tipe kontainer itu buat selected di tipeoutbound
+                                if($('#kendaraan_id').val() != kendaraan.kendaraanId && tipeKontainer != $('#tipeKontainerKendaraanDariChassis').val())
+                                {
+                                    console.log('masuk else');
+                                    $('#kendaraan_id').val('');
+                                    $('#no_polisi').val('');
+                                    $('#tipeKontainerKendaraanDariChassis').val('');
+                                    $('#select_driver').val('').trigger('change');
+                                    $('#karoseri').val('');
+                                }
+                                select_kendaraan.append(option);
+                            });
                         }
-            
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
                     }
                 });
-
             }
-
         }
         function setChassis(tipeKontainer)
         {
-            // console.log(tipeKontainer);
-
             var chassisSemua =  <?php echo json_encode($dataChassis); ?>;
             var select_chassis= $('#select_chassis');
             var selectedOption = $('#select_kendaraan').find('option:selected');
@@ -923,7 +856,7 @@
             {
                 select_chassis.empty(); 
                 select_chassis.append('<option value="">Pilih Chassis</option>');
-                         
+                
                 chassisSemua.forEach(chassis => {
                     const option = document.createElement('option');
                     option.value = chassis.idChassis;
@@ -947,31 +880,21 @@
                             
                             select_chassis.empty(); 
                             select_chassis.append('<option value="">Pilih Chassis</option>');
-                            // if(tipeKontainer!=""|| tipeKontainer!= undefined)
-                            // {
-                                
-                                 response.forEach(chassis => {
-                                    const option = document.createElement('option');
-                                    option.value = chassis.idChassis;
-                                    option.setAttribute('modelChassis', chassis.modelChassis);
-                                    option.setAttribute('karoseris', chassis.karoseri);
-                                    option.textContent = `${chassis.karoseri} - ${chassis.kode} (${chassis.modelChassis})` ;
-                                    //idChassis itu ambil attribut dari kendaraan
-                                    if ( idChassis == chassis.idChassis) {
-                                            option.selected = true;
-                                            $('#karoseri').val(chassis.karoseri);
+                            response.forEach(chassis => {
+                                const option = document.createElement('option');
+                                option.value = chassis.idChassis;
+                                option.setAttribute('modelChassis', chassis.modelChassis);
+                                option.setAttribute('karoseris', chassis.karoseri);
+                                option.textContent = `${chassis.karoseri} - ${chassis.kode} (${chassis.modelChassis})` ;
+                                //idChassis itu ambil attribut dari kendaraan
+                                if ( idChassis == chassis.idChassis) {
+                                        option.selected = true;
+                                        $('#karoseri').val(chassis.karoseri);
 
-                                    }
-                                    // if (idChassis != chassis.idChassis)
-                                    // {
-                                    //     $('#karoseri').val('');
-                                    //     select_chassis.val('').trigger('change');
-                                    // }
-                                    select_chassis.append(option);
-                                });
-                            // }
+                                }
+                                select_chassis.append(option);
+                            });
                         }
-            
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
@@ -988,28 +911,16 @@
             var idChassis = selectedOption.attr('idChassis');
             var nopol = selectedOption.attr('noPol');
             var supir = selectedOption.attr('idDriver');
-            // console.log(idKendaraan);
             if(idKendaraan != '')
             {
                 var tipeKontainerKendaraanDariChassis = selectedOption.attr('tipeKontainerKendaraanDariChassis').replace(/'/g, '');
             }
-
-            // console.log(tipeKontainerKendaraanDariChassis);
-            // kendaraan_id
-            // no_polisi
-            // select_chassis
             $('#kendaraan_id').val(idKendaraan);
             $('#no_polisi').val(nopol);
             $('#tipeKontainerKendaraanDariChassis').val(tipeKontainerKendaraanDariChassis);
-
-            // if ( $('#jenis_order').val()=='OUTBOND') {
-            //     $('#tipe_kontainer_out').val(tipeKontainerKendaraanDariChassis).trigger('change');
-            // }
-            console.log(idChassis);
             if (idChassis!=''&&idChassis!="null") {
                 $('#select_chassis').val(idChassis).trigger('change');
                 console.log('masuk if');
-
             }
             else
             {
@@ -1023,105 +934,63 @@
             else
             {
                 $('#select_driver').val('').trigger('change');
-
             }
-
 		});
 
         $('body').on('change','#select_chassis',function()
 		{
             var selectedOption = $(this).find('option:selected');
             var karoseris = selectedOption.attr('karoseris');
-            
             $('#karoseri').val(karoseris);
-
 		});
 
         $('body').on('change','#select_driver',function()
 		{
             var selectedOption = $(this).find('option:selected');
             var nama_driver = selectedOption.attr('nama_driver');
-            
             $('#driver_nama').val(nama_driver);
-
 		});
         $('body').on('change','#stack_tl',function()
 		{
             var selectedOption = $(this).val();
             var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
-            // console.log(dataTelukLamong.tl_teluk_lamong);
-            
-            // $('#value_jenis_tl').val(selectedOption);
-
-                if(selectedOption=='tl_teluk_lamong')
-                {
-                    $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
-                }
-                else
-                {
-                    $('#stack_teluk_lamong_hidden').val('');
-                    
-                }
-
+            if(selectedOption=='tl_teluk_lamong')
+            {
+                $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
+            }
+            else
+            {
+                $('#stack_teluk_lamong_hidden').val('');
+                
+            }
 		});
-        // hitungTarif();
-        // function hitungTarif()
-        // {
-            
-        //     var tarif = $('#tarif').val();
-        //     var uang_jalan = $('#uang_jalan').val();
-        //     var total_uang_jalan = parseFloat(tarif)+parseFloat(uang_jalan);
-        //     console.log('tarif :'+tarif);
-        //     console.log('uang_jalan :'+uang_jalan);
-        //     console.log('total_uang_jalan :'+total_uang_jalan);
-
-        //     console.log(isNaN(total_uang_jalan));
-        //     if(isNaN(total_uang_jalan))
-        //     {
-        //       $('#harga_tujuan').val(0)
-        //     }
-        //     else
-        //     {
-        //       $('#harga_tujuan').val(moneyMask(total_uang_jalan))
-        //     }
-        // }
+        
         hideMenuTujuan();
         function hideMenuTujuan(){
             var jenisTujuan=$('#jenis_tujuan').val();
             var jenisOrder =$('#jenis_order').val();
             var kendaraan_div =$('#kendaraan_div');
-            console.log(jenisTujuan);
-            console.log(jenisOrder);
-            // console.log(kendaraan_div);
 
-            // if(jenisOrder=='OUTBOUND')
-            // {
-                if(jenisTujuan=='FTL' || jenisTujuan=='')
-                {
-                    $('#kontainer_div').show();
-                    $('#chassis_div').show();
-                    $('#stack_tl_form').show();
-                    kendaraan_div.removeClass('col-lg-12 col-md-12 col-sm-12');
-                    kendaraan_div.addClass('col-lg-6 col-md-6 col-sm-12');
-                }
-                else
-                {
-                    $('#kontainer_div').hide();
-                    $('#chassis_div').hide();
-                    $('#stack_tl_form').hide();
-                    kendaraan_div.removeClass('col-lg-6 col-md-6 col-sm-12');
-                    kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
-                }
-            // }
-            // else if(jenisOrder=='INBOUND')
-            // {
-            //     $('#kontainer_div').show();
-            //     $('#chassis_div').show();
-            //     $('#driver_div').show();
-            // }
+            if(jenisTujuan=='FTL' || jenisTujuan=='')
+            {
+                $('#kontainer_div').show();
+                $('#chassis_div').show();
+                $('#stack_tl_form').show();
+                kendaraan_div.removeClass('col-lg-12 col-md-12 col-sm-12');
+                kendaraan_div.addClass('col-lg-6 col-md-6 col-sm-12');
+            }
+            else
+            {
+                $('#kontainer_div').hide();
+                $('#chassis_div').hide();
+                $('#stack_tl_form').hide();
+                kendaraan_div.removeClass('col-lg-6 col-md-6 col-sm-12');
+                kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
+            }
+
         }
 
-         $('#post_data').submit(function(event) {
+        $('#post_data').submit(function(event) {
             var jenis_order = $('#jenis_order').val();
             var selectKendaraan = $('#select_kendaraan').find('option:selected');
             var kategoriKendaraan = selectKendaraan.attr('kategoriKendaraan');
@@ -1265,6 +1134,6 @@
             }).datepicker("setDate", tomorrow);
         }
     });
-   
+
 </script>
 @endsection

@@ -415,14 +415,17 @@
         }
 
         $(document).on('keyup', '#modal_bayar', function (event) {
-            var modal_sisa_invoice = normalize($('#modal_sisa_invoice').val());
-            var modal_pph23 = normalize($('#modal_pph23').val());
-            var modal_bayar = normalize($('#modal_bayar').val());
+            var modal_sisa_invoice = !isNaN(normalize($('#modal_sisa_invoice').val()))? normalize($('#modal_sisa_invoice').val()):0;
+            var modal_pph23 = !isNaN(normalize($('#modal_pph23').val()))? normalize($('#modal_pph23').val()):0;
+            var modal_bayar = !isNaN(normalize($('#modal_bayar').val()))? normalize($('#modal_bayar').val()):0;
 
-            let val = modal_bayar>modal_sisa_invoice? modal_sisa_invoice:modal_bayar;
-            $('#modal_pph23').val( moneyMask(modal_sisa_invoice-val) );
-            this.value = val;
+            console.log('modal_sisa_invoice', modal_sisa_invoice);
+            if( (modal_bayar+modal_pph23) > modal_sisa_invoice){
+                $('#modal_pph23').val( 0 );
+                $('#modal_bayar').val( moneyMask(modal_sisa_invoice) );
+            }
         });
+
         $(document).on('keyup', '#modal_pph23', function (event) {
             var modal_sisa_invoice = normalize($('#modal_sisa_invoice').val());
             var modal_pph23 = normalize($('#modal_pph23').val());

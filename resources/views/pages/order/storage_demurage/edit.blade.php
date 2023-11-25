@@ -1,21 +1,21 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
-  
+
 @endsection
 
 @section('content')
 <style>
-    .card-header:first-child{
-        border-radius:inherit;
+    .card-header:first-child {
+        border-radius: inherit;
     }
+
     /* .tabelJO {
         border-collapse: collapse;
         border-spacing: 0;
@@ -24,161 +24,180 @@
     } */
 </style>
 
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ $error }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endforeach
-    @endif
-    <form action="{{ route('storage_demurage.update', ['storage_demurage' => $data['detail'] ]) }}" id='send' method="POST" >
-        @method('PUT')
-        @csrf
-        <div class="row m-2">
-            <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
-                <div class="card radiusSendiri" style="">
-                    <div class="card-header ">
-                        <a href="{{ route('storage_demurage.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+@if ($errors->any())
+@foreach ($errors->all() as $error)
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ $error }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endforeach
+@endif
+<form action="{{ route('storage_demurage.update', ['storage_demurage' => $data['detail'] ]) }}" id='send' method="POST">
+    @method('PUT')
+    @csrf
+    <div class="row m-2">
+        <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
+            <div class="card radiusSendiri" style="">
+                <div class="card-header ">
+                    <a href="{{ route('storage_demurage.index') }}" class="btn btn-secondary radiusSendiri"><i
+                            class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                    <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
+                            class="fa fa-fw fa-save"></i> Simpan</button>
 
-                        <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Data</strong></button> 
-                    </div>
+                    <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i
+                            class="fa fa-plus-circle"></i> <strong>Tambah Data</strong></button>
                 </div>
             </div>
-             <div class="col-12">
-                <div class="card radiusSendiri">
-                    {{-- <div class="card-header">
-                        <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" id='submitButton' class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-                    </div> --}}
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-4" >
-                                <div class="form-group" style="" >
-                                    <label for="">Pengirim</label>
-                                    <input type="text" value="{{$data['JO']->getCustomer->nama}}" class="form-control" disabled>
-                                    <input type="hidden" value="{{$data['JO']->id}}" class="form-control" name="id_jo">
-                                    <input type="hidden" value="{{$data['detail']->id}}" class="form-control" name="id_jo_detail">
-                                </div>
-                            </div>
-                            <div class="col-4" >
-                                <div class="form-group" style="pointer-events: none;" >
-                                    <label for="">Pelayaran</label>
-                                    <input type="text" value="{{$data['JO']->getSupplier->nama}}" class="form-control" disabled>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="form-group ">
-                                    <label for="">No. BL</label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{$data['JO']->no_bl}}" readonly disabled >
-                                </div>           
-                            </div>
-                        </div>
-                    
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group ">
-                                    <label for="">No. Kontainer</label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{$data['detail']->no_kontainer}}" readonly disabled >
-                                </div>           
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group ">
-                                    <label for="">Seal</label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{$data['detail']->seal}}" readonly disabled >
-                                </div>           
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group ">
-                                    <label for="">Tujuan</label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{isset($data['detail']->getTujuan->id)? $data['detail']->getTujuan->id:null}}" readonly disabled >
-                                </div>           
-                            </div>
-                        </div>
-                        <hr>
-
-                        <div class="table-responsive p-0">
-                            <form name="add_name" id="add_name">
-                                <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel">
-                                    <thead>
-                                        <tr class="">
-                                            <th style="">Storage</th>
-                                            <th style="">Demurage</th>
-                                            <th style="">Detention</th>
-                                            <th style="">Repair</th>
-                                            <th style="">Washing</th>
-                                            <th style="">Status</th>
-                                            <th style="width:30px;"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (isset($data['biaya']))
-                                            @foreach ($data['biaya'] as $key => $item)
-                                            <tr id="row_{{$key}}">
-                                                <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->storage, 2) }}" disabled>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->demurage, 2) }}" disabled>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->detention, 2) }}" disabled>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->repair, 2) }}" disabled>
-                                                    </div>
-                                                </td>
-                                                 <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->washing, 2) }}" disabled>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 50%" >
-                                                    <input type="text" class="form-control" value="{{$item->status_bayar}}" disabled>
-                                                </td>
-                                                <td style="width: 5%"></td>
-                                            </tr>
-                                            @endforeach
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </form>
-                    </div>
-
-                        <hr>
-
-                    </div>
-                </div> 
-            </div>
-            
-          
         </div>
-    </form>
+        <div class="col-12">
+            <div class="card radiusSendiri">
+                {{-- <div class="card-header">
+                    <a href="{{ route('job_order.index') }}" class="btn btn-secondary radiusSendiri"><i
+                            class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                    <button type="submit" id='submitButton' class="btn btn-success radiusSendiri ml-2"><i
+                            class="fa fa-fw fa-save"></i> Simpan</button>
+                </div> --}}
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group" style="">
+                                <label for="">Pengirim</label>
+                                <input type="text" value="{{$data['JO']->getCustomer->nama}}" class="form-control"
+                                    disabled>
+                                <input type="hidden" value="{{$data['JO']->id}}" class="form-control" name="id_jo">
+                                <input type="hidden" value="{{$data['detail']->id}}" class="form-control"
+                                    name="id_jo_detail">
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group" style="pointer-events: none;">
+                                <label for="">Pelayaran</label>
+                                <input type="text" value="{{$data['JO']->getSupplier->nama}}" class="form-control"
+                                    disabled>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group ">
+                                <label for="">No. BL</label>
+                                <input required type="text" name="no_bl" class="form-control"
+                                    value="{{$data['JO']->no_bl}}" readonly disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group ">
+                                <label for="">No. Kontainer</label>
+                                <input required type="text" name="no_bl" class="form-control"
+                                    value="{{$data['detail']->no_kontainer}}" readonly disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group ">
+                                <label for="">Seal</label>
+                                <input required type="text" name="no_bl" class="form-control"
+                                    value="{{$data['detail']->seal}}" readonly disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group ">
+                                <label for="">Tujuan</label>
+                                <input required type="text" name="no_bl" class="form-control"
+                                    value="{{isset($data['detail']->getTujuan->id)? $data['detail']->getTujuan->id:null}}"
+                                    readonly disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="table-responsive p-0">
+                        <form name="add_name" id="add_name">
+                            <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel">
+                                <thead>
+                                    <tr class="">
+                                        <th style="">Storage</th>
+                                        <th style="">Demurage</th>
+                                        <th style="">Detention</th>
+                                        <th style="">Repair</th>
+                                        <th style="">Washing</th>
+                                        <th style="">Status</th>
+                                        <th style="width:30px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (isset($data['biaya']))
+                                    @foreach ($data['biaya'] as $key => $item)
+                                    <tr id="row_{{$key}}">
+                                        <td style="width: 15%">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp.</span>
+                                                </div>
+                                                <input type="text" class="form-control numaja uang"
+                                                    value="{{ number_format($item->storage, 2) }}" disabled>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp.</span>
+                                                </div>
+                                                <input type="text" class="form-control numaja uang"
+                                                    value="{{ number_format($item->demurage, 2) }}" disabled>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp.</span>
+                                                </div>
+                                                <input type="text" class="form-control numaja uang"
+                                                    value="{{ number_format($item->detention, 2) }}" disabled>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp.</span>
+                                                </div>
+                                                <input type="text" class="form-control numaja uang"
+                                                    value="{{ number_format($item->repair, 2) }}" disabled>
+                                            </div>
+                                        </td>
+                                        <td style="width: 15%">
+                                            <div class="input-group mb-3">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp.</span>
+                                                </div>
+                                                <input type="text" class="form-control numaja uang"
+                                                    value="{{ number_format($item->washing, 2) }}" disabled>
+                                            </div>
+                                        </td>
+                                        <td style="width: 50%">
+                                            <input type="text" class="form-control" value="{{$item->status_bayar}}"
+                                                disabled>
+                                        </td>
+                                        <td style="width: 5%"></td>
+                                    </tr>
+                                    @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+
+                    <hr>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</form>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -340,5 +359,3 @@
 </script>
 
 @endsection
-
-

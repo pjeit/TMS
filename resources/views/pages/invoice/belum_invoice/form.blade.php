@@ -93,7 +93,7 @@
                                         <input type="text" maxlength="100" id="total_tagihan" name="total_tagihan" class="form-control uang numajaMinDesimal" value="" readonly>                         
                                     </div>
                                 </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group is_dibayar col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Total Dibayar</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -105,7 +105,7 @@
                             </div>
                         
                             <div class="row">
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group is_muatan col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Total Jumlah Muatan</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -649,6 +649,7 @@
         function calculateGrandTotal(){ // hitung grand total buat ditagihkan 
             var grandTotal = 0; 
             var grandTotalMuatan = 0; 
+            var grandTotalDibayar = 0; 
 
             var grandTotalText = document.getElementById("total_tagihan_text");
 
@@ -670,8 +671,7 @@
                 grandTotalText.textContent = "Rp. " + moneyMask(grandTotal); // Change the text content of the span
             }
 
-            if(grandTotalMuatan && grandTotalMuatan >= 0)
-            {
+            if(grandTotalMuatan && grandTotalMuatan >= 0){
                 $('#total_jumlah_muatan').val(grandTotalMuatan);
             }
         }
