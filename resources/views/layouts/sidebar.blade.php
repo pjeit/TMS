@@ -820,6 +820,7 @@
                         request()->is('belum_invoice') ||
                         request()->is('belum_invoice.*') ||
                         request()->is('bukti_potong*')||
+                        request()->is('update_resi*')||
                         request()->is('cetak_invoice*') ||
                         request()->is('pemutihan_invoice*') 
                         ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">

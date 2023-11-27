@@ -1,9 +1,9 @@
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('content')
@@ -28,8 +28,9 @@
         <div class="card-body">
             {{-- <div class="col-sm-12 col-md-4 col-lg-4 ">
                 <div class="form-group">
-                    <label for="">Status Invoice</label> 
-                    <select class="form-control selectpicker" required name="status" id="status" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                    <label for="">Status Invoice</label>
+                    <select class="form-control selectpicker" required name="status" id="status" data-live-search="true"
+                        data-show-subtext="true" data-placement="bottom">
                         <option value="BELUM LUNAS" selected>Belum Dibayar</option>
                         <option value="LUNAS">Riwayat Pembayaran (Tanpa bukti potong)</option>
                     </select>
@@ -52,41 +53,47 @@
                         </tr>
                     </thead>
                     <tbody id="hasil">
-                        
+
                     </tbody>
                     {{-- <tbody id="hasil">
                         @if (isset($data))
-                            @foreach($data as $item)
-                                <tr >
-                                    <td>{{ $item->nama_grup }}</td>
-                                    <td>{{ $item->nama_cust }} 
-                                        @if ($item->total_sisa != 0)
-                                            <span class="float-right">
-                                                <input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang" id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->id_grup }}">
-                                            </span> 
-                                        @endif
-                                    </td>
-                                    <td>{{ $item->no_invoice }}
-                                        <input type="hidden" id="id_{{ $item->id }}" value="{{ $item->id }}" >
-                                        <input type="hidden" id="invoice_{{ $item->id }}" value="{{ $item->no_invoice }}" >
-                                        <input type="hidden" id="bukti_potong_{{ $item->id }}" value="{{ $item->no_bukti_potong }}" >
-                                        <input type="hidden" id="catatan_{{ $item->id }}" value="{{ $item->catatan }}" >
-                                    </td>
-                                    <td>{{ date("d-M-Y", strtotime($item->tgl_invoice)) }}</td>
-                                    <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
-                                    <td class="float-right">{{ number_format($item->total_sisa) }}
-                                    <td>{{ $item->catatan }}
-                                    </td>
-                                    <td style="text-align: right;"> 
-                                        @if ($item->total_sisa != 0)
-                                            <input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="{{ $item->billing_to }}" grupId="{{ $item->id_grup }}" value="{{ $item->id }}">
-                                        @else
-                                            <btn class="btn btn-primary btn-sm radiusSendiri" id='input_bukti' idInvoice="{{ $item->id }}"> <span class="fa fa-sticky-note mr-1"></span> Input Bukti Potong</btn>
-                                        @endif
-                                        <input type="hidden" name="idGrup[]" id="idGrup">
-                                    </td>
-                                </tr>
-                            @endforeach
+                        @foreach($data as $item)
+                        <tr>
+                            <td>{{ $item->nama_grup }}</td>
+                            <td>{{ $item->nama_cust }}
+                                @if ($item->total_sisa != 0)
+                                <span class="float-right">
+                                    <input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang"
+                                        id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->id_grup }}">
+                                </span>
+                                @endif
+                            </td>
+                            <td>{{ $item->no_invoice }}
+                                <input type="hidden" id="id_{{ $item->id }}" value="{{ $item->id }}">
+                                <input type="hidden" id="invoice_{{ $item->id }}" value="{{ $item->no_invoice }}">
+                                <input type="hidden" id="bukti_potong_{{ $item->id }}"
+                                    value="{{ $item->no_bukti_potong }}">
+                                <input type="hidden" id="catatan_{{ $item->id }}" value="{{ $item->catatan }}">
+                            </td>
+                            <td>{{ date("d-M-Y", strtotime($item->tgl_invoice)) }}</td>
+                            <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
+                            <td class="float-right">{{ number_format($item->total_sisa) }}
+                            <td>{{ $item->catatan }}
+                            </td>
+                            <td style="text-align: right;">
+                                @if ($item->total_sisa != 0)
+                                <input type="checkbox" name="idInvoice[]" class="sewa_centang float-right"
+                                    custId="{{ $item->billing_to }}" grupId="{{ $item->id_grup }}"
+                                    value="{{ $item->id }}">
+                                @else
+                                <btn class="btn btn-primary btn-sm radiusSendiri" id='input_bukti'
+                                    idInvoice="{{ $item->id }}"> <span class="fa fa-sticky-note mr-1"></span> Input
+                                    Bukti Potong</btn>
+                                @endif
+                                <input type="hidden" name="idGrup[]" id="idGrup">
+                            </td>
+                        </tr>
+                        @endforeach
                         @endif
                     </tbody> --}}
                 </table>
@@ -95,72 +102,16 @@
     </div>
 </div>
 
-{{-- modal edit --}}
-<div class="modal fade" id="modal_detail" tabindex='-1'>
-    <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title">Update Resi</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-        </div>
-        <form action="{{ route('pembayaran_invoice.updateResi') }}" method="POST" enctype="multipart/form-data" id="updResi">
-            <div class="modal-body">
-                <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id --}}
-                <div class='row'>
-                    <div class="col-lg-12">
-                        <div class="row">
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="sewa">No. Invoice</label>
-                                <input type="text" class="form-control" id="modal_no_invoice" name="no_invoice" readonly> 
-                                <input type="hidden" class="form-control" id="modal_id_invoice" name="id_invoice" readonly> 
-                                <input type="hidden" name="_token" id="token" value="{{ csrf_token() }}">
-                            </div>   
-
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="">No. Resi</label>
-                                <input  type="text" class="form-control" id="modal_resi" name="resi" > 
-                            </div>
-
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="">Jatuh Tempo</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                    </div>
-                                    <input type="text" mplete="off"  class="form-control date" id="modal_jatuh_tempo" name="jatuh_tempo" > 
-                                </div>
-                            </div>
-
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="">Catatan</label>
-                                <input  type="text" class="form-control" id="modal_catatan" name="catatan" > 
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">BATAL</button>
-                <button type="submit" class="btn btn-sm btn-success save_detail" id="simpanResi" style='width:85px'>OK</button> 
-            </div>
-        </form>
-
-    </div>
-    <!-- /.modal-content -->
-    </div>
-</div>
-
 {{-- modal loading --}}
 <div class="modal" id="modal-loading" data-backdrop="static">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-        <div class="modal-body text-center">
-            <div class="cv-spinner">
-                <span class="loader"></span>
+            <div class="modal-body text-center">
+                <div class="cv-spinner">
+                    <span class="loader"></span>
+                </div>
+                <div>Harap Tunggu Sistem Sedang Memproses....</div>
             </div>
-            <div>Harap Tunggu Sistem Sedang Memproses....</div>
-        </div>
         </div>
     </div>
 </div>
@@ -364,13 +315,7 @@
     
                             row.append(`<td>${data[i].nama_grup}</td>`);
                             row.append(`<td>• ${data[i].nama_cust}</td>`);
-                            row.append(`<td>${data[i].no_invoice}
-                                            <input type="hidden" placeholder='id' id="id_${data[i].id}" value="${data[i].id}" >
-                                            <input type="hidden" placeholder='noInvoice' id="no_invoice_${data[i].id}" value="${data[i].no_invoice}" >
-                                            <input type="hidden" placeholder='jatuhTempo' id="jatuh_tempo_${data[i].id}" value="${data[i].jatuh_tempo}" >
-                                            <input type="hidden" placeholder='resi' id="resi_${data[i].id}" value="${data[i].resi}" >
-                                            <input type="hidden" placeholder='catatan' id="catatan_${data[i].id}" value="${data[i].catatan}" >
-                                        </td>`);
+                            row.append(`<td>${data[i].no_invoice} </td>`);
                             row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
                             row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
                             row.append(`<td> ${ data[i].total_sisa.toLocaleString()}</td>`);
@@ -386,10 +331,6 @@
                                             `+
                                                 btn_edit
                                             +`
-                                            <button class="dropdown-item update_resi" value="${data[i].id}">
-                                                <span class="fas fa-sticky-note mr-3"></span> Update Resi
-                                            </button>
-                                            <input type="text" id="ketentuan_bayar_${data[i].id}" value="${data[i].ketentuan_bayar}" hidden />
                                         </div>
                                     </div>
                                 </td>`);
