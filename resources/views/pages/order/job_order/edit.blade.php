@@ -1,323 +1,404 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
-  
+
 @endsection
 
 @section('content')
 <style>
-    .card-header:first-child{
-        border-radius:inherit;
+    .card-header:first-child {
+        border-radius: inherit;
     }
+
     /* .tabelJO {
         border-collapse: collapse;
         border-spacing: 0;
         width: 100%;
         border: 1px solid #ddd;
     } */
-    
 </style>
 
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ $error }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
+@if ($errors->any())
+@foreach ($errors->all() as $error)
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ $error }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endforeach
+@endif
+<form action="{{ route('job_order.update', ['job_order' => $data['JO'] ]) }}" id='save' method="POST">
+    @method('PUT')
+    @csrf
+    <div class="row m-2">
+        <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
+            <div class="card radiusSendiri" style="">
+                <div class="card-header ">
+                    <a href="{{ route('job_order.index') }}" class="btn btn-secondary radiusSendiri"><i
+                            class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                    <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
+                            class="fa fa-fw fa-save"></i> Simpan</button>
+                </div>
             </div>
-        @endforeach
-    @endif
-    <form action="{{ route('job_order.update', ['job_order' => $data['JO'] ]) }}" id='save' method="POST" >
-        @method('PUT')
-        @csrf
-        <div class="row m-2">
-            <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
-                <div class="card radiusSendiri" style="">
-                    <div class="card-header ">
-                        <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+        </div>
+        <div class="col-12">
+            <div class="card radiusSendiri">
+                {{-- <div class="card-header">
+                    <a href="{{ route('job_order.index') }}" class="btn btn-secondary radiusSendiri"><i
+                            class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                    <button type="submit" id='submitButton' class="btn btn-success radiusSendiri ml-2"><i
+                            class="fa fa-fw fa-save"></i> Simpan</button>
+                </div> --}}
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="form-group" style="pointer-events: none;">
+                                <label for="">Pengirim<span class="text-red">*</span></label>
+                                <select class="form-control selectpicker" readonly style="pointer-events: none;"
+                                    id='customer' name="customer" data-live-search="true" data-show-subtext="true"
+                                    data-placement="bottom">
+                                    <option value="0">--Pilih Pengirim--</option>
+                                    @foreach ($dataCustomer as $cust)
+                                    <option value="{{$cust->id}}" kode="{{$cust->kode}}" <?=$data['JO']->id_customer ==
+                                        $cust->id ? 'selected':''; ?> >[{{ $cust->kode }}] {{ $cust->nama }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                                <input type="hidden" id='kode_cust' name='kode_cust'>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group" style="pointer-events: none;">
+                                <label for="">Pelayaran</label>
+                                <select class="form-control selectpicker" readonly disabled id='supplier'
+                                    name="supplier" data-live-search="true" data-show-subtext="true"
+                                    data-placement="bottom">
+                                    <option value="0">--Pilih Pelayaran--</option>
+                                    @foreach ($dataSupplier as $sup)
+                                    <option value="{{$sup->id}}" <?=$data['JO']->id_supplier == $sup->id? 'selected':'';
+                                        ?> >{{ $sup->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group ">
+                                <label for="">No. BL<span class="text-red">*</span></label>
+                                <input required type="text" name="no_bl" class="form-control"
+                                    value="{{$data['JO']->no_bl}}" readonly disabled>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="tgl_sandar">Tanggal Sandar</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                    <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control"
+                                        id="tgl_sandar" placeholder="dd-M-yyyy"
+                                        value="{{ \Carbon\Carbon::parse($data['JO']->tgl_sandar)->format('d-M-Y') }}"
+                                        readonly disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
+                                <input required type="text" name="pelabuhan_muat" class="form-control"
+                                    value="{{$data['JO']->pelabuhan_muat}}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
+                                <input required type="text" name="pelabuhan_bongkar" class="form-control"
+                                    value="{{$data['JO']->pelabuhan_bongkar}}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="">Status</label>
+                                <input required type="text" name="status" class="form-control"
+                                    value="{{$data['JO']->status}}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table_wrapper">
+                        <table id="tabelJO" class="tabelJO table table-striped hover">
+                            <thead>
+                                <tr>
+                                    <th width="">No. Kontainer</th>
+                                    <th width="">Seal</th>
+                                    <th width="">Tipe</th>
+                                    <th width="">Stripping</th>
+                                    <th width="">Pick Up</th>
+                                    <th width="">Tujuan</th>
+                                    <th width="200">Tgl Booking</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb">
+                                @if ($data['detail'])
+                                @foreach (json_decode($data['detail']) as $key => $item)
+                                <tr id="row{{$key}}">
+
+                                    <td>
+                                        <input type="hidden" id="no_kontainer" name="detail[{{$key}}][no_kontainer]"
+                                            class="form-control no_kontainerx" maxlength="20"
+                                            value="{{$item->no_kontainer}}" readonly>
+                                        <span>{{$item->no_kontainer}}</span>
+                                    </td>
+                                    <td>
+                                        {{-- <input type="text" id="seal" name="detail[{{$key}}][seal]"
+                                            class="form-control" maxlength="10" value="{{$item->seal}}" readonly> --}}
+                                        <span>{{$item->seal}}</span>
+                                    </td>
+                                    <td>
+                                        <select class="form-control selectpicker tipeKontainer"
+                                            name="detail[{{$key}}][tipe]" id="tipe{{$key}}" data-live-search="true"
+                                            data-show-subtext="true" data-placement="bottom" readonly disabled>
+                                            <option value="">── Pilih Tipe ──</option>
+                                            <option value="20" <?=$item->tipe_kontainer == '20' ? 'selected':''; ?>
+                                                >20Ft </option>
+                                            <option value="40" <?=$item->tipe_kontainer == '40' ? 'selected':''; ?>
+                                                >40Ft </option>
+                                        </select>
+                                        <input type="hidden" readonly name="detail[{{$key}}][id_detail]"
+                                            value="{{$item->id}}">
+                                        <input type="hidden" readonly name="detail[{{$key}}][id_booking]"
+                                            value="{{$item->id_booking}}">
+                                        <input type="hidden" readonly class="hargaThc" <?='hargaThc_' .$key ?>
+                                        name="detail[{{$key}}][hargaThc]" value="">
+                                        <input type="hidden" readonly class="hargaLolo" <?='hargaLolo_' .$key ?>
+                                        name="detail[{{$key}}][hargaLolo]" value="">
+                                        <input type="hidden" readonly class="hargaApbs" <?='hargaApbs_' .$key ?>
+                                        name="detail[{{$key}}][hargaApbs]" value="">
+                                        <input type="hidden" readonly class="hargaCleaning" <?='hargaCleaning_' .$key ?>
+                                        name="detail[{{$key}}][hargaCleaning]" value="">
+                                        <input type="hidden" readonly class="hargaDocFee" <?='hargaDocFee_' .$key ?>
+                                        name="detail[{{$key}}][hargaDocFee]" value="">
+                                    </td>
+                                    <td>
+                                        <div class="form-group mb-0">
+                                            <div class="icheck-primary">
+                                                <input id="thcLuar{{$key}}" dataId="{{$key}}" class="thcc" type="radio"
+                                                    name="detail[{{$key}}][stripping]" value="luar"
+                                                    <?=$item->stripping== 'luar'? 'checked':''; ?> readonly disabled>
+                                                <label class="form-check-label" for="thcLuar{{$key}}"><span
+                                                        class="opacit">Luar</span></label>
+                                            </div>
+                                            <div class="icheck-primary mt-3">
+                                                <input id="thcDalam{{$key}}" dataId="{{$key}}" class="thcc" type="radio"
+                                                    name="detail[{{$key}}][stripping]" value="dalam"
+                                                    <?=$item->stripping== 'dalam'? 'checked':''; ?> readonly disabled>
+                                                <label class="form-check-label" for="thcDalam{{$key}}"><span
+                                                        class="opacit">Dalam</span></label><br>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <select class="form-control selectpicker pick_up"
+                                            name="detail[{{$key}}][pick_up]" id="tipe{{$key}}" {{isset($item->sewa_id)?
+                                            'disabled':''}} data-live-search="true" data-show-subtext="true"
+                                            data-placement="bottom" readonly >
+                                            <option value="">── Pick Up ──</option>
+                                            <option value="TTL" <?=$item->pick_up == 'TTL' ? 'selected':''; ?> >TTL
+                                            </option>
+                                            <option value="TPS" <?=$item->pick_up == 'TPS' ? 'selected':''; ?> >TPS
+                                            </option>
+                                            <option value="DEPO" <?=$item->pick_up == 'DEPO' ? 'selected':''; ?> >DEPO
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control selectpicker tujuanC"
+                                            name="detail[{{$key}}][tujuan]" tujuan_check="{{$key}}" id="tujuan{{$key}}"
+                                            {{isset($item->sewa_id)? 'disabled':''}} data-live-search="true"
+                                            data-show-subtext="true" data-placement="bottom" >
+                                            <option value="">── Pilih Tujuan ──</option>
+                                            @if ($dataTujuan)
+                                            @foreach ($dataTujuan as $tuj)
+                                            <option value="{{$tuj->id}}" <?=$item->id_grup_tujuan == $tuj->id ?
+                                                'selected':''; ?> >{{ $tuj->nama_tujuan }}</option>
+                                            @endforeach
+                                            @endif
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend ">
+                                                <span class="input-group-text d-sm-none d-md-none d-lg-block"><i
+                                                        class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="text" name="detail[{{$key}}][tgl_booking]"
+                                                id='tgl_booking{{$key}}' tgl_booking_check="{{$key}}"
+                                                {{isset($item->sewa_id)? 'disabled':''}} autocomplete="off" class="date
+                                            form-control tgl_booking" placeholder="dd-M-yyyy"
+                                            value="{{isset($item->tgl_booking)?
+                                            \Carbon\Carbon::parse($item->tgl_booking)->format('d-M-Y'):NULL}}">
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-             <div class="col-12">
-                <div class="card radiusSendiri">
-                    {{-- <div class="card-header">
-                        <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" id='submitButton' class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-                    </div> --}}
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6" >
-                                <div class="form-group" style="pointer-events: none;" >
-                                    <label for="">Pengirim<span class="text-red">*</span></label>
-                                        <select class="form-control selectpicker" readonly style="pointer-events: none;" id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                        <option value="0">--Pilih Pengirim--</option>
-                                        @foreach ($dataCustomer as $cust)
-                                            <option value="{{$cust->id}}" kode="{{$cust->kode}}" <?= $data['JO']->id_customer == $cust->id ? 'selected':''; ?> >{{ $cust->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" id='kode_cust' name='kode_cust' >
-                                </div>
-                            </div>
-                            <div class="col-6" >
-                                <div class="form-group" style="pointer-events: none;" >
-                                    <label for="">Pelayaran</label>
-                                    <select class="form-control selectpicker" readonly disabled id='supplier' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                        <option value="0">--Pilih Pelayaran--</option>
-                                        @foreach ($dataSupplier as $sup)
-                                            <option value="{{$sup->id}}" <?= $data['JO']->id_supplier == $sup->id? 'selected':''; ?> >{{ $sup->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group ">
-                                    <label for="">No. BL<span class="text-red">*</span></label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{$data['JO']->no_bl}}" readonly disabled >
-                                </div>           
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="tgl_sandar">Tanggal Sandar</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                        </div>
-                                        <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse($data['JO']->tgl_sandar)->format('d-M-Y') }}" readonly disabled>     
-                                    </div>
-                                </div>           
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_muat" class="form-control" value="{{$data['JO']->pelabuhan_muat}}" readonly>
-                                </div>     
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_bongkar" class="form-control" value="{{$data['JO']->pelabuhan_bongkar}}" readonly>
-                                </div>              
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="">Status</label>
-                                    <input required type="text" name="status" class="form-control" value="{{$data['JO']->status}}" readonly>
-                                </div>              
-                            </div>
-                        </div>  
+        </div>
 
-                        <div class="table_wrapper">
-                            <table id="tabelJO" class="tabelJO table table-striped hover" >
-                                <thead>
-                                    <tr>
-                                        <th width="">No. Kontainer</th>
-                                        <th width="">Seal</th>
-                                        <th width="">Tipe</th>
-                                        <th width="">Stripping</th>
-                                        <th width="">Pick Up</th>
-                                        <th width="">Tujuan</th>
-                                        <th width="200">Tgl Booking</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tb"> 
-                                    @if ($data['detail'])
-                                        @foreach (json_decode($data['detail']) as $key => $item)
-                                            <tr id="row{{$key}}" >
-    
-                                                <td>
-                                                    <input type="hidden" id="no_kontainer" name="detail[{{$key}}][no_kontainer]"class="form-control no_kontainerx" maxlength="20" value="{{$item->no_kontainer}}" readonly>
-                                                    <span>{{$item->no_kontainer}}</span>
-                                                </td>
-                                                <td>
-                                                    {{-- <input type="text" id="seal" name="detail[{{$key}}][seal]"class="form-control" maxlength="10" value="{{$item->seal}}" readonly> --}}
-                                                    <span>{{$item->seal}}</span>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control selectpicker tipeKontainer" name="detail[{{$key}}][tipe]" id="tipe{{$key}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" readonly disabled>
-                                                        <option value="">── Pilih Tipe ──</option>
-                                                        <option value="20" <?= $item->tipe_kontainer == '20' ? 'selected':''; ?> >20Ft </option>
-                                                        <option value="40" <?= $item->tipe_kontainer == '40' ? 'selected':''; ?> >40Ft </option>
-                                                    </select>
-                                                    <input type="hidden" readonly name="detail[{{$key}}][id_detail]" value="{{$item->id}}">
-                                                    <input type="hidden" readonly name="detail[{{$key}}][id_booking]" value="{{$item->id_booking}}">
-                                                    <input type="hidden" readonly class="hargaThc" <?= 'hargaThc_'.$key ?> name="detail[{{$key}}][hargaThc]" value="">
-                                                    <input type="hidden" readonly class="hargaLolo" <?= 'hargaLolo_'.$key ?> name="detail[{{$key}}][hargaLolo]" value="">
-                                                    <input type="hidden" readonly class="hargaApbs" <?= 'hargaApbs_'.$key ?> name="detail[{{$key}}][hargaApbs]" value="">
-                                                    <input type="hidden" readonly class="hargaCleaning" <?= 'hargaCleaning_'.$key ?> name="detail[{{$key}}][hargaCleaning]" value="">
-                                                    <input type="hidden" readonly class="hargaDocFee" <?= 'hargaDocFee_'.$key ?> name="detail[{{$key}}][hargaDocFee]" value="">
-                                                </td>
-                                                <td>
-                                                    <div class="form-group mb-0">
-                                                        <div class="icheck-primary">
-                                                            <input id="thcLuar{{$key}}" dataId="{{$key}}" class="thcc" type="radio" name="detail[{{$key}}][stripping]" value="luar" <?=  $item->stripping== 'luar'? 'checked':''; ?> readonly disabled>
-                                                            <label class="form-check-label" for="thcLuar{{$key}}"><span class="opacit">Luar</span></label>
-                                                        </div>
-                                                        <div class="icheck-primary mt-3">
-                                                            <input id="thcDalam{{$key}}" dataId="{{$key}}" class="thcc" type="radio" name="detail[{{$key}}][stripping]" value="dalam" <?=  $item->stripping== 'dalam'? 'checked':''; ?> readonly disabled>
-                                                            <label class="form-check-label" for="thcDalam{{$key}}"><span class="opacit">Dalam</span></label><br>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control selectpicker pick_up" name="detail[{{$key}}][pick_up]" id="tipe{{$key}}" {{isset($item->sewa_id)? 'disabled':''}} data-live-search="true" data-show-subtext="true" data-placement="bottom" readonly >
-                                                        <option value="">── Pick Up ──</option>
-                                                        <option value="TTL" <?= $item->pick_up == 'TTL' ? 'selected':''; ?> >TTL</option>
-                                                        <option value="TPS" <?= $item->pick_up == 'TPS' ? 'selected':''; ?> >TPS</option>
-                                                        <option value="DEPO" <?= $item->pick_up == 'DEPO' ? 'selected':''; ?> >DEPO</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control selectpicker tujuanC" name="detail[{{$key}}][tujuan]" tujuan_check="{{$key}}"  id="tujuan{{$key}}" {{isset($item->sewa_id)? 'disabled':''}} data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                        <option value="">── Pilih Tujuan ──</option>
-                                                        @if ($dataTujuan)
-                                                            @foreach ($dataTujuan as $tuj)
-                                                                <option value="{{$tuj->id}}" <?= $item->id_grup_tujuan == $tuj->id ? 'selected':''; ?> >{{ $tuj->nama_tujuan }}</option>
-                                                            @endforeach
-                                                        @endif
-                                                    </select>
-                                                </td>
-                                                <td >
-                                                    <div class="input-group mb-0">
-                                                        <div class="input-group-prepend ">
-                                                            <span class="input-group-text d-sm-none d-md-none d-lg-block"><i class="far fa-calendar-alt"></i></span>
-                                                        </div>
-                                                        <input type="text" name="detail[{{$key}}][tgl_booking]" id='tgl_booking{{$key}}' tgl_booking_check="{{$key}}" {{isset($item->sewa_id)? 'disabled':''}} autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{isset($item->tgl_booking)? \Carbon\Carbon::parse($item->tgl_booking)->format('d-M-Y'):NULL}}">     
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div> 
-            </div>
-            
-            <div class="col-12">
-                    <div class="card radiusSendiri">
-                        <div class="card-header">
-                            <h3 class="card-title mt-2"><b>KETERANGAN BIAYA</b></h3>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <!-- <button type="button" class="btn btn-tool" data-card-widget="remove">
+        <div class="col-12">
+            <div class="card radiusSendiri">
+                <div class="card-header">
+                    <h3 class="card-title mt-2"><b>KETERANGAN BIAYA</b></h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <!-- <button type="button" class="btn btn-tool" data-card-widget="remove">
                                     <i class="fas fa-times"></i>
                                 </button> -->
-                            </div>
-                        </div>
-                       <div class="card-body" >
-                        <div class="d-flex justify-content-between" style="gap: 10px;">
-                            <table class="table table-bordered" >
-                                <thead>
-                                    <tr>
-                                        <th colspan="2" class="card-outline card-primary">BIAYA SEBELUM DOORING</th>
-                                    </tr>
-                                </thead>
-                                <tbody > 
-                                    <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox" id="thc_cekbox" <?= ($data['JO']['thc'] == 0) ? '':'checked'; ?> disabled></span> THC</th>
-                                        <td name="">
-                                            <input type="text" name="total_thc" id="total_thc" class="form-control" value="{{number_format($data['JO']['thc'])}}" readonly >
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox" id="lolo_cekbox" <?= $data['JO']['lolo'] == 0 ? '':'checked'; ?> disabled></span> LOLO</th>
-                                        <td name="">
-                                            <input type="text" name="total_lolo" id="total_lolo" class="form-control" value="{{number_format($data['JO']['lolo'])}}" readonly >
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox" id="apbs_cekbox" <?= ($data['JO']['apbs'] == 0) ? '':'checked'; ?> disabled></span> APBS</th>
-                                        <td name="">
-                                            <input type="text" name="total_apbs" id="total_apbs" class="form-control" value="{{number_format($data['JO']['apbs'])}}" readonly >
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="cleaning_cekbox" id="cleaning_cekbox" <?=  ($data['JO']['cleaning'] == 0) ? '':'checked'; ?> disabled></span> CLEANING</th>
-                                        <td name="">
-                                            <input type="text" name="total_cleaning" id="total_cleaning" class="form-control" value="{{number_format($data['JO']['cleaning'])}}" readonly >
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox" id="doc_fee_cekbox" <?= ($data['JO']['doc_fee'] == 0) ? '':'checked'; ?> disabled></span> DOC FEE</th>
-                                        <td name="">
-                                            <input type="text" name="total_doc_fee" id="total_doc_fee" class="form-control" value="{{number_format($data['JO']['doc_fee'])}}" readonly >
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>SUB TOTAL</th>
-                                        <td>
-                                            <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" class="form-control" value="<?= number_format($data['JO']['thc']+$data['JO']['lolo']+$data['JO']['apbs']+$data['JO']['cleaning']+$data['JO']['doc_fee'] ,2) ?>" readonly>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                </tfoot>
-                            </table>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between" style="gap: 10px;">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="card-outline card-primary">BIAYA SEBELUM DOORING</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox"
+                                                id="thc_cekbox" <?=($data['JO']['thc']==0) ? '' :'checked'; ?>
+                                            disabled></span> THC</th>
+                                    <td name="">
+                                        <input type="text" name="total_thc" id="total_thc" class="form-control"
+                                            value="{{number_format($data['JO']['thc'])}}" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox"
+                                                id="lolo_cekbox" <?=$data['JO']['lolo']==0 ? '' :'checked'; ?>
+                                            disabled></span> LOLO</th>
+                                    <td name="">
+                                        <input type="text" name="total_lolo" id="total_lolo" class="form-control"
+                                            value="{{number_format($data['JO']['lolo'])}}" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox"
+                                                id="apbs_cekbox" <?=($data['JO']['apbs']==0) ? '' :'checked'; ?>
+                                            disabled></span> APBS</th>
+                                    <td name="">
+                                        <input type="text" name="total_apbs" id="total_apbs" class="form-control"
+                                            value="{{number_format($data['JO']['apbs'])}}" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><span> <input type="checkbox" class="checkitem" name="cleaning_cekbox"
+                                                id="cleaning_cekbox" <?=($data['JO']['cleaning']==0) ? '' :'checked'; ?>
+                                            disabled></span> CLEANING</th>
+                                    <td name="">
+                                        <input type="text" name="total_cleaning" id="total_cleaning"
+                                            class="form-control" value="{{number_format($data['JO']['cleaning'])}}"
+                                            readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><span> <input type="checkbox" class="checkitem" name="doc_fee_cekbox"
+                                                id="doc_fee_cekbox" <?=($data['JO']['doc_fee']==0) ? '' :'checked'; ?>
+                                            disabled></span> DOC FEE</th>
+                                    <td name="">
+                                        <input type="text" name="total_doc_fee" id="total_doc_fee" class="form-control"
+                                            value="{{number_format($data['JO']['doc_fee'])}}" readonly>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>SUB TOTAL</th>
+                                    <td>
+                                        <input type="text" name="total_sblm_dooring" id="total_sblm_dooring"
+                                            class="form-control"
+                                            value="<?= number_format($data['JO']['thc']+$data['JO']['lolo']+$data['JO']['apbs']+$data['JO']['cleaning']+$data['JO']['doc_fee'] ,2) ?>"
+                                            readonly>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
 
-                            <table class="table table-bordered" >
-                                <thead>
-                                    <tr>
-                                        <th colspan="2" class="card-outline card-primary">BIAYA JAMINAN</th>
-                                    </tr>
-                                </thead>
-                                <tbody > 
-                                    <tr>
-                                        <th style="height: 5px;">Tgl Bayar Jaminan</th>
-                                        <td>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                </div>
-                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" value="{{ ($data['jaminan'] != null)? \Carbon\Carbon::parse($data['jaminan']['tgl_bayar'])->format('d-M-Y'):null }}" disabled>     
-                                                <input type="hidden" name="id_jaminan" value="<?= ($data['jaminan'] != null)? $data['jaminan']['id']:NULL; ?>"  >     
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th colspan="2" class="card-outline card-primary">BIAYA JAMINAN</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th style="height: 5px;">Tgl Bayar Jaminan</th>
+                                    <td>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i
+                                                        class="far fa-calendar-alt"></i></span>
                                             </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th style="height: 5px;">Total Jaminan</th>
-                                        <td>
-                                            <div class="input-group mb-0">
-                                                <div class="input-group-prepend">
-                                                    <span class="input-group-text"><b>Rp.</b></span>
-                                                </div>
-                                                <input type="text" class="form-control uang numaja" id="total_jaminan" name="total_jaminan" value="{{ $data['jaminan'] != null ? number_format($data['jaminan']['nominal'],2):null }}" disabled>
+                                            <input type="text" name="tgl_bayar_jaminan" autocomplete="off"
+                                                class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy"
+                                                value="{{ ($data['jaminan'] != null)? \Carbon\Carbon::parse($data['jaminan']['tgl_bayar'])->format('d-M-Y'):null }}"
+                                                disabled>
+                                            <input type="hidden" name="id_jaminan"
+                                                value="<?= ($data['jaminan'] != null)? $data['jaminan']['id']:NULL; ?>">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th style="height: 5px;">Total Jaminan</th>
+                                    <td>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><b>Rp.</b></span>
                                             </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>Catatan</th>
-                                        <td>
-                                           <textarea name="catatan" class="form-control" id="catatan" cols="50" rows="10" disabled >{{ $data['jaminan'] != null ? $data['jaminan']['catatan']:null }}</textarea>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                </tfoot>
-                            </table>
-                        </div>
-                       </div>
-                </div>                 
+                                            <input type="text" class="form-control uang numaja" id="total_jaminan"
+                                                name="total_jaminan"
+                                                value="{{ $data['jaminan'] != null ? number_format($data['jaminan']['nominal'],2):null }}"
+                                                disabled>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Catatan</th>
+                                    <td>
+                                        <textarea name="catatan" class="form-control" id="catatan" cols="50" rows="10"
+                                            disabled>{{ $data['jaminan'] != null ? $data['jaminan']['catatan']:null }}</textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-    </form>
+    </div>
+</form>
 {{-- sweet save --}}
 <script>
     $(document).ready(function() {
@@ -859,5 +940,3 @@
 </script>
 
 @endsection
-
-

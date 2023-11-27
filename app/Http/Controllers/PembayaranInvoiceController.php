@@ -39,17 +39,6 @@ class PembayaranInvoiceController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
-        // $data =  DB::table('invoice AS i')
-        //         ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
-        //                 ,'g.id as id_grup','ip.no_bukti_potong', 'ip.catatan')
-        //         ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
-        //         ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
-        //         ->leftJoin('invoice_pembayaran AS ip', 'i.id', '=', 'ip.id_invoice')
-        //         ->where('i.is_aktif', '=', 'Y')
-        //         // ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
-        //         ->orderBy('i.id','ASC')
-        //         ->get();
-
         $data = Invoice::where('is_aktif', 'Y')->get();
     
         return view('pages.invoice.pembayaran_invoice.index',[
@@ -362,7 +351,7 @@ class PembayaranInvoiceController extends Controller
                         'Y'
                     ) 
                 );
-                         
+                
                 $kas_bank = KasBank::where('is_aktif','Y')->find($data['kas']);
                 $kas_bank->saldo_sekarang += floatval(str_replace(',', '', $data['total_diterima']));
                 $kas_bank->updated_by = $user;
@@ -391,13 +380,13 @@ class PembayaranInvoiceController extends Controller
                 }
 
             }
-     
+    
         } catch (ValidationException $e) {
             // return redirect()->back()->withErrors($e->errors())->withInput();
             db::rollBack();
             return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi Kesalahan ketika pembayaran!']);
         }
-       
+    
     }
 
     /**
@@ -437,7 +426,6 @@ class PembayaranInvoiceController extends Controller
                 return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Data Reimburse sudah terbayar, harap lakukan revisi Invoice untuk melakukan perubahan!']);
             }
         }
-
 
         $id_invoices = [];
         $checkLTL = false;
@@ -860,7 +848,6 @@ class PembayaranInvoiceController extends Controller
     }
 
     public function loadData($status) {
-        // dd($status);
         $data = null;
         if($status === 'BELUM LUNAS'){
             $data = DB::table('invoice AS i')

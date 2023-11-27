@@ -122,8 +122,8 @@ class RevisiTLController extends Controller
             'jumlah' => $pengaturan[$sewa['stack_tl']],
             'dataKas' => $dataKas,
             'id_sewa' => $id,
-            'checkTL'=>$checkTL,
-            'id'=>$id
+            'checkTL'=> $checkTL,
+            'id'=> $id
         ]);
     }
 
@@ -246,7 +246,7 @@ class RevisiTLController extends Controller
                         'Y'
                     ));
                 }
-     
+    
             DB::commit();
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambah Biaya TL']);
                     
@@ -254,7 +254,7 @@ class RevisiTLController extends Controller
             return redirect()->back()->withErrors($th->getMessage())->withInput();
             db::rollBack();
         }
-          
+        
     }
 
     /**
@@ -305,7 +305,7 @@ class RevisiTLController extends Controller
             if($data['pembayaran']=='hutang_karyawan'){
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
-                $kht->refrensi_id =  $datauang_jalan_riwayat->id;
+                $kht->refrensi_id = $datauang_jalan_riwayat->id;
                 $kht->refrensi_keterangan = 
                 '#totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
                 ' #potongHutang:0' . 
@@ -319,21 +319,20 @@ class RevisiTLController extends Controller
                 $kht->created_by = $user;
                 $kht->created_at = now();
                 $kht->is_aktif = 'Y';
-                if($kht->save())
-                {
+                if($kht->save()){
                     if(isset($kh)){
                         // kalau ada data, update hutang
-                         $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']); 
-                         $kh->updated_by = $user;
-                         $kh->updated_at = now();
-                         $kh->save();
+                        $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']); 
+                        $kh->updated_by = $user;
+                        $kh->updated_at = now();
+                        $kh->save();
                     }else{
                         // kalau tidak ada data, buat data hutang baru
                         $kh = new KaryawanHutang();
                         $kh->id_karyawan = $data['id_karyawan'];
                         $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']);
-                        $kh->createad_by = $user;
-                        $kh->createad_at = now();
+                        $kh->created_by = $user;
+                        $kh->created_at = now();
                         $kh->is_aktif = 'Y';
                         $kh->save();
                     }
@@ -348,7 +347,7 @@ class RevisiTLController extends Controller
                     CoaHelper::DataCoa(5002), //kode coa
                     'teluk_lamong',
                     'PENGEMBALIAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                     $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
+                    $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at
                     $user,//updated_by
@@ -377,7 +376,6 @@ class RevisiTLController extends Controller
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Mengembalikan Biaya TL']);
 
         } catch (\Throwable $th) {
-            //throw $th;
             return redirect()->back()->withErrors($th->getMessage())->withInput();
             db::rollBack();
         }

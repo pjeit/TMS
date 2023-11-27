@@ -1,40 +1,42 @@
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
 @endsection
 
 @section('content')
-<style >
+<style>
 </style>
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ $error }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endforeach
-    @endif
+@if ($errors->any())
+@foreach ($errors->all() as $error)
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ $error }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endforeach
+@endif
 <section class="container-fluid">
-    <form action="{{ route('tagihan_rekanan.store') }}" id="save" method="POST" >
+    <form action="{{ route('tagihan_rekanan.store') }}" id="save" method="POST">
         @csrf
         <div class="radiusSendiri sticky-top" style="margin-bottom: -15px;">
             <div class="card radiusSendiri" style="">
                 <div class="card-header radiusSendiri">
-                    <a href="{{ route('tagihan_rekanan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                    <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                    <a href="{{ route('tagihan_rekanan.index') }}" class="btn btn-secondary radiusSendiri"><i
+                            class="fa fa-arrow-circle-left"></i> Kembali</a>
+                    <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
+                            class="fa fa-fw fa-save"></i> Simpan</button>
                 </div>
             </div>
         </div>
         <div class="card radiusSendiri">
-            <div class="card-body radiusSendiri" >
+            <div class="card-body radiusSendiri">
                 <div class="row">
                     <div class="bg-gray-light radiusSendiri col-lg-6 col-md-6 col-sm-12">
                         <div class="row">
@@ -44,18 +46,20 @@
                                     <select name="supplier" class="select2" style="width: 100%" id="supplier" required>
                                         <option value="">── PILIH SUPPLIER ──</option>
                                         @foreach ($supplier as $item)
-                                            @if ($item->getSupplier)
-                                                <option  n value="{{ $item->getSupplier->id }}">{{ $item->getSupplier->nama }}</option>
-                                            @endif
+                                        @if ($item->getSupplier)
+                                        <option n value="{{ $item->getSupplier->id }}">{{ $item->getSupplier->nama }}
+                                        </option>
+                                        @endif
                                         @endforeach
                                     </select>
-                                </div>  
+                                </div>
                             </div>
 
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="form-group">
                                     <label for="">No. Nota<span style="color:red">*</span></label>
-                                    <input type="text" name="no_nota" id="no_nota" maxlength="25" class="form-control" required>
+                                    <input type="text" name="no_nota" id="no_nota" maxlength="25" class="form-control"
+                                        required>
                                 </div>
                             </div>
 
@@ -64,9 +68,10 @@
                                     <label for="">Tanggal Nota<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" autocomplete="off" name="tgl_nota" class="form-control date" id="tgl_nota" required>
+                                        <input type="text" autocomplete="off" name="tgl_nota" class="form-control date"
+                                            id="tgl_nota" required>
                                     </div>
                                 </div>
                             </div>
@@ -75,9 +80,10 @@
                                     <label for="">Jatuh Tempo<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" autocomplete="off" name="jatuh_tempo" class="form-control date" id="jatuh_tempo" required>
+                                        <input type="text" autocomplete="off" name="jatuh_tempo"
+                                            class="form-control date" id="jatuh_tempo" required>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +97,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input type="text" id="tagihan" name="tagihan" class="form-control uang numaja" value="" readonly required>                         
+                                    <input type="text" id="tagihan" name="tagihan" class="form-control uang numaja"
+                                        value="" readonly required>
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -102,9 +109,9 @@
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
 
-        <div style="overflow: auto;" >
+        <div style="overflow: auto;">
             <table class="table table-hover table-bordered table-striped " width='100%' id="tabel_tagihan">
                 <thead>
                     <tr>
@@ -116,7 +123,7 @@
                     </tr>
                 </thead>
                 <tbody id="hasil">
-              
+
                 </tbody>
             </table>
         </div>
@@ -204,8 +211,8 @@
 
         function showTable(supplier){
             var baseUrl = "{{ asset('') }}";
-            var url = baseUrl+`loadData/${supplier}`;
-
+            var url = `${baseUrl}tagihan_rekanan/load_data/${supplier}`;
+    
             $.ajax({
                 method: 'GET',
                 url: url,
@@ -316,5 +323,3 @@
 </script>
 
 @endsection
-
-
