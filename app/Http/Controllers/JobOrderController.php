@@ -12,7 +12,7 @@ use App\Models\JobOrderDetail;
 use App\Models\JobOrderDetailBiaya;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Barryvdh\DomPDF\Facade\PDF; // use PDF;
+use Barryvdh\DomPDF\Facade\Pdf; // use PDF;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\HtmlString;
@@ -513,7 +513,7 @@ class JobOrderController extends Controller
         $TotalBiayaRev = $JobOrder->thc+$JobOrder->lolo+$JobOrder->apbs+$JobOrder->cleaning+$JobOrder->doc_fee;
 
         // dd($dataJoDetail);   
-        $pdf = PDF::loadView('pages.order.job_order.print',[
+        $pdf = Pdf::loadView('pages.order.job_order.print',[
             'judul'=>"Job Order",
             'JobOrder'=>$JobOrder,
             'dataSupplier'=>$dataSupplier,
@@ -552,6 +552,60 @@ class JobOrderController extends Controller
         //     'dataCustomer'=>$dataCustomer,
         //     'dataJoDetail'=>$dataJoDetail,
         //     'dataJaminan'=>$dataJaminan,
+
+        // ]);
+    }
+
+    public function cetak_job_order(JobOrder $JobOrder)
+    {
+        //
+        $dataSupplier = DB::table('supplier')
+            ->select('*')
+            ->where('supplier.is_aktif', '=', "Y")
+            ->where('supplier.id', '=', $JobOrder->id_supplier)
+            ->first();
+        $dataCustomer = DB::table('customer')
+            ->select('*')
+            ->where('customer.is_aktif', '=', "Y")
+            ->where('customer.id', '=', $JobOrder->id_customer)
+            ->first();
+ 
+        $dataJaminan = DB::table('jaminan')
+            ->select('*')
+            ->where('jaminan.is_aktif', '=', "Y")
+            ->where('jaminan.id_job_order', '=', $JobOrder->id)
+            ->first();
+        
+        $TotalBiayaRev = $JobOrder->thc+$JobOrder->lolo+$JobOrder->apbs+$JobOrder->cleaning+$JobOrder->doc_fee;
+
+        // dd($dataJoDetail);   
+        $pdf = Pdf::loadView('pages.order.job_order.cetak_job_order',[
+            'judul'=>"Job Order",
+            'JobOrder'=>$JobOrder,
+            'dataSupplier'=>$dataSupplier,
+            'dataCustomer'=>$dataCustomer,
+            'dataJaminan'=>$dataJaminan,
+            'TotalBiayaRev'=>$TotalBiayaRev
+        ]); 
+        // dd($JobOrder);
+        // $pdf->setPaper('A5', 'landscape');
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true, // Enable HTML5 parser
+            'isPhpEnabled' => true, // Enable inline PHP execution
+            'defaultFont' => 'sans-serif',
+             'dpi' => 180, // Set a high DPI for better resolution
+            //  'isRemoteEnabled', true
+             'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
+        ]);
+        return $pdf->stream($JobOrder->no_jo.'.pdf'); 
+        // return view('pages.order.job_order.cetak_job_order',[
+        //     'judul'=>"Job Order",
+        //     'JobOrder'=>$JobOrder,
+        //     'dataSupplier'=>$dataSupplier,
+        //     'dataCustomer'=>$dataCustomer,
+        //     'dataJaminan'=>$dataJaminan,
+        //     'TotalBiayaRev'=>$TotalBiayaRev
 
         // ]);
     }

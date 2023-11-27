@@ -70,6 +70,9 @@
                                                 <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
                                                     <span class="fas fa-edit mr-3"></span> Edit
                                                 </a>
+                                                <a href="{{route('cetak_job_order.print',[$item->id])}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
+                                                    <span class="fas fa-print mr-3"></span> Cetak JO
+                                                </a>
                                                 @php
                                                     $kondisi = $item->Jumlah_sblm_dooring==0&&$item->idJaminan==null
                                                 @endphp
