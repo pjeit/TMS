@@ -127,21 +127,9 @@
                                             data-live-search="true" data-show-subtext="true" data-placement="bottom"
                                             required>
                                             <option value="">── Pilih ──</option>
-                                            <option value="SURABAYA">SURABAYA</option>
-                                            <option value="MEDAN">MEDAN</option>
-                                            <option value="JAKARTA">JAKARTA</option>
-                                            <option value="AMBON">AMBON</option>
-                                            <option value="BALIKPAPAN">BALIKPAPAN</option>
-                                            <option value="BANJARMASIN">BANJARMASIN</option>
-                                            <option value="BITUNG">BITUNG</option>
-                                            <option value="JAYAPURA">JAYAPURA</option>
-                                            <option value="KUPANG">KUPANG</option>
-                                            <option value="MAKASSAR">MAKASSAR</option>
-                                            <option value="PADANG">PADANG</option>
-                                            <option value="PALEMBANG">PALEMBANG</option>
-                                            <option value="PARE-PARE">PARE-PARE</option>
-                                            <option value="SEMARANG">SEMARANG</option>
-                                            <option value="SORONG">SORONG</option>
+                                            @foreach ($kota as $city)
+                                            <option value="{{ $city->nama }}">{{ $city->nama }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -152,21 +140,9 @@
                                             id="pelabuhan_bongkar" data-live-search="true" data-show-subtext="true"
                                             data-placement="bottom" required>
                                             <option value="">── Pilih ──</option>
-                                            <option value="SURABAYA">SURABAYA</option>
-                                            <option value="MEDAN">MEDAN</option>
-                                            <option value="JAKARTA">JAKARTA</option>
-                                            <option value="AMBON">AMBON</option>
-                                            <option value="BALIKPAPAN">BALIKPAPAN</option>
-                                            <option value="BANJARMASIN">BANJARMASIN</option>
-                                            <option value="BITUNG">BITUNG</option>
-                                            <option value="JAYAPURA">JAYAPURA</option>
-                                            <option value="KUPANG">KUPANG</option>
-                                            <option value="MAKASSAR">MAKASSAR</option>
-                                            <option value="PADANG">PADANG</option>
-                                            <option value="PALEMBANG">PALEMBANG</option>
-                                            <option value="PARE-PARE">PARE-PARE</option>
-                                            <option value="SEMARANG">SEMARANG</option>
-                                            <option value="SORONG">SORONG</option>
+                                            @foreach ($kota as $city)
+                                            <option value="{{ $city->nama }}">{{ $city->nama }}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>

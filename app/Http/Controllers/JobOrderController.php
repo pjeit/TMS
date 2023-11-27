@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\HtmlString;
 use App\Helper\UserHelper;
+use App\Models\M_Kota;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 // use Barryvdh\DomPDF\PDF;
@@ -34,10 +35,6 @@ class JobOrderController extends Controller
 
     public function index()
     {
-        // $this->authorize('read JO');
-        // if(!Gate::allows('read JO')){
-        //     abort(403, 'Anda tidak memiliki akses ke halaman ini');
-        // }
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
@@ -46,8 +43,6 @@ class JobOrderController extends Controller
         
         $id_role = Auth::user()->role_id; 
         $cabang = UserHelper::getCabang();
-
-        // dd(User::find(1)->HasRole('Super User'));
 
         $dataJO = DB::table('job_order as jo')
             ->leftJoin('user as u', 'u.id', '=', 'jo.created_by')
@@ -69,12 +64,11 @@ class JobOrderController extends Controller
             ->OrderBy('jo.status', 'ASC')
             ->OrderBy('jo.created_at', 'ASC')
             ->get();
-            // dd($dataJO);
         
-            return view('pages.order.job_order.index',[
-                'judul'=>"Job Order",
-                'dataJO' => $dataJO,
-            ]);
+        return view('pages.order.job_order.index',[
+            'judul'=>"Job Order",
+            'dataJO' => $dataJO,
+        ]);
     }
 
     /**
@@ -101,14 +95,15 @@ class JobOrderController extends Controller
             ->select('*')
             ->where('pengaturan_keuangan.is_aktif', '=', "Y")
             ->get();
-        // dd($dataPengaturanKeuangan[0]);
+
+        $kota = M_Kota::get();
 
         return view('pages.order.job_order.create',[
             'judul'=>"Job Order",
             'dataSupplier' => $dataSupplier,
             'dataCustomer' =>$dataCustomer,
             'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
-
+            'kota' => $kota,
         ]);
     }
 
