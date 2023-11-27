@@ -191,10 +191,16 @@ class TransaksiLainController extends Controller
     {
         //
         $dataKasLain= DB::table('kas_bank_lain as ksl')
-            ->select('ksl.*')
+            ->select('ksl.*','ksl.id as id_kas_lain','c.tipe as tipe_coa')
+            ->leftjoin('coa as c', function($join) {
+                $join->on('ksl.coa_id', '=', 'c.id')
+                    ->where('c.is_kas_bank_lain', '=', "Y")
+                    ->where('c.is_aktif', '=', "Y");
+                })
             ->where('ksl.is_aktif', '=', "Y")
             ->where('ksl.id', '=', $transaksi_lain->id)
             ->first();
+        
         $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
@@ -204,7 +210,7 @@ class TransaksiLainController extends Controller
             // ->paginate(10);
             ->select('coa.*')
             ->where('coa.is_aktif', '=', "Y")
-            ->where('c.is_kas_bank_lain', '=', "Y")
+            ->where('coa.is_kas_bank_lain', '=', "Y")
 
             // ->paginate(10);
             ->get();

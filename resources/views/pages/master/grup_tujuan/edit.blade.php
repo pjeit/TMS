@@ -17,6 +17,9 @@
     .card-header:first-child{
         border-radius:inherit;
     }
+    /* #modal_detail.modal-lg .modal-dialog {
+  width: 1516px !important;
+} */
 </style>
 <div class="container-fluid">
   
@@ -144,8 +147,8 @@
         
     </form>
     
-    <div class="modal fade" id="modal_detail" tabindex='-1' style="width: 100%;">
-        <div class="modal-dialog modal-lg" style="width: 100%;">
+    <div class="modal fade" id="modal_detail" tabindex='-1' >
+        <div class="modal-dialog modal-lg" style="min-width:70%;">
         <div class="modal-content">
             <div class="modal-header">
             <h5 class="modal-title">Detail</h5>

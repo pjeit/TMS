@@ -113,6 +113,7 @@ Route::middleware(['auth'])->group(function () {
         
        
         // ===================================INBOUND ORDER=========================================================
+        Route::get('/job_order/cetak_jo/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'cetak_job_order'])->name('cetak_job_order.print');
         Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO'])->name('job_order.print');
         Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');
         Route::post('job_order/unloading_plan/data', 'App\Http\Controllers\JobOrderController@unloading_data')->name('job_order.unloading_data');
