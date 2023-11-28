@@ -205,7 +205,6 @@
                         var data = response.data;
 
                         if(item == 'KARANTINA'){
-                            $("th").remove();
                             $("thead tr").append(`  <th>Grup</th>
                                                     <th>Customer</th>
                                                     <th>No. BL</th>
@@ -216,7 +215,6 @@
                                                 `);
                             $("thead tr").append("<th class='text-center' style='width: 30px;'><input id='check_all' type='checkbox'></th>");
                             
-                            $("#hasil").empty();
                             if(data.length > 0){
                                 for (var i = 0; i <data.length; i++) {
                                     var row = $("<tr></tr>");
@@ -254,35 +252,14 @@
                                     $("#hasil").append(row);
                                 }
                             }
-                            new DataTable('#rowGroup', {
-                                    order: [
-                                        [0, 'asc'],
-                                        [1, 'asc']
-                                    ],
-                                    rowGroup: {
-                                        dataSrc: [0,1]
-                                    },
-                                    columnDefs: [
-                                        {
-                                            targets: [0,1],
-                                            visible: false
-                                        },
-                                        { orderable: false, targets: -1 }
-
-                                    ]
-                                });
                         }else{
-                            $("th").remove();
                             $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
                             if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
                                 $("thead tr").append("<th>Total</th>");
                             }
-                            $("thead tr").append("<th>Dicairkan</th>");
-                            $("thead tr").append("<th>Catatan</th>");
-                            $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
-                            $("#hasil").html("");
-                            var dataCustomer = null;
-                            console.log('data.length', data);
+                            $("thead tr").append(`<th>Dicairkan</th>
+                                                    <th>Catatan</th>
+                                                    <th class='text-center'><input id='check_all' type='checkbox'></th>`);
 
                             if(data.length > 0){
                                 for (var i = 0; i <data.length; i++) {
@@ -344,28 +321,28 @@
                                         $("#hasil").append(row);
                                     }
                                 }
-                                
-                                new DataTable('#rowGroup', {
-                                    order: [
-                                        [0, 'asc'], // 0 = grup
-                                        [1, 'asc'] // 1 = customer
-                                    ],
-                                    rowGroup: {
-                                        dataSrc: [0, 1] // di order grup dulu, baru customer
-                                    },
-                                    columnDefs: [
-                                        {
-                                            targets: [0, 1], 
-                                            visible: false
-                                        },
-                                        {
-                                            targets: [-1],
-                                            orderable: false, // matiin sortir kolom centang
-                                        },
-                                    ],
-                                });
                             }
                         }
+
+                        new DataTable('#rowGroup', {
+                            order: [
+                                [0, 'asc'], // 0 = grup
+                                [1, 'asc'] // 1 = customer
+                            ],
+                            rowGroup: {
+                                dataSrc: [0, 1] // di order grup dulu, baru customer
+                            },
+                            columnDefs: [
+                                {
+                                    targets: [0, 1], 
+                                    visible: false
+                                },
+                                {
+                                    targets: [-1],
+                                    orderable: false, // matiin sortir kolom centang
+                                },
+                            ],
+                        });
                         
                     },error: function (xhr, status, error) {
                         $("#loading-spinner").hide();

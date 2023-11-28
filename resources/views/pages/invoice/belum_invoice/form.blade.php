@@ -26,7 +26,7 @@
             <div class="card radiusSendiri">
                 <div class="card-header ">
                     <a href="{{ route('belum_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                     <button type="button" class="btn btn-success radiusSendiri" id="btnSimpan">
+                    <button type="button" class="btn btn-success radiusSendiri" id="btnSimpan">
                         <i class="fa fa-fw fa-save"></i> Simpan    
                     </button>
                 </div>
@@ -122,8 +122,8 @@
                                             <span class="input-group-text">Rp</span>
                                         </div>
                                         <input type="text" id="total_sisa" name="total_sisa" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                        <input type="hidden" id="total_pisah" name="total_pisah" class="form-control uang numajaMinDesimal" value="" placeholder="total_pisah" readonly>                         
                                     </div>
+                                    <input type="hidden" id="total_pisah" name="total_pisah" class="form-control uang numajaMinDesimal" value="" placeholder="total_pisah" readonly>                         
                                 </div>
                             </div>
                             
@@ -154,7 +154,7 @@
                                                 </div>
                                             </div>
                                         </li>
-                                      </ul>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -224,35 +224,23 @@
                                     $total_addcost_pisah = 0;
                                 @endphp
                                 @foreach ($item->sewaOperasional as $i => $oprs)
-                                    @if ($oprs->is_aktif == 'Y' && 
-                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N'||
-                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N')
+                                    @if ($oprs->is_aktif == 'Y' && $oprs->is_dipisahkan == 'N')
                                         <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
                                         @php
                                             $total_addcost += $oprs->total_operasional;
                                         @endphp
-                                    @elseif ($oprs->is_aktif == 'Y' && 
-                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y'||
-                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y')
+                                    @elseif ($oprs->is_aktif == 'Y' && $oprs->is_dipisahkan == 'Y')
                                         @php
                                             $total_addcost_pisah += $oprs->total_operasional;
                                         @endphp
                                     @endif
-                                     {{-- @if($oprs->is_aktif == 'Y' && 
-                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y'||
-                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y')
-                                        @php
-                                            $total_addcost_pisah += $oprs->total_operasional;
-                                        @endphp
-                                    @endif --}}
                                 @endforeach
                                 <span class="text_addcost_{{ $item->id_sewa }}">{{ number_format($total_addcost) }}</span>
                                 <input type="hidden" class="cek_detail_addcost" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_details]" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
                                 {{-- <input type="text" name="detail[{{ $item->id_sewa }}][addcost_details_pisah]" id="detail_addcost_pisah_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasionalPisah) }}" /> --}}
                                 <input type="hidden" class="cek_detail_addcost_baru" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_baru]" id="detail_addcost_baru_{{ $item->id_sewa }}" value="" />
-
                                 <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost]' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
-                                <input type="hidden" class="addcost_pisah addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">
+                                <input type="text" class="addcost_pisah addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">
 
                             </td>
                             <td style="text-align:right">
@@ -285,9 +273,6 @@
                                         <button type="button" class="dropdown-item deleteParent" value="{{ $item->id_sewa }}">
                                             <span class="fas fa-trash mr-3"></span> Delete
                                         </button>
-                                         {{-- <a href="{{route('dalam_perjalanan.edit',[$item->id_sewa])}}" class="dropdown-item" target=”_blank” >
-                                                <span class="fas fa-truck mr-3"></span> Edit Sewa
-                                            </a> --}}
                                     </div>
                                 </div>
                             </td>
@@ -325,7 +310,7 @@
                                             <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                             </div>
-                                            <input type="text" autocomplete="off" class="form-control" id="tanggal_berangkat" placeholder="" readonly value="">
+                                            <input type="text" autocomplete="off" class="form-control" id="tanggal_berangkat" readonly value="">
                                         </div>
                                     </div>
 
@@ -345,7 +330,7 @@
                                         <input type="text" class="form-control" maxlength="25" id="no_kontainer"> 
                                     </div>
                                     @if ($checkLTL)
-                                       <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                             <label for="">Surat Jalan</label>
                                             <input  type="text" class="form-control" maxlength="25" id="no_sj"> 
                                         </div>
@@ -354,9 +339,7 @@
                                             <label for="">Seal Pelayaran</label>
                                             <input  type="text" class="form-control" maxlength="25" id="no_seal"> 
                                         </div>
-                                        
                                     @endif
-                                    
                                 </div>
                             </div>
 
@@ -368,7 +351,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" class="form-control numaja uang" id="tarif" placeholder="" readonly>
+                                            <input type="text" class="form-control numaja uang" id="tarif" readonly>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -377,8 +360,9 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" class="form-control numaja uang" id="addcost" placeholder="" readonly>
+                                            <input type="text" class="form-control numaja uang" id="addcost" readonly>
                                         </div>
+                                        <input type="hidden" class="form-control numaja uang" id="addcost_pisah" readonly>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -388,7 +372,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" class="form-control numaja uang" id="diskon" placeholder="" >
+                                            <input type="text" class="form-control numaja uang" id="diskon" >
                                         </div>
                                     </div>
 
@@ -398,7 +382,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" class="form-control numaja uang" id="subtotal" placeholder="" readonly>
+                                            <input type="text" class="form-control numaja uang" id="subtotal" readonly>
                                         </div>
                                     </div>
                                     
@@ -436,7 +420,6 @@
                                 </form>
                             </div>
                         </div>
-
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -547,9 +530,8 @@
         //     scrollX: true 
         // }); 
 
-        // set value default tgl invoice
         var today = new Date();
-         $('#tanggal_invoice').datepicker({
+        $('#tanggal_invoice').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
@@ -578,7 +560,6 @@
         $(document).on('change', '#diskon', function(){ // kalau diskon berubah, hitung total 
             var id_sewa = $('#key').val();
             hitung(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
-            console.log('first');
         });
 
         $('body').on('change','#billingTo',function()
@@ -613,7 +594,6 @@
                 startDate: today,
             }).datepicker("setDate", set_hari);
 
-           
         }
 
         function addCostPisah(set_hari_jatuh_tempo){
@@ -625,7 +605,7 @@
             $("#total_pisah").val(total);
 
             var today = new Date();
-             var set_hari = new Date(today);
+            var set_hari = new Date(today);
             set_hari.setDate(today.getDate() + set_hari_jatuh_tempo);
 
             $('#jatuh_tempo_pisah').datepicker({
@@ -635,7 +615,6 @@
                 language: 'en',
                 startDate: today,
             }).datepicker("setDate", set_hari);
-       
             if($("#total_pisah").val()==0)
             {
                 $('#jatuh_tempo_pisah_kontainer').hide();
@@ -692,6 +671,7 @@
             $('#catatan').val( $('#catatan_hidden_'+key).val() ); 
             $('#tarif').val( moneyMask($('#tarif_hidden_'+key).val()) ); 
             $('#addcost').val( moneyMask($('#addcost_hidden_'+key).val()) ); 
+            $('#addcost_pisah').val( moneyMask($('#addcost_pisah_hidden_'+key).val()) ); 
             $('#diskon').val( moneyMask($('#diskon_hidden_'+key).val()) ); 
 
             var dataSewa = <?php echo $dataSewa; ?>;
@@ -705,7 +685,7 @@
                 }
                 $('#addcost_sewa').append(option);
             });
-            $("#addcost_sewa").prop("disabled", true); // instead of $("select").enable(false);
+            $("#addcost_sewa").prop("disabled", true); 
 
             showAddcostDetails(key);
             showAddcostDetailsBaru(key);
@@ -717,7 +697,7 @@
             var key = $('#key').val(); 
 
             $('#addcost_hidden_'+key).val( normalize($('#addcost').val()) );
-
+            $('#addcost_pisah_hidden_'+key).val( normalize($('#addcost_pisah').val()) );
             document.querySelector(".text_addcost_"+key).textContent = moneyMask( $('#addcost').val() );
 
             $('#no_kontainer_hidden_'+key).val( $('#no_kontainer').val() );
@@ -727,10 +707,8 @@
             $('#diskon_hidden_'+key).val( $('#diskon').val() );
             $('#subtotal_hidden_'+key).val( escapeComma($('#subtotal').val()) );
 
-            // Set text content using JavaScript
             var elementIds = ["no_kontainer", "no_seal", "no_sj","catatan", "diskon", "subtotal"];
             elementIds.forEach(function (id) {
-                // console.log(id, $('#' + id).val());
                 if($('#' + id).val() !== undefined){
                     document.getElementById(id + '_text_' + key).textContent = $('#' + id).val();
                 }
@@ -777,7 +755,7 @@
                                     "is_ditagihkan":${JSON.stringify( tagih )},
                                     "is_dipisahkan":${JSON.stringify( pisah )},
                                     "catatan":${JSON.stringify( $('#addcost_catatan_'+id).val() )}
-                                  }`; 
+                                }`; 
 
                         if(is_new == true){
                             var obj=JSON.parse(myjson);
@@ -960,9 +938,9 @@
 
         function hitung(){ // hitung tarif + addcost - diskon 
             var id_sewa = $('#key').val();
-            var tarif = parseFloat($('#tarif').val().replace(/,/g, ''));
-            var addcost = parseFloat($('#addcost').val().replace(/,/g, ''));
-            var diskon = $('#diskon').val() == null || $('#diskon').val() == 0? 0:parseFloat($('#diskon').val().replace(/,/g, ''));
+            var tarif = normalize($('#tarif').val());
+            var addcost = normalize($('#addcost').val());
+            var diskon = $('#diskon').val() == null || $('#diskon').val() == 0? 0:normalize($('#diskon').val());
 
             if (diskon > (tarif + addcost) ){
                 diskon = (tarif + addcost);
@@ -977,6 +955,7 @@
         function hitungAddCost(){
             let addCost = document.querySelectorAll('.hitungAddCost');
             let total_add_cost = 0;
+            let total_add_cost_pisah = 0;
 
             addCost.forEach(function(add_cost) {
                 var id = add_cost.getAttribute('id_add_cost');
@@ -985,10 +964,13 @@
                 var add_cost = $('#addcost_total_operasional_' + id).val();
                 if(di_tagih.checked == true && di_pisah.checked == false){
                     total_add_cost += normalize(add_cost);
+                }else if(di_tagih.checked == true && di_pisah.checked == true){
+                    total_add_cost_pisah += normalize(add_cost);
                 }
             });
             let tarif = normalize($('#tarif').val());
             $('#addcost').val(moneyMask(total_add_cost));
+            $('#addcost_pisah').val(moneyMask(total_add_cost_pisah));
             $('#subtotal').val( moneyMask(tarif+total_add_cost) );
         }
 
@@ -1011,6 +993,7 @@
         cekPisahInvoice();
         function cekPisahInvoice(){ //pisah_invoice
             $('#is_pisah_invoice').val('FALSE');
+            let total_pisah = 0;
 
             let add_costs = document.querySelectorAll('.cek_detail_addcost');
             add_costs.forEach(function(add_cost, index){
@@ -1020,10 +1003,11 @@
                     parsed.forEach((element, index)  => {
                         if(element.is_ditagihkan == 'Y' && element.is_dipisahkan == 'Y'){
                             $('#is_pisah_invoice').val('TRUE');
-                            console.log('first', data.length);
+                            total_pisah += element.total_operasional;
                         }
                     });
                 }
+                $('#total_pisah').val(total_pisah);
             })
             
             let add_costs_baru = document.querySelectorAll('.cek_detail_addcost_baru');

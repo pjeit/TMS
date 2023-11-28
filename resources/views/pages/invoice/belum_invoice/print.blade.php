@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style type="text/css">
-  
         :root {
             margin: 55px;
             padding: 2px;
@@ -17,13 +16,12 @@
         table {
             width: 100%;
         }
-        	
+        
         .border-table{
              /* Optional: Set table width */    
             border: 1px solid #000000; /* Border around the table */
             border-collapse: collapse;
         }
-
         .bg-gray{
             background-color: rgb(225, 225, 225);
         }
@@ -52,24 +50,8 @@
     </style>
 </head>
 <body>
-    
     <hr style=" border: 10px solid rgb(54, 78, 163);margin-top: -55px;">
     @if ($data)
-
-    
-        {{-- <img src="{{ asset('img/LOGO_PJE.jpg') }}" alt=""> --}}
-        {{-- <div class="kontener">
-            <img src="{{ public_path("img/LOGO_PJE_WARNA.jpg") }}"  width="300" height="300" style="margin-left: -50px;">
-            <h3>PRIMATRANS JAYA EXPRESS</h3>
-            <p>Jl. Ikan Mungsing VII No. 61, Surabaya</p>
-            <p>Telp: 0896-0301-1919</p> --}}
-            {{-- <div id="qrcode">
-                <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" >
-            </div> --}}
-
-            {{-- <h2 class="text" style="">INVOICE</h2> --}}
-            
-        {{-- </div> --}}
         <table  autosize='1' style="width:100%; " >
             <thead >
                 <tr>
@@ -94,7 +76,7 @@
                     <th style="width:5%;"></th>
                     <th style="width:5%;"></th>
                 </tr>
-                 <tr>
+                <tr>
                     <th colspan='4' style="text-align:left;"><img style="position: absolute;margin-top: -170px;margin-left: -70px;" src="{{ public_path("img/LOGO_PJE_DOANG1.png") }}"  width="500" height="500"></th>
                     <th colspan='11' style="text-align:left;">
                         <h2 >
@@ -102,12 +84,9 @@
                             <br>
                             <span style="font-size:30px; font-weight:normal; margin-top:-20px;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
                             <br>
-                            {{-- <span style="font-size:20px; font-weight:normal">Telp: 0896-0301-1919</span> --}}
-                            
                         </h2>
                     </th>
                     <td colspan='5' style="text-align:right;">
-                        {{-- <img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
                         @php
                             $cekTarif = false;
                             $cekMuatan = false;
@@ -138,10 +117,8 @@
                             <h1>INVOICE REIMBURSE</h1>
 
                         @endif
-                            
-                        {{-- <span style="color:#1f55a2">{{ $data['no_invoice'] }}</span> --}}
                     </td>
-    			</tr>
+                </tr>
             </thead>
         </table>
         <hr style=" border: 1px solid rgb(76, 76, 76);margin-top: 30px;">
@@ -186,17 +163,14 @@
                     <td style="border: 1px solid black; border-collapse: collapse;">TGL. BERANGKAT <br> TUJUAN</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">
                         @if ($cekTarif && $cekMuatan)
-                                NO. KOLI
+                            NO. KOLI
                             <br>NO. SURAT JALAN 
                         @else
-                          NO. CONTAINER
-                         <br>NO. SEGEL
+                            NO. CONTAINER
+                            <br>NO. SEGEL
                         @endif
-                        {{-- <br>NO. SURAT JALAN --}}
                     </td>
                     <td style="border: 1px solid black; border-collapse: collapse;">NOPOL</td>
-                    {{-- @foreach ($data->invoiceDetails as $i => $detail) --}}
-
                         @if ($cekTarif)
                             @if ($cekTarif && $cekMuatan)
                                 <td style="border: 1px solid black; border-collapse: collapse;">JUMLAH MUATAN</td>
@@ -210,7 +184,6 @@
                         @else 
                             <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
                         @endif
-                    {{-- @endforeach --}}
                     <td style="border: 1px solid black; border-collapse: collapse;">SUBTOTAL</td>
                 </tr>
             </thead>
@@ -228,9 +201,6 @@
                         {{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }}
                         <br>{{ $detail->sewa->nama_tujuan }}
                     </td>
-                   
-                    {{-- <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td> --}}
-                    {{-- ini cek harga kalau ftl terus ga dipisah --}}
                     @if ($detail->tarif>0)
                     {{-- ini cek harga kalau ltl, kalau ltl detect ada muatannya --}}
                         @if ($detail->tarif>0 && $detail->jumlah_muatan>0)
@@ -306,7 +276,6 @@
                             @endif
                         </td>
                     @endif
-
                     <td class="text-right" style="padding-right: 20px;">{{ number_format($detail->sub_total) }} <br> &nbsp;</td>
                 </tr>
                 @php
@@ -316,20 +285,11 @@
             </tbody>
             <tfoot>
                 <tr>
-                    {{-- @foreach ($data->invoiceDetails as $i => $detail) --}}
-
                         @if ($cekTarif)
-                           {{-- @if ($cekTarif && $cekMuatan)
-                                <td colspan="6" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
-                              
-                            @else --}}
-                                <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
-                            {{-- @endif --}}
+                            <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
                         @else
                             <td colspan="5" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
                         @endif
-                        
-                    {{-- @endforeach --}}
                     <td class="text-right"  style="padding-right: 20px; border-top: 1px solid black; border-collapse: collapse;""><strong>{{ number_format($total) }}</strong></td>
                 </tr>
             </tfoot>
@@ -345,7 +305,6 @@
             <br>BCA: <b><u>51308 14141</u></b> / Mandiri: <b><u>14000 41415 135</u></b>
             <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b></br>
             <!-- </br></br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > -->
-
             {{-- {{$qrcode}} --}}
             {{-- <img src="{{ public_path("img/") }}{{ $qrcode }}" alt="QR Code"> --}}
             {{-- <br><br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
@@ -368,7 +327,6 @@
                     <td width="800px;">&nbsp;</td>
                     {{-- <td class="text-right" >(..................................)</td> --}}
                     <td class="text-right" style="padding-right: 50px;">({{Auth::user()->username}})</td>
-
                 </tr>
             </tfoot>
         </table>
