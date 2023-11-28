@@ -299,8 +299,19 @@ class JobOrderController extends Controller
             ->leftJoin('booking as b', function($leftJoin){
                 $leftJoin->on('b.id_jo_detail', '=', "jod.id")->where('b.is_aktif',"Y");
             })
-            ->leftJoin('sewa as s', function($leftJoin){
-                $leftJoin->on('s.id_jo_detail', '=', "jod.id")->where('s.is_aktif',"Y");
+            // ->leftJoin('sewa as s', function($leftJoin){
+            //     $leftJoin->on('s.id_jo_detail', '=', "jod.id")->where('s.is_aktif',"Y");
+            // })
+            ->leftJoin('sewa AS s', function($join) {
+                $join->on('jod.id', '=', 's.id_jo_detail')
+                ->where('s.is_aktif', '=', 'Y')
+                //where ini buat ambil id sewa yang terakir, kan bisa aja sewanya cancel, trs input lagi
+                ->where('s.id_sewa', '=', function ($query) {
+                $query->select(DB::raw('MAX(id_sewa)'))
+                        ->from('sewa as s')
+                        ->where('s.is_aktif', '=', 'Y')
+                        ->whereColumn('s.id_jo_detail', 'jod.id');
+                });
             })
             ->where('jod.id_jo', $jobOrder->id)
             ->where('jod.is_aktif', "Y")
@@ -570,7 +581,54 @@ class JobOrderController extends Controller
             ->where('jaminan.is_aktif', '=', "Y")
             ->where('jaminan.id_job_order', '=', $JobOrder->id)
             ->first();
-        
+         $data_kontainer = DB::table('job_order_detail as jod')
+            ->select('jod.no_kontainer',
+            'jod.seal',
+            'gt.nama_tujuan',
+            DB::raw('MAX(s.no_polisi) as no_polisi'),
+            DB::raw('MAX(s.tanggal_berangkat) as tanggal_berangkat'),
+            DB::raw('SUM(jodb.storage) as storage'),
+            DB::raw('SUM(jodb.demurage) as demurage'),
+            DB::raw('SUM(jodb.detention) as detention'),
+            DB::raw('SUM(jodb.repair) as repair'),
+            DB::raw('SUM(jodb.washing) as washing'),
+            )
+            //join grup tujuan buat ngambil nama tujuan
+            ->leftJoin('grup_tujuan AS gt', function($join) {
+                $join->on('jod.id_grup_tujuan', '=', 'gt.id')->where('gt.is_aktif', '=', 'Y');
+            })
+            //join sewa buat ngambil nopol sama tgl berangkat
+            ->leftJoin('sewa AS s', function($join) {
+                $join->on('jod.id', '=', 's.id_jo_detail')
+                ->where('s.is_aktif', '=', 'Y')
+                //where ini buat ambil id sewa yang terakir, kan bisa aja sewanya cancel, trs input lagi
+                ->where('s.id_sewa', '=', function ($query) {
+                $query->select(DB::raw('MAX(id_sewa)'))
+                        ->from('sewa as s')
+                        ->where('s.is_aktif', '=', 'Y')
+                        ->whereColumn('s.id_jo_detail', 'jod.id');
+                });
+            })
+            ->leftJoin('job_order_detail_biaya AS jodb', function($join) {
+                $join->on('jod.id', '=', 'jodb.id_jo_detail')
+                ->where('jodb.status_bayar', 'SELESAI PEMBAYARAN')
+                ->where('jodb.is_aktif', '=', 'Y');
+            })
+            ->where('jod.is_aktif', '=', "Y")
+            ->where('jod.id_jo', '=', $JobOrder->id)
+            ->groupBy('jod.no_kontainer', 
+            'jod.seal', 
+            'gt.nama_tujuan', 
+            's.no_polisi', 
+            's.tanggal_berangkat',
+            // 'jodb.storage',
+            // 'jodb.demurage',
+            // 'jodb.detention',
+            // 'jodb.repair',
+            // 'jodb.washing',
+            )
+            ->get();
+        // dd($data_kontainer);
         $TotalBiayaRev = $JobOrder->thc+$JobOrder->lolo+$JobOrder->apbs+$JobOrder->cleaning+$JobOrder->doc_fee;
 
         // dd($dataJoDetail);   
@@ -580,7 +638,8 @@ class JobOrderController extends Controller
             'dataSupplier'=>$dataSupplier,
             'dataCustomer'=>$dataCustomer,
             'dataJaminan'=>$dataJaminan,
-            'TotalBiayaRev'=>$TotalBiayaRev
+            'TotalBiayaRev'=>$TotalBiayaRev,
+            'data_kontainer'=>$data_kontainer
         ]); 
         // dd($JobOrder);
         // $pdf->setPaper('A5', 'landscape');
@@ -589,7 +648,7 @@ class JobOrderController extends Controller
             'isHtml5ParserEnabled' => true, // Enable HTML5 parser
             'isPhpEnabled' => true, // Enable inline PHP execution
             'defaultFont' => 'sans-serif',
-             'dpi' => 180, // Set a high DPI for better resolution
+             'dpi' => 200, // Set a high DPI for better resolution
             //  'isRemoteEnabled', true
              'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
         ]);

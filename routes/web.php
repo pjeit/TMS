@@ -257,6 +257,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/revisi_tl/getData/{status}', [App\Http\Controllers\RevisiTLController::class, 'getData'])->name('revisi_tl.getData');
         Route::resource('revisi_tl', 'App\Http\Controllers\RevisiTLController');
 
+        Route::get('revisi_klaim_supir/load_data_server', [App\Http\Controllers\KlaimSupirController::class, 'load_data_revisi_server'])->name('klaim_supir_revisi.load_data_revisi_server');
         Route::get('/revisi_klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan'])->name('pencairan_klaim_supir_revisi.edit');
         Route::post('/revisi_klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan_save'])->name('pencairan_klaim_supir_revisi.save');
         Route::get('/revisi_klaim_supir/revisi', [App\Http\Controllers\KlaimSupirController::class, 'revisi'])->name('klaim_supir_revisi.index');

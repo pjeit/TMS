@@ -17,8 +17,8 @@
         }
         .border-table{
             width: 100%; /* Optional: Set table width */    
-            /*border: 1px solid  #ccc;*/ /*Border around the table*/
-             /* background-color: #ccc; */
+       
+             border-spacing: 0;
         }
         thead {
             margin-bottom: 200px; 
@@ -26,42 +26,64 @@
         .text{
             text-transform: uppercase;
             font-family: Arial, sans-serif;
-            font-size: 20px;
+            font-size: 25px;
         }
         .text-kecil{
             font-family: Arial, sans-serif;
-            font-size: 20px;
+            font-size: 25px;
         }
         .p-50{
             padding-left: 50px;
         }
         .td-atas{
-            text-transform: uppercase;
+            /* text-transform: uppercase; */
             font-family: Arial, sans-serif;
-            font-size: 20px;
+            font-size: 25px;
             
         }
        tr,td{
-            border: 1px solid  #ccc; /* Border around the table */
+            border: 1px solid  #ccc; 
             
+       }
+        .custom-table tr,
+        .custom-table td {
+            border: none;
+        }
+        .custom-border{
+            border: 1px solid  #ccc; 
+        }
+       .p-10{
+             padding: 10px;
+       }
+       .bold{
+        font-weight: 300;
+       }
+       .align-uang{
+        text-align: left;
+       }
+       .garis-bawah{
+        text-decoration: underline;
        }
        .th-kontainer{
             border: 1px solid  #ccc; /* Border around the table */
              padding: 30px;
-
        }
        .tabel-kontainer{
              padding: 30px;
             text-align: center;
-            font-size: 20px;
+            font-size: 25px;
        }
        .border-table-kontainer{
             width: 100%; /* Optional: Set table width */    
         }
-       .flex{
-            display: flex;
-            flex-direction: row;
+       .float-left{
+            float: left;
+            font-size: 25px;
+            width: 19%;
+            /* border-collapse: collapse; */    
+            border-spacing: 0;
        }
+       
        table {
             /* Optional: Add table-specific styles */
             /* border-collapse: collapse; */
@@ -95,12 +117,12 @@
                     <th style="width:5%;"class="borderDebug"></th>
                 </tr>
             <tr>
-                <th colspan='4' style="text-align:left;"><img style="position: absolute;margin-top:-20px;margin-left: -40px;" src="{{ public_path("img/LOGO_PJE_DOANG1.png") }}"   width="250" height="250"></th>
-                <th colspan='11' style="text-align:left;">
+                <th style="text-align:left;"><img style="position: absolute;margin-top:-50px;margin-left: -40px;" src="{{ public_path("img/LOGO_PJE_DOANG1.png") }}"   width="300" height="300"></th>
+                <th colspan='10' style="text-align:left;">
                     <h2>
-                        <span style="color:#1f55a2;font-size:15px; margin-top:53px;position: absolute;"> PRIMATRANS JAYA EXPRESS</span>
+                        <span style="color:#1f55a2;font-size:30px; margin-top:33px;position: absolute;"> PRIMATRANS JAYA EXPRESS</span>
                         <br>
-                        <span style="font-size:15px; font-weight:normal; margin-top:15px;position: absolute;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
+                        <span style="font-size:30px; font-weight:normal; margin-top:15px;position: absolute;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
                         <br>
                     </h2>
                 </th>
@@ -119,31 +141,31 @@
             </tr> --}}
         </thead>
         <tbody  class="td-atas"> 
-            <tr>
+            <tr >
                 {{-- customer --}}
-                <td >Pengirim</td> 
-                <td >
+                <td class="p-10 bold">Pengirim</td> 
+                <td class="p-10 garis-bawah">
                     @if($JobOrder->id_customer == $dataCustomer->id)
                         {{$dataCustomer->nama}}
                     @endif
                 </td>
-                <td >Pelabuhan Muat</td>
-                <td>{{$JobOrder->pelabuhan_muat}}</td>
-                <td >No. BL</td>
-                <td>{{$JobOrder->no_bl}}</td>
+                <td class="p-10 bold">Pelabuhan Muat</td>
+                <td class="p-10 garis-bawah">{{$JobOrder->pelabuhan_muat}}</td>
+                <td class="p-10 bold">No. BL</td>
+                <td class="p-10 garis-bawah">{{$JobOrder->no_bl}}</td>
             </tr>
             <tr>
                 {{-- supplier --}}
-                <td >Pelayaran</td>
-                <td>
+                <td class="p-10 bold">Pelayaran</td>
+                <td class="p-10 garis-bawah">
                     @if($JobOrder->id_supplier == $dataSupplier->id)
                         {{$dataSupplier->nama}}
                     @endif
                 </td>
-                <td >Pelabuhan Bongkar</td>
-                <td>{{$JobOrder->pelabuhan_bongkar}}</td>
-                <td >Tanggal Sandar</td>
-                <td>{{\Carbon\Carbon::parse($JobOrder->tgl_sandar)->format('d-M-Y')}}</td>
+                <td class="p-10 bold">Pelabuhan Bongkar</td>
+                <td class="p-10 garis-bawah">{{$JobOrder->pelabuhan_bongkar}}</td>
+                <td class="p-10 bold">Tanggal Sandar</td>
+                <td class="p-10 garis-bawah">{{\Carbon\Carbon::parse($JobOrder->tgl_sandar)->format('d-M-Y')}}</td>
             </tr>
         </tbody>
         <tfoot>
@@ -167,164 +189,212 @@
             </tr>
         </thead>
         <tbody > 
-            <tr class="tabel-kontainer">
-                <td>No. Kontainer</td> 
-                <td>Seal</td> 
-                <td>Tujuan</td> 
-                <td>Nopol / Driver</td> 
-                <td>Tgl Dooring</td> 
-                <td>Storage</td> 
-                <td>Demurage</td> 
-                <td>Detention</td> 
-                <td>Repair</td> 
-                <td>Washing</td> 
-            </tr>
+            @php
+                $total_storage = 0;
+                $total_demurage = 0;
+                $total_detention = 0;
+                $total_repair = 0;
+                $total_washing = 0;
+
+            @endphp
+            @foreach ( $data_kontainer as $kont)
+                <tr class="tabel-kontainer">
+                    <td class="p-10">{{$kont->no_kontainer}}</td> 
+                    <td class="p-10">{{$kont->seal}}</td> 
+                    <td class="p-10">{{$kont->nama_tujuan}}</td> 
+                    <td class="p-10">{{$kont->no_polisi}}</td> 
+                    <td class="p-10">{{\Carbon\Carbon::parse($kont->tanggal_berangkat)->format('d-M-Y')}}</td> 
+                    <td class="p-10 align-uang">Rp. {{number_format( $kont->storage)}}</td> 
+                    <td class="p-10 align-uang">Rp. {{number_format( $kont->demurage)}}</td> 
+                    <td class="p-10 align-uang">Rp. {{number_format( $kont->detention)}}</td> 
+                    <td class="p-10 align-uang">Rp. {{number_format( $kont->repair)}}</td> 
+                    <td class="p-10 align-uang">Rp. {{number_format( $kont->washing)}}</td> 
+                </tr>
+                @php
+                $total_storage += $kont->storage;
+                $total_demurage += $kont->demurage;
+                $total_detention += $kont->detention;
+                $total_repair += $kont->repair;
+                $total_washing +=  $kont->washing;
+                @endphp
+            @endforeach
+             
         </tbody>
         <tfoot>
         </tfoot>
     </table>
 
-    <div class="flex">
-
-        <table  >
+        <table class="float-left" style="margin-top: 40px;border:1px solid#ccc;">
             <thead>
                 <tr>
                     <th colspan="2">Biaya Sebelum Dooring</th>
                 </tr>
             </thead>
             <tbody > 
-                @if ($JobOrder->thc)
-                    
                 <tr>
-                    <td>THC</td>
-                    <td>: Rp. {{number_format($JobOrder->thc,2) }}</td>
-    
+                    <td class="p-10 bold">THC</td>
+                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->thc,2) }}</td>
                 </tr>
-                @endif
-                    @if ($JobOrder->lolo)
-                    
-                    <tr>
-                        <td>LOLO</td>
-                        <td>: Rp. {{number_format($JobOrder->lolo,2)}}</td>
-    
-                    </tr>
-                @endif
-                    @if ($JobOrder->apbs)
-                    
-                    <tr>
-                        <td>APBS</td>
-                        <td>: Rp. {{number_format($JobOrder->apbs,2)}}</td>
-    
-                    </tr>
-                @endif
-                    @if ($JobOrder->cleaning)
-                    
-                    <tr>
-                        <td>CLEANING</td>
-                        <td>: Rp. {{number_format($JobOrder->cleaning,2)}}</td>
-    
-                    </tr>
-                @endif
-                    @if ($JobOrder->doc_fee)
-                    
-                    <tr>
-                        <td>DOC FEE</td>
-                        <td>: Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
-    
-                    </tr>
-                @endif
                 <tr>
-                    <td>SUB TOTAL</td>
-                    <td>: Rp. {{number_format($TotalBiayaRev,2)}}</td>
-    
+                    <td class="p-10 bold">LOLO</td>
+                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->lolo,2)}}</td>
+                </tr>
+                <tr>
+                    <td class="p-10 bold">APBS</td>
+                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->apbs,2)}}</td>
+                </tr>
+                <tr>
+                    <td class="p-10 bold">Cleaning</td>
+                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->cleaning,2)}}</td>
+
+                </tr>
+                <tr>
+                    <td class="p-10 bold">Docfee</td>
+                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
+
+                </tr>
+                <tr>
+                    <td class="p-10 bold">Subtotal</td>
+                    <td class="p-10 align-uang">Rp. {{number_format($TotalBiayaRev,2)}}</td>
                 </tr>
             </tbody>
             <tfoot>
             </tfoot>
         </table>
     
-        <table  >
+        <table class="float-left" style="margin-left: 30px;margin-top: 40px;border:1px solid#ccc;">
             <thead>
                 <tr>
                     <th colspan="2">Biaya Saat Dooring</th>
                 </tr>
             </thead>
             <tbody > 
-                @if ($JobOrder->thc)
-                    
                 <tr>
-                    <td>STORAGE</td>
-                    <td>: Rp. {{number_format($JobOrder->thc,2) }}</td>
-    
+                    <td class="p-10">Storage</td>
+                    <td class="p-10 align-uang"> Rp. {{number_format($total_storage,2) }}</td>
                 </tr>
-                @endif
-                @if ($JobOrder->lolo)
-                    <tr>
-                        <td>DEMURAGE</td>
-                        <td>: Rp. {{number_format($JobOrder->lolo,2)}}</td>
-                    </tr>
-                @endif
-                @if ($JobOrder->apbs)
-                    <tr>
-                        <td>DETENTION</td>
-                        <td>: Rp. {{number_format($JobOrder->apbs,2)}}</td>
-                    </tr>
-                @endif
-                @if ($JobOrder->cleaning)
-                    <tr>
-                        <td>REPAIR</td>
-                        <td>: Rp. {{number_format($JobOrder->cleaning,2)}}</td>
-                    </tr>
-                @endif
-                @if ($JobOrder->doc_fee)
-                    <tr>
-                        <td>WASHING</td>
-                        <td>: Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
-                    </tr>
-                @endif
                 <tr>
-                    <td>SUB TOTAL</td>
-                    <td>: Rp. {{number_format($TotalBiayaRev,2)}}</td>
+                    <td class="p-10">Demurage</td>
+                    <td class="p-10 align-uang"> Rp. {{number_format($total_demurage,2)}}</td>
+                </tr>
+                <tr>
+                    <td class="p-10">Detention</td>
+                    <td class="p-10 align-uang"> Rp. {{number_format($total_detention,2)}}</td>
+                </tr>
+                <tr>
+                    <td class="p-10">Repair</td>
+                    <td class="p-10 align-uang"> Rp. {{number_format($total_repair,2)}}</td>
+                </tr>
+                <tr>
+                    <td class="p-10">Washing</td>
+                    <td class="p-10 align-uang"> Rp. {{number_format($total_washing,2)}}</td>
+                </tr>
+                <tr>
+                    <td class="p-10">Subtotal</td>
+                    <td class="p-10 align-uang"> Rp. {{number_format($total_storage+$total_demurage+$total_detention+$total_repair+$total_washing,2)}}</td>
                 </tr>
             </tbody>
             <tfoot>
             </tfoot>
         </table>
-          
         @if($dataJaminan)
-            <table  >
+            <table class="float-left" style="margin-left: 30px;border:1px solid#ccc;margin-top: 40px;">
                     <thead>
-                        {{-- <tr>
-                            <th colspan="2">Biaya Sebelum Dooring</th>
-                        </tr> --}}
+                        <tr>
+                            <th colspan="2">Jaminan</th>
+                        </tr>
                     </thead>
                     <tbody > 
                         @if($JobOrder->id == $dataJaminan->id_job_order)
                             <tr>
-                                @php $total = $dataJaminan->nominal+$TotalBiayaRev @endphp
-    
-                                <td width='40%'>Biaya Jaminan</td>
-                                <td>: Rp. {{number_format($dataJaminan->nominal,2) }}</td>
-            
+                                <td width='40%' class="p-10">Tanggal Bayar Jaminan</td>
+                                <td class="p-10"> {{\Carbon\Carbon::parse($dataJaminan->tgl_bayar)->format('d-M-Y')}}</td>
                             </tr>
                             <tr>
-                                <td>Tanggal Jaminan</td>
-                                <td>: {{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
+                                <td width='40%' class="p-10">Total Jaminan</td>
+                                <td class="p-10 align-uang"> Rp. {{number_format($dataJaminan->nominal,2) }}</td>
                             </tr>
-                            @endif
-                        {{-- <tr>
-                            <td><span style="opacity: 0%">SUB TOTAL</span></td>
-                            <td><span style="opacity: 0%">: Rp. {{number_format($TotalBiayaRev,2)}}</span></td>
-                        </tr> --}}
+                            <tr>
+                                <td width='40%' class="p-10">Potongan Jaminan</td>
+                                <td class="p-10 align-uang">
+                                    @if ($dataJaminan->potongan_jaminan)
+                                        Rp.{{ number_format($dataJaminan->potongan_jaminan, 2) }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width='40%' class="p-10">Nominal Jaminan Kembali</td>
+                                <td class="p-10 align-uang">
+                                    @if ($dataJaminan->nominal_kembali)
+                                        Rp.{{ number_format($dataJaminan->nominal_kembali, 2) }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                            </tr><tr>
+                                <td width='40%' class="p-10">Tgl Jaminan Kembali</td>
+                                <td class="p-10">{{$dataJaminan->tgl_kembali?\Carbon\Carbon::parse($dataJaminan->tgl_kembali)->format('d-M-Y'):'-'}}</td>
+                            </tr>
+                        @endif
                     </tbody>
                     <tfoot>
                     </tfoot>
             </table>
         @endif
-
-    </div>
-     
-        
+        <table class="float-left custom-border" style="margin-left: 20px;margin-top: 40px;">
+            <thead>
+            </thead>
+            <tbody > 
+                <tr class="custom-table">
+                    <td colspan="2"  class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2"  class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2"  class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2"  class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2"  class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2" style="text-align: center;" class="custom-table">ADMIN</td>
+                </tr>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
+        <table class="float-left custom-border" style="margin-left: 30px;margin-top: 40px;">
+            <thead>
+            </thead>
+            <tbody style=""> 
+                <tr class="custom-table">
+                    <td colspan="2" class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2" class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2" class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2" class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2" class="custom-table"><span style="opacity: 0%;">...</span></td>
+                </tr>
+                <tr class="custom-table">
+                    <td colspan="2" style="text-align: center;" class="custom-table">FINANCE</td>
+                </tr>
+            </tbody>
+            <tfoot>
+            </tfoot>
+        </table>
 <br/>
 
 </body>
