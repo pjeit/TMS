@@ -151,7 +151,7 @@
                         </ul>
 
                         <div class="tab-content">
-                            {{-- @if ($errors->any())
+                            @if ($errors->any())
                                 @foreach ($errors->all() as $error)
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                     {{ $error }}
@@ -161,7 +161,7 @@
                                 </div>
                                 @endforeach
 
-                            @endif --}}
+                            @endif
                             {{-- data --}}
 
                                 <div class="tab-pane fade show active" id="justify-data" role="tabpanel" aria-labelledby="justify-data-tab">
