@@ -11,6 +11,8 @@ use App\Models\KasBank;
 use App\Models\KasBankTransaction;
 use App\Models\Coa;
 use Exception;
+use Yajra\DataTables\Facades\DataTables;
+
 class TransaksiLainController extends Controller
 {
     public function __construct()
@@ -58,6 +60,73 @@ class TransaksiLainController extends Controller
             'dataKas' => $dataKas,
             'dataCOA' => $dataCOA,
         ]);
+    }
+     public function index_server(Request $request)
+    {
+        if ($request->ajax()) {
+            $dataKasLain= DB::table('kas_bank_lain as ksl')
+            ->select('ksl.*','c.nama_jenis')
+            ->leftJoin('coa as c', function($join) {
+                    $join->on('ksl.coa_id', '=', 'c.id')
+                    ->where('c.is_kas_bank_lain', '=', "Y")
+                    ->where('c.is_aktif', '=', "Y");
+                })
+            ->where('ksl.is_aktif', '=', "Y")
+            ->get();
+             $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            // ->paginate(10);
+            ->get();
+            return DataTables::of($dataKasLain)
+                ->addIndexColumn()
+                ->addColumn('tgl_transaksi', function($item){ // edit supplier
+                    // var_dump($item);
+                    return date("d-M-Y", strtotime($item->tanggal_klaim));
+                }) 
+                ->addColumn('jenis', function($item){ // edit supplier
+                    return $item->jenis_klaim;
+                })
+                ->addColumn('kas_bank', function($item){ // edit format uang
+                    return date("d-M-Y", strtotime($item->tanggal_klaim));
+                }) 
+                ->addColumn('total_nominal', function($item){ // edit format uang
+                    return number_format($item->total_klaim);
+                }) 
+                ->addColumn('catatan', function($item){ // edit format uang
+                    return number_format($item->total_pencairan);
+                }) 
+                ->addColumn('Keterangan', function($item){ // edit format uang
+                    return $item->keterangan_klaim;
+                }) 
+                ->addColumn('action', function($row){
+                    $actionBtn = '
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu" >
+                                        <a href="/revisi_klaim_supir/pencairan/'.$row->id.'" class="dropdown-item edit">
+                                            <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                                        </a>
+                                    </div>
+                                </div>';
+                                    // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+                                    // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action', 
+                'Supir', 
+                'Jenis_Klaim', 
+                'Tanggal_Klaim',
+                'Jumlah_Klaim',
+                'Jumlah_Dicairkan',
+                'Status_Klaim',
+                'Keterangan'
+                ]) // ini buat render raw html, kalo ga pake nanti jadi text biasa
+                
+                ->make(true);
+        }
     }
 
     /**

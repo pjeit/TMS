@@ -247,6 +247,43 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function () {
+    var table = $('#TabelKlaim').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('klaim_supir_revisi.load_data_revisi_server') }}",
+            columns: [
+                {data: 'Supir', name: 'Supir'},
+                {data: 'Jenis_Klaim', name: 'Jenis_Klaim'},
+                {data: 'Tanggal_Klaim', name: 'Tanggal_Klaim'},
+                {data: 'Jumlah_Klaim', name: 'Jumlah_Klaim'},
+                {data: 'Jumlah_Dicairkan', name: 'Jumlah_Dicairkan'},
+                {data: 'Status_Klaim', name: 'Status_Klaim'},
+                {data: 'Keterangan', name: 'Keterangan'},
+                {
+                    data: 'action', 
+                    name: 'action', 
+                    orderable: false, 
+                    searchable: false
+                },
+            ],
+            //  order: [
+            //         [0, 'asc'],
+            //     ],
+            // rowGroup: {
+            //     dataSrc: ['Supir']//grouping per supir pake nama datanya, kalo bukan serverside nembak index
+            // },
+            // columnDefs: [
+            //     {
+            //         targets: [0],
+            //         visible: false
+            //     },
+            //     {
+            //         "orderable": false,
+            //         "targets": [0,1,2,3,4,5,6,7]
+            //     }
+        
+            // ],
+        });
     $('#tanggal_transaksi').datepicker({
         autoclose: true,
         format: "dd-M-yyyy",
