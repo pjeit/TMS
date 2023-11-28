@@ -28,11 +28,13 @@ class PencairanUangJalanLTLController extends Controller
     {
         $data = Sewa::where('is_aktif', 'Y')
             ->where('jenis_tujuan', 'LTL')
-            ->whereNull('id_supplier')
+            ->where('status', 'PROSES DOORING')
+            ->orderBy('id_sewa', 'ASC')
             ->groupBy('no_polisi')
             ->get();
+
         $kas = KasBank::where('is_aktif', 'Y')->get();
-        // dd($data);
+
         return view('pages.finance.pencairan_uang_jalan_ltl.index',[
             'judul' => "Pencairan Uang  LTL",
             'data' => $data,
@@ -64,7 +66,7 @@ class PencairanUangJalanLTLController extends Controller
         $uj = floatval(str_replace(',', '', $data['uang_jalan']));
         $diterima = floatval(str_replace(',', '', $data['diterima']));
         DB::beginTransaction(); 
-        // dd($data);
+
         try {
             $sewa = Sewa::where('is_aktif', 'Y')->find($data['key']);
 
@@ -157,7 +159,7 @@ class PencairanUangJalanLTLController extends Controller
                             );
                         }
                         DB::commit();
-                }
+                    }
                 }
             }
 
@@ -218,15 +220,14 @@ class PencairanUangJalanLTLController extends Controller
                         ->with('getCustomer')
                         ->with('getKaryawan.getHutang')
                         ->where('no_polisi', $item)
-                        // ->where('status', 'PROSES DOORING')
-                        ->whereNull('id_supplier')
+                        ->where('status', 'PROSES DOORING')
+                        // ->whereNull('id_supplier')
+                        ->orderBy('id_sewa', 'ASC')
                         ->get();
-        // dd($data);
-        if($data[0]['total_uang_jalan'] != 0){
+        if($data[0]->total_uang_jalan != 0){
             return response()->json(["result" => "error", 'data' => null], 404);
         }else{
             return response()->json(["result" => "success", 'data' => $data], 200);
         }
-        
     }
 }
