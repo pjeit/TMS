@@ -49,7 +49,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="datatable" class="table table-bordered table-striped" width="100%">
+                    <table id="tabel_transaksi_lain" class="table table-bordered table-striped" width="100%">
                         <thead>
                             <tr>
                                 <th>Tgl. Transaksi</th>
@@ -61,7 +61,7 @@
                             </tr>
                           </thead>
                         <tbody>
-                            @if (isset($dataKasLain))
+                            {{-- @if (isset($dataKasLain))
                                 @foreach ($dataKasLain as $item)
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-Y')}} </td>
@@ -94,7 +94,7 @@
                                     </td>
                                 </tr>
                                 @endforeach
-                            @endif
+                            @endif --}}
                         </tbody>
                     </table>
                 </div>
@@ -247,18 +247,16 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function () {
-    var table = $('#TabelKlaim').DataTable({
+    var table = $('#tabel_transaksi_lain').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('klaim_supir_revisi.load_data_revisi_server') }}",
+            ajax: "{{ route('transaksi_lain.index_server') }}",
             columns: [
-                {data: 'Supir', name: 'Supir'},
-                {data: 'Jenis_Klaim', name: 'Jenis_Klaim'},
-                {data: 'Tanggal_Klaim', name: 'Tanggal_Klaim'},
-                {data: 'Jumlah_Klaim', name: 'Jumlah_Klaim'},
-                {data: 'Jumlah_Dicairkan', name: 'Jumlah_Dicairkan'},
-                {data: 'Status_Klaim', name: 'Status_Klaim'},
-                {data: 'Keterangan', name: 'Keterangan'},
+                {data: 'tgl_transaksi', name: 'tgl_transaksi'},
+                {data: 'jenis', name: 'jenis'},
+                {data: 'kas_bank', name: 'kas_bank'},
+                {data: 'total_nominal', name: 'total_nominal'},
+                {data: 'catatan', name: 'catatan'},
                 {
                     data: 'action', 
                     name: 'action', 

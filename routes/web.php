@@ -192,6 +192,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('cetak_uang_jalan', 'App\Http\Controllers\CetakUangJalanController');
 
+        Route::get('transaksi_lain/index_server', [App\Http\Controllers\TransaksiLainController::class, 'index_server'])->name('transaksi_lain.index_server');
         Route::resource('transaksi_lain', 'App\Http\Controllers\TransaksiLainController');
         Route::resource('transfer_dana', 'App\Http\Controllers\TransferDanaController');
 

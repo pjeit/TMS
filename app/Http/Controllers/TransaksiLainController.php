@@ -82,22 +82,26 @@ class TransaksiLainController extends Controller
                 ->addIndexColumn()
                 ->addColumn('tgl_transaksi', function($item){ // edit supplier
                     // var_dump($item);
-                    return date("d-M-Y", strtotime($item->tanggal_klaim));
+                    return date("d-M-Y", strtotime($item->tanggal));
                 }) 
                 ->addColumn('jenis', function($item){ // edit supplier
-                    return $item->jenis_klaim;
+                    return $item->nama_jenis;
                 })
-                ->addColumn('kas_bank', function($item){ // edit format uang
-                    return date("d-M-Y", strtotime($item->tanggal_klaim));
+                ->addColumn('kas_bank', function($item)use ($dataKas){ // edit format uang
+                    $kasBankName = '';
+                    foreach ($dataKas as $kas) {
+                        if ($kas->id == $item->kas_bank_id) {
+                            $kasBankName = $kas->nama;
+                            break; 
+                        }
+                    }
+                    return $kasBankName;
                 }) 
                 ->addColumn('total_nominal', function($item){ // edit format uang
-                    return number_format($item->total_klaim);
+                    return number_format($item->total);
                 }) 
                 ->addColumn('catatan', function($item){ // edit format uang
-                    return number_format($item->total_pencairan);
-                }) 
-                ->addColumn('Keterangan', function($item){ // edit format uang
-                    return $item->keterangan_klaim;
+                    return $item->catatan;
                 }) 
                 ->addColumn('action', function($row){
                     $actionBtn = '
@@ -106,8 +110,11 @@ class TransaksiLainController extends Controller
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <a href="/revisi_klaim_supir/pencairan/'.$row->id.'" class="dropdown-item edit">
+                                        <a href="/transaksi_lain/'.$row->id.'/edit" class="dropdown-item edit">
                                             <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                                        </a>
+                                        <a href="/transaksi_lain/'.$row->id.'" class="dropdown-item destroy" data-confirm-delete="true">
+                                            <span class="fas fa-trash mr-3"></span> Hapus
                                         </a>
                                     </div>
                                 </div>';
@@ -116,15 +123,12 @@ class TransaksiLainController extends Controller
                     return $actionBtn;
                 })
                 ->rawColumns(['action', 
-                'Supir', 
-                'Jenis_Klaim', 
-                'Tanggal_Klaim',
-                'Jumlah_Klaim',
-                'Jumlah_Dicairkan',
-                'Status_Klaim',
-                'Keterangan'
+                'tgl_transaksi', 
+                'jenis', 
+                'kas_bank',
+                'total_nominal',
+                'catatan'
                 ]) // ini buat render raw html, kalo ga pake nanti jadi text biasa
-                
                 ->make(true);
         }
     }
@@ -223,7 +227,7 @@ class TransaksiLainController extends Controller
                 }
                 DB::commit();
 
-                return redirect()->route('transaksi_lain.index')->with(['status' => 'Success', 'msg'  => 'Transaksi lain berhasil dibuat!']);
+                return redirect()->route('transaksi_lain.index')->with(['status' => 'Success', 'msg'  => 'Transaksi non operasional berhasil dibuat!']);
 
         } catch (ValidationException $e) {
             db::rollBack();
@@ -403,7 +407,7 @@ class TransaksiLainController extends Controller
 
                 DB::commit();
 
-                return redirect()->route('transaksi_lain.index')->with(['status' => 'Success', 'msg'  => 'Transaksi lain berhasil diubah!']);
+                return redirect()->route('transaksi_lain.index')->with(['status' => 'Success', 'msg'  => 'Transaksi non operasional berhasil diubah!']);
 
         } catch (ValidationException $e) {
             db::rollBack();
@@ -477,7 +481,7 @@ class TransaksiLainController extends Controller
             $transaksi->is_aktif = "N";
             $transaksi->save();
             DB::commit();
-            return redirect()->route('transfer_dana.index')->with(['status' => 'Success', 'msg' => 'Berhasil Menghapus data transfer!']);
+            return redirect()->route('transaksi_lain.index')->with(['status' => 'Success', 'msg' => 'Berhasil Menghapus data transaksi non operasional!']);
         }
         catch (ValidationException $e) {
             DB::rollBack();
