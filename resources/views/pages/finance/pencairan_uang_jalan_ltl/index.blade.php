@@ -13,7 +13,7 @@
 
 @section('content')
 <style>
-  
+
 </style>
 <div class="container-fluid">
     <div class="card radiusSendiri">
@@ -27,11 +27,13 @@
                                     <label for="">Kendaraan</label> 
                                     <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                         <option value="">­­— PILIH KENDARAAN —</option>
-                                        @foreach ($data as $item)
-                                            @if ($item['total_uang_jalan'] == 0)
-                                                <option value="{{ $item['no_polisi'] }}">{{ $item['no_polisi'] }}</option>
-                                            @endif
-                                        @endforeach
+                                        @if ($data)
+                                            @foreach ($data as $item)
+                                                @if ($item['total_uang_jalan'] == 0)
+                                                    <option value="{{ $item['no_polisi'] }}">{{ $item['no_polisi'] }}</option>
+                                                @endif
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
@@ -93,7 +95,7 @@
 
                                     </div>
                                 </div>
-                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Tol<span class="text-red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -102,7 +104,7 @@
                                     <input type="text" id="tol" name="tol" class="form-control uang numaja" >
                                     </div>
                                 </div>
-                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Bensin<span class="text-red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -160,70 +162,6 @@
     </form>
 </div>
 
-{{-- logic save --}}
-<script type="text/javascript">
-    $(document).ready(function() {
-        // $('#save').submit(function(event) {
-        //     var item = $('#item').val();
-        //     var isOk = 0;
-
-        //     // check apakah sudah ada yg dicentang?
-        //         var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        //         checkboxes.forEach(function(checkbox) {
-        //             if (checkbox.checked) {
-        //                 isOk = 1;
-        //             }
-        //         });
-        //     //
-
-        //     // validasi sebelum di submit
-        //         if (item == '' || item == null || isOk == 0) {
-        //             event.preventDefault(); // Prevent form submission
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 text: 'Harap pilih item dahulu!',
-        //             })
-        //             return;
-        //         }
-        //     //
-        //     event.preventDefault(); // Prevent form submission
-
-        //     Swal.fire({
-        //         title: 'Apakah Anda yakin data sudah benar ?',
-        //         text: "Periksa kembali data anda",
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonText: 'Batal',
-        //         confirmButtonText: 'Ya',
-        //         reverseButtons: true
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             this.submit();
-        //         }else{
-        //             const Toast = Swal.mixin({
-        //                 toast: true,
-        //                 position: 'top',
-        //                 timer: 2500,
-        //                 showConfirmButton: false,
-        //                 timerProgressBar: true,
-        //                 didOpen: (toast) => {
-        //                     toast.addEventListener('mouseenter', Swal.stopTimer)
-        //                     toast.addEventListener('mouseleave', Swal.resumeTimer)
-        //                 }
-        //             })
-
-        //             Toast.fire({
-        //                 icon: 'warning',
-        //                 title: 'Batal Disimpan'
-        //             })
-        //             event.preventDefault();
-        //         }
-        //     })
-        // });
-    });
-</script>
 <script>
     $(document).ready(function() {
 
@@ -236,7 +174,7 @@
             }
 		});        
 
-         function showTable(item){
+        function showTable(item){
             var baseUrl = "{{ asset('') }}";
             var url = baseUrl+`pencairan_uang_jalan_ltl/getData/${item}`;
 
