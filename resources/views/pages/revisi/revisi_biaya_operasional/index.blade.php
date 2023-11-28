@@ -1,10 +1,9 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
@@ -13,13 +12,14 @@
 
 @section('content')
 <style>
-  
+
 </style>
 <div class="container-fluid">
     {{-- <div class="radiusSendiri sticky-top " style="margin-bottom: -15px;">
         <div class="card radiusSendiri" style="">
             <div class="p-3">
-                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
+                        class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
         </div>
     </div> --}}
@@ -32,7 +32,8 @@
                         <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
                             <label for="">&nbsp;</label>
                             <div class="form-group" style="width: 400px;">
-                                <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <select class="form-control selectpicker" required name="item" id="item"
+                                    data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                     <option value="">­­— PILIH DATA —</option>
                                     <option value="TALLY">TALLY</option>
                                     <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
@@ -50,17 +51,19 @@
                             <label for="">&nbsp;</label>
                             <div class="d-flex">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-success ml-3 popUp" id="btnSave" value="save"><i class="fa fa-save" aria-hidden="true" ></i> Simpan</button>
+                                    <button type="button" class="btn btn-success ml-3 popUp" id="btnSave"
+                                        value="save"><i class="fa fa-save" aria-hidden="true"></i> Simpan</button>
                                 </div>
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-danger ml-3 popUp" id="btnDelete" value="delete"><i class="fa fa-trash-alt" aria-hidden="true" ></i> Hapus</button>
+                                    <button type="button" class="btn btn-danger ml-3 popUp" id="btnDelete"
+                                        value="delete"><i class="fa fa-trash-alt" aria-hidden="true"></i> Hapus</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        
+
             <div class="card-body">
                 <section class="col-lg-12" id="show_report">
                     <table id="rowGroup" class="table table-bordered table-hover" width="100%">
@@ -309,7 +312,6 @@
             if(this.checked == true){
                 $('#dicairkan_'+id).prop('readonly', false);
                 $('#catatan_'+id).prop('readonly', false);
-
             }else{
                 $('#dicairkan_'+id).prop('readonly', true);
                 $('#catatan_'+id).prop('readonly', true);
@@ -320,13 +322,6 @@
         });
 
         $(document).on('click', '#btnDelete', function(e){
-            // $('#key').val('');
-            // $('#modal_item').val('');
-            // $('#key').val(this.value);
-            // $('#modal_item').val( $('#item').val() );
-            // $('#modal_delete').modal('show');
-            console.log('this.value', this.value);
-
             Swal.fire({
                 title: 'Apakah data sudah benar?',
                 text: "Periksa kembali data anda",
@@ -375,12 +370,6 @@
         });
 
         $(document).on('click', '#btnSave', function(e){
-            // $('#key').val('');
-            // $('#modal_item').val('');
-            // $('#key').val(this.value);
-            // $('#modal_item').val( $('#item').val() );
-            // $('#modal_save').modal('show');
-            console.log('this.value', this.value);
             Swal.fire({
                 title: 'Apakah data sudah benar?',
                 text: "Periksa kembali data anda",

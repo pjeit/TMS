@@ -790,7 +790,7 @@
           @if (array_intersect($invoice, $userAkses) != NULL)
           <li class="nav-item {{ request()->is('belum_invoice*') ||
                     request()->is('pembayaran_invoice') ||
-                    request()->is('pembayaran_invoice.*') ||
+                    request()->is('pembayaran_invoice*') ||
                     request()->is('pembayaran_invoice_karantina*') ||
                     request()->is('invoice_karantina*') ||
                     request()->is('bukti_potong*') ||
@@ -815,12 +815,10 @@
 
               @if (array_intersect($invoice_trucking, $userAkses) != NULL)
               <li class="nav-item   {{ 
-                        request()->is('pembayaran_invoice') ||
-                        request()->is('pembayaran_invoice.*') ||
-                        request()->is('belum_invoice') ||
-                        request()->is('belum_invoice.*') ||
-                        request()->is('bukti_potong*')||
-                        request()->is('update_resi*')||
+                        request()->is('pembayaran_invoice*') ||
+                        request()->is('belum_invoice*') ||
+                        request()->is('bukti_potong*') ||
+                        request()->is('update_resi*') ||
                         request()->is('cetak_invoice*') ||
                         request()->is('pemutihan_invoice*') 
                         ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
@@ -836,8 +834,7 @@
                   @can('READ_BELUM_INVOICE')
                   <li class="nav-item">
                     <a href="{{route('belum_invoice.index')}}"
-                      class="nav-link {{ request()->is('belum_invoice') || request()->is('belum_invoice.*')? ' active' : '' }} "
-                      style="font-weight: 500;">
+                      class="nav-link {{ request()->is('belum_invoice*')? ' active' : '' }} " style="font-weight: 500;">
                       <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                       <p>
                         Belum Invoice
@@ -849,7 +846,7 @@
                   @can('READ_CETAK_INVOICE')
                   <li class="nav-item">
                     <a href="{{route('cetak_invoice.index')}}"
-                      class="nav-link {{request()->url() === route('cetak_invoice.index')? ' active' : '' }} "
+                      class="nav-link {{ request()->is('cetak_invoice*')? ' active' : '' }} "
                       style="font-weight: 500;">
                       <i class="nav-icon fas fa-print " style="font-size: 15px;"></i>
                       <p>
@@ -862,7 +859,7 @@
                   @can('READ_PEMBAYARAN_INVOICE')
                   <li class="nav-item">
                     <a href="{{route('pembayaran_invoice.index')}}"
-                      class="nav-link {{ request()->is('pembayaran_invoice.*') || request()->is('pembayaran_invoice')? ' active' : '' }} "
+                      class="nav-link {{ request()->is('pembayaran_invoice*')? ' active' : '' }} "
                       style="font-weight: 500;">
                       <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
                       <p>
@@ -899,7 +896,7 @@
                   @can('READ_PEMUTIHAN_INVOICE')
                   <li class="nav-item">
                     <a href="{{route('pemutihan_invoice.index')}}"
-                      class="nav-link {{ request()->is('pemutihan_invoice.*') || request()->is('pemutihan_invoice')? ' active' : '' }} "
+                      class="nav-link {{ request()->is('pemutihan_invoice*') || request()->is('pemutihan_invoice')? ' active' : '' }} "
                       style="font-weight: 500;">
                       <i class="nav-icon fas fa-file-invoice" style="font-size: 15px;"></i>
                       <p>
