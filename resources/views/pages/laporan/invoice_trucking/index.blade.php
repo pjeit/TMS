@@ -22,7 +22,7 @@
         <div class="card-header ">
             {{-- <div class="" style="position: relative; left: 0px; top: 0px; background-color:#edf4fc;"> --}}
                 <div class="card-header" style="border: 2px solid #bbbbbb;">
-                    <form id="form_report" action="{{ route('laporan_bank.index') }}" method="GET">
+                    {{-- <form id="form_report" action="{{ route('laporan_bank.index') }}" method="GET"> --}}
                         <div class="row">
                             <div class="col-lg-4 col-md-4 col-sm-6">
                                 <div class="col-lg-12 col-md-12 col-sm-12">
@@ -50,9 +50,9 @@
                             </div>
                             <div class="col-lg-6 col-md-4 col-sm-12 d-flex flex-column" style="border-left: 1px solid gray">
                                 <div class="form-group ">
-                                    <label for="">Customer <span class="text-red">*</span></label>
+                                    <label for="">Billing to<span class="text-red">*</span></label>
                                     <select width="100%" class="form-control select2" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                        <option value="">── Pilih Customer ──</option>
+                                        <option value="ALL DATA">── Semua Customer ──</option>
                                         @foreach ($customers as $customer)
                                             <option value="{{ $customer->id }}">[{{ $customer->kode }}] {{ $customer->nama }}</option>
                                         @endforeach
@@ -69,75 +69,35 @@
                             </div>
                             <div class="col-lg-2 col-md-4 col-sm-12 d-flex flex-column align-items-center justify-content-center" style="border-left: 1px solid gray">
                                 <div class="form-group ">
-                                    <button type="submit" class="btn btn-primary radiusSendiri" onclick=""><i class="fas fa-search"></i> <b> Tampilkan Data</b></button>
+                                    <button type="button" class="btn btn-primary radiusSendiri show"><i class="fas fa-search"></i> <b> Tampilkan Data</b></button>
                                 </div>
 
                                 <div class="form-group ">
-                                    <button type="button" class="btn btn-success radiusSendiri" onclick=""><i class="fas fa-file-excel"></i> <b> Export Excel</b></button>
+                                    <button type="button" class="btn btn-success radiusSendiri excel"><i class="fas fa-file-excel"></i> <b> Export Excel</b></button>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    {{-- </form> --}}
                 </div>
             {{-- </div> --}}
         </div>
         
         <div class="card-body" style="overflow: auto;">
-            <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;">
+            <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;" id="invoice">
                 <thead>
                     <tr>
-                        {{-- <th></th> --}}
-                        <th style="width:1px; white-space: nowrap;">Tgl. Transaksi</th>
-                        <th>Jenis</th>
-                        <th>Keterangan</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right;">Debit</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right;">Kredit</th>
-                        <th style="width:1px; white-space: nowrap; text-align:right;">Saldo</th>
+                        <th>Customer</th>
+                        <th>No. Invoice</th>
+                        <th>Tgl. Invoice</th>
+                        <th>Jatuh Tempo</th>
+                        <th>Tgl. Pembayaran Terakhir</th>
+                        <th>Tagihan	PPh23</th>
+                        <th>Bayar</th>
+                        <th>Sisa Tagihan</th>
                     </tr>
                 </thead>
-                <tbody >
-                        @php
-                            $total_debit=$total_kredit=0;
-                        @endphp
-                        @if (isset($data))
-                            <tr>
-                                {{-- <td colspan="7">KAS KECIL {{number_format($kas->saldo_sekarang)}} | DEBIT: {{number_format($sumDebit)}} | KREDIT: {{number_format($sumKredit)}} | TOT SKRG: ({{number_format($kas->saldo_sekarang + $sumDebit - $sumKredit)}})</td> --}}
-                                @php
-                                    $saldo_sekarang = $kas->saldo_sekarang + $sumDebit - $sumKredit;
-                                @endphp
-                                <td colspan="6">{{$kas->nama}} (Saldo Awal: {{number_format($saldo_sekarang)}})</td>
-                            </tr>
-                            @foreach ($data as $key => $item)
-                                @php
-                                    // ngitung jumlah kredit sama debit
-                                    $total_kredit += $item->kredit;
-                                    $total_debit += $item->debit;
-                                @endphp
-                            <tr>
-                                {{-- <td>{{$key}}</td> --}}
-                                <td>{{ date('d-M-Y', strtotime($item->tanggal)) }}</td>
-                                <td>{{$item->jenis_deskripsi}}</td>
-                                <td>{{$item->keterangan_transaksi}}</td>
-                                <td>{{number_format($item->debit)}}</td>
-                                <td>{{number_format($item->kredit)}}</td>
-                                @php
-                                    if($item->kredit != 0){
-                                        $saldo_sekarang -= $item->kredit;
-                                    }elseif($item->debit != 0){
-                                        $saldo_sekarang += $item->debit;
-                                    }
-                                @endphp
-                                <td>{{ number_format($saldo_sekarang) }}</td>
-                                {{-- <td>{{number_format($item->total, 2)}}</td> --}}
-                            </tr>
-                            @endforeach
-                            <tr>
-                                <td colspan='3' style='text-align:right'><label>Total</label></td>
-                                <td style='text-align:right'><label><?= number_format($total_debit);?></label></td>
-                                <td style='text-align:right'><label><?= number_format($total_kredit);?></label></td>
-                                <td></td>
-                            </tr>
-                        @endif
+                <tbody id="result">
+                    
                 </tbody>
             </table>
         </div>
@@ -159,7 +119,66 @@
             language:'en',
             orientation: "bottom",
         });
-    });
 
+        $(document).on('click', '.show', function(e){
+            let tgl_mulai   = $('#tanggal_awal').val();
+            let tgl_akhir   = $('#tanggal_akhir').val();
+            let customer    = $('#customer').val();
+            let status      = $('#status').val();   
+
+            // Build the URL with parameters
+            let url = `load_data?tgl_mulai=${tgl_mulai}&tgl_akhir=${tgl_akhir}&customer=${customer}&status=${status}`;
+
+            fetch(url)
+            .then(response => response.json())
+            .then(datas => {
+                $('#invoice').DataTable().destroy();
+                $('#invoice tbody').empty();
+
+                if(datas.result == 'success'){
+                    const data = datas.data;
+                    // console.log('datas: '+ JSON.stringify(datas, null, 2));
+
+                    if(data.length > 0){
+                        for (let i = 0; i < data.length; i++) {
+                            var row = $("<tr></tr>");
+                            row.append(`<td>[${data[i].get_billing_to.kode}] ${data[i].get_billing_to.nama}</td>`);
+                            row.append(`<td>${data[i].no_invoice}</td>`);
+                            row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
+                            row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
+                            row.append(`<td>${dateMask(Date(data[i].updated_at))}</td>`);
+                            row.append(`<td>${moneyMask(data[i].pph)}</td>`);
+                            row.append(`<td>${moneyMask(data[i].total_dibayar)}</td>`);
+                            row.append(`<td>${moneyMask(data[i].total_sisa)}</td>`);
+                            $("#result").append(row);
+                        }
+                    }
+                }
+                
+                $('#invoice').DataTable({
+                    order: [
+                        [0, 'asc'], 
+                    ],
+                    rowGroup: {
+                        dataSrc: [0] 
+                    },
+                    // destroy: true,      // destroy old data and create new one
+                    info: false,        // Disable showing entries
+                    searching: false,   // Disable searching
+                    paging: false,      // Disable pagination
+                    ordering: false,    // Disable ordering
+                    "language": {
+                        "emptyTable": "Data tidak ditemukan."
+                    }
+                });
+                
+            }).catch(error => {
+                // Handle errors here
+                console.error('Error:', error);
+            })
+        })
+
+        
+    });
 </script>
 @endsection

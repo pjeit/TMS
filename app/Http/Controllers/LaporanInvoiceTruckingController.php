@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Invoice;
 use App\Models\KasBank;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class LaporanInvoiceTruckingController extends Controller
 {
@@ -26,69 +28,36 @@ class LaporanInvoiceTruckingController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    // public function load_data($tgl_mulai, $tgl_akhir, $customer, $status)
+    public function load_data(Request $request)
     {
-        //
-    }
+        $data = $request->collect();
+        try {
+            $invoices = Invoice::where('is_aktif', 'Y')->with('getBillingTo')
+                            ->where(function($where) use($data){
+                                $where->whereBetween('tgl_invoice', [date("Y-m-d 00:00:00", strtotime($data['tgl_mulai'])), date('Y-m-d 23:59:59', strtotime($data['tgl_akhir']))]);
+                            })
+                            ->where(function($where) use($data){
+                                if($data['status'] == 'LUNAS'){
+                                    $where->where('total_sisa', 0);
+                                }else{
+                                    $where->where('total_sisa', '>', 0);
+                                }   
+                            })
+                            ->where(function($where) use($data){
+                                if($data['customer'] != 'ALL DATA'){
+                                    $where->where('billing_to', $data['customer']);
+                                }
+                            })
+                            ->get();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            if(count($invoices)> 0){
+                return response()->json(["result" => "success",'data' => $invoices], 200);
+            }else{
+                return response()->json(["result" => "error",'data' => null]);
+            }
+        } catch (ValidationException $e) {
+            return response()->json(["result" => "error",'data' => null], 404);
+        }
     }
 }
