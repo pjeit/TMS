@@ -1147,6 +1147,28 @@
             </ul>
           </li>
           @endif
+
+            <li class="nav-item {{ request()->is('laporan_batal_muat*')  ? 'menu-is-opening menu-open' : '' }}">
+            <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
+              <i class="nav-icon fas fa-solid fa-id-badge"></i>
+              <p>LAPORAN ADMIN
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('laporan_batal_muat.index')}}"
+                  class="nav-link {{request()->url() === route('laporan_batal_muat.index')? ' active' : '' }} "
+                  style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Laporan Batal Muat
+                  </p>
+                </a>
+              </li>
+             
+            </ul>
+          </li>
         </ul>
       </nav>
     </div>

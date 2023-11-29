@@ -106,8 +106,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pair_kendaraan/filter', [App\Http\Controllers\PairKendaraanController::class, 'filterTruck'])->name('pair_kendaraan.cari');
         Route::resource('pair_kendaraan', 'App\Http\Controllers\PairKendaraanController');
 
-        Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
-        Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
+      
         
         // ===================================MASTER=========================================================
         
@@ -295,6 +294,19 @@ Route::middleware(['auth'])->group(function () {
         // ===================================HRD=========================================================
         Route::resource('status_kendaraan', 'App\Http\Controllers\StatusKendaraanController');
         // ===================================HRD=========================================================
+
+        // ===================================LAPORAN=========================================================
+        Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
+        Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
+        // ===================================LAPORAN=========================================================
+
+        // ===================================LAPORAN ADMIN=========================================================
+        Route::get('laporan_batal_muat', [App\Http\Controllers\LaporanBatalMuatController::class, 'index_laporan_batal_muat'])->name('laporan_batal_muat.index');
+        Route::get('laporan_batal_muat/load_data_ajax', [App\Http\Controllers\LaporanBatalMuatController::class, 'load_data_ajax'])->name('laporan_batal_muat.load_data_ajax');
+
+        // ===================================LAPORAN ADMIN=========================================================
+
+
     // });
 
     // Route::controller('JobOrderController::class')->group(function(){
