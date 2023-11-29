@@ -68,7 +68,7 @@
                                         karyawan_hutang = "{{$drvr->total_hutang}}"
                                         potong_hutang = "{{$drvr->potong_hutang}}"
                                         {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
-                                @endforeach
+                                @endforeach 
                             </select>
                             
                             <input type="hidden" id="driver_nama" name="driver_nama" value="{{$data->nama_driver}}" placeholder="driver_nama">

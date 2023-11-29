@@ -1064,13 +1064,24 @@ class DalamPerjalananController extends Controller
                     
         $dataDriver = DB::table('karyawan as k')
             ->select('k.*','k.id as idKaryawan','k.nama_panggilan','kh.total_hutang','ujr.potong_hutang','s.id_sewa')
+            ->distinct()
             ->leftJoin('karyawan_hutang as kh', function($join) {
                 $join->on('k.id', '=', 'kh.id_karyawan')
                 ->where('kh.is_aktif', '=', "Y")
                 ->where('kh.is_aktif', '=', "Y");
             })
-            ->leftJoin('sewa as s', function($join) {
-                $join->on('k.id', '=', 's.id_karyawan')->where('s.is_aktif', '=', "Y");
+            ->leftJoin('sewa as s', function($join)use ($id) {
+                $join->on('k.id', '=', 's.id_karyawan')
+                 ->where(function ($query)use ($id){
+                        $query->where(function ($innerQuery)use ($id) {
+                            $innerQuery->where('s.id_sewa',$id);
+                        })
+                        //yang ga ada sewa juga dimunculin (selain driver yang udah jalan)
+                        ->orWhere(function ($query) {
+                            $query->whereNull('s.id_sewa');
+                        });
+                })
+                ->where('s.is_aktif', '=', "Y");
             })
             ->leftJoin('uang_jalan_riwayat as ujr', function($join) use ($id){
                 $join->on('s.id_sewa', '=', 'ujr.sewa_id')
