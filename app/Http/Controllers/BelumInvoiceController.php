@@ -263,7 +263,7 @@ class BelumInvoiceController extends Controller
                         }
                     }
 
-                    if($is_invoice_detail == true){
+                    if(($is_invoice_detail == true && $value['addcost'] != null) || $value['tarif'] != 0){
                         $invoice_d = new InvoiceDetail();
                         $invoice_d->id_invoice = $invoice->id;
                         $invoice_d->id_customer = $value['id_customer'];
@@ -356,7 +356,6 @@ class BelumInvoiceController extends Controller
                 }
             }
 
-            
             if($data['is_pisah_invoice'] == 'TRUE'){
                 $invoicePisah = new Invoice();
                 $invoicePisah->id_grup = $data['grup_id'];
@@ -373,13 +372,29 @@ class BelumInvoiceController extends Controller
                 $invoicePisah->created_at = now();
                 $invoicePisah->is_aktif = 'Y';
                 if($invoicePisah->save()){
+                    $total_tagih = 0;
+                    // dd(json_decode($data['detail'][483]['addcost_details']));
+                    // dd(json_decode($data['detail'][482]['addcost_details']));
+                    // dd(json_decode($data['detail'][483]['addcost_baru']));
+                    // dd(json_decode($data['detail'][482]['addcost_baru']));
+
                     foreach ($data['detail'] as $key => $value) {
                         $is_invoice_detail_pisah = false;
                         $dataAddcost = json_decode($value['addcost_details']);
-                        foreach ($dataAddcost as $i => $addcost) {
-                            if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
-                                $is_invoice_detail_pisah = true;
-                            }
+                        $addcost_baru = json_decode($value['addcost_baru']);
+
+                        $result = array_filter($dataAddcost, function ($addcost) {
+                            return $addcost->is_ditagihkan === "Y" && $addcost->is_dipisahkan === "Y";
+                        });
+                        $resultx = array_filter($addcost_baru, function ($addcost_baru) {
+                            return $addcost_baru->is_ditagihkan === "Y" && $addcost_baru->is_dipisahkan === "Y";
+                        });
+                        
+                        if (!empty($result)) {
+                            $is_invoice_detail_pisah = true;
+                        }
+                        if (!empty($resultx)) {
+                            $is_invoice_detail_pisah = true;
                         }
 
                         if($is_invoice_detail_pisah == true){
@@ -394,6 +409,7 @@ class BelumInvoiceController extends Controller
                             $invoice_d_pisah->created_at = now();
                             $invoice_d_pisah->is_aktif = 'Y';
                             if($invoice_d_pisah->save()){
+
                                 foreach ($dataAddcost as $i => $addcost) {
                                     if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
                                         $sewa_oprs = SewaOperasional::where('is_aktif', 'Y')
@@ -405,6 +421,8 @@ class BelumInvoiceController extends Controller
                                             $sewa_oprs->updated_by = $user;
                                             $sewa_oprs->updated_at = now();
                                             $sewa_oprs->save();
+
+                                            $total_tagih += $addcost->total_operasional;
                                         }
             
                                         $invoice_da = new InvoiceDetailAddcost();
@@ -434,6 +452,7 @@ class BelumInvoiceController extends Controller
                                             $sewa_oprs->created_by = $user;
                                             $sewa_oprs->created_at = now();
                                             $sewa_oprs->save();
+                                            $total_tagih += $addcost->total_operasional;
                                             
                                             // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                             //     array(
@@ -468,6 +487,12 @@ class BelumInvoiceController extends Controller
                             }
                         }
                     }
+
+                    $editInvoicePisah = Invoice::where('is_aktif', 'Y')->find($invoicePisah->id);
+                    $editInvoicePisah->total_tagihan = $total_tagih;
+                    $editInvoicePisah->total_sisa = $total_tagih;
+                    $editInvoicePisah->save();
+
                 }
             }
 

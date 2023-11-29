@@ -108,6 +108,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
         Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
+
+        Route::resource('laporan_invoice_trucking', 'App\Http\Controllers\LaporanInvoiceTruckingController');
         
         // ===================================MASTER=========================================================
         
