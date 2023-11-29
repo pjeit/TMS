@@ -62,7 +62,14 @@
                                             <span class="badge badge-warning">{{ $item->jenis_tujuan }}</span>
                                         @endif
                                     </td>
-                                    <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
+                                    <td>
+                                        {{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}
+                                          @if ($item->jenis_order=="OUTBOUND")
+                                            <span class="badge badge-dark">{{ $item->jenis_order }}</span>
+                                        @else
+                                            <span class="badge badge-danger">{{ $item->jenis_order }}</span>
+                                        @endif
+                                    </td>
                                     @if ($item->id_supplier)
                                     <td>DRIVER REKANAN  ({{ $item->namaSupplier }})</td>
                                     @else
@@ -77,28 +84,35 @@
                                                 <a href="{{route('dalam_perjalanan.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                     <span class="fas fa-truck mr-3"></span> Input Kendaraan Kembali
                                                 </a>
-                                                <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
-                                                    <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa PJE
-                                                </a>
+                                               
                                                 @if ($item->id_supplier)
                                                     <a href="{{route('truck_order_rekanan.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                         <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa Rekanan
                                                     </a>
-                                                    {{-- @if ($item->jenis_tujuan == 'FTL') --}}
+                                                    @if ($item->jenis_order == 'OUTBOUND')
                                                         <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-undo mr-3"></span> Batal muat Rekanan
                                                         </a>
+                                                    {{-- @endif --}}
+                                                    
                                                         <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-times mr-3"></span> Cancel Rekanan
                                                         </a>
-                                                    {{-- @endif --}}
+                                                    @endif
                                                 @else
+                                                 <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                    <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa PJE
+                                                </a>
+                                                    @if ($item->jenis_order == 'OUTBOUND')
                                                         <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-undo mr-3"></span> Batal muat
                                                         </a>
+                                                    {{-- @endif --}}
+                                                    
                                                         <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-times mr-3"></span> Cancel
                                                         </a>
+                                                    @endif
                                                         <a href="{{route('dalam_perjalanan.ubah_supir',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-user mr-3"></span> Ubah Supir
                                                         </a>

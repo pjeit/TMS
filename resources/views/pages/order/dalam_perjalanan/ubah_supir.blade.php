@@ -387,8 +387,8 @@ $(document).ready(function() {
                 $('#kontainer_div').hide();
                 $('#chassis_div').hide();
                 $('#stack_tl_form').hide();
-                // kendaraan_div.removeClass('col-lg-4 col-md-6 col-sm-12');
-                // kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
+                kendaraan_div.removeClass('col-lg-4 col-md-6 col-sm-12');
+                kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
             }
         // }
         // else
