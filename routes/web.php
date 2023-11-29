@@ -106,7 +106,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/pair_kendaraan/filter', [App\Http\Controllers\PairKendaraanController::class, 'filterTruck'])->name('pair_kendaraan.cari');
         Route::resource('pair_kendaraan', 'App\Http\Controllers\PairKendaraanController');
 
-      
+        Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
+        Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
+
+        Route::resource('laporan_invoice_trucking', 'App\Http\Controllers\LaporanInvoiceTruckingController');
         
         // ===================================MASTER=========================================================
         

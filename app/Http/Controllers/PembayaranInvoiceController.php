@@ -260,7 +260,7 @@ class PembayaranInvoiceController extends Controller
                 $biaya_admin = isset($data['biaya_admin'])? floatval(str_replace(',', '', $data['biaya_admin'])):0;
                 $total_pph = isset($data['total_pph23'])? floatval(str_replace(',', '', $data['total_pph23'])):0;
                 $i = 0;
-              
+                
                 $pembayaran = new InvoicePembayaran();
                 $pembayaran->id_kas = $data['kas'];
                 $pembayaran->billing_to = $data['billingTo'];
@@ -408,7 +408,6 @@ class PembayaranInvoiceController extends Controller
      */
     public function edit($id)
     {
-        // dd($id);
         $invoice = Invoice::where('is_aktif', 'Y')->find($id);
         $cek = substr($invoice->no_invoice, -2);
         if($cek != '/I'){
@@ -444,13 +443,6 @@ class PembayaranInvoiceController extends Controller
         }
 
         if($invoice){
-            // $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
-            //         ->leftJoin('customer as c', 'c.id', 'id_customer')
-            //         ->where('c.grup_id', $invoice->id_grup)
-            //         ->where('sewa.is_aktif', '=', 'Y')
-            //         ->where('sewa.status', 'MENUNGGU INVOICE')
-            //         ->select('sewa.*')->with('sewaOperasional')
-            //         ->get();
             $dataSewa = Sewa::
                     with('sewaOperasional', 'getCustomer', 'getTujuan')
                     ->where('sewa.is_aktif', 'Y')
@@ -465,13 +457,16 @@ class PembayaranInvoiceController extends Controller
                     ->orWhere(function ($query) use($id_invoices) {
                         $query->whereIn('sewa.id_sewa', $id_invoices);
                     })
+                    ->orderBy('id_sewa', 'ASC')
                     ->get();
 
-            if($dataSewa[0]->jenis_tujuan == 'LTL'){
-                $checkLTL = true; 
+            if(count($dataSewa) > 0){
+                if($dataSewa[0]->jenis_tujuan == 'LTL'){
+                    $checkLTL = true; 
+                }
+            }else{
+                return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Data sewa tidak ditemukan pada invoice tersebut!']);
             }
-            // dd($dataSewa);
-
 
             $dataCust = Customer::where('grup_id', $invoice->id_grup)
                     ->where('is_aktif', 'Y')

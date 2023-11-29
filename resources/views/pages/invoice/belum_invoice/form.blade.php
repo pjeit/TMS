@@ -240,7 +240,7 @@
                                 {{-- <input type="text" name="detail[{{ $item->id_sewa }}][addcost_details_pisah]" id="detail_addcost_pisah_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasionalPisah) }}" /> --}}
                                 <input type="hidden" class="cek_detail_addcost_baru" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_baru]" id="detail_addcost_baru_{{ $item->id_sewa }}" value="" />
                                 <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost]' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
-                                <input type="text" class="addcost_pisah addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">
+                                <input type="hidden" class="addcost_pisah addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">
 
                             </td>
                             <td style="text-align:right">
