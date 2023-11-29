@@ -26,8 +26,8 @@
                 <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
             <div class="card-body">
-               
-               <div class="row">
+                
+                <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12" style=" border-right: 1px solid rgb(172, 172, 172);">
                         <div class="row">
                             <div class="col-6">
@@ -133,7 +133,7 @@
                                     </div>
 
                                     <div class="form-group col-12">
-                                        <label for="uang_jalan_kembali">Uang Jalan Kembali<span class="text-red">*</span></label>
+                                        <label for="">Uang Jalan Kembali<span class="text-red">*</span></label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
@@ -157,15 +157,12 @@
                             
                         </div>
                     </div>
-               </div>
+                </div>
             </div>
         </div> 
     </form>
 </div>
 
-
-         
- 
 <script type="text/javascript">
 $(document).ready(function() {
 
