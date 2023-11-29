@@ -17,6 +17,7 @@ use App\Models\KaryawanHutangTransaction;
 use App\Models\KasBankTransaction;
 use App\Models\UangJalanRiwayat;
 use App\Helper\SewaDataHelper;
+use App\Helper\CoaHelper;
 class DalamPerjalananController extends Controller
 {
     public function __construct()
@@ -612,8 +613,10 @@ class DalamPerjalananController extends Controller
     {
         $data = $request->post();
         $user = Auth::user()->id;
+        $tgl_batal_muat_cancel = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+        $tgl_kembali = date_create_from_format('d-M-Y', $data['tanggal_kembali']);
         DB::beginTransaction(); 
-        // dd($data);
+        // dd($tgl_kembali);
         
         try {
             $sewa->status = 'BATAL MUAT';
@@ -621,6 +624,8 @@ class DalamPerjalananController extends Controller
             $sewa->catatan = $data['alasan_cancel'];
             $sewa->no_kontainer = $data['no_kontainer'];
             $sewa->no_surat_jalan = $data['no_surat_jalan'];
+            $sewa->is_kembali = 'Y';
+            $sewa->tanggal_kembali = date_format($tgl_kembali, 'Y-m-d H:i:s');
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             if($sewa->save()){
@@ -629,20 +634,20 @@ class DalamPerjalananController extends Controller
                     $uj_kembali = isset($data['total_uang_jalan_kembali'])? floatval(str_replace(',', '', $data['total_uang_jalan_kembali'])):0;
                     $tarif_ditagihkan = isset($data['total_tarif_tagih'])? floatval(str_replace(',', '', $data['total_tarif_tagih'])):0;
 
-                    DB::table('uang_jalan_riwayat')
-                    ->where('sewa_id', $sewa->id_sewa)
-                    ->where('is_aktif', 'Y')
-                    ->update([
-                        'catatan' => 'BATAL MUAT',
-                        'updated_by' => $user,
-                        'updated_at' => now(),
-                        'is_aktif' => 'N',
-                    ]);
+                    // DB::table('uang_jalan_riwayat')
+                    // ->where('sewa_id', $sewa->id_sewa)
+                    // ->where('is_aktif', 'Y')
+                    // ->update([
+                    //     'catatan' => 'BATAL MUAT',
+                    //     'updated_by' => $user,
+                    //     'updated_at' => now(),
+                    //     'is_aktif' => 'N',
+                    // ]);
 
                     $batal = new SewaBatalCancel();
                     $batal->id_sewa = $sewa->id_sewa;
                     $batal->jenis = 'BATAL';
-                    $batal->tgl_batal_muat_cancel = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
+                    $batal->tgl_batal_muat_cancel = date_format($tgl_batal_muat_cancel, 'Y-m-d H:i:s');
                     $batal->total_tarif_ditagihkan = floatval(str_replace(',', '', $data['total_tarif_tagih']));
                     $batal->total_uang_jalan_kembali = $uj_kembali;
                     if(isset($data['kasbank'])){
@@ -652,29 +657,31 @@ class DalamPerjalananController extends Controller
                             $batal->id_karyawan_hutang = $data['id_karyawan'];
                         }
                     }
-                    $batal->tgl_kembali = date_create_from_format('Y-m-d', $data['tanggal_kembali']);
+                    $batal->tgl_kembali = date_format($tgl_kembali, 'Y-m-d H:i:s');
                     $batal->alasan_batal = $data['alasan_cancel'];
                     $batal->created_by = $user;
                     $batal->created_at = now();
                     $batal->is_aktif = 'Y';
                     if($batal->save()){
                         if(isset($data['kasbank'])){
+                            $riwayat_uang_jalan = UangJalanRiwayat::where('is_aktif', 'Y')->where('sewa_id', $sewa->id_sewa)->first();
+
                             $cek = KasBankTransaction::where('is_aktif', 'Y')
                                                     ->where('id_kas_bank', $data['kasbank'])
-                                                    ->where('id_sewa', $sewa->id_sewa)
+                                                    ->where('keterangan_kode_transaksi', $riwayat_uang_jalan->id)
                                                     ->where('jenis', 'uang_jalan')->first();
 
                             if($cek){
                                 if($data['kasbank'] != 'HUTANG DRIVER'){
                                     $kasBankTransaction = new KasBankTransaction ();
                                     $kasBankTransaction->id_kas_bank = $data['kasbank'];
-                                    $kasBankTransaction->tanggal = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
+                                    $kasBankTransaction->tanggal = date_format($tgl_batal_muat_cancel, 'Y-m-d H:i:s');
                                     $kasBankTransaction->debit = $uj_kembali; // debit uang masuk
                                     $kasBankTransaction->kredit = 0;
-                                    $kasBankTransaction->jenis = 'BATAL MUAT';
-                                    $kasBankTransaction->keterangan_transaksi = 'UANG JALAN KEMBALI - ' . $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver'] ;
-                                    $kasBankTransaction->kode_coa = 1823; // masih hardcode
-                                    $kasBankTransaction->keterangan_kode_transaksi = $sewa->id_sewa;
+                                    $kasBankTransaction->jenis = 'uang_jalan';
+                                    $kasBankTransaction->keterangan_transaksi = '(BATAL MUAT) UANG JALAN KEMBALI - ' . $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver']. $data['customer'].' #' . '('.$data['tujuan'].')' ;
+                                    $kasBankTransaction->kode_coa =  CoaHelper::DataCoa(5002); // masih hardcode
+                                    $kasBankTransaction->keterangan_kode_transaksi = $riwayat_uang_jalan->id;
                                     $kasBankTransaction->created_by = $user;
                                     $kasBankTransaction->created_at = now();
                                     $kasBankTransaction->is_aktif = 'Y';
@@ -712,7 +719,7 @@ class DalamPerjalananController extends Controller
                                     $kht->refrensi_id = $batal->id;
                                     $kht->refrensi_keterangan = 'BATAL MUAT';
                                     $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                                    $kht->tanggal = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
+                                    $kht->tanggal = date_format($tgl_batal_muat_cancel, 'Y-m-d H:i:s');
                                     $kht->debit = $uj_kembali;
                                     $kht->kredit = 0;
                                     $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
@@ -733,9 +740,9 @@ class DalamPerjalananController extends Controller
                     $batalRekanan = new SewaBatalCancel();
                     $batalRekanan->id_sewa = $sewa->id_sewa;
                     $batalRekanan->jenis = 'BATAL';
-                    $batalRekanan->tgl_batal_muat_cancel = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
+                    $batalRekanan->tgl_batal_muat_cancel = date_format($tgl_batal_muat_cancel, 'Y-m-d H:i:s');
                     $batalRekanan->total_tarif_ditagihkan = floatval(str_replace(',', '', $data['total_tarif_tagih']));
-                    $batalRekanan->tgl_kembali = date_create_from_format('Y-m-d', $data['tanggal_kembali']);
+                    $batalRekanan->tgl_kembali = date_format($tgl_kembali, 'Y-m-d H:i:s');
                     $batalRekanan->alasan_batal = $data['alasan_cancel'].'[rekanan batal]';
                     $batalRekanan->created_by = $user;
                     $batalRekanan->created_at = now();
@@ -810,8 +817,8 @@ class DalamPerjalananController extends Controller
     public function save_cancel(Request $request, Sewa $sewa)
     {
         $data = $request->post();
-        $tgl_cancel = date_create_from_format('Y-m-d', $data['tanggal_cancel']);
-        $tgl_kembali = date_create_from_format('Y-m-d', $data['tanggal_kembali']);
+        $tgl_cancel = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+        $tgl_kembali = date_create_from_format('d-M-Y', $data['tanggal_kembali']);
         $user = Auth::user()->id;
         DB::beginTransaction(); 
 
@@ -824,23 +831,10 @@ class DalamPerjalananController extends Controller
                 if($sewa->id_supplier==null)
                 {
                     $uj_kembali = isset($data['uang_jalan_kembali'])? floatval(str_replace(',', '', $data['uang_jalan_kembali'])):0;
-                    if(isset($data['uang_jalan_kembali'])){
-
-                        DB::table('uang_jalan_riwayat')
-                        ->where('sewa_id', $sewa->id_sewa)
-                        ->where('is_aktif', 'Y')
-                        ->update([
-                            'catatan' => 'CANCEL',
-                            'updated_at' => now(),
-                            'updated_by' => $user,
-                            'is_aktif' => 'N',
-                        ]); 
-                    }
-    
                     $cancel = new SewaBatalCancel();
                     $cancel->id_sewa = $sewa->id_sewa;
                     $cancel->jenis = 'CANCEL';
-                    $cancel->tgl_batal_muat_cancel = $tgl_cancel;
+                    $cancel->tgl_batal_muat_cancel = date_format($tgl_cancel, 'Y-m-d H:i:s');
                     $cancel->total_uang_jalan_kembali = $uj_kembali;
                     if(isset($data['pembayaran'])){
                         if($data['pembayaran'] != 'HUTANG KARYAWAN'){
@@ -849,7 +843,7 @@ class DalamPerjalananController extends Controller
                             $cancel->id_karyawan_hutang = $data['id_karyawan'];
                         }
                     }
-                    $cancel->tgl_kembali = $tgl_kembali;
+                    $cancel->tgl_kembali = date_format($tgl_kembali, 'Y-m-d H:i:s');
                     $cancel->alasan_batal = $data['alasan_cancel'];
                     $cancel->created_by = $user;
                     $cancel->created_at = now();
@@ -857,21 +851,24 @@ class DalamPerjalananController extends Controller
     
                     if($cancel->save()){
                         if(isset($data['pembayaran'])){
+                            $riwayat_uang_jalan = UangJalanRiwayat::where('is_aktif', 'Y')->where('sewa_id', $sewa->id_sewa)->first();
+
                             $cek = KasBankTransaction::where('is_aktif', 'Y')
-                                                        ->where('id_kas_bank', $data['pembayaran'])
-                                                        ->where('id_sewa', $sewa->id_sewa)
-                                                        ->where('jenis', 'uang_jalan')->first();
+                                                    ->where('id_kas_bank', $data['pembayaran'])
+                                                    ->where('keterangan_kode_transaksi', $riwayat_uang_jalan->id)
+                                                    ->where('jenis', 'uang_jalan')->first();
+                          
                             if($cek){
                                 if($data['pembayaran'] != 'HUTANG KARYAWAN'){
                                     $kasBankTransaction = new KasBankTransaction ();
                                     $kasBankTransaction->id_kas_bank = $data['pembayaran'];
-                                    $kasBankTransaction->tanggal = date("Y-m-d", strtotime($data['tanggal_cancel']));
+                                    $kasBankTransaction->tanggal =date_format($tgl_cancel, 'Y-m-d H:i:s');
                                     $kasBankTransaction->debit = $uj_kembali; // debit uang masuk
                                     $kasBankTransaction->kredit = 0;
-                                    $kasBankTransaction->jenis = 'CANCEL';
-                                    $kasBankTransaction->keterangan_transaksi = 'UANG JALAN KEMBALI - ' . $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver'] ;
-                                    $kasBankTransaction->kode_coa = 1824; // masih hardcode
-                                    $kasBankTransaction->keterangan_kode_transaksi = $sewa->id_sewa;
+                                    $kasBankTransaction->jenis = 'uang_jalan';
+                                    $kasBankTransaction->keterangan_transaksi = '(CANCEL) UANG JALAN KEMBALI - ' . $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver'].' #' . $data['customer'].' #' . '('.$data['tujuan'].')' ;
+                                    $kasBankTransaction->kode_coa =  CoaHelper::DataCoa(5002); // masih hardcode
+                                    $kasBankTransaction->keterangan_kode_transaksi = $riwayat_uang_jalan->id;
                                     $kasBankTransaction->created_by = $user;
                                     $kasBankTransaction->created_at = now();
                                     $kasBankTransaction->is_aktif = 'Y';
@@ -881,6 +878,17 @@ class DalamPerjalananController extends Controller
                                         $kasbank->updated_by = $user;
                                         $kasbank->updated_at = now();
                                         $kasbank->save();
+                                        // if(isset($data['uang_jalan_kembali'])){
+                                            DB::table('uang_jalan_riwayat')
+                                            ->where('sewa_id', $sewa->id_sewa)
+                                            ->where('is_aktif', 'Y')
+                                            ->update([
+                                                'catatan' => 'CANCEL',
+                                                'updated_at' => now(),
+                                                'updated_by' => $user,
+                                                'is_aktif' => 'N',
+                                            ]); 
+                                        // }
                                         DB::commit();
                                     }
                                 }else{
@@ -906,11 +914,11 @@ class DalamPerjalananController extends Controller
                                     $kht->refrensi_id = $cancel->id;
                                     $kht->refrensi_keterangan = 'CANCEL';
                                     $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                                    $kht->tanggal = $tgl_cancel;
+                                    $kht->tanggal = date_format($tgl_cancel, 'Y-m-d H:i:s');
                                     $kht->debit = $uj_kembali; // HUTANG BARU
                                     $kht->kredit = 0;
                                     $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
-                                    $kht->catatan = 'PENGEMBALIAN UANG JALAN SBG HUTANG - ' . $data['alasan_cancel'];
+                                    $kht->catatan = 'PENGEMBALIAN UANG JALAN SBG HUTANG - ' . $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver'].' #' . $data['customer'].' #' . '('.$data['tujuan'].')';
                                     $kht->created_by = $user;
                                     $kht->created_at = now();
                                     $kht->is_aktif = 'Y';
@@ -927,8 +935,8 @@ class DalamPerjalananController extends Controller
                     $cancel_rekanan = new SewaBatalCancel();
                     $cancel_rekanan->id_sewa = $sewa->id_sewa;
                     $cancel_rekanan->jenis = 'CANCEL';
-                    $cancel_rekanan->tgl_batal_muat_cancel = $tgl_cancel;
-                    $cancel_rekanan->tgl_kembali = $tgl_kembali;
+                    $cancel_rekanan->tgl_batal_muat_cancel = date_format($tgl_cancel, 'Y-m-d H:i:s');
+                    $cancel_rekanan->tgl_kembali = date_format($tgl_kembali, 'Y-m-d H:i:s');
                     $cancel_rekanan->alasan_batal = $data['alasan_cancel'].'[rekanan cancel]';
                     $cancel_rekanan->created_by = $user;
                     $cancel_rekanan->created_at = now();
@@ -1056,13 +1064,24 @@ class DalamPerjalananController extends Controller
                     
         $dataDriver = DB::table('karyawan as k')
             ->select('k.*','k.id as idKaryawan','k.nama_panggilan','kh.total_hutang','ujr.potong_hutang','s.id_sewa')
+            ->distinct()
             ->leftJoin('karyawan_hutang as kh', function($join) {
                 $join->on('k.id', '=', 'kh.id_karyawan')
                 ->where('kh.is_aktif', '=', "Y")
                 ->where('kh.is_aktif', '=', "Y");
             })
-            ->leftJoin('sewa as s', function($join) {
-                $join->on('k.id', '=', 's.id_karyawan')->where('s.is_aktif', '=', "Y");
+            ->leftJoin('sewa as s', function($join)use ($id) {
+                $join->on('k.id', '=', 's.id_karyawan')
+                 ->where(function ($query)use ($id){
+                        $query->where(function ($innerQuery)use ($id) {
+                            $innerQuery->where('s.id_sewa',$id);
+                        })
+                        //yang ga ada sewa juga dimunculin (selain driver yang udah jalan)
+                        ->orWhere(function ($query) {
+                            $query->whereNull('s.id_sewa');
+                        });
+                })
+                ->where('s.is_aktif', '=', "Y");
             })
             ->leftJoin('uang_jalan_riwayat as ujr', function($join) use ($id){
                 $join->on('s.id_sewa', '=', 'ujr.sewa_id')
@@ -1316,7 +1335,7 @@ class DalamPerjalananController extends Controller
                                 now(),//tanggal
                                 ($ujr->total_uang_jalan + $tl) - $potong_hutang,// debit 
                                 0, //uang keluar (kredit)
-                                2021, //kode coa
+                                CoaHelper::DataCoa(5002), //kode coa
                                 'uang_jalan',
                                 'Pengembalian uang jalan ubah supir '.$sewa->no_sewa.' #'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
                                 $ujr->id,//keterangan_kode_transaksi
@@ -1399,7 +1418,7 @@ class DalamPerjalananController extends Controller
                                     date('Y-m-d H:i:s', $new_time),//tanggal
                                     0,// debit 
                                     floatval(str_replace(',', '', $data['total_diterima'])), //uang keluar (kredit)
-                                    2021, //kode coa
+                                    CoaHelper::DataCoa(5002), //kode coa
                                     'uang_jalan',
                                     'Pencairan Uang jalan dari supir'.' #'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.'ke supir -> '.' #'.$data['no_polisi'].'('.$data['driver_nama'].')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
                                     $ujr->id,//keterangan_kode_transaksi

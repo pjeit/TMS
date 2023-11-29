@@ -68,7 +68,7 @@
                                         karyawan_hutang = "{{$drvr->total_hutang}}"
                                         potong_hutang = "{{$drvr->potong_hutang}}"
                                         {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
-                                @endforeach
+                                @endforeach 
                             </select>
                             
                             <input type="hidden" id="driver_nama" name="driver_nama" value="{{$data->nama_driver}}" placeholder="driver_nama">
@@ -387,8 +387,8 @@ $(document).ready(function() {
                 $('#kontainer_div').hide();
                 $('#chassis_div').hide();
                 $('#stack_tl_form').hide();
-                // kendaraan_div.removeClass('col-lg-4 col-md-6 col-sm-12');
-                // kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
+                kendaraan_div.removeClass('col-lg-4 col-md-6 col-sm-12');
+                kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
             }
         // }
         // else

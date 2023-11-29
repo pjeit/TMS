@@ -468,6 +468,28 @@ class SewaController extends Controller
                             ); 
                         
                         }
+                    }else {
+                         $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
+                            ->select('sb.*')
+                            ->where('sb.id_sewa', $sewa->id_sewa)
+                            ->where('sb.is_aktif', 'Y')
+                            ->where('sb.deskripsi', 'TL')
+                            ->first();
+                        //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
+                        //kalau ada tl nyantol di ubah jadi N
+                        if($cek_sewa_biaya_TL)
+                        {
+                            
+                            DB::table('sewa_biaya')
+                                ->where('id_sewa', $sewa->id_sewa)
+                                ->where('deskripsi', 'TL')
+                                ->update(array(
+                                    'is_aktif' => "N",
+                                    'updated_at'=> now(),
+                                    'updated_by'=> $user, // masih hardcode nanti diganti cookies
+                                )
+                            );
+                        }             
                     }
                 }
             } else {
@@ -489,29 +511,43 @@ class SewaController extends Controller
                     $sewa->updated_by = $user;
                     $sewa->updated_at = now();
                     $sewa->save();
+                    $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
+                            ->select('sb.*')
+                            ->where('sb.id_sewa', $sewa->id_sewa)
+                            ->where('sb.is_aktif', 'Y')
+                            ->where('sb.deskripsi', 'TL')
+                            ->first();
                     if($data['stack_tl'] == 'tl_teluk_lamong'){
-                        DB::table('sewa_biaya')
-                            ->insert(array(
-                            'id_sewa' => $sewa->id_sewa,
-                            'deskripsi' => 'TL',
-                            'biaya' => $data['stack_teluk_lamong_hidden'],
-                            'catatan' => $data['stack_tl'],
-                            'created_at' => now(),
-                            'created_by' => $user,
-                            'is_aktif' => "Y",
-                            )
-                        ); 
+                        if($cek_sewa_biaya_TL==null)
+                        {
+                            DB::table('sewa_biaya')
+                                ->insert(array(
+                                'id_sewa' => $sewa->id_sewa,
+                                'deskripsi' => 'TL',
+                                'biaya' => $data['stack_teluk_lamong_hidden'],
+                                'catatan' => $data['stack_tl'],
+                                'created_at' => now(),
+                                'created_by' => $user,
+                                'is_aktif' => "Y",
+                                )
+                            ); 
+                        }
                     }else{
-                        $hapus_tl = SewaBiaya::where([
-                                                        'is_aktif' => 'Y',
-                                                        'deskripsi' => 'TL',
-                                                        'id_sewa' => $sewa->id_sewa
-                                                    ])
-                                            ->update([
-                                                'updated_at' => now(),
-                                                'updated_by' => $user,
-                                                'is_aktif' => 'N',
-                                            ]);
+                         
+                        //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
+                        //kalau ada tl nyantol di ubah jadi N
+                        if($cek_sewa_biaya_TL)
+                        {
+                            DB::table('sewa_biaya')
+                                ->where('id_sewa', $sewa->id_sewa)
+                                ->where('deskripsi', 'TL')
+                                ->update(array(
+                                    'is_aktif' => "N",
+                                    'updated_at'=> now(),
+                                    'updated_by'=> $user, // masih hardcode nanti diganti cookies
+                                )
+                            );
+                        }   
                                         
                     }
                     if(isset($data['id_jo_detail'])){
@@ -537,6 +573,44 @@ class SewaController extends Controller
                     $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
                     $sewa->catatan = $data['catatan']? $data['catatan']:null;
                     $sewa->save();
+                    $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
+                            ->select('sb.*')
+                            ->where('sb.id_sewa', $sewa->id_sewa)
+                            ->where('sb.is_aktif', 'Y')
+                            ->where('sb.deskripsi', 'TL')
+                            ->first();
+                     if($data['stack_tl'] == 'tl_teluk_lamong'){
+                        if($cek_sewa_biaya_TL == null)
+                        {
+                            DB::table('sewa_biaya')
+                                ->insert(array(
+                                'id_sewa' => $sewa->id_sewa,
+                                'deskripsi' => 'TL',
+                                'biaya' => $data['stack_teluk_lamong_hidden'],
+                                'catatan' => $data['stack_tl'],
+                                'created_at' => now(),
+                                'created_by' => $user,
+                                'is_aktif' => "Y",
+                                )
+                            ); 
+                        }
+                    }else{
+                        //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
+                        //kalau ada tl nyantol di ubah jadi N
+                        if($cek_sewa_biaya_TL)
+                        {
+                            
+                            DB::table('sewa_biaya')
+                                ->where('id_sewa', $sewa->id_sewa)
+                                ->where('deskripsi', 'TL')
+                                ->update(array(
+                                    'is_aktif' => "N",
+                                    'updated_at'=> now(),
+                                    'updated_by'=> $user, // masih hardcode nanti diganti cookies
+                                )
+                            );
+                        }   
+                    }
                 }
             }
 

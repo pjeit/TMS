@@ -36,13 +36,13 @@
                     <div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="form-group">
                             <label for="customer">Customer</label>
-                            <input type="text" class="form-control" id="customer" readonly="" value="[{{ $data->getCustomer->kode }}] - {{ $data->getCustomer->nama }}">
+                            <input type="text" class="form-control" name="customer" id="customer" readonly="" value="[{{ $data->getCustomer->kode }}] - {{ $data->getCustomer->nama }}">
                         </div>
                     </div>
                     <div class="col-lg-5 col-md-5 col-sm-12">
                         <div class="form-group">
                             <label for="tujuan">Tujuan</label>
-                            <input type="text" class="form-control" id="tujuan" readonly="" value="{{ $data->nama_tujuan }}">
+                            <input type="text" class="form-control" name="tujuan" id="tujuan" readonly="" value="{{ $data->nama_tujuan }}">
                         </div>
                     </div>
                 </div>
