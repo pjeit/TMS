@@ -50,10 +50,10 @@
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label for="no_kontainer">{{$data->jenis_tujuan == "FTL"?'No. Kontainer':'No. Koli'}}<span style="color:red">*</span></label>
-                             @if ($data->no_kontainer_jod && $data->jenis_order =="INBOUND")
+                            @if ($data->no_kontainer_jod && $data->jenis_order =="INBOUND")
                                 <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$data->no_kontainer_jod}}" >                         
                             @else
-                                <input type="text" id="no_kontainer" required ="no_kontainer" class="form-control" value="{{$data->no_kontainer}}" >                         
+                                <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" value="{{$data->no_kontainer}}" required>                         
                             @endif
                             {{-- <input type="text" required name="no_kontainer" class="form-control" id="no_kontainer" placeholder="" value="{{ $data['no_kontainer'] }}"> --}}
                         </div>
