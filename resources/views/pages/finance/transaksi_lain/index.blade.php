@@ -49,7 +49,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="datatable" class="table table-bordered table-striped" width="100%">
+                    <table id="tabel_transaksi_lain" class="table table-bordered table-striped" width="100%">
                         <thead>
                             <tr>
                                 <th>Tgl. Transaksi</th>
@@ -61,7 +61,7 @@
                             </tr>
                           </thead>
                         <tbody>
-                            @if (isset($dataKasLain))
+                            {{-- @if (isset($dataKasLain))
                                 @foreach ($dataKasLain as $item)
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-Y')}} </td>
@@ -94,7 +94,7 @@
                                     </td>
                                 </tr>
                                 @endforeach
-                            @endif
+                            @endif --}}
                         </tbody>
                     </table>
                 </div>
@@ -247,6 +247,41 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function () {
+    var table = $('#tabel_transaksi_lain').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('transaksi_lain.index_server') }}",
+            columns: [
+                {data: 'tgl_transaksi', name: 'tgl_transaksi'},
+                {data: 'jenis', name: 'jenis'},
+                {data: 'kas_bank', name: 'kas_bank'},
+                {data: 'total_nominal', name: 'total_nominal'},
+                {data: 'catatan', name: 'catatan'},
+                {
+                    data: 'action', 
+                    name: 'action', 
+                    orderable: false, 
+                    searchable: false
+                },
+            ],
+            //  order: [
+            //         [0, 'asc'],
+            //     ],
+            // rowGroup: {
+            //     dataSrc: ['Supir']//grouping per supir pake nama datanya, kalo bukan serverside nembak index
+            // },
+            // columnDefs: [
+            //     {
+            //         targets: [0],
+            //         visible: false
+            //     },
+            //     {
+            //         "orderable": false,
+            //         "targets": [0,1,2,3,4,5,6,7]
+            //     }
+        
+            // ],
+        });
     $('#tanggal_transaksi').datepicker({
         autoclose: true,
         format: "dd-M-yyyy",
