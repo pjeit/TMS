@@ -33,6 +33,8 @@ class LaporanBatalMuatController extends Controller
                         ->with('getTujuan')
                         ->with('getKaryawan')
                         ->with('getBatalCancel')
+                        ->with('getSupplier')
+                        ->has('getBatalCancel') 
                         // ->leftJoin('sewa_batal_cancel as sbc', function($join) {
                         //     $join->on('sewa.id_sewa', '=', 'sbc.id_sewa')
                         //     ->where('sbc.jenis',  "BATAL")

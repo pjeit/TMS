@@ -1148,7 +1148,7 @@
           </li>
           @endif
 
-            <li class="nav-item {{ request()->is('laporan_batal_muat*')  ? 'menu-is-opening menu-open' : '' }}">
+          <li class="nav-item {{ request()->is('laporan_batal_muat*')  ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-solid fa-id-badge"></i>
               <p>LAPORAN ADMIN

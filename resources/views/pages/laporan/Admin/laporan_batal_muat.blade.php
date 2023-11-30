@@ -63,13 +63,14 @@
             <div class="card-body" style="overflow: auto;">
                 <table id="tabel_batal" class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;">
                     <thead>
-                        {{-- <tr>
+                        <tr>
+                            <th>Customer</th>
                             <th style="width:1px; white-space: nowrap;">Sewa</th>
                             <th>Tujuan & Kendaraan</th>
                             <th>Driver</th>
                             <th style="width:1px; white-space: nowrap; text-align:right;">Tanggal Cancel</th>
-                            <th style="width:1px; white-space: nowrap; text-align:right;">Alasan Cancel</th>
-                        </tr> --}}
+                            <th style="width:1px; white-space: nowrap; text-align:right;">Alasan Cancel</th>    
+                        </tr>
                     </thead>
                     <tbody >
                             
@@ -102,6 +103,30 @@
             var tanggal_awal = $("#tanggal_awal").val();
             var tanggal_akhir = $("#tanggal_akhir").val();
             var tipe_group = $("#tipe_group").val();
+            console.log(tanggal_awal);
+            console.log(tanggal_akhir);
+
+            const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    timer: 2500,
+                    showConfirmButton: false,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+
+            if(tanggal_awal> tanggal_akhir)
+            {
+                event.preventDefault();
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Tanggal awal harus lebih kecil dari tanggal akhir!'
+                    })
+                return;
+            }
             $.ajax({
                 method: 'GET',
                 url: "{{ route('laporan_batal_muat.load_data_ajax') }}",
@@ -115,15 +140,13 @@
                     tipe_group: tipe_group,
                 },
                 success: function(response) {
-                    // $("#hasil").empty();
-                    
-                    // $('#tabel_batal').dataTable().fnClearTable();
-                    // $("#tabel_batal").dataTable().fnDestroy();
-                    $('#tabel_batal').html('');
+                    $('#tabel_batal').DataTable().destroy();
+                    $('#tabel_batal tbody').html('');
 
                     // $("th").remove();
                     var customer_th = `
                         <tr>
+                            <th>Customer</th>
                             <th style="width:1px; white-space: nowrap;">Sewa</th>
                             <th>Tujuan & Kendaraan</th>
                             <th>Driver</th>
@@ -132,6 +155,7 @@
                         </tr>`
                     var kendaraan_th = `
                         <tr>
+                            <th>Kendaraan</th>
                             <th style="width:1px; white-space: nowrap;">Sewa</th>
                             <th>Customer & Tujuan</th>
                             <th>Driver</th>
@@ -140,6 +164,7 @@
                         </tr> `
                     var driver_th = `
                         <tr>
+                            <th>Driver</th>
                             <th style="width:1px; white-space: nowrap;">Sewa</th>
                             <th>Customer & Tujuan</th>
                             <th>Kendaraan</th>
@@ -148,59 +173,74 @@
                         </tr>`
                     if(tipe_group=='customer')
                     {
-                        $("#tabel_batal").html(customer_th);
+                        $("#tabel_batal thead").html(customer_th);
                     }   
                     else if(tipe_group=='kendaraan')
                     {
-                        $("#tabel_batal").html(kendaraan_th);
+                        $("#tabel_batal thead").html(kendaraan_th);
                     }
                     else if(tipe_group=='driver')
                     {
-                        $("#tabel_batal").html(driver_th);
+                        $("#tabel_batal thead").html(driver_th);
                     }
                     var data = response.data;
                     console.log(data);
                     if(data.length > 0){
                         for (var i = 0; i <data.length; i++) {
                             var row = $("<tr></tr>");
-                            // if(tipe_group=='customer')
-                            // {
-                            //     $("#tabel_batal").append(customer_th);
-                            // }   
-                            // else if(tipe_group=='kendaraan')
-                            // {
-                            //     $("#tabel_batal").append(kendaraan_th);
-                            // }
-                            // else if(tipe_group=='driver')
-                            // {
-                            //     $("#tabel_batal").append(driver_th);
-                            // }
-                            
-                            row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}</td>`);
-                            row.append(`<td>${data[i].nama_tujuan} - ${data[i].no_polisi} (${data[i].karoseri})</td>`);
-                            row.append(`<td>${data[i].get_karyawan.nama_panggilan}</td>`);
-                            row.append(`<td></td>`);
-                            row.append(`<td></td>`);
+                            if(tipe_group=='customer')
+                            {
+                                row.append(`<td>${data[i].get_customer.nama}</td>`);//customer
+                                row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}</td>`);//sewa
+                                row.append(`<td>${data[i].nama_tujuan} - [${data[i].no_polisi} (${data[i].karoseri?data[i].karoseri:'-'})]</td>`);//tujuan dan kendaraan
+                                row.append(`<td>${data[i].get_karyawan?data[i].get_karyawan.nama_panggilan:'DRIVER REKANAN : '+data[i].get_supplier.nama}</td>`);//driver
+                              
+                            }   
+                            else if(tipe_group=='kendaraan')
+                            {
+                                row.append(`<td>${data[i].no_polisi} (${data[i].karoseri?data[i].karoseri:'-'})</td>`);//nopol
+                                row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}</td>`);//sewa
+                                row.append(`<td>${data[i].get_customer.nama} - [${data[i].nama_tujuan}]</td>`);//customer dan tujuan
+                                row.append(`<td>${data[i].get_karyawan?data[i].get_karyawan.nama_panggilan:'DRIVER REKANAN : '+data[i].get_supplier.nama}</td>`);//driver
+                            }
+                            else if(tipe_group=='driver')
+                            {
+                                row.append(`<td>${data[i].get_karyawan?data[i].get_karyawan.nama_panggilan:'DRIVER REKANAN : '+data[i].get_supplier.nama}</td>`);//driver
+                                row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}</td>`);//sewa
+                                row.append(`<td>${data[i].get_customer.nama} - [${data[i].nama_tujuan}]</td>`);//customer dan tujuan
+                                row.append(`<td>${data[i].no_polisi} (${data[i].karoseri?data[i].karoseri:'-'})</td>`);//kendaraan
+                            }
+                            row.append(`<td>${dateMask(data[i].get_batal_cancel.tgl_batal_muat_cancel)}</td>`);
+                            row.append(`<td>${data[i].get_batal_cancel.alasan_batal}</td>`);
                             $("#tabel_batal").append(row);
                         }
-
-                        // new DataTable('#tabel_batal', {
-                        //     searching: true, paging: false, info: false, ordering: false,
-                        //     rowGroup: {
-                        //         dataSrc: [0] // di order grup dulu, baru customer
-                        //     },
-                        //     columnDefs: [
-                        //         {
-                        //             targets: [0], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
-                        //             visible: false
-                        //         },
-                        //         {
-                        //             // targets: [ord, ord-1],
-                        //             // orderable: false, // matiin sortir kolom centang
-                        //         },
-                        //     ],
-                        // });
                     }
+                        $('#tabel_batal').DataTable({
+                            order: [
+                                [0, 'asc'], 
+                            ],
+                            rowGroup: {
+                                dataSrc: [0] 
+                            },
+                            // destroy: true,      
+                            info: false,       
+                            searching: true,  
+                            paging: false,      
+                            ordering: false,    
+                            "language": {
+                                "emptyTable": "Data tidak ditemukan."
+                            },
+                             columnDefs: [
+                                {
+                                    targets: [0], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
+                                    visible: false
+                                },
+                                {
+                                    targets: [0,1,2,3,4,5],
+                                    // orderable: false, // matiin sortir kolom centang
+                                },
+                            ],
+                        });
                 },error: function (xhr, status, error) {
                     // $('#ltl').dataTable().fnClearTable();
                     if ( xhr.responseJSON.result == 'error') {
