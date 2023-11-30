@@ -30,6 +30,8 @@ class LaporanKendaraanRekananDijualController extends Controller
                         ->with('getTujuan')
                         ->with('getSupplier')
                         ->has('getSupplier') 
+                        ->where('sewa.is_kembali', 'Y')
+                        ->whereNotNull('sewa.tanggal_kembali')
                         ->whereBetween('sewa.tanggal_berangkat', [date_format($tanggal_awal_convert, 'Y-m-d'), date_format($tanggal_akhir_convert, 'Y-m-d')])
                         ->get();
             return response()->json(["result" => "success", 'data' => $data], 200);

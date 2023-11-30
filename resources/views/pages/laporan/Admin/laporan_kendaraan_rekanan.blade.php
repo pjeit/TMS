@@ -46,7 +46,7 @@
                                     <select class="form-control select2" id="tipe_group" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                             <option value="customer">Customer</option>
                                             <option value="kendaraan">Kendaraan</option>
-                                            <option value="driver">Driver</option>
+                                            <option value="supplier">Supplier</option>
                                     </select>
                                 </div>
                             </div>
@@ -96,7 +96,6 @@
             todayHighlight: true,
             language:'en',
             // endDate:'+1d'
-
         });
         $('body').on('click','#btnCari', function (){
             
@@ -118,18 +117,18 @@
                     }
                 })
 
-            if(tanggal_awal> tanggal_akhir)
-            {
-                event.preventDefault();
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Tanggal awal harus lebih kecil dari tanggal akhir!'
-                    })
-                return;
-            }
+            // if(tanggal_awal> tanggal_akhir)
+            // {
+            //     event.preventDefault();
+            //         Toast.fire({
+            //             icon: 'error',
+            //             title: 'Tanggal awal harus lebih kecil dari tanggal akhir!'
+            //         })
+            //     return;
+            // }
             $.ajax({
                 method: 'GET',
-                url: "{{ route('laporan_batal_muat.load_data_ajax') }}",
+                url: "{{ route('laporan_kendaraan_dijual.load_data_ajax') }}",
                 // dataType: 'JSON',
                 // contentType: false,
                 // cache: false,
@@ -148,28 +147,31 @@
                         <tr>
                             <th>Customer</th>
                             <th style="width:1px; white-space: nowrap;">Sewa</th>
-                            <th>Tujuan & Kendaraan</th>
-                            <th>Driver</th>
-                            <th style="width:1px; white-space: nowrap; text-align:right;">Tanggal Cancel</th>
-                            <th style="width:1px; white-space: nowrap; text-align:right;">Alasan Cancel</th>    
+                            <th>Tujuan</th>
+                            <th>Kendaraan</th>
+                            <th>Supplier</th>
+                            <th>No.Kontainer & Surat Jalan</th>
+                            <th>Tanggal Kembali</th>
                         </tr>`
                     var kendaraan_th = `
                         <tr>
                             <th>Kendaraan</th>
                             <th style="width:1px; white-space: nowrap;">Sewa</th>
-                            <th>Customer & Tujuan</th>
-                            <th>Driver</th>
-                            <th style="width:1px; white-space: nowrap; text-align:right;">Tanggal Cancel</th>
-                            <th style="width:1px; white-space: nowrap; text-align:right;">Alasan Cancel</th>      
+                            <th>Customer</th>
+                            <th>Tujuan</th>
+                            <th>Supplier</th>
+                            <th>No.Kontainer & Surat Jalan</th>
+                            <th>Tanggal Kembali</th>     
                         </tr> `
-                    var driver_th = `
+                    var supplier_th = `
                         <tr>
-                            <th>Driver</th>
+                            <th>Supplier</th>
                             <th style="width:1px; white-space: nowrap;">Sewa</th>
-                            <th>Customer & Tujuan</th>
+                            <th>Customer</th>
+                            <th>Tujuan</th>
                             <th>Kendaraan</th>
-                            <th style="width:1px; white-space: nowrap; text-align:right;">Tanggal Cancel</th>
-                            <th style="width:1px; white-space: nowrap; text-align:right;">Alasan Cancel</th>                  
+                            <th>No.Kontainer & Surat Jalan</th>
+                            <th>Tanggal Kembali</th>                
                         </tr>`
                     if(tipe_group=='customer')
                     {
@@ -179,9 +181,9 @@
                     {
                         $("#tabel_batal thead").html(kendaraan_th);
                     }
-                    else if(tipe_group=='driver')
+                    else if(tipe_group=='supplier')
                     {
-                        $("#tabel_batal thead").html(driver_th);
+                        $("#tabel_batal thead").html(supplier_th);
                     }
                     var data = response.data;
                     console.log(data);
@@ -192,26 +194,29 @@
                             {
                                 row.append(`<td>${data[i].get_customer.nama}</td>`);//customer
                                 row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}</td>`);//sewa
-                                row.append(`<td>${data[i].nama_tujuan} - [${data[i].no_polisi} (${data[i].karoseri?data[i].karoseri:'-'})]</td>`);//tujuan dan kendaraan
-                                row.append(`<td>${data[i].get_karyawan?data[i].get_karyawan.nama_panggilan:'DRIVER REKANAN : '+data[i].get_supplier.nama}</td>`);//driver
+                                row.append(`<td>${data[i].nama_tujuan} </td>`);//tujuan
+                                row.append(`<td>${data[i].no_polisi} </td>`);//kendaraan
+                                row.append(`<td>${data[i].get_supplier.nama} </td>`);//supplier
                               
                             }   
                             else if(tipe_group=='kendaraan')
                             {
-                                row.append(`<td>${data[i].no_polisi} (${data[i].karoseri?data[i].karoseri:'-'})</td>`);//nopol
+                                row.append(`<td>${data[i].no_polisi}</td>`);//kendaraan
                                 row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}</td>`);//sewa
-                                row.append(`<td>${data[i].get_customer.nama} - [${data[i].nama_tujuan}]</td>`);//customer dan tujuan
-                                row.append(`<td>${data[i].get_karyawan?data[i].get_karyawan.nama_panggilan:'DRIVER REKANAN : '+data[i].get_supplier.nama}</td>`);//driver
+                                row.append(`<td>${data[i].get_customer.nama}</td>`);//customer
+                                row.append(`<td>${data[i].nama_tujuan} </td>`);//tujuan
+                                row.append(`<td>${data[i].get_supplier.nama} </td>`);//supplier
                             }
-                            else if(tipe_group=='driver')
+                            else if(tipe_group=='supplier')
                             {
-                                row.append(`<td>${data[i].get_karyawan?data[i].get_karyawan.nama_panggilan:'DRIVER REKANAN : '+data[i].get_supplier.nama}</td>`);//driver
+                                row.append(`<td>${data[i].get_supplier.nama} </td>`);//supplier
                                 row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}</td>`);//sewa
-                                row.append(`<td>${data[i].get_customer.nama} - [${data[i].nama_tujuan}]</td>`);//customer dan tujuan
-                                row.append(`<td>${data[i].no_polisi} (${data[i].karoseri?data[i].karoseri:'-'})</td>`);//kendaraan
+                                row.append(`<td>${data[i].get_customer.nama}</td>`);//customer
+                                row.append(`<td>${data[i].nama_tujuan} </td>`);//tujuan
+                                row.append(`<td>${data[i].no_polisi}</td>`);//kendaraan
                             }
-                            row.append(`<td>${dateMask(data[i].get_batal_cancel.tgl_batal_muat_cancel)}</td>`);
-                            row.append(`<td>${data[i].get_batal_cancel.alasan_batal}</td>`);
+                            row.append(`<td>${data[i].no_kontainer}</br>${data[i].no_surat_jalan}</td>`);
+                            row.append(`<td>${data[i].tanggal_kembali?dateMask(data[i].tanggal_kembali):'Belum Kembali'}</td>`);
                             $("#tabel_batal").append(row);
                         }
                     }
@@ -249,7 +254,7 @@
                                     filename: function () {
                                         const dateOptions = { day: 'numeric', month: 'long', year: 'numeric' };
                                         const formattedDate = new Date().toLocaleDateString('en-US', dateOptions);
-                                        return 'Lap Batal Muat (' + formattedDate + ')';
+                                        return 'Lap Kendaraan Dijual (' + formattedDate + ')';
                                     },
                                 },
                             ],
