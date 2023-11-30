@@ -1067,7 +1067,7 @@ class DalamPerjalananController extends Controller
             ->distinct()
             ->leftJoin('karyawan_hutang as kh', function($join) {
                 $join->on('k.id', '=', 'kh.id_karyawan')
-                ->where('kh.is_aktif', '=', "Y")
+                // ->where('kh.is_aktif', '=', "Y")
                 ->where('kh.is_aktif', '=', "Y");
             })
             ->leftJoin('sewa as s', function($join)use ($id) {
