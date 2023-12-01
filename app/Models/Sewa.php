@@ -58,6 +58,13 @@ class Sewa extends Model
          
     }   
 
+    public function sewaOperasionaSales()
+    {
+        return $this->hasMany(SewaOperasional::class, 'id_sewa', 'id_sewa')
+        ->where('is_aktif', 'Y')
+        ->where('is_ditagihkan','<>' ,'N');
+    }   
+
      public function sewaOperasionalPisah()
     {
         return $this->hasMany(SewaOperasional::class, 'id_sewa', 'id_sewa')

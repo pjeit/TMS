@@ -322,7 +322,7 @@
               <li class="nav-item">
                 <a href="{{route('job_order.index')}}" style="font-weight: 500;"
                   class="nav-link {{request()->is('job_order*') ? 'active' : ''  }}">
-                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <i class="fa fa-solid fa-trailer nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Job Order
                   </p>
@@ -336,7 +336,7 @@
                 <a href="{{route('storage_demurage.index')}}"
                   class="nav-link {{request()->url() === route('storage_demurage.index')? ' active' : '' }} "
                   style="font-weight: 500;">
-                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <i class="fa fa-solid fa-file-signature nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Input S/D/T
                   </p>
@@ -350,7 +350,7 @@
                 <a href="{{route('pengembalian_jaminan.index')}}"
                   class="nav-link {{ request()->is('pengembalian_jaminan*')? ' active' : '' }} "
                   style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <i class="far fa-solid fa-calendar nav-icon" style="font-size: 15px;"></i>
                   <p>
                     <span style="font-size: 13.9px;">Pengembalian Jaminan</span>
                   </p>
@@ -363,7 +363,7 @@
               <li class="nav-item">
                 <a href="{{route('karantina.index')}}"
                   class="nav-link {{ request()->is('karantina*') ? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
                   <p>
                     Input Karantina
                   </p>
@@ -407,7 +407,7 @@
               <li class="nav-item">
                 <a href="{{route('truck_order.index')}}" style="font-weight: 500;"
                   class="nav-link {{ request()->is('truck_order*') ||  request()->is('truck_order/create') || request()->is('truck_order/*/edit') ? ' active' : '' }}">
-                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <i class="fa fa-solid fa-sort nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Order
                   </p>
@@ -421,7 +421,7 @@
                 <a href="{{route('status_kendaraan.index')}}"
                   class="nav-link {{request()->url() === route('status_kendaraan.index')? ' active' : '' }} "
                   style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <i class="fa fa-solid fa-info nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Status Kendaraan
                   </p>
@@ -1148,8 +1148,12 @@
           </li>
           @endif
 
-          <li class="nav-item {{ request()->is('laporan_batal_muat')||
-            request()->is('laporan_kendaraan_dijual*')  ? 'menu-is-opening menu-open' : '' }}">
+          <li class="nav-item {{ 
+            request()->is('laporan_batal_muat')||
+            request()->is('laporan_kendaraan_dijual*')  ||
+            request()->is('laporan_sales*') 
+            
+            ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-solid fa-id-badge"></i>
               <p>LAPORAN ADMIN
@@ -1168,6 +1172,16 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{route('laporan_sales.index')}}"
+                  class="nav-link {{request()->url() === route('laporan_sales.index')? ' active' : '' }} "
+                  style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                   Laporan Sales
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{route('laporan_kendaraan_dijual.index')}}"
                   class="nav-link {{request()->url() === route('laporan_kendaraan_dijual.index')? ' active' : '' }} "
                   style="font-weight: 500;">
@@ -1177,11 +1191,8 @@
                   </p>
                 </a>
               </li>
-             
             </ul>
           </li>
-
-          
         </ul>
       </nav>
     </div>

@@ -311,6 +311,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('laporan_kendaraan_dijual', [App\Http\Controllers\LaporanKendaraanRekananDijualController::class, 'index_laporan_kendaraan_dijual'])->name('laporan_kendaraan_dijual.index');
         Route::get('laporan_kendaraan_dijual/load_data_ajax', [App\Http\Controllers\LaporanKendaraanRekananDijualController::class, 'load_data_ajax'])->name('laporan_kendaraan_dijual.load_data_ajax');
 
+        Route::get('laporan_sales', [App\Http\Controllers\LaporanSalesController::class, 'index_laporan_sales'])->name('laporan_sales.index');
+        Route::get('laporan_sales/load_data_ajax', [App\Http\Controllers\LaporanSalesController::class, 'load_data_ajax'])->name('laporan_sales.load_data_ajax');
+
         // ===================================LAPORAN ADMIN=========================================================
 
 
