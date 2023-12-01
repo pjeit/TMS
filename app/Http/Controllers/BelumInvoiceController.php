@@ -373,10 +373,6 @@ class BelumInvoiceController extends Controller
                 $invoicePisah->is_aktif = 'Y';
                 if($invoicePisah->save()){
                     $total_tagih = 0;
-                    // dd(json_decode($data['detail'][483]['addcost_details']));
-                    // dd(json_decode($data['detail'][482]['addcost_details']));
-                    // dd(json_decode($data['detail'][483]['addcost_baru']));
-                    // dd(json_decode($data['detail'][482]['addcost_baru']));
 
                     foreach ($data['detail'] as $key => $value) {
                         $is_invoice_detail_pisah = false;
@@ -386,15 +382,19 @@ class BelumInvoiceController extends Controller
                         $result = array_filter($dataAddcost, function ($addcost) {
                             return $addcost->is_ditagihkan === "Y" && $addcost->is_dipisahkan === "Y";
                         });
-                        $resultx = array_filter($addcost_baru, function ($addcost_baru) {
-                            return $addcost_baru->is_ditagihkan === "Y" && $addcost_baru->is_dipisahkan === "Y";
-                        });
-                        
                         if (!empty($result)) {
                             $is_invoice_detail_pisah = true;
                         }
-                        if (!empty($resultx)) {
-                            $is_invoice_detail_pisah = true;
+
+                        if($addcost_baru != null){
+                            $result_baru = array_filter($addcost_baru, function ($addcost_baru) {
+                                return $addcost_baru->is_ditagihkan === "Y" && $addcost_baru->is_dipisahkan === "Y";
+                            });
+
+                            if (!empty($result_baru)) {
+                                $is_invoice_detail_pisah = true;
+                            }
+
                         }
 
                         if($is_invoice_detail_pisah == true){

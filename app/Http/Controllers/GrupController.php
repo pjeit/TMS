@@ -40,11 +40,10 @@ class GrupController extends Controller
         //   $hasAllPermissions = count(array_diff($semuaAkses, $userAkses)) === 0;
         // dd($hasAllPermissions);
 
-        $data = DB::table('grup')
-            ->where('is_aktif', '=', "Y")
-            ->orderBy('nama_grup', 'ASC')
-            ->orderBy('nama_pic', 'ASC')
-            ->get();
+        $data = Grup::where('is_aktif', "Y")
+                    ->orderBy('nama_grup', 'ASC')
+                    ->orderBy('nama_pic', 'ASC')
+                    ->get();
 
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";

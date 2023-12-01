@@ -418,8 +418,11 @@
             var modal_pph23 = normalize($('#modal_pph23').val());
             var modal_bayar = normalize($('#modal_bayar').val());
 
-            let val = modal_bayar>modal_sisa_invoice? modal_sisa_invoice:modal_bayar;
-            $('#modal_pph23').val( moneyMask(modal_sisa_invoice-val) );
+            let val = this.value;
+            if(modal_bayar+modal_pph23 > modal_sisa_invoice){
+                val = modal_sisa_invoice;
+                $('#modal_pph23').val( moneyMask(0) );
+            }
             this.value = val;
         });
         $(document).on('keyup', '#modal_pph23', function (event) {

@@ -45,7 +45,7 @@
                 <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
             <div class="card-body" >
-               <ul class="nav nav-tabs mb-3 mt-3 nav-fill" id="justifyTab" role="tablist">
+                <ul class="nav nav-tabs mb-3 mt-3 nav-fill" id="justifyTab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link nav-link-tab active" id="justify-data-tab" data-toggle="tab" href="#justify-data" role="tab" aria-controls="justify-data" aria-selected="true">Data</a>
                             </li>
@@ -76,9 +76,6 @@
                                                             @enderror
                                                         </div>
                                                     </div>
-
-
-                                                    
                                                 </div>
                                                 
                                                 <div class="row">
@@ -89,7 +86,6 @@
                                                             <option value="">Pilih Kendaraan</option>
 
                                                             @foreach ($dataKendaraan as $kendaraan)
-                                                            
                                                                 <option value="{{$kendaraan->kendaraanId}}"
                                                                     idChassis='{{$kendaraan->chassisId}}'
                                                                     noPol='{{$kendaraan->no_polisi}}'
@@ -128,11 +124,11 @@
                                                         <label for="">Jenis Klaim<span class="text-red">*</span></label>
                                                         <select class="form-control select2  @error('select_klaim') is-invalid @enderror" style="width: 100%;" id='select_klaim' name="select_klaim">
                                                             <option value="" >Pilih Jenis Klaim</option>
-                                                            <option value="Ban" {{$klaimSupir->jenis_klaim=='Ban'?'selected':''}}>Ban</option>
-                                                            <option value="CuciMobil" {{$klaimSupir->jenis_klaim=='CuciMobil'?'selected':''}}>Cuci Mobil</option>
-                                                            <option value="Sparepart" {{$klaimSupir->jenis_klaim=='Sparepart'?'selected':''}}>Sparepart</option>
-                                                            <option value="Tol" {{$klaimSupir->jenis_klaim=='Tol'?'selected':''}}>Tol</option>
-                                                            <option value="Lainlain" {{$klaimSupir->jenis_klaim=='Lainlain'?'selected':''}}>Lain-lain</option>
+                                                            <option value="BAN" {{$klaimSupir->jenis_klaim=='BAN'?'selected':''}}>Ban</option>
+                                                            <option value="CUCI MOBIL" {{$klaimSupir->jenis_klaim=='CUCI MOBIL'?'selected':''}}>Cuci Mobil</option>
+                                                            <option value="SPARE PART" {{$klaimSupir->jenis_klaim=='Sparepart'?'selected':''}}>Spare Part</option>
+                                                            <option value="TOL" {{$klaimSupir->jenis_klaim=='TOL'?'selected':''}}>Tol</option>
+                                                            <option value="LAIN LAIN" {{$klaimSupir->jenis_klaim=='LAIN LAIN'?'selected':''}}>Lain-lain</option>
 
                                                             {{-- @foreach ($datajO as $jo)
                                                                 <option value="{{$jo->id}}-{{$jo->id_customer}}">{{ $jo->no_bl }} / {{ $jo->getCustomer->kode }} / {{ $jo->getSupplier->nama }}</option>

@@ -16,6 +16,10 @@
     .select2 {
         width:100%!important;
     }
+    .dtrg-end {
+        padding: 0px!important;
+        margin: 0px!important;
+    }
 </style>
 <div class="container-fluid">
     <div class="card">
@@ -49,11 +53,11 @@
                         </div>
                         <div class="col-lg-6 col-md-4 col-sm-12 d-flex flex-column" style="border-left: 1px solid gray">
                             <div class="form-group ">
-                                <label for="">Billing to<span class="text-red">*</span></label>
-                                <select width="100%" class="form-control select2" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                    <option value="ALL DATA">── Semua Customer ──</option>
-                                    @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}">[{{ $customer->kode }}] {{ $customer->nama }}</option>
+                                <label for="">Supplier<span class="text-red">*</span></label>
+                                <select width="100%" class="form-control select2" name="supplier" id="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                    <option value="SEMUA SUPPLIER">── Semua Supplier ──</option>
+                                    @foreach ($suppliers as $supplier)
+                                        <option value="{{ $supplier['id'] }}">{{ $supplier['nama'] }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -61,6 +65,7 @@
                             <div class="form-group ">
                                 <label for="">Status <span class="text-red">*</span></label>
                                 <select width="100%" class="form-control select2" name="status" id="status" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
+                                    <option value="SEMUA STATUS">SEMUA STATUS</option>
                                     <option value="LUNAS">LUNAS</option>
                                     <option value="BELUM LUNAS">BELUM LUNAS</option>
                                 </select>
@@ -81,21 +86,22 @@
         </div>
         
         <div class="card-body" style="overflow: auto;">
-            <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;" id="invoice">
-                <thead>
+            <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;" id="tagihan_pembelian">
+                <thead id="header">
                     <tr>
-                        <th>Customer</th>
-                        <th>No. Invoice</th>
-                        <th>Tgl. Invoice</th>
+                        <th>Supplier</th>
+                        <th>No. Nota</th>
+                        <th>Tgl. Nota</th>
                         <th>Jatuh Tempo</th>
                         <th>Tgl. Pembayaran Terakhir</th>
-                        <th>Tagihan	PPh23</th>
+                        <th>Tagihan</th>
+                        <th>PPh23</th>
                         <th>Bayar</th>
                         <th>Sisa Tagihan</th>
                     </tr>
                 </thead>
                 <tbody id="result">
-                    
+                
                 </tbody>
             </table>
         </div>
@@ -121,17 +127,18 @@
         $(document).on('click', '.show', function(e){
             let tgl_mulai   = $('#tanggal_awal').val();
             let tgl_akhir   = $('#tanggal_akhir').val();
-            let customer    = $('#customer').val();
+            let supplier    = $('#supplier').val();
             let status      = $('#status').val();   
 
             // Build the URL with parameters
-            let url = `laporan_invoice_trucking/load_data?tgl_mulai=${tgl_mulai}&tgl_akhir=${tgl_akhir}&customer=${customer}&status=${status}`;
+            let url = `laporan_tagihan_pembelian/load_data?tgl_mulai=${tgl_mulai}&tgl_akhir=${tgl_akhir}&supplier=${supplier}&status=${status}`;
 
             fetch(url)
             .then(response => response.json())
             .then(datas => {
-                $('#invoice').DataTable().destroy();
-                $('#invoice tbody').empty();
+                $('#tagihan_pembelian').DataTable().destroy();
+                // $('#klaim thead').empty();
+                $('#tagihan_pembelian tbody').empty();
 
                 if(datas.result == 'success'){
                     const data = datas.data;
@@ -140,34 +147,49 @@
                     if(data.length > 0){
                         for (let i = 0; i < data.length; i++) {
                             var row = $("<tr></tr>");
-                            row.append(`<td>[${data[i].get_billing_to.kode}] ${data[i].get_billing_to.nama}</td>`);
-                            row.append(`<td>${data[i].no_invoice}</td>`);
-                            row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
+                            row.append(`<td>${data[i].get_supplier.nama}</td>`);
+                            row.append(`<td>${data[i].no_nota}</td>`);
+                            row.append(`<td>${dateMask(data[i].tgl_nota)}</td>`);
                             row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
-                            row.append(`<td>${dateMask(Date(data[i].updated_at))}</td>`);
-                            row.append(`<td>${moneyMask(data[i].pph)}</td>`);
-                            row.append(`<td>${moneyMask(data[i].total_dibayar)}</td>`);
-                            row.append(`<td>${moneyMask(data[i].total_sisa)}</td>`);
+                            row.append(`<td>${data[i].get_pembayaran != null? dateMask(data[i].get_pembayaran.tgl_bayar):'-'}</td>`);
+                            row.append(`<td style='text-align: end'>${data[i].total_tagihan != null? moneyMask(data[i].total_tagihan):0}</td>`);
+                            row.append(`<td style='text-align: end'>${data[i].pph != null? moneyMask(data[i].pph):0}</td>`);
+                            row.append(`<td style='text-align: end'>${data[i].tagihan_dibayarkan != null? moneyMask(data[i].tagihan_dibayarkan):0}</td>`);
+                            row.append(`<td style='text-align: end'>${data[i].sisa_tagihan != null? moneyMask(data[i].sisa_tagihan):0}</td>`);
                             $("#result").append(row);
                         }
                     }
                 }
                 
-                var fileName = 'Laporan Invoice Trucking ' +  dateMask(Date.now());
-                
-                $('#invoice').DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [
-                        {
-                            extend: 'excel',
-                            filename: fileName,
-                        }
-                    ],
-                    order: [
-                        [0, 'asc'], 
-                    ],
+                $('#tagihan_pembelian').DataTable({
+                    "responsive": true,
+                    order: [[0, 'asc']],
                     rowGroup: {
                         dataSrc: [0] 
+                    },
+                    rowGroup: {
+                        endRender: function ( rows, group ) {
+                            let tagihan = pph = bayar = sisa = 0;
+
+                            for (let i = 0; i < rows.data().length ; i++) {
+                                let colTagihan = rows.data().pluck(5)[i];
+                                let colPph = rows.data().pluck(6)[i];
+                                let colBayar = rows.data().pluck(7)[i];
+                                let colSisa = rows.data().pluck(8)[i];
+
+                                tagihan += parseFloat(colTagihan.replace(/,/g, ''));
+                                pph += parseFloat(colPph.replace(/,/g, ''));
+                                bayar += parseFloat(colBayar.replace(/,/g, ''));
+                                sisa += parseFloat(colSisa.replace(/,/g, ''));
+                            }
+                            return $('<tr/>')
+                                        .append('<th style="background: #8fff91" colspan="4"><strong>Total :</strong></th>')
+                                        .append('<th style="text-align: end; background: #8fff91;"><strong>' + moneyMask(tagihan) + '</strong></th>')
+                                        .append('<th style="text-align: end; background: #8fff91;"><strong>' + moneyMask(pph) + '</strong></th>')
+                                        .append('<th style="text-align: end; background: #8fff91;"><strong>' + moneyMask(bayar) + '</strong></th>')
+                                        .append('<th style="text-align: end; background: #8fff91;"><strong>' + moneyMask(sisa) + '</strong></th>');
+                        }, 
+                        // startRender: null // ini buat nge hide row group yg di atas
                     },
                     columnDefs: [
                         {
@@ -182,6 +204,7 @@
                     searching: false,   // Disable searching
                     paging: false,      // Disable pagination
                     // ordering: false,    // Disable ordering
+
                     "language": {
                         "emptyTable": "Data tidak ditemukan."
                     }

@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
 use App\Helper\SewaDataHelper;
+use App\Models\Customer;
 use App\Models\PengaturanKeuangan;
 use App\Models\SewaBiaya;
 use App\Models\SewaOperasional;
@@ -71,14 +72,9 @@ class SewaController extends Controller
         
         try {
             $data = $request->collect();
-            // dd($data);
-
             $pengaturan = PengaturanKeuangan::first();
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
-            // dd($data['stack_tl']);
-            //    $sewa->total_uang_jalan = $data['stack_tl'] == 'tl_teluk_lamong'?$data['uang_jalan']+$data['stack_teluk_lamong_hidden']:$data['uang_jalan'];
-            // dd($data['uang_jalan']+$data['stack_teluk_lamong_hidden']);
             $lastNoSewa = Sewa::where('is_aktif', 'Y')
                         ->where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
                         ->orderBy('no_sewa', 'DESC')
@@ -134,7 +130,10 @@ class SewaController extends Controller
             $sewa->is_aktif = 'Y';
             
             if($sewa->save()){
+                $biaya_tl = 0;
                 if($data['stack_tl'] == 'tl_teluk_lamong'){
+                    $biaya_tl += $data['stack_teluk_lamong_hidden'];
+
                     DB::table('sewa_biaya')
                         ->insert(array(
                         'id_sewa' => $sewa->id_sewa,
@@ -148,17 +147,6 @@ class SewaController extends Controller
                     ); 
                 }
 
-                $customer = DB::table('customer as c')
-                    ->select('c.*')
-                    ->where('c.id', '=', $data['customer_id'])
-                    ->where('c.is_aktif', '=', "Y")
-                    ->first();
-                $grup = DB::table('grup as g')
-                    ->select('g.*')
-                    ->where('g.id', '=', $customer->grup_id)
-                    ->where('g.is_aktif', '=', "Y")
-                    ->first();
-
                 if ($data['jenis_tujuan'] === "LTL") {
                     $harga = (float)$data['harga_per_kg'] * $data['min_muatan'];
                 } else {
@@ -166,22 +154,15 @@ class SewaController extends Controller
                 }
 
                 // update kredit grup + customer
-                    DB::table('customer')
-                        ->where('id', $data['customer_id'])
-                        ->update([
-                            'kredit_sekarang' => (float)$customer->kredit_sekarang+$harga,
-                            'updated_at' => now(),
-                            'updated_by' => $user,
-                    ]);
-
-                    DB::table('grup')
-                        ->where('id', $customer->grup_id)
-                        ->update([
-                            'total_kredit' => (float)$grup->total_kredit+$harga,
-                            'updated_at' => now(),
-                            'updated_by' => $user,
-                    ]);
+                    $customer = Customer::where('is_aktif', '=', "Y")->find($data['customer_id']);
+                    if($customer){
+                        $customer->kredit_sekarang += $harga + $biaya_tl;
+                        $customer->updated_by = $user;
+                        $customer->updated_at = now();
+                        $customer->save();
+                    }
                 ///
+
                 if(isset($data['booking_id'])){
                     DB::table('booking')
                         ->where('id', $data['booking_id'])
@@ -191,19 +172,19 @@ class SewaController extends Controller
                             'updated_by' => $user,
                     ]);
                 }
+
                 if(isset($data['select_jo']) && isset($data['id_jo_detail']))
                 {
                     DB::table('job_order_detail')
-                        ->where('id', $data['id_jo_detail'])
-                        ->update([
-                            'tgl_dooring' => date_format($tgl_berangkat, 'Y-m-d'),
-                            'status'=> 'PROSES DOORING',
-                            'updated_at' => now(),
-                            'updated_by' => $user,
-                        ]);
-                    
+                    ->where('id', $data['id_jo_detail'])
+                    ->update([
+                        'tgl_dooring' => date_format($tgl_berangkat, 'Y-m-d'),
+                        'status'=> 'PROSES DOORING',
+                        'updated_at' => now(),
+                        'updated_by' => $user,
+                    ]);
                 }
-              
+                
                 $arrayBiaya = json_decode($data['biayaDetail'], true);
                 if(isset($arrayBiaya))
                 {
@@ -391,33 +372,13 @@ class SewaController extends Controller
                 }
             
                 // update kredit grup + customer
-                $customer = DB::table('customer as c')
-                    ->select('c.*')
-                    ->where('c.id', '=', $data['customer_id'])
-                    ->where('c.is_aktif', '=', "Y")
-                    ->first();
-
-                $grup = DB::table('grup as g')
-                    ->select('g.*')
-                    ->where('g.id', '=', $customer->grup_id)
-                    ->where('g.is_aktif', '=', "Y")
-                    ->first();
-                    
-                DB::table('customer')
-                    ->where('id', $data['customer_id'])
-                    ->update([
-                        'kredit_sekarang' => (float)$customer->kredit_sekarang+$harga,
-                        'updated_at' => now(),
-                        'updated_by' => $user,
-                ]);
-
-                DB::table('grup')
-                    ->where('id', $customer->grup_id)
-                    ->update([
-                        'total_kredit' => (float)$grup->total_kredit+$harga,
-                        'updated_at' => now(),
-                        'updated_by' => $user,
-                ]);
+                $customer = Customer::where('is_aktif', "Y")->find($data['customer_id']);
+                if($customer){
+                    $customer->kredit_sekarang += $harga;
+                    $customer->updated_by = $user;
+                    $customer->updated_at = now();
+                    $customer->save();
+                }
 
                 $arrayBiaya = json_decode($data['biayaDetail'], true);
                 if(isset($arrayBiaya))
@@ -469,7 +430,7 @@ class SewaController extends Controller
                         
                         }
                     }else {
-                         $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
+                        $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
                             ->select('sb.*')
                             ->where('sb.id_sewa', $sewa->id_sewa)
                             ->where('sb.is_aktif', 'Y')
@@ -479,7 +440,6 @@ class SewaController extends Controller
                         //kalau ada tl nyantol di ubah jadi N
                         if($cek_sewa_biaya_TL)
                         {
-                            
                             DB::table('sewa_biaya')
                                 ->where('id_sewa', $sewa->id_sewa)
                                 ->where('deskripsi', 'TL')

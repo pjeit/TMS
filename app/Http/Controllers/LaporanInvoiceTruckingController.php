@@ -12,10 +12,10 @@ class LaporanInvoiceTruckingController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware('permission:READ_LAPORAN_INVOICE', ['only' => ['index']]);
-		// $this->middleware('permission:CREATE_LAPORAN_INVOICE', ['only' => ['create','store']]);
-		// $this->middleware('permission:EDIT_LAPORAN_INVOICE', ['only' => ['edit','update']]);
-		// $this->middleware('permission:DELETE_LAPORAN_INVOICE', ['only' => ['destroy']]);  
+        $this->middleware('permission:READ_LAPORAN_INVOICE_TRUCKING', ['only' => ['index', 'export']]);
+		$this->middleware('permission:CREATE_LAPORAN_INVOICE_TRUCKING', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_LAPORAN_INVOICE_TRUCKING', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_LAPORAN_INVOICE_TRUCKING', ['only' => ['destroy']]);  
     }
     
     public function index()
@@ -49,6 +49,7 @@ class LaporanInvoiceTruckingController extends Controller
                                     $where->where('billing_to', $data['customer']);
                                 }
                             })
+                            ->orderBy('id', 'DESC')
                             ->get();
 
             if(count($invoices)> 0){
