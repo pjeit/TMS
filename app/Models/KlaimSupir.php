@@ -25,5 +25,20 @@ class KlaimSupir extends Model
         'updated_at',
         'updated_by',
         'is_aktif',
-   ];
+    ];
+
+    public function karyawan()
+    {
+        return $this->hasOne(Karyawan::class, 'id', 'karyawan_id');
+    }
+
+    public function kendaraan()
+    {
+        return $this->hasOne(Head::class, 'id', 'kendaraan_id');
+    }
+
+    public function klaimRiwayat()
+    {
+        return $this->hasOne(KlaimSupirRiawayat::class, 'id_klaim', 'id');
+    }
 }

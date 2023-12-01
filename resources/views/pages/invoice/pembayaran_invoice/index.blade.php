@@ -327,7 +327,6 @@
                                             <i class="fa fa-list"></i>
                                         </button>
                                         <div class="dropdown-menu" >
-                                            
                                             `+
                                                 btn_edit
                                             +`

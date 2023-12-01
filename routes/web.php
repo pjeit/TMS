@@ -111,10 +111,21 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('laporan_invoice_trucking/load_data', 'App\Http\Controllers\LaporanInvoiceTruckingController@load_data')->name('laporan_invoice_trucking.load_data');
         Route::resource('laporan_invoice_trucking', 'App\Http\Controllers\LaporanInvoiceTruckingController');
+
+        Route::get('laporan_klaim_supir/load_data', 'App\Http\Controllers\LaporanKlaimSupirController@load_data')->name('laporan_klaim_supir.load_data');
+        Route::resource('laporan_klaim_supir', 'App\Http\Controllers\LaporanKlaimSupirController');
+        
+        Route::get('laporan_tagihan_pembelian/load_data', 'App\Http\Controllers\LaporanTagihanPembelianController@load_data')->name('laporan_tagihan_pembelian.load_data');
+        Route::resource('laporan_tagihan_pembelian', 'App\Http\Controllers\LaporanTagihanPembelianController');
+        
+        Route::get('laporan_pemutihan/load_data', 'App\Http\Controllers\LaporanPemutihanController@load_data')->name('laporan_pemutihan.load_data');
+        Route::resource('laporan_pemutihan', 'App\Http\Controllers\LaporanPemutihanController');
+        
+        Route::get('laporan_kredit_customer/load_data', 'App\Http\Controllers\LaporanKreditCustomerController@load_data')->name('laporan_kredit_customer.load_data');
+        Route::resource('laporan_kredit_customer', 'App\Http\Controllers\LaporanKreditCustomerController');
         
         // ===================================MASTER=========================================================
         
-       
         // ===================================INBOUND ORDER=========================================================
         Route::get('/job_order/cetak_jo/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'cetak_job_order'])->name('cetak_job_order.print');
         Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO'])->name('job_order.print');

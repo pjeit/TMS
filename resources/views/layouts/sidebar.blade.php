@@ -447,9 +447,9 @@
 
           @php
           $finance = [
-          'READ_BIAYA_OPERASIONAL', 'READ_KLAIM_SUPIR', 'READ_PEMBAYARAN_JO', 'READ_PEMBAYARAN_SDT',
-          'READ_PENCAIRAN_UJ_FTL', 'READ_PENCAIRAN_UJ_LTL', 'READ_CETAK_UJ', 'READ_PENCAIRAN_KOMISI_CUSTOMER',
-          'READ_PENCAIRAN_KOMISI_DRIVER'
+            'READ_BIAYA_OPERASIONAL', 'READ_KLAIM_SUPIR', 'READ_PEMBAYARAN_JO', 'READ_PEMBAYARAN_SDT',
+            'READ_PENCAIRAN_UJ_FTL', 'READ_PENCAIRAN_UJ_LTL', 'READ_CETAK_UJ', 'READ_PENCAIRAN_KOMISI_CUSTOMER',
+            'READ_PENCAIRAN_KOMISI_DRIVER'
           ];
           @endphp
           {{-- FINANCE --}}
@@ -492,6 +492,7 @@
               </li>
             </ul>
             @endcan
+
             @can('READ_KLAIM_SUPIR')
             <ul class="nav nav-treeview">
               <li class="nav-item">
@@ -1106,12 +1107,19 @@
           @endif
 
           @php
-          $laporan_finance = [ 'READ_LAPORAN_BANK', 'READ_LAPORAN_KAS' ];
+            $laporan_finance = [ 'READ_LAPORAN_INVOICE_TRUCKING', 'READ_LAPORAN_BANK', 'READ_LAPORAN_KAS', 'READ_LAPORAN_KLAIM_SUPIR',
+                                  'READ_LAPORAN_TAGIHAN_PEMBELIAN', 'READ_LAPORAN_PEMUTIHAN', 'READ_LAPORAN_KREDIT_CUSTOMER' ];
           @endphp
           {{-- LAPORAN FINANCE --}}
           @if (array_intersect($laporan_finance, $userAkses) != NULL)
-          <li class="nav-item {{ request()->is('laporan_kas*') ||
-                  request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}">
+          <li class="nav-item {{  request()->is('laporan_kas*') ||
+                                  request()->is('laporan_invoice_trucking*') ||
+                                  request()->is('laporan_klaim_supir*') ||
+                                  request()->is('laporan_tagihan_pembelian*') ||
+                                  request()->is('laporan_pemutihan*') ||
+                                  request()->is('laporan_kredit_customer*') ||
+                                  request()->is('laporan_bank*') ? 'menu-is-opening menu-open' : '' }}
+          ">
             <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-dollar-sign"></i>
               <p>LAPORAN FINANCE
@@ -1119,6 +1127,20 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+              
+              @can('READ_LAPORAN_INVOICE_TRUCKING')
+              <li class="nav-item">
+                <a href="{{route('laporan_invoice_trucking.index')}}"
+                  class="nav-link {{ request()->is('laporan_invoice_trucking*')? ' active' : '' }} "
+                  style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    <span style="font-size: 0.82em;">Laporan Invoice Trucking</span>
+                  </p>
+                </a>
+              </li>
+              @endcan
+
               @can('READ_LAPORAN_KAS')
               <li class="nav-item">
                 <a href="{{route('laporan_kas.index')}}"
@@ -1144,6 +1166,59 @@
                 </a>
               </li>
               @endcan
+
+              @can('READ_LAPORAN_KLAIM_SUPIR')
+                <li class="nav-item">
+                  <a href="{{route('laporan_klaim_supir.index')}}"
+                    class="nav-link {{request()->url() === route('laporan_klaim_supir.index')? ' active' : '' }} "
+                    style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Laporan Klaim Supir
+                    </p>
+                  </a>
+                </li>
+              @endcan
+
+              @can('READ_LAPORAN_TAGIHAN_PEMBELIAN')
+                <li class="nav-item">
+                  <a href="{{route('laporan_tagihan_pembelian.index')}}"
+                    class="nav-link {{request()->url() === route('laporan_tagihan_pembelian.index')? ' active' : '' }} "
+                    style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 0.74em;">Laporan Tagihan Pembelian</span>
+                    </p>
+                  </a>
+                </li>
+              @endcan
+
+              @can('READ_LAPORAN_PEMUTIHAN')
+                <li class="nav-item">
+                  <a href="{{route('laporan_pemutihan.index')}}"
+                    class="nav-link {{request()->url() === route('laporan_pemutihan.index')? ' active' : '' }} "
+                    style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Laporan Pemutihan
+                    </p>
+                  </a>
+                </li>
+              @endcan
+
+              @can('READ_LAPORAN_KREDIT_CUSTOMER')
+                <li class="nav-item">
+                  <a href="{{route('laporan_kredit_customer.index')}}"
+                    class="nav-link {{request()->url() === route('laporan_kredit_customer.index')? ' active' : '' }} "
+                    style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 0.81em;">Laporan Kredit Customer</span>
+                    </p>
+                  </a>
+                </li>
+              @endcan
+
             </ul>
           </li>
           @endif

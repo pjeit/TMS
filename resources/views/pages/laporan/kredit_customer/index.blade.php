@@ -16,6 +16,10 @@
     .select2 {
         width:100%!important;
     }
+
+    .dtrg-end {
+        background: #8fff91!important;
+    }
 </style>
 <div class="container-fluid">
     <div class="card">
@@ -51,23 +55,25 @@
                             <div class="form-group ">
                                 <label for="">Billing to<span class="text-red">*</span></label>
                                 <select width="100%" class="form-control select2" name="customer" id="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                    <option value="ALL DATA">── Semua Customer ──</option>
-                                    @foreach ($customers as $customer)
-                                        <option value="{{ $customer->id }}">[{{ $customer->kode }}] {{ $customer->nama }}</option>
+                                    <option value="SEMUA CUSTOMER">── Semua Customer ──</option>
+                                    @foreach ($customers as $item)
+                                        <option value="{{ $item->id }}">[{{ $item->kode }}] {{ $item->nama }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <div class="form-group ">
+                            {{-- <div class="form-group ">
                                 <label for="">Status <span class="text-red">*</span></label>
                                 <select width="100%" class="form-control select2" name="status" id="status" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
-                                    <option value="LUNAS">LUNAS</option>
-                                    <option value="BELUM LUNAS">BELUM LUNAS</option>
+                                    <option value="SEMUA STATUS">SEMUA STATUS</option>
+                                    <option value="ACCEPTED">DITERIMA</option>
+                                    <option value="REJECTED">DITOLAK</option>
+                                    <option value="PENDING">PENDING</option>
                                 </select>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="col-lg-2 col-md-4 col-sm-12 d-flex flex-column align-items-center justify-content-center" style="border-left: 1px solid gray">
-                            <div class="form-group ">
+                            <div class="form-group">
                                 <button type="button" class="btn btn-primary radiusSendiri show"><i class="fas fa-search"></i> <b> Tampilkan Data</b></button>
                             </div>
 
@@ -81,21 +87,18 @@
         </div>
         
         <div class="card-body" style="overflow: auto;">
-            <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;" id="invoice">
-                <thead>
+            <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;" id="pemutihan">
+                <thead id="header">
                     <tr>
                         <th>Customer</th>
-                        <th>No. Invoice</th>
-                        <th>Tgl. Invoice</th>
-                        <th>Jatuh Tempo</th>
-                        <th>Tgl. Pembayaran Terakhir</th>
-                        <th>Tagihan	PPh23</th>
-                        <th>Bayar</th>
-                        <th>Sisa Tagihan</th>
+                        <th>No. Invoice / No. Sewa</th>
+                        <th>Tgl Invoice</th>
+                        <th>Tgl Jatuh Tempo</th>
+                        <th>Jumlah</th>
                     </tr>
                 </thead>
                 <tbody id="result">
-                    
+                
                 </tbody>
             </table>
         </div>
@@ -122,16 +125,15 @@
             let tgl_mulai   = $('#tanggal_awal').val();
             let tgl_akhir   = $('#tanggal_akhir').val();
             let customer    = $('#customer').val();
-            let status      = $('#status').val();   
 
-            // Build the URL with parameters
-            let url = `laporan_invoice_trucking/load_data?tgl_mulai=${tgl_mulai}&tgl_akhir=${tgl_akhir}&customer=${customer}&status=${status}`;
+            let url = `laporan_kredit_customer/load_data?tgl_mulai=${tgl_mulai}&tgl_akhir=${tgl_akhir}&customer=${customer}`;
 
             fetch(url)
             .then(response => response.json())
             .then(datas => {
-                $('#invoice').DataTable().destroy();
-                $('#invoice tbody').empty();
+                $('#pemutihan').DataTable().destroy();
+                // $('#pemutihan thead').empty();
+                $('#pemutihan tbody').empty();
 
                 if(datas.result == 'success'){
                     const data = datas.data;
@@ -140,22 +142,18 @@
                     if(data.length > 0){
                         for (let i = 0; i < data.length; i++) {
                             var row = $("<tr></tr>");
-                            row.append(`<td>[${data[i].get_billing_to.kode}] ${data[i].get_billing_to.nama}</td>`);
-                            row.append(`<td>${data[i].no_invoice}</td>`);
-                            row.append(`<td>${dateMask(data[i].tgl_invoice)}</td>`);
-                            row.append(`<td>${dateMask(data[i].jatuh_tempo)}</td>`);
-                            row.append(`<td>${dateMask(Date(data[i].updated_at))}</td>`);
-                            row.append(`<td>${moneyMask(data[i].pph)}</td>`);
-                            row.append(`<td>${moneyMask(data[i].total_dibayar)}</td>`);
-                            row.append(`<td>${moneyMask(data[i].total_sisa)}</td>`);
+                            row.append(`<td>${data[i].customer}</td>`);
+                            row.append(`<td>${data[i].kode}</td>`);
+                            row.append(`<td>${data[i].tgl_invoice != null? dateMask(data[i].tgl_invoice):'' }</td>`);
+                            row.append(`<td>${data[i].jatuh_tempo != null? dateMask(data[i].jatuh_tempo):'' }</td>`);
+                            row.append(`<td style='text-align: end'>${moneyMask(data[i].total)}</td>`);
                             $("#result").append(row);
                         }
                     }
                 }
-                
-                var fileName = 'Laporan Invoice Trucking ' +  dateMask(Date.now());
-                
-                $('#invoice').DataTable({
+                var fileName = 'Laporan Kredit Customer ' +  dateMask(Date.now());
+
+                $('#pemutihan').DataTable({
                     dom: 'Bfrtip',
                     buttons: [
                         {
@@ -163,11 +161,21 @@
                             filename: fileName,
                         }
                     ],
-                    order: [
-                        [0, 'asc'], 
-                    ],
+                    order: [[0, 'asc']],
                     rowGroup: {
                         dataSrc: [0] 
+                    },
+                    rowGroup: {
+                        endRender: function ( rows, group ) {
+                            let total = 0;
+                            for (let i = 0; i < rows.data().length ; i++) {
+                                let jumlah = rows.data().pluck(4)[i];
+
+                                total += parseFloat(jumlah.replace(/,/g, ''));
+                            }
+                            return `<div class='d-flex justify-content-between'><div>Total:</div><div class=''>${moneyMask(total)}</div></div>`;
+                        }, 
+                        // startRender: null // ini buat nge hide row group yg di atas
                     },
                     columnDefs: [
                         {
