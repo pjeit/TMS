@@ -224,12 +224,12 @@
                                     $total_addcost_pisah = 0;
                                 @endphp
                                 @foreach ($item->sewaOperasional as $i => $oprs)
-                                    @if ($oprs->is_aktif == 'Y' && $oprs->is_dipisahkan == 'N')
+                                    @if ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y'&& $oprs->is_dipisahkan == 'N')
                                         <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
                                         @php
                                             $total_addcost += $oprs->total_operasional;
                                         @endphp
-                                    @elseif ($oprs->is_aktif == 'Y' && $oprs->is_dipisahkan == 'Y')
+                                    @elseif ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y'&& $oprs->is_dipisahkan == 'Y')
                                         @php
                                             $total_addcost_pisah += $oprs->total_operasional;
                                         @endphp
@@ -698,7 +698,7 @@
 
             $('#addcost_hidden_'+key).val( normalize($('#addcost').val()) );
             $('#addcost_pisah_hidden_'+key).val( normalize($('#addcost_pisah').val()) );
-            document.querySelector(".text_addcost_"+key).textContent = moneyMask( $('#addcost').val() );
+            document.querySelector(".text_addcost_"+key).textContent =  $('#addcost').val();
 
             $('#no_kontainer_hidden_'+key).val( $('#no_kontainer').val() );
             $('#no_seal_hidden_'+key).val( $('#no_seal').val() );
