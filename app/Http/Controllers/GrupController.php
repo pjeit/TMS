@@ -40,7 +40,7 @@ class GrupController extends Controller
         //   $hasAllPermissions = count(array_diff($semuaAkses, $userAkses)) === 0;
         // dd($hasAllPermissions);
 
-        $data = Grup::where('is_aktif', "Y")
+        $data = Grup::where('is_aktif', "Y")->with('customers')
                     ->orderBy('nama_grup', 'ASC')
                     ->orderBy('nama_pic', 'ASC')
                     ->get();

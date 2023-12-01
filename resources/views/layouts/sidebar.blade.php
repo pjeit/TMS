@@ -434,7 +434,7 @@
               <li class="nav-item">
                 <a href="{{route('dalam_perjalanan.index')}}" style="font-weight: 500;"
                   class="nav-link {{request()->is('dalam_perjalanan*') ? 'active' : ''  }}">
-                  <i class="fa fa-cubes nav-icon" style="font-size: 15px;"></i>
+                  <i class="fa fa-road nav-icon" style="font-size: 15px;"></i>
                   <p>
                     Dalam Perjalanan
                   </p>
