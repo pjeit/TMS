@@ -3,17 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\DB;
 use App\Models\Sewa;
-use Exception;
-class LaporanBatalMuatController extends Controller
+
+class LaporanKendaraanRekananDijualController extends Controller
 {
     //
-    public function index_laporan_batal_muat()
+    public function index_laporan_kendaraan_dijual()
     {
-        return view('pages.laporan.Admin.laporan_batal_muat',[
+        return view('pages.laporan.Admin.laporan_kendaraan_rekanan',[
                 'judul'=>"Laporan Batal Muat",
         ]);
     }
@@ -31,17 +28,10 @@ class LaporanBatalMuatController extends Controller
                         // ->select('sbc.tgl_batal_muat_cancel','sbc.alasan_batal','getCustomer','getTujuan','getKaryawan')
                         ->with('getCustomer')
                         ->with('getTujuan')
-                        ->with('getKaryawan')
-                        ->with('getBatalCancel')
                         ->with('getSupplier')
-                        ->has('getBatalCancel') 
-                        // ->leftJoin('sewa_batal_cancel as sbc', function($join) {
-                        //     $join->on('sewa.id_sewa', '=', 'sbc.id_sewa')
-                        //     ->where('sbc.jenis',  "BATAL")
-                        //     ->where('sbc.is_aktif', '=', "Y");
-                        // })
-                        // ->where('no_polisi', $item)
-                        // ->where('status', 'PROSES DOORING')
+                        ->has('getSupplier') 
+                        ->where('sewa.is_kembali', 'Y')
+                        ->whereNotNull('sewa.tanggal_kembali')
                         ->whereBetween('sewa.tanggal_berangkat', [date_format($tanggal_awal_convert, 'Y-m-d'), date_format($tanggal_akhir_convert, 'Y-m-d')])
                         ->get();
             return response()->json(["result" => "success", 'data' => $data], 200);

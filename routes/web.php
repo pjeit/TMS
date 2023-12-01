@@ -319,6 +319,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('laporan_batal_muat', [App\Http\Controllers\LaporanBatalMuatController::class, 'index_laporan_batal_muat'])->name('laporan_batal_muat.index');
         Route::get('laporan_batal_muat/load_data_ajax', [App\Http\Controllers\LaporanBatalMuatController::class, 'load_data_ajax'])->name('laporan_batal_muat.load_data_ajax');
 
+        Route::get('laporan_kendaraan_dijual', [App\Http\Controllers\LaporanKendaraanRekananDijualController::class, 'index_laporan_kendaraan_dijual'])->name('laporan_kendaraan_dijual.index');
+        Route::get('laporan_kendaraan_dijual/load_data_ajax', [App\Http\Controllers\LaporanKendaraanRekananDijualController::class, 'load_data_ajax'])->name('laporan_kendaraan_dijual.load_data_ajax');
+
         // ===================================LAPORAN ADMIN=========================================================
 
 

@@ -415,6 +415,8 @@ class DalamPerjalananController extends Controller
         // dd(/*isset(*/$data/*[0]['masuk_db'])*/); 
         // dd($dalam_perjalanan->jenis_order);
         // dd($data);
+         
+
         try {
            
             $dalam_perjalanan->catatan = isset($data['catatan'])? $data['catatan']:null;
@@ -424,7 +426,9 @@ class DalamPerjalananController extends Controller
             $dalam_perjalanan->no_kontainer = isset($data['no_kontainer'])? $data['no_kontainer']:null;
             if( $dalam_perjalanan->status == 'PROSES DOORING')
             {
-                $dalam_perjalanan->tanggal_kembali = isset($data['tanggal_kembali'])? date_create_from_format('Y-m-d', $data['tanggal_kembali']):null;
+                $tgl_kembali = date_create_from_format('d-M-Y', $data['tanggal_kembali']);
+
+                $dalam_perjalanan->tanggal_kembali = isset($tgl_kembali)? date_format($tgl_kembali, 'Y-m-d H:i:s'):null;
                 $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
                 $dalam_perjalanan->is_kembali = $data['is_kembali'];
                 if ($data['jenis_tujuan']=='LTL') {
@@ -1067,7 +1071,7 @@ class DalamPerjalananController extends Controller
             ->distinct()
             ->leftJoin('karyawan_hutang as kh', function($join) {
                 $join->on('k.id', '=', 'kh.id_karyawan')
-                ->where('kh.is_aktif', '=', "Y")
+                // ->where('kh.is_aktif', '=', "Y")
                 ->where('kh.is_aktif', '=', "Y");
             })
             ->leftJoin('sewa as s', function($join)use ($id) {

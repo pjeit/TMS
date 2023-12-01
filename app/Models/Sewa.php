@@ -23,7 +23,10 @@ class Sewa extends Model
     {
          return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan');
     }
-    
+    public function getBatalCancel(): HasOne
+    {
+         return $this->hasOne(SewaBatalCancel::class, 'id_sewa', 'id_sewa')->where('is_aktif', 'Y')->where('jenis', 'BATAL'); // id db sewa, id db sewadi batal cancel
+    }
     public function getCustomer()
     {
          return $this->hasOne(Customer::class, 'id', 'id_customer');
