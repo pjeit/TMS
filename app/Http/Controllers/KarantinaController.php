@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use Barryvdh\DomPDF\Facade\PDF; // use PDF;
+use Barryvdh\DomPDF\Facade\Pdf; // use PDF;
 class KarantinaController extends Controller
 {
     public function __construct()
@@ -142,7 +142,7 @@ class KarantinaController extends Controller
                 })
             ->where('kd.id_karantina', '=', $karantinaData->id)
             ->get();
-        $pdf = PDF::loadView('pages.finance.karantina.print',[
+        $pdf = Pdf::loadView('pages.finance.karantina.print',[
                     'judul'=>"Job Order",
                     'karantinaData'=>$karantinaData,
                     'karantina_detail'=>$karantina_detail,
