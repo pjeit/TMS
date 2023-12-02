@@ -197,6 +197,7 @@
                         $("#tabel_batal thead").html(driver_th);
                     }
                     var data = response.data;
+                    var dataOps = response.dataOps;
                     console.log(data);
                     if(data.length > 0){
                         for (var i = 0; i <data.length; i++) {

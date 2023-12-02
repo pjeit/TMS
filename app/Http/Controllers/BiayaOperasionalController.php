@@ -143,7 +143,7 @@ class BiayaOperasionalController extends Controller
                         
                         $sewa_o = new SewaOperasional();
                         $sewa_o->id_sewa = $key;
-                        $sewa_o->deskripsi = $item == 'OPERASIONAL'? 'OPERASIONAL' . ($value['pick_up'] != 'null'? ' '. $value['pick_up']:'') : $item;
+                        $sewa_o->deskripsi = $item == 'ALAT'? 'ALAT' . ($value['pick_up'] != 'null'? ' '. $value['pick_up']:'') : $item;
                         $sewa_o->catatan = $value['catatan'];
                         $sewa_o->total_operasional = $total_operasional;
                         $sewa_o->total_dicairkan = $dicairkan;
@@ -155,7 +155,7 @@ class BiayaOperasionalController extends Controller
                         $sewa_o->save();
 
                         // dd($data['data']);
-                        if($item == 'OPERASIONAL' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
+                        if($item == 'ALAT' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
                             $i=1;
                             $driver = $value['supplier'] != 'null'? $value['supplier']:$value['driver'];
         
@@ -217,7 +217,7 @@ class BiayaOperasionalController extends Controller
                 }
             }
 
-            if($item == 'OPERASIONAL' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
+            if($item == 'ALAT' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
                 foreach ($storeData as $key => $dump) {
 
                     $pembayaran = new SewaOperasionalPembayaran();
@@ -328,7 +328,7 @@ class BiayaOperasionalController extends Controller
             }else{
                 $data = DB::table('sewa AS s')
                         ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
-                            if($item == 'OPERASIONAL'){
+                            if($item == 'ALAT'){
                                 $join->on('s.id_sewa', '=', 'so.id_sewa')
                                     ->where('so.is_aktif', 'Y')
                                     ->where('so.deskripsi', 'like', $item.'%');
