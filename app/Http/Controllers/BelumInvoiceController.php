@@ -658,19 +658,13 @@ class BelumInvoiceController extends Controller
     }
     public function print($id)
     {
-        $data = Invoice::where('is_aktif', '=', "Y")->find($id);
+        $data = Invoice::where('is_aktif', '=', "Y")->with('invoiceDetails', 'invoiceDetails.invoiceDetailsAddCost.sewaOperasional')->find($id);
         if($data == null){
             return redirect()->route('cetak_invoice.index')->with(['status' => 'Error', 'msg'  => 'Data tidak ditemukan!']);
         }
 
-        $arrIdOperasional=[];
-        foreach ($data->invoiceDetailsCost as $key => $value) {
-            array_push( $arrIdOperasional, $value->id_sewa_operasional);
-        }
-        $dataOperasional = SewaOperasional::where('is_aktif', '=', "Y")
-                                        ->whereIn('id', $arrIdOperasional)
-                                        ->selectRaw('*, total_operasional as total')
-                                        ->get();
+        // dd($data);
+
 
         $TotalBiayaRev = 0;
         $qrcode = QrCode::size(150)
@@ -680,17 +674,14 @@ class BelumInvoiceController extends Controller
             'Total tagihan: ' .'Rp.' .number_format($data->total_tagihan,2) 
         );
         // dd($qrcode);
-        // dd($dataOperasional!='[]');   
         $pdf = Pdf::loadView('pages.invoice.belum_invoice.print',[
             'judul' => "Invoice",
             'data' => $data,
             'qrcode'=>$qrcode,
-            'dataOperasional'=>$dataOperasional
-
         ]);
         
         $pdf->setPaper('A4', 'portrait');
- 
+        
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true, // Enable HTML5 parser
             'isPhpEnabled' => true, // Enable inline PHP execution
@@ -712,7 +703,6 @@ class BelumInvoiceController extends Controller
         // $dataInvoiceAddCost = InvoiceDetailAddcost::where('is_aktif', '=', "Y")
         //     ->where('id_invoice', $id)
         //     ->get();
-      
 
         $arrIdOperasional=[];
         foreach ($data->invoiceDetailsCost as $key => $value) {

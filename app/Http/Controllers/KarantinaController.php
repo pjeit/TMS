@@ -29,11 +29,6 @@ class KarantinaController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
-        // $customer = JobOrder::where('is_aktif', 'Y')
-        //                     ->with('getCustomer', 'getDetails.getTujuan')
-        //                     ->groupBy('id_customer')
-        //                     ->get();
-
         $customer = DB::table('job_order as jo')
                         ->leftJoin('job_order_detail as jod', 'jod.id_jo', '=', 'jo.id')
                         ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
@@ -106,10 +101,11 @@ class KarantinaController extends Controller
                     }
                 }
             }
+
             DB::commit();
             return redirect()->route('karantina.index')
-            ->with('id_print_karantina', $karantina->id)
-            ->with(['status' => 'Success', 'msg'  => 'Pembayaran berhasil!']);
+                ->with('id_print_karantina', $karantina->id)
+                ->with(['status' => 'Success', 'msg'  => 'Pembayaran berhasil!']);
         } catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->route('karantina.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
@@ -117,9 +113,7 @@ class KarantinaController extends Controller
     }
     public function print($id)
     {
-         
-        
-         $karantinaData = DB::table('karantina as k')
+        $karantinaData = DB::table('karantina as k')
             ->select('k.*','c.nama as nama_customer','jo.kapal as nama_kapal','jo.voyage')
             ->where('k.is_aktif', '=', "Y")
             ->leftJoin('customer as c', function($join) {
@@ -132,8 +126,7 @@ class KarantinaController extends Controller
                 })
             ->where('k.id', '=', $id)
             ->first();
-        // dd($karantinaData);
-         $karantina_detail = DB::table('karantina_detail as kd')
+        $karantina_detail = DB::table('karantina_detail as kd')
             ->select('kd.*','jod.no_kontainer as no_kontainer','jod.tipe_kontainer as tipe_kontainer','jod.no_kontainer as seal')
             ->where('kd.is_aktif', '=', "Y")
             ->leftJoin('job_order_detail as jod', function($join) {
@@ -147,8 +140,7 @@ class KarantinaController extends Controller
                     'karantinaData'=>$karantinaData,
                     'karantina_detail'=>$karantina_detail,
             ]); 
-        // dd($JobOrder);
-        // $pdf->setPaper('A5', 'landscape');
+
         $pdf->setPaper('A5', 'portrait');
 
         $pdf->setOptions([
@@ -163,16 +155,6 @@ class KarantinaController extends Controller
         // return $pdf->download('fileCoba.pdf'); 
         // preview dulu
         return $pdf->stream($id.'.pdf'); 
-
-        //  return view('pages.order.job_order.print',[
-        //     'judul'=>"Job Order",
-        //     'JobOrder'=>$JobOrder,
-        //     'dataSupplier'=>$dataSupplier,
-        //     'dataCustomer'=>$dataCustomer,
-        //     'dataJoDetail'=>$dataJoDetail,
-        //     'dataJaminan'=>$dataJaminan,
-
-        // ]);
     }
 
     /**

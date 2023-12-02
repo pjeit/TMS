@@ -214,16 +214,14 @@
                             <td class="text-center">{{ $detail->sewa->no_polisi }} <br> &nbsp;</td>
                             <td class="text-right">{{ $detail->jumlah_muatan }} <br> &nbsp;</td>
                             <td class="text-right">{{ number_format($detail->tarif) }} <br> &nbsp;</td>
-                            <td class="text-right" {{--rowspan="27"--}}>
-                            @if ($dataOperasional!='[]')
-                                @foreach ($dataOperasional as $DO)
-                                    @if ($detail->id_sewa == $DO->id_sewa)
-                                        <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}} </>
-                                    @endif
-                                @endforeach
-                            @else
-                                -
-                            @endif
+                            <td class="text-right">
+                                @if ($detail->invoiceDetailsAddCost != null)
+                                    @foreach ($detail->invoiceDetailsAddCost as $add_cost)
+                                        <span style="font-size: 20px;">({{$add_cost->sewaOperasional->deskripsi}})</span>  {{ number_format($add_cost->sewaOperasional->total_dicairkan)}} </>
+                                    @endforeach
+                                @else
+                                    -
+                                @endif
                                 <br> &nbsp;
                             </td>
                             
@@ -232,20 +230,15 @@
                             <td>
                                 {{-- {{ $detail->sewa->getJOD->no_kontainer }} --}}
                                 {{ $detail->sewa->no_kontainer }}
-
-                                {{-- <br>{{ $detail->sewa->no_surat_jalan }} --}}
+                                {{-- <br> {{ $detail->sewa->no_surat_jalan }} --}}
                                 <br>{{ $detail->sewa->seal_pelayaran }}
                             </td>
                             <td class="text-center">{{ $detail->sewa->no_polisi }} <br> ( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
                             <td class="text-right"> {{ number_format($detail->tarif) }} <br> &nbsp; </td>
                             <td class="text-right" {{--rowspan="27"--}}> 
-                            @if ($dataOperasional!='[]')
-                                @foreach ($dataOperasional as $key => $DO)
-                                    @if ($detail->id_sewa == $DO->id_sewa)
-                                        @if ($key != 0)
-                                        @endif
-                                        <span style="font-size: 20px;">({{$DO->deskripsi}})</span> {{ number_format($DO->total)}} </br>
-                                    @endif
+                            @if ($detail->invoiceDetailsAddCost != null)
+                                @foreach ($detail->invoiceDetailsAddCost as $key => $add_cost)
+                                    <span style="font-size: 20px;">({{$add_cost->sewaOperasional->deskripsi}})</span> {{ number_format($add_cost->sewaOperasional->total_dicairkan)}} </br>
                                 @endforeach
                             @else
                                 -
@@ -262,14 +255,12 @@
                         </td>
                         <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
                         <td class="text-right" {{--rowspan="27"--}}>
-                            @if ($dataOperasional!='[]')
-                                @foreach ($dataOperasional as $key => $DO)
-                                    @if ($detail->id_sewa == $DO->id_sewa)
-                                        @if ($key != 0)
-                                            <br> 
-                                        @endif
-                                        <span style="font-size: 20px;">({{$DO->deskripsi}})</span>  {{ number_format($DO->total)}}
+                            @if ($detail->invoiceDetailsAddCost != null)
+                                @foreach ($detail->invoiceDetailsAddCost as $key => $add_cost)
+                                    @if ($key != 0)
+                                        <br> 
                                     @endif
+                                    <span style="font-size: 20px;">({{$add_cost->sewaOperasional->deskripsi}})</span>  {{ number_format($add_cost->sewaOperasional->total_dicairkan)}}
                                 @endforeach
                             @else
                                 -

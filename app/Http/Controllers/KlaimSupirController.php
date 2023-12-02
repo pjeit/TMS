@@ -642,7 +642,7 @@ class KlaimSupirController extends Controller
                     // {
                     //     $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                     //                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                    //                     ->where('jenis', 'uang_klaim_supir')
+                    //                     ->where('jenis', 'klaim_supir')
                     //                     ->first();
 
                     // }
@@ -655,7 +655,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //  dd($kas_bank_transaksi);
 
@@ -687,7 +687,7 @@ class KlaimSupirController extends Controller
 
                                 DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -718,7 +718,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -746,7 +746,7 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->save();
                                  DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -793,7 +793,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -819,9 +819,9 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->updated_by = $user;
                                 // $kas_bank_transaksi->is_aktif = 'N';
                                 // $kas_bank_transaksi->save();
-                                 DB::table('kas_bank_transaction')
+                                DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -845,7 +845,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat->save();   
 
                             //setelah itu update lagi kasbanknya, kan ini keluar uang kalo diterima
-                             $saldo = DB::table('kas_bank')
+                            $saldo = DB::table('kas_bank')
                                     ->select('*')
                                     ->where('is_aktif', '=', "Y")
                                     ->where('kas_bank.id', '=',  $data['kas'])
@@ -867,7 +867,7 @@ class KlaimSupirController extends Controller
                                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5004), //kode coa
-                                    'uang_klaim_supir',
+                                    'klaim_supir',
                                     'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
                                     $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
@@ -918,7 +918,7 @@ class KlaimSupirController extends Controller
                                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
-                                        'uang_klaim_supir',
+                                        'klaim_supir',
                                         'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
                                         $user,//created_by
@@ -1045,7 +1045,7 @@ class KlaimSupirController extends Controller
                     // {
                     //     $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                     //                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                    //                     ->where('jenis', 'uang_klaim_supir')
+                    //                     ->where('jenis', 'klaim_supir')
                     //                     ->first();
 
                     // }
@@ -1058,7 +1058,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //  dd($kas_bank_transaksi);
 
@@ -1090,7 +1090,7 @@ class KlaimSupirController extends Controller
 
                                 DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -1121,7 +1121,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -1149,7 +1149,7 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->save();
                                 //  DB::table('kas_bank_transaction')
                                 //     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                //     ->where('jenis', 'uang_klaim_supir')
+                                //     ->where('jenis', 'klaim_supir')
                                 //     ->where('is_aktif', 'Y')
                                 //     ->update(array(
                                 //         'updated_at'=> now(),
@@ -1164,7 +1164,7 @@ class KlaimSupirController extends Controller
                                         $klaim_supir_riwayat->total_pencairan,// debit 
                                         0, //uang keluar (kredit)
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
-                                        'uang_klaim_supir',
+                                        'klaim_supir',
                                         'Uang kembali tolak Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'].'# Alasan revisi tolak: '.$data['alasan_tolak'], //keterangan_transaksi, //keterangan_transaksi
                                         $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                         $user,//created_by
@@ -1208,7 +1208,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -1236,7 +1236,7 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->save();
                                  DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -1282,7 +1282,7 @@ class KlaimSupirController extends Controller
                                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
-                                    'uang_klaim_supir',
+                                    'klaim_supir',
                                     'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
                                     $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
@@ -1333,7 +1333,7 @@ class KlaimSupirController extends Controller
                                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
-                                        'uang_klaim_supir',
+                                        'klaim_supir',
                                         'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
                                         $user,//created_by

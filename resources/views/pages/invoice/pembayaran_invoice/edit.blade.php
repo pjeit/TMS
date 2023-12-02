@@ -1035,7 +1035,7 @@
                                     "is_ditagihkan":${JSON.stringify( tagih )},
                                     "is_dipisahkan":${JSON.stringify( pisah )},
                                     "catatan":${JSON.stringify( $('#addcost_catatan_'+id).val() )}
-                                  }`; 
+                                }`; 
 
                         if(is_new == true){
                             var obj = JSON.parse(myjson);

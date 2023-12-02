@@ -26,5 +26,10 @@ class InvoiceDetailAddcost extends Model
         return $this->belongsTo(InvoiceDetail::class, 'id', 'id_sewa_operasional');  //id target, id sendiri
     } 
 
+    public function sewaOperasional()
+    {
+        return $this->hasOne(SewaOperasional::class, 'id', 'id_sewa_operasional')->where('is_aktif', 'Y');  //id target, id sendiri
+    } 
+
 
 }
