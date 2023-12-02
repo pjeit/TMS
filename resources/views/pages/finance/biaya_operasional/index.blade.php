@@ -38,7 +38,7 @@
                                         <option value="">­­— PILIH DATA —</option>
                                         <option value="TALLY">TALLY</option>
                                         <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                        <option value="OPERASIONAL">ALAT</option>
+                                        <option value="ALAT">ALAT</option>
                                         <option value="TIMBANG">TIMBANG</option>
                                         <option value="BURUH">BURUH</option>
                                         <option value="LEMBUR">LEMBUR</option>
@@ -318,7 +318,9 @@
                                                         <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
                                                         <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
                                                     </td>`);
-                                        $("#hasil").append(row);
+                                        if(nominal != 0){
+                                            $("#hasil").append(row);
+                                        }
                                     }
                                 }
                             }

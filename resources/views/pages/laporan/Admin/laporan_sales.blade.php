@@ -197,6 +197,7 @@
                         $("#tabel_batal thead").html(driver_th);
                     }
                     var data = response.data;
+                    var dataOps = response.dataOps;
                     console.log(data);
                     if(data.length > 0){
                         for (var i = 0; i <data.length; i++) {
@@ -210,21 +211,36 @@
                             if(tipe_group=='customer')
                             {
                                 row.append(`<td>${data[i].nama_customer}</td>`);//customer
-                                row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}</td>`);//sewa
+                                
+                                        
+                                  
+                                row.append(`<td>
+                                         <a href="/laporan_sales/detail/${data[i].id_sewa}" >
+                                        ${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}
+                                        </a>
+                                    </td>`);//sewa
                                 row.append(`<td>${data[i].no_invoice?data[i].no_invoice:'Belum Invoice'}</td>`);//invoice
                                 row.append(`<td>${data[i].nama_tujuan} - [${data[i].no_polisi} (${data[i].nama_ekor?data[i].nama_ekor:'-'})]</td>`);//tujuan dan kendaraan
                             }   
                             else if(tipe_group=='kendaraan')
                             {
                                 row.append(`<td>${data[i].no_polisi} (${data[i].nama_ekor?data[i].nama_ekor:'-'})</td>`);//nopol
-                                row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)} </td>`);//sewa
+                                 row.append(`<td>
+                                         <a href="/laporan_sales/detail/${data[i].id_sewa}" >
+                                        ${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}
+                                        </a>
+                                    </td>`);//sewa
                                 row.append(`<td>${data[i].no_invoice?data[i].no_invoice:'Belum Invoice'}</td>`);//invoice
                                 row.append(`<td>${data[i].nama_customer} - [${data[i].nama_driver?data[i].nama_driver:'DRIVER REKANAN : '+data[i].nama_supplier}]</td>`);//customer dan driver
                             }
                             else if(tipe_group=='driver')
                             {
                                 row.append(`<td>${data[i].nama_driver?data[i].nama_driver:'DRIVER REKANAN : '+data[i].nama_supplier}</td>`);//driver
-                                row.append(`<td>${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}</td>`);//sewa
+                                 row.append(`<td>
+                                         <a href="/laporan_sales/detail/${data[i].id_sewa}" >
+                                        ${data[i].no_sewa} ${dateMask(data[i].tanggal_berangkat)}
+                                        </a>
+                                    </td>`);//sewa
                                 row.append(`<td>${data[i].no_invoice?data[i].no_invoice:'Belum Invoice'}</td>`);//invoice
                                 row.append(`<td>${data[i].nama_customer} - [${data[i].no_polisi} (${data[i].nama_ekor?data[i].nama_ekor:'-'})]</td>`);//customer dan tujuan
                             }

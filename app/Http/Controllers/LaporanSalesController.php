@@ -30,17 +30,12 @@ class LaporanSalesController extends Controller
             }elseif($tipe_group=='driver'){
                 $order_by='kw.nama_panggilan, kw.id, s.tanggal_berangkat, s.id_sewa';
             }
-            // $data = Sewa::where('sewa.is_aktif', 'Y')
-            //             // ->select('sbc.tgl_batal_muat_cancel','sbc.alasan_batal','getCustomer','getTujuan','getKaryawan')
-            //             ->with('getCustomer')
-            //             ->with('getTujuan')
-            //             ->with('getKaryawan')
-            //             ->with('getSupplier')
-            //             ->with('sewaOperasionaSales')
-            //             ->where('sewa.is_kembali', 'Y')
-            //             ->whereNotNull('sewa.tanggal_kembali')
-            //             ->whereBetween('sewa.tanggal_berangkat', [date_format($tanggal_awal_convert, 'Y-m-d'), date_format($tanggal_akhir_convert, 'Y-m-d')])
-            //             ->get();
+            $dataOps = Sewa::where('sewa.is_aktif', 'Y')
+                        ->with('sewaOperasionaSales')
+                        ->where('sewa.is_kembali', 'Y')
+                        ->whereNotNull('sewa.tanggal_kembali')
+                        ->whereBetween('sewa.tanggal_berangkat', [date_format($tanggal_awal_convert, 'Y-m-d'), date_format($tanggal_akhir_convert, 'Y-m-d')])
+                        ->get();
            $data = DB::table('sewa as s')
                     ->select(
                         's.id_sewa',
@@ -72,8 +67,7 @@ class LaporanSalesController extends Controller
                         // DB::raw("s.total_tarif - ifnull(trd.subtotal, ifnull(s.total_uang_jalan,0)) - ifnull(s.total_komisi,0) - ifnull(s.total_reimburse_aktual,0) + ifnull(id.tambahan,0) - ifnull(id.diskon,0) as total_profit"),
                         DB::raw("s.total_tarif - (ifnull(trd.total_tagihan, ifnull(s.total_uang_jalan,0)) - ifnull(s.total_komisi,0) - ifnull(s.total_komisi_driver,0))  as total_profit"),
                         'kw.nama_lengkap as nama_driver',
-                        'kw.nama_panggilan as panggilan_driver',
-                    )
+                        'kw.nama_panggilan as panggilan_driver')
                     ->leftJoin('kendaraan as k', 's.id_kendaraan', '=', 'k.id')
                     ->leftJoin('supplier as sp', 's.id_supplier', '=', 'sp.id')
                     ->leftJoin('chassis as chs', 's.id_chassis', '=', 'chs.id')
@@ -123,33 +117,34 @@ class LaporanSalesController extends Controller
                     ->where('s.is_aktif', '=', 'Y')
                     ->whereBetween(DB::raw('cast(s.tanggal_berangkat as date)'), [date_format($tanggal_awal_convert, 'Y-m-d'), date_format($tanggal_akhir_convert, 'Y-m-d')])
                     ->orderByRaw($order_by)
-                    ->groupBy('s.id_sewa',
-                        's.id_supplier',
-                        's.id_karyawan',
-                        's.no_polisi',
-                        's.id_customer',
-                        's.id_chassis',
+                    ->groupBy(//'s.id_sewa',
+                        // 's.id_supplier',
+                        // 's.id_karyawan',
+                        // 's.no_polisi',
+                        // 's.id_customer',
+                        // 's.id_chassis',
                         's.no_sewa',
-                        's.nama_tujuan',
-                        's.alamat_tujuan',
-                        's.total_tarif',
-                        's.total_komisi',
-                        's.total_komisi_driver',
-                        's.catatan',
-                        's.no_kontainer',
-                        's.no_surat_jalan',
-                        'sp.nama',
-                        'i.no_invoice',
-                        'nama_customer',
-                        'nama_ekor',
-                        'tanggal_berangkat',
-                        'tanggal_kembali',
-                        'total_uang_jalan',
-                        'total_profit',
-                        'nama_driver',
-                        'panggilan_driver')
+                        // 's.nama_tujuan',
+                        // 's.alamat_tujuan',
+                        // 's.total_tarif',
+                        // 's.total_komisi',
+                        // 's.total_komisi_driver',
+                        // 's.catatan',
+                        // 's.no_kontainer',
+                        // 's.no_surat_jalan',
+                        // 'sp.nama',
+                        // 'i.no_invoice',
+                        // 'nama_customer',
+                        // 'nama_ekor',
+                        // 'tanggal_berangkat',
+                        // 'tanggal_kembali',
+                        // 'total_uang_jalan',
+                        // 'total_profit',
+                        // 'nama_driver',
+                        // 'panggilan_driver'
+                        )
                     ->get();
-            return response()->json(["result" => "success", 'data' => $data], 200);
+            return response()->json(["result" => "success", 'data' => $data,'dataOps',$dataOps], 200);
         } catch (\Throwable $th) {
             //throw $th;
         return response()->json(["result" => "error", 'data' =>/*$request->input('tanggal_awal')*/$th->getMessage()], 500);

@@ -990,7 +990,7 @@ class DalamPerjalananController extends Controller
         $id = $data['id_sewa_hidden'];
         DB::beginTransaction(); 
 
-        dd($data);
+        // dd($data);
 
         try {
             $sewa = Sewa::where('is_aktif', 'Y')->where('id_sewa', $id)->first();
@@ -1005,6 +1005,7 @@ class DalamPerjalananController extends Controller
             $ujr->updated_by = $user;
             $ujr->updated_at = now();
             $ujr->is_aktif = 'N';
+            
             if($ujr->save()){
                 $kht = KaryawanHutangTransaction::where(['is_aktif' => 'Y', 
                                                         'id_karyawan' => $sewa->id_karyawan,
@@ -1044,9 +1045,28 @@ class DalamPerjalananController extends Controller
                     $riwayat->save();
                 }
             }
-
+            $cek_sewa_operasional_TL = DB::table('sewa_operasional as so')
+                                    ->select('so.*')
+                                    ->where('so.id_sewa',  $id)
+                                    ->where('so.is_aktif', 'Y')
+                                    ->where('so.deskripsi', 'TL')
+                                    ->first();
+            //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
+            //kalau ada tl nyantol di ubah jadi N
+            if($cek_sewa_operasional_TL )
+            {
+                DB::table('sewa_operasional')
+                    ->where('id_sewa',  $id)
+                    ->where('deskripsi', 'TL')
+                    ->update(array(
+                        'is_aktif' => "N",
+                        'updated_at'=> now(),
+                        'updated_by'=> $user, 
+                    )
+                );
+            }
             DB::commit();
-            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil merubah data supir!"]);
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil Mengembalikan uang jalan!"]);
 
         } catch (ValidationException $e) {
             DB::rollBack();
