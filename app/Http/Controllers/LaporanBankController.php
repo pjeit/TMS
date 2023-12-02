@@ -47,28 +47,36 @@ class LaporanBankController extends Controller
                 if(@subtotal >= 0, 0, abs(@subtotal)) as subtotal_kredit,
                 @kas_bank_id := d.id_kas_bank, d.id_kas_bank as id_kas_bank,
                 case
-                    when d.jenis = 'saldo_awal' then
-                    'Saldo Awal'
-                    when d.jenis = 'uang_jalan' then
-                    'Uang Jalan'
-                    when d.jenis = 'reimburse' then
-                    'Reimburse'
-                    when d.jenis = 'invoice_customer' then
-                    'Invoice'
-                    when d.jenis = 'tagihan_supplier' then
-                    'Pembelian'
-                    when d.jenis = 'hutang_karyawan' then
-                    'Hutang'
-                    when d.jenis = 'gaji' then
-                    'Gaji'
-                    when d.jenis = 'transfer_dana' then
-                    'Pindah Dana'
-                    when d.jenis = 'lainnya' then
-                    'Lainnya'
-                    when d.jenis = 'biaya_admin' then
-                        'Biaya_admin'
-                    when d.jenis = 'uang_klaim_supir' then
-                        'Klaim Supir'
+                    when d.jenis = 'saldo_awal' 
+                        then 'Saldo Awal'
+                    when d.jenis = 'uang_jalan' 
+                        then 'Uang Jalan'
+                    when d.jenis = 'reimburse' 
+                        then 'Reimburse'
+                    when d.jenis = 'invoice_customer' 
+                        then 'Invoice'
+                    when d.jenis = 'tagihan_supplier' 
+                        then 'Pembelian'
+                    when d.jenis = 'hutang_karyawan' 
+                        then 'Hutang'
+                    when d.jenis = 'gaji' 
+                        then 'Gaji'
+                    when d.jenis = 'transfer_dana' 
+                        then 'Pindah Dana'
+                    when d.jenis = 'lainnya' 
+                        then 'Lainnya'
+                    when d.jenis = 'biaya_admin' 
+                        then 'Biaya_admin'
+                    when d.jenis = 'uang_klaim_supir' 
+                        then 'Klaim Supir'
+                    when d.jenis = 'pencairan_operasional' 
+                        then 'Pencairan Operasional'
+                    when d.jenis = 'BAYAR INVOICE' 
+                        then 'Pembayaran Invoice'
+                    when d.jenis = 'biaya_pelayaran_jaminan' 
+                        then 'Pembayaran Jaminan'
+                    when d.jenis = 'TAGIHAN_PEMBELIAN' 
+                        then 'Tagihan Pembelian'
                 end jenis_deskripsi
                 FROM (
                     -- SELECT 

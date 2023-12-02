@@ -535,7 +535,7 @@ class PembayaranInvoiceController extends Controller
             }
 
             // nonaktifin anak2an reimburse (invoice details)
-            if(isset($reimburse) && $reimburse != null){
+            if(isset($reimburse) || $reimburse != null){
                 if($data['total_pisah'] == 0){
                     $reimburse->updated_by = $user;
                     $reimburse->updated_at = now();

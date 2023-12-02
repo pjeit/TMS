@@ -658,39 +658,26 @@ class BelumInvoiceController extends Controller
     }
     public function print($id)
     {
-        $data = Invoice::where('is_aktif', '=', "Y")
-            ->where('id', $id)
-            ->first();
-        // $dataInvoiceAddCost = InvoiceDetailAddcost::where('is_aktif', '=', "Y")
-        //     ->where('id_invoice', $id)
-        //     ->get();
-      
+        $data = Invoice::where('is_aktif', '=', "Y")->find($id);
+        if($data == null){
+            return redirect()->route('cetak_invoice.index')->with(['status' => 'Error', 'msg'  => 'Data tidak ditemukan!']);
+        }
 
         $arrIdOperasional=[];
         foreach ($data->invoiceDetailsCost as $key => $value) {
-            # code...
             array_push( $arrIdOperasional, $value->id_sewa_operasional);
         }
         $dataOperasional = SewaOperasional::where('is_aktif', '=', "Y")
-        ->whereIn('id', $arrIdOperasional)
-        // ->groupBy('deskripsi') // Group by 'deskripsi'
-        // ->selectRaw('*, SUM(total_operasional) as total')
-        ->selectRaw('*, total_operasional as total')
-
-        ->get();
-        // dd($arrIdOperasional);
-        // dd($data->invoiceDetailsCost);
-        // dd($dataOperasional);
-
-        // dd($dataInvoiceAddCost->sewaOperasionalDetail);
+                                        ->whereIn('id', $arrIdOperasional)
+                                        ->selectRaw('*, total_operasional as total')
+                                        ->get();
 
         $TotalBiayaRev = 0;
-        // dd($data);
         $qrcode = QrCode::size(150)
         // ->backgroundColor(255, 0, 0, 25)
         ->generate(
-             'No. Invoice: ' . $data->no_invoice . "\n" .
-             'Total tagihan: ' .'Rp.' .number_format($data->total_tagihan,2) 
+            'No. Invoice: ' . $data->no_invoice . "\n" .
+            'Total tagihan: ' .'Rp.' .number_format($data->total_tagihan,2) 
         );
         // dd($qrcode);
         // dd($dataOperasional!='[]');   
@@ -713,14 +700,6 @@ class BelumInvoiceController extends Controller
         ]);
 
         return $pdf->stream($data->no_invoice.'.pdf'); 
-        // return view('pages.invoice.belum_invoice.print',[
-        //     'judul'=>"Invoice",
-        //     'data' => $data,
-        //     'qrcode'=>$qrcode,
-        //     'dataOperasional'=>$dataOperasional
-
-        // ]);
-
     }
 
     public function printGabung($no_invoice)

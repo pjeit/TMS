@@ -154,7 +154,7 @@
                                                 </div>
                                             </div>
                                         </li>
-                                      </ul>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -291,7 +291,7 @@
                                         <button type="button" class="dropdown-item deleteParent" value="{{ $item->id_sewa }}">
                                             <span class="fas fa-trash mr-3"></span> Delete
                                         </button>
-                                         {{-- <a href="{{route('dalam_perjalanan.edit',[$item->id_sewa])}}" class="dropdown-item" target=”_blank” >
+                                        {{-- <a href="{{route('dalam_perjalanan.edit',[$item->id_sewa])}}" class="dropdown-item" target=”_blank” >
                                                 <span class="fas fa-truck mr-3"></span> Edit Sewa
                                         </a> --}}
                                     </div>
@@ -560,7 +560,7 @@
         console.log('dataSewa', dataSewa);
         // set value default tgl invoice
         var today = new Date();
-         $('#tanggal_invoice').datepicker({
+        $('#tanggal_invoice').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
@@ -622,7 +622,6 @@
                 startDate: today,
             }).datepicker("setDate", set_hari);
 
-           
         }
 
         function addCostPisah(set_hari_jatuh_tempo){
@@ -631,10 +630,11 @@
                 var value = parseFloat($(this).val()) || 0;
                 total += value;
             });
+            console.log('total', total);
             $("#total_pisah").val(total);
 
             var today = new Date();
-             var set_hari = new Date(today);
+            var set_hari = new Date(today);
             set_hari.setDate(today.getDate() + set_hari_jatuh_tempo);
 
             $('#jatuh_tempo_pisah').datepicker({
@@ -644,7 +644,7 @@
                 language: 'en',
                 startDate: today,
             }).datepicker("setDate", set_hari);
-       
+            
             if($("#total_pisah").val()==0)
             {
                 $('#jatuh_tempo_pisah_kontainer').hide();
@@ -703,7 +703,6 @@
             $('#no_kontainer').val( $('#hidden_no_kontainer_'+key).val() ); 
             $('#no_seal').val( $('#hidden_no_seal_'+key).val() ); 
             $('#no_sj').val( $('#hidden_no_sj_'+key).val() ); 
-
             $('#catatan').val( $('#hidden_catatan_'+key).val() ); 
             $('#tarif').val( moneyMask($('#hidden_tarif_'+key).val()) ); 
             $('#addcost').val( moneyMask($('#addcost_hidden_'+key).val()) ); 
@@ -739,7 +738,6 @@
             $('#modal_detail').modal('show');
         });
 
-       
         $(document).on('change', '#addcost_sewa', function(){ 
             let index = $("#addcost_sewa option:selected").attr('index');
             let selected_sewa = $("#addcost_sewa").val();
@@ -768,7 +766,6 @@
             $('#tarif').val( moneyMask(data.total_tarif) ); 
             $('#addcost').val(''); 
             $('#diskon').val(''); 
-   
             if(data.sewa_operasional.length > 0){
                 showAddcostDetails(index, 'update');
             }
@@ -785,16 +782,17 @@
             var selectedOption = $('#billingTo').find('option:selected');
             var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
             
+            updateSewa(key);
+            updateAddCost(key); //update data addcost yg berubah
+
             if(ketentuan_bayar==undefined){
                 getDate(0);
                 addCostPisah(0);
             }else{
-                console.log('ketentuan_bayar', ketentuan_bayar);
                 getDate(parseFloat(ketentuan_bayar) );
                 addCostPisah(parseFloat(ketentuan_bayar));
             }
-            updateSewa(key);
-            updateAddCost(key); //update data addcost yg berubah
+
             calculateGrandTotal(); // pas load awal langsung hitung grand total
             cekPisahInvoice();
             clearData();
