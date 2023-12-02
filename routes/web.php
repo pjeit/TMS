@@ -324,6 +324,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('laporan_sales', [App\Http\Controllers\LaporanSalesController::class, 'index_laporan_sales'])->name('laporan_sales.index');
         Route::get('laporan_sales/load_data_ajax', [App\Http\Controllers\LaporanSalesController::class, 'load_data_ajax'])->name('laporan_sales.load_data_ajax');
+        Route::get('laporan_sales/detail/{dalam_perjalanan}', [App\Http\Controllers\LaporanSalesController::class, 'edit'])->name('laporan_sales.edit');
 
         // ===================================LAPORAN ADMIN=========================================================
 
