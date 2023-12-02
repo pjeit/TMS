@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Barryvdh\DomPDF\Facade\PDF; // use PDF;
+use Barryvdh\DomPDF\Facade\Pdf; // use PDF;
 use Exception;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -694,7 +694,7 @@ class BelumInvoiceController extends Controller
         );
         // dd($qrcode);
         // dd($dataOperasional!='[]');   
-        $pdf = PDF::loadView('pages.invoice.belum_invoice.print',[
+        $pdf = Pdf::loadView('pages.invoice.belum_invoice.print',[
             'judul' => "Invoice",
             'data' => $data,
             'qrcode'=>$qrcode,
@@ -763,7 +763,7 @@ class BelumInvoiceController extends Controller
         );
         // dd($qrcode);
         // dd($dataJoDetail);   
-        $pdf = PDF::loadView('pages.invoice.belum_invoice.print',[
+        $pdf = Pdf::loadView('pages.invoice.belum_invoice.print',[
             'judul' => "Invoice",
             'data' => $data,
             'qrcode'=>$qrcode,

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Barryvdh\DomPDF\Facade\PDF; // use PDF;
+use Barryvdh\DomPDF\Facade\Pdf; // use PDF;
 
 class InvoiceKarantinaController extends Controller
 {
@@ -180,7 +180,7 @@ class InvoiceKarantinaController extends Controller
              'Total tagihan: ' .'Rp.' .'number_format($data->total_tagihan,2) '
         );
 
-        $pdf = PDF::loadView('pages.invoice.invoice_karantina.print',[
+        $pdf = Pdf::loadView('pages.invoice.invoice_karantina.print',[
             'judul' => "Invoice",
             'invoiceKarantina' => $invoiceKarantina,
             'invoiceKarantinaDetail' => $invoiceKarantinaDetail,
