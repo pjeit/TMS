@@ -13,12 +13,12 @@ class Customer extends Model
 
     public function getGrup()
     {
-         return $this->hasOne(Grup::class, 'id', 'grup_id');
+        return $this->hasOne(Grup::class, 'id', 'grup_id');
     }
 
     // eloquent
     public function sewa()
     {
-        return $this->hasMany(Sewa::class, 'id_customer', 'id');
+    return $this->hasMany(Sewa::class, 'id_customer', 'id');
     }
 }

@@ -29,6 +29,6 @@ class Grup extends Model
 
     public function customers()
     {
-        return $this->hasMany(Customer::class, 'grup_id', 'id');
+        return $this->hasMany(Customer::class, 'grup_id', 'id')->where('is_aktif', 'Y');
     }
 }

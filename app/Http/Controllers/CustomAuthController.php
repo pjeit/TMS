@@ -23,7 +23,7 @@ class CustomAuthController extends Controller
             'username' => 'required',
             'password' => 'required',
         ]);
-   
+
         $credentials = $request->only('username', 'password');
         if (Auth::attempt($credentials)) {
             return redirect()->intended('/')

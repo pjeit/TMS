@@ -30,8 +30,14 @@
                                 <tr>
                                 <td>{{ $item->nama_grup }}</td>
                                 <td>{{ $item->nama_pic }}</td>
-                                <td>{{ number_format($item->total_kredit,0,",",".") }}</td>
-                                <td>{{ number_format($item->total_max_kredit,0,",",".") }}</td>
+                                @php
+                                    $kredit_sekarang = 0;
+                                    foreach ($item->customers as $key => $value) {
+                                        $kredit_sekarang += $value->kredit_sekarang;
+                                    }
+                                @endphp
+                                <td>{{ number_format($kredit_sekarang) }}</td>
+                                <td>{{ number_format($item->total_max_kredit) }}</td>
                                 <td>                                    
                                     <div class="btn-group dropleft">
                                         <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

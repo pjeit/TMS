@@ -21,7 +21,7 @@ class CetakInvoiceController extends Controller
     public function index()
     {
         //
-         $title = 'Data akan dihapus!';
+        $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
