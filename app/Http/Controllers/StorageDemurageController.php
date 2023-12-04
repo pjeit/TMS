@@ -196,7 +196,7 @@ class StorageDemurageController extends Controller
 
             $dataJO = DB::table('job_order AS jo')
                     ->select('jo.*','jod.*','jo.status as statusJO','jod.status as statusDetail','c.kode AS kode', 'c.nama AS nama_cust', 's.nama AS nama_supp')
-   
+            
                     ->leftJoin('customer AS c', 'c.id', '=', 'jo.id_customer')
                     ->leftJoin('supplier AS s', 's.id', '=', 'jo.id_supplier')
                     ->join('job_order_detail AS jod', function($join){
@@ -222,11 +222,5 @@ class StorageDemurageController extends Controller
             return response()->json(["result" => "error",'message' => $th->getMessage()], 500);
 
         }
-       
-        // return view('pages.order.job_order.unloading_plan',[
-        //         'judul'=>"Uloading Plan Job Order",
-        //         'dataJO' => $dataJO,
-        //         // 'dataJODetail'=>$dataJODetail
-        //     ]);
     }
 }
