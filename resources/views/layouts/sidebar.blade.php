@@ -306,7 +306,6 @@
           @if (array_intersect($inbound_order, $userAkses) != NULL)
           <li class="nav-item {{ request()->is('job_order*') ||
                 request()->is('storage_demurage*') ||
-                request()->is('pengembalian_jaminan*') ||
                 request()->is('karantina*') ||
                 request()->is('pengembalian_jaminan*') ||
                 request()->is('unloading_plan*')
@@ -344,33 +343,34 @@
               </li>
             </ul>
             @endcan
-            @can('READ_PENGEMBALIAN_JAMINAN')
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('pengembalian_jaminan.index')}}"
-                  class="nav-link {{ request()->is('pengembalian_jaminan*')? ' active' : '' }} "
-                  style="font-weight: 500;">
-                  <i class="far fa-solid fa-calendar nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    <span style="font-size: 13.9px;">Pengembalian Jaminan</span>
-                  </p>
-                </a>
-              </li>
-            </ul>
-            @endcan
             @can('READ_KARANTINA')
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('karantina.index')}}"
-                  class="nav-link {{ request()->is('karantina*') ? ' active' : '' }} " style="font-weight: 500;">
-                  <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
-                  <p>
-                    Input Karantina
-                  </p>
-                </a>
-              </li>
-            </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('karantina.index')}}"
+                    class="nav-link {{ request()->is('karantina*') ? ' active' : '' }} " style="font-weight: 500;">
+                    <i class="nav-icon fas fa-pencil-alt " style="font-size: 15px;"></i>
+                    <p>
+                      Input Karantina
+                    </p>
+                  </a>
+                </li>
+              </ul>
             @endcan
+            @can('READ_PENGEMBALIAN_JAMINAN')
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{route('pengembalian_jaminan.index')}}"
+                    class="nav-link {{ request()->is('pengembalian_jaminan*')? ' active' : '' }} "
+                    style="font-weight: 500;">
+                    <i class="far fa-solid fa-calendar nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 13.9px;">Pengembalian Jaminan</span>
+                    </p>
+                  </a>
+                </li>
+              </ul>
+            @endcan
+
           </li>
           @endif
 
@@ -1127,7 +1127,54 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              
+
+              @php
+                $kasbank = [ 'READ_LAPORAN_KAS', 'READ_LAPORAN_BANK' ];
+              @endphp
+              {{-- KAS BANK --}}
+              @if (array_intersect($kasbank, $userAkses) != NULL)
+                <li class="nav-item {{ 
+                    request()->is('laporan_kas*') ||
+                    request()->is('laporan_bank*')
+                    ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p style="font-weight: 500;">
+                      Kas / Bank
+                      <i class="right fas fa-angle-left" style="font-size: 15px;"></i>
+                    </p>
+                  </a>
+
+                  <ul class="nav nav-treeview">
+                    @can('READ_LAPORAN_KAS')
+                      <li class="nav-item">
+                        <a href="{{route('laporan_kas.index')}}"
+                          class="nav-link {{ request()->is('laporan_kas*')? ' active' : '' }} "
+                          style="font-weight: 500;">
+                          <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                          <p>
+                            <span style="font-size: 0.85em;">Laporan Kas</span>
+                          </p>
+                        </a>
+                      </li>
+                    @endcan
+
+                    @can('READ_LAPORAN_BANK')
+                      <li class="nav-item">
+                        <a href="{{route('laporan_bank.index')}}"
+                          class="nav-link {{ request()->is('laporan_bank*')? ' active' : '' }} "
+                          style="font-weight: 500;">
+                          <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                          <p>
+                            <span style="font-size: 0.81em;">Laporan Bank</span>
+                          </p>
+                        </a>
+                      </li>
+                    @endcan
+                  </ul>
+                </li>
+              @endif
+
               @can('READ_LAPORAN_INVOICE_TRUCKING')
               <li class="nav-item">
                 <a href="{{route('laporan_invoice_trucking.index')}}"
@@ -1136,32 +1183,6 @@
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                   <p>
                     <span style="font-size: 0.82em;">Laporan Invoice Trucking</span>
-                  </p>
-                </a>
-              </li>
-              @endcan
-
-              @can('READ_LAPORAN_KAS')
-              <li class="nav-item">
-                <a href="{{route('laporan_kas.index')}}"
-                  class="nav-link {{request()->url() === route('laporan_kas.index')? ' active' : '' }} "
-                  style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Laporan Kas
-                  </p>
-                </a>
-              </li>
-              @endcan
-
-              @can('READ_LAPORAN_BANK')
-              <li class="nav-item">
-                <a href="{{route('laporan_bank.index')}}"
-                  class="nav-link {{request()->url() === route('laporan_bank.index')? ' active' : '' }} "
-                  style="font-weight: 500;">
-                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
-                  <p>
-                    Laporan Bank
                   </p>
                 </a>
               </li>
