@@ -163,8 +163,8 @@ class InvoiceKarantinaController extends Controller
     public function print($id)
     {
         $invoiceKarantina = InvoiceKarantina::where('invoice_karantina.is_aktif', '=', "Y")
-         ->with('getCustomer')
-        ->find($id);
+                ->with('getCustomer')
+                ->find($id);
 
         $invoiceKarantinaDetail = InvoiceKarantinaDetail::where('invoice_karantina_detail.is_aktif', '=', "Y")
             ->where('id_invoice_k', $invoiceKarantina->id)
@@ -176,8 +176,8 @@ class InvoiceKarantinaController extends Controller
         $qrcode = QrCode::size(150)
         // ->backgroundColor(255, 0, 0, 25)
         ->generate(
-             'No. Invoice: ' . '$data->no_invoice' . "\n" .
-             'Total tagihan: ' .'Rp.' .'number_format($data->total_tagihan,2) '
+            'No. Invoice: ' . '$data->no_invoice' . "\n" .
+            'Total tagihan: ' .'Rp.' .'number_format($data->total_tagihan,2) '
         );
 
         $pdf = Pdf::loadView('pages.invoice.invoice_karantina.print',[
@@ -188,7 +188,7 @@ class InvoiceKarantinaController extends Controller
         ]);
         
         $pdf->setPaper('A4', 'portrait');
- 
+        
         $pdf->setOptions([
             'isHtml5ParserEnabled' => true, // Enable HTML5 parser
             'isPhpEnabled' => true, // Enable inline PHP execution
@@ -240,11 +240,10 @@ class InvoiceKarantinaController extends Controller
     public function load_data($id)
     {
         $data = Karantina::where('is_aktif', 'Y')
-        ->where('id_customer', $id)
-        ->where('total_dicairkan','!=',null)
-        ->orWhere('total_dicairkan','!=',0)
-        ->with('getCustomer.getGrup', 'getJO')->get();
-
+                ->where('id_customer', $id)
+                ->where('is_invoice', 'N')
+                ->where('total_dicairkan', '!=', null)
+                ->with('getCustomer.getGrup', 'getJO')->get();
         return $data;
     }
 }
