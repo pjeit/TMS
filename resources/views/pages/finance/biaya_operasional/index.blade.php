@@ -262,7 +262,7 @@
                                                     <th class='text-center'><input id='check_all' type='checkbox'></th>`);
 
                             if(data.length > 0){
-                                for (var i = 0; i <data.length; i++) {
+                                for (var i = 0; i < data.length; i++) {
                                     if(data[i].total_dicairkan == null){
                                         var start = data[i].deskripsi_so;
                                         var nominal = 0;
@@ -318,6 +318,7 @@
                                                         <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
                                                         <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
                                                     </td>`);
+
                                         if(nominal != 0){
                                             $("#hasil").append(row);
                                         }

@@ -608,32 +608,33 @@ class BelumInvoiceController extends Controller
                         $sewa_oprs->id_sewa = $new_addcost->id_sewa;
                         $sewa_oprs->deskripsi = $new_addcost->deskripsi;
                         $sewa_oprs->total_operasional = $new_addcost->total_operasional;
-                        // $sewa_oprs->total_dicairkan = $new_addcost->total_operasional;
-                        // $sewa_oprs->tgl_dicairkan = now();
+                        $sewa_oprs->total_dicairkan = $new_addcost->total_operasional;
+                        $sewa_oprs->tgl_dicairkan = now();
                         $sewa_oprs->is_ditagihkan = $new_addcost->is_ditagihkan;
                         $sewa_oprs->is_dipisahkan = $new_addcost->is_dipisahkan;
                         $sewa_oprs->catatan = $new_addcost->catatan;
                         $sewa_oprs->created_by = $user;
                         $sewa_oprs->created_at = now();
                         $sewa_oprs->save();
-
-                        // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                        //     array(
-                        //         $data['pembayaran'], // id kas_bank dr form
-                        //         now(), //tanggal
-                        //         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                        //         $sewa_oprs->total_dicairkan, //uang keluar (kredit)
-                        //         1015, //kode coa
-                        //         'pencairan_operasional',
-                        //         'REVISI BELUM INVOICE - ' . $addcost->deskripsi . ' : '. $addcost->nama_tujuan .'/'. $addcost->driver, //keterangan_transaksi
-                        //         $sewa_oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
-                        //         $user, //created_by
-                        //         now(), //created_at
-                        //         $user, //updated_by
-                        //         now(), //updated_at
-                        //         'Y'
-                        //     ) 
-                        // );
+                        
+                        $deskripsi = $new_addcost->deskripsi . ': ' . $value['nama_tujuan'] . ' #' . $value['driver'];
+                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                            array(
+                                $data['pembayaran'], // id kas_bank dr form
+                                now(), //tanggal
+                                0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                $new_addcost->total_operasional, //uang keluar (kredit)
+                                1015, //kode coa
+                                'pencairan_operasional',
+                                $deskripsi, //keterangan_transaksi
+                                $sewa_oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
+                                $user, //created_by
+                                now(), //created_at
+                                $user, //updated_by
+                                now(), //updated_at
+                                'Y'
+                            ) 
+                        );
                     }
                 }
             }
@@ -663,10 +664,6 @@ class BelumInvoiceController extends Controller
             return redirect()->route('cetak_invoice.index')->with(['status' => 'Error', 'msg'  => 'Data tidak ditemukan!']);
         }
 
-        // dd($data);
-
-
-        $TotalBiayaRev = 0;
         $qrcode = QrCode::size(150)
         // ->backgroundColor(255, 0, 0, 25)
         ->generate(
