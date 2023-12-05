@@ -150,7 +150,7 @@ class SewaController extends Controller
                     $harga = (float)$data['tarif'];
                 }
 
-                // update kredit grup + customer
+                // update kredit customer
                     $customer = Customer::where('is_aktif', '=', "Y")->find($data['customer_id']);
                     if($customer){
                         $customer->kredit_sekarang += $harga;
@@ -629,7 +629,7 @@ class SewaController extends Controller
                     ->where('c.is_aktif', '=', "Y")
                     ->first();
                 
-                //KURANGI  KREDIT YANG LAMA,SOALNYA KAN dihapus, jadi gajadi
+            //KURANGI  KREDIT YANG LAMA,SOALNYA KAN dihapus, jadi gajadi
             DB::table('customer')
                 ->where('id', $truck_order->id_customer)
                 ->update([
