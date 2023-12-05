@@ -121,7 +121,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                    <input readonly="" value="{{ number_format(($data->getUJRiwayat[0]->total_uang_jalan + $data->getUJRiwayat[0]->total_tl)-$data->getUJRiwayat[0]->potong_hutang )  }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
                                 </div>
                             </div>
 

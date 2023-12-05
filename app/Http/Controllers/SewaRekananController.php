@@ -165,11 +165,6 @@ class SewaRekananController extends Controller
                     ->where('c.id', '=', $data['customer_id'])
                     ->where('c.is_aktif', '=', "Y")
                     ->first();
-                $grup = DB::table('grup as g')
-                    ->select('g.*')
-                    ->where('g.id', '=', $customer->grup_id)
-                    ->where('g.is_aktif', '=', "Y")
-                    ->first();
 
                 if ($data['jenis_tujuan'] === "LTL") {
                     $harga = (float)$data['harga_per_kg'] * $data['min_muatan'];
@@ -182,14 +177,6 @@ class SewaRekananController extends Controller
                         ->where('id', $data['customer_id'])
                         ->update([
                             'kredit_sekarang' => (float)$customer->kredit_sekarang+$harga,
-                            'updated_at' => now(),
-                            'updated_by' => $user,
-                    ]);
-
-                    DB::table('grup')
-                        ->where('id', $customer->grup_id)
-                        ->update([
-                            'total_kredit' => (float)$grup->total_kredit+$harga,
                             'updated_at' => now(),
                             'updated_by' => $user,
                     ]);
@@ -350,11 +337,7 @@ class SewaRekananController extends Controller
                     ->where('c.id', '=', $sewa->id_customer)
                     ->where('c.is_aktif', '=', "Y")
                     ->first();
-            $grup_lama = DB::table('grup as g')
-                ->select('g.*')
-                ->where('g.id', '=', $customer_lama->grup_id)
-                ->where('g.is_aktif', '=', "Y")
-                ->first();
+          
             // kalo tujuan baru ga sama sama tujuan yang lama
             if($data['tujuan_id']!=$sewa->id_grup_tujuan &&$sewa->jenis_order == "OUTBOUND")
             {
@@ -367,13 +350,7 @@ class SewaRekananController extends Controller
                         'updated_at' => now(),
                         'updated_by' => $user,
                 ]);
-                DB::table('grup')
-                    ->where('id', $customer_lama->grup_id)
-                    ->update([
-                        'total_kredit' => (float)$grup_lama->total_kredit-$sewa->total_tarif< 0 ? 0 : $grup_lama->total_kredit-$sewa->total_tarif,
-                        'updated_at' => now(),
-                        'updated_by' => $user,
-                ]);
+               
                     $sewa->id_customer = $data['customer_id'];
                     $sewa->id_grup_tujuan = $data['tujuan_id'];
                     $sewa->jenis_tujuan = $data['jenis_tujuan'];
@@ -417,13 +394,7 @@ class SewaRekananController extends Controller
                         'updated_by' => $user,
                 ]);
 
-                DB::table('grup')
-                    ->where('id', $customer->grup_id)
-                    ->update([
-                        'total_kredit' => (float)$grup->total_kredit+$harga,
-                        'updated_at' => now(),
-                        'updated_by' => $user,
-                ]);
+               
                 $arrayBiaya = json_decode($data['biayaDetail'], true);
                 //   dd(isset($arrayBiaya));
 
