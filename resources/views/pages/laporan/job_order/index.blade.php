@@ -63,7 +63,7 @@
                                 <label for="">Pelayaran<span class="text-red">*</span></label>
                                 <select class="form-control select2" name="pelayaran" id="pelayaran"
                                     data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                    <option value="SEMUA DATA">—­­— Semua Pelayaran ——</option>
+                                    <option value="SEMUA DATA">── Semua Pelayaran ──</option>
                                     @foreach ($supplier as $supp)
                                     <option value="{{$supp->id}}">{{$supp->nama}}</option>
                                     @endforeach
@@ -151,18 +151,18 @@
                     const data = datas.data;
                     // console.log('datas: '+ JSON.stringify(datas, null, 2));
 
-                    if(data.length > 0){
-                        var job_order = null;
-                        for (var i = 0; i < data.length; i++) {
-                            var row = $("<tr></tr>");
-                            row.append("<td><b>⚫ " + data[i].no_bl + "</b><br> Status JO: " + data[i].statusJO + "</td>");
-                            row.append("<td>" + data[i].no_kontainer + "</td>");
-                            row.append("<td> [" + data[i].kode + "] " + data[i].nama_cust + "</td>");
-                            row.append("<td>" + data[i].nama_supp + "</td>");
-                            row.append("<td>" + dateMask(data[i].tgl_dooring) + "</td>");
-                            row.append("<td>" + data[i].statusDetail + "</td>");
-                            $("#result").append(row);
-                        }
+                    if (data.length > 0) {
+                        const rows = data.map(item => (
+                            `<tr>
+                                <td><b>◾ ${item.get_j_o.no_bl}</b></td>
+                                <td>${item.no_kontainer}</td>
+                                <td> [${item.get_j_o.get_customer.kode}] ${item.get_j_o.get_customer.nama}</td>
+                                <td>${item.get_j_o.get_supplier.nama}</td>
+                                <td>${dateMask(item.tgl_dooring)}</td>
+                                <td>${item.status}</td>
+                            </tr>`
+                        ));
+                        $("#result").append(rows);
                     }
                 }
                 
