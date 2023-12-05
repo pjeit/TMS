@@ -106,7 +106,7 @@
                             <div class="form-group ">
                                 <label for="">Tujuan</label>
                                 <input required type="text" name="no_bl" class="form-control"
-                                    value="{{isset($data['detail']->getTujuan->id)? $data['detail']->getTujuan->id:null}}"
+                                    value="{{isset($data['detail']->getTujuan->nama_tujuan)? $data['detail']->getTujuan->nama_tujuan:null}}"
                                     readonly disabled>
                             </div>
                         </div>
@@ -123,7 +123,7 @@
                                         <th style="">Detention</th>
                                         <th style="">Repair</th>
                                         <th style="">Washing</th>
-                                        <th style="">Status</th>
+                                        <th style="">Dibayarkan Oleh</th>
                                         <th style="width:30px;"></th>
                                     </tr>
                                 </thead>
@@ -136,8 +136,9 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp.</span>
                                                 </div>
-                                                <input type="text" class="form-control numaja uang"
-                                                    value="{{ number_format($item->storage, 2) }}" disabled>
+                                                
+                                                <input type="text" id="storage{{$key}}" class="form-control numaja uang" 
+                                                value="{{ number_format($item->storage) }}" name="data[{{$key}}][storage]"  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
                                             </div>
                                         </td>
                                         <td style="width: 15%">
@@ -145,8 +146,8 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp.</span>
                                                 </div>
-                                                <input type="text" class="form-control numaja uang"
-                                                    value="{{ number_format($item->demurage, 2) }}" disabled>
+                                                <input type="text" id="demurage{{$key}}" class="form-control numaja uang"
+                                                    value="{{ number_format($item->demurage) }}" name="data[{{$key}}][demurage]"  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
                                             </div>
                                         </td>
                                         <td style="width: 15%">
@@ -154,8 +155,8 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp.</span>
                                                 </div>
-                                                <input type="text" class="form-control numaja uang"
-                                                    value="{{ number_format($item->detention, 2) }}" disabled>
+                                                <input type="text" id="detention{{$key}}" class="form-control numaja uang"
+                                                    value="{{ number_format($item->detention) }}" name="data[{{$key}}][detention]"  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
                                             </div>
                                         </td>
                                         <td style="width: 15%">
@@ -163,8 +164,8 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp.</span>
                                                 </div>
-                                                <input type="text" class="form-control numaja uang"
-                                                    value="{{ number_format($item->repair, 2) }}" disabled>
+                                                <input type="text" id="repair{{$key}}" class="form-control numaja uang"
+                                                    value="{{ number_format($item->repair) }}" name="data[{{$key}}][repair]"  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
                                             </div>
                                         </td>
                                         <td style="width: 15%">
@@ -172,15 +173,42 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp.</span>
                                                 </div>
-                                                <input type="text" class="form-control numaja uang"
-                                                    value="{{ number_format($item->washing, 2) }}" disabled>
+                                                <input type="text" id="washing{{$key}}" class="form-control numaja uang"
+                                                    value="{{ number_format($item->washing) }}" name="data[{{$key}}][washing]" {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
                                             </div>
                                         </td>
                                         <td style="width: 50%">
-                                            <input type="text" class="form-control" value="{{$item->status_bayar}}"
-                                                disabled>
+                                            <div class="form-group">
+                                                <input type="hidden" value="{{ $item->id }}" name="data[{{$key}}][id_detail_biaya]">
+                                                <input type="hidden" value="{{ $item->is_aktif }}" name="data[{{$key}}][is_aktif]" id="is_aktif_{{$key}}">
+                                                <select  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}} class="form-control select2" name="data[{{$key}}][id_pembayaran_customer]" id="id_pembayaran_customer_{{$key}}">
+                                                    <option value="dibayar_pje">­­— PJE —</option>
+                                                    @foreach ( $data['customer'] as $cust)
+                                                    <option value="{{$cust->id}}" {{$cust->id==$item->id_customer?'selected':''}}>[{{ $cust->kode }}] {{$cust->nama}}</option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($item->id_customer == null)
+                                                    @if ($item->status_bayar=='MENUNGGU PEMBAYARAN')
+                                                        <label>Status : <span class="badge badge-warning">{{$item->status_bayar}}</span></label>
+                                                    @else
+                                                        <label>Status : <span class="badge badge-success">{{$item->status_bayar}}</span></label>
+                                                    @endif
+                                                @else
+                                                    <label>Status : <span class="badge badge-secondary">{{$item->status_bayar}}</span></label>
+                                                @endif
+                                            </div>
                                         </td>
-                                        <td style="width: 5%"></td>
+                                        {{-- <td style="width: 5%">
+                                            </td> --}}
+                                        @if ($item->status_bayar!='SELESAI PEMBAYARAN')
+                                            <td style="width: 5%">
+                                                <button type="button" id="{{$key}}" class="btn btn-danger btn_remove_db"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                            </td>
+                                        @else
+                                             <td style="width: 5%">
+                                            </td>
+                                        @endif
+
                                     </tr>
                                     @endforeach
                                     @endif
@@ -260,8 +288,7 @@
                 })
             // pop up confirmation
         });
-
-        $("#add").click(function(){
+        $( document ).on( 'click', '#add', function (event) {
             var rows = document.querySelectorAll('tr[id^="row_"]');
 
             // Find the maximum ID number
@@ -318,7 +345,7 @@
                             <input type="text" name="data[${i}][repair]" id="repair${i}" class="form-control numaja uang"/>
                         </div>
                     </td>
-                      <td style="text-align: center; vertical-align: middle;">
+                    <td style="text-align: center; vertical-align: middle;">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp.</span>
@@ -326,14 +353,20 @@
                             <input type="text" name="data[${i}][washing]" id="washing${i}" class="form-control numaja uang"/>
                         </div>
                     </td>
-                    <td style="text-align: center; vertical-align: middle;">
-                        <div class="input-group mb-3">
-                            <input type="text" id="status${i}" class="form-control"/ disabled>
+                    <td >
+                        <div class="form-group">
+                            <input type="hidden" value="" name="data[${i}][id_detail_biaya]">
+                            <select class="form-control select2" name="data[${i}][id_pembayaran_customer]" id="id_pembayaran_customer_${i}">
+                                <option value="dibayar_pje">­­— PJE —</option>
+                                @foreach ( $data['customer'] as $cust)
+                                <option value="{{$cust->id}}">[{{ $cust->kode }}] {{$cust->nama}}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </td>
                     <td>
                         <button type="button" name="del" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                    </td></tr>);  
+                    </td>
                 </tr>
             `
             );
@@ -343,8 +376,14 @@
                 var uppercaseValue = inputValue.toUpperCase();
                 $(this).val(uppercaseValue);
             });
-
+            $('.select2').select2({
+                dropdownPosition: 'below'
+            });
         });
+        // $("#add").click(function(){
+           
+
+        // });
 
         $(document).on('click', '.btn_remove', function(){  
             var button_id = $(this).attr("id");
@@ -355,6 +394,15 @@
             $('#row_'+button_id+'').remove();  
         });
 
+         $(document).on('click', '.btn_remove_db', function(){  
+            var button_id = $(this).attr("id");
+            console.log(button_id);
+            // get id yg dihapus
+            var row = $(this).closest("tr");
+            $('#row_'+button_id+'').hide();  
+            $('#is_aktif_'+button_id).val('N');
+
+        });
     });
 </script>
 

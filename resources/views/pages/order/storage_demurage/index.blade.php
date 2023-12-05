@@ -25,7 +25,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <label for="">Pengirim</label>
-                                <select class="form-control selectpicker" name="pengirim" id="pengirim"
+                                <select class="form-control select2" name="pengirim" id="pengirim"
                                     data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                     <option value="">­­— SEMUA DATA —</option>
                                     @foreach ($customer as $cust)
@@ -37,7 +37,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <label for="">Pelayaran</label>
-                                <select class="form-control selectpicker" name="pelayaran" id="pelayaran"
+                                <select class="form-control select2" name="pelayaran" id="pelayaran"
                                     data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                     <option value="">­­— SEMUA DATA —</option>
                                     @foreach ($supplier as $supp)
