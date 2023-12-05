@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helper\UserHelper;
 use App\Models\Customer;
+use App\Models\JobOrder;
+use App\Models\JobOrderDetail;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,47 +46,33 @@ class LaporanJobOrderController extends Controller
             $id_role = Auth::user()->role_id; 
             $cabang = UserHelper::getCabang();
 
-            $dataJO = DB::table('job_order AS jo')
-                    ->select('jo.*','jod.*','jo.status as statusJO','jod.tgl_dooring','jod.status as statusDetail','c.kode AS kode', 'c.nama AS nama_cust', 's.nama AS nama_supp')
-                    ->leftJoin('customer AS c', 'c.id', '=', 'jo.id_customer')
-                    ->leftJoin('supplier AS s', 's.id', '=', 'jo.id_supplier')
-                    ->where(function($where) use($data){
-                        $where->whereBetween('jod.tgl_dooring', [date("Y-m-d 00:00:00", strtotime($data['tgl_mulai'])), date('Y-m-d 23:59:59', strtotime($data['tgl_akhir']))]);
-                    })
-                    ->join('job_order_detail AS jod', function($join) use($data){
-                        if($data['status'] != 'SEMUA STATUS'){
-                            $join->on('jo.id', 'jod.id_jo') 
-                            ->where('jod.status', $data['status'])
-                            ->where('jod.is_aktif', "Y");
-                        }else{
-                            $join->on('jo.id', 'jod.id_jo') 
-                            ->where('jod.is_aktif', "Y");
-                        }
-                    })
-                    ->where(function($where) use($data){
-                        if($data['customer'] != 'SEMUA DATA'){
-                            $where->where('jo.id_customer', $data['customer']);
-                        }
-                    })
-                    ->where(function($where) use($data){
-                        if($data['pelayaran'] != 'SEMUA DATA'){
-                            $where->where('jo.id_supplier', $data['pelayaran']);
-                        }
-                    })
-                    ->leftJoin('user as u', 'u.id', '=', 'jod.created_by')
-                    ->leftJoin('karyawan as k', 'k.id', '=', 'u.karyawan_id')
-                    ->where(function ($query) use ($id_role, $cabang) {
-                        if(!in_array($id_role, [1,3])){
-                            $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
-                        }
-                    })
-                    ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
-                    ->where('jo.is_aktif', 'Y')
-
-                    ->where('jo.status', 'like', "PROSES DOORING")
-                    ->groupBy('jod.id_jo','jod.id')
-                    ->get();
-            return response()->json(["result" => "success",'data' => $dataJO], 200);
+            $data = JobOrderDetail::where('is_aktif', 'Y')->with('getJO', 'getJO.getCustomer', 'getJO.getSupplier', 'getTujuan')
+                            ->where(function($where) use($data){
+                                $where->whereBetween('tgl_dooring', [date("Y-m-d 00:00:00", strtotime($data['tgl_mulai'])), date('Y-m-d 23:59:59', strtotime($data['tgl_akhir']))]);
+                            })
+                            ->whereHas('getJO.getCustomer', function ($query) use($data) {
+                                if($data['customer'] != 'SEMUA DATA'){
+                                    $query->where('id_customer', $data['customer']);
+                                }
+                            })
+                            ->whereHas('getJO.getSupplier', function ($query) use($data) {
+                                if($data['pelayaran'] != 'SEMUA DATA'){
+                                    $query->where('id_supplier', $data['pelayaran']);
+                                }
+                            })
+                            ->where(function($where) use($data){
+                                if($data['status'] != 'SEMUA STATUS'){
+                                    $where->where('status', $data['status'])->where('is_aktif', "Y");
+                                }else{
+                                    $where->where('is_aktif', "Y");
+                                }
+                            })
+                            ->whereHas('getJO', function ($query) use($data) {
+                                $query->where('is_aktif', "Y");
+                            })
+                            ->get();
+                            
+            return response()->json(["result" => "success",'data' => $data], 200);
         } catch (\Throwable $th) {
             return response()->json(["result" => "error",'message' => $th->getMessage()], 500);
 

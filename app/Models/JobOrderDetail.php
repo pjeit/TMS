@@ -44,22 +44,20 @@ class JobOrderDetail extends Model
         'updated_at',
         'updated_by',
         'is_aktif',
-   ];
+    ];
 
-   public function getJO()
-   {
-    return $this->hasOne(JobOrder::class, 'id', 'id_jo');
-   }
+    public function getJO()
+    {
+        return $this->hasOne(JobOrder::class, 'id', 'id_jo');
+    }
 
-   public function getTujuan()
-   {
-       return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan');
-   }
+    public function getTujuan()
+    {
+        return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan');
+    }
 
-   public function getSewa()
-   {
+    public function getSewa()
+    {
         return $this->hasOne(Sewa::class, 'id_jo_detail', 'id')->select('*');
-   }
-   
-   
+    }
 }
