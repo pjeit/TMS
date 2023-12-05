@@ -19,6 +19,9 @@
         overflow-x: auto;
         white-space: nowrap; */
     }
+    [data-select2-id="22"]{
+        border: 5px solid #00ff6a !important;
+    }
 </style>
     <form action="{{ route('belum_invoice.update', [$data->id_sewa]) }}" id="save" method="POST" >
         @csrf @method('PUT')
@@ -26,7 +29,7 @@
             <div class="card radiusSendiri">
                 <div class="card-header ">
                     <a href="{{ route('belum_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                     <button type="button" class="btn btn-success radiusSendiri" id="btnSimpan">
+                    <button type="button" class="btn btn-success radiusSendiri" id="btnSimpan">
                         <i class="fa fa-fw fa-save"></i> Simpan    
                     </button>
                 </div>
@@ -94,7 +97,6 @@
                                 </div> --}}
                             </div>
                             <div class="row">
-               
     
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                     <label for="">Total Sisa</label>
@@ -111,7 +113,7 @@
                             
                             <div class="row">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                  
+                                
                                 </div>
                             </div>
                         </div>
@@ -181,22 +183,22 @@
                                 @endphp
                                 @foreach ($data->sewaOperasional as $i => $oprs)
                                     @if ($oprs->is_aktif == 'Y' && 
-                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N'||
-                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N')
+                                        $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N'||
+                                        $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N')
                                         <input type="hidden" class="addcost_{{ $data->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
                                         @php
                                             $total_addcost += $oprs->total_operasional;
                                         @endphp
                                     @elseif ($oprs->is_aktif == 'Y' && 
-                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y'||
-                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y')
+                                        $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y'||
+                                        $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y')
                                         @php
                                             $total_addcost_pisah += $oprs->total_operasional;
                                         @endphp
                                     @endif
-                                     {{-- @if($oprs->is_aktif == 'Y' && 
-                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y'||
-                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y')
+                                    {{-- @if($oprs->is_aktif == 'Y' && 
+                                        $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y'||
+                                        $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y')
                                         @php
                                             $total_addcost_pisah += $oprs->total_operasional;
                                         @endphp
@@ -206,7 +208,6 @@
                                 <input type="hidden" class="cek_detail_addcost" id_sewa="{{ $data->id_sewa }}" name="detail[{{ $data->id_sewa }}][addcost_details]" id="detail_addcost_{{ $data->id_sewa }}" value="{{ json_encode($data->sewaOperasional) }}" />
                                 {{-- <input type="text" name="detail[{{ $data->id_sewa }}][addcost_details_pisah]" id="detail_addcost_pisah_{{ $data->id_sewa }}" value="{{ json_encode($data->sewaOperasionalPisah) }}" /> --}}
                                 <input type="hidden" class="cek_detail_addcost_baru" id_sewa="{{ $data->id_sewa }}" name="detail[{{ $data->id_sewa }}][addcost_baru]" id="detail_addcost_baru_{{ $data->id_sewa }}" value="" />
-
                                 <input type="hidden" class="addcost_{{ $data->id_sewa }} {{ $data->deskripsi }}" name='detail[{{ $data->id_sewa }}][addcost]' id='addcost_hidden_{{ $data->id_sewa }}' value="{{ $total_addcost }}">
                                 <input type="hidden" class="addcost_pisah addcost_pisah_{{ $data->id_sewa }} {{ $data->deskripsi }}" name='detail[{{ $data->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $data->id_sewa }}' value="{{ $total_addcost_pisah }}">
 
@@ -241,9 +242,9 @@
                                         <button type="button" class="dropdown-item deleteParent" value="{{ $data->id_sewa }}">
                                             <span class="fas fa-trash mr-3"></span> Delete
                                         </button>
-                                         {{-- <a href="{{route('dalam_perjalanan.edit',[$data->id_sewa])}}" class="dropdown-item" target=”_blank” >
-                                                <span class="fas fa-truck mr-3"></span> Edit Sewa
-                                            </a> --}}
+                                        {{-- <a href="{{route('dalam_perjalanan.edit',[$data->id_sewa])}}" class="dropdown-item" target=”_blank” >
+                                            <span class="fas fa-truck mr-3"></span> Edit Sewa
+                                        </a> --}}
                                     </div>
                                 </div>
                             </td>
@@ -300,7 +301,7 @@
                                         <input type="text" class="form-control" maxlength="25" id="no_kontainer"> 
                                     </div>
                                     @if ($checkLTL)
-                                       <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                             <label for="">Surat Jalan</label>
                                             <input  type="text" class="form-control" maxlength="25" id="no_sj"> 
                                         </div>
@@ -371,7 +372,19 @@
                                 <form name="add_addcost_detail" id="add_addcost_detail">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-bold">Detail Add Cost</span>
-                                        <button type="button" id="tambah" class="btn btn-primary btn-sm mb-2"> <i class="fa fa-plus-circle"></i> Tambah Add Cost</button>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <div id="is_bank" class="mb-2 ">
+                                                <select name="bank" class="select2" style="width: 200px; border: 3px solid #f239;" id="bank">
+                                                    <option value="">─ Pilih Kas ─</option>
+                                                    @foreach ($bank as $item)
+                                                        <option value="{{ $item->id }}" {{ $item->id == 1? 'selected':'' }}>{{ $item->nama }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <button type="button" id="tambah" class="btn btn-primary btn-sm mb-2 ml-3"> <i class="fa fa-plus-circle"></i> Tambah Add Cost</button>
+                                            </div>
+                                        </div>
                                     </div>
                                     <input type="hidden" id="deleted_temp" name="deleted_temp" placeholder="deleted_temp">
                                     <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel_addcost">
@@ -580,7 +593,7 @@
             $("#total_pisah").val(total);
 
             var today = new Date();
-             var set_hari = new Date(today);
+            var set_hari = new Date(today);
             set_hari.setDate(today.getDate() + set_hari_jatuh_tempo);
 
             $('#jatuh_tempo_pisah').datepicker({
@@ -590,7 +603,7 @@
                 language: 'en',
                 startDate: today,
             }).datepicker("setDate", set_hari);
-       
+            
             if($("#total_pisah").val()==0)
             {
                 $('#jatuh_tempo_pisah_kontainer').hide();
@@ -728,7 +741,7 @@
                                     "is_ditagihkan":${JSON.stringify( tagih )},
                                     "is_dipisahkan":${JSON.stringify( pisah )},
                                     "catatan":${JSON.stringify( $('#addcost_catatan_'+id).val() )}
-                                  }`; 
+                                }`; 
 
                         if(is_new == true){
                             var obj=JSON.parse(myjson);
@@ -755,10 +768,10 @@
                         `
                             <tr id="${index}" id_addcost="${item.id}">
                                 <td>
-                                    <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" class="form-control" readonly/>
+                                    <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" title="${item.deskripsi}" class="form-control" readonly/>
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_operasional)}" class="form-control numaja uang hitungBiaya hitungAddCost" />
+                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost" />
                                 </td>
                                 <td style="text-align:center;">
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
@@ -767,10 +780,9 @@
                                     <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} >
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_catatan_${item.id}" value="${item.catatan == null? '':item.catatan}" class="form-control w-auto" />
+                                    <input type="text" id="addcost_catatan_${item.id}" value="${item.catatan == null? '':item.catatan}" class="form-control w-auto" title="${item.catatan != null? item.catatan:''}" ${item.catatan == 'PENCAIRAN DI UANG JALAN'? 'readonly':''}/>
                                 </td>
-                                <td>
-                                </td>
+                                <td></td>
                             </tr>
                         `
                     );
@@ -792,10 +804,10 @@
                         `
                             <tr id="${item.id.substring(2)}" id_addcost="${item.id}">
                                 <td>
-                                    <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" class="form-control" />
+                                    <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" title="${item.deskripsi}" class="form-control" />
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_operasional)}" class="form-control numaja uang hitungBiaya hitungAddCost"  />
+                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost"  />
                                 </td>
                                 <td style="text-align:center;">
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
@@ -804,7 +816,7 @@
                                     <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} >
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_catatan_${item.id}" value="${item.catatan == null? '':item.catatan}" class="form-control w-auto" />
+                                    <input type="text" id="addcost_catatan_${item.id}" value="${item.catatan == null? '':item.catatan}" class="form-control w-auto" title="${item.catatan != null? item.catatan:''}" ${item.catatan == 'PENCAIRAN DI UANG JALAN'? 'readonly':''}/>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-danger delete" value="${item.id}"><i class="fa fa-trash-alt"></i></button>

@@ -42,6 +42,7 @@
                                     <option value="BURUH">BURUH</option>
                                     <option value="LEMBUR">LEMBUR</option>
                                     <option value="KARANTINA">KARANTINA</option>
+                                    <option value="LAIN-LAIN">LAIN-LAIN</option>
                                 </select>
                                 <input type="hidden" id="alasan" name="alasan" value="">
                                 <input type="hidden" id="type" name="type" value="">
@@ -232,36 +233,48 @@
                             });
 
                         }else{
-                            $("thead tr").append(`<th>Grup</th><th>Customer</th><th>Tujuan</th><th>Driver</th>`);
-                            $("thead tr").append("<th>Total</th>");
+                            $("thead tr").append(`<th>Grup</th><th>Customer</th><th>Tujuan</th>`);
+                            if(item == 'LAIN-LAIN'){
+                                $("thead tr").append("<th>Deskripsi</th>");
+                            }
+                            $("thead tr").append("<th>Driver</th><th>Total</th>");
                             $("thead tr").append(`  <th>Dicairkan</th>
                                                     <th>Catatan</th>
                                                 `);  // <th class='text-center' style='width: 30px;'></th> // <input id='check_all' type='checkbox'>
                             // if(item == 'OPERASIONAL' || item == 'TALLY' || item == 'SEAL PELAYARAN'){
                                 for (var i = 0; i <data.length; i++) {
-                                    var row = $("<tr></tr>");
-                                    row.append(`<td style='background: #efefef'>
-                                                        <b> 
-                                                            <span> ${data[i].get_operasional[0].get_sewa.get_tujuan.get_grup.nama_grup}</span> 
-                                                        </b>
-                                                </td>`);
-                                    row.append(`<td style='background: #efefef'>
-                                                        <b> 
-                                                            <span>► ${data[i].get_operasional[0].get_sewa.get_customer.nama}</span> 
-                                                        </b>
-                                                </td>`);
-                                    row.append(`<td> ${data[i].get_operasional[0].get_sewa.nama_tujuan} </td>`);
-                                    row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" class="form-control" title="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" readonly />`).join('<br>')}</td>`);
-                                    row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
-                                    row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
-                                                                                            <input type="hidden" value="${item.total_dicairkan}" id="hidden_dicairkan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />
-                                                                                            `).join('<br>')}</td>`);
-                                    row.append(`<td> ${data[i].get_operasional.map(item => `<div class='d-flex'>
-                                                                                                <input type="text" value="${item.catatan != null? item.catatan:''}" id="catatan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][catatan]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
-                                                                                                <input type="hidden" value="${item.catatan != null? item.catatan:''}" id="hidden_catatan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
-                                                                                                <input type="checkbox" value="${item.id}" name="data[${item.id_pembayaran}][${item.id}][check]" class="ml-3 mt-2 centang" /> 
-                                                                                            </div>`).join('<br>')}</td>`);
-                                    $("#tbodyId").append(row);
+                                    // let cek_status = data[i].get_operasional;
+                                    // if(cek_status != 'SELESAI'){
+                                        console.log('cek_status', data[i].get_operasional);
+                                        var row = $("<tr></tr>");
+                                        row.append(`<td style='background: #efefef'>
+                                                            <b> 
+                                                                <span> ${data[i].get_operasional[0].get_sewa.get_customer.get_grup.nama_grup}</span> 
+                                                            </b>
+                                                    </td>`);
+                                        row.append(`<td style='background: #efefef'>
+                                                            <b> 
+                                                                <span>► ${data[i].get_operasional[0].get_sewa.get_customer.nama}</span> 
+                                                            </b>
+                                                    </td>`);
+                                        row.append(`<td> ${data[i].get_operasional[0].get_sewa.nama_tujuan} </td>`);
+                                        if(item == 'LAIN-LAIN'){
+                                            row.append(`<td>
+                                                            <span>${data[i].get_operasional[0].deskripsi}</span> 
+                                                        </td>`);
+                                        }
+                                        row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" class="form-control" title="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" readonly />`).join('<br>')}</td>`);
+                                        row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
+                                        row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
+                                                                                                <input type="hidden" value="${item.total_dicairkan}" id="hidden_dicairkan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />
+                                                                                                `).join('<br>')}</td>`);
+                                        row.append(`<td> ${data[i].get_operasional.map(item => `<div class='d-flex'>
+                                                                                                    <input type="text" value="${item.catatan != null? item.catatan:''}" id="catatan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][catatan]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
+                                                                                                    <input type="hidden" value="${item.catatan != null? item.catatan:''}" id="hidden_catatan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
+                                                                                                    <input type="checkbox" value="${item.id}" name="data[${item.id_pembayaran}][${item.id}][check]" class="ml-3 mt-2 centang" /> 
+                                                                                                </div>`).join('<br>')}</td>`);
+                                        $("#tbodyId").append(row);
+                                    // }
                                 }
                             // }
                                 

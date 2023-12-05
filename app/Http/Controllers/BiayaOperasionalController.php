@@ -162,6 +162,7 @@ class BiayaOperasionalController extends Controller
                             if($value['dicairkan'] != null){
                                 if (array_key_exists($value['tujuan'], $storeData)) {
                                     // tambah data jika tujuan sudah ada
+                                    $storeData[$value['tujuan']]['operasional'] += floatval(str_replace(',', '', $value['nominal']));
                                     $storeData[$value['tujuan']]['dicairkan'] += floatval(str_replace(',', '', $value['dicairkan']));
                                     $storeData[$value['tujuan']]['driver'] .= ' #'. $value['nopol'] .' ('.$driver.')';
                                     $storeData[$value['tujuan']]['id_opr'][] = $sewa_o->id;
@@ -169,6 +170,7 @@ class BiayaOperasionalController extends Controller
                                 } else {
                                     // buat data baru kalau data tujuan belum ada
                                     $storeData[$value['tujuan']] = [
+                                        'operasional' => floatval(str_replace(',', '', $value['nominal'])),
                                         'dicairkan' => floatval(str_replace(',', '', $value['dicairkan'])),
                                         'driver' => '#'. $value['nopol'] .' ('.$driver.')',
                                         'id_opr' => [$sewa_o->id],
@@ -179,6 +181,7 @@ class BiayaOperasionalController extends Controller
                         }else{
                             $pembayaran = new SewaOperasionalPembayaran();
                             $pembayaran->deskripsi = $item;
+                            $pembayaran->total_operasional = $total_operasional;
                             $pembayaran->total_dicairkan = $dicairkan;
                             // $pembayaran->catatan = '';
                             $pembayaran->created_by = $user;
@@ -222,6 +225,7 @@ class BiayaOperasionalController extends Controller
 
                     $pembayaran = new SewaOperasionalPembayaran();
                     $pembayaran->deskripsi = $item;
+                    $pembayaran->total_operasional = $dump['operasional'];
                     $pembayaran->total_dicairkan = $dump['dicairkan'];
                     // $pembayaran->catatan = '';
                     $pembayaran->created_by = $user;

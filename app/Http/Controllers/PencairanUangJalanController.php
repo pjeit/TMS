@@ -17,6 +17,8 @@ use App\Models\UangJalanRiwayat;
 use App\Models\SewaOperasional;
 use Symfony\Component\VarDumper\VarDumper;
 use App\Helper\CoaHelper;
+use App\Models\KasBank;
+
 class PencairanUangJalanController extends Controller
 {
     public function __construct()
@@ -144,7 +146,7 @@ class PencairanUangJalanController extends Controller
                     $kht->is_aktif = 'Y';
                     $kht->save();
                 
-                    if( $data['total_diterima']!=0||$data['total_diterima']!="0")
+                    if( $data['total_diterima'] != 0 || $data['total_diterima'] != "0")
                     {
                         if (isset($data['teluk_lamong'])) {
                             $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
@@ -157,6 +159,7 @@ class PencairanUangJalanController extends Controller
                             $SOP->is_ditagihkan = 'N';
                             $SOP->is_dipisahkan = 'N';
                             $SOP->status = "SUDAH DICAIRKAN";
+                            $SOP->catatan = "PENCAIRAN DI UANG JALAN";
                             $SOP->created_by = $user;
                             $SOP->created_at = now();
                             $SOP->is_aktif = 'Y';
@@ -188,7 +191,7 @@ class PencairanUangJalanController extends Controller
                 {
                     if (isset($data['teluk_lamong'])) {
                             // $nominal =(float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']);
-                            $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
+                            $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
                             $SOP = new SewaOperasional();
                             $SOP->id_sewa = $data['id_sewa_defaulth']; 
                             $SOP->deskripsi = 'TL';
@@ -198,14 +201,16 @@ class PencairanUangJalanController extends Controller
                             $SOP->is_ditagihkan = 'N';
                             $SOP->is_dipisahkan = 'N';
                             $SOP->status = "SUDAH DICAIRKAN";
+                            $SOP->catatan = "PENCAIRAN DI UANG JALAN";
                             $SOP->created_by = $user;
                             $SOP->created_at = now();
                             $SOP->is_aktif = 'Y';
                             $SOP->save();
                         } else {
                             // $nominal =(float)str_replace(',', '', $data['total_diterima']);
-                            $keterangan_string='UANG KELUAR #PEMBAYARAN UANG JALAN';
+                            $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN';
                         }
+
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
                                 $data['pembayaran'],// id kas_bank dr form
@@ -234,23 +239,13 @@ class PencairanUangJalanController extends Controller
 
             if ((float)str_replace(',', '', $data['total_diterima']>0))
             {
-                $saldo = DB::table('kas_bank')
-                    ->select('*')
-                    ->where('is_aktif', '=', "Y")
-                    ->where('kas_bank.id', '=', $data['pembayaran'])
-                    ->first();
-
-                $saldo_baru = $saldo->saldo_sekarang - (float)str_replace(',', '', $data['total_diterima']);
-                
-                DB::table('kas_bank')
-                    ->where('id', $data['pembayaran'])
-                    ->update(array(
-                        'saldo_sekarang' => $saldo_baru,
-                        'updated_at'=> now(),
-                        'updated_by'=> $user,
-                    )
-                );
+                $saldo = KasBank::where('is_aktif', "Y")->find($data['pembayaran']);
+                $saldo->saldo_sekarang -= (float)str_replace(',', '', $data['total_diterima']);
+                $saldo->updated_by = $user;
+                $saldo->updated_at = now();
+                $saldo->save();
             }
+
             DB::commit();
             return redirect()->route('pencairan_uang_jalan.index')->with(['status' => 'Success', 'msg' => 'Pembayaran berhasil!']);
         } catch (ValidationException $e) {

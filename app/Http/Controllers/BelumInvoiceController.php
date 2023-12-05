@@ -5,8 +5,10 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceDetail;
 use App\Models\InvoiceDetailAddcost;
+use App\Models\KasBank;
 use App\Models\Sewa;
 use App\Models\SewaOperasional;
+use App\Models\SewaOperasionalPembayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -172,10 +174,13 @@ class BelumInvoiceController extends Controller
                 $dataCust = Customer::where('grup_id', $grup[0])
                         ->where('is_aktif', 'Y')
                         ->get();
+
+                $bank = KasBank::where('is_aktif', 'Y')->get();
     
                 return view('pages.invoice.belum_invoice.form',[
                     'judul'=>"BELUM INVOICE",
                     'data' => $data,
+                    'bank' => $bank,
                     'dataSewa' => $dataSewa,
                     'dataCust' => $dataCust,
                     'grup' => $grup[0],
@@ -198,10 +203,11 @@ class BelumInvoiceController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-     {
+    {
         $user = Auth::user()->id;
         $data = $request->post();
         DB::beginTransaction(); 
+        // dd($data);
 
         try {
             // logic nomer booking
@@ -219,7 +225,6 @@ class BelumInvoiceController extends Controller
                 }
             //
 
-            // dd(explode('/',$newInvoiceNumber)[2]);
             $invoice = new Invoice();
             $invoice->id_grup = $data['grup_id'];
             $invoice->no_invoice = $newInvoiceNumber;
@@ -257,8 +262,21 @@ class BelumInvoiceController extends Controller
 
                     $is_invoice_detail = false;
                     $dataAddcost = json_decode($value['addcost_details']);
-                    foreach ($dataAddcost as $i => $addcost) {
-                        if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'N'){
+                    $result = array_filter($dataAddcost, function ($addcost) {
+                        return $addcost->is_ditagihkan === "Y" && $addcost->is_dipisahkan === "Y";
+                    });
+
+                    if (!empty($result)) {
+                        $is_invoice_detail = true;
+                    }
+
+                    $addcost_baru = json_decode($value['addcost_baru']);
+                    if($addcost_baru != null){
+                        $result_baru = array_filter($addcost_baru, function ($addcost_baru) {
+                            return $addcost_baru->is_ditagihkan === "Y" && $addcost_baru->is_dipisahkan === "Y";
+                        });
+
+                        if (!empty($result_baru)) {
                             $is_invoice_detail = true;
                         }
                     }
@@ -280,6 +298,7 @@ class BelumInvoiceController extends Controller
                         $invoice_d->created_at = now();
                         $invoice_d->is_aktif = 'Y';
                         if($invoice_d->save()){
+                            // data addcost lama
                             foreach ($dataAddcost as $i => $addcost) {
                                 $sewa_oprs = SewaOperasional::where('is_aktif', 'Y')
                                                             ->where('id_sewa', $addcost->id_sewa)
@@ -304,40 +323,61 @@ class BelumInvoiceController extends Controller
                                     $invoice_da->save();
                                 }
                             }
-    
-                            $addcost_baru = json_decode($value['addcost_baru']);
+
+                            // data addcost baru
                             if($addcost_baru != null){
+                                if($data['bank'] == null){
+                                    db::rollBack();
+                                    return redirect()->back()->with(['status' => 'Error', 'msg' => 'Harap isi Kas untuk pencairan!']);
+                                }
                                 foreach ($addcost_baru as $i => $addcost) {
+                                    $pembayaran = new SewaOperasionalPembayaran();
+                                    $pembayaran->deskripsi = $addcost->deskripsi;
+                                    $pembayaran->total_operasional = $addcost->total_operasional;
+                                    $pembayaran->total_dicairkan = $addcost->total_operasional;
+                                    // $pembayaran->catatan = '';
+                                    $pembayaran->created_by = $user;
+                                    $pembayaran->created_at = now();
+                                    $pembayaran->save();
+                                        
                                     $sewa_oprs = new SewaOperasional();
                                     $sewa_oprs->id_sewa = $addcost->id_sewa;
+                                    $sewa_oprs->id_pembayaran = $pembayaran->id;
                                     $sewa_oprs->deskripsi = $addcost->deskripsi;
                                     $sewa_oprs->total_operasional = $addcost->total_operasional;
-                                    // $sewa_oprs->total_dicairkan = $addcost->total_operasional;
+                                    $sewa_oprs->total_dicairkan = $addcost->total_operasional;
                                     $sewa_oprs->tgl_dicairkan = now();
                                     $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                     $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+                                    $sewa_oprs->status = 'SUDAH DICAIRKAN';
                                     $sewa_oprs->created_by = $user;
                                     $sewa_oprs->created_at = now();
                                     $sewa_oprs->save();
                                     if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'N'){
-                                        
-                                        // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                        //     array(
-                                        //         $data['pembayaran'], // id kas_bank dr form
-                                        //         now(), //tanggal
-                                        //         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                        //         $sewa_oprs->total_dicairkan, //uang keluar (kredit)
-                                        //         1015, //kode coa
-                                        //         'pencairan_operasional',
-                                        //         'REVISI BELUM INVOICE - ' . $addcost->deskripsi . ' : '. $addcost->nama_tujuan .'/'. $addcost->driver, //keterangan_transaksi
-                                        //         $sewa_oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
-                                        //         $user, //created_by
-                                        //         now(), //created_at
-                                        //         $user, //updated_by
-                                        //         now(), //updated_at
-                                        //         'Y'
-                                        //     ) 
-                                        // );
+                                        $keterangan = $addcost->deskripsi . ': ' . $value['nama_tujuan'] . '#' . $value['driver'];
+                                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                            array(
+                                                $data['bank'], // id kas_bank dr form
+                                                now(), //tanggal
+                                                0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                                $sewa_oprs->total_dicairkan, //uang keluar (kredit)
+                                                1015, //kode coa
+                                                'pencairan_operasional',
+                                                $keterangan, //keterangan_transaksi
+                                                $pembayaran->id, //keterangan_kode_transaksi // id_pembayaran
+                                                $user, //created_by
+                                                now(), //created_at
+                                                $user, //updated_by
+                                                now(), //updated_at
+                                                'Y'
+                                            ) 
+                                        );
+
+                                        $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
+                                        $saldo->saldo_sekarang -= $addcost->total_operasional;
+                                        $saldo->created_by = $user;
+                                        $saldo->created_at = now();
+                                        $saldo->save();
                                         
                                         $invoice_da = new InvoiceDetailAddcost();
                                         $invoice_da->id_invoice = $invoice->id;
@@ -377,8 +417,6 @@ class BelumInvoiceController extends Controller
                     foreach ($data['detail'] as $key => $value) {
                         $is_invoice_detail_pisah = false;
                         $dataAddcost = json_decode($value['addcost_details']);
-                        $addcost_baru = json_decode($value['addcost_baru']);
-
                         $result = array_filter($dataAddcost, function ($addcost) {
                             return $addcost->is_ditagihkan === "Y" && $addcost->is_dipisahkan === "Y";
                         });
@@ -386,6 +424,7 @@ class BelumInvoiceController extends Controller
                             $is_invoice_detail_pisah = true;
                         }
 
+                        $addcost_baru = json_decode($value['addcost_baru']);
                         if($addcost_baru != null){
                             $result_baru = array_filter($addcost_baru, function ($addcost_baru) {
                                 return $addcost_baru->is_ditagihkan === "Y" && $addcost_baru->is_dipisahkan === "Y";
@@ -394,7 +433,6 @@ class BelumInvoiceController extends Controller
                             if (!empty($result_baru)) {
                                 $is_invoice_detail_pisah = true;
                             }
-
                         }
 
                         if($is_invoice_detail_pisah == true){
@@ -409,7 +447,7 @@ class BelumInvoiceController extends Controller
                             $invoice_d_pisah->created_at = now();
                             $invoice_d_pisah->is_aktif = 'Y';
                             if($invoice_d_pisah->save()){
-
+                                // data addcost lama
                                 foreach ($dataAddcost as $i => $addcost) {
                                     if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
                                         $sewa_oprs = SewaOperasional::where('is_aktif', 'Y')
@@ -436,41 +474,63 @@ class BelumInvoiceController extends Controller
                                         $invoice_da->save();
                                     }
                                 }
-            
-                                $addcost_baru = json_decode($value['addcost_baru']);
+                                
+                                // data addcost baru
                                 if($addcost_baru != null){
+                                    if($data['bank'] == null){
+                                        db::rollBack();
+                                        return redirect()->back()->with(['status' => 'Error', 'msg' => 'Harap isi Kas untuk pencairan!']);
+                                    }
+
                                     foreach ($addcost_baru as $i => $addcost) {
                                         if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
+                                            $pembayaran = new SewaOperasionalPembayaran();
+                                            $pembayaran->deskripsi = $addcost->deskripsi;
+                                            $pembayaran->total_operasional = $addcost->total_operasional;
+                                            $pembayaran->total_dicairkan = $addcost->total_operasional;
+                                            // $pembayaran->catatan = '';
+                                            $pembayaran->created_by = $user;
+                                            $pembayaran->created_at = now();
+                                            $pembayaran->save();
+
                                             $sewa_oprs = new SewaOperasional();
                                             $sewa_oprs->id_sewa = $addcost->id_sewa;
                                             $sewa_oprs->deskripsi = $addcost->deskripsi;
                                             $sewa_oprs->total_operasional = $addcost->total_operasional;
-                                            // $sewa_oprs->total_dicairkan = $addcost->total_operasional;
+                                            $sewa_oprs->total_dicairkan = $addcost->total_operasional;
                                             $sewa_oprs->tgl_dicairkan = now();
                                             $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                             $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+                                            $sewa_oprs->status = 'SUDAH DICAIRKAN';
                                             $sewa_oprs->created_by = $user;
                                             $sewa_oprs->created_at = now();
                                             $sewa_oprs->save();
                                             $total_tagih += $addcost->total_operasional;
                                             
-                                            // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                            //     array(
-                                            //         $data['pembayaran'], // id kas_bank dr form
-                                            //         now(), //tanggal
-                                            //         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                            //         $sewa_oprs->total_dicairkan, //uang keluar (kredit)
-                                            //         1015, //kode coa
-                                            //         'pencairan_operasional',
-                                            //         'REVISI BELUM INVOICE - ' . $addcost->deskripsi . ' : '. $addcost->nama_tujuan .'/'. $addcost->driver, //keterangan_transaksi
-                                            //         $sewa_oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
-                                            //         $user, //created_by
-                                            //         now(), //created_at
-                                            //         $user, //updated_by
-                                            //         now(), //updated_at
-                                            //         'Y'
-                                            //     ) 
-                                            // );
+                                            $keterangan = $addcost->deskripsi . ': ' . $value['nama_tujuan'] . '#' . $value['driver'];
+                                            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                                array(
+                                                    $data['bank'], // id kas_bank dr form
+                                                    now(), //tanggal
+                                                    0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                                    $sewa_oprs->total_dicairkan, //uang keluar (kredit)
+                                                    1015, //kode coa
+                                                    'pencairan_operasional',
+                                                    $keterangan, //keterangan_transaksi
+                                                    $pembayaran->id, //keterangan_kode_transaksi // id_pembayaran
+                                                    $user, //created_by
+                                                    now(), //created_at
+                                                    $user, //updated_by
+                                                    now(), //updated_at
+                                                    'Y'
+                                                ) 
+                                            );
+    
+                                            $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
+                                            $saldo->saldo_sekarang -= $addcost->is_ditagihkan;
+                                            $saldo->created_by = $user;
+                                            $saldo->created_at = now();
+                                            $saldo->save();
                                             
                                             $invoice_da = new InvoiceDetailAddcost();
                                             $invoice_da->id_invoice = $invoicePisah->id;
@@ -539,6 +599,8 @@ class BelumInvoiceController extends Controller
             if ($data->jenis_tujuan == 'LTL') {
                 $checkLTL = true; 
             }
+
+            $bank = KasBank::where('is_aktif', 'Y')->get();
         
             //ini buat yang di dalem modal
             $dataSewa = Sewa::leftJoin('grup as g', 'g.id', 'id_grup_tujuan')
@@ -556,6 +618,7 @@ class BelumInvoiceController extends Controller
             return view('pages.invoice.belum_invoice.edit',[
                 'judul'=>"EDIT BELUM INVOICE",
                 'data' => $data,
+                'bank' => $bank,
                 'dataSewa' => $dataSewa,
                 'dataCust' => $dataCust,
                 'grup' => $data->getTujuan->grup_id,
@@ -581,6 +644,7 @@ class BelumInvoiceController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
+        // dd($data);
 
         try {
             foreach ($data['detail'] as $key => $value) {
@@ -603,9 +667,23 @@ class BelumInvoiceController extends Controller
 
                 $new_addcosts = json_decode($value['addcost_baru']);
                 if($new_addcosts != null){
+                    if($data['bank'] == null){
+                        db::rollBack();
+                        return redirect()->route('belum_invoice.index')->with(['status' => 'error', 'msg' => 'Harap isi bank dahulu untuk pencairan!']);
+                    }
+
                     foreach ($new_addcosts as $new_addcost) {
+                        $pembayaran = new SewaOperasionalPembayaran();
+                        $pembayaran->deskripsi = $new_addcost->deskripsi;
+                        $pembayaran->total_operasional = $new_addcost->total_operasional;
+                        $pembayaran->total_dicairkan = $new_addcost->total_operasional;
+                        $pembayaran->created_by = $user;
+                        $pembayaran->created_at = now();
+                        $pembayaran->save();
+
                         $sewa_oprs = new SewaOperasional();
                         $sewa_oprs->id_sewa = $new_addcost->id_sewa;
+                        $sewa_oprs->id_pembayaran = $pembayaran->id;
                         $sewa_oprs->deskripsi = $new_addcost->deskripsi;
                         $sewa_oprs->total_operasional = $new_addcost->total_operasional;
                         $sewa_oprs->total_dicairkan = $new_addcost->total_operasional;
@@ -616,18 +694,18 @@ class BelumInvoiceController extends Controller
                         $sewa_oprs->created_by = $user;
                         $sewa_oprs->created_at = now();
                         $sewa_oprs->save();
-                        
+
                         $deskripsi = $new_addcost->deskripsi . ': ' . $value['nama_tujuan'] . ' #' . $value['driver'];
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
-                                $data['pembayaran'], // id kas_bank dr form
+                                $data['bank'], // id kas_bank dr form
                                 now(), //tanggal
                                 0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                 $new_addcost->total_operasional, //uang keluar (kredit)
                                 1015, //kode coa
                                 'pencairan_operasional',
-                                $deskripsi, //keterangan_transaksi
-                                $sewa_oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
+                                $deskripsi, // keterangan_transaksi
+                                $pembayaran->id, //keterangan_kode_transaksi // id_pembayaran
                                 $user, //created_by
                                 now(), //created_at
                                 $user, //updated_by
@@ -635,6 +713,12 @@ class BelumInvoiceController extends Controller
                                 'Y'
                             ) 
                         );
+
+                        $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
+                        $saldo->saldo_sekarang -= $new_addcost->total_operasional;
+                        $saldo->updated_by = $user;
+                        $saldo->updated_at = now();
+                        $saldo->save();
                     }
                 }
             }

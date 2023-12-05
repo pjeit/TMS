@@ -15,12 +15,12 @@ class SewaOperasional extends Model
 
     public function getSewa()
     {
-         return $this->hasOne(Sewa::class, 'id_sewa', 'id_sewa');
+        return $this->hasOne(Sewa::class, 'id_sewa', 'id_sewa');
     }
 
     public function getTransaction()
     {
-         return $this->hasOne(KasBankTransaction::class, 'keterangan_kode_transaksi', 'like', '%727%')->where('is_aktif', 'Y');
+        return $this->hasOne(KasBankTransaction::class, 'keterangan_kode_transaksi', 'like', '%727%')->where('is_aktif', 'Y');
     }
     
 
