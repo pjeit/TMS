@@ -332,6 +332,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('laporan_sales/detail/{dalam_perjalanan}', [App\Http\Controllers\LaporanSalesController::class, 'edit'])->name('laporan_sales.edit');
         Route::get('laporan_sales', [App\Http\Controllers\LaporanSalesController::class, 'index_laporan_sales'])->name('laporan_sales.index');
 
+        Route::get('laporan_status_kendaraan/load_data_ajax', [App\Http\Controllers\LaporanStatusKendaraanController::class, 'load_data_ajax'])->name('laporan_status_kendaraan.load_data_ajax');
+        Route::get('laporan_status_kendaraan', [App\Http\Controllers\LaporanStatusKendaraanController::class, 'index_laporan_status_kendaraan'])->name('laporan_status_kendaraan.index');
+
         // ===================================LAPORAN ADMIN=========================================================
 
 
