@@ -70,8 +70,7 @@
                                             $kas->nama }}</option>
                                         @endforeach
                                     </select>
-                                    <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i
-                                            class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
+                                    <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
                                 </div>
                             </div>
                         </div>
@@ -269,7 +268,7 @@
                                         var row = $("<tr></tr>");
                                         row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
                                         row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
-                                        row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' / '+data[i].no_polisi:'' } / ${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier} </td>`);
+                                        row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) </td>`);
                                         row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
                                         if(data[i].jenis_order == 'INBOUND'){
                                             if(data[i].tipe_kontainer=='20'){

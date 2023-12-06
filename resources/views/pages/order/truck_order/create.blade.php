@@ -239,7 +239,7 @@
                                         <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required>
                                         <option value="">Pilih Driver</option>
                                         @foreach ($dataDriver as $drvr)
-                                            <option value="{{$drvr->id}}" nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
+                                            <option value="{{$drvr->id}}" nama_driver="{{ $drvr->nama_panggilan }}">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">

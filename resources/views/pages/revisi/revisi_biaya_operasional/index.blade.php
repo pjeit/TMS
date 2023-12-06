@@ -37,7 +37,7 @@
                                     <option value="">­­— PILIH DATA —</option>
                                     <option value="TALLY">TALLY</option>
                                     <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                    <option value="OPERASIONAL">ALAT</option>
+                                    <option value="ALAT">ALAT</option>
                                     <option value="TIMBANG">TIMBANG</option>
                                     <option value="BURUH">BURUH</option>
                                     <option value="LEMBUR">LEMBUR</option>
@@ -244,7 +244,7 @@
                             // if(item == 'OPERASIONAL' || item == 'TALLY' || item == 'SEAL PELAYARAN'){
                                 for (var i = 0; i <data.length; i++) {
                                     // let cek_status = data[i].get_operasional;
-                                    // if(cek_status != 'SELESAI'){
+                                    if(cek_status != 'SELESAI' || cek_status != 'MENUNGGU PEMBAYARAN INVOICE'){
                                         console.log('cek_status', data[i].get_operasional);
                                         var row = $("<tr></tr>");
                                         row.append(`<td style='background: #efefef'>
@@ -274,7 +274,7 @@
                                                                                                     <input type="checkbox" value="${item.id}" name="data[${item.id_pembayaran}][${item.id}][check]" class="ml-3 mt-2 centang" /> 
                                                                                                 </div>`).join('<br>')}</td>`);
                                         $("#tbodyId").append(row);
-                                    // }
+                                    }
                                 }
                             // }
                                 

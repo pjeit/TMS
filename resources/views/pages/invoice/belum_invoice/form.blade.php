@@ -19,8 +19,8 @@
         overflow-x: auto;
         white-space: nowrap; */
     }
-    [data-select2-id="108"]{
-        border: 5px solid #00ff6a !important;
+    [aria-labelledby="select2-bank-container"]{
+        border: 3px solid #00ff6a !important;
     }
 </style>
     <form action="{{ route('belum_invoice.store') }}" id="save" method="POST" >
@@ -81,6 +81,7 @@
                                     <label for="">Catatan</label>
                                     <textarea type="text" id="catatan_invoice" name="catatan_invoice" class="form-control" rows="4"></textarea>                     
                                     <input type="hidden" id="is_pisah_invoice" name="is_pisah_invoice" value="FALSE">
+                                    <input type="hidden" id="checkLTL" value={{ $checkLTL }}>
                                 </div>  
                             </div>
                         </div>
@@ -215,7 +216,14 @@
                                 @endphp
                                     {{ $driver }}
                             </td>
-                            <td> <span id="no_kontainer_text_{{ $item->id_sewa }}">{{ isset($item->id_jo_detail)? $item->getJOD->no_kontainer:$item->no_kontainer }}</span> <br> <span id='no_seal_text_{{ $item->id_sewa }}'>{{ $item->seal_pelayaran }}</span> </td>
+                            <td> 
+                                <span id="no_kontainer_text_{{ $item->id_sewa }}">
+                                    {{ isset($item->id_jo_detail)? $item->getJOD->no_kontainer:$item->no_kontainer }}
+                                </span> 
+                                <br> 
+                                <span id='no_sj_text_{{ $item->id_sewa }}'>{{ $item->no_surat_jalan }}</span> 
+                                <span id='no_seal_text_{{ $item->id_sewa }}'>{{ $item->seal_pelayaran }}</span> 
+                            </td>
                             <td style="text-align:right" id="muatan_satuan_{{ $key }}">
                                 {{ (isset($item->jumlah_muatan ))? number_format($item->jumlah_muatan,2)  : "-" }}
                                 <input type="hidden" class="muatan_satuan" name='detail[{{ $item->id_sewa }}][muatan_satuan]' id='muatan_satuan_{{ $item->id_sewa }}' value="{{(isset($item->jumlah_muatan ))?$item->jumlah_muatan : 0}}">
@@ -228,13 +236,13 @@
                                 @endphp
                                 @foreach ($item->sewaOperasional as $i => $oprs)
                                     @if ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y'&& $oprs->is_dipisahkan == 'N')
-                                        <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
+                                        <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_dicairkan }}">
                                         @php
-                                            $total_addcost += $oprs->total_operasional;
+                                            $total_addcost += $oprs->total_dicairkan;
                                         @endphp
                                     @elseif ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y'&& $oprs->is_dipisahkan == 'Y')
                                         @php
-                                            $total_addcost_pisah += $oprs->total_operasional;
+                                            $total_addcost_pisah += $oprs->total_dicairkan;
                                         @endphp
                                     @endif
                                 @endforeach
@@ -682,7 +690,6 @@
             $('#no_kontainer').val( $('#no_kontainer_hidden_'+key).val() ); 
             $('#no_seal').val( $('#no_seal_hidden_'+key).val() ); 
             $('#no_sj').val( $('#no_sj_hidden_'+key).val() ); 
-
             $('#catatan').val( $('#catatan_hidden_'+key).val() ); 
             $('#tarif').val( moneyMask($('#tarif_hidden_'+key).val()) ); 
             $('#addcost').val( moneyMask($('#addcost_hidden_'+key).val()) ); 
@@ -710,6 +717,8 @@
 
         $(document).on('click', '.save_detail', function(event){ // save detail
             var key = $('#key').val(); 
+            let checkLTL = $('#checkLTL').val();
+            console.log('checkLTL', checkLTL);
 
             $('#addcost_hidden_'+key).val( normalize($('#addcost').val()) );
             $('#addcost_pisah_hidden_'+key).val( normalize($('#addcost_pisah').val()) );
@@ -717,17 +726,19 @@
 
             $('#no_kontainer_hidden_'+key).val( $('#no_kontainer').val() );
             $('#no_seal_hidden_'+key).val( $('#no_seal').val() );
-            $('#no_sj_hidden_'+key).val( $('#no_sj').val() );
+            if(checkLTL == 1){
+                $('#no_sj_hidden_'+key).val( $('#no_sj').val() );
+                document.getElementById('no_sj_text_' + key).textContent = $('#no_sj').val();
+            }
             $('#catatan_hidden_'+key).val( $('#catatan').val() );
             $('#diskon_hidden_'+key).val( $('#diskon').val() );
             $('#subtotal_hidden_'+key).val( escapeComma($('#subtotal').val()) );
 
-            var elementIds = ["no_kontainer", "no_seal", "no_sj","catatan", "diskon", "subtotal"];
-            elementIds.forEach(function (id) {
-                if($('#' + id).val() !== undefined){
-                    document.getElementById(id + '_text_' + key).textContent = $('#' + id).val();
-                }
-            });
+            document.getElementById('no_kontainer_text_' + key).textContent = $('#no_kontainer').val();
+            document.getElementById('no_seal_text_' + key).textContent = $('#no_seal').val();
+            document.getElementById('catatan_text_' + key).textContent = $('#catatan').val();
+            document.getElementById('diskon_text_' + key).textContent = $('#diskon').val();
+            document.getElementById('subtotal_text_' + key).textContent = $('#subtotal').val();
             
             updateAddCost(key); //update data addcost yg berubah
             calculateGrandTotal(); // pas load awal langsung hitung grand total
@@ -766,7 +777,7 @@
                         myjson = `{"id":${JSON.stringify(id)},
                                     "id_sewa":${JSON.stringify(key)},
                                     "deskripsi":${JSON.stringify( $('#addcost_deskripsi_'+id).val() )},
-                                    "total_operasional":${JSON.stringify( normalize($('#addcost_total_operasional_'+id).val()) )},
+                                    "total_dicairkan":${JSON.stringify( normalize($('#addcost_total_dicairkan_'+id).val()) )},
                                     "is_ditagihkan":${JSON.stringify( tagih )},
                                     "is_dipisahkan":${JSON.stringify( pisah )},
                                     "catatan":${JSON.stringify( $('#addcost_catatan_'+id).val() )}
@@ -790,9 +801,15 @@
 
         function showAddcostDetails(key){
             var details = $('#detail_addcost_'+key).val(); 
-            // console.log('details', details);
             if (details && (details != null)) { // cek apakah ada isi detail addcost
                 JSON.parse(details).forEach(function(item, index) {
+                    let is_readonly = '';
+                    let exclude_array = ['TL', 'ALAT', 'TALLY', 'SEAL PELAYARAN'];
+                    if(exclude_array.includes(item.deskripsi)){
+                        is_readonly = 'readonly';
+                    }
+                    let isDisabledLTL = item.deskripsi == 'ALAT'? 'disabled':'';
+
                     $('#tabel_addcost > tbody:last-child').append(
                         `
                             <tr id="${index}" id_addcost="${item.id}">
@@ -800,13 +817,13 @@
                                     <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" title="${item.deskripsi}" class="form-control" readonly/>
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost" readonly />
+                                    <input type="text" id="addcost_total_dicairkan_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost" ${is_readonly} />
                                 </td>
                                 <td style="text-align:center;">
-                                    <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
+                                    <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} ${isDisabledLTL} >
                                 </td>
                                 <td style="text-align:center;">
-                                    <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} >
+                                    <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} ${isDisabledLTL} >
                                 </td>
                                 <td>
                                     <input type="text" id="addcost_catatan_${item.id}" value="${item.catatan == null? '':item.catatan}" title="${item.catatan == null? '':item.catatan}" ${item.catatan == 'PENCAIRAN DI UANG JALAN'? 'readonly':''} class="form-control w-auto" />
@@ -825,7 +842,6 @@
 
         function showAddcostDetailsBaru(key){
             var details = $('#detail_addcost_baru_'+key).val(); 
-            // console.log('details', details);
             if (details && (details != null)) { // cek apakah ada isi detail addcost
                 JSON.parse(details).forEach(function(item, index) {
                     console.log('item', item);
@@ -836,7 +852,7 @@
                                     <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" title="${item.deskripsi}" class="form-control" />
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost"  />
+                                    <input type="text" id="addcost_total_dicairkan_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost"  />
                                 </td>
                                 <td style="text-align:center;">
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
@@ -899,13 +915,13 @@
                             <input type="text" id="addcost_deskripsi_x_${id}" class="form-control" />
                         </td>
                         <td>
-                            <input type="text" id="addcost_total_operasional_x_${id}" id_add_cost="x_${id}" class="form-control numaja uang hitungBiaya hitungAddCost" />
+                            <input type="text" id="addcost_total_dicairkan_x_${id}" id_add_cost="x_${id}" class="form-control numaja uang hitungBiaya hitungAddCost" />
                         </td>
                         <td style="text-align:center;">
                             <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_x_${id}" id_tagih="x_${id}" name="addcost_is_ditagihkan_x_${id}" >
                         </td>
                         <td style="text-align:center;">
-                            <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_x_${id}" id_pisah="x_${id}" name="addcost_is_dipisahkan_x_${id}" >
+                            <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_x_${id}" id_pisah="x_${id}" name="addcost_is_dipisahkan_x_${id}" disabled>
                         </td>
                         <td>
                             <input type="text" id="addcost_catatan_x_${id}" class="form-control w-auto" />
@@ -975,7 +991,7 @@
                 var id = add_cost.getAttribute('id_add_cost');
                 var di_tagih = document.getElementById('addcost_is_ditagihkan_' + id);
                 var di_pisah = document.getElementById('addcost_is_dipisahkan_' + id);
-                var add_cost = $('#addcost_total_operasional_' + id).val();
+                var add_cost = $('#addcost_total_dicairkan_' + id).val();
                 if(di_tagih.checked == true && di_pisah.checked == false){
                     total_add_cost += normalize(add_cost);
                 }else if(di_tagih.checked == true && di_pisah.checked == true){
@@ -1017,7 +1033,7 @@
                     parsed.forEach((element, index)  => {
                         if(element.is_ditagihkan == 'Y' && element.is_dipisahkan == 'Y'){
                             $('#is_pisah_invoice').val('TRUE');
-                            total_pisah += element.total_operasional;
+                            total_pisah += element.total_dicairkan;
                         }
                     });
                 }

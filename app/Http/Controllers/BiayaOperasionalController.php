@@ -154,7 +154,6 @@ class BiayaOperasionalController extends Controller
                         $sewa_o->is_aktif = 'Y';
                         $sewa_o->save();
 
-                        // dd($data['data']);
                         if($item == 'ALAT' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
                             $i=1;
                             $driver = $value['supplier'] != 'null'? $value['supplier']:$value['driver'];
@@ -218,6 +217,7 @@ class BiayaOperasionalController extends Controller
                         }
                     }
                 }
+                // dd($storeData);
             }
 
             if($item == 'ALAT' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){

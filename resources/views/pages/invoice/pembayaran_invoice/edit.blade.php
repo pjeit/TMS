@@ -19,8 +19,9 @@
         overflow-x: auto;
         white-space: nowrap; */
     }
-    [data-select2-id="56"]{
-        border: 5px solid #00ff6a !important;
+    /* [data-select2-id="56"]{ */
+    [aria-labelledby="select2-bank-container"]{
+        border: 3px solid #00ff6a !important;
     }
 </style>
     <form action="{{ route('pembayaran_invoice.update', [ $data['id'] ]) }}" id="save" method="POST" >
@@ -29,7 +30,7 @@
             <div class="card radiusSendiri">
                 <div class="card-header ">
                     <a href="{{ route('pembayaran_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
-                     <button type="button" class="btn btn-success radiusSendiri" id="btnSimpan">
+                    <button type="button" class="btn btn-success radiusSendiri" id="btnSimpan">
                         <i class="fa fa-fw fa-save"></i> Simpan    
                     </button>
                 </div>
@@ -776,7 +777,6 @@
             $('#no_kontainer').val( data.no_kontainer ); 
             $('#no_seal').val( data.seal_pelayaran ); 
             $('#no_sj').val( data.no_surat_jalan ); 
-
             $('#catatan').val( data.catatan ); 
             $('#tarif').val( moneyMask(data.total_tarif) ); 
             $('#addcost').val(''); 
@@ -967,7 +967,7 @@
 
             $('#addcost_hidden_'+data.id_sewa).val( normalize($('#addcost').val()) );
             $('#addcost_pisah_hidden_'+data.id_sewa).val( normalize($('#addcost_pisah').val()) );
-                   
+            
             let total = 0;
             $(".addcost_pisah").each(function() {
                 var value = parseFloat($(this).val()) || 0;
@@ -1083,6 +1083,12 @@
 
             if (details && (details != null)) { // cek apakah ada isi detail addcost
                 oprs.forEach(function(item, index) {
+                    let is_readonly = '';
+                    let exclude_array = ['TL', 'ALAT', 'TALLY', 'SEAL PELAYARAN'];
+                    if(exclude_array.includes(item.deskripsi)){
+                        is_readonly = 'readonly';
+                    }
+                    let isDisabledLTL = item.deskripsi == 'ALAT'? 'disabled':'';
                     $('#tabel_addcost > tbody:last-child').append(
                         `
                             <tr id="${index}" id_addcost="${item.id}">
@@ -1090,10 +1096,10 @@
                                     <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" title="${item.deskripsi}" class="form-control" readonly/>
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_total_dicairkan_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost" readonly />
+                                    <input type="text" id="addcost_total_dicairkan_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost" ${is_readonly} />
                                 </td>
                                 <td style="text-align:center;">
-                                    <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
+                                    <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} ${isDisabledLTL} >
                                 </td>
                                 <td style="text-align:center;">
                                     <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} ${item.is_ditagihkan == 'N'? 'disabled':''}>

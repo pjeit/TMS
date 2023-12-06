@@ -549,7 +549,7 @@
             $('#total_pph23').val(moneyMask(total_pph23));
             $('#total_dibayar').val(moneyMask(total_diterima+total_pph23));
         }
-     
+        
         function dibayar(){
             var pph = parseFloat(escapeComma($('#modal_pph23').val()));
             pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;
