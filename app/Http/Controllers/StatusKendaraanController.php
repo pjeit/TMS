@@ -116,9 +116,24 @@ class StatusKendaraanController extends Controller
      * @param  \App\Models\StatusKendaraan  $statusKendaraan
      * @return \Illuminate\Http\Response
      */
-    public function show(StatusKendaraan $statusKendaraan)
+    public function show(StatusKendaraan $status_kendaraan)
     {
         //
+        $dataStatusKendaraan = DB::table('status_kendaraan as sk')
+            ->select('sk.*')
+            ->where('sk.is_aktif', '=', "Y")
+            ->where('sk.id',$status_kendaraan->id)
+            ->first();
+        $dataKendaraan=DB::table('kendaraan as k')
+            ->select('k.*','kkm.nama as kategoriKendaraan')
+            ->leftJoin('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+            ->where('k.is_aktif', '=', "Y")
+            ->get();
+        return view('pages.asset.status_kendaraan.edit',[
+            'judul'=>"Status Kendaraan",
+            'dataStatusKendaraan' => $dataStatusKendaraan,
+            'dataKendaraan' => $dataKendaraan,
+        ]);
     }
 
     /**

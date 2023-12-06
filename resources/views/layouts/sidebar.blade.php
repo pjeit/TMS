@@ -1331,8 +1331,8 @@
             request()->is('laporan_job_order*')||
             request()->is('laporan_batal_muat*')||
             request()->is('laporan_kendaraan_dijual*')  ||
-            request()->is('laporan_sales*') 
-            
+            request()->is('laporan_sales*') ||
+            request()->is('laporan_status_kendaraan*') 
             ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-solid fa-id-badge"></i>
@@ -1378,6 +1378,16 @@
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                   <p>
                     <span style="font-size: 0.80em;">Laporan Kendaraan Dijual</span>
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('laporan_status_kendaraan.index')}}"
+                  class="nav-link {{request()->url() === route('laporan_status_kendaraan.index')? ' active' : '' }} "
+                  style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    <span style="font-size: 0.70em;">Laporan Status Kendaraan</span>
                   </p>
                 </a>
               </li>
