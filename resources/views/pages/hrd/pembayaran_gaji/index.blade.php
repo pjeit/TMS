@@ -48,7 +48,13 @@
                             <td>{{\Carbon\Carbon::parse($item->tanggal_catat)->format('d-M-Y')}}</td>
                             <td>{{ $item->nama_periode}} </td>
                             <td>{{ number_format($item->total) }}</td>
-                            <td>{{ number_format($item->kas_bank_id) }}</td>
+                            <td>
+                                @foreach ($dataKas as $kas)
+                                    @if ($kas->id==$item->kas_bank_id)
+                                        {{ $kas->nama }}
+                                    @endif
+                                @endforeach
+                            </td>
                             <td>
                                 <div class="btn-group dropleft">
                                     <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -179,7 +179,7 @@ class PembayaranGajiController extends Controller
                                 (float)str_replace(',', '', $data['total']), //kredit
                                 CoaHelper::DataCoa(5021), //kode coa gaji
                                 'gaji',
-                                'Pembayaran Gaji'.' - '.$data['catatan'], //keterangan_transaksi
+                                'Pembayaran Gaji'.' - '.$data['catatan'].' - '.$data['tahun_periode'].' - '.$data['nama_periode'], //keterangan_transaksi
                                 $bayar_gaji->id,//keterangan_kode_transaksi
                                 $user,//created_by
                                 now(),//created_at
