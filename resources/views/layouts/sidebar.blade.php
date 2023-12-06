@@ -790,7 +790,7 @@
           {{-- INVOICE --}}
           @if (array_intersect($invoice, $userAkses) != NULL)
           <li class="nav-item {{ request()->is('belum_invoice*') ||
-                    request()->is('pembayaran_invoice.*') ||
+                    request()->is('pembayaran_invoice') ||
                     request()->is('pembayaran_invoice_karantina*') ||
                     request()->is('invoice_karantina*') ||
                     request()->is('bukti_potong*') ||
@@ -815,7 +815,7 @@
 
               @if (array_intersect($invoice_trucking, $userAkses) != NULL)
               <li class="nav-item   {{ 
-                        request()->is('pembayaran_invoice.*') ||
+                        request()->is('pembayaran_invoice') ||
                         request()->is('belum_invoice*') ||
                         request()->is('bukti_potong*') ||
                         request()->is('update_resi*') ||
@@ -859,7 +859,7 @@
                   @can('READ_PEMBAYARAN_INVOICE')
                   <li class="nav-item">
                     <a href="{{route('pembayaran_invoice.index')}}"
-                      class="nav-link {{ request()->is('pembayaran_invoice.*')? ' active' : '' }} "
+                      class="nav-link {{ request()->is('pembayaran_invoice')? ' active' : '' }} "
                       style="font-weight: 500;">
                       <i class="nav-icon fas fa-money-bill-wave" style="font-size: 15px;"></i>
                       <p>

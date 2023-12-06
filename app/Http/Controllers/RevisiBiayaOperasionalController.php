@@ -63,7 +63,7 @@ class RevisiBiayaOperasionalController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        // dd($data);
+        dd($data);
 
         if($data['type'] == 'save'){
             try {
@@ -426,7 +426,6 @@ class RevisiBiayaOperasionalController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        dd($data);
 
         try {
             if($data['modal_item'] == 'KARANTINA'){
@@ -485,11 +484,19 @@ class RevisiBiayaOperasionalController extends Controller
                                     ->get();
             }else{
                 $data = SewaOperasionalPembayaran::where('is_aktif', 'Y')
-                                        ->where('deskripsi', $item)
+                                        ->where(function($where) use($item){
+                                            if($item == 'LAIN-LAIN'){
+                                                $where->whereNotIn('deskripsi', ['SEAL PELAYARAN','TALLY','OPERASIONAL','TIMBANG','BURUH','LEMBUR','KARANTINA']);
+                                            }else{
+                                                $where->where('deskripsi', $item);
+                                            }
+                                        })
+                                        ->whereHas('getOperasional', function ($query){
+                                            $query->where('is_aktif', 'Y');
+                                        })
                                         ->with('getOperasional')
-                                        ->with('getOperasional.getSewa.getTujuan.getGrup')
+                                        ->with('getOperasional.getSewa.getCustomer.getGrup')
                                         ->with('getOperasional.getSewa.getKaryawan')
-                                        ->with('getOperasional.getSewa.getCustomer')
                                         ->with('getOperasional.getSewa.getSupplier')
                                         ->get();
             }

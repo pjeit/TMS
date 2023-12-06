@@ -21,6 +21,9 @@ use App\Helper\UserHelper;
 use App\Models\SewaOperasional;
 use Symfony\Component\VarDumper\VarDumper;
 use App\Helper\CoaHelper;
+use App\Models\KasBankTransaction;
+use App\Models\SewaOperasionalPembayaran;
+
 class PembayaranInvoiceController extends Controller
 {
     public function __construct()
@@ -468,9 +471,12 @@ class PembayaranInvoiceController extends Controller
                     ->where('is_aktif', 'Y')
                     ->get();
 
+            $bank = KasBank::where('is_aktif', 'Y')->get();
+
             return view('pages.invoice.pembayaran_invoice.edit',[
                 'judul' => "Revisi Invoice",
                 'data' => $invoice,
+                'bank' => $bank,
                 'reimburse' => isset($reimburse)? $reimburse:NULL,
                 'dataSewa' => $dataSewa,
                 'checkLTL' => $checkLTL,
@@ -601,7 +607,6 @@ class PembayaranInvoiceController extends Controller
                     $invoice->billing_to = $data['billingTo'];
                     $invoice->save();
 
-                    // dd($data);
                     $invoice_d = new InvoiceDetail();
                     $invoice_d->id_invoice = $invoice->id;
                     $invoice_d->id_customer = $value['id_customer'];
@@ -625,10 +630,63 @@ class PembayaranInvoiceController extends Controller
                                                         ->find($addcost->id);
     
                             if($sewa_oprs){
-                                // $sewa_oprs->total_operasional = $addcost->total_operasional;
-                                // $sewa_oprs->total_dicairkan = $addcost->total_operasional;
+                                if($sewa_oprs->total_dicairkan != $addcost->total_dicairkan){
+                                    $pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($sewa_oprs->id_pembayaran);
+                                    $pembayaran->total_dicairkan = $addcost->total_dicairkan;
+                                    $pembayaran->updated_by = $user;
+                                    $pembayaran->updated_at = now();
+                                    if($pembayaran->save()){
+                                        // rollback transaksi lama
+                                        $transaction = KasBankTransaction::where('is_aktif', 'Y')
+                                                            ->where('jenis', 'pencairan_operasional')
+                                                            ->where('keterangan_kode_transaksi', $pembayaran->id)
+                                                            ->first();
+                                        if($transaction){
+                                            $transaction->is_aktif = 'N';
+                                            $transaction->updated_by = $user;
+                                            $transaction->updated_at = now();
+                                            if($transaction->save()){
+                                                $saldo = KasBank::where('is_aktif', 'Y')->find($transaction->id_kas_bank);
+                                                if($saldo){
+                                                    $saldo->saldo_sekarang += $transaction->kredit;
+                                                    $saldo->updated_by = $user;
+                                                    $saldo->updated_at = now();
+                                                    $saldo->save();
+                                                }
+                                            }
+                                        }
+        
+                                        // buat data transaction baru
+                                        $keterangan_transaksi = substr($transaction->keterangan_transaksi, 0, 9) == "REVISI - "? $transaction->keterangan_transaksi: 'REVISI - '.$transaction->keterangan_transaksi;
+                                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                            array(
+                                                $data['bank'], //id kas_bank dr form
+                                                now(), //tanggal
+                                                0, //debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                                $addcost->total_dicairkan, //uang keluar (kredit)
+                                                CoaHelper::DataCoa(5007), //kode coa
+                                                'pencairan_operasional',
+                                                $keterangan_transaksi, //keterangan_transaksi
+                                                $pembayaran->id, //keterangan_kode_transaksi // id_sewa_operasional_pembayaran
+                                                $user, //created_by
+                                                now(), //created_at
+                                                $user, //updated_by
+                                                now(), //updated_at
+                                                'Y'
+                                            ) 
+                                        );
+                    
+                                        $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
+                                        $saldo->saldo_sekarang -= $addcost->total_dicairkan;
+                                        $saldo->updated_by = $user;
+                                        $saldo->updated_at = now();
+                                        $saldo->save();
+                                    }
+                                }
+                                $sewa_oprs->total_dicairkan = $addcost->total_dicairkan;
                                 $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                 $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+                                $sewa_oprs->catatan = $addcost->catatan;
                                 $sewa_oprs->updated_by = $user;
                                 $sewa_oprs->updated_at = now();
                                 $sewa_oprs->save();
@@ -648,45 +706,60 @@ class PembayaranInvoiceController extends Controller
     
                         $addcost_baru = json_decode($value['addcost_baru']);
                         if($addcost_baru != null){
+                            if($data['bank'] == null){
+                                db::rollBack();
+                                return redirect()->back()->with(['status' => 'Error', 'msg' => 'Harap isi Kas untuk pencairan!']);
+                            }
                             foreach ($addcost_baru as $i => $addcost) {
                                 if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'N'){
+                                    $pembayaran = new SewaOperasionalPembayaran();
+                                    $pembayaran->deskripsi = $addcost->deskripsi;
+                                    $pembayaran->total_operasional = $addcost->total_dicairkan;
+                                    $pembayaran->total_dicairkan = $addcost->total_dicairkan;
+                                    $pembayaran->catatan = $addcost->catatan;
+                                    $pembayaran->created_by = $user;
+                                    $pembayaran->created_at = now();
+                                    $pembayaran->save();
+
                                     $sewa_oprs = new SewaOperasional();
                                     $sewa_oprs->id_sewa = $addcost->id_sewa;
+                                    $sewa_oprs->id_pembayaran = $pembayaran->id;
                                     $sewa_oprs->deskripsi = $addcost->deskripsi;
-                                    $sewa_oprs->total_operasional = $addcost->total_operasional;
-                                    $sewa_oprs->total_dicairkan = $addcost->total_operasional;
-                                    // $sewa_oprs->tgl_dicairkan = now();
+                                    $sewa_oprs->total_operasional = $addcost->total_dicairkan;
+                                    $sewa_oprs->total_dicairkan = $addcost->total_dicairkan;
+                                    $sewa_oprs->tgl_dicairkan = now();
                                     $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                     $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+                                    $sewa_oprs->catatan = $addcost->catatan;
+                                    $sewa_oprs->status = 'SUDAH DICAIRKAN';
                                     $sewa_oprs->created_by = $user;
                                     $sewa_oprs->created_at = now();
                                     $sewa_oprs->save();
                                     
-                                    // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                    //     array(
-                                    //         $data['pembayaran'], // id kas_bank dr form
-                                    //         now(), //tanggal
-                                    //         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                    //         $sewa_oprs->total_dicairkan, //uang keluar (kredit)
-                                    //         1015, //kode coa
-                                    //         'pencairan_operasional',
-                                    //         'REVISI BELUM INVOICE - ' . $addcost->deskripsi . ' : '. $addcost->nama_tujuan .'/'. $addcost->driver, //keterangan_transaksi
-                                    //         $sewa_oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
-                                    //         $user, //created_by
-                                    //         now(), //created_at
-                                    //         $user, //updated_by
-                                    //         now(), //updated_at
-                                    //         'Y'
-                                    //     ) 
-                                    // );
-                                    
-                                    // $bank = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
-                                    // if($bank){
-                                    //     $bank->saldo_sekarang -= $sewa_oprs->total_dicairkan; //kurangi saldo
-                                    //     $bank->updated_by = $user;
-                                    //     $bank->updated_at = now();
-                                    //     $bank->save();
-                                    // }
+                                    $keterangan = $addcost->deskripsi . ' : ' . $value['nama_tujuan'] . ' #' . $value['driver'];
+                                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                        array(
+                                            $data['bank'], // id kas_bank dr form
+                                            now(), //tanggal
+                                            0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                            $sewa_oprs->total_dicairkan, //uang keluar (kredit)
+                                            1015, //kode coa
+                                            'pencairan_operasional',
+                                            $keterangan, //keterangan_transaksi
+                                            $pembayaran->id, //keterangan_kode_transaksi // id_pembayaran
+                                            $user, //created_by
+                                            now(), //created_at
+                                            $user, //updated_by
+                                            now(), //updated_at
+                                            'Y'
+                                        ) 
+                                    );
+
+                                    $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
+                                    $saldo->saldo_sekarang -= $addcost->total_dicairkan;
+                                    $saldo->created_by = $user;
+                                    $saldo->created_at = now();
+                                    $saldo->save();
                                     
                                     $invoice_da = new InvoiceDetailAddcost();
                                     $invoice_da->id_invoice = $invoice->id;
@@ -749,16 +822,66 @@ class PembayaranInvoiceController extends Controller
                                                                 ->where('id_sewa', $addcost->id_sewa)
                                                                 ->find($addcost->id);
                                     if($sewa_oprs){
-                                        // $sewa_oprs->total_operasional = $addcost->total_operasional;
-                                        // $sewa_oprs->total_dicairkan = $addcost->total_operasional;
+                                        if($sewa_oprs->total_dicairkan != $addcost->total_dicairkan){
+                                            $pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($sewa_oprs->id_pembayaran);
+                                            $pembayaran->total_dicairkan = $addcost->total_dicairkan;
+                                            $pembayaran->updated_by = $user;
+                                            $pembayaran->updated_at = now();
+                                            if($pembayaran->save()){
+                                                // rollback transaksi lama
+                                                $transaction = KasBankTransaction::where('is_aktif', 'Y')
+                                                                    ->where('jenis', 'pencairan_operasional')
+                                                                    ->where('keterangan_kode_transaksi', $pembayaran->id)
+                                                                    ->first();
+                                                if($transaction){
+                                                    $transaction->is_aktif = 'N';
+                                                    $transaction->updated_by = $user;
+                                                    $transaction->updated_at = now();
+                                                    if($transaction->save()){
+                                                        $saldo = KasBank::where('is_aktif', 'Y')->find($transaction->id_kas_bank);
+                                                        if($saldo){
+                                                            $saldo->saldo_sekarang += $transaction->kredit;
+                                                            $saldo->updated_by = $user;
+                                                            $saldo->updated_at = now();
+                                                            $saldo->save();
+                                                        }
+                                                    }
+                                                }
+                
+                                                // buat data transaction baru
+                                                $keterangan_transaksi = substr($transaction->keterangan_transaksi, 0, 9) == "REVISI - "? $transaction->keterangan_transaksi: 'REVISI - '.$transaction->keterangan_transaksi;
+                                                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                                    array(
+                                                        $data['bank'], //id kas_bank dr form
+                                                        now(), //tanggal
+                                                        0, //debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                                        $addcost->total_dicairkan, //uang keluar (kredit)
+                                                        CoaHelper::DataCoa(5007), //kode coa
+                                                        'pencairan_operasional',
+                                                        $keterangan_transaksi, //keterangan_transaksi
+                                                        $pembayaran->id, //keterangan_kode_transaksi // id_sewa_operasional_pembayaran
+                                                        $user, //created_by
+                                                        now(), //created_at
+                                                        $user, //updated_by
+                                                        now(), //updated_at
+                                                        'Y'
+                                                    ) 
+                                                );
+                            
+                                                $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
+                                                $saldo->saldo_sekarang -= $addcost->total_dicairkan;
+                                                $saldo->updated_by = $user;
+                                                $saldo->updated_at = now();
+                                                $saldo->save();
+                                            }
+                                        }
+                                        $sewa_oprs->total_dicairkan = $addcost->total_dicairkan;
                                         $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                         $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+                                        $sewa_oprs->catatan = $addcost->catatan;
                                         $sewa_oprs->updated_by = $user;
                                         $sewa_oprs->updated_at = now();
                                         $sewa_oprs->save();
-
-                                        // kalau total dicairkan berubah, harus ngerubah kas bank transaksi, 
-                                        // biaya pencairan oprasional yg lama di edit / di hapus
                                     }
                                     if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
                                         $invoice_da = new InvoiceDetailAddcost();
@@ -775,45 +898,60 @@ class PembayaranInvoiceController extends Controller
             
                                 $addcost_baru = json_decode($value['addcost_baru']);
                                 if($addcost_baru != null){
+                                    if($data['bank'] == null){
+                                        db::rollBack();
+                                        return redirect()->back()->with(['status' => 'Error', 'msg' => 'Harap isi Kas untuk pencairan!']);
+                                    }
                                     foreach ($addcost_baru as $i => $addcost) {
                                         if($addcost->is_ditagihkan == 'Y' && $addcost->is_dipisahkan == 'Y'){
+                                            $pembayaran = new SewaOperasionalPembayaran();
+                                            $pembayaran->deskripsi = $addcost->deskripsi;
+                                            $pembayaran->total_operasional = $addcost->total_dicairkan;
+                                            $pembayaran->total_dicairkan = $addcost->total_dicairkan;
+                                            $pembayaran->catatan = $addcost->catatan;
+                                            $pembayaran->created_by = $user;
+                                            $pembayaran->created_at = now();
+                                            $pembayaran->save();
+
                                             $sewa_oprs = new SewaOperasional();
                                             $sewa_oprs->id_sewa = $addcost->id_sewa;
+                                            $sewa_oprs->id_pembayaran = $pembayaran->id;
                                             $sewa_oprs->deskripsi = $addcost->deskripsi;
-                                            $sewa_oprs->total_operasional = $addcost->total_operasional;
-                                            $sewa_oprs->total_dicairkan = $addcost->total_operasional;
-                                            // $sewa_oprs->tgl_dicairkan = now();
+                                            $sewa_oprs->total_operasional = $addcost->total_dicairkan;
+                                            $sewa_oprs->total_dicairkan = $addcost->total_dicairkan;
+                                            $sewa_oprs->tgl_dicairkan = now();
                                             $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                             $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+                                            $sewa_oprs->catatan = $addcost->catatan;
+                                            $sewa_oprs->status = 'SUDAH DICAIRKAN';
                                             $sewa_oprs->created_by = $user;
                                             $sewa_oprs->created_at = now();
                                             $sewa_oprs->save();
                                             
-                                            // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                            //     array(
-                                            //         $data['pembayaran'], // id kas_bank dr form
-                                            //         now(), //tanggal
-                                            //         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                            //         $sewa_oprs->total_dicairkan, //uang keluar (kredit)
-                                            //         1015, //kode coa
-                                            //         'pencairan_operasional',
-                                            //         'REVISI BELUM INVOICE - ' . $addcost->deskripsi . ' : '. $addcost->nama_tujuan .'/'. $addcost->driver, //keterangan_transaksi
-                                            //         $sewa_oprs->id, //keterangan_kode_transaksi // id_sewa_operasional
-                                            //         $user, //created_by
-                                            //         now(), //created_at
-                                            //         $user, //updated_by
-                                            //         now(), //updated_at
-                                            //         'Y'
-                                            //     ) 
-                                            // );
+                                            $keterangan = $addcost->deskripsi . ' : ' . $value['nama_tujuan'] . ' #' . $value['driver'];
+                                            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                                array(
+                                                    $data['bank'], // id kas_bank dr form
+                                                    now(), //tanggal
+                                                    0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                                    $sewa_oprs->total_dicairkan, //uang keluar (kredit)
+                                                    1015, //kode coa
+                                                    'pencairan_operasional',
+                                                    $keterangan, //keterangan_transaksi
+                                                    $pembayaran->id, //keterangan_kode_transaksi // id_pembayaran
+                                                    $user, //created_by
+                                                    now(), //created_at
+                                                    $user, //updated_by
+                                                    now(), //updated_at
+                                                    'Y'
+                                                ) 
+                                            );
 
-                                            // $bank = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
-                                            // if($bank){
-                                            //     $bank->saldo_sekarang -= $sewa_oprs->total_dicairkan; //kurangi saldo
-                                            //     $bank->updated_by = $user;
-                                            //     $bank->updated_at = now();
-                                            //     $bank->save();
-                                            // }
+                                            $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
+                                            $saldo->saldo_sekarang -= $addcost->total_dicairkan;
+                                            $saldo->created_by = $user;
+                                            $saldo->created_at = now();
+                                            $saldo->save();
                                             
                                             $invoice_da = new InvoiceDetailAddcost();
                                             $invoice_da->id_invoice = $reimburse->id;

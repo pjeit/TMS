@@ -88,34 +88,16 @@
                     </th>
                     <td colspan='5' style="text-align:right;">
                         @php
-                            $cekTarif = false;
-                            $cekMuatan = false;
-
+                            $is_reimburse = FALSE;
+                            $noInvc = substr($data->no_invoice, -2);
+                            if($noInvc == '/I'){
+                                $is_reimburse = TRUE;
+                            }
                         @endphp
-                        @php
-                            foreach ($data->invoiceDetails as $i => $detail) {
-                                if( $detail->tarif>0 )
-                                {
-                                    //FLAG KALO KETEMU KELUAR LOOPING
-                                    $cekTarif = true;
-                                    break;
-                                }
-                            }
-                            foreach ($data->invoiceDetails as $i => $detail) {
-                                if( $detail->jumlah_muatan > 0 )
-                                {
-                                    //FLAG KALO KETEMU KELUAR LOOPING
-                                    $cekMuatan = true;
-                                    break;
-                                }
-                            }
-                        @endphp 
-                        @if ($cekTarif)
-                    
+                        @if ($is_reimburse == FALSE)
                             <h1>INVOICE</h1>
                         @else
                             <h1>INVOICE REIMBURSE</h1>
-
                         @endif
                     </td>
                 </tr>
@@ -162,7 +144,7 @@
                     <td style="border: 1px solid black; border-collapse: collapse;">NO</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">TGL. BERANGKAT <br> TUJUAN</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">
-                        @if ($cekTarif && $cekMuatan)
+                        @if ($data->invoiceDetails[0]->sewa->jenis_tujuan == 'LTL')
                             NO. KOLI
                             <br>NO. SURAT JALAN 
                         @else
@@ -171,25 +153,27 @@
                         @endif
                     </td>
                     <td style="border: 1px solid black; border-collapse: collapse;">NOPOL</td>
-                        @if ($cekTarif)
-                            @if ($cekTarif && $cekMuatan)
+                        {{-- @if ($is_reimburse == TRUE)
+                            @if ($data->invoiceDetails[0]->sewa->jenis_tujuan == 'LTL')
                                 <td style="border: 1px solid black; border-collapse: collapse;">JUMLAH MUATAN</td>
                                 <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
-                                <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
                             @else
                                 <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
-                                <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
                                 <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
                             @endif
-                        @else 
-                            <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
-                        @endif
+                        @else  --}}
+                    <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
+                    @if ($is_reimburse == FALSE)
+                        <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
+                    @endif
+                    <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
                     <td style="border: 1px solid black; border-collapse: collapse;">SUBTOTAL</td>
                 </tr>
             </thead>
             <tbody >
                 @php
                     $total = 0;
+                    $diskon = 0;
                 @endphp
                 @foreach ($data->invoiceDetails as $i => $detail)
                 @php
@@ -201,60 +185,21 @@
                         {{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }}
                         <br>{{ $detail->sewa->nama_tujuan }}
                     </td>
-                    @if ($detail->tarif>0)
-                    {{-- ini cek harga kalau ltl, kalau ltl detect ada muatannya --}}
-                        @if ($detail->tarif>0 && $detail->jumlah_muatan>0)
-                            <td>
-                                {{-- DI DB EMANG NO KONTAINER, TP INI NO KOLI --}}
-                                {{ $detail->sewa->no_kontainer }}
-
-                                <br>{{ $detail->sewa->no_surat_jalan }}
-                                {{-- <br>{{ $detail->sewa->seal_pelayaran }} --}}
-                            </td>
-                            <td class="text-center">{{ $detail->sewa->no_polisi }} <br> &nbsp;</td>
-                            <td class="text-right">{{ $detail->jumlah_muatan }} <br> &nbsp;</td>
-                            <td class="text-right">{{ number_format($detail->tarif) }} <br> &nbsp;</td>
-                            <td class="text-right">
-                                @if ($detail->invoiceDetailsAddCost != null)
-                                    @foreach ($detail->invoiceDetailsAddCost as $add_cost)
-                                        <span style="font-size: 20px;">({{$add_cost->sewaOperasional->deskripsi}})</span>  {{ number_format($add_cost->sewaOperasional->total_dicairkan)}} </>
-                                    @endforeach
-                                @else
-                                    -
-                                @endif
-                                <br> &nbsp;
-                            </td>
-                            
-                            {{-- ini else masuk kalau ftl biasa --}}
-                        @else
-                            <td>
-                                {{-- {{ $detail->sewa->getJOD->no_kontainer }} --}}
-                                {{ $detail->sewa->no_kontainer }}
-                                {{-- <br> {{ $detail->sewa->no_surat_jalan }} --}}
-                                <br>{{ $detail->sewa->seal_pelayaran }}
-                            </td>
-                            <td class="text-center">{{ $detail->sewa->no_polisi }} <br> ( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
-                            <td class="text-right"> {{ number_format($detail->tarif) }} <br> &nbsp; </td>
-                            <td class="text-right" {{--rowspan="27"--}}> 
-                            @if ($detail->invoiceDetailsAddCost != null)
-                                @foreach ($detail->invoiceDetailsAddCost as $key => $add_cost)
-                                    <span style="font-size: 20px;">({{$add_cost->sewaOperasional->deskripsi}})</span> {{ number_format($add_cost->sewaOperasional->total_dicairkan)}} </br>
-                                @endforeach
-                            @else
-                                -
-                            @endif
-                            <br>
-                            </td>
-                            <td class="text-right">{{ number_format($detail->diskon) }} <br> &nbsp; </td>
-                        @endif
-                    {{-- ini cek harga kalau dipisah cuman addcost doang--}}
-                    @else
                         <td class="text-center">
                             {{ $detail->sewa->no_kontainer }}
-                            <br>{{ $detail->sewa->seal_pelayaran }}
+                            <br>
+                            @if ($data->invoiceDetails[0]->sewa->jenis_tujuan == 'LTL')
+                                {{ $detail->sewa->no_surat_jalan }}
+                            @else
+                                {{ $detail->sewa->seal_pelayaran }}
+                            @endif
                         </td>
                         <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
-                        <td class="text-right" {{--rowspan="27"--}}>
+                        <td class="text-center">{{ number_format($detail->diskon) }}</td>
+                        @if ($is_reimburse == FALSE)
+                            <td class="text-center">{{ number_format($detail->tarif) }}</td>
+                        @endif
+                        <td class="text-right">
                             @if ($detail->invoiceDetailsAddCost != null)
                                 @foreach ($detail->invoiceDetailsAddCost as $key => $add_cost)
                                     @if ($key != 0)
@@ -266,7 +211,6 @@
                                 -
                             @endif
                         </td>
-                    @endif
                     <td class="text-right" style="padding-right: 20px;">{{ number_format($detail->sub_total) }} <br> &nbsp;</td>
                 </tr>
                 @php
@@ -276,11 +220,19 @@
             </tbody>
             <tfoot>
                 <tr>
-                        @if ($cekTarif)
+                        @php
+                            if($is_reimburse == TRUE){
+                                $span = 6;
+                            }else{
+                                $span = 7;
+                            }
+                        @endphp
+                        <td colspan="{{ $span }}" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
+                        {{-- @if ($is_reimburse == TRUE)
                             <td colspan="7" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
                         @else
                             <td colspan="5" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>
-                        @endif
+                        @endif --}}
                     <td class="text-right"  style="padding-right: 20px; border-top: 1px solid black; border-collapse: collapse;""><strong>{{ number_format($total) }}</strong></td>
                 </tr>
             </tfoot>
@@ -294,11 +246,7 @@
             Pembayaran dapat dilakukan pembukaan cek atas nama <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b>
             <br>Atau transfer ke rekening
             <br>BCA: <b><u>51308 14141</u></b> / Mandiri: <b><u>14000 41415 135</u></b>
-            <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b></br>
-            <!-- </br></br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > -->
-            {{-- {{$qrcode}} --}}
-            {{-- <img src="{{ public_path("img/") }}{{ $qrcode }}" alt="QR Code"> --}}
-            {{-- <br><br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
+            <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b><br>
         </span>    
     
         <table class="table-bawah" style="margin-top: 50px;">

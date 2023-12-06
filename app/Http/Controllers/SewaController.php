@@ -72,6 +72,8 @@ class SewaController extends Controller
         
         try {
             $data = $request->collect();
+            // dd($data['driver_nama']);
+
             $pengaturan = PengaturanKeuangan::first();
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
