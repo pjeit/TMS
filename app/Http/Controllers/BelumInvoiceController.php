@@ -76,7 +76,7 @@ class BelumInvoiceController extends Controller
             $sewa = session()->get('sewa'); //buat ambil session
             $cust = session()->get('cust'); //buat ambil session
             $grup = session()->get('grup'); //buat ambil session
-            Session::forget(['sewa', 'cust', 'grup']);
+            // Session::forget(['sewa', 'cust', 'grup']);
 
             $data= $request->collect();
             session()->put('sewa', $data['idSewa']);
