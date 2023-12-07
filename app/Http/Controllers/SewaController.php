@@ -518,6 +518,26 @@ class SewaController extends Controller
                         }
                     }
                 } else if($sewa->status == 'PROSES DOORING') {
+                    $cek_sewa_biaya_TL_0 = DB::table('sewa_biaya as sb')
+                            ->select('sb.*')
+                            ->where('sb.id_sewa', $sewa->id_sewa)
+                            ->where('sb.is_aktif', 'Y')
+                            ->where('sb.biaya',0)
+                            ->where('sb.deskripsi', 'TL')
+                            ->first();
+                    if($cek_sewa_biaya_TL_0)
+                    {
+                        DB::table('sewa_biaya')
+                            ->where('id_sewa', $sewa->id_sewa)
+                            ->where('deskripsi', 'TL')
+                            ->where('sb.biaya',0)
+                            ->update(array(
+                                'is_aktif' => "N",
+                                'updated_at'=> now(),
+                                'updated_by'=> $user, // masih hardcode nanti diganti cookies
+                            )
+                        );
+                    }
                     $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
                     $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
                     $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:"";

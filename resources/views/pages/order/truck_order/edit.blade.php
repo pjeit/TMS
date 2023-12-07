@@ -595,7 +595,7 @@
 		{
             var selectedOption = $(this).val();
             var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
-            if(selectedOption=='tl_teluk_lamong')
+            if(selectedOption=='tl_teluk_lamong'&& $('#tarif').val()<1000000)
             {
                 $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
             }
