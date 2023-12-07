@@ -292,7 +292,6 @@
                         <span class="input-group-text">Rp</span>
                       </div>
                       <input type="text" class="form-control numaja uang" id="total_diterima" placeholder="" readonly>
-                     
                     </div>
                 </div>
                 <div class="form-group">

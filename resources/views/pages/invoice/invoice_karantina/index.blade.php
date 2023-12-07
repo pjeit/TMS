@@ -196,7 +196,7 @@
                         parent.append(`<td>${data[i].get_customer.nama}</td>`);
                         parent.append(`<td>${data[i].get_j_o.no_bl}</td>`);
                         parent.append(`<td>${data[i].get_j_o.kapal} ( ${data[i].get_j_o.voyage} )</td>`);
-                        parent.append(`<td>${(data[i].total_dicairkan)?moneyMask(data[i].total_dicairkan):'belum dicairkan'}</td>`);
+                        parent.append(`<td>${moneyMask(data[i].total_operasional)}</td>`);
                         parent.append(`<td style="background: #d9d9d9">
                                           <div style="display: flex; justify-content: center; align-items: center;">
                                              <input type="checkbox" class="form-check parent parent_${data[i].id}" name="idKarantina[]" value="${data[i].id}" />

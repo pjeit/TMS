@@ -147,9 +147,9 @@
         @endforeach
         <tr class="subtotal">
             <td colspan="2">Subtotal :</td>
-            <td><b>Rp {{number_format($value->getKarantina->total_dicairkan)}}</b></td>
+            <td><b>Rp {{number_format($value->getKarantina->total_operasional)}}</b></td>
             @php
-                $total += $value->getKarantina->total_dicairkan;
+                $total += $value->getKarantina->total_operasional;
             @endphp
         </tr>
         <br>

@@ -79,7 +79,7 @@ class RevisiTLController extends Controller
             ->where('is_aktif', '=', "Y")
             ->get();
 
-        return view('pages.revisi.revisi_tl.cair',[
+        return view('pages.revisi.revisi_TL.cair',[
             'judul' => "Pencairan TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
@@ -117,7 +117,7 @@ class RevisiTLController extends Controller
                             ->where('id_sewa', $id)
                             ->first();
 
-        return view('pages.revisi.revisi_tl.refund',[
+        return view('pages.revisi.revisi_TL.refund',[
             'judul' => "Pengembalian TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
