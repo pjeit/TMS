@@ -401,7 +401,8 @@ class RevisiTLController extends Controller
             $data = Sewa::where('is_aktif', 'Y')
                         ->with('getTujuan', 'getKaryawan', 'getCustomer')
                         ->whereHas('getSewaBiayaReturnTL', function ($query) {
-                            $query->where('is_aktif', 'Y');
+                            $query->where('is_aktif', 'Y')
+                            ->where('biaya','!=', 0);
                         })
                         // ->whereIn('stack_tl', ['tl_perak', 'tl_priuk'])
                         ->whereNotIn('stack_tl', ['tl_teluk_lamong'])
