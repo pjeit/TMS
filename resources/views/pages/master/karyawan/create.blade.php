@@ -416,7 +416,7 @@
                                 <select class="form-control selectpicker" name="role" id="role" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Role">
                                     <option value="">--Pilih Role--</option>
                                     @foreach($dataRole as $data)
-                                        <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                        <option value="{{$data->id}}">{{$data->nama}}</option>
                                     @endforeach
                                 </select>
                             </div>
