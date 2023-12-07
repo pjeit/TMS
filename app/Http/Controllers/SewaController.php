@@ -58,7 +58,6 @@ class SewaController extends Controller
             'dataPengaturanKeuangan'=>SewaDataHelper::DataPengaturanBiaya()
         ]);
     }
-   
 
     /**
      * Store a newly created resource in storage.
@@ -566,7 +565,7 @@ class SewaController extends Controller
                 'is_aktif' => "N",
                 'updated_at'=> now(),
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
-              )
+            )
             );
 
             DB::table('sewa_biaya')
@@ -575,7 +574,7 @@ class SewaController extends Controller
                 'is_aktif' => "N",
                 'updated_at'=> now(),
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
-              )
+            )
             );
 
             DB::table('sewa_operasional')
