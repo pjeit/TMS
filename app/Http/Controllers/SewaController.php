@@ -519,6 +519,8 @@ class SewaController extends Controller
                         }
                     }
                 } else if($sewa->status == 'PROSES DOORING') {
+                    $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
+                    $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
                     $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:"";
                     $sewa->catatan = $data['catatan']? $data['catatan']:null;
                     $sewa->save();
