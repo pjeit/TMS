@@ -13,20 +13,37 @@ class Sewa extends Model
      protected $table = 'sewa';
      protected $primaryKey='id_sewa';
 
-
      public function getJOD(): HasOne
      {
           return $this->hasOne(JobOrderDetail::class, 'id', 'id_jo_detail')
                          ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 'job_order_detail.id_grup_tujuan'); // Assuming 'grup_tujuan' is the name of the relation in JobOrderDetail model
      }
+     
      public function getTujuan(): HasOne
      {
           return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan');
      }
+
+     public function getSewaBiaya(): HasOne
+     {
+          return $this->hasOne(SewaBiaya::class, 'id_sewa', 'id_sewa');
+     }
+
+     public function getSewaBiayaAddTL()
+     {
+          return $this->hasOne(SewaBiaya::class, 'id_sewa', 'id_sewa')->where('deskripsi', 'TL')->where('is_aktif', 'Y');
+     }
+
+     public function getSewaBiayaReturnTL()
+     {
+          return $this->hasOne(SewaBiaya::class, 'id_sewa', 'id_sewa')->where('deskripsi', 'TL')->where('is_aktif', 'Y');
+     }
+
      public function getBatalCancel(): HasOne
      {
           return $this->hasOne(SewaBatalCancel::class, 'id_sewa', 'id_sewa')->where('is_aktif', 'Y')->where('jenis', 'BATAL'); // id db sewa, id db sewadi batal cancel
      }
+
      public function getCustomer()
      {
           return $this->hasOne(Customer::class, 'id', 'id_customer');
@@ -46,7 +63,6 @@ class Sewa extends Model
      {
           return $this->hasOne(Supplier::class, 'id', 'id_supplier');
      }
-
 
      // eloquent relation
      public function sewaOperasional()

@@ -88,7 +88,7 @@ class MarketingController extends Controller
         
             // hardcode langsung id marketing
             $role = 6;
-            $roleMarketing = Role::where('is_aktif', 'Y')->where('nama', 'Marketing')->first();
+            $roleMarketing = Role::where('is_aktif', 'Y')->where('name', 'Marketing')->first();
             if(isset($roleMarketing)){
                 $role = $roleMarketing->id;
             }
@@ -110,7 +110,7 @@ class MarketingController extends Controller
             $new_customer->is_aktif = 'Y';
             $new_customer->save();
 
-            return redirect()->route('marketing.index')->with('status','Success!!');
+                return redirect()->route('marketing.index')->with(['status' => 'Success', 'msg' => 'Data berhasil dibuat!']);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }

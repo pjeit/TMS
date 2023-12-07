@@ -122,7 +122,7 @@ class SewaController extends Controller
             $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
             $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
             $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
-            $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
+            $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:"";
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
@@ -349,7 +349,7 @@ class SewaController extends Controller
                 $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
                 $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
                 $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
-                $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
+                $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:"";
                 $sewa->catatan = $data['catatan']? $data['catatan']:null;
                 $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
                 $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
@@ -405,8 +405,8 @@ class SewaController extends Controller
                                     ->where('sb.deskripsi', 'TL')
                                     ->first();
                         // pengecekan kalau null dan kalau status sewa masih menunggu uang jalan bisa dimasukin tl nya dari edit, 
-                        //kalau udah dibayar uang jalan, gabisa masuk detail, harus dari add/return TL
-                        if($cek_sewa_biaya_TL ==null && $sewa->status=="MENUNGGU UANG JALAN")
+                        // kalau udah dibayar uang jalan, gabisa masuk detail, harus dari add/return TL
+                        if($cek_sewa_biaya_TL == null && $sewa->status == "MENUNGGU UANG JALAN")
                         {
                             DB::table('sewa_biaya')
                                 ->insert(array(
@@ -419,7 +419,6 @@ class SewaController extends Controller
                                 'is_aktif' => "Y",
                                 )
                             ); 
-                        
                         }
                     }else {
                         $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
@@ -445,7 +444,7 @@ class SewaController extends Controller
                     }
                 }
             } else {
-                if($sewa->status=="MENUNGGU UANG JALAN"){
+                if($sewa->status == "MENUNGGU UANG JALAN"){
                     $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
                     $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
                     $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;
@@ -454,7 +453,7 @@ class SewaController extends Controller
                     $sewa->karoseri = $data['karoseri']? $data['karoseri']:null;
                     $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
                     $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
-                    $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
+                    $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:"";
                     $sewa->total_komisi = $data['komisi']? $data['komisi']:null;
                     $sewa->total_komisi_driver = $data['komisi_driver']? $data['komisi_driver']:null;
                     $sewa->catatan = $data['catatan']? $data['catatan']:null;
@@ -463,6 +462,7 @@ class SewaController extends Controller
                     $sewa->updated_by = $user;
                     $sewa->updated_at = now();
                     $sewa->save();
+
                     $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
                             ->select('sb.*')
                             ->where('sb.id_sewa', $sewa->id_sewa)
@@ -485,7 +485,6 @@ class SewaController extends Controller
                             ); 
                         }
                     }else{
-                         
                         //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
                         //kalau ada tl nyantol di ubah jadi N
                         if($cek_sewa_biaya_TL)
@@ -519,50 +518,10 @@ class SewaController extends Controller
                                 ]);
                         }
                     }
-                } else if ($sewa->status == "BATAL MUAT" || $sewa->status == "CANCEL"){ 
-                    
-                } else {
-                    $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:null;
+                } else if($sewa->status == 'PROSES DOORING') {
+                    $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:"";
                     $sewa->catatan = $data['catatan']? $data['catatan']:null;
                     $sewa->save();
-                    $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
-                            ->select('sb.*')
-                            ->where('sb.id_sewa', $sewa->id_sewa)
-                            ->where('sb.is_aktif', 'Y')
-                            ->where('sb.deskripsi', 'TL')
-                            ->first();
-                     if($data['stack_tl'] == 'tl_teluk_lamong'){
-                        if($cek_sewa_biaya_TL == null)
-                        {
-                            DB::table('sewa_biaya')
-                                ->insert(array(
-                                'id_sewa' => $sewa->id_sewa,
-                                'deskripsi' => 'TL',
-                                'biaya' => $data['stack_teluk_lamong_hidden'],
-                                'catatan' => $data['stack_tl'],
-                                'created_at' => now(),
-                                'created_by' => $user,
-                                'is_aktif' => "Y",
-                                )
-                            ); 
-                        }
-                    }else{
-                        //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
-                        //kalau ada tl nyantol di ubah jadi N
-                        if($cek_sewa_biaya_TL)
-                        {
-                            
-                            DB::table('sewa_biaya')
-                                ->where('id_sewa', $sewa->id_sewa)
-                                ->where('deskripsi', 'TL')
-                                ->update(array(
-                                    'is_aktif' => "N",
-                                    'updated_at'=> now(),
-                                    'updated_by'=> $user, // masih hardcode nanti diganti cookies
-                                )
-                            );
-                        }   
-                    }
                 }
             }
 
