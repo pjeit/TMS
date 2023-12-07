@@ -80,7 +80,7 @@ class RevisiTLController extends Controller
             ->where('is_aktif', '=', "Y")
             ->get();
 
-        return view('pages.revisi.revisi_tl.cair',[
+        return view('pages.revisi.revisi_TL.cair',[
             'judul' => "Pencairan TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
@@ -116,7 +116,7 @@ class RevisiTLController extends Controller
                             ->where('id_sewa', $id)
                             ->first();
 
-        return view('pages.revisi.revisi_tl.refund',[
+        return view('pages.revisi.revisi_TL.refund',[
             'judul' => "Pengembalian TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
@@ -403,16 +403,21 @@ class RevisiTLController extends Controller
             ->leftJoin('sewa_biaya as sb', function($join){
                 $join->on('sb.id_sewa', '=', 's.id_sewa')
                 ->where('sb.deskripsi', 'TL')
-                ->where('sb.is_aktif', 'Y')
-                ->whereNotIn('s.stack_tl',['tl_teluk_lamong']);
+                ->where('sb.is_aktif', 'Y');
+                // ->whereNotIn('s.stack_tl',['tl_teluk_lamong']);
 
             })
-            ->whereNotIn('s.stack_tl',['tl_teluk_lamong'])
-            ->whereNotNull('sb.id_biaya')
-            ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            // ->whereNotIn('s.stack_tl',['tl_teluk_lamong'])
+            ->where('s.stack_tl','not like','%tl_teluk_lamong%')
+            // ->whereNotNull('sb.id_biaya')
+            // ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            ->leftJoin('grup_tujuan as gt', function($join){
+                $join->on('gt.id', '=', 's.id_grup_tujuan')
+                ->where('gt.is_aktif', '=', "Y");
+            })
             ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
             ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
-            ->where('gt.is_aktif', '=', "Y")
+            // ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
             ->where('s.status', 'PROSES DOORING')
             ->whereNull('s.id_supplier')
@@ -425,16 +430,19 @@ class RevisiTLController extends Controller
             ->leftJoin('sewa_biaya as sb', function($join){
                 $join->on('sb.id_sewa', '=', 's.id_sewa')
                 ->where('sb.deskripsi', 'TL')
-                ->where('sb.is_aktif', 'Y')
-                ->where('s.stack_tl','like','%tl_teluk_lamong%');
-
+                ->where('sb.is_aktif', 'Y');
+                // ->where('s.stack_tl','like','%tl_teluk_lamong%');
             })
             ->where('s.stack_tl','like','%tl_teluk_lamong%')
             ->whereNull('sb.id_biaya')
-            ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+             // ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            ->leftJoin('grup_tujuan as gt', function($join){
+                $join->on('gt.id', '=', 's.id_grup_tujuan')
+                ->where('gt.is_aktif', '=', "Y");
+            })
             ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
             ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
-            ->where('gt.is_aktif', '=', "Y")
+            // ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
             ->whereNull('s.id_supplier')
             ->where('s.status', 'PROSES DOORING')

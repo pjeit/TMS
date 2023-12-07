@@ -567,7 +567,7 @@
             var uang_jalan = $('#uang_jalan').val();
             console.log('tarif :'+tarif);
             console.log('uang_jalan :'+uang_jalan);
-            console.log(isNaN(total_uang_jalan));
+            // console.log(isNaN(total_uang_jalan));
             if(isNaN(tarif))
             {
                 $('#harga_tujuan').val(0)

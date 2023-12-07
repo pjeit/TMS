@@ -152,9 +152,11 @@ class SewaRekananController extends Controller
                     $SOP->id_sewa = $sewa->id_sewa; 
                     $SOP->deskripsi = 'TL';
                     $SOP->total_operasional = $data['stack_teluk_lamong_hidden'];
+                    $SOP->total_dicairkan = $data['stack_teluk_lamong_hidden'];
                     $SOP->is_ditagihkan = 'N';
                     $SOP->is_dipisahkan = 'N';
                     $SOP->status = "TAGIHKAN DI INVOICE";
+                    $SOP->catatan = "TELUK LAMONG REKANAN [TIDAK ADA PENCAIRAN]";
                     $SOP->created_by = $user;
                     $SOP->created_at = now();
                     $SOP->is_aktif = 'Y';
@@ -450,9 +452,11 @@ class SewaRekananController extends Controller
                             $SOP->id_sewa = $sewa->id_sewa; 
                             $SOP->deskripsi = 'TL';
                             $SOP->total_operasional = $data['stack_teluk_lamong_hidden'];
+                            $SOP->total_dicairkan = $data['stack_teluk_lamong_hidden'];
                             $SOP->is_ditagihkan = 'N';
                             $SOP->is_dipisahkan = 'N';
                             $SOP->status = "TAGIHKAN DI INVOICE";
+                            $SOP->catatan = "TELUK LAMONG REKANAN [TIDAK ADA PENCAIRAN]";
                             $SOP->created_by = $user;
                             $SOP->created_at = now();
                             $SOP->is_aktif = 'Y';
@@ -537,9 +541,11 @@ class SewaRekananController extends Controller
                         $SOP->id_sewa = $sewa->id_sewa; 
                         $SOP->deskripsi = 'TL';
                         $SOP->total_operasional = $data['stack_teluk_lamong_hidden'];
+                        $SOP->total_dicairkan = $data['stack_teluk_lamong_hidden'];
                         $SOP->is_ditagihkan = 'N';
                         $SOP->is_dipisahkan = 'N';
                         $SOP->status = "TAGIHKAN DI INVOICE";
+                        $SOP->catatan = "TELUK LAMONG REKANAN [TIDAK ADA PENCAIRAN]";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
                         $SOP->is_aktif = 'Y';
