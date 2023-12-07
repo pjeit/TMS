@@ -531,7 +531,7 @@ class SewaController extends Controller
                         DB::table('sewa_biaya')
                             ->where('id_sewa', $sewa->id_sewa)
                             ->where('deskripsi', 'TL')
-                            ->where('sb.biaya',0)
+                            ->where('biaya',0)
                             ->update(array(
                                 'is_aktif' => "N",
                                 'updated_at'=> now(),

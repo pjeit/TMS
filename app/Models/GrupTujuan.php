@@ -35,4 +35,9 @@ class GrupTujuan extends Model
    {
         return $this->hasOne(Grup::class, 'id', 'grup_id');
    }
+
+   public function getMarketing()
+   {
+        return $this->hasOne(Marketing::class, 'id', 'marketing_id');
+   }
 }

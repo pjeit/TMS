@@ -194,7 +194,7 @@ class PencairanUangJalanController extends Controller
                 {
                     if (isset($data['teluk_lamong'])&&(float)str_replace(',', '', $data['teluk_lamong'])>0) {
                         // $nominal =(float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']);
-                
+                 
                         $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
                         $SOP = new SewaOperasional();
                         $SOP->id_sewa = $data['id_sewa_defaulth']; 

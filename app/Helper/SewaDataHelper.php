@@ -3,7 +3,7 @@ namespace App\Helper;
 use Illuminate\Support\Facades\DB;
 use App\Models\Customer;
 use App\Models\JobOrder;
-
+use App\Models\GrupTujuan;
 class SewaDataHelper
 {
     //=================================index================================
@@ -183,10 +183,17 @@ class SewaDataHelper
     public function getTujuanCust($id)
     {
         $cust = Customer::where('id', $id)->first();
-        $Tujuan = DB::table('grup_tujuan as gt')
-            ->select('gt.*')
-            ->where('gt.grup_id', '=',  $cust->grup_id)
-            ->where('gt.is_aktif', '=', "Y")
+        // $Tujuan = DB::table('grup_tujuan as gt')
+        //     ->select('gt.*')
+        //     ->where('gt.grup_id', '=',  $cust->grup_id)
+        //     ->where('gt.is_aktif', '=', "Y")
+        //     ->orderBy('gt.nama_tujuan')
+        //     ->get();
+        $Tujuan = GrupTujuan::where('is_aktif',"Y")
+            ->where('grup_tujuan.grup_id', '=',  $cust->grup_id)
+            ->where('grup_tujuan.is_aktif', '=', "Y")
+            ->with('getMarketing')
+            ->orderBy('grup_tujuan.nama_tujuan')
             ->get();
         $dataKredit = DB::table('customer')
             ->select('customer.id as idCustomer',
