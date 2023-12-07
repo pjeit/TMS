@@ -272,6 +272,7 @@ class RevisiTLController extends Controller
         DB::beginTransaction(); 
         try {
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+
             DB::table('sewa_biaya')
                 ->where('id_biaya', $data['id_sewa_biaya'])
                 ->update(array(
@@ -280,6 +281,7 @@ class RevisiTLController extends Controller
                     'is_aktif' => "N",
                 )
             );
+
             DB::table('sewa_operasional')
                 ->where('id_sewa', $data['id_sewa'])
                 ->where('deskripsi', 'TL')
@@ -289,11 +291,13 @@ class RevisiTLController extends Controller
                     'is_aktif' => "N",
                 )
             );
+
             $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
                     ->select('*')
                     ->where('is_aktif', '=', "Y")
                     ->where('sewa_id', $data['id_sewa'])
                     ->first();
+
             DB::table('uang_jalan_riwayat')
                 ->where('sewa_id', $data['id_sewa'])
                 ->where('is_aktif', 'Y')
@@ -303,7 +307,8 @@ class RevisiTLController extends Controller
                     'updated_by'=> $user,
                 )
             );
-            if($data['pembayaran']=='hutang_karyawan'){
+
+            if($data['pembayaran'] == 'hutang_karyawan'){
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
                 $kht->refrensi_id = $datauang_jalan_riwayat->id;
