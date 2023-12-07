@@ -208,8 +208,8 @@
                                                     <th>Customer</th>
                                                     <th>No. BL</th>
                                                     <th>Kapal / Voyage</th>
-                                                    <th>Biaya</th>
                                                     <th>Ditagihkan</th>
+                                                    <th>Dicairkan</th>
                                                     <th>Catatan</th>    
                                                 `);
                             $("thead tr").append("<th class='text-center' style='width: 30px;'><input id='check_all' type='checkbox'></th>");

@@ -166,9 +166,9 @@
                                 @endforeach
                             </td>
                             <td> 
-                                {{ number_format($item->total_dicairkan) }} 
+                                {{ number_format($item->total_operasional) }} 
                                 <input type="hidden" name="data[{{ $item->id }}][id_karantina]" value="{{ $item->id }}">
-                                <input type="hidden" id="dicairkan_{{ $item->id }}" class="dicairkan" value="{{ $item->total_dicairkan }}">
+                                <input type="hidden" id="dicairkan_{{ $item->id }}" class="dicairkan" value="{{ $item->total_operasional }}">
                             </td>
                             {{-- <td>
                                 <div class="btn-group dropleft">
