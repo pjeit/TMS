@@ -730,6 +730,8 @@ height: 20px;
                 $(this).val('Y');
                 row.find('.deskripsi_lain').prop('readonly', false);
                 row.find('.nominal_lain').prop('readonly', false);
+                $('#checkTagih_data_'+index).prop('checked', true);
+                value_cek_tagih.val('Y');
 
                 if(row.find('.cek_tagih').is(":checked"))
                 {

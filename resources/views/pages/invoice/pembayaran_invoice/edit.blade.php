@@ -429,7 +429,7 @@
                                 <form name="add_addcost_detail" id="add_addcost_detail">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-bold">Detail Add Cost</span>
-                                        <div class="d-flex justify-content-center align-items-center">
+                                        {{-- <div class="d-flex justify-content-center align-items-center">
                                             <div id="is_bank" class="mb-2 ">
                                                 <select name="bank" class="select2" style="width: 200px; border: 3px solid #f239;" id="bank">
                                                     <option value="">─ Pilih Kas ─</option>
@@ -441,7 +441,7 @@
                                             <div>
                                                 <button type="button" id="tambah" class="btn btn-primary btn-sm mb-2 ml-3"> <i class="fa fa-plus-circle"></i> Tambah Add Cost</button>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                     <input type="hidden" id="deleted_temp" name="deleted_temp" placeholder="deleted_temp">
                                     <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel_addcost">
