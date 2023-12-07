@@ -71,11 +71,11 @@
                         <div class="col-12 col-md-6 col-sm-12">
                              <div class="form-group">
                                 <label for="">No Rekening</label>
-                                <input type="text" name="no_rek" maxlength="20" class="form-control " value="{{$data->no_rek}}" required>                         
+                                <input type="text" name="no_rek" maxlength="20" class="form-control " value="{{$data->no_rek}}" >                         
                             </div>
                             <div class="form-group">
                                 <label for="">Atas Nama Rekening</label>
-                                <input  type="text" required name="atas_nama" maxlength="30" class="form-control" value="{{$data->atas_nama}}" >                         
+                                <input  type="text"  name="atas_nama" maxlength="30" class="form-control" value="{{$data->atas_nama}}" >                         
                             </div>
                            <div class="form-group">
                                 <label for="">Cabang Bank</label>
@@ -83,7 +83,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="">Nama Bank</label>
-                                <input type="text" name="bank" maxlength="15" class="form-control " value="{{$data->bank}}" required>                         
+                                <input type="text" name="bank" maxlength="15" class="form-control " value="{{$data->bank}}" >                         
                             </div>
                             
                         </div>

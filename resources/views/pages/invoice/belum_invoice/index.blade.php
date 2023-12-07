@@ -471,7 +471,7 @@
                                 console.error('Error:', error);
                             }
                         });
-                        window.location.href = '{{ route("belum_invoice.create") }}';
+                        // window.location.href = '{{ route("belum_invoice.create") }}';
                     }
                 }
                
