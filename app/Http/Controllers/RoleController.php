@@ -180,7 +180,7 @@ class RoleController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try{
-            DB::table('role')
+            DB::table('roles')
             ->where('id', $role['id'])
             ->update(array(
                 'is_aktif' => "N",

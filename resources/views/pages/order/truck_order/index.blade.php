@@ -33,7 +33,7 @@
                         <th>No. Polisi</th>
                         <th>Driver</th>
                         <th>Tgl Berangkat</th>
-                        <th>Marketing</th>
+                        {{-- <th>Marketing</th> --}}
                         <th>No. Sewa</th>
                         <th>Status</th>
                         <th></th>
@@ -48,7 +48,7 @@
                                 <td>{{ $item->no_polisi }}</td>
                                 <td>{{ $item->nama_lengkap }}</td>
                                 <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
-                                <td>{{ $item->no_sewa }}</td>
+                                {{-- <td>{{ $item->no_sewa }}</td> --}}
                                 <td>{{ $item->no_sewa }}</td>
                                 <td>{{ $item->status }}</td>
                                 <td>                                    

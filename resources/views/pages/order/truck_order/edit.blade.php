@@ -595,13 +595,13 @@
 		{
             var selectedOption = $(this).val();
             var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
-            if(selectedOption=='tl_teluk_lamong'&& $('#tarif').val()<1000000)
+            if(selectedOption=='tl_teluk_lamong'&& $('#uang_jalan').val()<1000000)
             {
                 $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
             }
             else
             {
-                $('#stack_teluk_lamong_hidden').val('');
+                $('#stack_teluk_lamong_hidden').val(0);
                 
             }
 		});
@@ -1031,7 +1031,7 @@
                             response.dataTujuan.forEach(tujuan => {
                                 const option = document.createElement('option');
                                 option.value = tujuan.id;
-                                option.textContent = tujuan.nama_tujuan;
+                                option.textContent = tujuan.nama_tujuan+ ` ( ${tujuan.jenis_tujuan} )` +  ` [${tujuan.getMarketing?tujuan.getMarketing.nama:'-'} ]`;
                                 if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
                                 {
                                     if ($('#tujuan_id').val() == tujuan.id) {
@@ -1130,13 +1130,13 @@
             var selectedOption = $('#stack_tl').val();
             var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
 
-            if(selectedOption=='tl_teluk_lamong')
+            if(selectedOption=='tl_teluk_lamong'&& $('#uang_jalan').val()<1000000)
             {
                 $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
             }
             else
             {
-                $('#stack_teluk_lamong_hidden').val('');
+                $('#stack_teluk_lamong_hidden').val(0);
             }
         }
     });
