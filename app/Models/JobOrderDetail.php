@@ -58,6 +58,11 @@ class JobOrderDetail extends Model
 
     public function getSewa()
     {
-        return $this->hasOne(Sewa::class, 'id_jo_detail', 'id')->select('*');
+        return $this->hasOne(Sewa::class, 'id_jo_detail', 'id');
+    }
+
+    public function getSewaJaminan()
+    {
+        return $this->hasOne(Sewa::class, 'id_jo_detail', 'id')->whereIn('status', ['MENUNGGU PEMBAYARAN INVOICE', 'SELESAI'])->where('is_aktif', 'Y');
     }
 }

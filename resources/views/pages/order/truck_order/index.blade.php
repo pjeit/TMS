@@ -29,11 +29,12 @@
                 <thead>
                     <tr>
                         <th>Customer</th>
-                        <th>No. Polisi</th>
-                        <th>No. Sewa</th>
-                        <th>Tgl Berangkat</th>
                         <th>Tujuan</th>
+                        <th>No. Polisi</th>
                         <th>Driver</th>
+                        <th>Tgl Berangkat</th>
+                        <th>Marketing</th>
+                        <th>No. Sewa</th>
                         <th>Status</th>
                         <th></th>
                     </tr>
@@ -43,11 +44,12 @@
                         @foreach($dataSewa as $item)
                             <tr>
                                 <td>{{ $item->nama_customer }}</td>
-                                <td>{{ $item->no_polisi }}</td>
-                                <td>{{ $item->no_sewa }}</td>
-                                <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                 <td>{{ $item->nama_tujuan }}</td>
+                                <td>{{ $item->no_polisi }}</td>
                                 <td>{{ $item->nama_lengkap }}</td>
+                                <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
+                                <td>{{ $item->no_sewa }}</td>
+                                <td>{{ $item->no_sewa }}</td>
                                 <td>{{ $item->status }}</td>
                                 <td>                                    
                                     <div class="btn-group dropleft">

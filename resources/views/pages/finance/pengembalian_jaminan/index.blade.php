@@ -39,27 +39,27 @@
                     <tbody id="hasil">
                         @foreach ($data as $key => $item)
                             <tr>
-                                <td id="customer_{{ $item->id_job_order }}">{{ $item->getCustomer->nama }}</td>
-                                <td id="supplier_{{ $item->id_job_order }}">{{ $item->getSupplier->nama }}</td>
-                                <td id="no_bl_{{ $item->id_job_order }}">{{ $item->no_bl }}</td>
-                                <td id="catatan_{{ $item->id_job_order }}">{{ $item->catatan }}</td>
-                                <td id="total_{{ $item->id_job_order }}">{{ number_format($item->nominal) }}</td>
-                                <td id="status_{{ $item->id_job_order }}">{{ $item->status }}</td>
-                                <td id="tgl_request_{{ $item->id_job_order }}">{{ date("d-M-Y", strtotime($item->tgl_request)) }}</td>
+                                <td id="customer_{{ $item->id }}">{{ $item->getCustomer->nama }}</td>
+                                <td id="supplier_{{ $item->id }}">{{ $item->getSupplier->nama }}</td>
+                                <td id="no_bl_{{ $item->id }}">{{ $item->no_bl }}</td>
+                                <td id="catatan_{{ $item->id }}">{{ $item->catatan }}</td>
+                                <td id="total_{{ $item->id }}">{{ number_format($item->jaminan->nominal) }}</td>
+                                <td id="status_{{ $item->id }}">{{ $item->status }}</td>
+                                <td id="tgl_request_{{ $item->id }}">{{ isset($item->tgl_request)? date("d-M-Y", strtotime($item->tgl_request)):'' }}</td>
                                 <td>
                                     <div class="btn-group btn-sm dropleft">
                                         <button type="button" class="btn btn-sm btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-list"></i>
                                         </button>
                                         <div class="dropdown-menu" >
-                                            @if ($item->status == 'DIBAYARKAN')
-                                                <button value="{{ $item->id_job_order }}" class="btn-sm dropdown-item showRequest"> 
+                                            @if ($item->jaminan->status == 'DIBAYARKAN')
+                                                <button value="{{ $item->id }}" class="btn-sm dropdown-item showRequest"> 
                                                     <i class="fa fa-sticky-note mr-2"> </i> <b>Request</b>
                                                 </button>
                                             @endif
-                                            @if ($item->status == 'REQUEST')
-                                                <button value="{{ $item->id_job_order }}" class="btn-sm dropdown-item showBayar"> 
-                                                    <i class="fas fa-dollar-sign mr-2"> </i> <b>Bayar</b>
+                                            @if ($item->jaminan->status == 'REQUEST')
+                                                <button value="{{ $item->id }}" class="btn-sm dropdown-item showBayar"> 
+                                                    <i class="fas fa-dollar-sign mr-2"> </i> <b>Pengembalian</b>
                                                 </button>
                                             @endif
 
@@ -322,6 +322,7 @@
             var no_bl    = $('#no_bl_'+this.value).html();
             var total    = $('#total_'+this.value).html();
             var catatan  = $('#catatan_'+this.value).html();
+            console.log('first:', this.value);
 
             $('#id_jo_req').val(this.value);
             $('#customer_req').val(customer);

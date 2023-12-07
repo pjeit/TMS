@@ -95,7 +95,7 @@ class JobOrder extends Model
           return $this->hasOne(Customer::class, 'id', 'id_customer');
      }
      
-     public function hasSewa()
+     public function getSewa()
      {
           return $this->hasOne(Sewa::class, 'id', 'id_customer')->where('is_aktif', 'Y');
      }
