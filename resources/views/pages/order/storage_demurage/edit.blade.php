@@ -182,10 +182,9 @@
                                                 <input type="hidden" value="{{ $item->id }}" name="data[{{$key}}][id_detail_biaya]">
                                                 <input type="hidden" value="{{ $item->is_aktif }}" name="data[{{$key}}][is_aktif]" id="is_aktif_{{$key}}">
                                                 <select  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}} class="form-control select2" name="data[{{$key}}][id_pembayaran_customer]" id="id_pembayaran_customer_{{$key}}">
-                                                    <option value="dibayar_pje">­­— PJE —</option>
-                                                    @foreach ( $data['customer'] as $cust)
-                                                    <option value="{{$cust->id}}" {{$cust->id==$item->id_customer?'selected':''}}>[{{ $cust->kode }}] {{$cust->nama}}</option>
-                                                    @endforeach
+                                                    <option value="dibayar_pje" {{ $item->status_bayar == 'dibayar_pje'? 'selected':'' }}>PJE</option>
+                                                    <option value="DIBAYAR CUSTOMER" {{ $item->status_bayar == 'DIBAYAR CUSTOMER'? 'selected':'' }}>­­CUSTOMER</option>
+                                                    <option value="DIBAYAR PENERIMA" {{ $item->status_bayar == 'DIBAYAR PENERIMA'? 'selected':'' }}>PENERIMA</option>
                                                 </select>
                                                 @if ($item->id_customer == null)
                                                     @if ($item->status_bayar=='MENUNGGU PEMBAYARAN')
@@ -205,7 +204,7 @@
                                                 <button type="button" id="{{$key}}" class="btn btn-danger btn_remove_db"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                             </td>
                                         @else
-                                             <td style="width: 5%">
+                                            <td style="width: 5%">
                                             </td>
                                         @endif
 
@@ -357,10 +356,9 @@
                         <div class="form-group">
                             <input type="hidden" value="" name="data[${i}][id_detail_biaya]">
                             <select class="form-control select2" name="data[${i}][id_pembayaran_customer]" id="id_pembayaran_customer_${i}">
-                                <option value="dibayar_pje">­­— PJE —</option>
-                                @foreach ( $data['customer'] as $cust)
-                                <option value="{{$cust->id}}">[{{ $cust->kode }}] {{$cust->nama}}</option>
-                                @endforeach
+                                <option value="dibayar_pje">­­PJE</option>
+                                <option value="DIBAYAR CUSTOMER">CUSTOMER</option>
+                                <option value="DIBAYAR PENERIMA">PENERIMA</option>
                             </select>
                         </div>
                     </td>

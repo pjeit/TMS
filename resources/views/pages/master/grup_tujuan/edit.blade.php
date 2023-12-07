@@ -301,7 +301,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp.</span>
                                     </div>
-                                    <input type="text" name="tally_pje" class="form-control numaja uang" id="tally_pje" placeholder="" readonly> 
+                                    <input type="text" name="tally_pje" class="form-control numaja uang" id="tally_pje" placeholder="" > 
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><input type="checkbox" id="check_is_tally" name="is_tally"></span>
                                     </div>
@@ -482,7 +482,7 @@
                 // console.log("Checkbox is checked.");
             }else if($(this).is(":not(:checked)")){
                 $('#tally_pje').val('');
-                $('#tally_pje').attr('readonly',true);
+                // $('#tally_pje').attr('readonly',true);
                 // console.log("Checkbox is unchecked.");
             }
             totalTarif();
@@ -1153,7 +1153,7 @@
             $('#check_is_plastik').prop('checked',false);
             $('#seal_pje').attr('readonly',true);
             $('#seal_pelayaran').attr('readonly',true);
-            $('#tally_pje').attr('readonly',true);
+            // $('#tally_pje').attr('readonly',true);
             // $('#plastik_pje').attr('readonly',true);
 
             
