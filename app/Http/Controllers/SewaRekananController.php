@@ -55,7 +55,7 @@ class SewaRekananController extends Controller
         $supplier = DB::table('supplier as s')
         ->select('s.*')
         ->where('s.is_aktif', '=', "Y")
-        ->where('s.jenis_supplier_id', '=', 1)
+        ->where('s.jenis_supplier_id', '=', 11) //jenis = tagihan rekanan
         ->get();
          return view('pages.order.truck_order_rekanan.create',[
             'judul'=>"Trucking Order Rekanan",
@@ -284,7 +284,7 @@ class SewaRekananController extends Controller
         $supplier = DB::table('supplier as s')
         ->select('s.*')
         ->where('s.is_aktif', '=', "Y")
-        ->where('s.jenis_supplier_id', '=', 1)
+        ->where('s.jenis_supplier_id', '=', 11)
         ->get();
         $dataBooking = DB::table('booking as b')
                 ->select('*','b.id as idBooking')

@@ -558,7 +558,7 @@
                             response.dataTujuan.forEach(tujuan => {
                                 const option = document.createElement('option');
                                 option.value = tujuan.id;
-                                option.textContent = tujuan.nama_tujuan+ ` ( ${tujuan.jenis_tujuan} )` +  ` [${tujuan.getMarketing?tujuan.getMarketing.nama:'-'} ]`;
+                                option.textContent = tujuan.nama_tujuan+ ` ( ${tujuan.jenis_tujuan} )` +  ` [${tujuan.getMarketing?tujuan.getMarketing.nama:'-'}]`;
                                 if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
                                 {
                                     if (idTujuan == tujuan.id) {

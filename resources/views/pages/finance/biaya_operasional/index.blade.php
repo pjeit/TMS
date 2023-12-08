@@ -202,6 +202,7 @@
                         $("#hasil").empty();
                         var item = $('#item').val();
                         var data = response.data;
+                        console.log('data', data);
 
                         if(item == 'KARANTINA'){
                             $("thead tr").append(`  <th>Grup</th>
@@ -263,6 +264,7 @@
                             if(data.length > 0){
                                 for (var i = 0; i < data.length; i++) {
                                     if(data[i].total_dicairkan == null){
+                                        console.log('ok');
                                         var start = data[i].deskripsi_so;
                                         var nominal = 0;
                                         var row = $("<tr></tr>");
@@ -272,11 +274,13 @@
                                         row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
                                         if(data[i].jenis_order == 'INBOUND'){
                                             if(data[i].tipe_kontainer=='20'){
-                                                if(data[i].pick_up == 'DEPO'){
+                                                if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                    // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
                                                     nominal = 15000;
                                                 }
                                             }else{
-                                                if(data[i].pick_up == 'DEPO'){
+                                                if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                    // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
                                                     nominal = 25000;
                                                 }
                                             }
@@ -293,7 +297,7 @@
                                             nominal = data[i].seal_pelayaran;       
                                         }
                                         if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
-                                            
+                                            nominal = 200000; // set default value biar kalau angka 0 di hidden
                                         }else{
                                             row.append(`<td> ${nominal.toLocaleString()} </td>`);
                                         }
@@ -317,7 +321,8 @@
                                                         <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
                                                         <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
                                                     </td>`);
-
+                                                    
+                                        // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
                                         if(nominal != 0){
                                             $("#hasil").append(row);
                                         }

@@ -70,8 +70,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" autocomplete="off" name="tgl_nota" class="form-control date"
-                                            id="tgl_nota" required>
+                                        <input type="text" autocomplete="off" name="tgl_nota" class="form-control date" value="{{ date("d-M-Y", strtotime(now())) }}" id="tgl_nota" required>
                                     </div>
                                 </div>
                             </div>
@@ -119,7 +118,9 @@
                         <th style="width: 200px;">Tarif</th>
                         <th style="width: 200px;">Ditagihkan</th>
                         <th>Catatan</th>
-                        <th style="width: 50px;"></th>
+                        <th style="width: 50px;" class='text-center' style="text-align:center">
+                            {{-- <input type="checkbox" class="check_all"> --}}
+                        </th>
                     </tr>
                 </thead>
                 <tbody id="hasil">
@@ -236,7 +237,7 @@
                                     </td>`)
                         row.append(`<td><input type="text" readonly name="data[${data[i].id_sewa}][catatan]" class="form-control" id="catatan_${data[i].id_sewa}" /></td>`)
                         row.append(`<td class='text-center' style="text-align:center">
-                                        <input type="checkbox" class="checkHitung" value="${data[i].id_sewa}">
+                                        <input type="checkbox" class="checkHitung check_item" value="${data[i].id_sewa}">
                                     </td>`);
                         $("#hasil").append(row);
                     }
@@ -246,7 +247,7 @@
                         var uppercaseValue = inputValue.toUpperCase();
                         $(this).val(uppercaseValue);
                     });
-                   
+                
                 },error: function (xhr, status, error) {
                     const Toast = Swal.mixin({
                         toast: true,
@@ -268,11 +269,15 @@
             });
         };    
 
+        $(document).on('click', '.check_all', function (event) {
+            $(".check_item").prop('checked', this.checked);
+        });
+
         $(document).on('click', '.checkHitung', function (event) {
             const harga_jual = document.getElementById('hidden_harga_jual_'+this.value);
             const inputElement = document.getElementById(this.value);
             const catatanElement = document.getElementById("catatan_"+this.value);
-             
+            
             if (this.checked) {
                 inputElement.value = moneyMask(harga_jual.value);
                 inputElement.removeAttribute("readonly");

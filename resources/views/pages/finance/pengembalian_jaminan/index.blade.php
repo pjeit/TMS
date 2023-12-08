@@ -45,7 +45,8 @@
                                 <td id="catatan_{{ $item->id }}">{{ $item->catatan }}</td>
                                 <td id="total_{{ $item->id }}">{{ number_format($item->jaminan->nominal) }}</td>
                                 <td id="status_{{ $item->id }}">{{ $item->status }}</td>
-                                <td id="tgl_request_{{ $item->id }}">{{ isset($item->tgl_request)? date("d-M-Y", strtotime($item->tgl_request)):'' }}</td>
+        dd($data);
+                                <td id="tgl_request_{{ $item->id }}">{{ isset($item->jaminan->tgl_request)? date("d-M-Y", strtotime($item->jaminan->tgl_request)):'' }}</td>
                                 <td>
                                     <div class="btn-group btn-sm dropleft">
                                         <button type="button" class="btn btn-sm btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

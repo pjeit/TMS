@@ -27,15 +27,12 @@ class PengembalianJaminanController extends Controller
                         ->whereHas('jaminan',function ($query) {
                             $query->where('is_aktif', 'Y')
                             ->whereIn('status', ['DIBAYARKAN', 'REQUEST']);
+                        })
+                        ->whereHas('getDetails.getSewa',function ($query) {
+                            $query->where('is_aktif', 'Y')
+                            ->whereIn('status', ['MENUNGGU INVOICE', 'MENUNGGU PEMBAYARAN INVOICE', 'SELESAI PEMBAYARAN']);
                         })->get();
-        // $data = JobOrder::where('job_order.is_aktif', 'Y')
-        //         ->where('job_order.status', 'SELESAI')
-        //         ->join('jaminan as j', function($join) {
-        //         $join->on('job_order.id', '=', 'j.id_job_order')
-        //             ->where('j.is_aktif', '=', "Y")
-        //             ->whereIn('j.status', ['DIBAYARKAN', 'REQUEST']);
-        //         })->get();
-        // dd($data);
+
         $bank = KasBank::where('is_aktif', 'Y')->get();
         return view('pages.finance.pengembalian_jaminan.index',[
             'judul' => 'Pengembalian Jaminan',

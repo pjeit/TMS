@@ -432,7 +432,11 @@
             var modal_bayar = normalize($('#modal_bayar').val());
             
             let val = modal_pph23>modal_sisa_invoice? modal_sisa_invoice:modal_pph23;
+            if(isNaN(val)){
+                val = 0;
+            }
             $('#modal_bayar').val( moneyMask(modal_sisa_invoice-val) );
+            console.log('val', val);
             this.value = val;
         });
 
