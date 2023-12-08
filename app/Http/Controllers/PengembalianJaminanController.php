@@ -8,7 +8,7 @@ use App\Models\KasBank;
 use App\Models\KasBankTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\db;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helper\CoaHelper;
 class PengembalianJaminanController extends Controller
