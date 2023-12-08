@@ -300,7 +300,7 @@ class DalamPerjalananController extends Controller
                 foreach ($array_inbound_parent as $key=> $dataInbound) {
                     # code...
                     if($opersional->deskripsi == $dataInbound['deskripsi'] && 
-                    $opersional->total_operasional == $dataInbound['biaya'] &&
+                    $opersional->total_dicairkan == $dataInbound['biaya'] &&
                     $opersional->id_jo ==  $dataInbound['id_jo']
                     )
                     {
@@ -316,7 +316,7 @@ class DalamPerjalananController extends Controller
         {
             foreach ($array_inbound as $key=> $dataInbound) {
                 # code...
-                if($opersional->deskripsi == $dataInbound['deskripsi'] && $opersional->total_operasional == $dataInbound['biaya'] )
+                if($opersional->deskripsi == $dataInbound['deskripsi'] && $opersional->total_dicairkan == $dataInbound['biaya'] )
                 {
                     //hapus array kalau datanya sama 
                     unset($array_inbound[$key]);
@@ -369,11 +369,12 @@ class DalamPerjalananController extends Controller
             // }
             
         }
+        //yang seal pje sama plastik dari grup tujuan
         foreach($dataOpreasional as $opersional)
         {
             foreach ($array_outbond as $key=> $dataOutbond) {
                 # code...
-                if($opersional->deskripsi == $dataOutbond['deskripsi'] && $opersional->total_operasional == $dataOutbond['biaya'] )
+                if($opersional->deskripsi == $dataOutbond['deskripsi'] && $opersional->total_dicairkan == $dataOutbond['biaya'] )
                 {
                     //hapus array kalau datanya sama 
                     unset($array_outbond[$key]);
@@ -480,7 +481,7 @@ class DalamPerjalananController extends Controller
                         $SOP = new SewaOperasional();
                         $SOP->id_sewa = $dalam_perjalanan->id_sewa; 
                         $SOP->deskripsi = $value['deskripsi_data'];
-                        $SOP->total_operasional = (float)str_replace(',', '', $value['nominal_data']);
+                        $SOP->total_operasional = (float)str_replace(',', '', $value['nominal_ditagihkan']);
                         $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
@@ -514,32 +515,33 @@ class DalamPerjalananController extends Controller
 
                     if(isset($value['masuk_db']))
                     {
-                        if (in_array($value['deskripsi_data'], $deskripsi1)) {
+                        // if (in_array($value['deskripsi_data'], $deskripsi1)) {
                             DB::table('sewa_operasional')
                             ->where('id_sewa', $dalam_perjalanan->id_sewa)
                             ->where('id', $value['id_sewa_operasional_data'])
                             ->update([
                                 'is_ditagihkan' => $value['ditagihkan_data_value'],
                                 'is_dipisahkan' => $value['dipisahkan_data_value'],
+                                'total_operasional' => (float)str_replace(',', '', $value['nominal_ditagihkan']),
                                 'catatan' => $value['catatan_data'],
                                 'updated_at' => now(),
                                 'updated_by' => $user,
                             ]);
-                        } else if(!in_array($value['deskripsi_data'], $deskripsi1)) {
-                            DB::table('sewa_operasional')
-                            ->where('id_sewa', $dalam_perjalanan->id_sewa)
-                            ->where('id', $value['id_sewa_operasional_data'])
-                            ->update([
-                                'deskripsi' => $value['deskripsi_data'],
-                                'total_operasional' => (float)str_replace(',', '', $value['nominal_data']),
-                                'total_dicairkan' => (float)str_replace(',', '', $value['nominal_data']),
-                                'is_ditagihkan' => $value['ditagihkan_data_value'],
-                                'is_dipisahkan' => $value['dipisahkan_data_value'],
-                                'catatan' => $value['catatan_data'],
-                                'updated_at' => now(),
-                                'updated_by' => $user,
-                            ]);
-                        }
+                        // } else if(!in_array($value['deskripsi_data'], $deskripsi1)) {
+                        //     DB::table('sewa_operasional')
+                        //     ->where('id_sewa', $dalam_perjalanan->id_sewa)
+                        //     ->where('id', $value['id_sewa_operasional_data'])
+                        //     ->update([
+                        //         'deskripsi' => $value['deskripsi_data'],
+                        //         'total_operasional' => (float)str_replace(',', '', $value['nominal_ditagihkan']),
+                        //         'total_dicairkan' => (float)str_replace(',', '', $value['nominal_data']),
+                        //         'is_ditagihkan' => $value['ditagihkan_data_value'],
+                        //         'is_dipisahkan' => $value['dipisahkan_data_value'],
+                        //         'catatan' => $value['catatan_data'],
+                        //         'updated_at' => now(),
+                        //         'updated_by' => $user,
+                        //     ]);
+                        // }
                     }
                     else
                     {
@@ -572,7 +574,7 @@ class DalamPerjalananController extends Controller
                         $SOP = new SewaOperasional();
                         $SOP->id_sewa = $dalam_perjalanan->id_sewa; 
                         $SOP->deskripsi = $value['deskripsi_data'];
-                        $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_data']);
+                        $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_ditagihkan']);
                         $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
@@ -598,7 +600,7 @@ class DalamPerjalananController extends Controller
                         $SOP = new SewaOperasional();
                         $SOP->id_sewa = $dalam_perjalanan->id_sewa; 
                         $SOP->deskripsi = $value['deskripsi_data'];
-                        $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_data']);
+                        $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_ditagihkan']);
                         $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];

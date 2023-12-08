@@ -257,7 +257,7 @@ height: 20px;
                                                     <span class="badge badge-success">Data Yang Tersimpan</span>
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja nominal_hardcode">
+                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja nominal_hardcode" readonly>
                                                 </td>
                                             @endif
                                             @php
@@ -293,7 +293,7 @@ height: 20px;
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja" readonly>
+                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_dicairkan) }}" class="form-control uang numaja" readonly>
                                                 </td>
                                             @endif
                                             @if(!in_array($value->deskripsi, $deskripsi2))
@@ -303,10 +303,13 @@ height: 20px;
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja nominal_lain" >
+                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_dicairkan) }}" class="form-control uang numaja nominal_lain" readonly>
                                                 </td>
 
                                             @endif
+                                            <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{$index}}">
+                                                <input type="text" name="data[{{$index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja nominal_ditagihkan" >
+                                            </td>
                                             <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
                                                 <div class="icheck-success d-inline">
                                                     <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="data[{{$index}}][ditagihkan_data]" {{$value->is_ditagihkan=='Y'?'checked':''}} >
@@ -380,7 +383,10 @@ height: 20px;
                                         
                                         </td>
                                         <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{ $index}}">
-                                                <input type="text" name="data_hardcode[{{ $index}}][nominal_data]" id="nominal_data_{{ $index}}" value="" class="form-control uang numaja nominal_hardcode" readonly>
+                                                <input type="text" name="data_hardcode[{{ $index}}][nominal_data]" id="nominal_data_{{ $index}}" value="0" class="form-control uang numaja nominal_hardcode" readonly>
+                                        </td>
+                                        <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{$index}}">
+                                            <input type="text" name="data_hardcode[{{$index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="" class="form-control uang numaja nominal_ditagihkan" readonly>
                                         </td>
                                         <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{ $index}}" >
                                             <div class="icheck-danger d-inline">
@@ -424,7 +430,10 @@ height: 20px;
                                                 <span class="badge badge-danger">Data Template</span>
                                         </td>
                                         <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{ $index}}">
-                                                <input type="text" name="data_hardcode[{{ $index}}][nominal_data]" id="nominal_data_{{ $index}}" value="" class="form-control uang numaja nominal_hardcode" readonly>
+                                                <input type="text" name="data_hardcode[{{ $index}}][nominal_data]" id="nominal_data_{{ $index}}" value="0" class="form-control uang numaja nominal_hardcode" readonly>
+                                        </td>
+                                        <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
+                                                <input type="text" name="data_hardcode[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="" class="form-control uang numaja nominal_ditagihkan"readonly>
                                         </td>
                                         <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{ $index}}" >
                                             <div class="icheck-danger d-inline">
@@ -474,6 +483,9 @@ height: 20px;
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                         <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja" readonly>
+                                                </td>
+                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
+                                                        <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
                                                     <div class="icheck-info d-inline">
@@ -526,6 +538,9 @@ height: 20px;
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                         <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja" readonly>
                                                 </td>
+                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
+                                                        <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
+                                                </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
                                                     <div class="icheck-info d-inline">
                                                         <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data]"  >
@@ -576,6 +591,9 @@ height: 20px;
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                         <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja" readonly>
+                                                </td>
+                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
+                                                        <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
                                                     <div class="icheck-warning d-inline">
@@ -659,6 +677,8 @@ height: 20px;
                 }
                 if (checkbox.is(":checked")) {
                     row.find('.cek_tagih').prop('disabled', false);
+                    row.find('.nominal_ditagihkan').prop('readonly', false);
+
                     if (value_cek_tagih == "Y") {
                         row.find('.cek_pisah').prop('disabled', false);
                     } else {
@@ -666,6 +686,8 @@ height: 20px;
                     }
                     row.find('.catatan').prop('readonly', false);
                 } else if (!checkbox.is(":checked")) {
+                    row.find('.nominal_ditagihkan').prop('readonly', true);
+
                     row.find('.cek_tagih').prop('checked', false);
                     row.find('.cek_tagih').prop('disabled', true);
                     row.find('.cek_pisah').prop('checked', false);
@@ -689,7 +711,8 @@ height: 20px;
                 if (checkbox.is(":checked")) {
                     row.find('.cek_tagih').prop('disabled', false);
                     row.find('.deskripsi_lain').prop('readonly', false);
-                    row.find('.nominal_lain').prop('readonly', false);
+                    // row.find('.nominal_lain').prop('readonly', false);
+                    row.find('.nominal_ditagihkan').prop('readonly', false);
 
                     if (value_cek_tagih == "Y") {
                         row.find('.cek_pisah').prop('disabled', false);
@@ -706,7 +729,9 @@ height: 20px;
                     row.find('.catatan').val('');
 
                     row.find('.deskripsi_lain').prop('readonly', true);
-                    row.find('.nominal_lain').prop('readonly', true);
+                    // row.find('.nominal_lain').prop('readonly', true);
+                    row.find('.nominal_ditagihkan').prop('readonly', true);
+
                     // deskripsi_lain.prop('readonly', false);
                     // nominal_lain.prop('readonly', false);
                 }
@@ -730,7 +755,7 @@ height: 20px;
             if ($(this).is(":checked")) {
                 $(this).val('Y');
                 row.find('.deskripsi_lain').prop('readonly', false);
-                row.find('.nominal_lain').prop('readonly', false);
+                // row.find('.nominal_lain').prop('readonly', false);
                 $('#checkTagih_data_'+index).prop('checked', true);
                 value_cek_tagih.val('Y');
 
@@ -744,7 +769,8 @@ height: 20px;
                 }
                 row.find('.cek_tagih').prop('disabled', false);
                 row.find('.catatan').prop('readonly', false);
-                row.find('.nominal_hardcode').prop('readonly', false);
+                // row.find('.nominal_hardcode').prop('readonly', false);
+                row.find('.nominal_ditagihkan').prop('readonly', false);
 
             
             } else if ($(this).is(":not(:checked)")) {  
@@ -759,8 +785,10 @@ height: 20px;
                 value_cek_tagih.val('N');
                 value_cek_dipisahkan_data.val('N');
                 // id_operasional.val('HAPUS');
-                 row.find('.deskripsi_lain').prop('readonly', true);
-                row.find('.nominal_lain').prop('readonly', true);
+                row.find('.deskripsi_lain').prop('readonly', true);
+                // row.find('.nominal_lain').prop('readonly', true);
+                row.find('.nominal_ditagihkan').prop('readonly', true);
+
 
                 row.find('.nominal_hardcode').prop('readonly', true);
 
@@ -923,7 +951,10 @@ height: 20px;
                             <span class="badge badge-primary">Data Lain-lain</span>
                         </td>
                         <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_${maxID}">
-                                <input type="text" readonly name="dataLain[${maxID}][nominal_data]" id="nominal_data_${maxID}" value="" class="form-control uang numaja nominal_lain">
+                                <input type="text" readonly name="dataLain[${maxID}][nominal_data]" id="nominal_data_${maxID}" value="0" class="form-control uang numaja nominal_lain">
+                        </td>
+                        <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_${maxID}">
+                                <input type="text" readonly name="dataLain[${maxID}][nominal_ditagihkan]" id="nominal_ditagihkan_${maxID}" value="" class="form-control uang numaja nominal_ditagihkan">
                         </td>
                         <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_${maxID}" >
                             <div class="icheck-primary d-inline">
@@ -1002,15 +1033,19 @@ height: 20px;
         });
         $('#post_data').submit(function(event) {
             var deskripsi = $('.deskripsi_lain');
-            var nominal_lain = $('.nominal_lain');
-            var nominal_hardcode = $('.nominal_hardcode');
+            // var nominal_lain = $('.nominal_lain');
+            // var nominal_hardcode = $('.nominal_hardcode');
+            var nominal_ditagihkan = $('.nominal_ditagihkan');
+
             var cek_checkbox_ditagihkan = $('.value_cek_tagih');
 
             var flagDeskripsi = false;
             var flagDeskripsiPrevent = false;
 
-            var flagNominal = false;
-            var flagNominalHardcode = false;
+            // var flagNominal = false;
+            // var flagNominalHardcode = false;
+            var flagNominalDitagihkan = false;
+
 
             var flagCekBoxDitagihkanDicentangGak = false;
             var flagCekBoxsealPJE = false;
@@ -1082,37 +1117,54 @@ height: 20px;
                 }
             }
 
-            for (var i = 0; i < nominal_lain.length; i++) {
-                var NominalTextbox = nominal_lain.eq(i);
-                var row = NominalTextbox.closest('tr');
+            // for (var i = 0; i < nominal_lain.length; i++) {
+            //     var NominalTextbox = nominal_lain.eq(i);
+            //     var row = NominalTextbox.closest('tr');
+            //     var index = row.attr('id');
+            //     var trimNominal = NominalTextbox.val().trim();
+            //     var simpanData=row.find('.centang_cekbox').val();
+
+            //     if(simpanData=="Y")
+            //     {
+            //         if (trimNominal === '') {
+            //             flagNominal = true;
+            //             break; 
+            //         }
+            //     }
+            // }
+
+            // for (var i = 0; i < nominal_hardcode.length; i++) {
+            //     var NominalHardCodeTextbox = nominal_hardcode.eq(i);
+            //     var row = NominalHardCodeTextbox.closest('tr');
+            //     var index = row.attr('id');
+            //     var trimNominal = NominalHardCodeTextbox.val().trim();
+            //     var simpanData=row.find('.centang_cekbox').val();
+
+            //     if(simpanData=="Y")
+            //     {
+            //         if (trimNominal === '') {
+            //             flagNominalHardcode = true;
+            //             break; 
+            //         }
+            //     }
+            // }
+
+            for (var i = 0; i < nominal_ditagihkan.length; i++) {
+                var NominalDitagihkanTextbox = nominal_ditagihkan.eq(i);
+                var row = NominalDitagihkanTextbox.closest('tr');
                 var index = row.attr('id');
-                var trimNominal = NominalTextbox.val().trim();
+                var trimNominal = NominalDitagihkanTextbox.val().trim();
                 var simpanData=row.find('.centang_cekbox').val();
 
                 if(simpanData=="Y")
                 {
                     if (trimNominal === '') {
-                        flagNominal = true;
+                        flagNominalDitagihkan = true;
                         break; 
                     }
                 }
             }
 
-            for (var i = 0; i < nominal_hardcode.length; i++) {
-                var NominalHardCodeTextbox = nominal_hardcode.eq(i);
-                var row = NominalHardCodeTextbox.closest('tr');
-                var index = row.attr('id');
-                var trimNominal = NominalHardCodeTextbox.val().trim();
-                var simpanData=row.find('.centang_cekbox').val();
-
-                if(simpanData=="Y")
-                {
-                    if (trimNominal === '') {
-                        flagNominalHardcode = true;
-                        break; 
-                    }
-                }
-            }
             for (var i = 0; i < cek_checkbox_ditagihkan.length; i++) {
                 var index_cekbox_ditagihkan = cek_checkbox_ditagihkan.eq(i);
                 var row = index_cekbox_ditagihkan.closest('tr');
@@ -1207,11 +1259,11 @@ height: 20px;
                 });
                 return;
             }
-            if (flagNominal||flagNominalHardcode) {
+            if (/*flagNominal||flagNominalHardcode*/flagNominalDitagihkan) {
                 event.preventDefault(); 
                 Swal.fire({
                     icon: 'error',
-                    text: 'NOMINAL BIAYA WAJIB DI ISI!',
+                    text: 'NOMINAL DITAGIHKAN WAJIB DI ISI!',
                 });
                 return;
             }
