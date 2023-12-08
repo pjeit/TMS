@@ -1327,6 +1327,11 @@
           </li>
           @endif
 
+          @php
+            $laporan_finance = [ 'READ_LAPORAN_JOB_ORDER', 
+            'READ_LAPORAN_BATAL_MUAT', 'READ_LAPORAN_KENDARAAN_DIJUAL','READ_LAPORAN_SALES','READ_LAPORAN_STATUS_KENDARAAN',];
+          @endphp
+          @if (array_intersect($laporan_finance, $userAkses) != NULL)
           <li class="nav-item {{ 
             request()->is('laporan_job_order*')||
             request()->is('laporan_batal_muat*')||
@@ -1341,6 +1346,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
+              @can('READ_LAPORAN_JOB_ORDER')
               <li class="nav-item">
                 <a href="{{route('laporan_job_order.index')}}"
                   class="nav-link {{request()->url() === route('laporan_job_order.index')? ' active' : '' }} "
@@ -1351,6 +1357,8 @@
                   </p>
                 </a>
               </li>
+              @endcan
+              @can('READ_LAPORAN_BATAL_MUAT')
               <li class="nav-item">
                 <a href="{{route('laporan_batal_muat.index')}}"
                   class="nav-link {{request()->url() === route('laporan_batal_muat.index')? ' active' : '' }} "
@@ -1361,6 +1369,8 @@
                   </p>
                 </a>
               </li>
+              @endcan
+              @can('READ_LAPORAN_SALES')
               <li class="nav-item">
                 <a href="{{route('laporan_sales.index')}}"
                   class="nav-link {{request()->url() === route('laporan_sales.index')? ' active' : '' }} "
@@ -1371,6 +1381,8 @@
                   </p>
                 </a>
               </li>
+              @endcan
+              @can('READ_LAPORAN_KENDARAAN_DIJUAL')
               <li class="nav-item">
                 <a href="{{route('laporan_kendaraan_dijual.index')}}"
                   class="nav-link {{request()->url() === route('laporan_kendaraan_dijual.index')? ' active' : '' }} "
@@ -1381,6 +1393,8 @@
                   </p>
                 </a>
               </li>
+              @endcan
+              @can('READ_LAPORAN_STATUS_KENDARAAN')
               <li class="nav-item">
                 <a href="{{route('laporan_status_kendaraan.index')}}"
                   class="nav-link {{request()->url() === route('laporan_status_kendaraan.index')? ' active' : '' }} "
@@ -1391,8 +1405,10 @@
                   </p>
                 </a>
               </li>
+              @endcan
             </ul>
           </li>
+          @endif
         </ul>
       </nav>
     </div>
