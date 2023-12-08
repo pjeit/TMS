@@ -77,12 +77,12 @@
                     <th style="width:5%;"class="borderDebug"></th>
                 </tr>
             <tr>
-                <th colspan='4' style="text-align:left;"><img style="position: absolute;margin-top:-100px;margin-left: -40px;" src="{{ public_path("img/LOGO_PJE_DOANG1.png") }}"   width="250" height="250"></th>
+                <th colspan='4' style="text-align:left;"><img style="position: absolute;margin-top:-100px;margin-left: -40px;" src="{{ public_path("img/LOGO_PJE_DOANG1.png") }}"   width="300" height="300"></th>
                 <th colspan='11' style="text-align:left;">
                     <h2>
-                        <span style="color:#1f55a2;font-size:15px; margin-top:-23px;position: absolute;"> PRIMATRANS JAYA EXPRESS</span>
+                        <span style="color:#1f55a2;font-size:25px; margin-left:70px;position: absolute;"> PRIMATRANS JAYA EXPRESS</span>
                         <br>
-                        <span style="font-size:15px; font-weight:normal; margin-top:-35px;position: absolute;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
+                        <span style="font-size:22px; font-weight:normal; margin-left:70px;position: absolute;">Jl. Ikan Mungsing VII No. 61, Surabaya</span>
                         <br>
                     </h2>
                 </th>
@@ -116,7 +116,7 @@
 <br>
 <table>
     <tr class="total" >
-        <td style="font-size: 1.25em;"><b>Total Karantina :</b> </td>
+        <td style="font-size: 1.25em;"><b>Total Ditagihkan Karantina :</b> </td>
         <td><span style="opacity: 0%;">...............</span></td>
         <td><span style="opacity: 0%;">................</span></td>
         <td style="font-size: 1.25em;"><b>Rp {{ number_format($karantinaData->total_operasional); }}</b></td>
