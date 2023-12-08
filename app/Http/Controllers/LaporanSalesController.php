@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 class LaporanSalesController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('permission:READ_LAPORAN_SALES', ['only' => ['index_laporan_sales']]);
+    }
      public function index_laporan_sales()
     {
         return view('pages.laporan.Admin.laporan_sales',[

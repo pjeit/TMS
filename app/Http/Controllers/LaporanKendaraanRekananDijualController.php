@@ -8,6 +8,10 @@ use App\Models\Sewa;
 class LaporanKendaraanRekananDijualController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('permission:READ_LAPORAN_KENDARAAN_DIJUAL', ['only' => ['index_laporan_kendaraan_dijual']]);
+    }
     public function index_laporan_kendaraan_dijual()
     {
         return view('pages.laporan.Admin.laporan_kendaraan_rekanan',[

@@ -11,6 +11,10 @@ use Exception;
 class LaporanBatalMuatController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('permission:READ_LAPORAN_BATAL_MUAT', ['only' => ['index_laporan_batal_muat']]);
+    }
     public function index_laporan_batal_muat()
     {
         return view('pages.laporan.Admin.laporan_batal_muat',[

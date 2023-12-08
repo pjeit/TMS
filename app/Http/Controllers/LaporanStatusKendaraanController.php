@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Auth;
 class LaporanStatusKendaraanController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('permission:READ_LAPORAN_STATUS_KENDARAAN', ['only' => ['index_laporan_status_kendaraan']]);
+    }
     public function index_laporan_status_kendaraan()
     {
         $dataKendaraan=DB::table('kendaraan as k')
