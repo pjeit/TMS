@@ -22,7 +22,7 @@
                                 <tr>
                                     <th>Menu</th>
                                     <th class="d-flex align-items-center justify-content-center"><div><input type="checkbox" id="check_all"></div></th>
-                                    <th colspan="4"><span class="ml-4">Akses</span></th>
+                                    <th colspan="5"><span class="ml-4">Akses</span></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,7 +37,7 @@
                                             <td>
                                                 <div class="form-check">
                                                     <input class="check per_item {{ $item->menu }} mr-2" child_menu="{{ $item->menu }}" name="data[{{ $item->menu }}][]" value="{{ $permission->id }}" type="checkbox" {{ $permission->permission_id && $permission->role_id != null? 'checked':'' }} />
-                                                    <label for="centang" class="form-check-label"><small>{{ $permission->name }}</small></label>
+                                                    <label for="centang" class="form-check-label"><small>{{ str_replace("_" . $item->menu, "", $permission->name); }}</small></label>
                                                 </div>
                                             </td>
                                         @endforeach

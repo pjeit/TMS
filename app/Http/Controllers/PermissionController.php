@@ -13,8 +13,8 @@ class PermissionController extends Controller
     public function __construct()
     {
         $this->middleware('permission:READ_PERMISSION', ['only' => ['index']]);
-		$this->middleware('permission:CREATE_PERMISSION', ['only' => ['create','store']]);
-		$this->middleware('permission:EDIT_PERMISSION', ['only' => ['edit','update']]);
+		$this->middleware('permission:CREATE_PERMISSION', ['only' => ['create', 'store']]);
+		// $this->middleware('permission:EDIT_PERMISSION', ['only' => ['edit', 'update']]);
 		$this->middleware('permission:DELETE_PERMISSION', ['only' => ['destroy']]);  
     }
 
@@ -91,7 +91,7 @@ class PermissionController extends Controller
         $data = Permissions::where('is_aktif', 'Y')->find($id);
 
         return view('pages.master.permission.edit',[
-            'judul' => 'Edit Permission',
+            'judul' => 'Permission',
             'data' => $data,
         ]);
     }

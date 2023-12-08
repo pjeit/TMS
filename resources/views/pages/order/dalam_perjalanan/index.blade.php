@@ -40,15 +40,6 @@
                                 $simpenIdCust = null; 
                             @endphp
                             @foreach($dataSewa as $item)
-                                
-                                {{-- @if($item->id_cust != $simpenIdCust)
-                                    @php
-                                        $simpenIdCust = $item->id_cust; 
-                                    @endphp
-                                    <tr>
-                                        <th colspan="6">{{ $item->nama_cust }}</th>
-                                    </tr>
-                                @endif --}}
                                 <tr>
                                     <td>{{ $item->nama_cust}}</td>
                                     <td>
@@ -64,7 +55,7 @@
                                     </td>
                                     <td>
                                         {{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}
-                                          @if ($item->jenis_order=="OUTBOUND")
+                                        @if ($item->jenis_order=="OUTBOUND")
                                             <span class="badge badge-dark">{{ $item->jenis_order }}</span>
                                         @else
                                             <span class="badge badge-danger">{{ $item->jenis_order }}</span>
@@ -84,46 +75,44 @@
                                                 <a href="{{route('dalam_perjalanan.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                     <span class="fas fa-truck mr-3"></span> Input Kendaraan Kembali
                                                 </a>
-                                               
+                                                
                                                 @if ($item->id_supplier)
                                                     <a href="{{route('truck_order_rekanan.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                         <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa Rekanan
                                                     </a>
                                                     @if ($item->jenis_order == 'OUTBOUND')
-                                                        <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="nav-icon fas fa-undo mr-3"></span> Batal muat Rekanan
-                                                        </a>
-                                                    {{-- @endif --}}
-                                                    
-                                                        <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="nav-icon fas fa-times mr-3"></span> Cancel Rekanan
-                                                        </a>
+                                                        @can('CANCEL_DALAM_PERJALANAN')
+                                                            <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
+                                                                <span class="nav-icon fas fa-undo mr-3"></span> Batal muat Rekanan
+                                                            </a>
+                                                            <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
+                                                                <span class="nav-icon fas fa-times mr-3"></span> Cancel Rekanan
+                                                            </a>
+                                                        @endcan
                                                     @endif
                                                 @else
-                                                 <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
+                                                <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                     <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa PJE
                                                 </a>
                                                     @if ($item->jenis_order == 'OUTBOUND')
-                                                        <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="nav-icon fas fa-undo mr-3"></span> Batal muat
-                                                        </a>
-                                                    {{-- @endif --}}
-                                                    
-                                                        <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="nav-icon fas fa-times mr-3"></span> Cancel
-                                                        </a>
+                                                        @can('CANCEL_DALAM_PERJALANAN')
+                                                            <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
+                                                                <span class="nav-icon fas fa-undo mr-3"></span> Batal muat
+                                                            </a>
+                                                            <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
+                                                                <span class="nav-icon fas fa-times mr-3"></span> Cancel
+                                                            </a>
+                                                        @endcan
                                                     @endif
                                                         <a href="{{route('dalam_perjalanan.ubah_supir',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-user mr-3"></span> Ubah Supir
                                                         </a>
                                                     @if ($item->jenis_tujuan == 'FTL')
-                                                        <a href="{{route('dalam_perjalanan.cancel_uang_jalan',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="nav-icon fas fa-dollar-sign mr-3"></span> Cancel Uang Jalan
-                                                        </a>
-                                                    @else
-                                                        {{-- <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="fas fa-times mr-3"></span> Cancel
-                                                        </a> --}}
+                                                        @can('CANCEL_DALAM_PERJALANAN')
+                                                            <a href="{{route('dalam_perjalanan.cancel_uang_jalan',[$item->id_sewa])}}" class="dropdown-item">
+                                                                <span class="nav-icon fas fa-dollar-sign mr-3"></span> Cancel Uang Jalan
+                                                            </a>
+                                                        @endcan
                                                     @endif
                                                 @endif
                                             </div>

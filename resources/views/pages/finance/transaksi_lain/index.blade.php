@@ -108,8 +108,8 @@
 </div>
 <div class="modal fade" id="modal_tambah" >
         <div class="modal-dialog modal-lg ">
-             <form action="{{ route('transaksi_lain.store') }}" id="post_data" method="POST" >
-              @csrf
+            <form action="{{ route('transaksi_lain.store') }}" id="post_data" method="POST" >
+                @csrf
                 <div class="modal-content radiusSendiri">
                     <div class="modal-header">
                         <h5 class="modal-title">Form Data</h5>

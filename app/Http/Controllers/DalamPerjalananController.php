@@ -27,12 +27,13 @@ class DalamPerjalananController extends Controller
 		$this->middleware('permission:CREATE_DALAM_PERJALANAN', ['only' => ['create','store']]);
 		$this->middleware('permission:EDIT_DALAM_PERJALANAN', ['only' => ['edit','update']]);
 		$this->middleware('permission:DELETE_DALAM_PERJALANAN', ['only' => ['destroy']]);  
+        $this->middleware('permission:CANCEL_DALAM_PERJALANAN', ['only' => ['cancel', 'batal_muat', 'cancel_uang_jalan', 'save_cancel', 'save_batal_muat', 'save_cancel_uang_jalan']]);  
     }
 
     public function index()
     {
         //
-         $title = 'Data akan dihapus!';
+        $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
@@ -310,7 +311,7 @@ class DalamPerjalananController extends Controller
                 }
             }
         }
-       
+        
         //yang storage demurage dkk
         foreach($dataOpreasional as $opersional)
         {
