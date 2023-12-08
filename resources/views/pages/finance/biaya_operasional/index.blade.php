@@ -254,7 +254,7 @@
                         }else{
                             $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
                             if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
-                                $("thead tr").append("<th>Total</th>");
+                                $("thead tr").append("<th>Ditagihkan</th>");
                             }
                             $("thead tr").append(`<th>Dicairkan</th>
                                                     <th>Catatan</th>

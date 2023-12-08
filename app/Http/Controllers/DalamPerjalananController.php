@@ -206,7 +206,7 @@ class DalamPerjalananController extends Controller
 
         $array_inbound = [];
         foreach ($datajODetailBiaya as $item) {
-           
+            
             if ($item->storage || $item->storage != 0) {
                 $objSTORAGE = [
                     'deskripsi' => 'STORAGE',

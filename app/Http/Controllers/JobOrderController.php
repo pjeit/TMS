@@ -83,7 +83,7 @@ class JobOrderController extends Controller
         $dataSupplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
-            ->where('jenis_supplier_id', 6) // jenis pelayaran
+            ->where('jenis_supplier_id', 7) // jenis pelayaran
             ->orderBy('nama')
             ->get();
         $dataCustomer = DB::table('customer')

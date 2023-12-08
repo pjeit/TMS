@@ -207,7 +207,8 @@ height: 20px;
                                         </div> --}}
                                     </th>
                                     <th>Deskripsi</th>
-                                    <th>Jumlah</th>
+                                    <th>Jumlah Dicairkan</th>
+                                    <th>Jumlah Ditagihkan</th>
                                     <th>Ditagihkan</th>
                                     <th>Dipisahkan</th>
                                     <th>Catatan</th>
@@ -240,102 +241,102 @@ height: 20px;
                                         }
                                     @endphp 
                                     @foreach ($dataOpreasional as $key => $value)
-                                            <tr id="{{$index}}">
-                                                <td>
-                                                    <div class="icheck-success d-inline">
-                                                        <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="" name="data[{{$index}}][masuk_db]">
-                                                        <label for="checkboxPrimary_{{$index}}"></label>
-                                                    </div>
+                                        <tr id="{{$index}}">
+                                            <td>
+                                                <div class="icheck-success d-inline">
+                                                    <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="" name="data[{{$index}}][masuk_db]">
+                                                    <label for="checkboxPrimary_{{$index}}"></label>
+                                                </div>
+                                            </td>
+                                            <td id="id_sewa_operasional_tabel_{{$index}}" hidden="">
+                                                <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->id}}">
+                                            </td>
+                                            @if($value->deskripsi =='INAP'|| $value->deskripsi == 'CLEANING')
+                                                <td id="deskripsi_tabel_{{$index}}" >
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_hardcode ambil_text_deskripsi" readonly>
+                                                    <span class="badge badge-success">Data Yang Tersimpan</span>
                                                 </td>
-                                                <td id="id_sewa_operasional_tabel_{{$index}}" hidden="">
-                                                    <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->id}}">
+                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja nominal_hardcode">
                                                 </td>
-                                                @if($value->deskripsi =='INAP'|| $value->deskripsi == 'CLEANING')
-                                                    <td id="deskripsi_tabel_{{$index}}" >
-                                                        <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_hardcode ambil_text_deskripsi" readonly>
-                                                        <span class="badge badge-success">Data Yang Tersimpan</span>
-                                                    </td>
-                                                    <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                        <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja nominal_hardcode">
-                                                    </td>
-                                                @endif
-                                                @php
-                                                    $deskripsi1 = ['STORAGE', 
-                                                    'DEMURAGE', 
-                                                    'DETENTION', 
-                                                    'REPAIR', 
-                                                    'WASHING', 
-                                                    'SEAL PELAYARAN', 
-                                                    'SEAL PJE', 
-                                                    'PLASTIK', 
-                                                    'TALLY', 
-                                                    'TIMBANG', 
-                                                    'BURUH', 
-                                                    'LEMBUR', 'THC', 'LOLO', 'APBS', 'TL', 'DOCFEE'];
-                                                    $deskripsi2 = ['STORAGE', 
-                                                    'DEMURAGE', 
-                                                    'DETENTION', 
-                                                    'REPAIR', 
-                                                    'WASHING', 
-                                                    'SEAL PELAYARAN', 
-                                                    'SEAL PJE', 
-                                                    'PLASTIK', 
-                                                    'TALLY', 
-                                                    'TIMBANG', 
-                                                    'BURUH', 
-                                                    'LEMBUR',  'INAP', 'CLEANING','THC', 'LOLO', 'APBS', 'TL', 'DOCFEE'];
-                                                @endphp
-                                                @if (in_array($value->deskripsi, $deskripsi1))
-                                                    <td id="deskripsi_tabel_{{$index}}" >
-                                                        <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi ambil_text_deskripsi" readonly>
-                                                        <span class="badge badge-success">Data Yang Tersimpan</span>
-                                                    
-                                                    </td>
-                                                    <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                        <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja" readonly>
-                                                    </td>
-                                                @endif
-                                                @if(!in_array($value->deskripsi, $deskripsi2))
-                                                    <td id="deskripsi_tabel_{{$index}}" >
-                                                        <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_lain ambil_text_deskripsi" >
-                                                        <span class="badge badge-success">Data Yang Tersimpan</span>
-                                                    
-                                                    </td>
-                                                    <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                        <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja nominal_lain" >
-                                                    </td>
-
-                                                @endif
-                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
-                                                    <div class="icheck-success d-inline">
-                                                        <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="data[{{$index}}][ditagihkan_data]" {{$value->is_ditagihkan=='Y'?'checked':''}} >
-                                                        <label for="checkTagih_data_{{$index}}"></label>
-                                                        <input type="hidden" class="value_cek_tagih" name="data[{{$index}}][ditagihkan_data_value]"  value="{{$value->is_ditagihkan}}">
-                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
-                                                    </div>
-                                                </td>
-                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}" >
-                                                    <div class="icheck-success d-inline">
-                                                        <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="data[{{$index}}][dipisahkan_data]" {{$value->is_dipisahkan=='Y'?'checked':''}}  >
-                                                        <label for="checkPisah_data_{{$index}}"></label>
-                                                        <input type="hidden" class="value_cek_dipisahkan_data" name="data[{{$index}}][dipisahkan_data_value]"  value="{{$value->is_dipisahkan}}">
-
-                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
-                                                    </div>
-                                                </td>
-                                                <td id="catatan_tabel_{{$index}}">
-                                                    <input type="text" name="data[{{$index}}][catatan_data]" id="catatan_data_{{$index}}"  value="{{$value->catatan}}" class="form-control catatan">
-                                                </td>
-                                                {{-- 
-                                                <td class="text-danger">
-                                                        <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove"  class="btn btn-danger radiusSendiri btnDelete">
-                                                            <i class="fa fa-fw fa-trash-alt"></i>
-                                                        </button>
-                                                    </td> --}}
-                                            </tr>
+                                            @endif
                                             @php
-                                            $index+=1;
+                                                $deskripsi1 = ['STORAGE', 
+                                                'DEMURAGE', 
+                                                'DETENTION', 
+                                                'REPAIR', 
+                                                'WASHING', 
+                                                'SEAL PELAYARAN', 
+                                                'SEAL PJE', 
+                                                'PLASTIK', 
+                                                'TALLY', 
+                                                'TIMBANG', 
+                                                'BURUH', 
+                                                'LEMBUR', 'THC', 'LOLO', 'APBS', 'TL', 'DOCFEE'];
+                                                $deskripsi2 = ['STORAGE', 
+                                                'DEMURAGE', 
+                                                'DETENTION', 
+                                                'REPAIR', 
+                                                'WASHING', 
+                                                'SEAL PELAYARAN', 
+                                                'SEAL PJE', 
+                                                'PLASTIK', 
+                                                'TALLY', 
+                                                'TIMBANG', 
+                                                'BURUH', 
+                                                'LEMBUR',  'INAP', 'CLEANING','THC', 'LOLO', 'APBS', 'TL', 'DOCFEE'];
                                             @endphp
+                                            @if (in_array($value->deskripsi, $deskripsi1))
+                                                <td id="deskripsi_tabel_{{$index}}" >
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi ambil_text_deskripsi" readonly>
+                                                    <span class="badge badge-success">Data Yang Tersimpan</span>
+                                                
+                                                </td>
+                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja" readonly>
+                                                </td>
+                                            @endif
+                                            @if(!in_array($value->deskripsi, $deskripsi2))
+                                                <td id="deskripsi_tabel_{{$index}}" >
+                                                    <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_lain ambil_text_deskripsi" >
+                                                    <span class="badge badge-success">Data Yang Tersimpan</span>
+                                                
+                                                </td>
+                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                    <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja nominal_lain" >
+                                                </td>
+
+                                            @endif
+                                            <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
+                                                <div class="icheck-success d-inline">
+                                                    <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="data[{{$index}}][ditagihkan_data]" {{$value->is_ditagihkan=='Y'?'checked':''}} >
+                                                    <label for="checkTagih_data_{{$index}}"></label>
+                                                    <input type="hidden" class="value_cek_tagih" name="data[{{$index}}][ditagihkan_data_value]"  value="{{$value->is_ditagihkan}}">
+                                                    {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                                </div>
+                                            </td>
+                                            <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}" >
+                                                <div class="icheck-success d-inline">
+                                                    <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="data[{{$index}}][dipisahkan_data]" {{$value->is_dipisahkan=='Y'?'checked':''}}  >
+                                                    <label for="checkPisah_data_{{$index}}"></label>
+                                                    <input type="hidden" class="value_cek_dipisahkan_data" name="data[{{$index}}][dipisahkan_data_value]"  value="{{$value->is_dipisahkan}}">
+
+                                                    {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                                </div>
+                                            </td>
+                                            <td id="catatan_tabel_{{$index}}">
+                                                <input type="text" name="data[{{$index}}][catatan_data]" id="catatan_data_{{$index}}"  value="{{$value->catatan}}" class="form-control catatan">
+                                            </td>
+                                            {{-- 
+                                            <td class="text-danger">
+                                                    <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove"  class="btn btn-danger radiusSendiri btnDelete">
+                                                        <i class="fa fa-fw fa-trash-alt"></i>
+                                                    </button>
+                                                </td> --}}
+                                        </tr>
+                                        @php
+                                        $index+=1;
+                                        @endphp
                                     @endforeach
                                 @endif
                                 @php
@@ -363,48 +364,48 @@ height: 20px;
                                 }
                                 @endphp 
                                 @if(!$flagCleaning && $sewa->jenis_order=="INBOUND" /*|| !$flagJOCleaning&& $sewa->jenis_order=="INBOUND"*/ )
-                                            <tr id="{{ $index}}">
-                                                <td>
-                                                    <div class="icheck-danger d-inline">
-                                                        <input type="checkbox" id="checkboxPrimary_{{ $index}}" class="centang_cekbox" value="N" name="data_hardcode[{{$index}}][masuk_db]">
-                                                        <label for="checkboxPrimary_{{ $index}}"></label>
-                                                    </div>
-                                                </td>
-                                                <td id="id_sewa_operasional_tabel_{{ $index}}" hidden="">
-                                                    <input type="hidden" id="id_sewa_operasional_data_{{ $index}}"  class="id_operasional" name="data_hardcode[{{$index}}][id_sewa_operasional_data]" value="">
-                                                </td>
-                                                <td id="deskripsi_tabel_{{ $index}}" >
-                                                        <input type="text" name="data_hardcode[{{ $index}}][deskripsi_data]" id="deskripsi_data_{{ $index}}" value="CLEANING" class="form-control ambil_text_deskripsi" readonly>
-                                                    <span class="badge badge-danger">Data Template</span>
-                                                
-                                                </td>
-                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{ $index}}">
-                                                        <input type="text" name="data_hardcode[{{ $index}}][nominal_data]" id="nominal_data_{{ $index}}" value="" class="form-control uang numaja nominal_hardcode" readonly>
-                                                </td>
-                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{ $index}}" >
-                                                    <div class="icheck-danger d-inline">
-                                                        <input type="checkbox" id="checkTagih_data_{{ $index}}" class="cek_tagih" name="data_hardcode[{{ $index}}][ditagihkan_data]" >
-                                                        <label for="checkTagih_data_{{ $index}}"></label>
-                                                        <input type="hidden" class="value_cek_tagih" name="data_hardcode[{{ $index}}][ditagihkan_data_value]"  value="N">
-                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
-                                                    </div>
-                                                </td>
-                                                <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{ $index}}" >
-                                                    <div class="icheck-danger d-inline">
-                                                        <input type="checkbox" id="checkPisah_data_{{ $index}}" class="cek_pisah" name="data_hardcode[{{ $index}}][dipisahkan_data]" >
-                                                        <label for="checkPisah_data_{{ $index}}"></label>
-                                                        <input type="hidden" class="value_cek_dipisahkan_data" name="data_hardcode[{{ $index}}][dipisahkan_data_value]"  value="N">
+                                    <tr id="{{ $index}}">
+                                        <td>
+                                            <div class="icheck-danger d-inline">
+                                                <input type="checkbox" id="checkboxPrimary_{{ $index}}" class="centang_cekbox" value="N" name="data_hardcode[{{$index}}][masuk_db]">
+                                                <label for="checkboxPrimary_{{ $index}}"></label>
+                                            </div>
+                                        </td>
+                                        <td id="id_sewa_operasional_tabel_{{ $index}}" hidden="">
+                                            <input type="hidden" id="id_sewa_operasional_data_{{ $index}}"  class="id_operasional" name="data_hardcode[{{$index}}][id_sewa_operasional_data]" value="">
+                                        </td>
+                                        <td id="deskripsi_tabel_{{ $index}}" >
+                                                <input type="text" name="data_hardcode[{{ $index}}][deskripsi_data]" id="deskripsi_data_{{ $index}}" value="CLEANING" class="form-control ambil_text_deskripsi" readonly>
+                                            <span class="badge badge-danger">Data Template</span>
+                                        
+                                        </td>
+                                        <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{ $index}}">
+                                                <input type="text" name="data_hardcode[{{ $index}}][nominal_data]" id="nominal_data_{{ $index}}" value="" class="form-control uang numaja nominal_hardcode" readonly>
+                                        </td>
+                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{ $index}}" >
+                                            <div class="icheck-danger d-inline">
+                                                <input type="checkbox" id="checkTagih_data_{{ $index}}" class="cek_tagih" name="data_hardcode[{{ $index}}][ditagihkan_data]" >
+                                                <label for="checkTagih_data_{{ $index}}"></label>
+                                                <input type="hidden" class="value_cek_tagih" name="data_hardcode[{{ $index}}][ditagihkan_data_value]"  value="N">
+                                                {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                            </div>
+                                        </td>
+                                        <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{ $index}}" >
+                                            <div class="icheck-danger d-inline">
+                                                <input type="checkbox" id="checkPisah_data_{{ $index}}" class="cek_pisah" name="data_hardcode[{{ $index}}][dipisahkan_data]" >
+                                                <label for="checkPisah_data_{{ $index}}"></label>
+                                                <input type="hidden" class="value_cek_dipisahkan_data" name="data_hardcode[{{ $index}}][dipisahkan_data_value]"  value="N">
 
-                                                        {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
-                                                    </div>
-                                                </td>
-                                                <td id="catatan_tabel_{{ $index}}">
-                                                    <input type="text" name="data_hardcode[{{ $index}}][catatan_data]" id="catatan_data_{{ $index}}"  value="" class="form-control catatan">
-                                                </td>
-                                            </tr>
-                                            @php
-                                            $index+=1;
-                                            @endphp
+                                                {{-- for label sama id harus sama, kalo nggk gabisa di klik --}}
+                                            </div>
+                                        </td>
+                                        <td id="catatan_tabel_{{ $index}}">
+                                            <input type="text" name="data_hardcode[{{ $index}}][catatan_data]" id="catatan_data_{{ $index}}"  value="" class="form-control catatan">
+                                        </td>
+                                    </tr>
+                                    @php
+                                    $index+=1;
+                                    @endphp
                                 @endif
                                 @if (!$flagInap && $sewa->jenis_tujuan=="FTL")
                                     <tr id="{{ $index}}">
