@@ -79,8 +79,13 @@ class RoleController extends Controller
 
             $data = $request->collect();
           
+            $dataRolemaxID = DB::table('roles')
+            ->where('is_aktif', '=', 'Y')
+            ->max('id');
+            // dd($dataRolemaxID+1);
             DB::table('roles')
                 ->insert(array(
+                    'id'=>$dataRolemaxID+1,
                     'name' => strtoupper($data['nama']),
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $user,

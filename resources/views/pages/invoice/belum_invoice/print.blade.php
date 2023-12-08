@@ -114,7 +114,7 @@
                     <td style=""><b>:</b> {{ $data['no_invoice'] }}</td>
                 </tr>
                 <tr>
-                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{ ($data->getBillingTo->nama) }}</td>
+                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{ ($data->getBillingTo->nama) }} <br>{{ ($data->getBillingTo->alamat) }}</td>
                     <td></td>
                     <td width='30%'>&nbsp;</td>
                     <td style=""><b>Tanggal</b> </td>
@@ -211,7 +211,7 @@
                                 -
                             @endif
                         </td>
-                    <td class="text-right" style="padding-right: 20px;">{{ number_format($detail->sub_total) }} <br> &nbsp;</td>
+                    <td class="text-right" style="padding-right: 20px;">{{ number_format($detail->sub_total) }} </td>
                 </tr>
                 @php
                     $total += $detail->sub_total;                 
