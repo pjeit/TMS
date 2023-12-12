@@ -1331,7 +1331,7 @@
             $laporan_admin = [ 'READ_LAPORAN_JOB_ORDER', 
             'READ_LAPORAN_BATAL_MUAT', 'READ_LAPORAN_KENDARAAN_DIJUAL','READ_LAPORAN_SALES','READ_LAPORAN_STATUS_KENDARAAN',];
           @endphp
-          {{-- @if (array_intersect($laporan_admin, $userAkses) != NULL) --}}
+          @if (array_intersect($laporan_admin, $userAkses) != NULL)
           <li class="nav-item {{ 
             request()->is('laporan_job_order*')||
             request()->is('laporan_batal_muat*')||
@@ -1407,7 +1407,7 @@
                 </a>
               </li>
               @endcan
-              {{-- @can('READ_LAPORAN_PACK_LIST') --}}
+              @can('READ_LAPORAN_PACK_LIST')
               <li class="nav-item">
                 <a href="{{route('laporan_packing_list.index')}}"
                   class="nav-link {{request()->url() === route('laporan_packing_list.index')? ' active' : '' }} "
@@ -1418,10 +1418,10 @@
                   </p>
                 </a>
               </li>
-              {{-- @endcan --}}
+              @endcan
             </ul>
           </li>
-          {{-- @endif --}}
+          @endif
         </ul>
       </nav>
     </div>

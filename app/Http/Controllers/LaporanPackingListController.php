@@ -8,10 +8,10 @@ use App\Models\Customer;
 class LaporanPackingListController extends Controller
 {
     //
-    // public function __construct()
-    // {
-    //     $this->middleware('permission:READ_LAPORAN_KENDARAAN_DIJUAL', ['only' => ['index_laporan_kendaraan_dijual']]);
-    // }
+    public function __construct()
+    {
+        $this->middleware('permission:READ_LAPORAN_PACK_LIST', ['only' => ['index_laporan_packing_list']]);
+    }
     public function index_laporan_packing_list()
     {
         $dataCustomer = Customer::where('is_aktif','Y')->get();
