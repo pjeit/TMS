@@ -1331,13 +1331,14 @@
             $laporan_admin = [ 'READ_LAPORAN_JOB_ORDER', 
             'READ_LAPORAN_BATAL_MUAT', 'READ_LAPORAN_KENDARAAN_DIJUAL','READ_LAPORAN_SALES','READ_LAPORAN_STATUS_KENDARAAN',];
           @endphp
-          @if (array_intersect($laporan_admin, $userAkses) != NULL)
+          {{-- @if (array_intersect($laporan_admin, $userAkses) != NULL) --}}
           <li class="nav-item {{ 
             request()->is('laporan_job_order*')||
             request()->is('laporan_batal_muat*')||
             request()->is('laporan_kendaraan_dijual*')  ||
             request()->is('laporan_sales*') ||
-            request()->is('laporan_status_kendaraan*') 
+            request()->is('laporan_status_kendaraan*') ||
+            request()->is('laporan_packing_list*') 
             ? 'menu-is-opening menu-open' : '' }}">
             <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
               <i class="nav-icon fas fa-solid fa-id-badge"></i>
@@ -1406,9 +1407,21 @@
                 </a>
               </li>
               @endcan
+              {{-- @can('READ_LAPORAN_PACK_LIST') --}}
+              <li class="nav-item">
+                <a href="{{route('laporan_packing_list.index')}}"
+                  class="nav-link {{request()->url() === route('laporan_packing_list.index')? ' active' : '' }} "
+                  style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    <span style="font-size: 0.9em;">Laporan Packing List</span>
+                  </p>
+                </a>
+              </li>
+              {{-- @endcan --}}
             </ul>
           </li>
-          @endif
+          {{-- @endif --}}
         </ul>
       </nav>
     </div>

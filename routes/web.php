@@ -335,6 +335,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('laporan_status_kendaraan/load_data_ajax', [App\Http\Controllers\LaporanStatusKendaraanController::class, 'load_data_ajax'])->name('laporan_status_kendaraan.load_data_ajax');
         Route::get('laporan_status_kendaraan', [App\Http\Controllers\LaporanStatusKendaraanController::class, 'index_laporan_status_kendaraan'])->name('laporan_status_kendaraan.index');
 
+        Route::get('laporan_packing_list/load_data_ajax', [App\Http\Controllers\LaporanPackingListController::class, 'load_data_ajax'])->name('laporan_packing_list.load_data_ajax');
+        Route::get('laporan_packing_list', [App\Http\Controllers\LaporanPackingListController::class, 'index_laporan_packing_list'])->name('laporan_packing_list.index');
+
         // ===================================LAPORAN ADMIN=========================================================
 
 

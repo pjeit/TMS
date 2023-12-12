@@ -170,7 +170,7 @@ return [
         // Intervention\Image\ImageServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class, //qr code
         Spatie\Permission\PermissionServiceProvider::class, // buat role
-
+        Maatwebsite\Excel\ExcelServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -242,6 +242,7 @@ return [
         'Pdf' => 'Barryvdh\DomPDF\Facade', //pdf
         // 'PDF' => Barryvdh\DomPDF\Facade::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];
