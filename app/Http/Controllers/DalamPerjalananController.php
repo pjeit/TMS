@@ -1030,7 +1030,6 @@ class DalamPerjalananController extends Controller
                     $cancel_rekanan->is_aktif = 'Y';
                     $cancel_rekanan->save();
                     DB::commit();
-
                 }
             }
             DB::commit();
@@ -1061,8 +1060,6 @@ class DalamPerjalananController extends Controller
             'id_sewa' => $id,
             'dataKas' => $dataKas,
             'ujr' => $ujr,
-
-
         ]);
     }
 

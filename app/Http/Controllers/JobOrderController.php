@@ -728,4 +728,129 @@ class JobOrderController extends Controller
         //         // 'dataJODetail'=>$dataJODetail
         //     ]);
     }
+
+    public function cetak_si($id){
+        $data = JobOrder::with('getSupplier', 'getDetails.getTujuan', 'getCustomer')->where('is_aktif', 'Y')->find($id);
+        $user = Auth::user()->username;
+
+        // dd($data);
+        // Creating the new document...
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+        $section = $phpWord->addSection();
+        
+        // Define styles
+        $multiTabStyle = 'multipleTab';
+        $phpWord->addParagraphStyle(
+            $multiTabStyle,
+            [
+                'tabs' => [
+                    new \PhpOffice\PhpWord\Style\Tab('left', 3200),
+                    new \PhpOffice\PhpWord\Style\Tab('left', 3200),
+                ],
+            ]
+        );
+
+        $leftTabStyle = 'leftTab';
+        $phpWord->addParagraphStyle($leftTabStyle, ['tabs' => [new \PhpOffice\PhpWord\Style\Tab('left', 5000)]]);
+        
+        $rightTabStyle = 'rightTab';
+        $phpWord->addParagraphStyle($rightTabStyle, ['tabs' => [new \PhpOffice\PhpWord\Style\Tab('right', 9090)]]);
+
+        $styleCenter = 'pStyle';
+        $phpWord->addParagraphStyle($styleCenter, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 100]);
+
+        $section->addText(
+            'SHIPPING INSTRUCTION',
+            array('name' => 'Cambria', 'size' => 10, 'bold' => true, 'underline' => 'single'), $styleCenter
+        );
+
+        $section->addText(
+            '',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $section->addText(
+            'Kepada',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $kepada = strtoupper($data->getSupplier->nama);
+        $section->addText(
+            $kepada. ' <w:br/><w:br/>',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $section->addText(
+            'Dengan ini Kami sampaikan Shipping Instruction ( Instruksi Pengapalan ) sebagai berikut :',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        // Add listitem elements
+        $pengirim = strtoupper($data->getCustomer->nama);
+        $containers = $data->getDetails;
+        $countContainers = count($containers);
+        $containersType = $containers[0]['tipe_kontainer'];
+        // dd($containers);
+        
+        $section->addText("Shipper \t : \t $pengirim", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Consignee \t : \t $pengirim", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Notify Party \t : \t  AS CONSIGNEE", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Quantity \t : \t $countContainers  X $containersType  CONTAINER", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Goods \t : \t -", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Vessel Name \t : \t $data->kapal $data->voyage", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+
+        $fancyTableStyleName = 'Table';
+        $fancyTableStyle = ['borderSize' => 4, 'borderColor' => '006699', 'cellMargin' => 20, 'alignment' => \PhpOffice\PhpWord\SimpleType\JcTable::CENTER, 'cellSpacing' => 25];
+        $fancyTableFirstRowStyle = ['borderBottomSize' => 5, 'borderBottomColor' => '0000FF', 'bgColor' => '66BBFF'];
+        $fancyTableCellStyle = ['valign' => 'center',];
+        $fancyTableFontStyle = ['bold' => true];
+        $phpWord->addTableStyle($fancyTableStyleName, $fancyTableStyle, $fancyTableFirstRowStyle);
+        $table = $section->addTable($fancyTableStyleName);
+        $table->addRow(400);
+        $table->addCell(2000, $fancyTableCellStyle)->addText('NO. CONTAINER', array('name' => 'Cambria', 'size' => 10) , $styleCenter, $fancyTableFontStyle);
+        $table->addCell(2000, $fancyTableCellStyle)->addText('SEAL', array('name' => 'Cambria', 'size' => 10) , $styleCenter, $fancyTableFontStyle);
+        $table->addCell(2000, $fancyTableCellStyle)->addText('CARGO', array('name' => 'Cambria', 'size' => 10) , $styleCenter, $fancyTableFontStyle);
+        // for ($i = 1; $i <= $countContainers; ++$i) {
+        //     $table->addRow();
+        //     $table->addCell(2000)->addText("SPNU 310724-5", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+        //     $table->addCell(2000)->addText("E22.514192", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+        //     $table->addCell(2000)->addText("MAKANAN", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+        // }
+        foreach ($containers as $key => $value) {
+            $kargo = $value->getTujuan->kargo;
+            $table->addRow();
+            $table->addCell(2000)->addText("$value->no_kontainer", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+            $table->addCell(2000)->addText("$value->seal", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+            $table->addCell(2000)->addText("$kargo", array('name' => 'Cambria', 'size' => 10), $styleCenter);        }
+
+        $section->addText(
+            '<w:br/><w:br/>',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $monthNames = [ 1 => "Januari", 2 => "Februari", 3 => "Maret", 4 => "April", 5 => "Mei", 6 => "Juni", 7 => "Juli", 8 => "Agustus", 9 => "September", 10 => "Oktober", 11 => "November", 12 => "Desember"];
+
+        $tanggal = date('d', strtotime(now()));
+        $bulan = $monthNames[date('m', strtotime(now()))];
+        $tahun = date('Y', strtotime(now()));
+        $section->addText(
+            'Surabaya,  '.$tanggal.' '.$bulan.' '.$tahun,
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $section->addText(
+            '<w:br/><w:br/> Lastri',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $filename = $data->no_bl;
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save($filename);
+
+        header("Content-Disposition: attachment; filename=$filename.docx");
+        readfile($filename); // or echo file_get_contents($filename);
+        unlink($filename);  // remove temp file
+
+    }
 }

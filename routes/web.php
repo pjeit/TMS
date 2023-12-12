@@ -109,6 +109,7 @@ Route::middleware(['auth'])->group(function () {
         // ===================================MASTER=========================================================
         
         // ===================================INBOUND ORDER=========================================================
+        Route::get('/job_order/cetak_si/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'cetak_si'])->name('job_order.cetak_si');
         Route::get('/job_order/cetak_jo/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'cetak_job_order'])->name('cetak_job_order.print');
         Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO'])->name('job_order.print');
         Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');

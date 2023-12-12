@@ -73,7 +73,7 @@
                     <div class="card-body" >
                         <input type="hidden" id="deleted_tujuan" name="data[deleted_tujuan]" placeholder="deleted_tujuan">
                         <input type="hidden" id="deleted_biaya" name="data[deleted_biaya]" placeholder="deleted_biaya">
-          
+        
                         <div class="table-responsive p-0">
                                 <form name="add_name" id="add_name">
                                     <table class="table table-hover table-bordered table-striped text-nowrap" id="dynamic_field">
@@ -124,7 +124,6 @@
                                                         <input type="hidden" name="data[tujuan][{{$key}}][grup_hidden]" id="grup_hidden_{{$key}}" value="{{$item->grup_id}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][marketing_hidden]" id="marketing_hidden_{{$key}}" value="{{$item->marketing_id}}">
                                                         <input type="hidden" name="data[tujuan][{{$key}}][obj_biaya]" id="obj_biaya{{$key}}" value="{{$item->detail_uang_jalan}}">
-                                                        {{-- timoth tambah --}}
                                                         <input type="hidden" name="data[tujuan][{{$key}}][seal_pelayaran_hidden]" id="seal_pelayaran_hidden_{{$key}}" value="{{isset($item->seal_pelayaran)? number_format($item->seal_pelayaran):''}}" >
                                                         <input type="hidden" name="data[tujuan][{{$key}}][seal_pje_hidden]" id="seal_pje_hidden_{{$key}}" value="{{isset($item->seal_pje)? number_format($item->seal_pje):''}}" >
                                                         <input type="hidden" name="data[tujuan][{{$key}}][tally_hidden]" id="tally_hidden_{{$key}}" value="{{isset($item->tally)? number_format($item->tally):''}}" >
@@ -168,7 +167,7 @@
                             <div class="form-group col-lg-6 col-md-6 col-6">
                                 <label for="marketing">Marketing <span style="color:red;">*</span></label>
                                 <select name="marketing[]" class="select2" style="width: 100%" id="marketing" required>
-                             
+                            
                                 </select>
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-6">
