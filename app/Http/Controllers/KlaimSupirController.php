@@ -208,7 +208,8 @@ class KlaimSupirController extends Controller
         DB::beginTransaction(); 
 
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
-        
+        $src="/home/pjexpres/tms.pjexpress.co.id/img/klaim_supir/";
+        $srcUpdateDelete="/home/pjexpres/tms.pjexpress.co.id";
         try {
 
             $pesanKustom = [
@@ -243,7 +244,10 @@ class KlaimSupirController extends Controller
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoNota);
-                $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),20);
+                // $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),20);
+                $webp->save($src.$nama_gambar ,20);
+               
+                
                 $pathFotoNota = '/img/klaim_supir/' . $nama_gambar;
             }
 
@@ -256,7 +260,8 @@ class KlaimSupirController extends Controller
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoBarang);
-                $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),5);
+                // $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),5);
+                $webp->save($src.$nama_gambar ,20);
                 $pathFotoBarang = '/img/klaim_supir/' . $nama_gambar;
             }
             $data = $request->collect();
@@ -284,14 +289,22 @@ class KlaimSupirController extends Controller
         } catch (ValidationException $e) {
             DB::rollBack();
             if (!empty($pathFotoNota)) {
-                    if (file_exists(public_path($pathFotoNota))) {
-                        unlink(public_path($pathFotoNota));
+                    // if (file_exists(public_path($pathFotoNota))) {
+                    //     unlink(public_path($pathFotoNota));
+                    // }
+                     if (file_exists($srcUpdateDelete.$pathFotoNota)) {
+                        unlink($srcUpdateDelete.$pathFotoNota);
                     }
+                    
+                    
             }
 
             if (!empty($pathFotoBarang)) {
-                    if (file_exists(public_path($pathFotoBarang))) {
-                        unlink(public_path($pathFotoBarang));
+                    // if (file_exists(public_path($pathFotoBarang))) {
+                    //     unlink(public_path($pathFotoBarang));
+                    // }
+                     if (file_exists($srcUpdateDelete.$pathFotoBarang)) {
+                        unlink($srcUpdateDelete.$pathFotoBarang);
                     }
             }
             // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $e->errors()]);
@@ -303,13 +316,19 @@ class KlaimSupirController extends Controller
             //throw $th;
             DB::rollBack();
             if (!empty($pathFotoNota)) {
-                    if (file_exists(public_path($pathFotoNota))) {
-                        unlink(public_path($pathFotoNota));
+                    // if (file_exists(public_path($pathFotoNota))) {
+                    //     unlink(public_path($pathFotoNota));
+                    // }
+                     if (file_exists($srcUpdateDelete.$pathFotoNota)) {
+                        unlink($srcUpdateDelete.$pathFotoNota);
                     }
             }
               if (!empty($pathFotoBarang)) {
-                    if (file_exists(public_path($pathFotoBarang))) {
-                        unlink(public_path($pathFotoBarang));
+                    // if (file_exists(public_path($pathFotoBarang))) {
+                    //     unlink(public_path($pathFotoBarang));
+                    // }
+                       if (file_exists($srcUpdateDelete.$pathFotoBarang)) {
+                        unlink($srcUpdateDelete.$pathFotoBarang);
                     }
             }
             // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
@@ -362,6 +381,8 @@ class KlaimSupirController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         $fotoNotaDB = $klaimSupir->foto_nota;
         $fotoBarangDB = $klaimSupir->foto_barang;
+        $src="/home/pjexpres/tms.pjexpress.co.id/img/klaim_supir/";
+        $srcUpdateDelete="/home/pjexpres/tms.pjexpress.co.id";
         try {
 
             $pesanKustom = [
@@ -390,10 +411,16 @@ class KlaimSupirController extends Controller
 
             $pathFotoNota = "";
 
+
             if ($request->hasFile('foto_nota')) {
+                // if (!empty($fotoNotaDB)) {
+                //     if (file_exists(public_path($fotoNotaDB))) {
+                //         unlink(public_path($fotoNotaDB));
+                //     }
+                // }
                 if (!empty($fotoNotaDB)) {
-                    if (file_exists(public_path($fotoNotaDB))) {
-                        unlink(public_path($fotoNotaDB));
+                    if (file_exists($srcUpdateDelete.$fotoNotaDB)) {
+                        unlink($srcUpdateDelete.$fotoNotaDB);
                     }
                 }
                 $fotoNota = $request->file('foto_nota');
@@ -402,16 +429,22 @@ class KlaimSupirController extends Controller
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoNota);
-                $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),20);
+                // $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),20);
+                $webp->save($src.$nama_gambar ,20);
                 $pathFotoNota = '/img/klaim_supir/' . $nama_gambar;
             }
 
             $pathFotoBarang = "";
 
             if ($request->hasFile('foto_barang')) {
-                if (!empty($fotoBarangDB)) {
-                    if (file_exists(public_path($fotoBarangDB))) {
-                        unlink(public_path($fotoBarangDB));
+                // if (!empty($fotoBarangDB)) {
+                //     if (file_exists(public_path($fotoBarangDB))) {
+                //         unlink(public_path($fotoBarangDB));
+                //     }
+                // }
+                 if (!empty($fotoBarangDB)) {
+                    if (file_exists($srcUpdateDelete.$fotoBarangDB)) {
+                        unlink($srcUpdateDelete.$fotoBarangDB);
                     }
                 }
                 $fotoBarang= $request->file('foto_barang');
@@ -420,7 +453,8 @@ class KlaimSupirController extends Controller
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoBarang);
-                $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),5);
+                // $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),5);
+                $webp->save($src.$nama_gambar ,20);
                 $pathFotoBarang = '/img/klaim_supir/' . $nama_gambar;
             }
             $data = $request->collect();
@@ -449,17 +483,30 @@ class KlaimSupirController extends Controller
 
         } catch (ValidationException $e) {
             DB::rollBack();
+            // if (!empty($pathFotoNota)) {
+            //         if (file_exists(public_path($pathFotoNota))) {
+            //             unlink(public_path($pathFotoNota));
+            //         }
+            // }
+
+            // if (!empty($pathFotoBarang)) {
+            //         if (file_exists(public_path($pathFotoBarang))) {
+            //             unlink(public_path($pathFotoBarang));
+            //         }
+            // }
             if (!empty($pathFotoNota)) {
-                    if (file_exists(public_path($pathFotoNota))) {
-                        unlink(public_path($pathFotoNota));
-                    }
+                if (file_exists($srcUpdateDelete.$pathFotoNota)) {
+                    unlink($srcUpdateDelete.$pathFotoNota);
+                }
             }
 
             if (!empty($pathFotoBarang)) {
-                    if (file_exists(public_path($pathFotoBarang))) {
-                        unlink(public_path($pathFotoBarang));
-                    }
+                 if (file_exists($srcUpdateDelete.$pathFotoBarang)) {
+                    unlink($srcUpdateDelete.$pathFotoBarang);
+                 }
             }
+            
+          
             // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $e->errors()]);
             // return redirect()->back()->withErrors($e->getMessages())->withInput();
             return redirect()->back()->withErrors($e->errors())->withInput();
@@ -468,15 +515,26 @@ class KlaimSupirController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-            if (!empty($pathFotoNota)) {
-                    if (file_exists(public_path($pathFotoNota))) {
-                        unlink(public_path($pathFotoNota));
-                    }
+            // if (!empty($pathFotoNota)) {
+            //         if (file_exists(public_path($pathFotoNota))) {
+            //             unlink(public_path($pathFotoNota));
+            //         }
+            // }
+            //   if (!empty($pathFotoBarang)) {
+            //         if (file_exists(public_path($pathFotoBarang))) {
+            //             unlink(public_path($pathFotoBarang));
+            //         }
+            // }
+              if (!empty($pathFotoNota)) {
+                if (file_exists($srcUpdateDelete.$pathFotoNota)) {
+                    unlink($srcUpdateDelete.$pathFotoNota);
+                }
             }
-              if (!empty($pathFotoBarang)) {
-                    if (file_exists(public_path($pathFotoBarang))) {
-                        unlink(public_path($pathFotoBarang));
-                    }
+
+            if (!empty($pathFotoBarang)) {
+                 if (file_exists($srcUpdateDelete.$pathFotoBarang)) {
+                    unlink($srcUpdateDelete.$pathFotoBarang);
+                 }
             }
             // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
             return redirect()->back()->withErrors($th->getMessage())->withInput();
@@ -488,6 +546,7 @@ class KlaimSupirController extends Controller
     {
         $user = Auth::user()->id; 
         // dd($klaimSupir);   
+        $src="/home/pjexpres/tms.pjexpress.co.id";
         try{
             // $klaim_supir_riwayat = KlaimSupirRiawayat::where('is_aktif', 'Y')
             //                        ->where('id_klaim', $klaimSupir->id)
@@ -500,14 +559,28 @@ class KlaimSupirController extends Controller
             // $klaim_supir_riwayat->save();  
             $fotoNotaDB = $klaimSupir->foto_nota;
             $fotoBarangDB = $klaimSupir->foto_barang;
+            
+           
+            // if (!empty($fotoNotaDB)) {
+            //     if (file_exists(public_path($fotoNotaDB))) {
+            //         unlink(public_path($fotoNotaDB));
+            //     }
+                
+            // }
+            // if (!empty($fotoBarangDB)) {
+            //     if (file_exists(public_path($fotoBarangDB))) {
+            //         unlink(public_path($fotoBarangDB));
+            //     }
+            // }
             if (!empty($fotoNotaDB)) {
-                if (file_exists(public_path($fotoNotaDB))) {
-                    unlink(public_path($fotoNotaDB));
+                if (file_exists($src.$fotoNotaDB)) {
+                    unlink($src.$fotoNotaDB);
                 }
+                
             }
             if (!empty($fotoBarangDB)) {
-                if (file_exists(public_path($fotoBarangDB))) {
-                    unlink(public_path($fotoBarangDB));
+                if (file_exists($src.$fotoBarangDB)) {
+                    unlink($src.$fotoBarangDB);
                 }
             }
             $klaim_supir = KlaimSupir::where('is_aktif', 'Y')

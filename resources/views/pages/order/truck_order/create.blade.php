@@ -1125,13 +1125,14 @@
             var today = new Date();
             var tomorrow = new Date(today);
             tomorrow.setDate(today.getDate() + 1);
-
+            var hmin2 = new Date(today);
+            hmin2.setDate(today.getDate() - 2);
             $('#tanggal_berangkat').datepicker({
                 autoclose: true,
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language: 'en',
-                startDate: tomorrow,
+                startDate: hmin2,
             }).datepicker("setDate", tomorrow);
         }
     });

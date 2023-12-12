@@ -38,6 +38,7 @@ class KaryawanHutangController extends Controller
             ->leftJoin('roles as r', function($join) {
                 $join->on('k.role_id', '=', 'r.id')->where('r.is_aktif', '=', "Y");
             })
+            ->orderBy('kh.total_hutang','DESC')
             ->where('k.is_aktif',  "Y")
             ->get();
         $dataKas = DB::table('kas_bank')
@@ -317,6 +318,10 @@ class KaryawanHutangController extends Controller
         })
         ->where('kht.is_aktif', '=', "Y")
         ->where('kht.id_karyawan',$karyawan_hutang->id)
+        ->where(function ($query) {
+            $query->where('kht.debit', '!=', 0)
+                ->orWhere('kht.kredit', '!=', 0);
+        })
         ->orderByDesc('kht.tanggal')
         ->get();
         // dd($dataDetailHutang);
