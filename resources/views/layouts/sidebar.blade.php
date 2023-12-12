@@ -1328,10 +1328,10 @@
           @endif
 
           @php
-            $laporan_finance = [ 'READ_LAPORAN_JOB_ORDER', 
+            $laporan_admin = [ 'READ_LAPORAN_JOB_ORDER', 
             'READ_LAPORAN_BATAL_MUAT', 'READ_LAPORAN_KENDARAAN_DIJUAL','READ_LAPORAN_SALES','READ_LAPORAN_STATUS_KENDARAAN',];
           @endphp
-          @if (array_intersect($laporan_finance, $userAkses) != NULL)
+          @if (array_intersect($laporan_admin, $userAkses) != NULL)
           <li class="nav-item {{ 
             request()->is('laporan_job_order*')||
             request()->is('laporan_batal_muat*')||
