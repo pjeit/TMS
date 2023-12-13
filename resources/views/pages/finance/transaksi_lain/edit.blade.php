@@ -9,7 +9,6 @@
 
 
 @section('content')
-<br>
 <style>
 </style>
 
@@ -27,106 +26,102 @@
     <form action="{{ route('transaksi_lain.update',[$dataKasLain->id_kas_lain]) }}" method="POST" id="post">
         @csrf
         @method('PUT')
-        {{-- <div class='row'>
-            <div class="col-lg-12"> --}}
-              <div class="card radiusSendiri">
-                    <div class="card-header">
-                        <a href="{{ route('transaksi_lain.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
-                        <button type="submit" name="save" id="save" value="save" class="btn ml-2 btn-success radiusSendiri"><strong><i class="fa fa-fw fa-save"></i> Simpan</strong></button>
+        <div class="card radiusSendiri">
+            <div class="card-header">
+                <a href="{{ route('transaksi_lain.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
+                <button type="submit" name="save" id="save" value="save" class="btn ml-2 btn-success radiusSendiri"><strong><i class="fa fa-fw fa-save"></i> Simpan</strong></button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+        
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                        <label for="tanggal_transaksi">Tanggal Transaksi<span style="color:red">*</span></label>
+                        <div class="input-group mb-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                            </div>
+                            <input type="text" autocomplete="off" name="tanggal_transaksi" class="form-control date @error('tanggal_transaksi') is-invalid @enderror" id="tanggal_transaksi" placeholder="dd-M-yyyy" value="{{old('tanggal_transaksi',\Carbon\Carbon::parse($dataKasLain->tanggal)->format('d-M-Y') )}}">
+                            @error('tanggal_transaksi')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <div class="row">
+                </div>
+                <div class="row">
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                        <label for="tipe">Tipe Transaksi</label>
+                        <br>
+                        <div class="icheck-primary d-inline ">
+                            <input id="sudahNikah" type="radio" name="tipe_transaksi" value="pengeluaran" {{$dataKasLain->tipe_coa=='pengeluaran'?'checked':''}}>
+                            <label class="form-check-label" for="sudahNikah">Pengeluaran</label>
+                        </div>
+                        <div class="icheck-primary d-inline ml-3">
+                            <input id="belumNikah" type="radio" name="tipe_transaksi" value="penerimaan" {{$dataKasLain->tipe_coa=='penerimaan'?'checked':''}}>
+                            <label class="form-check-label" for="belumNikah">Penerimaan</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                        <label for="select_coa">Jenis Transaksi<span style="color:red">*</span></label>
+                            <select class="form-control select2  @error('select_coa') is-invalid @enderror" style="width: 100%;" id='select_coa' name="select_coa">
+                            <option value="">Pilih Jenis Transaksi</option>
+                            @foreach ($dataCOA as $data)
+                                <option value="{{$data->id}}" {{$dataKasLain->coa_id==$data->id?'selected':''}} id_coa='{{$data->no_akun}}' nama_coa='{{$data->nama_jenis}}' tipe='{{$data->tipe}}'>{{ $data->nama_jenis }}</option>
+                            @endforeach
+                        </select>
+                        <input type="hidden" name="id_coa_hidden" id="id_coa_hidden">
+                        <input type="hidden" name="nama_coa_hidden" id="nama_coa_hidden">
+
+                        @error('select_coa')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror   
+                    </div>
                 
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="tanggal_transaksi">Tanggal Transaksi<span style="color:red">*</span></label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                    </div>
-                                    <input type="text" autocomplete="off" name="tanggal_transaksi" class="form-control date @error('tanggal_transaksi') is-invalid @enderror" id="tanggal_transaksi" placeholder="dd-M-yyyy" value="{{old('tanggal_transaksi',\Carbon\Carbon::parse($dataKasLain->tanggal)->format('d-M-Y') )}}">
-                                    @error('tanggal_transaksi')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                        <label for="select_bank">Kas/Bank<span style="color:red">*</span></label>
+                            <select class="form-control select2  @error('select_bank') is-invalid @enderror" style="width: 100%;" id='select_bank' name="select_bank">
+                            <option value="">Pilih Kas/Bank</option>
+                            @foreach ($dataKas as $data)
+                                <option value="{{$data->id}}" {{$dataKasLain->kas_bank_id==$data->id?'selected':''}} >{{ $data->nama }}</option>
+                            @endforeach
+                        </select>
+                        @error('select_bank')
+                            <div class="invalid-feedback">
+                                {{ $message }}
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="tipe">Tipe Transaksi</label>
-                                <br>
-                                <div class="icheck-primary d-inline ">
-                                    <input id="sudahNikah" type="radio" name="tipe_transaksi" value="pengeluaran" {{$dataKasLain->tipe_coa=='pengeluaran'?'checked':''}}>
-                                    <label class="form-check-label" for="sudahNikah">Pengeluaran</label>
-                                </div>
-                                <div class="icheck-primary d-inline ml-3">
-                                    <input id="belumNikah" type="radio" name="tipe_transaksi" value="penerimaan" {{$dataKasLain->tipe_coa=='penerimaan'?'checked':''}}>
-                                    <label class="form-check-label" for="belumNikah">Penerimaan</label>
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="select_coa">Jenis Transaksi<span style="color:red">*</span></label>
-                                    <select class="form-control select2  @error('select_coa') is-invalid @enderror" style="width: 100%;" id='select_coa' name="select_coa">
-                                    <option value="">Pilih Jenis Transaksi</option>
-                                    @foreach ($dataCOA as $data)
-                                        <option value="{{$data->id}}" {{$dataKasLain->coa_id==$data->id?'selected':''}} id_coa='{{$data->no_akun}}' nama_coa='{{$data->nama_jenis}}' tipe='{{$data->tipe}}'>{{ $data->nama_jenis }}</option>
-                                    @endforeach
-                                </select>
-                                <input type="hidden" name="id_coa_hidden" id="id_coa_hidden">
-                                <input type="hidden" name="nama_coa_hidden" id="nama_coa_hidden">
-
-                                @error('select_coa')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror   
-                            </div>
-                        
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="select_bank">Kas/Bank<span style="color:red">*</span></label>
-                                    <select class="form-control select2  @error('select_bank') is-invalid @enderror" style="width: 100%;" id='select_bank' name="select_bank">
-                                    <option value="">Pilih Kas/Bank</option>
-                                    @foreach ($dataKas as $data)
-                                        <option value="{{$data->id}}" {{$dataKasLain->kas_bank_id==$data->id?'selected':''}} >{{ $data->nama }}</option>
-                                    @endforeach
-                                </select>
-                                @error('select_bank')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror   
-                            </div>
-
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="total">Total Nominal<span style="color:red">*</span></label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input type="text" name="total" class="form-control numaja uang @error('total') is-invalid @enderror" id="total" placeholder="" value="{{old('total',number_format( $dataKasLain->total))}}">
-                                    @error('total')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>  
-                            
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="keterangan_klaim">Catatan</label>
-                                <input type="text" class="form-control @error('catatan') is-invalid @enderror" id="catatan" name="catatan" value="{{old('catatan',$dataKasLain->catatan)}}">
-                                @error('catatan')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                @enderror
-                            </div>  
-                        </div>
+                        @enderror   
                     </div>
-              </div>
-            {{-- </div>
-        </div> --}}
+
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                        <label for="total">Total Nominal<span style="color:red">*</span></label>
+                        <div class="input-group mb-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Rp</span>
+                            </div>
+                            <input type="text" name="total" class="form-control numaja uang @error('total') is-invalid @enderror" id="total" placeholder="" value="{{old('total',number_format( $dataKasLain->total))}}">
+                            @error('total')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                    </div>  
+                    
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                        <label for="keterangan_klaim">Catatan</label>
+                        <input type="text" class="form-control @error('catatan') is-invalid @enderror" id="catatan" name="catatan" value="{{old('catatan',$dataKasLain->catatan)}}">
+                        @error('catatan')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>  
+                </div>
+            </div>
+        </div>
     </form>
 
 

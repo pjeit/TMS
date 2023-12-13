@@ -44,12 +44,16 @@
                                             <i class="fa fa-list"></i>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a href="{{route('grup.edit',[$item->id])}}" class="dropdown-item ">
-                                                <span class="fas fa-edit mr-3"></span> Edit
-                                            </a>
-                                            <a href="{{ route('grup.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
-                                                <span class="fas fa-trash mr-3"></span> Delete
-                                            </a>
+                                            @can('EDIT_GRUP')
+                                                <a href="{{route('grup.edit',[$item->id])}}" class="dropdown-item ">
+                                                    <span class="fas fa-edit mr-3"></span> Edit
+                                                </a>
+                                            @endcan
+                                            @can('DELETE_GRUP')
+                                                <a href="{{ route('grup.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                    <span class="fas fa-trash mr-3"></span> Delete
+                                                </a>
+                                            @endcan
                                         </div>
                                     </div>
                                 </td>
@@ -68,8 +72,8 @@
 <script type="text/javascript">
     $(function () {
       var table = $('#myTable').DataTable({
-        // responsive: true,
-        scrollX: true
+        responsive: true,
+        // scrollX: true
       });
     });
 </script>

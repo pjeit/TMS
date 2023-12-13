@@ -104,18 +104,23 @@ class TransaksiLainController extends Controller
                     return $item->catatan;
                 }) 
                 ->addColumn('action', function($row){
+                    $edit = auth()->user()->can('EDIT_TRANSAKSI_NON_OPERASIONAL')?
+                            '<a href="/transaksi_lain/'.$row->id.'/edit" class="dropdown-item edit">
+                                <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                            </a>':'';
+
+                    $delete = auth()->user()->can('DELETE_TRANSAKSI_NON_OPERASIONAL')?
+                                '<a href="/transaksi_lain/'.$row->id.'" class="dropdown-item destroy" data-confirm-delete="true">
+                                    <span class="fas fa-trash mr-3"></span> Hapus
+                                </a>':'';
+
                     $actionBtn = '
                                 <div class="btn-group dropleft">
                                     <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <a href="/transaksi_lain/'.$row->id.'/edit" class="dropdown-item edit">
-                                            <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
-                                        </a>
-                                        <a href="/transaksi_lain/'.$row->id.'" class="dropdown-item destroy" data-confirm-delete="true">
-                                            <span class="fas fa-trash mr-3"></span> Hapus
-                                        </a>
+                                    '.$edit . $delete .'  
                                     </div>
                                 </div>';
                                     // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
@@ -492,6 +497,6 @@ class TransaksiLainController extends Controller
             DB::rollBack();
             return redirect()->back()->withErrors($ex->getMessage())->withInput();
         }
-       
+    
     }
 }

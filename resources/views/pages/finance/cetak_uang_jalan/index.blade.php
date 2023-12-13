@@ -28,7 +28,6 @@
             {{-- <a href="{{route('karyawan.create')}}" >
             </a>  --}}
         </div>
-        <!-- /.card-header -->
         <div class="card-body">
             <table id="TabelKlaim" class="table table-bordered table-striped" width="100%">
                 <thead>
@@ -54,7 +53,7 @@
                             <td>Rp. {{number_format(($item->total_uang_jalan+$item->total_tl) - $item->potong_hutang,2)  }}</td>
                             <td>
                                 <div class="btn-group dropleft">
-                                    <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" class="btn btn-sm btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu">
@@ -70,9 +69,7 @@
                 </tbody>
             </table>
         </div>
-        <!-- /.card-body -->
     </div>
-    <!-- /.card -->
 </div>
 
 <script type="text/javascript">

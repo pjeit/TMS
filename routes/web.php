@@ -84,6 +84,8 @@ Route::middleware(['auth'])->group(function () {
     
         Route::resource('grup', 'App\Http\Controllers\GrupController');
 
+        Route::post('grup_tujuan/update_tujuan', [App\Http\Controllers\GrupTujuanController::class, 'update_tujuan'])->name('grup_tujuan.update_tujuan');
+        Route::post('grup_tujuan/delete_tujuan', [App\Http\Controllers\GrupTujuanController::class, 'delete_tujuan'])->name('grup_tujuan.delete_tujuan');
         Route::get('grup_tujuan/getMarketing/{groupId}', [App\Http\Controllers\GrupTujuanController::class, 'getMarketing']);
         Route::get('/grup_tujuan/printJob/{grup}', [App\Http\Controllers\GrupTujuanController::class, 'printDetail']);
         Route::resource('grup_tujuan', 'App\Http\Controllers\GrupTujuanController');

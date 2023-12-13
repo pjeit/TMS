@@ -65,9 +65,11 @@
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
-                                            <span class="fas fa-edit mr-3"></span> Edit
-                                        </a>
+                                        @can('EDIT_JO')
+                                            <a href="{{route('job_order.edit',[$item->id])}}" class="dropdown-item">
+                                                <span class="fas fa-edit mr-3"></span> Edit
+                                            </a>
+                                        @endcan
                                         <a href="{{route('cetak_job_order.print',[$item->id])}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
                                             <span class="fas fa-print mr-3"></span> Cetak JO
                                         </a>
@@ -83,9 +85,11 @@
                                             </a>
                                         @endif
                                         @if ($item->status == 'MENUNGGU PEMBAYARAN')
-                                            <a href="{{ route('job_order.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
-                                                <span class="fas fa-trash mr-3"></span> Delete
-                                            </a>
+                                            @can('DELETE_JO')
+                                                <a href="{{ route('job_order.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                    <span class="fas fa-trash mr-3"></span> Delete
+                                                </a>
+                                            @endcan
                                         @endif
                                     </div>
                                 </div>

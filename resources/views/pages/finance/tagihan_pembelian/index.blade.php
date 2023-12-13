@@ -58,9 +58,11 @@
                                                         <i class="fa fa-list"></i>
                                                     </button>
                                                     <div class="dropdown-menu" >
-                                                        <a href="{{ route('tagihan_pembelian.edit', [$item->id]) }}" class="dropdown-item update_resi">
-                                                            <span class="fas fa-pen-alt mr-3"></span> Edit
-                                                        </a>
+                                                        @can('EDIT_TAGIHAN_PEMBELIAN')
+                                                            <a href="{{ route('tagihan_pembelian.edit', [$item->id]) }}" class="dropdown-item update_resi">
+                                                                <span class="fas fa-pen-alt mr-3"></span> Edit
+                                                            </a>
+                                                        @endcan
                                                     </div>
                                                 </div>
                                             </td>
