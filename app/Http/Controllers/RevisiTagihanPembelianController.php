@@ -319,23 +319,41 @@ class RevisiTagihanPembelianController extends Controller
                     return number_format($item->total_bayar);
                 }) 
                 ->addColumn('action', function($row){
+                     // $actionBtn = '
+                    //             <div class="btn-group dropleft">
+                    //                 <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    //                     <i class="fa fa-list"></i>
+                    //                 </button>
+                    //                 <div class="dropdown-menu" >
+                    //                     <a href="/revisi_tagihan_pembelian/'.$row->id.'/edit" class="dropdown-item edit">
+                    //                         <span class="fas fa-pen-alt mr-3"></span> Edit 
+                    //                     </a>
+                    //                     <button type="button" class="dropdown-item delete" value="'.$row->id.'">
+                    //                         <span class="fas fa-trash mr-3"></span> Delete
+                    //                     </button>
+                    //                 </div>
+                    //             </div>';
+                    //                 // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+                    //                 // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+                    // return $actionBtn;
+                    $edit=auth()->user()->can('EDIT_REVISI_TAGIHAN_PEMBELIAN')?'<a href="/revisi_tagihan_pembelian/'.$row->id.'/edit" class="dropdown-item edit">
+                                            <span class="fas fa-pen-alt mr-3"></span> Edit 
+                                        </a>':'';
+                    $delete = auth()->user()->can('DELETE_REVISI_TAGIHAN_PEMBELIAN')?'<button type="button" class="dropdown-item delete" value="'.$row->id.'">
+                                            <span class="fas fa-trash mr-3"></span> Delete
+                                        </button>':'';
                     $actionBtn = '
                                 <div class="btn-group dropleft">
                                     <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <a href="/revisi_tagihan_pembelian/'.$row->id.'/edit" class="dropdown-item edit">
-                                            <span class="fas fa-pen-alt mr-3"></span> Edit 
-                                        </a>
-                                        <button type="button" class="dropdown-item delete" value="'.$row->id.'">
-                                            <span class="fas fa-trash mr-3"></span> Delete
-                                        </button>
+                                    '.$edit. $delete.'
                                     </div>
                                 </div>';
+                    return $actionBtn;
                                     // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
                                     // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
-                    return $actionBtn;
                 })
                 ->rawColumns(['action', 'no_nota', 'tgl_nota', 'jatuh_tempo']) // ini buat render raw html, kalo ga pake nanti jadi text biasa
                 ->make(true);

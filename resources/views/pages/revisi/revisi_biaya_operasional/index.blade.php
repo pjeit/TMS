@@ -55,10 +55,13 @@
                                     <button type="button" class="btn btn-success ml-3 popUp" id="btnSave"
                                         value="save"><i class="fa fa-save" aria-hidden="true"></i> Simpan</button>
                                 </div>
+                                @can('DELETE_REVISI_BIAYA_OPERASIONAL')
                                 <div class="form-group">
                                     <button type="button" class="btn btn-danger ml-3 popUp" id="btnDelete"
                                         value="delete"><i class="fa fa-trash-alt" aria-hidden="true"></i> Hapus</button>
                                 </div>
+                                @endcan
+
                             </div>
                         </div>
                     </div>
