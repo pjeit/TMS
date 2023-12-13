@@ -384,15 +384,30 @@ class RevisiInvoiceTruckingController extends Controller
                     return number_format($item->total_diterima);
                 }) 
                 ->addColumn('action', function($row){
+                     // $actionBtn = '
+                    //             <div class="btn-group dropleft">
+                    //                 <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    //                     <i class="fa fa-list"></i>
+                    //                 </button>
+                    //                 <div class="dropdown-menu" >
+                    //                     <a href="/revisi_invoice_trucking/edit-pembayaran/'.$row->id.'" class="dropdown-item edit">
+                    //                         <span class="fas fa-pencil-alt mr-3"></span> Edit 
+                    //                     </a>
+                    //                 </div>
+                    //             </div>';
+                    //                 // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+                    //                 // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+                    // return $actionBtn;
+                    $edit=auth()->user()->can('EDIT_REVISI_INVOICE_TRUCKING')?'<a href="/revisi_invoice_trucking/edit-pembayaran/'.$row->id.'" class="dropdown-item edit">
+                                            <span class="fas fa-pencil-alt mr-3"></span> Edit 
+                                        </a>':'';
                     $actionBtn = '
                                 <div class="btn-group dropleft">
                                     <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <a href="/revisi_invoice_trucking/edit-pembayaran/'.$row->id.'" class="dropdown-item edit">
-                                            <span class="fas fa-pencil-alt mr-3"></span> Edit 
-                                        </a>
+                                        '.$edit.'
                                     </div>
                                 </div>';
                                     // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
