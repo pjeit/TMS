@@ -326,11 +326,13 @@
                                         <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-list"></i>
                                         </button>
+                                        @can('EDIT_PEMBAYARAN_INVOICE')
                                         <div class="dropdown-menu" >
                                             `+
                                                 btn_edit
                                             +`
                                         </div>
+                                        @endcan
                                     </div>
                                 </td>`);
                             row.append(`<td class='text-center' style="text-align:center">${jenis}</td>`);
