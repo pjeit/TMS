@@ -330,6 +330,7 @@ class TransaksiLainController extends Controller
                 'total' => 'required',
                 // 'catatan' => 'required',
             ], $pesanKustom);
+            
             $data= $request->collect();
             
                 $tanggal=date_create_from_format('d-M-Y', $data['tanggal_transaksi']);
