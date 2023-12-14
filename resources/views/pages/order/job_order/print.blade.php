@@ -190,7 +190,7 @@
         <tfoot>
         </tfoot>
     </table> --}}
-
+    @if ($TotalBiayaRev>0)
     <h3 class="text" style="text-align: center;background-color: rgb(54, 78, 163);color:aliceblue;">Biaya pelayaran</h3>
     <table class="border-table td-atas"  id="sortable" >
         <thead>
@@ -248,6 +248,7 @@
         <tfoot>
         </tfoot>
     </table>
+    @endif
         @php
             $total = 0;
         @endphp
@@ -271,7 +272,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal Jaminan</td>
-                            <td>: {{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
+                            <td>: {{\Carbon\Carbon::parse($dataJaminan->tgl_bayar)->format('d-M-Y')}}</td>
                         </tr>
                         @endif
                     {{-- <tr>
