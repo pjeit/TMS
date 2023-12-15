@@ -574,7 +574,6 @@
                             </td>
                             <td>
                                 <select class="form-control selectpicker tipeKontainer" name="detail[${i}][tipe]" id="tipe${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value="">── Tipe ──</option>
                                     <option value='20'>20"</option>
                                     <option value='40'>40"</option>
                                 </select>

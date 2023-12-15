@@ -26,7 +26,7 @@
                         <div class="col-lg-4 col-md-4 col-sm-6">
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="form-group">
-                                    <label for="">Tanggal Mulai</label>
+                                    <label for="">Tanggal Mulai <sup><i class="fa fa-question-circle" title="Tanggal JO dibuat"></i></sup> </label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -37,7 +37,7 @@
                             </div>
                             <div class="col-lg-12 col-md-12 col-sm-12">
                                 <div class="form-group">
-                                    <label for="">Tanggal Akhir</label>
+                                    <label for="">Tanggal Akhir <sup><i class="fa fa-question-circle" title="Tanggal JO dibuat"></i></sup> </label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
@@ -71,9 +71,10 @@
                             </div>
 
                             <div class="form-group ">
-                                <label for="">Status<span class="text-red">*</span></label>
+                                <label for="">Status Kontainer<span class="text-red">*</span> </label>
                                 <select width="100%" class="form-control select2" name="status" id="status" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                     <option value="SEMUA STATUS">SEMUA STATUS</option>
+                                    <option value="BELUM DOORING">BELUM DOORING</option>
                                     <option value="PROSES DOORING">PROSES DOORING</option>
                                     <option value="MENUNGGU INVOICE">MENUNGGU INVOICE</option>
                                     <option value="MENUNGGU PEMBAYARAN INVOICE">MENUNGGU PEMBAYARAN INVOICE</option>
@@ -99,11 +100,13 @@
             <table class="table table-bordered table-striped" style="border: 2px solid #bbbbbb;" id="invoice">
                 <thead>
                     <tr>
-                        <th>###</th>
+                        <th>No. BL</th>
                         <th>No. Kontainer</th>
                         <th>Pengirim</th>
                         <th>Pelayaran</th>
                         <th>Tgl Dooring</th>
+                        <th>Tgl Sandar</th>
+                        <th>Tgl JO Dibuat</th>
                         <th>Status Kontainer</th>
                     </tr>
                 </thead>
@@ -158,8 +161,10 @@
                                 <td>${item.no_kontainer}</td>
                                 <td> [${item.get_j_o.get_customer.kode}] ${item.get_j_o.get_customer.nama}</td>
                                 <td>${item.get_j_o.get_supplier.nama}</td>
-                                <td>${dateMask(item.tgl_dooring)}</td>
-                                <td>${item.status}</td>
+                                <td><small>${item.tgl_dooring != null? dateMask(item.tgl_dooring):''}</small></td>
+                                <td><small>${dateMask(item.get_j_o.tgl_sandar)}</small></td>
+                                <td><small>${dateMask(item.get_j_o.created_at)}</small></td>
+                                <td><small>${item.status}</small></td>
                             </tr>`
                         ));
                         $("#result").append(rows);

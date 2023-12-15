@@ -172,7 +172,6 @@
                                             <select class="form-control selectpicker tipeKontainer"
                                                 name="detail[{{$key}}][tipe]" id="tipe{{$key}}" data-live-search="true"
                                                 data-show-subtext="true" data-placement="bottom" readonly disabled>
-                                                <option value="">── Pilih Tipe ──</option>
                                                 <option value="20" <?=$item->tipe_kontainer == '20' ? 'selected':''; ?>
                                                     >20Ft </option>
                                                 <option value="40" <?=$item->tipe_kontainer == '40' ? 'selected':''; ?>

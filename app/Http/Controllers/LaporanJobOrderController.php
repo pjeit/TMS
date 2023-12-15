@@ -47,13 +47,16 @@ class LaporanJobOrderController extends Controller
             $cabang = UserHelper::getCabang();
 
             $data = JobOrderDetail::where('is_aktif', 'Y')->with('getJO', 'getJO.getCustomer', 'getJO.getSupplier', 'getTujuan')
-                            ->where(function($where) use($data){
-                                $where->whereBetween('tgl_dooring', [date("Y-m-d 00:00:00", strtotime($data['tgl_mulai'])), date('Y-m-d 23:59:59', strtotime($data['tgl_akhir']))]);
+                            // ->where(function($where) use($data){ //tgl_dooring
+                            //     $where->whereBetween('tgl_dooring', [date("Y-m-d 00:00:00", strtotime($data['tgl_mulai'])), date('Y-m-d 23:59:59', strtotime($data['tgl_akhir']))]);
+                            // })
+                            ->whereHas('getJO', function ($query) use($data) {
+                                $query->whereBetween('created_at', [date("Y-m-d 00:00:00", strtotime($data['tgl_mulai'])), date('Y-m-d 23:59:59', strtotime($data['tgl_akhir']))]);
                             })
                             ->whereHas('getJO.getCustomer', function ($query) use($data) {
-                                if($data['customer'] != 'SEMUA DATA'){
+                                if($data['customer'] != 'SEMUA DATA'){ 
                                     $query->where('id_customer', $data['customer']);
-                                }
+                                }      
                             })
                             ->whereHas('getJO.getSupplier', function ($query) use($data) {
                                 if($data['pelayaran'] != 'SEMUA DATA'){

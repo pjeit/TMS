@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\HtmlString;
 use App\Helper\UserHelper;
+use App\Models\Customer;
 use App\Models\M_Kota;
+use App\Models\PengaturanKeuangan;
+use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 // use Barryvdh\DomPDF\PDF;
@@ -78,24 +81,15 @@ class JobOrderController extends Controller
      */
     public function create()
     {
-        // $this->authorize('create JO');
-
-        $dataSupplier = DB::table('supplier')
-            ->select('*')
-            ->where('supplier.is_aktif', '=', "Y")
-            ->where('jenis_supplier_id', 7) // jenis pelayaran
-            ->orderBy('nama')
-            ->get();
-        $dataCustomer = DB::table('customer')
-            ->select('*')
-            ->where('customer.is_aktif', "Y")
-            ->orderBy('kode')
-            ->orderBy('nama')
-            ->get();
-        $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
-            ->select('*')
-            ->where('pengaturan_keuangan.is_aktif', '=', "Y")
-            ->get();
+        $dataSupplier = Supplier::where('supplier.is_aktif', '=', "Y")
+                                ->where('jenis_supplier_id', 7) // jenis pelayaran
+                                ->orderBy('nama')
+                                ->get();
+        $dataCustomer = Customer::where('customer.is_aktif', "Y")
+                                ->orderBy('kode')
+                                ->orderBy('nama')
+                                ->get();
+        $dataPengaturanKeuangan = PengaturanKeuangan::where('pengaturan_keuangan.is_aktif', '=', "Y")->get();
 
         $kota = M_Kota::get();
 
@@ -121,7 +115,7 @@ class JobOrderController extends Controller
             $data = $request->post();
             $currentYear = Carbon::now()->format('y');
             $currentMonth = Carbon::now()->format('m');
-            // dd($data);
+            DB::beginTransaction();
 
             $kode = DB::table('customer')
                 ->select('kode')
@@ -161,7 +155,7 @@ class JobOrderController extends Controller
             $newJO->created_by = $user;
             $newJO->created_at = now();
             $newJO->is_aktif = 'Y';
-       
+            
             if( $newJO->thc == 0 && $newJO->lolo == 0 && $newJO->apbs == 0 && 
                     $newJO->cleaning == 0 && $newJO->doc_fee == 0 && 
                     ($data['tgl_bayar_jaminan'] == null || $data['total_jaminan'] == null) ){
@@ -242,17 +236,20 @@ class JobOrderController extends Controller
                     $newJO->cleaning != 0 || $newJO->doc_fee != 0 || 
                     $data['tgl_bayar_jaminan'] != null || $data['total_jaminan'] != null ){
 
+                DB::commit();
                 return redirect()->route('job_order.index')
-                ->with('id_print_jo', $id_print_jo)
-                ->with(['status' => 'Success', 'msg' => 'Data berhasil tersimpan']);
+                    ->with('id_print_jo', $id_print_jo)
+                    ->with(['status' => 'Success', 'msg' => 'Data berhasil tersimpan']);
             }else{
+                DB::commit();
                 return redirect()->route('job_order.index')
                 ->with(['status' => 'Success', 'msg' => 'Data berhasil tersimpan']);
             }
             
 
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            DB::rollBack();
+            return redirect()->back()->with(['status' => 'Error', 'msg' => 'Terjadi kesalahan saat menyimpan']);
         }
     }
 
@@ -433,44 +430,45 @@ class JobOrderController extends Controller
     public function destroy(JobOrder $jobOrder)
     {
         // dd($jobOrder);
-         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        DB::beginTransaction();
 
-        // try{
+        try{
             DB::table('job_order')
-            ->where('id', $jobOrder['id'])
-            ->update(array(
-                'is_aktif' => "N",
-                'updated_at'=> now(),
-                'updated_by'=> $user, 
-              )
+                ->where('id', $jobOrder['id'])
+                ->update(array(
+                    'is_aktif' => "N",
+                    'updated_at'=> now(),
+                    'updated_by'=> $user, 
+                )
             );
             DB::table('job_order_detail')
-            ->where('id_jo', $jobOrder['id'])
-            ->update(array(
-                'is_aktif' => "N",
-                'updated_at'=> now(),
-                'updated_by'=> $user, 
-              )
+                ->where('id_jo', $jobOrder['id'])
+                ->update(array(
+                    'is_aktif' => "N",
+                    'updated_at'=> now(),
+                    'updated_by'=> $user, 
+                )
             );
             $jaminan = Jaminan::where('id_job_order', $jobOrder->id)->where('is_aktif', 'Y')->first();
-            if($jaminan)
-            {
+            if($jaminan){
                 DB::table('jaminan')
-               ->where('id_job_order', $jobOrder['id'])
-               ->update(array(
-                   'is_aktif' => "N",
-                   'updated_at'=> now(),
-                   'updated_by'=> $user, 
-                 )
-               );
+                ->where('id_job_order', $jobOrder['id'])
+                ->update(array(
+                    'is_aktif' => "N",
+                    'updated_at'=> now(),
+                    'updated_by'=> $user, 
+                    )
+                );
             }
 
-             return redirect()->route('job_order.index')->with('status','Berhasil menghapus data!');
-
-        // }
-        // catch (ValidationException $e) {
-        //     return redirect()->back()->withErrors($e->errors());
-        // }
+            DB::commit();
+            return redirect()->route('job_order.index')->with(['status' => 'Success', 'message' => 'Data berhasil dihapus.']);
+        }
+        catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->back()->with(['status' => 'Error', 'message' => 'Terjadi kesalahan saat menghapus.']);
+        }
     }
 
     public function printJO(JobOrder $JobOrder)
