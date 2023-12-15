@@ -931,7 +931,7 @@
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language: 'en',
-                startDate: hmin2,
+                // startDate: hmin2,
             }).datepicker("setDate", tomorrow);
         }
     });
