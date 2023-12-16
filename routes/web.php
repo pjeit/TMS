@@ -170,7 +170,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pencairan_uang_jalan/form', [App\Http\Controllers\PencairanUangJalanController::class, 'form'])->name('pencairan_uang_jalan.form');
         Route::resource('pencairan_uang_jalan', 'App\Http\Controllers\PencairanUangJalanController');
 
-        Route::get('pencairan_uang_jalan_ltl/getData/{item}', 'App\Http\Controllers\PencairanUangJalanLTLController@get_data')->name('pencairan_uang_jalan_ltl.get_data');
+        // Route::get('pencairan_uang_jalan_ltl/getData/{item}', 'App\Http\Controllers\PencairanUangJalanLTLController@get_data')->name('pencairan_uang_jalan_ltl.get_data');
+        Route::get('pencairan_uang_jalan_ltl/getData', 'App\Http\Controllers\PencairanUangJalanLTLController@get_data')->name('pencairan_uang_jalan_ltl.get_data');
         Route::resource('pencairan_uang_jalan_ltl', 'App\Http\Controllers\PencairanUangJalanLTLController');
 
         Route::get('pencairan_komisi_customer/load_data', 'App\Http\Controllers\PencairanKomisiCustomerController@load_data')->name('pencairan_komisi_customer.load_data');

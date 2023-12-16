@@ -105,7 +105,7 @@ class GrupTujuanController extends Controller
                                 ->where('is_aktif', 'Y')
                                 ->where('grup_tujuan_id', $value->id)
                                 ->get();
-            
+
             $data['tujuan'][$key]=(object)array(
                 'id'=>$value->id,
                 'grup_id'=>$value->grup_id,

@@ -817,6 +817,7 @@
             if (cekBiaya) {
                 // var jsonData = JSON.parse(jsonString);
                 if(cekBiaya != null || cekBiaya != ''){
+                    console.log('cekBiaya', cekBiaya);
                     JSON.parse(cekBiaya).forEach(function(item, index) {
                         $('#tabel_biaya > tbody:last-child').append(
                             `
@@ -829,7 +830,7 @@
                                         <input type="text" id="biaya${index}" value="${item.biaya.toLocaleString()}" name="biaya[${item.id}][biaya]" class="form-control numaja uang hitungBiaya" />
                                     </td>
                                     <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                        <input type="text" id="catatan_biaya${index}" name="biaya[${item.id}][catatan]" value="${item.catatan == 'null' || item.catatan == 'NULL'? '':item.catatan}" class="form-control"/>
+                                        <input type="text" id="catatan_biaya${index}" name="biaya[${item.id}][catatan]" value="${item.catatan == 'null' || item.catatan == undefined? '':item.catatan}" class="form-control"/>
                                     </td>
                                     <td><button type="button" name="del_biaya" id="${index}" class="btn btn-danger btn_remove_biaya"><i class="fa fa-trash" aria-hidden="true"></i></button></td></tr>);  
                                 </tr>

@@ -48,21 +48,14 @@ class BelumInvoiceController extends Controller
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                 ->leftJoin('grup AS g', 'c.grup_id', '=', 'g.id')
                 ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
-                    ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
-
+                ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
-                // ->where('s.jenis_tujuan', 'like', '%FTL%')
                 ->where('s.status', 'MENUNGGU INVOICE')
-            //      ->where(function ($query) {
-            //     $query->where('s.status', 'MENUNGGU INVOICE')
-            //         ->orWhere('s.status', 'BATAL MUAT');
-            // })
-                // ->whereNull('s.id_supplier')
-                // ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
+                ->orderBy('s.no_sewa','ASC')
+                ->orderBy('s.tanggal_berangkat','ASC')
                 ->get();
-        // dd($dataSewa);
     
         return view('pages.invoice.belum_invoice.index',[
             'judul'=>"BELUM INVOICE",
