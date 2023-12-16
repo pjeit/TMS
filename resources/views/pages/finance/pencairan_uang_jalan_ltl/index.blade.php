@@ -139,7 +139,8 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                    <input type="text" id="diterima" name="diterima" class="form-control uang numaja" readonly>
+                                        <input type="text" id="diterima" name="diterima" class="form-control uang numaja" readonly>
+                                        <input type="hidden" id="tujuan_modal" name="tujuan" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -206,9 +207,16 @@
                                         `);
 
                     var data = response.data;
-                    console.log('data', data);
+                    let tujuan = '';
+                    let inputTujuan = '';
+
                     if(data.length > 0){
-                        for (var i = 0; i <data.length; i++) {
+                        for (var i = 0; i < data.length; i++) {
+                            tujuan = tujuan + ' #'+data[i].nama_tujuan; 
+                            if(i==(data.length-1)){
+                                inputTujuan = `<input type="hidden" id="tujuan" value="${tujuan}" />`;
+                            }
+
                             if(data[i].total_dicairkan == null){
                                 var row = $("<tr></tr>");
 
@@ -232,7 +240,9 @@
                                         </div>
                                     </td>`);
                                 row.append(`<td></td>`);
-                                row.append(`<td>${dateMask(data[i].tanggal_berangkat)}</td>`);
+                                row.append(`<td>${dateMask(data[i].tanggal_berangkat)} 
+                                            ${inputTujuan}
+                                            </td>`);
                                 row.append(`<td>${data[i].nama_tujuan}</td>`);
                                 $("#hasil").append(row);
                             }
@@ -346,7 +356,10 @@
         $(document).on('click', '.openModal', function(event){
             var id = this.value;
             $('#key').val(id);
+
             let driver = $('#driver_'+id).val();
+            $('#tujuan_modal').val( $('#tujuan').val() );
+
             if(driver == "null"){
                 $('.is_potong_hutang').hide();
                 $('.is_total_hutang').hide();
