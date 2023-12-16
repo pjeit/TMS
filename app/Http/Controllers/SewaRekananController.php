@@ -621,7 +621,7 @@ class SewaRekananController extends Controller
             }
             
             
-            return redirect()->route('truck_order_rekanan.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data sewa rekanan!']);
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data sewa rekanan!']);
             
         } catch (ValidationException $e) {
             //throw $th;
