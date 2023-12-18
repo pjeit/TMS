@@ -496,7 +496,6 @@ class JobOrderController extends Controller
 
     public function printJO(JobOrder $JobOrder)
     {
-        //
         $dataSupplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
@@ -507,56 +506,23 @@ class JobOrderController extends Controller
             ->where('customer.is_aktif', '=', "Y")
             ->where('customer.id', '=', $JobOrder->id_customer)
             ->get();
- 
         $dataJaminan = DB::table('jaminan')
             ->select('*')
             ->where('jaminan.is_aktif', '=', "Y")
             ->where('jaminan.id_job_order', '=', $JobOrder->id)
             ->first();
-        // var_dump(( isset($dataJaminan) ? 'xx':'zzz')); die;
-        // $totalThc =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%THC%')
-        //     ->sum('nominal');
-        // $totalLolo =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%LOLO%')
-        //     ->sum('nominal');
-        // $totalApbs =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%APBS%')
-        //     ->sum('nominal');
-        //  $totalCleaning =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%CLEANING%')
-        //     ->sum('nominal');
-        //  $Docfee =  DB::table('job_order_detail_biaya')
-        //     ->select('nominal')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%DOC_FEE%')
-        //     ->first();
-        // $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
-        // dd($TotalBiaya);
 
         $TotalBiayaRev = $JobOrder->thc+$JobOrder->lolo+$JobOrder->apbs+$JobOrder->cleaning+$JobOrder->doc_fee;
 
-        // dd($dataJoDetail);   
         $pdf = Pdf::loadView('pages.order.job_order.print',[
             'judul'=>"Job Order",
             'JobOrder'=>$JobOrder,
             'dataSupplier'=>$dataSupplier,
             'dataCustomer'=>$dataCustomer,
             'dataJaminan'=>$dataJaminan,
-            // 'totalThc'=> $totalThc,
-            // 'totalLolo'=> $totalLolo,
-            // 'totalApbs'=> $totalApbs,
-            // 'totalCleaning'=>$totalCleaning,
-            // 'Docfee'=>$Docfee,
-            // 'TotalBiaya'=>$TotalBiaya
             'TotalBiayaRev'=>$TotalBiayaRev
 
         ]); 
-        // dd($JobOrder);
         // $pdf->setPaper('A5', 'landscape');
         $pdf->setPaper('A5', 'portrait');
 
@@ -568,20 +534,12 @@ class JobOrderController extends Controller
             //  'isRemoteEnabled', true
              'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
         ]);
+        
         // langsung download
         // return $pdf->download('fileCoba.pdf'); 
+
         // preview dulu
         return $pdf->stream($JobOrder->no_jo.'.pdf'); 
-
-        //  return view('pages.order.job_order.print',[
-        //     'judul'=>"Job Order",
-        //     'JobOrder'=>$JobOrder,
-        //     'dataSupplier'=>$dataSupplier,
-        //     'dataCustomer'=>$dataCustomer,
-        //     'dataJoDetail'=>$dataJoDetail,
-        //     'dataJaminan'=>$dataJaminan,
-
-        // ]);
     }
 
     public function cetak_job_order(JobOrder $JobOrder)
