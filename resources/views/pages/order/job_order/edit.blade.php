@@ -92,52 +92,81 @@
                         </div>
     
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group ">
                                     <label for="">No. BL<span class="text-red">*</span></label>
-                                    <input required type="text" name="no_bl" class="form-control"
-                                        value="{{$data['JO']->no_bl}}" readonly disabled>
+                                    <input required type="text" id="no_bl" name="no_bl" class="form-control" maxlength="25" value="{{ $data['JO']->no_bl}}" readonly>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
-                                    <label for="tgl_sandar">Tanggal Sandar</label>
+                                    <label for="tgl_sandar">Tanggal Sandar<span class="text-red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" name="tgl_sandar" autocomplete="off" class="date form-control"
-                                            id="tgl_sandar" placeholder="dd-M-yyyy"
-                                            value="{{ \Carbon\Carbon::parse($data['JO']->tgl_sandar)->format('d-M-Y') }}"
-                                            readonly disabled>
+                                        <input type="text" name="tgl_sandar" autocomplete="off" class="datepicker form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{ date('d-M-Y', strtotime($data['JO']->tgl_sandar))}}" {{ $data['JO']->status == 'MENUNGGU PEMBAYARAN'? '':'disabled' }}>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group ">
+                                    <label for="">Nama Kapal<span class="text-red">*</span></label>
+                                    <input value="{{ $data['JO']->kapal}}" readonly required type="text" id="kapal" name="kapal" maxlength="30" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group ">
+                                    <label for="">Voyage<span class="text-red">*</span></label>
+                                    <input value="{{ $data['JO']->voyage}}" readonly required type="text" id="voyage" name="voyage" maxlength="5" class="form-control" placeholder="Max. 5 char">
                                 </div>
                             </div>
                         </div>
     
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Muat<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_muat" class="form-control"
-                                        value="{{$data['JO']->pelabuhan_muat}}" readonly>
+                                    <input required type="text" name="pelabuhan_muat" class="form-control" value="{{$data['JO']->pelabuhan_muat}}" readonly>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Pelabuhan Bongkar<span class="text-red">*</span></label>
-                                    <input required type="text" name="pelabuhan_bongkar" class="form-control"
-                                        value="{{$data['JO']->pelabuhan_bongkar}}" readonly>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="">Status</label>
-                                    <input required type="text" name="status" class="form-control"
-                                        value="{{$data['JO']->status}}" readonly>
+                                    <input required type="text" name="pelabuhan_bongkar" class="form-control" value="{{$data['JO']->pelabuhan_bongkar}}" readonly>
                                 </div>
                             </div>
                         </div>
+
+                        
+                        <div class="row">
+                            <div class="form-group col-lg-3 col-md-3 col-sm-12">
+                                <label for="tanggal_keluar">No. VA <sup style="opacity: 60%">(Centang jika virtual account)</sup></label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <input type="checkbox" id="isVA" value="Y" {{ $data['JO']->no_va != null? 'checked':'' }} disabled>
+                                        </span>
+                                    </div>
+                                    <input required type="text" id="no_va" name="no_va" class="form-control numaja" value="{{ $data['JO']->no_va }}" readonly> 
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-3 col-md-3 col-sm-12">
+                                <label for="">Atas Nama</label>
+                                <input required type="text" id="va_nama" name="va_nama" class="form-control" value="{{ $data['JO']->va_nama }}" readonly>                         
+                            </div>
+                            <div class="form-group col-lg-3 col-md-3 col-sm-12">
+                                <label for="">Bank</label>
+                                <input required type="text" id="va_bank" name="va_bank" class="form-control" value="{{ $data['JO']->va_bank }}" readonly>                         
+                            </div>
+                            <div class="form-group col-lg-3 col-md-3 col-sm-12">
+                                <div class="form-group">
+                                    <label for="">Status</label>
+                                    <input required type="text" name="status" class="form-control" value="{{$data['JO']->status}}" readonly>
+                                </div>
+                            </div>
+                        </div>
+
     
                         <div class="table_wrapper">
                             <table id="tabelJO" class="tabelJO table table-striped hover">
@@ -285,27 +314,18 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox"
-                                                    id="thc_cekbox" <?=($data['JO']['thc']==0) ? '' :'checked'; ?>
-                                                disabled></span> THC</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox" id="thc_cekbox" <?=($data['JO']['thc']==0) ? '' :'checked'; ?> disabled></span> THC</th>
                                         <td name="">
-                                            <input type="text" name="total_thc" id="total_thc" class="form-control"
-                                                value="{{number_format($data['JO']['thc'])}}" readonly>
+                                            <input type="text" name="total_thc" id="total_thc" class="form-control" value="{{number_format($data['JO']['thc'])}}" readonly>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox"
-                                                    id="lolo_cekbox" <?=$data['JO']['lolo']==0 ? '' :'checked'; ?>
-                                                disabled></span> LOLO</th>
-                                        <td name="">
-                                            <input type="text" name="total_lolo" id="total_lolo" class="form-control"
-                                                value="{{number_format($data['JO']['lolo'])}}" readonly>
+                                        <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox" id="lolo_cekbox" <?=$data['JO']['lolo']==0 ? '' :'checked'; ?> disabled></span> LOLO</th>
+                                        <td name=""> <input type="text" name="total_lolo" id="total_lolo" class="form-control" value="{{number_format($data['JO']['lolo'])}}" readonly>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox"
-                                                    id="apbs_cekbox" <?=($data['JO']['apbs']==0) ? '' :'checked'; ?>
-                                                disabled></span> APBS</th>
+                                        <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox" id="apbs_cekbox" <?=($data['JO']['apbs']==0) ? '' :'checked'; ?> disabled></span> APBS</th>
                                         <td name="">
                                             <input type="text" name="total_apbs" id="total_apbs" class="form-control"
                                                 value="{{number_format($data['JO']['apbs'])}}" readonly>
@@ -335,7 +355,7 @@
                                         <td>
                                             <input type="text" name="total_sblm_dooring" id="total_sblm_dooring"
                                                 class="form-control"
-                                                value="<?= number_format($data['JO']['thc']+$data['JO']['lolo']+$data['JO']['apbs']+$data['JO']['cleaning']+$data['JO']['doc_fee'] ,2) ?>"
+                                                value="<?= number_format($data['JO']['thc']+$data['JO']['lolo']+$data['JO']['apbs']+$data['JO']['cleaning']+$data['JO']['doc_fee']) ?>"
                                                 readonly>
                                         </td>
                                     </tr>
@@ -356,15 +376,10 @@
                                         <td>
                                             <div class="input-group mb-0">
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text"><i
-                                                            class="far fa-calendar-alt"></i></span>
+                                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                 </div>
-                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off"
-                                                    class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy"
-                                                    value="{{ ($data['jaminan'] != null)? \Carbon\Carbon::parse($data['jaminan']['tgl_bayar'])->format('d-M-Y'):null }}"
-                                                    disabled>
-                                                <input type="hidden" name="id_jaminan"
-                                                    value="<?= ($data['jaminan'] != null)? $data['jaminan']['id']:NULL; ?>">
+                                                <input type="text" name="tgl_bayar_jaminan" autocomplete="off" class="date form-control" id="tgl_bayar_jaminan" placeholder="dd-M-yyyy" value="{{ ($data['jaminan'] != null)? \Carbon\Carbon::parse($data['jaminan']['tgl_bayar'])->format('d-M-Y'):null }}" {{ $data['JO']['status'] == 'MENUNGGU PEMBAYARAN'? '':'disabled' }}>
+                                                <input type="hidden" name="id_jaminan" value="<?= ($data['jaminan'] != null)? $data['jaminan']['id']:NULL; ?>" >
                                             </div>
                                         </td>
                                     </tr>
@@ -375,18 +390,14 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><b>Rp.</b></span>
                                                 </div>
-                                                <input type="text" class="form-control uang numaja" id="total_jaminan"
-                                                    name="total_jaminan"
-                                                    value="{{ $data['jaminan'] != null ? number_format($data['jaminan']['nominal'],2):null }}"
-                                                    disabled>
+                                                <input type="text" class="form-control uang numaja" id="total_jaminan" name="total_jaminan" value="{{ $data['jaminan'] != null ? number_format($data['jaminan']['nominal']):null }}" {{ $data['JO']['status'] == 'MENUNGGU PEMBAYARAN'? '':'disabled' }}>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Catatan</th>
                                         <td>
-                                            <textarea name="catatan" class="form-control" id="catatan" cols="50" rows="10"
-                                                disabled>{{ $data['jaminan'] != null ? $data['jaminan']['catatan']:null }}</textarea>
+                                            <textarea name="catatan" class="form-control" id="catatan" cols="50" rows="10" {{ $data['JO']['status'] == 'MENUNGGU PEMBAYARAN'? '':'disabled' }}>{{ $data['jaminan'] != null ? $data['jaminan']['catatan']:null }}</textarea>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -403,6 +414,7 @@
 {{-- sweet save --}}
 <script>
     $(document).ready(function() {
+
         $('#save').submit(function(event) {
             event.preventDefault();
 
@@ -524,6 +536,8 @@
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language:'en',
+                orientation: "bottom" // add this for placemenet
+
             });
             $('.tgl_booking').datepicker({
                 autoclose: true,

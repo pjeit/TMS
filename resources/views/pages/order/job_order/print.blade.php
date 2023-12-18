@@ -314,10 +314,18 @@
              @php $total = $TotalBiayaRev @endphp
               <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
         @endif
-        @if($JobOrder->id_supplier == $dataSupplier->id)
-            <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$dataSupplier->bank}} </b><br> 
-            atas nama : <b>{{$dataSupplier->rek_nama}} </b><br>
-            dengan nomor {{$dataSupplier->is_virtual_acc == "Y"?'virtual account':'rekening'}} : <b><u>{{$dataSupplier->no_rek}}</u></b></p>
+        @if ($JobOrder->no_va != null)
+            @if($JobOrder->id_supplier == $dataSupplier->id)
+                <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$JobOrder->va_bank}} </b><br> 
+                atas nama : <b>{{$JobOrder->va_nama}} </b><br>
+                dengan nomor : <b><u>{{$JobOrder->no_va}}</u></b></p>
+            @endif
+        @else
+            @if($JobOrder->id_supplier == $dataSupplier->id)
+                <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$dataSupplier->bank}} </b><br> 
+                atas nama : <b>{{$dataSupplier->rek_nama}} </b><br>
+                dengan nomor {{$dataSupplier->is_virtual_acc == "Y"?'virtual account':'rekening'}} : <b><u>{{$dataSupplier->no_rek}}</u></b></p>
+            @endif
         @endif
         {{-- <div style="display: flex; justify-content: space-between;">
             <div style="flex-basis: 49%;">

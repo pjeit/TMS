@@ -194,7 +194,11 @@
                                 {{ $detail->sewa->seal_pelayaran }}
                             @endif
                         </td>
-                        <td class="text-center">{{ $detail->sewa->no_polisi }} <br>( {{ $detail->sewa->tipe_kontainer.'"' }} )</td>
+                        <td class="text-center">{{ $detail->sewa->no_polisi }}  
+                            @isset($detail->sewa->tipe_kontainer)
+                            <br>( {{ $detail->sewa->tipe_kontainer . '"' }} )
+                            @endisset 
+                        </td>
                         <td class="text-center">{{ number_format($detail->diskon) }}</td>
                         @if ($is_reimburse == FALSE)
                             <td class="text-center">{{ number_format($detail->tarif) }}</td>

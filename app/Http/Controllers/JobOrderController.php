@@ -135,7 +135,7 @@ class JobOrderController extends Controller
             //strpad itu nambah 00 yang awalnya cuman 4 jd 004
             $no_jo = 'JO/'. $kode->kode . '/' . $now . str_pad($max_jo, 3, '0', STR_PAD_LEFT);
             
-            // dd($data);
+            // dd($data);   
             $newJO = new JobOrder();
             $newJO->no_jo = $no_jo;
             $newJO->id_customer = $data['customer'];
@@ -152,6 +152,11 @@ class JobOrderController extends Controller
             $newJO->cleaning = isset($data['checkbox_CLEANING'])? floatval(str_replace(',', '', $data['total_cleaning'])):0;
             $newJO->doc_fee = isset($data['checkbox_DOC_FEE'])? floatval(str_replace(',', '', $data['DOC_FEE'])):0;
             $newJO->catatan = $data['catatan'];
+            if($data['no_va'] != null){
+                $newJO->no_va = $data['no_va'];
+                $newJO->va_nama = $data['va_nama'];
+                $newJO->va_bank = $data['va_bank'];
+            }
             $newJO->created_by = $user;
             $newJO->created_at = now();
             $newJO->is_aktif = 'Y';
@@ -341,12 +346,18 @@ class JobOrderController extends Controller
     public function update(Request $request, JobOrder $jobOrder)
     {
         try {
-            // var_dump($request->post()); die;
             $user = Auth::user()->id;
             $data = $request->post();
             $currentYear = Carbon::now()->format('y');
             $currentMonth = Carbon::now()->format('m');
             // dd($data);
+
+            if(isset($data['tgl_sandar'])){
+                $jobOrder->tgl_sandar = date_create_from_format('d-M-Y', $data['tgl_sandar']);
+                $jobOrder->updated_by = $user;
+                $jobOrder->updated_at = now();
+                $jobOrder->save();
+            }
 
             if(isset($data['detail'])){
                 foreach ($data['detail'] as $key => $detail) {
@@ -404,19 +415,31 @@ class JobOrderController extends Controller
                 }
             }
             
-            // if(isset($data['id_jaminan'])){
-            //     $jaminan = Jaminan::where('is_aktif', 'Y')->find($data['id_jaminan']);
-            //     $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
-            //     $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
-            //     $jaminan->catatan = $data['catatan'];
-            //     $jaminan->updated_by = $user;
-            //     $jaminan->updated_at = now();
-            //     $jaminan->save();
-            // }
+            if(isset($data['id_jaminan']) && isset($data['total_jaminan'])){
+                if($data['id_jaminan'] != null){
+                    $jaminan = Jaminan::where('is_aktif', 'Y')->find($data['id_jaminan']);
+                    $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
+                    $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
+                    $jaminan->catatan = $data['catatan'];
+                    $jaminan->updated_by = $user;
+                    $jaminan->updated_at = now();
+                    $jaminan->save();
+                }else{
+                    $jaminan = new Jaminan();
+                    $jaminan->id_job_order = $jobOrder['id'];
+                    $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
+                    $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
+                    $jaminan->catatan = $data['catatan'];
+                    $jaminan->status = 'MENUNGGU PEMBAYARAN';
+                    $jaminan->created_by = $user;
+                    $jaminan->created_at = now();
+                    $jaminan->save();
+                }
+            }
 
-            return redirect()->route('job_order.index')->with('status','Success');
+            return redirect()->route('job_order.index')->with(['status' => 'Success', 'msg' => 'Berhasil update data.']);
         } catch (ValidationException $e) {
-            return redirect()->route('job_order.index')->with('status','Error');
+            return redirect()->route('job_order.index')->with(['status' => 'Error', 'msg' => 'Terjadi kesalahan.']);
             // return redirect()->back()->withErrors($e->errors())->withInput();
         }
     }

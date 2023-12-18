@@ -100,7 +100,7 @@
                                             </div>
                                             <input type="text" name="tgl_sandar" autocomplete="off"
                                                 class="date form-control" id="tgl_sandar" placeholder="dd-M-yyyy"
-                                                value="" required>
+                                                required>
                                         </div>
                                     </div>
                                 </div>
@@ -147,6 +147,29 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                    <label for="tanggal_keluar">No. VA <sup style="opacity: 60%">(Centang jika virtual account)</sup></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">
+                                                <input type="checkbox" id="isVA" value="Y">
+                                            </span>
+                                        </div>
+                                        <input required type="text" id="no_va" name="no_va" class="form-control numaja" readonly> 
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                    <label for="">Atas Nama</label>
+                                    <input required type="text" id="va_nama" name="va_nama" class="form-control" readonly>                         
+                                </div>
+                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                    <label for="">Bank</label>
+                                    <input required type="text" id="va_bank" name="va_bank" class="form-control" readonly>                         
+                                </div>
+                            </div>
+
 
                             <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2 mt-2">
                                 <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Kontainer
@@ -195,70 +218,53 @@
                                     <tbody>
                                         <tr>
                                             <th>
-                                                <span>
-                                                    <input type="checkbox" class="checkitem" name="checkbox_THC"
-                                                        id="thc_cekbox">
-                                                </span> THC
+                                                <input type="checkbox" class="checkitem" name="checkbox_THC" id="thc_cekbox"> THC
                                             </th>
                                             <td>
-                                                <input type="text" id="thc_null" class="form-control" value="0"
-                                                    readonly>
-                                                <input type="text" name="total_thc" id="total_thc" value="0"
-                                                    class="form-control uang numaja" readonly hidden>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th><span> <input type="checkbox" class="checkitem" name="checkbox_LOLO"
-                                                        id="lolo_cekbox"></span> LOLO</th>
-                                            <td>
-                                                <input type="text" id="lolo_null" class="form-control" value="0"
-                                                    readonly>
-                                                <input type="text" name="total_lolo" id="total_lolo" value="0"
-                                                    class="form-control uang numaja" readonly hidden>
+                                                <input type="text" id="thc_null" class="form-control" value="0" readonly>
+                                                <input type="text" name="total_thc" id="total_thc" value="0" class="form-control uang numaja" readonly hidden>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>
-                                                <span> <input type="checkbox" class="checkitem" name="checkbox_APBS"
-                                                        id="apbs_cekbox">
-                                                </span> APBS
+                                                <input type="checkbox" class="checkitem" name="checkbox_LOLO" id="lolo_cekbox"> LOLO
                                             </th>
                                             <td>
-                                                <input type="text" id="apbs_null" class="form-control" value="0"
-                                                    readonly>
-                                                <input type="text" name="total_apbs" id="total_apbs" value="0"
-                                                    class="form-control uang numaja" readonly hidden>
+                                                <input type="text" id="lolo_null" class="form-control" value="0" readonly>
+                                                <input type="text" name="total_lolo" id="total_lolo" value="0" class="form-control uang numaja" readonly hidden>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>
-                                                <span>
-                                                    <input type="checkbox" class="checkitem" name="checkbox_CLEANING"
-                                                        id="cleaning_cekbox">
-                                                </span> CLEANING
+                                                <input type="checkbox" class="checkitem" name="checkbox_APBS" id="apbs_cekbox"> APBS
                                             </th>
                                             <td>
-                                                <input type="text" id="cleaning_null" class="form-control" value="0"
-                                                    readonly>
-                                                <input type="text" name="total_cleaning" id="total_cleaning" value="0"
-                                                    class="form-control uang numaja" readonly hidden>
+                                                <input type="text" id="apbs_null" class="form-control" value="0" readonly>
+                                                <input type="text" name="total_apbs" id="total_apbs" value="0" class="form-control uang numaja" readonly hidden>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <th><span> <input type="checkbox" class="checkitem" name="checkbox_DOC_FEE"
-                                                        id="doc_fee_cekbox"></span> DOC FEE</th>
+                                            <th>
+                                                <input type="checkbox" class="checkitem" name="checkbox_CLEANING" id="cleaning_cekbox"> CLEANING
+                                            </th>
                                             <td>
-                                                <input type="text" id="doc_fee_null" class="form-control" value="0"
-                                                    readonly>
-                                                <input type="text" name="DOC_FEE" id="DOC_FEE" value="0"
-                                                    class="form-control uang numaja" readonly hidden>
+                                                <input type="text" id="cleaning_null" class="form-control" value="0" readonly>
+                                                <input type="text" name="total_cleaning" id="total_cleaning" value="0" class="form-control uang numaja" readonly hidden>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" class="checkitem" name="checkbox_DOC_FEE" id="doc_fee_cekbox"> DOC FEE
+                                            </th>
+                                            <td>
+                                                <input type="text" id="doc_fee_null" class="form-control" value="0" readonly>
+                                                <input type="text" name="DOC_FEE" id="DOC_FEE" value="0" class="form-control uang numaja" readonly hidden>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>SUB TOTAL</th>
                                             <td>
-                                                <input type="text" name="total_sblm_dooring" id="total_sblm_dooring"
-                                                    value="0" class="form-control uang numaja" readonly>
+                                                <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" value="0" class="form-control uang numaja" readonly>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -454,6 +460,17 @@
             });
         // end of handling tgl
 
+        $(document).on('click', '#isVA', function(event) {
+            $('#no_va').prop('readonly', !this.checked);
+            $('#va_nama').prop('readonly', !this.checked);
+            $('#va_bank').prop('readonly', !this.checked);
+
+            if(this.checked == false){
+                $('#no_va').val('');
+                $('#va_nama').val('');
+                $('#va_bank').val('');
+            }
+        });
         $(document).on('change', '#customer', function(event) {
             // Get selected value from #customer
             var selectedValue = this.value;
@@ -574,8 +591,8 @@
                             </td>
                             <td>
                                 <select class="form-control selectpicker tipeKontainer" name="detail[${i}][tipe]" id="tipe${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                    <option value='20'>20"</option>
-                                    <option value='40'>40"</option>
+                                    <option value='20' selected>20"</option>
+                                    <option value='40' >40"</option>
                                 </select>
                                 <input type="hidden" readonly id="h_thc${i}" class="THC" THC_${i} name="detail[${i}][biaya][THC]" value="">
                                 <input type="hidden" readonly id="h_lolo${i}" class="LOLO" LOLO_${i} name="detail[${i}][biaya][LOLO]" value="">
@@ -583,7 +600,6 @@
                                 <input type="hidden" readonly id="h_cleaning${i}" class="CLEANING" CLEANING_${i} name="detail[${i}][biaya][CLEANING]" value="">
                                 
                             </td>
-                        
                             <td>
                                 <div class="form-group mb-0">
                                     <div class="icheck-primary">
@@ -613,7 +629,6 @@
                             <td>
                                 <input type="text"  name="detail[${i}][tgl_booking]" id="tgl_booking${i}" tgl_booking_check="${i}" autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="">     
                             </td>
-                        
                             <td align="center" class="text-danger">
                                 <button type="button" data-toggle="tooltip" data-placement="right" title="Hapus" class="btn btn-sm btn-danger hapus">
                                     <i class="fa fa-fw fa-trash-alt"></i>
@@ -621,6 +636,11 @@
                             </td>
                         </tr>`
                     );
+
+                    getThc(i);
+                    uncheck();
+                    calculateTotalHarga();
+                    hitungTotal();
 
                     $('input[type="text"]').on("input", function () {
                         var inputValue = $(this).val();
@@ -636,13 +656,13 @@
                     console.error('Error:', error);
                 }
             });
-        
+
             // $('#save').removeAttr('hidden',true);
         });
 
         $( document ).on( 'click', '.hapus', function (event) {
             $(this).closest('tr').remove();
-                 
+            
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'top',
@@ -727,7 +747,7 @@
                 
                 var selectedId = $(this).attr('id');
                 var id = selectedId.replace('tipe', ''); // Remove 'thc' from the beginning
-
+                
                 getThc(id);
                 uncheck();
                 // tiap ada perubahan di class tipekontainer, di akhir akan di hitung total harganya
