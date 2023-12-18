@@ -21,7 +21,7 @@
                 <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
                         class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
-        </div>
+        </div>  
     </div> --}}
     <div class="card radiusSendiri">
         <form id="save" action="{{ route('biaya_operasional.store') }}" method="POST">
@@ -66,8 +66,7 @@
                                         data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                         <option value="">── PILIH PEMBAYARAN ──</option>
                                         @foreach ($dataKas as $kas)
-                                        <option value="{{$kas->id}}" {{$kas->id == '1'? 'selected':''}} >{{
-                                            $kas->nama }}</option>
+                                        <option value="{{$kas->id}}">{{ $kas->nama }}</option>
                                         @endforeach
                                     </select>
                                     <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
@@ -165,6 +164,16 @@
             var item = $('#item').val();
             var totalElement = document.querySelector('.t_total');
             totalElement.textContent = "Rp. 0"; 
+            console.log('item', item);
+
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                let bank = $('#pembayaran').selectpicker('val', 1);
+            }else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'){
+                let bank = $('#pembayaran').selectpicker('val', 2);
+            }else{
+                let bank = $('#pembayaran').selectpicker('val', '');
+            }
+
             if(item != null){
                 showTable(item);
             }else{
@@ -270,7 +279,7 @@
                                         var row = $("<tr></tr>");
                                         row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
                                         row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
-                                        row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) </td>`);
+                                        row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
                                         row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
                                         if(data[i].jenis_order == 'INBOUND'){
                                             if(data[i].tipe_kontainer=='20'){
@@ -334,7 +343,7 @@
                         new DataTable('#rowGroup', {
                             order: [
                                 [0, 'asc'], // 0 = grup
-                                [1, 'asc'] // 1 = customer
+                                [1, 'asc'], // 1 = customer
                             ],
                             rowGroup: {
                                 dataSrc: [0, 1] // di order grup dulu, baru customer

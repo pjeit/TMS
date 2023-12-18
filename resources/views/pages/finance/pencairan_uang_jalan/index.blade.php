@@ -19,7 +19,7 @@
     <div class="card radiusSendiri">
         {{-- <div class="row"> --}}
             <div class="card-header ">
-             
+                
             </div>
             
             <div class="card-body">
@@ -46,16 +46,16 @@
                                         $simpenIdCust = $item->id_cust; 
                                     @endphp
                                     <tr>
-                                        <td colspan="6">{{ $item->nama_cust }}</td>
+                                        <th colspan="6">{{ $item->nama_cust }}</th>
                                     </tr>
                                 @endif
                                 <tr>
                                 
-                                    <td>{{ $item->no_polisi}}</td>
+                                    <td width="140">{{ $item->no_polisi}}</td>
                                     <td>{{ $item->no_sewa }}</td>
-                                    <td>{{ $item->tanggal_berangkat }}</td>
+                                    <td width="125">{{ date('d-M-Y', strtotime($item->tanggal_berangkat)) }}</td>
                                     <td>{{ $item->nama_tujuan }}</td>
-                                    <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
+                                    <td>{{ $item->supir }} (0{{ trim($item->telpSupir) }})</td>
                                     <td>
                                         {{-- <form method="POST" action="{{ route('pencairan_uang_jalan.form') }}">
                                             @csrf
@@ -65,7 +65,7 @@
                                             </button>
                                         </form> --}}
                                         <a class="btn btn-success radiusSendiri" href="{{route('pencairan_uang_jalan.edit',[$item->id_sewa])}}">
-                                              <i class="fas fa-credit-card"></i> Pencairan
+                                            <i class="fas fa-credit-card"></i> Pencairan
                                         </a>  
                                         {{-- <a class="dropdown-item" href="{{ route('pencairan_uang_jalan.edit', [$item->id_sewa]) }}"><span class="fas fa-edit" style="width:24px"></span>Pencairan</a> --}}
                                     </td>

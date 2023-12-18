@@ -366,9 +366,11 @@ class BiayaOperasionalController extends Controller
                             'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
                             'c.nama as customer',
                             'g.nama_grup as nama_grup',
-                            'sp.nama as namaSupplier'
+                            'sp.nama as namaSupplier','s.tanggal_berangkat'
                         )
-                ->get();
+                        ->orderBy('s.id_sewa', 'DESC')
+                        ->orderBy('s.tanggal_berangkat', 'DESC')
+                        ->get();
             }
             
             return response()->json(["result" => "success",'data' => $data], 200);

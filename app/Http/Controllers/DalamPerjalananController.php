@@ -51,6 +51,7 @@ class DalamPerjalananController extends Controller
                 // ->whereNull('s.id_supplier')
                 ->whereNull('s.tanggal_kembali')
                 ->orderBy('c.id','ASC')
+                ->orderBy('s.tanggal_berangkat','DESC')
                 ->get();
         // dd($dataSewa);
     

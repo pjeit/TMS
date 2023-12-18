@@ -63,7 +63,7 @@
                                 @if ($item->id_supplier)
                                 <td>DRIVER REKANAN  ({{ $item->namaSupplier }})</td>
                                 @else
-                                <td>{{ $item->supir }} ({{ $item->telpSupir }})</td>
+                                <td>{{ $item->supir }} (0{{ trim($item->telpSupir) }})</td>
                                 @endif
                                 <td style="text-align: center">
                                         <div class="btn-group dropleft">

@@ -254,7 +254,6 @@ class PembayaranInvoiceController extends Controller
         DB::beginTransaction(); 
         $isErr = false;
         $Err = '';
-        // dd($data);`
 
         try {
             if($data['detail'] != null){
@@ -352,7 +351,7 @@ class PembayaranInvoiceController extends Controller
                         $user,//updated_by
                         now(),//updated_at
                         'Y'
-                    ) 
+                    )
                 );
                 
                 $kas_bank = KasBank::where('is_aktif','Y')->find($data['kas']);
@@ -361,6 +360,10 @@ class PembayaranInvoiceController extends Controller
                 $kas_bank->updated_at = now();
                 $kas_bank->save();
                 
+                // perbaiki ini, kredit customer cuma dikurangi biaya tarif, 
+                // karna kredit customer cuma nambah waktu input sewa kena tarif, biaya oprs dan biaya lain2 ga merubah kredit customer
+                // fix juga ketika billing to beda dengan id customer di sewa, logic kurangi kredit customer itu by id customer di sewa 
+                // bukan by id customer di billing to
                 $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
                 if($cust){
                     $kredit_sekarang = $cust->kredit_sekarang - $total_bayar;
