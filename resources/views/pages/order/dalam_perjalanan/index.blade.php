@@ -133,7 +133,7 @@
 <script>
 $(document).ready(function () {
     new DataTable('#tabelSewa', {
-        "ordering": false,
+        "ordering": true,
         order: [
             [0, 'asc'],
         ],
