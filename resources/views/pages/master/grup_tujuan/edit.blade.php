@@ -421,16 +421,16 @@
                 })
             }
 
-            let cekKolom = $('#dynamic_field > tbody > tr');
-            if (cekKolom.length <= 0) {
-                Swal.fire(
-                'Gagal menyimpan!',
-                'Tidak ada data untuk disimpan.',
-                'error'
-                )
-                event.preventDefault();
-                return false;
-            }
+            // let cekKolom = $('#dynamic_field > tbody > tr');
+            // if (cekKolom.length <= 0) {
+            //     Swal.fire(
+            //     'Gagal menyimpan!',
+            //     'Tidak ada data untuk disimpan.',
+            //     'error'
+            //     )
+            //     event.preventDefault();
+            //     return false;
+            // }
 
             event.preventDefault();
             Swal.fire({

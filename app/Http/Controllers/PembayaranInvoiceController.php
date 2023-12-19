@@ -105,148 +105,6 @@ class PembayaranInvoiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function storeV2NotUsed(Request $request)
-    {
-        $data = $request->post();
-        $user = Auth::user()->id; 
-        DB::beginTransaction(); 
-        $isErr = false;
-        dd($data);
-        // simpan data per invoice
-
-        try {
-            if($data['detail'] != null){
-                $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
-                $id_invoices = '';
-                $i = 0;
-                foreach ($data['detail'] as $key => $value) {
-                    if($value['diterima'] != null || $value['diterima'] != 0){
-                        $new = new InvoicePembayaran();
-                        $new->id_invoice = $key;
-                        $new->no_invoice = $value['no_invoice'];
-                        $new->billing_to = $data['billingTo'];
-                        $new->tgl_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
-                        
-                        $diterima = $value['diterima'];
-                        if($i == 0 && substr($value['no_invoice'], -2) != '/I'){
-                            // kalau index pertama, dikurangi biaya admin
-                            $diterima = $value['diterima']-(float)str_replace(',', '', $data['biaya_admin']);
-                            $new->biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
-                            $new->no_cek = isset($data['no_cek'])? $data['no_cek']:null;
-                        }
-                        $new->total_diterima = $diterima;
-                        $new->total_pph23 = $value['pph23'];
-                        $new->cara_pembayaran = $data['cara_pembayaran'];
-                        $new->id_kas = $data['kas'];
-                        $new->no_bukti_potong = $data['no_bukti_potong'];
-                        $new->catatan = $value['catatan'];
-                        $new->created_by = $user;
-                        $new->created_at = now();
-                        if($new->save()){
-                            $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($key);
-                            $keterangan_transaksi .= ' #'.$invoice->no_invoice;
-                            $id_invoices .= $invoice->id . ',';
-                            if($invoice){
-                                $invoice->total_dibayar += $value['dibayar'];
-                                $invoice->total_sisa -=  $invoice->total_dibayar;
-                                if($invoice->total_sisa < 0){
-                                    $isErr = true;
-                                }
-                                $currentStatus = '';
-                                if($invoice->total_sisa == 0){
-                                    $currentStatus = 'SELESAI PEMBAYARAN INVOICE';
-                                    $invoice->status = $currentStatus;
-                                }
-                                $invoice->updated_by = $user;
-                                $invoice->updated_at = now();
-                                if($invoice->save()){
-                                    if($currentStatus == 'SELESAI PEMBAYARAN INVOICE'){
-                                        $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
-                                        if($invoiceDetail){
-                                            foreach ($invoiceDetail as $i => $item) {
-                                                $check = InvoiceDetail::leftJoin('invoice', 'invoice.id', '=', 'invoice_detail.id_invoice')
-                                                                        ->where('invoice_detail.is_aktif', 'Y')
-                                                                        ->where('invoice.status', 'MENUNGGU PEMBAYARAN INVOICE')
-                                                                        ->where('id_sewa', $item->id_sewa)->get();
-                                                if ($check->isEmpty()) {
-                                                    $updateSewa = Sewa::where('is_aktif', 'Y')->find($item->id_sewa);
-                                                    $updateSewa->status = 'SELESAI PEMBAYARAN';
-                                                    $updateSewa->updated_by = $user;
-                                                    $updateSewa->updated_at = now();
-                                                    $updateSewa->save();
-
-                                                    // trigger update status jo detail jika semua sewa sudah selesai
-                                                    // trigger update status jo jika semua jo detail sudah selesai
-                                                }
-                                            }
-                                        }
-                                    }
-                                }else{
-                                    $isErr = true;
-                                }
-                            }
-                        }else{
-                            $isErr = true;
-                        }
-                    }
-                    $i++;
-                }
-
-                // dump data ke dump transaction
-                $total_bayar = (float)str_replace(',', '', $data['total_diterima']);
-                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                    array(
-                        $data['kas'],// id kas_bank dr form
-                        now(),//tanggal
-                        $total_bayar, //uang masuk (debit)
-                        0,// kredit 0 soalnya kan ini uang masuk
-                         CoaHelper::DataCoa(1100), //kode coa invoice
-                        'BAYAR_INVOICE',
-                        $keterangan_transaksi, //keterangan_transaksi
-                        substr($id_invoices, 0, -1),//keterangan_kode_transaksi
-                        $user,//created_by
-                        now(),//created_at
-                        $user,//updated_by
-                        now(),//updated_at
-                        'Y'
-                    ) 
-                );
-                $kas_bank = KasBank::where('is_aktif','Y')->find($data['kas']);
-                $kas_bank->saldo_sekarang += floatval(str_replace(',', '', $data['total_diterima']));
-                $kas_bank->updated_by = $user;
-                $kas_bank->updated_at = now();
-                $kas_bank->save();
-
-                $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
-                if($cust){
-                    $kredit_sekarang = $cust->kredit_sekarang - $value['dibayar'];
-                    if($kredit_sekarang < 0){
-                        $kredit_sekarang = 0;
-                    }
-                    $cust->kredit_sekarang = $kredit_sekarang;
-                    $cust->updated_by = $user;
-                    $cust->updated_at = now();
-                    $cust->save();
-                }
-
-                if($isErr === true){
-                    db::rollBack();
-                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi kesalahan!']);
-                }else{
-                    DB::commit();
-                    return redirect()->route('pembayaran_invoice.index')->with(["status" => "Success", "msg" => "Berhasil Membayar invoice!"]);
-                }
-
-            }
-     
-        } catch (ValidationException $e) {
-            // return redirect()->back()->withErrors($e->errors())->withInput();
-            db::rollBack();
-            return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi Kesalahan ketika pembayaran!']);
-        }
-       
-    }
-
     public function store(Request $request)
     {
         $data = $request->post();
@@ -261,8 +119,9 @@ class PembayaranInvoiceController extends Controller
                 $id_invoices = '';
                 $biaya_admin = isset($data['biaya_admin'])? floatval(str_replace(',', '', $data['biaya_admin'])):0;
                 $total_pph = isset($data['total_pph23'])? floatval(str_replace(',', '', $data['total_pph23'])):0;
-                $i = 0;
+                $i = 0; // ini index buat nempelin biaya admin
                 
+                // ini buat data invoice pembayaran
                 $pembayaran = new InvoicePembayaran();
                 $pembayaran->id_kas = $data['kas'];
                 $pembayaran->billing_to = $data['billingTo'];
@@ -287,6 +146,9 @@ class PembayaranInvoiceController extends Controller
                             $invoice->id_pembayaran = $pembayaran->id;
                             $invoice->pph = $value['pph23'];
                             if($i == 0){
+                                // ini dicek index ke berapa?
+                                // misal ini index pertama (index ke 0), terus ada biaya admin, maka biaya admin di inputin
+                                // selain index 0 ga bakal nyimpen data biaya admin
                                 $invoice->total_dibayar += $value['diterima'] - $biaya_admin;
                                 $invoice->biaya_admin = $biaya_admin;
                             }else{
@@ -312,7 +174,11 @@ class PembayaranInvoiceController extends Controller
                                                                     ->where('invoice_detail.is_aktif', 'Y')
                                                                     ->where('invoice.status', 'MENUNGGU PEMBAYARAN INVOICE')
                                                                     ->where('id_sewa', $item->id_sewa)->get();
-                                            if ($check->isEmpty()) {
+                                            // ini ngecek
+                                            // apakah masih ada invoice yg statusnya masih menunggu pembayaran?
+                                            // kalau tidak ada, berarti invoice sudah dibayar lunas semua
+                                            // kalau dibayar lunas semua, kita lanjut update status sewa sama update kredit customer
+                                            if($check->isEmpty()) {
                                                 $updateSewa = Sewa::where('is_aktif', 'Y')->find($item->id_sewa);
                                                 $updateSewa->status = 'SELESAI PEMBAYARAN';
                                                 $updateSewa->updated_by = $user;
@@ -321,6 +187,22 @@ class PembayaranInvoiceController extends Controller
 
                                                 // trigger update status jo detail jika semua sewa sudah selesai 
                                                 // trigger update status jo jika semua jo detail sudah selesai 
+
+                                                // rubah kredit customer
+                                                // cari data kredit customer berdasarkan sewa yg ada, lalu dikurangi biaya tarif sewanya
+                                                // dengan cara ini kredit customer bakal match, nambah berapa dan berkurang berapa
+                                                // ini kredit customer berdasarkan sewa, jadi meski di invoice billing to dirubah2, 
+                                                // tetep sewa itu bakal yg dikurangi, bukan kredit customer yg di billing to
+                                                $cust = Customer::where('is_aktif', 'Y')->findOrFail($updateSewa['id_customer']);
+                                                if($cust){
+                                                    $kredit_sekarang = $cust->kredit_sekarang - $updateSewa->total_tarif;
+                                                    $cust->kredit_sekarang = $kredit_sekarang;
+                                                    $cust->updated_by = $user;
+                                                    $cust->updated_at = now();
+                                                    $cust->save();
+                                                }
+
+                                                
                                             }
                                         }
                                     }
@@ -360,18 +242,20 @@ class PembayaranInvoiceController extends Controller
                 $kas_bank->updated_at = now();
                 $kas_bank->save();
                 
-                // perbaiki ini, kredit customer cuma dikurangi biaya tarif, 
+                // kredit customer cuma dikurangi biaya tarif, 
                 // karna kredit customer cuma nambah waktu input sewa kena tarif, biaya oprs dan biaya lain2 ga merubah kredit customer
                 // fix juga ketika billing to beda dengan id customer di sewa, logic kurangi kredit customer itu by id customer di sewa 
                 // bukan by id customer di billing to
-                $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
-                if($cust){
-                    $kredit_sekarang = $cust->kredit_sekarang - $total_bayar;
-                    $cust->kredit_sekarang = $kredit_sekarang;
-                    $cust->updated_by = $user;
-                    $cust->updated_at = now();
-                    $cust->save();
-                }
+                // $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
+                // dd($total_bayar);
+                // if($cust){
+                //     $kredit_sekarang = $cust->kredit_sekarang - $total_bayar;
+                //     $cust->kredit_sekarang = $kredit_sekarang;
+                //     $cust->updated_by = $user;
+                //     $cust->updated_at = now();
+                //     $cust->save();
+                // }
+                // die();
 
                 if($isErr === true){
                     db::rollBack();

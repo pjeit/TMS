@@ -44,7 +44,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="">Billing To</label>
-                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required disabled
+                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required disabled>
                                             <option value="">── BILLING TO ──</option>
                                             @foreach ($dataCustomers as $cust)
                                                 <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" {{ $cust->id == $idCust? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
@@ -131,7 +131,7 @@
                                 </div>
                             </div>
                             <div class="row" id="showTunai">
-                               
+                            
                             </div>
                             <div class="row" id="showCek">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">

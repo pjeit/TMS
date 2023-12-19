@@ -159,10 +159,17 @@ class BiayaOperasionalController extends Controller
                         if($item == 'ALAT' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
                             $i=1;
                             $driver = $value['supplier'] != 'null'? $value['supplier']:$value['driver'];
-        
+                            // ketika item == alat, tally, seal
+                            // data bakal dikumpulin ke array, selain 3 data itu, langsung dicairin ke dump
+
                             if($value['dicairkan'] != null){
                                 if (array_key_exists($value['tujuan'], $storeData)) {
                                     // tambah data jika tujuan sudah ada
+                                    // ini ngedit datanya, misal X tadi udah di input
+                                    // kalau udah ada, di concat data yg lama, misal tujuan X, tadi sudah ada driver Y,
+                                    // nah didata selanjutnya ada driver Z ke tujuan X juga, data di concat jadi driver: #Y #Z
+                                    // terus nominal di increment 100+200 
+                                    // intinya disini ngeconcat data yg ada
                                     $storeData[$value['tujuan']]['operasional'] += floatval(str_replace(',', '', $value['nominal']));
                                     $storeData[$value['tujuan']]['dicairkan'] += floatval(str_replace(',', '', $value['dicairkan']));
                                     $storeData[$value['tujuan']]['driver'] .= ' #'. $value['nopol'] .' ('.$driver.')';
@@ -170,6 +177,7 @@ class BiayaOperasionalController extends Controller
                                     $storeData[$value['tujuan']]['index'] += 1;
                                 } else {
                                     // buat data baru kalau data tujuan belum ada
+                                    // ini nyimpen data per tujuan, misal tujuan X, driver Y, dicairkan 100
                                     $storeData[$value['tujuan']] = [
                                         'operasional' => floatval(str_replace(',', '', $value['nominal'])),
                                         'dicairkan' => floatval(str_replace(',', '', $value['dicairkan'])),
@@ -191,6 +199,7 @@ class BiayaOperasionalController extends Controller
                                 $sewa_o->id_pembayaran = $pembayaran->id;
                                 $sewa_o->save();
 
+                                // ini langsung dicairin ke dump
                                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                     array(
                                         $data['pembayaran'], // id kas_bank dr form
@@ -224,7 +233,7 @@ class BiayaOperasionalController extends Controller
 
             if($item == 'ALAT' || $item == 'TALLY' || $item == 'SEAL PELAYARAN'){
                 foreach ($storeData as $key => $dump) {
-
+                    // ini ngecreate data pembayaran
                     $pembayaran = new SewaOperasionalPembayaran();
                     $pembayaran->deskripsi = $item;
                     $pembayaran->total_operasional = $dump['operasional'];
@@ -233,10 +242,14 @@ class BiayaOperasionalController extends Controller
                     $pembayaran->created_by = $user;
                     $pembayaran->created_at = now();
                     if($pembayaran->save()){
+                        // ini ngedit sewa operasional, ditempelin id pembayaran
+                        // logic mirip invoice pembayaran
                         SewaOperasional::whereIn('id', $dump['id_opr'])
                                         ->where('is_aktif', 'Y')
                                         ->update(['id_pembayaran' => $pembayaran->id]);
-
+                        
+                        // ini ngedump data array yg concat tadi
+                        // misal tujuan X, driver #Y #Z, nominal 300
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
                                 $data['pembayaran'], //id kas_bank dr form
@@ -338,10 +351,12 @@ class BiayaOperasionalController extends Controller
                                 $join->on('s.id_sewa', '=', 'so.id_sewa')
                                     ->where('so.is_aktif', 'Y')
                                     ->where('so.deskripsi', 'like', $item.'%');
+                                    // ini nge get data alat, pakai like soalnya ALAT blablabla
                             }else {
                                 $join->on('s.id_sewa', '=', 'so.id_sewa')
                                     ->where('so.is_aktif', 'Y')
                                     ->where('so.deskripsi', '=', $item);
+                                    // ini get kalau misal selain alat, langsung get datanya gapake like, karna udah fix deskripsinya
                             }
                         })
                         ->where('s.status', 'PROSES DOORING')
@@ -361,8 +376,8 @@ class BiayaOperasionalController extends Controller
                             's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
                             'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 'so.total_dicairkan',
                             'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
-                            DB::raw('COALESCE(gt.tally, 0) as tally'),
-                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), 
+                            DB::raw('COALESCE(gt.tally, 0) as tally'), // ini get data tally di grup tujuan (gt), kalau di gt gak diset, nanti nominal 0, kalau 0 ga bakal muncul di frontend
+                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), // ini get data seal di grup tujuan (gt), kalau di gt gak diset, nanti nominal 0, kalau 0 ga bakal muncul di frontend
                             'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
                             'c.nama as customer',
                             'g.nama_grup as nama_grup',
@@ -371,6 +386,14 @@ class BiayaOperasionalController extends Controller
                         ->orderBy('s.id_sewa', 'DESC')
                         ->orderBy('s.tanggal_berangkat', 'DESC')
                         ->get();
+                        // intinya, pertama get data sewa
+                        // terus kamu left join ke data sewa operasional, kalau misal ada sewa operasional, dengan deskripsi tersebut
+                        // pasti bakal muncul nominalnya, misal buruh 15000, alat 30000, tp misal waktu di join ga ada, maka nanti nominal 0
+                        // nah, kalau data 0, nanti datanya dimunculin di frontend, kalau ga 0, ga dimunculin
+                        // tapi kalau tally sama seal pelayaran, pokok data master di grup tujuan, baru muncul jika ada angkanya
+                        // kebalikan dari sewa operasional
+                        // sewa operasional = ketika join data 0, ga muncul di front end
+                        // grup tujuan (tally, seal) = ketika data TIDAK 0, maka muncul di front end
             }
             
             return response()->json(["result" => "success",'data' => $data], 200);

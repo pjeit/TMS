@@ -189,7 +189,6 @@ class TagihanRekananController extends Controller
                         $tagihan->biaya_admin = $biaya_admin;
                     }else{
                         $tagihan->tagihan_dibayarkan += $value['total_bayar'];
-
                     }
                     if($tagihan->sisa_tagihan == 0){
                         $tagihan->status = 'LUNAS';

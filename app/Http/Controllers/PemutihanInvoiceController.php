@@ -159,6 +159,16 @@ class PemutihanInvoiceController extends Controller
                                     $updateSewa->save();
                                     // trigger update status jo detail jika semua sewa sudah selesai
                                     // trigger update status jo jika semua jo detail sudah selesai
+
+                                    // logicnya sama kaya di pembayaran invoice
+                                    $cust = Customer::where('is_aktif', 'Y')->findOrFail($updateSewa['id_customer']);
+                                    if($cust){
+                                        $kredit_sekarang = $cust->kredit_sekarang - $updateSewa->total_tarif;
+                                        $cust->kredit_sekarang = $kredit_sekarang;
+                                        $cust->updated_by = $user;
+                                        $cust->updated_at = now();
+                                        $cust->save();
+                                    }
                                 }
                             }
                         }

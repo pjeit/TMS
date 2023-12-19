@@ -25,6 +25,8 @@ class RevisiInvoiceTruckingController extends Controller
 		$this->middleware('permission:DELETE_REVISI_INVOICE_TRUCKING', ['only' => ['destroy']]);  
     }
 
+    // sementara tak matiin, kalau memang dipakai, idupin lagi aja
+    // revisi invoice ini ngefeknya kalo udah selesai dibayar soalnya, bukan yg masih belum di bayar
     public function index()
     {
         $data = InvoicePembayaran::where('is_aktif', 'Y')->get();

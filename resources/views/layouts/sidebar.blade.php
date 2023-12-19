@@ -1031,7 +1031,12 @@
                 </a>
               </li>
               @endcan
-              @can('READ_REVISI_INVOICE_TRUCKING')
+
+              {{-- ini tak hide dulu, soalnya ini revisi invoice yg sudah dibayar
+              kalau perlu tinggal munculin lagi,
+              edit data yg masih belum invoice udah ke handle di menu belum invoice > edit, gaperlu sampai ke menu revisi ini --}}
+              
+              {{-- @can('READ_REVISI_INVOICE_TRUCKING')
               <li class="nav-item">
                 <a href="{{route('revisi_invoice_trucking.index')}}"
                   class="nav-link {{ request()->is('revisi_invoice_trucking*')? ' active' : '' }} "
@@ -1042,7 +1047,7 @@
                   </p>
                 </a>
               </li>
-              @endcan
+              @endcan --}}
 
               @php
               $READ_REVISI_TAGIHAN_REKANAN = auth()->user()->can('READ_REVISI_TAGIHAN_REKANAN');
