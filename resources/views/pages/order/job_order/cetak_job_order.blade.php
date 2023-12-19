@@ -203,7 +203,7 @@
                     <td class="p-10">{{$kont->seal}}</td> 
                     <td class="p-10">{{$kont->nama_tujuan}}</td> 
                     <td class="p-10">{{$kont->no_polisi}}</td> 
-                    <td class="p-10">{{\Carbon\Carbon::parse($kont->tanggal_berangkat)->format('d-M-Y')}}</td> 
+                    <td class="p-10">{{$kont->tanggal_berangkat?\Carbon\Carbon::parse($kont->tanggal_berangkat)->format('d-M-Y'):''}}</td> 
                     <td class="p-10 align-uang">Rp. {{number_format( $kont->storage)}}</td> 
                     <td class="p-10 align-uang">Rp. {{number_format( $kont->demurage)}}</td> 
                     <td class="p-10 align-uang">Rp. {{number_format( $kont->detention)}}</td> 
