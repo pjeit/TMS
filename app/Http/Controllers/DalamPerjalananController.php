@@ -690,7 +690,7 @@ class DalamPerjalananController extends Controller
                 $customer->save();
             }
             $sewa->total_tarif = floatval(str_replace(',', '', $data['total_tarif_tagih']));
-            $sewa->catatan = $data['alasan_cancel'];
+            $sewa->alasan_hapus = $data['alasan_cancel'].'[batal_muat]';
             $sewa->no_kontainer = $data['no_kontainer'];
             $sewa->no_surat_jalan = $data['no_surat_jalan'];
             $sewa->is_kembali = 'Y';
@@ -876,7 +876,7 @@ class DalamPerjalananController extends Controller
                 $customer->updated_at = now();
                 $customer->save();
             }
-            $sewa->catatan = $data['alasan_cancel'];
+            $sewa->alasan_hapus = $data['alasan_cancel'].'[cancel]';
             $sewa->updated_by = $user;
             $sewa->updated_at = now();
             $sewa->is_aktif = 'N';
