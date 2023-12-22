@@ -561,7 +561,7 @@ class JobOrderController extends Controller
             ->where('jaminan.is_aktif', '=', "Y")
             ->where('jaminan.id_job_order', '=', $JobOrder->id)
             ->first();
-         $data_kontainer = DB::table('job_order_detail as jod')
+        $data_kontainer = DB::table('job_order_detail as jod')
             ->select('jod.no_kontainer',
             'jod.seal',
             'gt.nama_tujuan',

@@ -309,10 +309,10 @@
                 <tfoot>
                 </tfoot>
             </table> --}}
-             <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
+            <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
         @else
-             @php $total = $TotalBiayaRev @endphp
-              <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
+            @php $total = $TotalBiayaRev @endphp
+            <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
         @endif
         @if ($JobOrder->no_va != null)
             @if($JobOrder->id_supplier == $dataSupplier->id)
@@ -343,7 +343,7 @@
         </div> --}}
 <br/>
 <table class="table-bawah" >
-      <thead>
+    <thead>
         
         </thead>
         <tbody> 
@@ -351,18 +351,18 @@
                 {{-- customer --}}
                 <td style="text-align: left; ">Di siapkan Oleh :</td> 
                 <td style="text-align: right; padding-left: 550px;">
-                   Di setujui Oleh :
+                    Di setujui Oleh :
                 </td>
             </tr>
             <br>
             <br/>
             <br/>
             <br/>
-             <tr>
+            <tr>
                 {{-- customer --}}
                 <td style="text-align: left; ">({{Auth::user()->username}})</td> 
                 <td style="text-align: right; padding-left: 550px;">
-                   (.........................)
+                    (.........................)
                 </td>
             </tr>
         
