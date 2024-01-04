@@ -252,15 +252,15 @@
                                 @endphp
                                 @foreach ($item->sewaOperasional as $i => $oprs)
                                     @if ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y' && $oprs->is_dipisahkan == 'N')
-                                        <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_dicairkan }}">
+                                        <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
                                         @php
-                                            $total_addcost += $oprs->total_dicairkan;
+                                            $total_addcost += $oprs->total_operasional;
                                         @endphp
                                         {{-- SUDAH DICAIRKAN --}}
                                         {{-- TAGIHKAN DI INVOICE --}}
                                     @elseif ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y' && $oprs->is_dipisahkan == 'Y')
                                         @php
-                                            $total_addcost_pisah += $oprs->total_dicairkan;
+                                            $total_addcost_pisah += $oprs->total_operasional;
                                         @endphp
                                     @endif
                                 @endforeach
@@ -429,19 +429,19 @@
                                 <form name="add_addcost_detail" id="add_addcost_detail">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-bold">Detail Add Cost</span>
-                                        {{-- <div class="d-flex justify-content-center align-items-center">
-                                            <div id="is_bank" class="mb-2 ">
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            {{-- <div id="is_bank" class="mb-2 ">
                                                 <select name="bank" class="select2" style="width: 200px; border: 3px solid #f239;" id="bank">
                                                     <option value="">─ Pilih Kas ─</option>
                                                     @foreach ($bank as $item)
                                                         <option value="{{ $item->id }}" {{ $item->id == 1? 'selected':'' }}>{{ $item->nama }}</option>
                                                     @endforeach
                                                 </select>
-                                            </div>
+                                            </div>--}}
                                             <div>
                                                 <button type="button" id="tambah" class="btn btn-primary btn-sm mb-2 ml-3"> <i class="fa fa-plus-circle"></i> Tambah Add Cost</button>
                                             </div>
-                                        </div> --}}
+                                        </div> 
                                     </div>
                                     <input type="hidden" id="deleted_temp" name="deleted_temp" placeholder="deleted_temp">
                                     <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel_addcost">
@@ -528,7 +528,28 @@
                 var kodeValue = $('#billingTo option:selected').attr('kode');
                 $('#kode_customer').val(kodeValue);
             //
-
+            const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+                let barisTabel = $("#table_invoice > tbody tr");
+                // console.log(barisTabel.length + 'baris tabel');
+                if (barisTabel.length == 0) {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `Detail Invoice Tidak boleh Kosong!`,
+                    })
+                    return;
+                    
+                }
             event.preventDefault(); // Prevent form submission
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar ?',
@@ -573,7 +594,7 @@
         //     scrollX: true 
         // }); 
         var dataSewa = <?= isset($dataSewa)? $dataSewa:NULL; ?> ;
-        console.log('dataSewa', dataSewa);
+        // console.log('dataSewa', dataSewa);
         // set value default tgl invoice
         var today = new Date();
         $('#tanggal_invoice').datepicker({
@@ -646,7 +667,7 @@
                 var value = parseFloat($(this).val()) || 0;
                 total += value;
             });
-            console.log('total', total);
+            // console.log('total', total);
             $("#total_pisah").val(total);
 
             var today = new Date();
@@ -756,6 +777,7 @@
 
         $(document).on('change', '#addcost_sewa', function(){ 
             let index = $("#addcost_sewa option:selected").attr('index');
+            // console.log(index);
             let selected_sewa = $("#addcost_sewa").val();
             let key = $('#key').val();
             if(key != selected_sewa){
@@ -771,18 +793,40 @@
 
         function updateDetail(index){
             const data = dataSewa[index];
+            // console.log(data==undefined);
+            if(data!=undefined)
+            {
+                $('#tanggal_berangkat').val( dateMask(data.tanggal_berangkat) );
+                $('#nama_tujuan').val( data.nama_tujuan ); 
+                $('#no_kontainer').val( data.no_kontainer ); 
+                $('#no_seal').val( data.seal_pelayaran ); 
+                $('#no_sj').val( data.no_surat_jalan ); 
+                $('#catatan').val( data.catatan ); 
+                $('#tarif').val( moneyMask(data.total_tarif) ); 
+                $('#addcost').val(''); 
+                $('#diskon').val(''); 
+                // $('#subtotal').val(moneyMask(data.total_tarif)); 
+                if(data.sewa_operasional.length > 0){
+                    showAddcostDetails(index, 'update');
+                }
+                // else{
+                //     hitung();
+                // }
+                // hitung();
 
-            $('#tanggal_berangkat').val( dateMask(data.tanggal_berangkat) );
-            $('#nama_tujuan').val( data.nama_tujuan ); 
-            $('#no_kontainer').val( data.no_kontainer ); 
-            $('#no_seal').val( data.seal_pelayaran ); 
-            $('#no_sj').val( data.no_surat_jalan ); 
-            $('#catatan').val( data.catatan ); 
-            $('#tarif').val( moneyMask(data.total_tarif) ); 
-            $('#addcost').val(''); 
-            $('#diskon').val(''); 
-            if(data.sewa_operasional.length > 0){
-                showAddcostDetails(index, 'update');
+            }
+            else
+            {
+                $('#tanggal_berangkat').val('');
+                $('#nama_tujuan').val(''); 
+                $('#no_kontainer').val(''); 
+                $('#no_seal').val(''); 
+                $('#no_sj').val(''); 
+                $('#catatan').val(''); 
+                $('#tarif').val(''); 
+                $('#addcost').val(''); 
+                $('#diskon').val(''); 
+                $('#subtotal').val(''); 
             }
         }
 
@@ -850,8 +894,12 @@
         });
 
         $(document).on('click', '#save_sewa_baru', function(event){ // save detail
-            save_sewa('baru', null);
 
+            save_sewa('baru',  null);
+            // updateAddCost($('#addcost_sewa').val()); //update data addcost yg berubah
+            // calculateGrandTotal(); //pas load awal langsung hitung grand total
+            // cekPisahInvoice();
+            // clearData();
             $('#modal_detail').modal('hide'); // close modal
         });
 
@@ -1046,7 +1094,7 @@
                         myjson = `{"id":${JSON.stringify(id)},
                                     "id_sewa":${JSON.stringify(id_sewa)},
                                     "deskripsi":${JSON.stringify( $('#addcost_deskripsi_'+id).val() )},
-                                    "total_dicairkan":${JSON.stringify( normalize($('#addcost_total_dicairkan_'+id).val()) )},
+                                    "total_operasional":${JSON.stringify( normalize($('#addcost_total_operasional_'+id).val()) )},
                                     "is_ditagihkan":${JSON.stringify( tagih )},
                                     "is_dipisahkan":${JSON.stringify( pisah )},
                                     "catatan":${JSON.stringify( $('#addcost_catatan_'+id).val() )}
@@ -1096,7 +1144,7 @@
                                     <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" title="${item.deskripsi}" class="form-control" readonly/>
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_total_dicairkan_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost" ${is_readonly} readonly />
+                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_operasional)}" class="form-control numaja uang hitungBiaya hitungAddCost" ${is_readonly} readonly />
                                 </td>
                                 <td style="text-align:center;">
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} ${isDisabledLTL} >
@@ -1114,6 +1162,7 @@
                     );
                 });
                 hitungAddCost();
+                // hitung();
             }
         }
 
@@ -1128,7 +1177,7 @@
                                     <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" title="${item.deskripsi}" class="form-control" />
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_total_dicairkan_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost"  />
+                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_operasional)}" class="form-control numaja uang hitungBiaya hitungAddCost"  />
                                 </td>
                                 <td style="text-align:center;">
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
@@ -1191,7 +1240,7 @@
                             <input type="text" id="addcost_deskripsi_x_${id}" class="form-control" />
                         </td>
                         <td>
-                            <input type="text" id="addcost_total_dicairkan_x_${id}" id_add_cost="x_${id}" class="form-control numaja uang hitungBiaya hitungAddCost" />
+                            <input type="text" id="addcost_total_operasional_x_${id}" id_add_cost="x_${id}" class="form-control numaja uang hitungBiaya hitungAddCost" />
                         </td>
                         <td style="text-align:center;">
                             <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_x_${id}" id_tagih="x_${id}" name="addcost_is_ditagihkan_x_${id}" >
@@ -1236,6 +1285,7 @@
             // $('#deleted').val(deletedValues.join(','));
             cekPisahInvoice();
             calculateGrandTotal();
+            
         });
 
         $(document).on('keyup', '.hitungBiaya', function (event) {
@@ -1244,9 +1294,11 @@
 
         function hitung(){ // hitung tarif + addcost - diskon 
             var id_sewa = $('#key').val();
-            var tarif = parseFloat($('#tarif').val().replace(/,/g, ''));
-            var addcost = parseFloat($('#addcost').val().replace(/,/g, ''));
-            var diskon = $('#diskon').val() == null || $('#diskon').val() == 0? 0:parseFloat($('#diskon').val().replace(/,/g, ''));
+            // var tarif = parseFloat($('#tarif').val().replace(/,/g, ''));
+            // var addcost = parseFloat($('#addcost').val().replace(/,/g, ''));
+            let tarif = $('#tarif').val() == null || $('#tarif').val() == 0? 0:normalize($('#tarif').val());
+            let addcost = $('#addcost').val() == null || $('#addcost').val() == 0? 0:normalize($('#addcost').val());
+            var diskon = $('#diskon').val() == null || $('#diskon').val() == 0? 0:normalize($('#diskon').val());
 
             if (diskon > (tarif + addcost) ){
                 diskon = (tarif + addcost);
@@ -1255,6 +1307,7 @@
 
             var subtotal = tarif + addcost - diskon;
             calculateGrandTotal();
+            // console.log(addcost);
             $('#subtotal').val(moneyMask(subtotal));
         }
 
@@ -1267,7 +1320,7 @@
                 var id = add_cost.getAttribute('id_add_cost');
                 var di_tagih = document.getElementById('addcost_is_ditagihkan_' + id);
                 var di_pisah = document.getElementById('addcost_is_dipisahkan_' + id);
-                var add_cost = $('#addcost_total_dicairkan_' + id).val();
+                var add_cost = $('#addcost_total_operasional_' + id).val();
                 if(di_tagih.checked == true && di_pisah.checked == false){
                     total_add_cost += normalize(add_cost);
                 }
@@ -1276,6 +1329,8 @@
                 }
             });
             let tarif = normalize($('#tarif').val());
+            console.log(total_add_cost);
+           
             $('#addcost').val(moneyMask(total_add_cost));
             $('#addcost_pisah').val(moneyMask(total_add_cost_pisah));
             $('#subtotal').val( moneyMask(tarif+total_add_cost) );

@@ -34,6 +34,7 @@ class CetakInvoiceController extends Controller
                 ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
                 ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
                 ->where('i.is_aktif', '=', 'Y')
+                ->where('i.total_sisa', '!=', 0)
                 // ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
                 ->orderBy('i.id','ASC')
                 ->get();
