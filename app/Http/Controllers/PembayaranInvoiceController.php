@@ -864,10 +864,10 @@ class PembayaranInvoiceController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('pembayaran_invoice.index')->with(['status' => 'Success', 'msg'  => 'Edit berhasil!']);
+            return redirect()->route('cetak_invoice.index')->with(['status' => 'Success', 'msg'  => 'Edit berhasil!']);
         } catch (ValidationException $e) {
             db::rollBack();
-            return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Edit gagal!']);
+            return redirect()->route('cetak_invoice.index')->with(['status' => 'error', 'msg' => 'Edit gagal!']);
         }
     }
 
