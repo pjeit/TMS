@@ -120,7 +120,7 @@ class LaporanBankController extends Controller
             $transaction = KasBankTransaction::where('is_aktif', 'Y')
                                             ->where('id_kas_bank', $tipe)
                                             // ->whereBetween('tanggal', [$tgl_default, $tgl_awal]) 
-                                            ->where('tanggal','<=', $tgl_awal)
+                                            ->where('tanggal','<', $tgl_awal)
                                             ->get();
             
             $sumKredit  = $transaction->sum('kredit'); // ini hitung sum kreditnya
