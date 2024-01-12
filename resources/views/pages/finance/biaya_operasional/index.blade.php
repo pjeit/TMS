@@ -31,8 +31,21 @@
                     <ul class="list-inline">
                         <div class="row">
                             <div class="col-sm-12 col-md-3 col-lg-3 bg-white pb-3">
+
                                 <div class="form-group">
                                     <label for="">Jenis Biaya</label>
+                                    {{-- <div class="icheck-primary d-inline">
+                                        <input id="item" type="radio" name="item" value="TALLY" >
+                                        <label class="form-check-label" for="item">TALLY</label>
+                                    </div>
+                                    <div class="icheck-primary d-inline ml-3">
+                                        <input id="item1" type="radio" name="item" value="SEAL PELAYARAN" >
+                                        <label class="form-check-label" for="item1">SEAL PELAYARAN</label>
+                                    </div>
+                                    <div class="icheck-primary d-inline ml-3">
+                                        <input id="item2" type="radio" name="item" value="ALAT" >
+                                        <label class="form-check-label" for="item2">ALAT</label><br>
+                                    </div> --}}
                                     <select class="form-control selectpicker" required name="item" id="item"
                                         data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                         <option value="">­­— PILIH DATA —</option>
@@ -100,16 +113,54 @@
         $('#save').submit(function(event) {
             var item = $('#item').val();
             var isOk = 0;
+            var dicairkan_nol = false;
+            var dicairkan_null = false;
 
             // check apakah sudah ada yg dicentang?
-                var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                var checkboxes = document.querySelectorAll('.item');
                 checkboxes.forEach(function(checkbox) {
                     if (checkbox.checked) {
                         isOk = 1;
                     }
                 });
             //
+                var textbox_dicairkan = document.querySelectorAll('.item_dicairkan');
+                var textbox_catatan = document.querySelectorAll('.item_catatan');
 
+                for (var i = 0; i < textbox_dicairkan.length; i++) {
+                    console.log(checkboxes[i].value);
+                    console.log(textbox_dicairkan[i].value=='');
+                    console.log(checkboxes[i].value == textbox_dicairkan[i].getAttribute('item')&&checkboxes[i].checked && textbox_dicairkan[i].value == '');
+                    // item itu get idnya val itu di checkboxnya
+                    //misal val checkbox == 492 sama dengan item attr nya 492, jadi true
+                    if (checkboxes[i].value == textbox_dicairkan[i].getAttribute('item') &&checkboxes[i].checked && textbox_dicairkan[i].value == '') {
+                        event.preventDefault(); 
+                        Swal.fire({
+                            icon: 'error',
+                            text: 'Jumlah dicairkan harus diisi',
+                        });
+                        return; 
+                    }
+
+                    if (checkboxes[i].value == textbox_dicairkan[i].getAttribute('item') &&checkboxes[i].checked && textbox_dicairkan[i].value == 0&&textbox_catatan[i].value == '') {
+                        event.preventDefault(); 
+                        Swal.fire({
+                            icon: 'error',
+                            text: 'Catatan Harus diisi jika pencairan 0 (artinya tidak ada pencairan)',
+                        });
+                        return; 
+                    }
+                }
+                textbox_dicairkan.forEach(function(dicairkan) {
+                    if (dicairkan.value == 0) {
+                        dicairkan_nol = true;
+                    }
+                });
+                // console.log(dicairkan_null);
+            // if (isOk&&dicairkan_null) {
+                   
+            //     }
+                
             // validasi sebelum di submit
                 if (item == '' || item == null || isOk == 0) {
                     event.preventDefault(); // Prevent form submission

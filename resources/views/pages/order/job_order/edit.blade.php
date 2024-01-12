@@ -172,6 +172,7 @@
                             <table id="tabelJO" class="tabelJO table table-striped hover">
                                 <thead>
                                     <tr>
+                                        <th>No.</th>
                                         <th width="">No. Kontainer</th>
                                         <th width="">Seal</th>
                                         <th width="">Tipe</th>
@@ -185,12 +186,15 @@
                                     @if ($data['detail'])
                                     @foreach (json_decode($data['detail']) as $key => $item)
                                     <tr id="row{{$key}}">
-    
                                         <td>
-                                            <input type="hidden" id="no_kontainer" name="detail[{{$key}}][no_kontainer]"
-                                                class="form-control no_kontainerx" maxlength="20"
-                                                value="{{$item->no_kontainer}}" readonly>
-                                            <span>{{$item->no_kontainer}}</span>
+                                            <span class="text-bold">{{$key+1}}. </span>
+                                        </td>
+                                        <td>
+                                            <input type="text" id="no_kontainer" name="detail[{{$key}}][no_kontainer]"
+                                                    class="form-control no_kontainerx" maxlength="20"
+                                                    value="{{$item->no_kontainer}}" >
+                                            {{-- <span class="text-bold">{{$key+1}}. </span> --}}
+                                            {{-- <span>{{$item->no_kontainer}}</span> --}}
                                         </td>
                                         <td>
                                             {{-- <input type="text" id="seal" name="detail[{{$key}}][seal]"

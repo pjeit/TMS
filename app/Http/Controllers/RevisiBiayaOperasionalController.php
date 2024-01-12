@@ -63,7 +63,7 @@ class RevisiBiayaOperasionalController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        dd($data);
+        // dd($data);
 
         if($data['type'] == 'save'){
             try {

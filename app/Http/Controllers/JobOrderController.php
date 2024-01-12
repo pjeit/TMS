@@ -362,6 +362,9 @@ class JobOrderController extends Controller
             if(isset($data['detail'])){
                 foreach ($data['detail'] as $key => $detail) {
                     $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($detail['id_detail']);
+                    if(isset($detail['no_kontainer'])){
+                        $JOD->no_kontainer = $detail['no_kontainer'];
+                    }
                     if(isset($detail['tujuan'])){
                         $JOD->id_grup_tujuan = $detail['tujuan'];
                     }
