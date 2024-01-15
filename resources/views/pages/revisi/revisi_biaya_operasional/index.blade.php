@@ -266,7 +266,7 @@
                                                             <span>${data[i].get_operasional[0].deskripsi}</span> 
                                                         </td>`);
                                         }
-                                        
+                                         
                                         // row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan?item.get_sewa.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" class="form-control" title="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan?item.get_sewa.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" readonly />`).join('<br>')}</td>`);
                                         row.append(`<td>${data[i].get_operasional.map(item => 
                                         `<input type="text" value="${item.get_sewa.no_polisi} (${item.get_sewa.get_karyawan ? item.get_sewa.get_karyawan.nama_panggilan : 'REKANAN'})" 

@@ -102,6 +102,7 @@
                     <tr>
                         <th>No. BL</th>
                         <th>No. Kontainer</th>
+                        <th>Kapal</th>
                         <th>Pengirim</th>
                         <th>Pelayaran</th>
                         <th>Tujuan</th>
@@ -158,8 +159,9 @@
                     if (data.length > 0) {
                         const rows = data.map(item => (
                             `<tr>
-                                <td><b>◾ ${item.get_j_o.no_bl}</b></td>
+                                <td><b>◾ ${item.get_j_o.no_bl} </b></td>
                                 <td>${item.no_kontainer}</td>
+                                <td>${item.get_j_o.kapal} ${item.get_j_o.voyage}</td>
                                 <td> [${item.get_j_o.get_customer.kode}] ${item.get_j_o.get_customer.nama}</td>
                                 <td>${item.get_j_o.get_supplier.nama}</td>
                                 <td>${item.get_tujuan?item.get_tujuan.nama_tujuan:'Belum Ada Tujuan'}</td>
