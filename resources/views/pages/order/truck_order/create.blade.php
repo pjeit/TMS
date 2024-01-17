@@ -57,7 +57,7 @@
                         {{-- <button type="submit">wet</button> --}}
                     </div>
                     <div class="card-body">
-                         <div class="row mb-2">
+                        <div class="row mb-2">
                             <div class="col-6 text-center radiusSendiri" id="inbound">
                                 {{-- <a href="" class="rubik-heading-2" style="text-decoration: none; color:black;">
                                     Bongkar (INBOUND)
@@ -77,7 +77,7 @@
                         </div>
                         <div class="row">
                             <div class="col-12">
-                                 <div class="form-group">
+                                <div class="form-group">
                                     <label for="credit_customer">Kredit Customer</label>
                                     <div class="progress">
                                         <div class="progress-bar " role="progressbar" aria-valuenow="" aria-valuemin="100" aria-valuemax="100" name="credit_customer" id="credit_customer" style=""></div>
@@ -245,21 +245,38 @@
                                     <input type="hidden" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">
                                 </div>
                                 
-                                <div class="form-group" id="stack_tl_form">
-                                    <label for="select_driver">Stack Full</label>
-                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
-                                        <option value="">── Pilih Stack ──</option>
-                                        <option value="tl_perak">Perak</option>
-                                        <option value="tl_priuk">Priuk</option>
-                                        <option value="tl_teluk_lamong">Teluk Lamong</option>
-                                    </select>
-                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
-                                    {{-- <input type="text" id="value_jenis_tl" name="value_jenis_tl" value=""> --}}
-
-
+                                <div class="row">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="stack_tl_form">
+                                        <label for="select_driver">Stack Full</label>
+                                            <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
+                                            <option value="">── Pilih Stack ──</option>
+                                            <option value="tl_perak">Perak</option>
+                                            <option value="tl_priuk">Priuk</option>
+                                            <option value="tl_teluk_lamong">Teluk Lamong</option>
+                                        </select>
+                                        <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+                                        {{-- <input type="text" id="value_jenis_tl" name="value_jenis_tl" value=""> --}}
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="buruh_pje_form">
+                                        <label for="select_driver">Apakah ada Buruh?</label>
+                                        <br>
+                                        {{-- <input type="checkbox" id="buruh_pje" value="Y"> --}}
+                                        <div class="icheck-primary d-inline">
+                                            <input id="buruh_pje_Y" type="radio" name="buruh_pje" value="Y" >
+                                            <label class="form-check-label" for="buruh_pje_Y">Ya</label>
+                                        </div>
+                                        <div class="icheck-primary d-inline ml-5">
+                                            <input id="buruh_pje_N" type="radio" name="buruh_pje" value="N" checked>
+                                            <label class="form-check-label" for="buruh_pje_N">Tidak</label><br>
+                                        </div>
+                                        {{-- <select class="form-control select2" style="width: 100%;" id='buruh_pje' name="buruh_pje">
+                                            <option value="N">Tidak</option>
+                                            <option value="Y">Ada</option>
+                                        </select> --}}
+                                        <input type="hidden" id="buruh_pje_hidden" name="buruh_pje_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
