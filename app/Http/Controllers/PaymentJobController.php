@@ -212,14 +212,14 @@ class PaymentJobController extends Controller
 
             if($dataJaminan){
                 $perhitunganSaldo = $data_saldo_kas_sekarang->saldo_sekarang - (($data['total_sblm_dooring']+$dataJaminan->nominal));
-                  DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                     array(
                         $data['pembayaran'],// id kas_bank dr form
                         now(),//tanggal
                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                         $data['total_sblm_dooring']+$dataJaminan->nominal, //uang keluar (kredit)
                         CoaHelper::DataCoa(5003), //kode coa pelayaran
-                        'biaya_pelayaran_jaminan',
+                        'pembayaran_jaminan',
                         'UANG KELUAR # BIAYA PELAYARAN + UANG JAMINAN # '.$pembayaran_jo->no_jo.
                         '# PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.
                         '# PELABUHAN BONGKAR : '.$pembayaran_jo->pelabuhan_bongkar.

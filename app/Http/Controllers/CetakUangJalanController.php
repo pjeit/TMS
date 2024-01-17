@@ -6,7 +6,7 @@ use App\Models\UangJalanRiwayat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\PDF; // use PDF;
+use Barryvdh\DomPDF\Facade\Pdf; // use PDF;
 
 class CetakUangJalanController extends Controller
 {
@@ -99,7 +99,7 @@ class CetakUangJalanController extends Controller
             ->get();
         // dd($data_sewa_biaya);
 
-         $pdf = PDF::loadView('pages.finance.cetak_uang_jalan.cetak',[
+         $pdf = Pdf::loadView('pages.finance.cetak_uang_jalan.cetak',[
             'judul' => "cetak uang jalan",
             'data_uang_jalan' => $data_uang_jalan,
             'data_sewa_biaya' => $data_sewa_biaya,

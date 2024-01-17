@@ -8,7 +8,7 @@ use App\Models\KasBank;
 use App\Models\KasBankTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\db;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helper\CoaHelper;
 class PengembalianJaminanController extends Controller
@@ -23,14 +23,16 @@ class PengembalianJaminanController extends Controller
 
     public function index()
     {
-        $data = JobOrder::where('job_order.is_aktif', 'Y')
-                ->where('job_order.status', 'SELESAI')
-                ->join('jaminan as j', function($join) {
-                $join->on('job_order.id', '=', 'j.id_job_order')
-                    ->where('j.is_aktif', '=', "Y")
-                    ->whereIn('j.status', ['DIBAYARKAN', 'REQUEST']);
-                })->get();
-        // dd($data);
+        $data = JobOrder::where('is_aktif', 'Y')->with('getDetails.getSewa', 'jaminan')
+                        ->whereHas('jaminan',function ($query) {
+                            $query->where('is_aktif', 'Y')
+                            ->whereIn('status', ['DIBAYARKAN', 'REQUEST']);
+                        })
+                        ->whereHas('getDetails.getSewa',function ($query) {
+                            $query->where('is_aktif', 'Y')
+                            ->whereIn('status', ['MENUNGGU INVOICE', 'MENUNGGU PEMBAYARAN INVOICE', 'SELESAI PEMBAYARAN']);
+                        })->get();
+
         $bank = KasBank::where('is_aktif', 'Y')->get();
         return view('pages.finance.pengembalian_jaminan.index',[
             'judul' => 'Pengembalian Jaminan',
@@ -106,7 +108,6 @@ class PengembalianJaminanController extends Controller
         $user = Auth::user()->id; 
         $data = $request->collect();
         DB::beginTransaction(); 
-
         try {
             $jaminan = Jaminan::where('is_aktif', 'Y')->where('id_job_order', $data['id_jo'])->first();
             if($jaminan){

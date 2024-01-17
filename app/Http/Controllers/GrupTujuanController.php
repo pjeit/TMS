@@ -105,12 +105,13 @@ class GrupTujuanController extends Controller
                                 ->where('is_aktif', 'Y')
                                 ->where('grup_tujuan_id', $value->id)
                                 ->get();
-            
+
             $data['tujuan'][$key]=(object)array(
                 'id'=>$value->id,
                 'grup_id'=>$value->grup_id,
                 'marketing_id'=>$value->marketing_id,
                 'nama_tujuan'=>$value->nama_tujuan,
+                'pic'=>$value->pic,
                 'alamat'=>$value->alamat,
                 'jenis_tujuan'=>$value->jenis_tujuan,
                 'harga_per_kg'=>$value->harga_per_kg,
@@ -150,7 +151,7 @@ class GrupTujuanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateOld(Request $request, $id)
     {
         try {
             $data = $request->post();
@@ -181,70 +182,71 @@ class GrupTujuanController extends Controller
                         'updated_by' => $user,
                     ]);
             }
-
+            
+            // dd($data['data']['tujuan'][0]['komisi_driver_hidden'] != '');
             foreach ($data['data']['tujuan'] as $key => $value) {
-                if($value['id_tujuan'] != 'undefined'){
-                    // ini edit 
+                if(isset($value['id_tujuan']) && $value['id_tujuan'] != 'undefined' ){
                     $tarif = ($value['tarif'] != '')? floatval(str_replace(',', '', $value['tarif'])):0;
                     $komisi = ($value['komisi'] != '')? floatval(str_replace(',', '', $value['komisi'])):0;
-                    $komisi_driver_hidden = ($value['komisi_driver_hidden'] != '')? floatval(str_replace(',', '', $value['komisi_driver_hidden'])):0;
+                    $komisi_driver_hidden = isset($value['komisi_driver_hidden'])? $value['komisi_driver_hidden'] != ''? floatval(str_replace(',', '', $value['komisi_driver_hidden'])):0 : 0;
 
                     $uang_jalan = ($value['uang_jalan'] != '')? floatval(str_replace(',', '', $value['uang_jalan'])):0;
-                    $harga_per_kg = ($value['harga_per_kg_hidden'] != '')? floatval(str_replace(',', '', $value['harga_per_kg_hidden'])):0;
+                    $harga_per_kg = isset($value['harga_per_kg_hidden'])? $value['harga_per_kg_hidden'] != ''? floatval(str_replace(',', '', $value['harga_per_kg_hidden'])):0 : 0;
 
                     $edit_tujuan = GrupTujuan::where('is_aktif', 'Y')->findOrFail($value['id_tujuan']);
                     if($edit_tujuan){
-                        $edit_tujuan->marketing_id = $value['marketing_hidden'];
+                        $edit_tujuan->marketing_id = isset($value['marketing_hidden'])? $value['marketing_hidden']:null;
                         $edit_tujuan->nama_tujuan = $value['nama_tujuan'];
+                        $edit_tujuan->pic = $value['pic'];
                         $edit_tujuan->alamat = $value['alamat_hidden'];
                         $edit_tujuan->jenis_tujuan = $value['jenis_tujuan'];
                         $edit_tujuan->harga_per_kg = $harga_per_kg;
-                        $edit_tujuan->min_muatan = $value['min_muatan_hidden'];
+                        $edit_tujuan->min_muatan = isset($value['min_muatan_hidden'])? $value['min_muatan_hidden']:null;
                         $edit_tujuan->uang_jalan = $uang_jalan;
                         $edit_tujuan->tarif = $tarif;
                         $edit_tujuan->komisi = $komisi;
                         $edit_tujuan->komisi_driver = $komisi_driver_hidden;
                         $edit_tujuan->catatan = $value['catatan'];
-                        $edit_tujuan->seal_pje = ($value['seal_pje_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pje_hidden'])):null;
-                        $edit_tujuan->seal_pelayaran = ($value['seal_pelayaran_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pelayaran_hidden'])):null;
-                        $edit_tujuan->plastik = ($value['plastik_hidden'] != '')? floatval(str_replace(',', '', $value['plastik_hidden'])):null;
-                        $edit_tujuan->tally = ($value['tally_hidden'] != '')? floatval(str_replace(',', '', $value['tally_hidden'])):null;
-                        $edit_tujuan->kargo = $value['kargo_hidden'];
+                        $edit_tujuan->seal_pje = isset($value['seal_pje_hidden'])? ($value['seal_pje_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pje_hidden'])):null : null;
+                        $edit_tujuan->seal_pelayaran = isset($value['seal_pelayaran_hidden'])? ($value['seal_pelayaran_hidden'] != '')? floatval(str_replace(',', '', $value['seal_pelayaran_hidden'])):null : null;
+                        $edit_tujuan->plastik = isset($value['plastik_hidden'])? ($value['plastik_hidden'] != '')? floatval(str_replace(',', '', $value['plastik_hidden'])):null : null;
+                        $edit_tujuan->tally = isset($value['tally_hidden'])? ($value['tally_hidden'] != '')? floatval(str_replace(',', '', $value['tally_hidden'])):null : null;
+                        $edit_tujuan->kargo = isset($value['kargo_hidden'])? $value['kargo_hidden']:null;
                         $edit_tujuan->updated_by = $user;
                         $edit_tujuan->updated_at = now();
                         if($edit_tujuan->save()){
-                            if($value['jenis_tujuan']=="FTL")
-                            {
-                                $data_biaya = json_decode($value['obj_biaya'], true);
-                                foreach ($data_biaya as $key => $item) {
-                                    $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
-        
-                                    $new_biaya = GrupTujuanBiaya::where('is_aktif', 'Y')->find($item['id']);
-                                    if($new_biaya){
-                                        $new_biaya->biaya = $biaya;
-                                        $new_biaya->deskripsi = $item['deskripsi'];
-                                        $new_biaya->catatan = $item['catatan'];
-                                        $new_biaya->updated_by = $user;
-                                        $new_biaya->updated_at = now();
-                                        $new_biaya->save();
-                                    }else{
-                                        $new_biaya = new GrupTujuanBiaya();
-                                        $new_biaya->grup_id = $value['grup_hidden'];
-                                        $new_biaya->grup_tujuan_id = $edit_tujuan->id;
-                                        $new_biaya->biaya = $biaya;
-                                        $new_biaya->deskripsi = $item['deskripsi'];
-                                        $new_biaya->catatan = $item['catatan'];
-                                        $new_biaya->created_by = $user;
-                                        $new_biaya->created_at = now();
-                                        $new_biaya->save();
-                                    }
+                            if($value['jenis_tujuan']=="FTL"){
+                                if(isset($value['obj_biaya'])){
+                                    $data_biaya = json_decode($value['obj_biaya'], true);
+                                    foreach ($data_biaya as $key => $item) {
+                                        $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
+            
+                                        $new_biaya = GrupTujuanBiaya::where('is_aktif', 'Y')->find($item['id']);
+                                        if($new_biaya){
+                                            $new_biaya->biaya = $biaya;
+                                            $new_biaya->deskripsi = $item['deskripsi'];
+                                            $new_biaya->catatan = $item['catatan'];
+                                            $new_biaya->updated_by = $user;
+                                            $new_biaya->updated_at = now();
+                                            $new_biaya->save();
+                                        }else{
+                                            $new_biaya = new GrupTujuanBiaya();
+                                            $new_biaya->grup_id = $value['grup_hidden'];
+                                            $new_biaya->grup_tujuan_id = $edit_tujuan->id;
+                                            $new_biaya->biaya = $biaya;
+                                            $new_biaya->deskripsi = $item['deskripsi'];
+                                            $new_biaya->catatan = $item['catatan'];
+                                            $new_biaya->created_by = $user;
+                                            $new_biaya->created_at = now();
+                                            $new_biaya->save();
+                                        }
+                                    }    
                                 }
                             }
                         }
                     }
                 }else{
                      // ini create baru
-
                     $tarif = ($value['tarif'] != '')? floatval(str_replace(',', '', $value['tarif'])):0;
                     $komisi = ($value['komisi'] != '')? floatval(str_replace(',', '', $value['komisi'])):0;
                     $uang_jalan = ($value['uang_jalan'] != '')? floatval(str_replace(',', '', $value['uang_jalan'])):0;
@@ -255,6 +257,7 @@ class GrupTujuanController extends Controller
                     $new_tuj->grup_id = $value['grup_hidden'];
                     $new_tuj->marketing_id = $value['marketing_hidden'];
                     $new_tuj->nama_tujuan = $value['nama_tujuan'];
+                    $new_tuj->pic = $value['pic'];
                     $new_tuj->alamat = $value['alamat_hidden'];
                     $new_tuj->jenis_tujuan = $value['jenis_tujuan'];
                     $new_tuj->harga_per_kg = $harga_per_kg;
@@ -296,7 +299,152 @@ class GrupTujuanController extends Controller
             // return redirect()->route('grup_tujuan.index')->with('status','Success!!');
             return redirect('grup_tujuan')->with(['status' => 'Success', 'msg' => 'Data berhasil disimpan!']);
         } catch (ValidationException $e) {
-            return redirect('grup_tujuan')->with('status','Error');
+            return redirect('grup_tujuan')->with('status', 'Error');
+        }
+    }
+
+    public function update_tujuan(Request $request){
+        $data = $request->post();
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        // dd($data);
+
+        try {
+            if($data['delete_biaya'] != null){
+                $del = explode(',', $data['delete_biaya']);
+                // Update the records
+                $delete_biaya = GrupTujuanBiaya::whereIn('id', $del)
+                    ->update([
+                        'updated_by' => $user,
+                        'updated_at' => now(),
+                        'is_aktif' => 'N',
+                    ]);
+            }
+
+            $grup_tujuan = GrupTujuan::where('is_aktif', 'Y')->find($data['tujuan_id']);
+            
+            if($grup_tujuan){
+                $grup_tujuan->marketing_id = $data['marketing'][0];
+                $grup_tujuan->nama_tujuan = $data['nama_tujuan'];
+                $grup_tujuan->pic = $data['pic'];
+                $grup_tujuan->alamat = $data['alamat'];
+                $grup_tujuan->jenis_tujuan = $data['select_jenis_tujuan'];
+                $grup_tujuan->harga_per_kg = $data['harga_per_kg'];
+                $grup_tujuan->min_muatan = $data['min_muatan'];
+                $grup_tujuan->uang_jalan = floatval(str_replace(',', '', $data['uang_jalan']));
+                $grup_tujuan->tarif = floatval(str_replace(',', '', $data['tarif']));
+                $grup_tujuan->komisi = floatval(str_replace(',', '', $data['komisi']));
+                $grup_tujuan->komisi_driver = floatval(str_replace(',', '', $data['komisi_driver']));
+                $grup_tujuan->catatan = $data['catatan'];
+                $grup_tujuan->seal_pje = floatval(str_replace(',', '', $data['seal_pje']));
+                $grup_tujuan->seal_pelayaran = floatval(str_replace(',', '', $data['seal_pelayaran']));
+                $grup_tujuan->plastik = floatval(str_replace(',', '', $data['plastik_pje']));
+                $grup_tujuan->tally = floatval(str_replace(',', '', $data['tally_pje']));
+                $grup_tujuan->kargo = $data['kargo_pje'];
+                $grup_tujuan->updated_by = $user;
+                $grup_tujuan->updated_at = now();
+                $grup_tujuan->save();
+
+                if(isset($data['biaya'])){
+                    foreach ($data['biaya'] as $key => $biaya) {
+                        if(substr($key, 0, 1) != 'x'){ 
+                            // update
+                            $tujuan_biaya = GrupTujuanBiaya::where('is_aktif', 'Y')->find($key);
+                            if($tujuan_biaya){
+                                $tujuan_biaya->deskripsi = $biaya['deskripsi'];
+                                $tujuan_biaya->biaya = floatval(str_replace(',', '', $biaya['biaya']));
+                                $tujuan_biaya->catatan = $biaya['catatan'];
+                                $tujuan_biaya->updated_by = $user;
+                                $tujuan_biaya->updated_at = now();
+                                $tujuan_biaya->save();
+                            }
+                        }else{
+                            $new = new GrupTujuanBiaya();
+                            $new->grup_id = $data['grup_id'];
+                            $new->grup_tujuan_id = $data['tujuan_id'];
+                            $new->deskripsi = $biaya['deskripsi'];
+                            $new->biaya = floatval(str_replace(',', '', $biaya['biaya']));
+                            $new->catatan = $biaya['catatan'];
+                            $new->created_by = $user;
+                            $new->created_at = now();
+                            $new->save();
+                        }
+                    }
+                }
+
+            }else{
+                if($data['tujuan_id'] == null){
+                    $new_grup_tujuan = new GrupTujuan();
+                    $new_grup_tujuan->grup_id = $data['grup_id'];
+                    $new_grup_tujuan->marketing_id = $data['marketing'][0];
+                    $new_grup_tujuan->nama_tujuan = $data['nama_tujuan'];
+                    $new_grup_tujuan->pic = $data['pic'];
+                    $new_grup_tujuan->alamat = $data['alamat'];
+                    $new_grup_tujuan->jenis_tujuan = $data['select_jenis_tujuan'];
+                    $new_grup_tujuan->harga_per_kg = $data['harga_per_kg'];
+                    $new_grup_tujuan->min_muatan = $data['min_muatan'];
+                    $new_grup_tujuan->uang_jalan = floatval(str_replace(',', '', $data['uang_jalan']));
+                    $new_grup_tujuan->tarif = floatval(str_replace(',', '', $data['tarif']));
+                    $new_grup_tujuan->komisi = floatval(str_replace(',', '', $data['komisi']));
+                    $new_grup_tujuan->komisi_driver = floatval(str_replace(',', '', $data['komisi_driver']));
+                    $new_grup_tujuan->catatan = $data['catatan'];
+                    $new_grup_tujuan->seal_pje = floatval(str_replace(',', '', $data['seal_pje']));
+                    $new_grup_tujuan->seal_pelayaran = floatval(str_replace(',', '', $data['seal_pelayaran']));
+                    $new_grup_tujuan->plastik = floatval(str_replace(',', '', $data['plastik_pje']));
+                    $new_grup_tujuan->tally = floatval(str_replace(',', '', $data['tally_pje']));
+                    $new_grup_tujuan->kargo = $data['kargo_pje'];
+                    $new_grup_tujuan->created_by = $user;
+                    $new_grup_tujuan->created_at = now();
+                    $new_grup_tujuan->save();
+    
+                    if(isset($data['biaya'])){
+                        foreach ($data['biaya'] as $key => $biaya) {
+                            $new = new GrupTujuanBiaya();
+                            $new->grup_id = $data['grup_id'];
+                            $new->grup_tujuan_id = $new_grup_tujuan->id;
+                            $new->deskripsi = $biaya['deskripsi'];
+                            $new->biaya = floatval(str_replace(',', '', $biaya['biaya']));
+                            $new->catatan = $biaya['catatan'];
+                            $new->created_by = $user;
+                            $new->created_at = now();
+                            $new->save();
+                        }
+                    }
+        
+                }
+            }
+
+
+            DB::commit();
+            return redirect()->back()->with(['status' => 'Success', 'msg' => 'Data berhasil disimpan!']);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->back()->with(['status' => 'Error', 'msg' => 'Terjadi kesalahan.']);
+
+        }
+    }
+
+    public function delete_tujuan(Request $request){
+        $data = $request->post();
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+
+        try {
+            $tujuan = GrupTujuan::where('is_aktif', 'Y')->find($data['delete_tujuan']);
+
+            if($tujuan){
+                $tujuan->updated_by = $user;
+                $tujuan->updated_at = now();
+                $tujuan->is_aktif = "N";
+                $tujuan->save();
+            }
+
+            DB::commit();
+            return redirect()->back()->with(['status' => 'Success', 'msg' => 'Data berhasil dihapus!']);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->back()->with(['status' => 'Error', 'msg' => 'Terjadi kesalahan.']);
+
         }
     }
 
@@ -320,7 +468,6 @@ class GrupTujuanController extends Controller
     //         ->where('supplier.is_aktif', '=', "Y")
     //         ->where('supplier.id', '=', $JobOrder->id_supplier)
     //         ->get();
-     
     //     // dd($dataJoDetail);   
     //     $pdf = PDF::loadView('pages.order.job_order.print',[
     //         'judul'=>"Job Order",

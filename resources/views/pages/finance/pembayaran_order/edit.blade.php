@@ -45,18 +45,16 @@
                                         <div class="form-group">
                                             <label for="">Pengirim<span class="text-red">*</span></label>
                                                 <select class="form-control selectpicker"  id='customer' name="customer" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
-                                                {{-- <option value="0">PT. Pasifik Global Makmur</option> --}}
                                                 @foreach ($dataCustomer as $cust)
-                                                    <option value="{{$cust->id}}" {{$cust->id == $pembayaran_jo->id_customer?'checked':''}}>{{ $cust->nama }}</option>
+                                                    <option value="{{$cust->id}}" {{$cust->id == $pembayaran_jo->id_customer? 'selected':''}}>{{ $cust->nama }} </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="form-group ">
                                             <label for="">Pelayaran</label>
                                             <select class="form-control selectpicker"  id='pelayaran' name="supplier" data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
-                                                {{-- <option value="0">PT. TANTO INTI LINE</option> --}}
                                                 @foreach ($dataSupplier as $sup)
-                                                    <option value="{{$sup->id}}" {{$sup->id == $pembayaran_jo->id_supplier?'checked':''}}>{{ $sup->nama }}</option>
+                                                    <option value="{{$sup->id}}" {{$sup->id == $pembayaran_jo->id_supplier? 'selected':''}}>{{ $sup->nama }} </option>
                                                 @endforeach
                                             </select>
                                         </div>

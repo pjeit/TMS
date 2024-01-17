@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\ClearCache;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,8 @@ class RoleController extends Controller
 
     public function index()
     {
-        //
+        ClearCache::Clear();
+
          $dataRole = DB::table('roles')
             ->select('*')
             ->where('is_aktif', '=', "Y")
@@ -77,8 +79,13 @@ class RoleController extends Controller
 
             $data = $request->collect();
           
+            $dataRolemaxID = DB::table('roles')
+            ->where('is_aktif', '=', 'Y')
+            ->max('id');
+            // dd($dataRolemaxID+1);
             DB::table('roles')
                 ->insert(array(
+                    'id'=>$dataRolemaxID+1,
                     'name' => strtoupper($data['nama']),
                     'created_at'=>VariableHelper::TanggalFormat(), 
                     'created_by'=> $user,
@@ -178,7 +185,7 @@ class RoleController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try{
-            DB::table('role')
+            DB::table('roles')
             ->where('id', $role['id'])
             ->update(array(
                 'is_aktif' => "N",

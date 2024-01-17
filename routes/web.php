@@ -41,14 +41,17 @@ Route::get('signout', [CustomAuthController::class, 'signOut'])->name('signout')
 Route::get('dashboard', [CustomAuthController::class, 'dashboard']); 
 Route::get('registration', [CustomAuthController::class, 'registration'])->name('register-user');
 Route::post('custom-registration', [CustomAuthController::class, 'customRegistration'])->name('register.custom'); 
-
+// Route::get('/foo', function()
+// {
+//     $exitCode = Artisan::call('optimize', ['--option' => 'foo']);
+//     return $exitCode;
+//     //
+// });
 ///    
 
 // ========================================== master ==================================================
 // Route::group(['middleware' => ['auth']], function () {
 Route::middleware(['auth'])->group(function () {
-    Route::resource('grup', 'App\Http\Controllers\GrupController');
-
     Route::get('/', function () {
         return view('home', [
             'judul'=>'Home'
@@ -79,7 +82,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('karyawan/getData/', [App\Http\Controllers\KaryawanController::class, 'index']);
         Route::resource('karyawan', 'App\Http\Controllers\KaryawanController');
     
+        Route::resource('grup', 'App\Http\Controllers\GrupController');
 
+        Route::post('grup_tujuan/update_tujuan', [App\Http\Controllers\GrupTujuanController::class, 'update_tujuan'])->name('grup_tujuan.update_tujuan');
+        Route::post('grup_tujuan/delete_tujuan', [App\Http\Controllers\GrupTujuanController::class, 'delete_tujuan'])->name('grup_tujuan.delete_tujuan');
         Route::get('grup_tujuan/getMarketing/{groupId}', [App\Http\Controllers\GrupTujuanController::class, 'getMarketing']);
         Route::get('/grup_tujuan/printJob/{grup}', [App\Http\Controllers\GrupTujuanController::class, 'printDetail']);
         Route::resource('grup_tujuan', 'App\Http\Controllers\GrupTujuanController');
@@ -88,6 +94,12 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('customer', 'App\Http\Controllers\CustomerController');
         
         Route::resource('role', 'App\Http\Controllers\RoleController');
+
+        Route::get('permission/delete/{id}', 'App\Http\Controllers\PermissionController@delete')->name('permission.delete');
+        Route::resource('permission', 'App\Http\Controllers\PermissionController');
+
+        Route::get('access/delete/{id}', 'App\Http\Controllers\AccessController@delete')->name('access.delete');
+        Route::resource('access', 'App\Http\Controllers\AccessController');
     
         Route::resource('users', 'App\Http\Controllers\UsersController');
     
@@ -95,14 +107,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/pair_kendaraan/filter', [App\Http\Controllers\PairKendaraanController::class, 'filterTruck'])->name('pair_kendaraan.cari');
         Route::resource('pair_kendaraan', 'App\Http\Controllers\PairKendaraanController');
-
-        Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
-        Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
         
         // ===================================MASTER=========================================================
         
-       
         // ===================================INBOUND ORDER=========================================================
+        Route::get('/job_order/cetak_si/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'cetak_si'])->name('job_order.cetak_si');
+        Route::get('/job_order/cetak_jo/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'cetak_job_order'])->name('cetak_job_order.print');
         Route::get('/job_order/printJob/{JobOrder}', [App\Http\Controllers\JobOrderController::class, 'printJO'])->name('job_order.print');
         Route::get('job_order/unloading_plan', 'App\Http\Controllers\JobOrderController@unloading_plan')->name('job_order.unloading_plan');
         Route::post('job_order/unloading_plan/data', 'App\Http\Controllers\JobOrderController@unloading_data')->name('job_order.unloading_data');
@@ -160,7 +170,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/pencairan_uang_jalan/form', [App\Http\Controllers\PencairanUangJalanController::class, 'form'])->name('pencairan_uang_jalan.form');
         Route::resource('pencairan_uang_jalan', 'App\Http\Controllers\PencairanUangJalanController');
 
-        Route::get('pencairan_uang_jalan_ltl/getData/{item}', 'App\Http\Controllers\PencairanUangJalanLTLController@get_data')->name('pencairan_uang_jalan_ltl.get_data');
+        // Route::get('pencairan_uang_jalan_ltl/getData/{item}', 'App\Http\Controllers\PencairanUangJalanLTLController@get_data')->name('pencairan_uang_jalan_ltl.get_data');
+        Route::get('pencairan_uang_jalan_ltl/getData', 'App\Http\Controllers\PencairanUangJalanLTLController@get_data')->name('pencairan_uang_jalan_ltl.get_data');
         Route::resource('pencairan_uang_jalan_ltl', 'App\Http\Controllers\PencairanUangJalanLTLController');
 
         Route::get('pencairan_komisi_customer/load_data', 'App\Http\Controllers\PencairanKomisiCustomerController@load_data')->name('pencairan_komisi_customer.load_data');
@@ -168,19 +179,20 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('pencairan_komisi_driver', 'App\Http\Controllers\PencairanKomisiDriverController');
         Route::resource('pencairan_komisi_customer', 'App\Http\Controllers\PencairanKomisiCustomerController');
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
-      
+        
         Route::get('/klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan'])->name('pencairan_klaim_supir.edit');
         Route::post('/klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
         Route::resource('klaim_supir', 'App\Http\Controllers\KlaimSupirController');
 
         Route::post('tagihan_rekanan/bayar_save', [App\Http\Controllers\TagihanRekananController::class, 'bayar_save'])->name('tagihan_rekanan.bayar_save');
         Route::post('tagihan_rekanan/bayar', [App\Http\Controllers\TagihanRekananController::class, 'bayar'])->name('tagihan_rekanan.bayar');
-        Route::get('/tagihan_rekanan/loadData/{id}', [App\Http\Controllers\TagihanRekananController::class, 'load_data'])->name('tagihan_rekanan.load_data');
-        Route::get('/tagihan_rekanan/filteredData/{id_tagihan},{id_supplier}', [App\Http\Controllers\TagihanRekananController::class, 'filtered_data'])->name('tagihan_rekanan.filtered_data');
+        Route::get('tagihan_rekanan/load_data/{id}', [App\Http\Controllers\TagihanRekananController::class, 'load_data'])->name('tagihan_rekanan.load_data');
+        Route::get('tagihan_rekanan/filteredData/{id_tagihan},{id_supplier}', [App\Http\Controllers\TagihanRekananController::class, 'filtered_data'])->name('tagihan_rekanan.filtered_data');
         Route::resource('tagihan_rekanan', 'App\Http\Controllers\TagihanRekananController');
 
         Route::resource('cetak_uang_jalan', 'App\Http\Controllers\CetakUangJalanController');
 
+        Route::get('transaksi_lain/index_server', [App\Http\Controllers\TransaksiLainController::class, 'index_server'])->name('transaksi_lain.index_server');
         Route::resource('transaksi_lain', 'App\Http\Controllers\TransaksiLainController');
         Route::resource('transfer_dana', 'App\Http\Controllers\TransferDanaController');
 
@@ -218,6 +230,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/bukti_potong/loadData/{status}', [App\Http\Controllers\BuktiPotongController::class, 'loadData'])->name('bukti_potong.loadData');
         Route::resource('bukti_potong', 'App\Http\Controllers\BuktiPotongController');
 
+        Route::get('update_resi/load_data', [App\Http\Controllers\UpdateResiController::class, 'load_data'])->name('update_resi.load_data');
+        Route::resource('update_resi', 'App\Http\Controllers\UpdateResiController');
+
         Route::get('invoice_karantina/print/{id}', [App\Http\Controllers\InvoiceKarantinaController::class, 'print'])->name('invoice_karantina.print');
         Route::get('invoice_karantina/load_data/{id}', [App\Http\Controllers\InvoiceKarantinaController::class, 'load_data'])->name('invoice_karantina.load_data');
         Route::resource('invoice_karantina', 'App\Http\Controllers\InvoiceKarantinaController');
@@ -243,6 +258,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/revisi_tl/getData/{status}', [App\Http\Controllers\RevisiTLController::class, 'getData'])->name('revisi_tl.getData');
         Route::resource('revisi_tl', 'App\Http\Controllers\RevisiTLController');
 
+        Route::get('revisi_klaim_supir/load_data_server', [App\Http\Controllers\KlaimSupirController::class, 'load_data_revisi_server'])->name('klaim_supir_revisi.load_data_revisi_server');
         Route::get('/revisi_klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan'])->name('pencairan_klaim_supir_revisi.edit');
         Route::post('/revisi_klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan_save'])->name('pencairan_klaim_supir_revisi.save');
         Route::get('/revisi_klaim_supir/revisi', [App\Http\Controllers\KlaimSupirController::class, 'revisi'])->name('klaim_supir_revisi.index');
@@ -255,7 +271,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('revisi_tagihan_rekanan/delete/{id}', [App\Http\Controllers\RevisiTagihanRekananController::class, 'delete'])->name('revisi_tagihan_rekanan.delete');
         Route::get('revisi_tagihan_rekanan/load_data', [App\Http\Controllers\RevisiTagihanRekananController::class, 'load_data'])->name('revisi_tagihan_rekanan.load_data');
         Route::resource('revisi_tagihan_rekanan', 'App\Http\Controllers\RevisiTagihanRekananController');
-      
+        
         Route::get('revisi_tagihan_pembelian/delete/{id}', [App\Http\Controllers\RevisiTagihanPembelianController::class, 'delete'])->name('revisi_tagihan_pembelian.delete');
         Route::get('revisi_tagihan_pembelian/load_data', [App\Http\Controllers\RevisiTagihanPembelianController::class, 'load_data'])->name('revisi_tagihan_pembelian.load_data');
         Route::resource('revisi_tagihan_pembelian', 'App\Http\Controllers\RevisiTagihanPembelianController');
@@ -279,6 +295,56 @@ Route::middleware(['auth'])->group(function () {
         // ===================================HRD=========================================================
         Route::resource('status_kendaraan', 'App\Http\Controllers\StatusKendaraanController');
         // ===================================HRD=========================================================
+
+        // ===================================LAPORAN FINANCE=========================================================
+        Route::resource('laporan_kas', 'App\Http\Controllers\LaporanKasController');
+        Route::resource('laporan_bank', 'App\Http\Controllers\LaporanBankController');
+
+        Route::get('laporan_invoice_trucking/load_data', 'App\Http\Controllers\LaporanInvoiceTruckingController@load_data')->name('laporan_invoice_trucking.load_data');
+        Route::resource('laporan_invoice_trucking', 'App\Http\Controllers\LaporanInvoiceTruckingController');
+
+        Route::get('laporan_invoice_karantina/load_data', 'App\Http\Controllers\LaporanInvoiceKarantinaController@load_data')->name('laporan_invoice_karantina.load_data');
+        Route::resource('laporan_invoice_karantina', 'App\Http\Controllers\LaporanInvoiceKarantinaController');
+
+        Route::get('laporan_klaim_supir/load_data', 'App\Http\Controllers\LaporanKlaimSupirController@load_data')->name('laporan_klaim_supir.load_data');
+        Route::resource('laporan_klaim_supir', 'App\Http\Controllers\LaporanKlaimSupirController');
+        
+        Route::get('laporan_tagihan_pembelian/load_data', 'App\Http\Controllers\LaporanTagihanPembelianController@load_data')->name('laporan_tagihan_pembelian.load_data');
+        Route::resource('laporan_tagihan_pembelian', 'App\Http\Controllers\LaporanTagihanPembelianController');
+
+        Route::get('laporan_tagihan_rekanan/load_data', 'App\Http\Controllers\LaporanTagihanRekananController@load_data')->name('laporan_tagihan_rekanan.load_data');
+        Route::resource('laporan_tagihan_rekanan', 'App\Http\Controllers\LaporanTagihanRekananController');
+        
+        Route::get('laporan_pemutihan/load_data', 'App\Http\Controllers\LaporanPemutihanController@load_data')->name('laporan_pemutihan.load_data');
+        Route::resource('laporan_pemutihan', 'App\Http\Controllers\LaporanPemutihanController');
+        
+        Route::get('laporan_kredit_customer/load_data', 'App\Http\Controllers\LaporanKreditCustomerController@load_data')->name('laporan_kredit_customer.load_data');
+        Route::resource('laporan_kredit_customer', 'App\Http\Controllers\LaporanKreditCustomerController');
+        // ===================================LAPORAN=========================================================
+
+        // ===================================LAPORAN ADMIN=========================================================
+        Route::get('laporan_job_order/load_data', 'App\Http\Controllers\LaporanJobOrderController@load_data')->name('laporan_job_order.load_data');
+        Route::resource('laporan_job_order', 'App\Http\Controllers\LaporanJobOrderController');
+        
+        Route::get('laporan_batal_muat/load_data_ajax', [App\Http\Controllers\LaporanBatalMuatController::class, 'load_data_ajax'])->name('laporan_batal_muat.load_data_ajax');
+        Route::get('laporan_batal_muat', [App\Http\Controllers\LaporanBatalMuatController::class, 'index_laporan_batal_muat'])->name('laporan_batal_muat.index');
+
+        Route::get('laporan_kendaraan_dijual/load_data_ajax', [App\Http\Controllers\LaporanKendaraanRekananDijualController::class, 'load_data_ajax'])->name('laporan_kendaraan_dijual.load_data_ajax');
+        Route::get('laporan_kendaraan_dijual', [App\Http\Controllers\LaporanKendaraanRekananDijualController::class, 'index_laporan_kendaraan_dijual'])->name('laporan_kendaraan_dijual.index');
+
+        Route::get('laporan_sales/load_data_ajax', [App\Http\Controllers\LaporanSalesController::class, 'load_data_ajax'])->name('laporan_sales.load_data_ajax');
+        Route::get('laporan_sales/detail/{dalam_perjalanan}', [App\Http\Controllers\LaporanSalesController::class, 'edit'])->name('laporan_sales.edit');
+        Route::get('laporan_sales', [App\Http\Controllers\LaporanSalesController::class, 'index_laporan_sales'])->name('laporan_sales.index');
+
+        Route::get('laporan_status_kendaraan/load_data_ajax', [App\Http\Controllers\LaporanStatusKendaraanController::class, 'load_data_ajax'])->name('laporan_status_kendaraan.load_data_ajax');
+        Route::get('laporan_status_kendaraan', [App\Http\Controllers\LaporanStatusKendaraanController::class, 'index_laporan_status_kendaraan'])->name('laporan_status_kendaraan.index');
+
+        Route::get('laporan_packing_list/load_data_ajax', [App\Http\Controllers\LaporanPackingListController::class, 'load_data_ajax'])->name('laporan_packing_list.load_data_ajax');
+        Route::get('laporan_packing_list', [App\Http\Controllers\LaporanPackingListController::class, 'index_laporan_packing_list'])->name('laporan_packing_list.index');
+
+        // ===================================LAPORAN ADMIN=========================================================
+
+
     // });
 
     // Route::controller('JobOrderController::class')->group(function(){

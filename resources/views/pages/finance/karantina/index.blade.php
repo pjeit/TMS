@@ -39,7 +39,7 @@
                                 <tr>
                                     <th>Tujuan</th>
                                     <th>No. Kontainer</th>
-                                    <th>Nominal</th>
+                                    <th>Nominal Ditagihkan</th>
                                     <th style="width: 50px"></th>
                                 </tr>
                             </thead>

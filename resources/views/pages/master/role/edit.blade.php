@@ -62,7 +62,7 @@
                     <div class="card-body">
                         <div class="form-group col-md-4">
                             <label for="nama_jenis">Nama Role</label>
-                            <input required type="text" placeholder="contoh: Admin Staff"  name="nama" class="form-control" value="{{old('nama',$role->nama)}}" >                         
+                            <input required type="text" placeholder="contoh: Admin Staff"  name="nama" class="form-control" value="{{old('nama',$role->name)}}" >                         
                         </div>
                     </div>
                 </div>

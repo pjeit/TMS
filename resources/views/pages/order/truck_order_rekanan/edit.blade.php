@@ -133,10 +133,15 @@
                                     </div>
                                     
                                 </div>
-                                <div class="form-group">
-                                        <label for="catatan">Catatan</label>
-                                        <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="{{$data['catatan']}}"> 
-                                    </div>
+                                {{-- <div class="form-group">
+                                    <label for="catatan">Catatan</label>
+                                    <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="{{$data['catatan']}}"> 
+                                </div> --}}
+                                 <div class="form-group">
+                                    <label for="catatan">Catatan</label>
+                                    {{-- <input type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="">  --}}
+                                    <textarea name="catatan" class="form-control" id="catatan" cols="20" rows="9" placeholder="">{{$data['catatan']}}</textarea>
+                                </div>
                             </div>
                             <div class="col-6">
                                
@@ -216,45 +221,44 @@
                                         <input type="text" maxlength="11" name="no_polisi" class="form-control" id="no_polisi" name="no_polisi" placeholder="" value="{{$data->no_polisi}}"> 
                                     </div>   
                                 </div>
-                                <div class="form-group open_harga_tujuan ">
-                                    <label for="harga_jual">Harga Tujuan + UJ</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp.</span>
+                                <div class="row">
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-12 open_harga_tujuan ">
+                                        <label for="harga_jual">Harga Tujuan</label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp.</span>
+                                            </div>
+                                            <input type="text" class="form-control numaja uang" id="harga_tujuan" disabled min="0">
                                         </div>
-                                        <input type="text" class="form-control numaja uang" id="harga_tujuan" disabled min="0">
+                                    </div>
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                                        <label for="harga_jual">Harga Jual</label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp.</span>
+                                            </div>
+                                            <input type="text" name="harga_jual" class="form-control numaja uang" id="harga_jual"  min="0" value="{{number_format($data->harga_jual,2) }}">
+                                        
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-lg-4 col-md-4 col-sm-12" id="stack_tl_form">
+                                        <label for="select_driver">Stack Full</label>
+                                            <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
+                                            <option value="">Pilih TL</option>
+                                            {{-- <option value="tl_perak" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_perak'? 'selected':''):'' }}>Perak</option>
+                                            <option value="tl_priuk" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_priuk'? 'selected':''):'' }}>Priuk</option>
+                                            <option value="tl_teluk_lamong" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_teluk_lamong'? 'selected':''):'' }}>Teluk Lamong</option> --}}
+                                            <option value="tl_perak" {{ $data['stack_tl'] == 'tl_perak'? 'selected':'' }}>Perak</option>
+                                            <option value="tl_priuk" {{ $data['stack_tl'] == 'tl_priuk'? 'selected':'' }}>Priuk</option>
+                                            <option value="tl_teluk_lamong" {{ $data['stack_tl'] == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
+                                        </select>
+                                        <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="harga_jual">Harga Jual</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp.</span>
-                                        </div>
-                                        <input type="text" name="harga_jual" class="form-control numaja uang" id="harga_jual"  min="0" value="{{number_format($data->harga_jual,2) }}">
-                                    
-                                    </div>
-                                </div>
-
-                                <div class="form-group" id="stack_tl_form">
-                                    <label for="select_driver">Stack TL</label>
-                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
-                                        <option value="">Pilih TL</option>
-                                        {{-- <option value="tl_perak" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_perak'? 'selected':''):'' }}>Perak</option>
-                                        <option value="tl_priuk" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_priuk'? 'selected':''):'' }}>Priuk</option>
-                                        <option value="tl_teluk_lamong" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_teluk_lamong'? 'selected':''):'' }}>Teluk Lamong</option> --}}
-                                        <option value="tl_perak" {{ $data['stack_tl'] == 'tl_perak'? 'selected':'' }}>Perak</option>
-                                        <option value="tl_priuk" {{ $data['stack_tl'] == 'tl_priuk'? 'selected':'' }}>Priuk</option>
-                                        <option value="tl_teluk_lamong" {{ $data['stack_tl'] == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
-                                    </select>
-                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
-
-                                </div>
+                                
                             </div>
-
-                           
-                         
-
                         </div>
                     </div>
                 </div>
@@ -268,7 +272,6 @@
           $('#no_polisi').keyup(function() {
             let inputValue = $(this).val();
             let outputValue = inputValue.replace(/\s+/g, '-');
-            console.log(outputValue);
             $(this).val(outputValue);
         });
         getDate();
@@ -281,6 +284,8 @@
             $('#outbondDataKontainer').hide();
             $("#inbound").removeClass("col-6");
             $("#inbound").addClass("col-12");
+            $('#catatan').attr('rows',5);
+
             $('#inboundData').show();
             $('#garisInbound').show();
             $('#outboundData').hide();
@@ -289,7 +294,7 @@
             $("#inbound").removeClass("aktif");
              $('#inboundDataKontainer').hide();
             $('#outbondDataKontainer').show();
-
+            $('#catatan').attr('rows',9);
             $("#inbound").hide();
             $("#outbound").removeClass("col-6");
             $("#outbound").addClass("col-12");
@@ -414,7 +419,7 @@
                             response.dataTujuan.forEach(tujuan => {
                                 const option = document.createElement('option');
                                 option.value = tujuan.id;
-                                option.textContent = tujuan.nama_tujuan + ` ( ${tujuan.jenis_tujuan} )`;
+                                option.textContent = tujuan.nama_tujuan + ` ( ${tujuan.jenis_tujuan} )` +  ` [${tujuan.getMarketing?tujuan.getMarketing.nama:'-'} ]`;
                                 if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
                                 {
                                     if (idTujuan == tujuan.id) {
@@ -498,30 +503,19 @@
                     else
                     {
                         $('#tujuan_id').val(response.dataTujuan.id);
-                       
-
-                        // JSON.stringify(array_detail_biaya)
 
                         $('#nama_tujuan').val(response.dataTujuan.nama_tujuan);
                         $('#alamat_tujuan').val(response.dataTujuan.alamat);
-                        //   if(response.dataTujuan.jenis_tujuan =="LTL")
-                        // {
-                        //      $('#tarif').val(response.dataTujuan.min_muatan*response.dataTujuan.harga_per_kg );
-                        // }
                         $('#tarif').val(response.dataTujuan.tarif);
                         $('#uang_jalan').val(response.dataTujuan.uang_jalan);
                         $('#komisi').val(response.dataTujuan.komisi);
                         $('#komisi_driver').val(response.dataTujuan.komisi_driver);
-
                         $('#jenis_tujuan').val(response.dataTujuan.jenis_tujuan);
-                        //ltl
                         $('#harga_per_kg').val(response.dataTujuan.harga_per_kg);
                         $('#min_muatan').val(response.dataTujuan.min_muatan);
-                     
                         $('#kargo').val(response.dataTujuan.kargo);
                         hitungTarif();
                         hideMenuTujuan();
-                         // console.log( response.dataTujuanBiaya);
                         var dataBiaya = response.dataTujuanBiaya;
                         for (var i in dataBiaya) {
                                 var obj = {
@@ -529,31 +523,23 @@
                                     biaya: dataBiaya[i].biaya,
                                     catatan: dataBiaya[i].catatan,
                                 };
-                            // if(dataBiaya[i].deskripsi!= 'TL')
-                            // {
                                 array_detail_biaya.push(obj);
-                            // }
                         }
                         
-
                         $('#plastik').val(response.dataTujuan.plastik);
                         $('#tally').val(response.dataTujuan.tally);
-
                         $('#biayaDetail').val(JSON.stringify(array_detail_biaya));
-
                     }
-         
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
                 }
             });
-           
 		});
         $('body').on('change','#tipe_kontainer_out', function (){
             $('#tipe_kontainer').val(this.value);
         })
-         $('body').on('change','#stack_tl',function()
+        $('body').on('change','#stack_tl',function()
 		{
             var selectedOption = $(this).val();
             var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
@@ -561,13 +547,13 @@
             
             // $('#value_jenis_tl').val(selectedOption);
 
-                if(selectedOption=='tl_teluk_lamong')
+                if(selectedOption=='tl_teluk_lamong'&& $('#uang_jalan').val()<1000000)
                 {
                     $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
                 }
                 else
                 {
-                    $('#stack_teluk_lamong_hidden').val('');
+                    $('#stack_teluk_lamong_hidden').val(0);
                     
                 }
 
@@ -579,25 +565,21 @@
             
             var tarif = $('#tarif').val();
             var uang_jalan = $('#uang_jalan').val();
-            var total_uang_jalan = parseFloat(tarif)+parseFloat(uang_jalan);
-
             console.log('tarif :'+tarif);
             console.log('uang_jalan :'+uang_jalan);
-            console.log('total_uang_jalan :'+total_uang_jalan);
-
-            console.log(isNaN(total_uang_jalan));
-            if(isNaN(total_uang_jalan))
+            // console.log(isNaN(total_uang_jalan));
+            if(isNaN(tarif))
             {
-              $('#harga_tujuan').val(0)
+                $('#harga_tujuan').val(0)
             }
             else
             {
-              $('#harga_tujuan').val(moneyMask(total_uang_jalan))
+                $('#harga_tujuan').val(moneyMask(tarif))
             }
         }
         hideMenuTujuan();
         function hideMenuTujuan(){
-           var jenisTujuan=$('#jenis_tujuan').val();
+            var jenisTujuan=$('#jenis_tujuan').val();
             var jenisOrder =$('#jenis_order').val();
             var no_pol_rekanan =$('#no_pol_rekanan');
             console.log('pencet');
@@ -663,7 +645,6 @@
                                 toast.addEventListener('mouseleave', Swal.resumeTimer)
                             }
                         })
-
                         Toast.fire({
                             icon: 'warning',
                             title: 'Batal Disimpan'
@@ -685,29 +666,7 @@
 
             var tarif = $('#tarif').val();
             var uang_jalan = $('#uang_jalan').val();
-             var harga_tujuan =$('#harga_tujuan').val();
-            // var total_uang_jalan = parseFloat(escapeComma(tarif))/*+parseFloat(uang_jalan)*/;
-            // if(no_polisi.trim()=='')
-            // {
-            //     event.preventDefault();
-            //     const Toast = Swal.mixin({
-            //             toast: true,
-            //             position: 'top-end',
-            //             timer: 2500,
-            //             showConfirmButton: false,
-            //             timerProgressBar: true,
-            //             didOpen: (toast) => {
-            //                 toast.addEventListener('mouseenter', Swal.stopTimer)
-            //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
-            //             }
-            //         })
-
-            //         Toast.fire({
-            //             icon: 'error',
-            //             title: 'Nomor Polisi Rekanan Harus diisi!'
-            //         })
-            //     return;
-            // }
+            var harga_tujuan =$('#harga_tujuan').val();
             if(supplier.trim()=='')
             {
                 event.preventDefault();
@@ -750,30 +709,7 @@
                     })
                 return;
             }
-            
-            // if( escapeComma(harga_jual)>escapeComma(harga_tujuan) )
-            // {
-            //     event.preventDefault();
-            //     const Toast = Swal.mixin({
-            //             toast: true,
-            //             position: 'top-end',
-            //             timer: 2500,
-            //             showConfirmButton: false,
-            //             timerProgressBar: true,
-            //             didOpen: (toast) => {
-            //                 toast.addEventListener('mouseenter', Swal.stopTimer)
-            //                 toast.addEventListener('mouseleave', Swal.resumeTimer)
-            //             }
-            //         })
-
-            //         Toast.fire({
-            //             icon: 'warning',
-            //             title: `Harga Jual Rekanan lebih besar dari Rp. ${harga_tujuan}`
-            //         })
-            //     return;
-            // }
             event.preventDefault();
-
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar ?',
                 text: "Periksa kembali data anda",
@@ -896,7 +832,7 @@
                 var selectBooking = $('#select_booking').val();
                 var splitValue = selectBooking.split('-');
                 var idTujuan=splitValue[2];
-                 var select_grup_tujuan = $('#select_grup_tujuan');
+                var select_grup_tujuan = $('#select_grup_tujuan');
 
                 $.ajax({
                     url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
@@ -956,7 +892,7 @@
                             response.dataTujuan.forEach(tujuan => {
                                 const option = document.createElement('option');
                                 option.value = tujuan.id;
-                                option.textContent = tujuan.nama_tujuan+ ` ( ${tujuan.jenis_tujuan} )`;
+                                option.textContent = tujuan.nama_tujuan+ ` ( ${tujuan.jenis_tujuan} )` +  ` [${tujuan.getMarketing?tujuan.getMarketing.nama:'-'} ]`;
                                 if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
                                 {
                                     if ($('#tujuan_id').val() == tujuan.id) {
@@ -967,12 +903,6 @@
                                  select_grup_tujuan.append(option);
                             });
                         }
-                        // else
-                        // {
-                        //       select_grup_tujuan.empty(); 
-                        //       select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
-                        // }
-
                         }else{
                             customerLoad = false;
                             const persen = document.getElementById('persenanCredit');
@@ -1028,16 +958,8 @@
                         else
                         {
                             $('#tujuan_id').val(response.dataTujuan.id);
-                        
-
-                            // JSON.stringify(array_detail_biaya)
-
                             $('#nama_tujuan').val(response.dataTujuan.nama_tujuan);
                             $('#alamat_tujuan').val(response.dataTujuan.alamat);
-                            //   if(response.dataTujuan.jenis_tujuan =="LTL")
-                            // {
-                            //      $('#tarif').val(response.dataTujuan.min_muatan*response.dataTujuan.harga_per_kg );
-                            // }
                             $('#tarif').val(response.dataTujuan.tarif);
                             $('#uang_jalan').val(response.dataTujuan.uang_jalan);
                             $('#komisi').val(response.dataTujuan.komisi);
@@ -1059,47 +981,31 @@
                                         biaya: dataBiaya[i].biaya,
                                         catatan: dataBiaya[i].catatan,
                                     };
-                                // if(dataBiaya[i].deskripsi!= 'TL')
-                                // {
                                     array_detail_biaya.push(obj);
-                                // }
-
                             }
-                            
-
                             $('#plastik').val(response.dataTujuan.plastik);
                             $('#tally').val(response.dataTujuan.tally);
-
                             $('#biayaDetail').val(JSON.stringify(array_detail_biaya));
-
                         }
-            
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
                     }
                 });
-
-
-
                 var selectedOption = $('#stack_tl').val();
                 var dataTelukLamong =  <?php echo json_encode($dataPengaturanKeuangan); ?>;
-                // console.log(dataTelukLamong.tl_teluk_lamong);
-                
-                // $('#value_jenis_tl').val(selectedOption);    
-                if(selectedOption=='tl_teluk_lamong')
+                if(selectedOption=='tl_teluk_lamong'&& $('#uang_jalan').val()<1000000)
                 {
                     $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
                 }
                 else
                 {
-                    $('#stack_teluk_lamong_hidden').val('');
+                    $('#stack_teluk_lamong_hidden').val(0);
                     
                 }
                 hitungTarif();
                 hideMenuTujuan();
         }
     });
-   
 </script>
 @endsection

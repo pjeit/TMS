@@ -285,7 +285,7 @@
                         var dataHutangKaryawan =  response.hutangKaryawan;
                         var biayaTL =  response.SewaBiayaTL;
 
-                        // console.log(biayaTL.biaya);
+                        console.log(dataHutangKaryawan);
 
 
                         $('#tanggal_berangkat').val( dateMask(dataSewaDetail.tanggal_berangkat));

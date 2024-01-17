@@ -143,9 +143,11 @@
                                                     <input type="hidden" name="idJo" value="{{$item->id_jo}}">
                                                     <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
                                                 </form>   --}}
+                                                @can('EDIT_BELUM_INVOICE')
                                                 <a href="{{ route('belum_invoice.edit', [$item->id_sewa]) }}" class="btn dropdown-item" >
                                                     <span class="fas fa-pencil-alt" style="width:24px"></span> Edit
                                                 </a>
+                                                @endcan
                                             </div>
                                         </div>
                                     </td>
@@ -471,7 +473,7 @@
                                 console.error('Error:', error);
                             }
                         });
-                        window.location.href = '{{ route("belum_invoice.create") }}';
+                        // window.location.href = '{{ route("belum_invoice.create") }}';
                     }
                 }
                

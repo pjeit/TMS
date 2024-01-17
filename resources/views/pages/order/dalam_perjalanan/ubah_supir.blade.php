@@ -26,8 +26,7 @@
                 <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
             <div class="card-body">
-               
-               <div class="row">
+                <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12" style=" border-right: 1px solid rgb(172, 172, 172);">
                                 <div class="form-group ">
                                     <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
@@ -68,8 +67,8 @@
                                         nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})"
                                         karyawan_hutang = "{{$drvr->total_hutang}}"
                                         potong_hutang = "{{$drvr->potong_hutang}}"
-                                         {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
-                                @endforeach
+                                        {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
+                                @endforeach 
                             </select>
                             
                             <input type="hidden" id="driver_nama" name="driver_nama" value="{{$data->nama_driver}}" placeholder="driver_nama">
@@ -116,39 +115,105 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12">
-                         <div class="row">
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="total_hutang" >Total Hutang</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
+                    @if ($data['jenis_tujuan'] == 'FTL' )
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="row">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="total_hutang" >Total Hutang</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numaja" value="" readonly>                         
                                     </div>
-                                    <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numaja" value="" readonly>                         
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-0" 
+                                    @if (isset($data->getKaryawan->getHutang) && $data->getKaryawan->getHutang->total_hutang > 0)
+                                        style="background: hsl(0, 100%, 93%); border: 1px red solid;"
+                                    @endif>
+                                    <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" value="" >                         
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-0" 
-                                @if (isset($data->getKaryawan->getHutang) && $data->getKaryawan->getHutang->total_hutang > 0)
-                                    style="background: hsl(0, 100%, 93%); border: 1px red solid;"
-                                @endif>
-                                <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
+                            <div class="row">
+                                {{-- @if ($data->jenis_tujuan =='FTL') --}}
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <label for="total_uang_jalan">Total Uang Jalan</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $dataUangJalanRiwayat->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                        </div>
                                     </div>
-                                    <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" value="" >                         
-                                </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <label for="total_diterima">Total Diberikan</label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang " value="" readonly>                         
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label for="">Kas / Bank<span class="text-red">*</span></label>
+                                        <select class="form-control select2" name="pembayaran" id="pembayaran" {{$dataUangJalanRiwayat->kas_bank_id? 'disabled':''}} >
+                                            @foreach ($dataKas as $kb)
+                                                <option value="{{$kb->id}}" {{ $dataUangJalanRiwayat->kas_bank_id==$kb->id ? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                            @endforeach
+                                                {{-- <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option> --}}
+                                        </select>
+                                        <input type="hidden" name="pembayaran_defaulth" value="{{$dataUangJalanRiwayat->kas_bank_id}}">
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label for="catatan">Catatan</label>
+                                        <input type="text" name="catatan" class="form-control" id="catatan" placeholder="" value="">
+                                        <input type="hidden" name="catatan_awal" id="catatan_awal" value=""> 
+                                    </div>
+                                {{-- @endif --}}
                             </div>
                         </div>
-                        <div class="row">
-                            {{-- @if ($data->jenis_tujuan =='FTL') --}}
+                    @else
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="row">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="total_hutang" >Total Hutang</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numaja" value="" readonly>                         
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-0" 
+                                    @if (isset($data->getKaryawan->getHutang) && $data->getKaryawan->getHutang->total_hutang > 0)
+                                        style="background: hsl(0, 100%, 93%); border: 1px red solid;"
+                                    @endif>
+                                    <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" value="" >                         
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="total_uang_jalan">Total Uang Jalan</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $dataUangJalanRiwayat->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                        @php
+                                            $tl = isset($dataUangJalanRiwayat)? $dataUangJalanRiwayat->total_tl:0;
+                                        @endphp
+                                        <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -160,34 +225,27 @@
                                         <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang " value="" readonly>                         
                                     </div>
                                 </div>
-                                {{-- <div class="form-group col-12">
-                                    <label for="uang_jalan_kembali">Uang Jalan Kembali<span class="text-red">*</span></label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" >
+                                @isset($dataUangJalanRiwayat)
+                                    <div class="form-group col-12">
+                                        <label for="">Kas / Bank<span class="text-red">*</span></label>
+                                        <select class="form-control select2" name="pembayaran" id="pembayaran" {{$dataUangJalanRiwayat->kas_bank_id? 'disabled':''}} >
+                                            @foreach ($dataKas as $kb)
+                                                <option value="{{$kb->id}}" {{ $dataUangJalanRiwayat->kas_bank_id==$kb->id ? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                            @endforeach
+                                                {{-- <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option> --}}
+                                        </select>
+                                        <input type="hidden" name="pembayaran_defaulth" value="{{$dataUangJalanRiwayat->kas_bank_id}}">
                                     </div>
-                                </div> --}}
-                                <div class="form-group col-12">
-                                    <label for="">Kas / Bank<span class="text-red">*</span></label>
-                                    <select class="form-control select2" name="pembayaran" id="pembayaran" {{$dataUangJalanRiwayat->kas_bank_id? 'disabled':''}} >
-                                        @foreach ($dataKas as $kb)
-                                            <option value="{{$kb->id}}" {{ $dataUangJalanRiwayat->kas_bank_id==$kb->id ? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
-                                        @endforeach
-                                            {{-- <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option> --}}
-                                    </select>
-                                    <input type="hidden" name="pembayaran_defaulth" value="{{$dataUangJalanRiwayat->kas_bank_id}}">
-                                </div>
+                                @endisset
                                 <div class="form-group col-12">
                                     <label for="catatan">Catatan</label>
                                     <input type="text" name="catatan" class="form-control" id="catatan" placeholder="" value="">
                                     <input type="hidden" name="catatan_awal" id="catatan_awal" value=""> 
                                 </div>
-                            {{-- @endif --}}
+                            </div>
                         </div>
-                    </div>
-               </div>
+                    @endif
+                </div>
             </div>
         </div> 
     </form>
@@ -329,8 +387,8 @@ $(document).ready(function() {
                 $('#kontainer_div').hide();
                 $('#chassis_div').hide();
                 $('#stack_tl_form').hide();
-                // kendaraan_div.removeClass('col-lg-4 col-md-6 col-sm-12');
-                // kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
+                kendaraan_div.removeClass('col-lg-4 col-md-6 col-sm-12');
+                kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
             }
         // }
         // else

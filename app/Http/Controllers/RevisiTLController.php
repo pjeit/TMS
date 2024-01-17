@@ -60,7 +60,6 @@ class RevisiTLController extends Controller
     public function cair($id)
     {
         $pengaturan = PengaturanKeuangan::first();
-
         $sewa = Sewa::from('sewa AS s')
                     ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir', 'kh.total_hutang')
                     ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
@@ -75,12 +74,12 @@ class RevisiTLController extends Controller
                     ->groupBy('c.id')
                     ->first();
                     
-         $dataKas = DB::table('kas_bank')
+        $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
 
-        return view('pages.revisi.revisi_tl.cair',[
+        return view('pages.revisi.revisi_TL.cair',[
             'judul' => "Pencairan TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
@@ -92,19 +91,21 @@ class RevisiTLController extends Controller
     public function refund($id)
     {
         $pengaturan = PengaturanKeuangan::first();
+        
+        $sewa = Sewa::where('is_aktif', 'Y')->with('getCustomer', 'getTujuan', 'getKaryawan', 'getSewaBiaya')->find($id);
 
-        $sewa = Sewa::from('sewa AS s')
-                    ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
-                    ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
-                    ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
-                    ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
-                    ->where('s.is_aktif', '=', 'Y')
-                    ->where('s.jenis_tujuan', 'like', '%FTL%')
-                    ->where('s.status', "PROSES DOORING")
-                    ->where('s.is_aktif', '=', 'Y')
-                    ->where('s.id_sewa', $id)
-                    ->groupBy('c.id')
-                    ->first();
+        // $sewa = Sewa::from('sewa AS s')
+        //             ->select('s.*','c.id AS id_cust','c.nama AS nama_cust','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir')
+        //             ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+        //             ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
+        //             ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
+        //             ->where('s.is_aktif', '=', 'Y')
+        //             ->where('s.jenis_tujuan', 'like', '%FTL%')
+        //             ->where('s.status', "PROSES DOORING")
+        //             ->where('s.is_aktif', '=', 'Y')
+        //             ->where('s.id_sewa', $id)
+        //             ->groupBy('c.id')
+        //             ->first();
         
         $dataKas = DB::table('kas_bank')
             ->select('*')
@@ -116,14 +117,14 @@ class RevisiTLController extends Controller
                             ->where('id_sewa', $id)
                             ->first();
 
-        return view('pages.revisi.revisi_tl.refund',[
+        return view('pages.revisi.revisi_TL.refund',[
             'judul' => "Pengembalian TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
             'dataKas' => $dataKas,
             'id_sewa' => $id,
-            'checkTL'=>$checkTL,
-            'id'=>$id
+            'checkTL'=> $checkTL,
+            'id'=> $id
         ]);
     }
 
@@ -246,7 +247,7 @@ class RevisiTLController extends Controller
                         'Y'
                     ));
                 }
-     
+    
             DB::commit();
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambah Biaya TL']);
                     
@@ -254,7 +255,7 @@ class RevisiTLController extends Controller
             return redirect()->back()->withErrors($th->getMessage())->withInput();
             db::rollBack();
         }
-          
+        
     }
 
     /**
@@ -271,6 +272,7 @@ class RevisiTLController extends Controller
         DB::beginTransaction(); 
         try {
             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+
             DB::table('sewa_biaya')
                 ->where('id_biaya', $data['id_sewa_biaya'])
                 ->update(array(
@@ -279,6 +281,7 @@ class RevisiTLController extends Controller
                     'is_aktif' => "N",
                 )
             );
+
             DB::table('sewa_operasional')
                 ->where('id_sewa', $data['id_sewa'])
                 ->where('deskripsi', 'TL')
@@ -288,11 +291,13 @@ class RevisiTLController extends Controller
                     'is_aktif' => "N",
                 )
             );
+
             $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
                     ->select('*')
                     ->where('is_aktif', '=', "Y")
                     ->where('sewa_id', $data['id_sewa'])
                     ->first();
+
             DB::table('uang_jalan_riwayat')
                 ->where('sewa_id', $data['id_sewa'])
                 ->where('is_aktif', 'Y')
@@ -302,10 +307,11 @@ class RevisiTLController extends Controller
                     'updated_by'=> $user,
                 )
             );
-            if($data['pembayaran']=='hutang_karyawan'){
+
+            if($data['pembayaran'] == 'hutang_karyawan'){
                 $kht = new KaryawanHutangTransaction();
                 $kht->id_karyawan = $data['id_karyawan'];
-                $kht->refrensi_id =  $datauang_jalan_riwayat->id;
+                $kht->refrensi_id = $datauang_jalan_riwayat->id;
                 $kht->refrensi_keterangan = 
                 '#totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
                 ' #potongHutang:0' . 
@@ -319,21 +325,20 @@ class RevisiTLController extends Controller
                 $kht->created_by = $user;
                 $kht->created_at = now();
                 $kht->is_aktif = 'Y';
-                if($kht->save())
-                {
+                if($kht->save()){
                     if(isset($kh)){
                         // kalau ada data, update hutang
-                         $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']); 
-                         $kh->updated_by = $user;
-                         $kh->updated_at = now();
-                         $kh->save();
+                        $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']); 
+                        $kh->updated_by = $user;
+                        $kh->updated_at = now();
+                        $kh->save();
                     }else{
                         // kalau tidak ada data, buat data hutang baru
                         $kh = new KaryawanHutang();
                         $kh->id_karyawan = $data['id_karyawan'];
                         $kh->total_hutang +=(float)str_replace(',', '', $data['jumlah']);
-                        $kh->createad_by = $user;
-                        $kh->createad_at = now();
+                        $kh->created_by = $user;
+                        $kh->created_at = now();
                         $kh->is_aktif = 'Y';
                         $kh->save();
                     }
@@ -348,7 +353,7 @@ class RevisiTLController extends Controller
                     CoaHelper::DataCoa(5002), //kode coa
                     'teluk_lamong',
                     'PENGEMBALIAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
-                     $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
+                    $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at
                     $user,//updated_by
@@ -377,7 +382,6 @@ class RevisiTLController extends Controller
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Mengembalikan Biaya TL']);
 
         } catch (\Throwable $th) {
-            //throw $th;
             return redirect()->back()->withErrors($th->getMessage())->withInput();
             db::rollBack();
         }
@@ -399,49 +403,77 @@ class RevisiTLController extends Controller
         // some logic to determine if the publisher is main
         
         if($status == 'Return TL'){
-            return DB::table('sewa as s')
-            ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap', 'c.nama as nama_customer'
-                    ,'s.stack_tl','sb.id_biaya', 'sb.deskripsi as isTL', 'sb.catatan as jenisTL', 'sb.is_aktif as TLAktif')
-            ->leftJoin('sewa_biaya as sb', function($join){
-                $join->on('sb.id_sewa', '=', 's.id_sewa')
-                ->where('sb.deskripsi', 'TL')
-                ->where('sb.is_aktif', 'Y')
-                ->whereNotIn('s.stack_tl',['tl_teluk_lamong']);
+            $data = Sewa::where('is_aktif', 'Y')
+                        ->with('getTujuan', 'getKaryawan', 'getCustomer')
+                        ->whereHas('getSewaBiayaReturnTL', function ($query) {
+                            $query->where('is_aktif', 'Y')
+                            ->where('biaya','!=', 0);
+                        })
+                        // ->whereIn('stack_tl', ['tl_perak', 'tl_priuk'])
+                        ->whereNotIn('stack_tl', ['tl_teluk_lamong'])
+                        // ->orWhereNull('stack_tl')
+                        // ->orWhere('stack_tl', NULL)
+                        ->where('status', 'PROSES DOORING')
+                        ->orderBy('created_at', 'DESC')
+                        ->get();
 
-            })
-            ->whereNotIn('s.stack_tl',['tl_teluk_lamong'])
-            ->whereNotNull('sb.id_biaya')
-            ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
-            ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
-            ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
-            ->where('gt.is_aktif', '=', "Y")
-            ->where('s.is_aktif', '=', "Y")
-            ->where('s.status', 'PROSES DOORING')
-            ->whereNull('s.id_supplier')
-            ->orderBy('created_at', 'DESC')
-            ->get();
+            return $data;
+
+            // return DB::table('sewa as s')
+            // ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap', 'c.nama as nama_customer',
+            //             's.stack_tl','sb.id_biaya', 'sb.deskripsi as isTL', 'sb.catatan as jenisTL', 'sb.is_aktif as TLAktif')
+            // ->leftJoin('sewa_biaya as sb', function($join){
+            //     $join->on('sb.id_sewa', '=', 's.id_sewa')
+            //     ->where('sb.deskripsi', 'TL')
+            //     ->where('sb.is_aktif', 'Y')
+            //     ->whereNotIn('s.stack_tl', ['tl_teluk_lamong']);
+            // })
+            // ->whereNotIn('s.stack_tl', ['tl_teluk_lamong'])
+            // ->whereNotNull('sb.id_biaya')
+            // ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            // ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+            // ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
+            // ->where('gt.is_aktif', '=', "Y")
+            // ->where('s.is_aktif', '=', "Y")
+            // ->where('s.status', 'PROSES DOORING')
+            // ->whereNull('s.id_supplier')
+            // ->orderBy('created_at', 'DESC')
+            // ->get();
         }else if($status == 'Add TL'){
-            return DB::table('sewa as s')
-            ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap', 'c.nama as nama_customer'
-                    ,'s.stack_tl','sb.id_biaya', 'sb.deskripsi as isTL', 'sb.catatan as jenisTL', 'sb.is_aktif as TLAktif')
-            ->leftJoin('sewa_biaya as sb', function($join){
-                $join->on('sb.id_sewa', '=', 's.id_sewa')
-                ->where('sb.deskripsi', 'TL')
-                ->where('sb.is_aktif', 'Y')
-                ->where('s.stack_tl','like','%tl_teluk_lamong%');
+            $data = Sewa::where('is_aktif', 'Y')
+                            ->with('getTujuan', 'getKaryawan', 'getCustomer', 'getSewaBiayaAddTL')
+                            // ->whereHas('getSewaBiaya', function ($query) {
+                            //     $query->whereNull('id_biaya');
+                            // })
+                            ->doesntHave('getSewaBiayaAddTL') // Use doesntHave to filter where getSewaBiayaAddTL is null
+                            ->where('stack_tl', 'tl_teluk_lamong')
+                            ->where('status', 'PROSES DOORING')
+                            ->orderBy('created_at', 'DESC')
+                            ->get();
 
-            })
-            ->where('s.stack_tl','like','%tl_teluk_lamong%')
-            ->whereNull('sb.id_biaya')
-            ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
-            ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
-            ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
-            ->where('gt.is_aktif', '=', "Y")
-            ->where('s.is_aktif', '=', "Y")
-            ->whereNull('s.id_supplier')
-            ->where('s.status', 'PROSES DOORING')
-            ->orderBy('created_at', 'DESC')
-            ->get();
+            return $data;
+
+            // return DB::table('sewa as s')
+            // ->select('s.*', 'gt.nama_tujuan as nama_tujuan', 'k.nama_lengkap as nama_lengkap', 'c.nama as nama_customer'
+            //         ,'s.stack_tl','sb.id_biaya', 'sb.deskripsi as isTL', 'sb.catatan as jenisTL', 'sb.is_aktif as TLAktif')
+            // ->leftJoin('sewa_biaya as sb', function($join){
+            //     $join->on('sb.id_sewa', '=', 's.id_sewa')
+            //     ->where('sb.deskripsi', 'TL')
+            //     ->where('sb.is_aktif', 'Y')
+            //     ->where('s.stack_tl','like','%tl_teluk_lamong%');
+
+            // })
+            // ->where('s.stack_tl','like','%tl_teluk_lamong%')
+            // ->whereNull('sb.id_biaya')
+            // ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            // ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+            // ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
+            // ->where('gt.is_aktif', '=', "Y")
+            // ->where('s.is_aktif', '=', "Y")
+            // ->whereNull('s.id_supplier')
+            // ->where('s.status', 'PROSES DOORING')
+            // ->orderBy('created_at', 'DESC')
+            // ->get();
         }else{
             return null;
         }

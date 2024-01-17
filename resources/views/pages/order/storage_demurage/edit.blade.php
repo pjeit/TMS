@@ -1,21 +1,21 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
-  
+
 @endsection
 
 @section('content')
 <style>
-    .card-header:first-child{
-        border-radius:inherit;
+    .card-header:first-child {
+        border-radius: inherit;
     }
+
     /* .tabelJO {
         border-collapse: collapse;
         border-spacing: 0;
@@ -24,82 +24,96 @@
     } */
 </style>
 
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ $error }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endforeach
-    @endif
-    <form action="{{ route('storage_demurage.update', ['storage_demurage' => $data['detail'] ]) }}" id='send' method="POST" >
-        @method('PUT')
-        @csrf
-        <div class="row m-2">
+@if ($errors->any())
+@foreach ($errors->all() as $error)
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ $error }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+@endforeach
+@endif
+<form action="{{ route('storage_demurage.update', ['storage_demurage' => $data['detail'] ]) }}" id='send' method="POST">
+    @method('PUT')
+    @csrf
+    <div class="container-fluid">
+        <div class="row">
             <div class="col-12 radiusSendiri sticky-top " style="margin-bottom: -15px;">
                 <div class="card radiusSendiri" style="">
                     <div class="card-header ">
-                        <a href="{{ route('storage_demurage.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-
-                        <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i class="fa fa-plus-circle"></i> <strong >Tambah Data</strong></button> 
+                        <a href="{{ route('storage_demurage.index') }}" class="btn btn-secondary radiusSendiri"><i
+                                class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
+                                class="fa fa-fw fa-save"></i> Simpan</button>
+    
+                        <button type="button" name="add" id="add" class="btn btn-primary radiusSendiri float-right"><i
+                                class="fa fa-plus-circle"></i> <strong>Tambah Data</strong></button>
                     </div>
                 </div>
             </div>
-             <div class="col-12">
+            <div class="col-12">
                 <div class="card radiusSendiri">
                     {{-- <div class="card-header">
-                        <a href="{{ route('job_order.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" id='submitButton' class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                        <a href="{{ route('job_order.index') }}" class="btn btn-secondary radiusSendiri"><i
+                                class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                        <button type="submit" id='submitButton' class="btn btn-success radiusSendiri ml-2"><i
+                                class="fa fa-fw fa-save"></i> Simpan</button>
                     </div> --}}
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-4" >
-                                <div class="form-group" style="" >
+                            <div class="col-4">
+                                <div class="form-group" style="">
                                     <label for="">Pengirim</label>
-                                    <input type="text" value="{{$data['JO']->getCustomer->nama}}" class="form-control" disabled>
+                                    <input type="text" value="{{$data['JO']->getCustomer->nama}}" class="form-control"
+                                        disabled>
                                     <input type="hidden" value="{{$data['JO']->id}}" class="form-control" name="id_jo">
-                                    <input type="hidden" value="{{$data['detail']->id}}" class="form-control" name="id_jo_detail">
+                                    <input type="hidden" value="{{$data['detail']->id}}" class="form-control"
+                                        name="id_jo_detail">
                                 </div>
                             </div>
-                            <div class="col-4" >
-                                <div class="form-group" style="pointer-events: none;" >
+                            <div class="col-4">
+                                <div class="form-group" style="pointer-events: none;">
                                     <label for="">Pelayaran</label>
-                                    <input type="text" value="{{$data['JO']->getSupplier->nama}}" class="form-control" disabled>
+                                    <input type="text" value="{{$data['JO']->getSupplier->nama}}" class="form-control"
+                                        disabled>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <div class="form-group ">
                                     <label for="">No. BL</label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{$data['JO']->no_bl}}" readonly disabled >
-                                </div>           
+                                    <input required type="text" name="no_bl" class="form-control"
+                                        value="{{$data['JO']->no_bl}}" readonly disabled>
+                                </div>
                             </div>
                         </div>
-                    
+    
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group ">
                                     <label for="">No. Kontainer</label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{$data['detail']->no_kontainer}}" readonly disabled >
-                                </div>           
+                                    <input required type="text" name="no_bl" class="form-control"
+                                        value="{{$data['detail']->no_kontainer}}" readonly disabled>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group ">
                                     <label for="">Seal</label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{$data['detail']->seal}}" readonly disabled >
-                                </div>           
+                                    <input required type="text" name="no_bl" class="form-control"
+                                        value="{{$data['detail']->seal}}" readonly disabled>
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group ">
                                     <label for="">Tujuan</label>
-                                    <input required type="text" name="no_bl" class="form-control" value="{{isset($data['detail']->getTujuan->id)? $data['detail']->getTujuan->id:null}}" readonly disabled >
-                                </div>           
+                                    <input required type="text" name="no_bl" class="form-control"
+                                        value="{{isset($data['detail']->getTujuan->nama_tujuan)? $data['detail']->getTujuan->nama_tujuan:null}}"
+                                        readonly disabled>
+                                </div>
                             </div>
                         </div>
                         <hr>
-
+    
                         <div class="table-responsive p-0">
                             <form name="add_name" id="add_name">
                                 <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel">
@@ -110,75 +124,107 @@
                                             <th style="">Detention</th>
                                             <th style="">Repair</th>
                                             <th style="">Washing</th>
-                                            <th style="">Status</th>
+                                            <th style="">Dibayarkan Oleh</th>
                                             <th style="width:30px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @if (isset($data['biaya']))
-                                            @foreach ($data['biaya'] as $key => $item)
-                                            <tr id="row_{{$key}}">
-                                                <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->storage, 2) }}" disabled>
+                                        @foreach ($data['biaya'] as $key => $item)
+                                        <tr id="row_{{$key}}">
+                                            <td style="width: 15%">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Rp.</span>
                                                     </div>
-                                                </td>
-                                                <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->demurage, 2) }}" disabled>
+                                                    
+                                                    <input type="text" id="storage{{$key}}" class="form-control numaja uang" 
+                                                    value="{{ number_format($item->storage) }}" name="data[{{$key}}][storage]"  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
+                                                </div>
+                                            </td>
+                                            <td style="width: 15%">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Rp.</span>
                                                     </div>
-                                                </td>
-                                                <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->detention, 2) }}" disabled>
+                                                    <input type="text" id="demurage{{$key}}" class="form-control numaja uang"
+                                                        value="{{ number_format($item->demurage) }}" name="data[{{$key}}][demurage]"  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
+                                                </div>
+                                            </td>
+                                            <td style="width: 15%">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Rp.</span>
                                                     </div>
-                                                </td>
-                                                <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->repair, 2) }}" disabled>
+                                                    <input type="text" id="detention{{$key}}" class="form-control numaja uang"
+                                                        value="{{ number_format($item->detention) }}" name="data[{{$key}}][detention]"  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
+                                                </div>
+                                            </td>
+                                            <td style="width: 15%">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Rp.</span>
                                                     </div>
-                                                </td>
-                                                 <td style="width: 15%">
-                                                    <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Rp.</span>
-                                                        </div>
-                                                        <input type="text" class="form-control numaja uang" value="{{ number_format($item->washing, 2) }}" disabled>
+                                                    <input type="text" id="repair{{$key}}" class="form-control numaja uang"
+                                                        value="{{ number_format($item->repair) }}" name="data[{{$key}}][repair]"  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
+                                                </div>
+                                            </td>
+                                            <td style="width: 15%">
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">Rp.</span>
                                                     </div>
+                                                    <input type="text" id="washing{{$key}}" class="form-control numaja uang"
+                                                        value="{{ number_format($item->washing) }}" name="data[{{$key}}][washing]" {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}}>
+                                                </div>
+                                            </td>
+                                            <td style="width: 50%">
+                                                <div class="form-group">
+                                                    <input type="hidden" value="{{ $item->id }}" name="data[{{$key}}][id_detail_biaya]">
+                                                    <input type="hidden" value="{{ $item->is_aktif }}" name="data[{{$key}}][is_aktif]" id="is_aktif_{{$key}}">
+                                                    <select  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}} class="form-control select2" name="data[{{$key}}][id_pembayaran_customer]" id="id_pembayaran_customer_{{$key}}">
+                                                        <option value="dibayar_pje" {{ $item->status_bayar == 'dibayar_pje'? 'selected':'' }}>PJE</option>
+                                                        <option value="DIBAYAR CUSTOMER" {{ $item->status_bayar == 'DIBAYAR CUSTOMER'? 'selected':'' }}>­­CUSTOMER</option>
+                                                        <option value="DIBAYAR PENERIMA" {{ $item->status_bayar == 'DIBAYAR PENERIMA'? 'selected':'' }}>PENERIMA</option>
+                                                    </select>
+                                                    @if ($item->id_customer == null)
+                                                        @if ($item->status_bayar=='MENUNGGU PEMBAYARAN')
+                                                            <label>Status : <span class="badge badge-warning">{{$item->status_bayar}}</span></label>
+                                                        @else
+                                                            <label>Status : <span class="badge badge-success">{{$item->status_bayar}}</span></label>
+                                                        @endif
+                                                    @else
+                                                        <label>Status : <span class="badge badge-secondary">{{$item->status_bayar}}</span></label>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                            {{-- <td style="width: 5%">
+                                                </td> --}}
+                                            @if ($item->status_bayar!='SELESAI PEMBAYARAN')
+                                                <td style="width: 5%">
+                                                    <button type="button" id="{{$key}}" class="btn btn-danger btn_remove_db"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                                 </td>
-                                                <td style="width: 50%" >
-                                                    <input type="text" class="form-control" value="{{$item->status_bayar}}" disabled>
+                                            @else
+                                                <td style="width: 5%">
                                                 </td>
-                                                <td style="width: 5%"></td>
-                                            </tr>
-                                            @endforeach
+                                            @endif
+    
+                                        </tr>
+                                        @endforeach
                                         @endif
                                     </tbody>
                                 </table>
                             </form>
-                    </div>
-
+                        </div>
+    
                         <hr>
-
+    
                     </div>
-                </div> 
+                </div>
             </div>
-            
-          
         </div>
-    </form>
+    </div>
+</form>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -241,8 +287,7 @@
                 })
             // pop up confirmation
         });
-
-        $("#add").click(function(){
+        $( document ).on( 'click', '#add', function (event) {
             var rows = document.querySelectorAll('tr[id^="row_"]');
 
             // Find the maximum ID number
@@ -299,7 +344,7 @@
                             <input type="text" name="data[${i}][repair]" id="repair${i}" class="form-control numaja uang"/>
                         </div>
                     </td>
-                      <td style="text-align: center; vertical-align: middle;">
+                    <td style="text-align: center; vertical-align: middle;">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp.</span>
@@ -307,14 +352,19 @@
                             <input type="text" name="data[${i}][washing]" id="washing${i}" class="form-control numaja uang"/>
                         </div>
                     </td>
-                    <td style="text-align: center; vertical-align: middle;">
-                        <div class="input-group mb-3">
-                            <input type="text" id="status${i}" class="form-control"/ disabled>
+                    <td >
+                        <div class="form-group">
+                            <input type="hidden" value="" name="data[${i}][id_detail_biaya]">
+                            <select class="form-control select2" name="data[${i}][id_pembayaran_customer]" id="id_pembayaran_customer_${i}">
+                                <option value="dibayar_pje">­­PJE</option>
+                                <option value="DIBAYAR CUSTOMER">CUSTOMER</option>
+                                <option value="DIBAYAR PENERIMA">PENERIMA</option>
+                            </select>
                         </div>
                     </td>
                     <td>
                         <button type="button" name="del" id="${i}" class="btn btn-danger btn_remove"><i class="fa fa-trash" aria-hidden="true"></i></button>
-                    </td></tr>);  
+                    </td>
                 </tr>
             `
             );
@@ -324,8 +374,14 @@
                 var uppercaseValue = inputValue.toUpperCase();
                 $(this).val(uppercaseValue);
             });
-
+            $('.select2').select2({
+                dropdownPosition: 'below'
+            });
         });
+        // $("#add").click(function(){
+           
+
+        // });
 
         $(document).on('click', '.btn_remove', function(){  
             var button_id = $(this).attr("id");
@@ -336,9 +392,16 @@
             $('#row_'+button_id+'').remove();  
         });
 
+         $(document).on('click', '.btn_remove_db', function(){  
+            var button_id = $(this).attr("id");
+            console.log(button_id);
+            // get id yg dihapus
+            var row = $(this).closest("tr");
+            $('#row_'+button_id+'').hide();  
+            $('#is_aktif_'+button_id).val('N');
+
+        });
     });
 </script>
 
 @endsection
-
-

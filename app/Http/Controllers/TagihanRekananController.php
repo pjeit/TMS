@@ -55,22 +55,12 @@ class TagihanRekananController extends Controller
                     ->where('is_aktif', '=', "Y")
                     ->get();
 
-        // $supplier = Sewa::from('sewa as s')
-        //             ->leftJoin('supplier as sup', 'sup.id', '=', 's.id_supplier')
-        //             ->where('s.is_aktif', 'Y')
-        //             ->whereNotNull('s.id_supplier')
-        //             ->groupBy('s.id_supplier')
-        //             ->get();
-
         $supplier = Sewa::from('sewa as s')
                     ->with('getCustomer')
                     ->leftJoin('grup_tujuan as gt', 'gt.id', 's.id_grup_tujuan')
-                    // ->where('gt.jenis_tujuan', 'LTL')
                     ->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
                     ->groupBy('s.id_supplier')
                     ->get();
-
-        // dd($supplier);
 
         return view('pages.finance.tagihan_rekanan.create',[
             'judul' => "Tagihan Rekanan",
@@ -199,7 +189,6 @@ class TagihanRekananController extends Controller
                         $tagihan->biaya_admin = $biaya_admin;
                     }else{
                         $tagihan->tagihan_dibayarkan += $value['total_bayar'];
-
                     }
                     if($tagihan->sisa_tagihan == 0){
                         $tagihan->status = 'LUNAS';
@@ -400,7 +389,6 @@ class TagihanRekananController extends Controller
         $sewa = Sewa::from('sewa as s')
             ->with('getCustomer')
             ->leftJoin('grup_tujuan as gt', 'gt.id', 's.id_grup_tujuan')
-            // ->where('gt.jenis_tujuan', 'LTL')
             ->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
             ->where('s.id_supplier', $id)
             ->get();

@@ -13,18 +13,13 @@ class Invoice extends Model
 
     public function getBillingTo()
     {
-         return $this->hasOne(Customer::class, 'id', 'billing_to');
+        return $this->hasOne(Customer::class, 'id', 'billing_to');
     }
 
     // eloquent relation
     public function invoiceDetails()
     {
-    return $this->hasMany(InvoiceDetail::class, 'id_invoice', 'id')->where('is_aktif', 'Y'); //id target, id sendiri
-    }   
-
-     public function invoiceDetailsCost()
-    {
-    return $this->hasMany(InvoiceDetailAddcost::class, 'id_invoice', 'id')->where('is_aktif', 'Y'); //id target, id sendiri
+        return $this->hasMany(InvoiceDetail::class, 'id_invoice', 'id')->where('is_aktif', 'Y'); //id target, id sendiri
     }   
 
     public function customer()

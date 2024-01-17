@@ -22,15 +22,11 @@ class PemutihanInvoiceController extends Controller
 
     public function index()
     {
-        //
-        //
-         $title = 'Data akan dihapus!';
+        $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
-        // Session::flush();
-        // Session::forget(['sewa', 'cust', 'grup']);
         $dataPengaturanKeuangan = PengaturanKeuangan::where('id', 1)->first();
 
         $dataInvoice =  DB::table('invoice AS i')
@@ -43,8 +39,6 @@ class PemutihanInvoiceController extends Controller
                 ->where('i.total_sisa','!=',0)
                 ->orderBy('i.id','ASC')
                 ->get();
-        // dd($dataSewa);
-        // dd($dataSewa);
         return view('pages.invoice.pemutihan_invoice.index',[
             'judul'=>"PEMUTIHAN INVOICE",
             'dataInvoice' => $dataInvoice,
@@ -91,8 +85,8 @@ class PemutihanInvoiceController extends Controller
         //
         $data_pengaturan = PengaturanKeuangan::where('id', 1)->first();
         $data_customer = Customer::where('is_aktif', 'Y')
-        ->where('id', $pemutihan_invoice->billing_to)
-        ->first();
+                                    ->where('id', $pemutihan_invoice->billing_to)
+                                    ->first();
 
         return view('pages.invoice.pemutihan_invoice.form',[
             'judul'=>"PEMUTIHAN INVOICE",
@@ -111,8 +105,6 @@ class PemutihanInvoiceController extends Controller
      */
     public function update(Request $request, Invoice $pemutihan_invoice)
     {
-        //
-        
         $user = Auth::user()->id;
         DB::beginTransaction(); 
         try {
@@ -140,7 +132,7 @@ class PemutihanInvoiceController extends Controller
             if($pemutihan->save())
             {
                 $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($pemutihan_invoice->id);
-              
+                
                 $curStatus = '';
                 $invoice->total_sisa-=floatval(str_replace(',', '', $data['jumlah_pemutihan']));
                 $invoice->total_dibayar+=floatval(str_replace(',', '', $data['jumlah_pemutihan']));
@@ -167,6 +159,16 @@ class PemutihanInvoiceController extends Controller
                                     $updateSewa->save();
                                     // trigger update status jo detail jika semua sewa sudah selesai
                                     // trigger update status jo jika semua jo detail sudah selesai
+
+                                    // logicnya sama kaya di pembayaran invoice
+                                    $cust = Customer::where('is_aktif', 'Y')->findOrFail($updateSewa['id_customer']);
+                                    if($cust){
+                                        $kredit_sekarang = $cust->kredit_sekarang - $updateSewa->total_tarif;
+                                        $cust->kredit_sekarang = $kredit_sekarang;
+                                        $cust->updated_by = $user;
+                                        $cust->updated_at = now();
+                                        $cust->save();
+                                    }
                                 }
                             }
                         }

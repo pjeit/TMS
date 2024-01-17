@@ -46,12 +46,12 @@
                             <th>Tgl Berangkat</th>
                             <th>Tujuan</th>
                             <th>Driver</th>
-                            <th>Keterangan</th>
+                            <th>Status</th>
                             <th style="width:30px"></th>
                         </tr>
                     </thead>
                     <tbody id="hasil">
-                  
+                        
                     </tbody>
                 </table>
             </div>
@@ -89,10 +89,10 @@
                     console.log('response', data);
                     for (var i = 0; i < data.length; i++) {
                         var row = $("<tr></tr>");
-                        row.append(`<td>${data[i].nama_customer}</td>`);
+                        row.append(`<td>${data[i].get_customer.nama}</td>`);
                         row.append(`<td>${data[i].no_polisi}</td>`);
                         row.append(`<td>${data[i].no_sewa}</td>`);
-                        row.append(`<td>${data[i].tanggal_berangkat}</td>`);
+                        row.append(`<td>${dateMask(data[i].tanggal_berangkat)}</td>`);
                         row.append(`<td>${data[i].alamat_tujuan}</td>`);
                         row.append(`<td>${data[i].nama_driver}</td>`);
                         row.append(`<td>${data[i].status}</td>`);

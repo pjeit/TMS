@@ -2,18 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permissions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class PermissionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PERMISSION', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PERMISSION', ['only' => ['create', 'store']]);
+		// $this->middleware('permission:EDIT_PERMISSION', ['only' => ['edit', 'update']]);
+		$this->middleware('permission:DELETE_PERMISSION', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
-        //
+        $data = Permissions::where('is_aktif', 'Y')->get();
+
+        return view('pages.master.permission.index',[
+            'judul' => 'Permission',
+            'data' => $data,
+        ]);
     }
 
     /**
@@ -23,7 +35,9 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        //
+        return view('pages.master.permission.create',[
+            'judul' => 'Create Permission',
+        ]);
     }
 
     /**
@@ -34,7 +48,25 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user()->id;
+        $data = $request->collect();
+        DB::beginTransaction(); 
+        
+        try {
+            $permission = new Permissions();
+            $permission->menu = $data['menu'];
+            $permission->name = $data['action'];
+            $permission->guard_name = $data['guard_name'];
+            $permission->created_by = $user;
+            $permission->created_at = now();
+            if($permission->save()){
+                DB::commit();
+                return redirect()->route('permission.index')->with(['status' => 'Success', 'msg'  => 'Tambah data berhasil!']);
+            }
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('permission.index')->with(['status' => 'error', 'msg' => 'Tambah data gagal!']);
+        }
     }
 
     /**
@@ -56,7 +88,12 @@ class PermissionController extends Controller
      */
     public function edit($id)
     {
-        //
+        $data = Permissions::where('is_aktif', 'Y')->find($id);
+
+        return view('pages.master.permission.edit',[
+            'judul' => 'Permission',
+            'data' => $data,
+        ]);
     }
 
     /**
@@ -68,7 +105,25 @@ class PermissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = Auth::user()->id;
+        $data = $request->collect();
+        DB::beginTransaction(); 
+        
+        try {
+            $permission = Permissions::where('is_aktif', 'Y')->find($id);
+            $permission->menu = $data['menu'];
+            $permission->name = $data['action'];
+            $permission->guard_name = $data['guard_name'];
+            $permission->updated_by = $user;
+            $permission->updated_at = now();
+            if($permission->save()){
+                DB::commit();
+                return redirect()->route('permission.index')->with(['status' => 'Success', 'msg'  => 'Edit data berhasil!']);
+            }
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('permission.index')->with(['status' => 'error', 'msg' => 'Edit data gagal!']);
+        }
     }
 
     /**
@@ -77,8 +132,21 @@ class PermissionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete($id)
     {
-        //
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        
+        try {
+            $permission = Permissions::where('is_aktif', 'Y')->where('id', $id)->delete();
+
+            if($permission){
+                DB::commit();
+                return redirect()->route('permission.index')->with(['status' => 'Success', 'msg'  => 'Hapus data berhasil!']);
+            }
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('permission.index')->with(['status' => 'error', 'msg' => 'Hapus data gagal!']);
+        }
     }
 }

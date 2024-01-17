@@ -29,20 +29,21 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
-                            <label for="select_sewa">No. Sewa</label>
-                            <input type="text" class="form-control" name="no_sewa" value="{{ $data['no_sewa'] }} ({{ date('d-M-Y', strtotime($data['tanggal_berangkat'])) }})" readonly>
+                            <label for="select_sewa">Tgl. Berangkat</label>
+                            <input type="hidden" name="no_sewa" value="{{$data->no_sewa}}">
+                            <input type="text" class="form-control" name="tanggal_berangkat" value="{{ date('d-M-Y', strtotime($data['tanggal_berangkat'])) }}" readonly>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="form-group">
                             <label for="customer">Customer</label>
-                            <input type="text" class="form-control" id="customer" readonly="" value="[{{ $data->getCustomer->kode }}] - {{ $data->getCustomer->nama }}">
+                            <input type="text" class="form-control" name="customer" id="customer" readonly="" value="[{{ $data->getCustomer->kode }}] - {{ $data->getCustomer->nama }}">
                         </div>
                     </div>
                     <div class="col-lg-5 col-md-5 col-sm-12">
                         <div class="form-group">
                             <label for="tujuan">Tujuan</label>
-                            <input type="text" class="form-control" id="tujuan" readonly="" value="{{ $data->nama_tujuan }}">
+                            <input type="text" class="form-control" name="tujuan" id="tujuan" readonly="" value="{{ $data->nama_tujuan }}">
                         </div>
                     </div>
                 </div>
@@ -50,10 +51,10 @@
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <div class="form-group">
                             <label for="no_kontainer">{{$data->jenis_tujuan == "FTL"?'No. Kontainer':'No. Koli'}}<span style="color:red">*</span></label>
-                             @if ($data->no_kontainer_jod && $data->jenis_order =="INBOUND")
+                            @if ($data->no_kontainer_jod && $data->jenis_order =="INBOUND")
                                 <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$data->no_kontainer_jod}}" >                         
                             @else
-                                <input type="text" id="no_kontainer" required ="no_kontainer" class="form-control" value="{{$data->no_kontainer}}" >                         
+                                <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" value="{{$data->no_kontainer}}" required>                         
                             @endif
                             {{-- <input type="text" required name="no_kontainer" class="form-control" id="no_kontainer" placeholder="" value="{{ $data['no_kontainer'] }}"> --}}
                         </div>
@@ -149,7 +150,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text">Rp</span>
                                                 </div>
-                                                <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}">
+                                                <input readonly="" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="" value="{{ number_format(($data->getUJRiwayat[0]->total_uang_jalan + $data->getUJRiwayat[0]->total_tl)-$data->getUJRiwayat[0]->potong_hutang ) }}">
                                             </div>
                                         </div>
                                     </div>
@@ -202,9 +203,6 @@
     </form>
 </div>
 
-
-         
- 
 <script type="text/javascript">
     $(document).ready(function() {
         var today = new Date();

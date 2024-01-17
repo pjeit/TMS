@@ -292,7 +292,7 @@ class TransferDanaController extends Controller
                 // $transfer->save();
                 if ($transfer->save()) {
                 
-                     $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
+                    $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $transfer->id)
                                         ->where('jenis', 'transfer_dana')
                                         ->get();

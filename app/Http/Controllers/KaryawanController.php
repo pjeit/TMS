@@ -132,7 +132,7 @@ class KaryawanController extends Controller
             ->get();
         return view('pages.master.karyawan.create',[
             'judul' =>"Karyawan",
-             'dataroles' => $dataRole,
+             'dataRole' => $dataRole,
              'dataKota' => $dataKota,
              'dataPtkp' => $dataPtkp,
              'dataAgama' => $dataAgama,

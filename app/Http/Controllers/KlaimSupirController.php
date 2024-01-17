@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Helper\SewaDataHelper;
 use Illuminate\Validation\ValidationException;
+use Yajra\DataTables\Facades\DataTables;
 
 use Illuminate\Support\Facades\Auth;
 use Buglinjo\LaravelWebp\Webp;
@@ -80,6 +81,125 @@ class KlaimSupirController extends Controller
         ]);
         
     }
+    public function load_data_revisi_server(Request $request)
+    {
+        if ($request->ajax()) {
+            $dataKlaimSupir = DB::table('klaim_supir as ks')
+            ->select('ks.*','ks.id as id_klaim','k.nama_panggilan as nama_supir','k.telp1 as telp','ksr.total_pencairan')
+            ->leftJoin('karyawan as k', function($join) {
+                    $join->on('ks.karyawan_id', '=', 'k.id')->where('k.is_aktif', '=', "Y");
+                })
+             ->leftJoin('klaim_supir_riwayat as ksr', function($join) {
+                    $join->on('ks.id', '=', 'ksr.id_klaim')->where('ksr.is_aktif', '=', "Y");
+                })
+            ->where('ks.is_aktif', '=', "Y")
+            ->where('ks.status_klaim','not like',"%PENDING%")
+            ->get();
+            // var_dump($dataKlaimSupir);
+            return DataTables::of($dataKlaimSupir)
+                ->addIndexColumn()
+                ->addColumn('Supir', function($item){ // edit supplier
+                    // var_dump($item);
+                    return $item->nama_supir.'('.$item->telp.')';
+                }) 
+                ->addColumn('Jenis_Klaim', function($item){ // edit supplier
+                    return $item->jenis_klaim;
+                })
+                ->addColumn('Tanggal_Klaim', function($item){ // edit format uang
+                    return date("d-M-Y", strtotime($item->tanggal_klaim));
+                }) 
+                 ->addColumn('Jumlah_Klaim', function($item){ // edit format uang
+                        return number_format($item->total_klaim);
+
+                    
+                }) 
+                 ->addColumn('Jumlah_Dicairkan', function($item){ // edit format uang
+                   if ($item->status_klaim == 'ACCEPTED') {
+                        return number_format($item->total_pencairan);
+                    }
+                    else
+                    {
+                        return "Tidak ada pencairan";
+                    }
+                }) 
+                 ->addColumn('Status_Klaim', function($item){ // edit format uang
+                    $pending=  '
+                                <span class="badge badge-warning">
+                                    MENUNGGU PERSETUJUAN
+                                    <i class="fas fa-solid fa-clock"></i>
+                                </span>
+                            ';
+                    $acc= '
+                            <span class="badge badge-success">
+                                DITERIMA
+                                <i class="fas fa-regular fa-thumbs-up"></i>
+                            </span>
+                        ';
+                    $reject =  '
+                            <span class="badge badge-danger">
+                                DITOLAK
+                                <i class="fas fa-regular fa-thumbs-down"></i>
+                            </span>
+                        ';
+                    if ($item->status_klaim == 'PENDING') {
+                        return  $pending;
+                    }
+                    else if($item->status_klaim == 'ACCEPTED')
+                    {
+                        return  $acc;
+                    }
+                    else
+                    {
+                        return $reject;
+                    }
+                }) 
+                ->addColumn('Keterangan', function($item){ // edit format uang
+                    return $item->keterangan_klaim;
+                }) 
+                ->addColumn('action', function($row){
+                    // $actionBtn = '
+                    //             <div class="btn-group dropleft">
+                    //                 <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    //                     <i class="fa fa-list"></i>
+                    //                 </button>
+                    //                 <div class="dropdown-menu" >
+                    //                     <a href="/revisi_klaim_supir/pencairan/'.$row->id.'" class="dropdown-item edit">
+                    //                         <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                    //                     </a>
+                    //                 </div>
+                    //             </div>';
+                    //                 // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+                    //                 // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+                    // return $actionBtn;
+                    $edit=auth()->user()->can('EDIT_REVISI_KLAIM_SUPIR')?'<a href="/revisi_klaim_supir/pencairan/'.$row->id.'" class="dropdown-item edit">
+                                            <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                                        </a>':'';
+                    $actionBtn = '
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu" >
+                                        '.$edit.'
+                                    </div>
+                                </div>';
+                                    // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+                                    // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action', 
+                'Supir', 
+                'Jenis_Klaim', 
+                'Tanggal_Klaim',
+                'Jumlah_Klaim',
+                'Jumlah_Dicairkan',
+                'Status_Klaim',
+                'Keterangan'
+                ]) // ini buat render raw html, kalo ga pake nanti jadi text biasa
+                
+                ->make(true);
+        }
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -103,7 +223,8 @@ class KlaimSupirController extends Controller
         DB::beginTransaction(); 
 
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
-        
+        $src="/home/pjexpres/tms.pjexpress.co.id/img/klaim_supir/";
+        $srcUpdateDelete="/home/pjexpres/tms.pjexpress.co.id";
         try {
 
             $pesanKustom = [
@@ -138,7 +259,10 @@ class KlaimSupirController extends Controller
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoNota);
-                $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),20);
+                // $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),20);
+                $webp->save($src.$nama_gambar ,20);
+               
+                
                 $pathFotoNota = '/img/klaim_supir/' . $nama_gambar;
             }
 
@@ -151,7 +275,8 @@ class KlaimSupirController extends Controller
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoBarang);
-                $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),5);
+                // $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),5);
+                $webp->save($src.$nama_gambar ,20);
                 $pathFotoBarang = '/img/klaim_supir/' . $nama_gambar;
             }
             $data = $request->collect();
@@ -179,14 +304,22 @@ class KlaimSupirController extends Controller
         } catch (ValidationException $e) {
             DB::rollBack();
             if (!empty($pathFotoNota)) {
-                    if (file_exists(public_path($pathFotoNota))) {
-                        unlink(public_path($pathFotoNota));
+                    // if (file_exists(public_path($pathFotoNota))) {
+                    //     unlink(public_path($pathFotoNota));
+                    // }
+                     if (file_exists($srcUpdateDelete.$pathFotoNota)) {
+                        unlink($srcUpdateDelete.$pathFotoNota);
                     }
+                    
+                    
             }
 
             if (!empty($pathFotoBarang)) {
-                    if (file_exists(public_path($pathFotoBarang))) {
-                        unlink(public_path($pathFotoBarang));
+                    // if (file_exists(public_path($pathFotoBarang))) {
+                    //     unlink(public_path($pathFotoBarang));
+                    // }
+                     if (file_exists($srcUpdateDelete.$pathFotoBarang)) {
+                        unlink($srcUpdateDelete.$pathFotoBarang);
                     }
             }
             // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $e->errors()]);
@@ -198,13 +331,19 @@ class KlaimSupirController extends Controller
             //throw $th;
             DB::rollBack();
             if (!empty($pathFotoNota)) {
-                    if (file_exists(public_path($pathFotoNota))) {
-                        unlink(public_path($pathFotoNota));
+                    // if (file_exists(public_path($pathFotoNota))) {
+                    //     unlink(public_path($pathFotoNota));
+                    // }
+                     if (file_exists($srcUpdateDelete.$pathFotoNota)) {
+                        unlink($srcUpdateDelete.$pathFotoNota);
                     }
             }
               if (!empty($pathFotoBarang)) {
-                    if (file_exists(public_path($pathFotoBarang))) {
-                        unlink(public_path($pathFotoBarang));
+                    // if (file_exists(public_path($pathFotoBarang))) {
+                    //     unlink(public_path($pathFotoBarang));
+                    // }
+                       if (file_exists($srcUpdateDelete.$pathFotoBarang)) {
+                        unlink($srcUpdateDelete.$pathFotoBarang);
                     }
             }
             // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
@@ -257,6 +396,8 @@ class KlaimSupirController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         $fotoNotaDB = $klaimSupir->foto_nota;
         $fotoBarangDB = $klaimSupir->foto_barang;
+        $src="/home/pjexpres/tms.pjexpress.co.id/img/klaim_supir/";
+        $srcUpdateDelete="/home/pjexpres/tms.pjexpress.co.id";
         try {
 
             $pesanKustom = [
@@ -285,10 +426,16 @@ class KlaimSupirController extends Controller
 
             $pathFotoNota = "";
 
+
             if ($request->hasFile('foto_nota')) {
+                // if (!empty($fotoNotaDB)) {
+                //     if (file_exists(public_path($fotoNotaDB))) {
+                //         unlink(public_path($fotoNotaDB));
+                //     }
+                // }
                 if (!empty($fotoNotaDB)) {
-                    if (file_exists(public_path($fotoNotaDB))) {
-                        unlink(public_path($fotoNotaDB));
+                    if (file_exists($srcUpdateDelete.$fotoNotaDB)) {
+                        unlink($srcUpdateDelete.$fotoNotaDB);
                     }
                 }
                 $fotoNota = $request->file('foto_nota');
@@ -297,16 +444,22 @@ class KlaimSupirController extends Controller
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoNota);
-                $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),20);
+                // $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),20);
+                $webp->save($src.$nama_gambar ,20);
                 $pathFotoNota = '/img/klaim_supir/' . $nama_gambar;
             }
 
             $pathFotoBarang = "";
 
             if ($request->hasFile('foto_barang')) {
-                if (!empty($fotoBarangDB)) {
-                    if (file_exists(public_path($fotoBarangDB))) {
-                        unlink(public_path($fotoBarangDB));
+                // if (!empty($fotoBarangDB)) {
+                //     if (file_exists(public_path($fotoBarangDB))) {
+                //         unlink(public_path($fotoBarangDB));
+                //     }
+                // }
+                 if (!empty($fotoBarangDB)) {
+                    if (file_exists($srcUpdateDelete.$fotoBarangDB)) {
+                        unlink($srcUpdateDelete.$fotoBarangDB);
                     }
                 }
                 $fotoBarang= $request->file('foto_barang');
@@ -315,7 +468,8 @@ class KlaimSupirController extends Controller
 
                 // Convert and save the image to WebP format
                 $webp = Webp::make($fotoBarang);
-                $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),5);
+                // $webp->save(public_path('/img/klaim_supir/' . $nama_gambar ),5);
+                $webp->save($src.$nama_gambar ,20);
                 $pathFotoBarang = '/img/klaim_supir/' . $nama_gambar;
             }
             $data = $request->collect();
@@ -344,17 +498,30 @@ class KlaimSupirController extends Controller
 
         } catch (ValidationException $e) {
             DB::rollBack();
+            // if (!empty($pathFotoNota)) {
+            //         if (file_exists(public_path($pathFotoNota))) {
+            //             unlink(public_path($pathFotoNota));
+            //         }
+            // }
+
+            // if (!empty($pathFotoBarang)) {
+            //         if (file_exists(public_path($pathFotoBarang))) {
+            //             unlink(public_path($pathFotoBarang));
+            //         }
+            // }
             if (!empty($pathFotoNota)) {
-                    if (file_exists(public_path($pathFotoNota))) {
-                        unlink(public_path($pathFotoNota));
-                    }
+                if (file_exists($srcUpdateDelete.$pathFotoNota)) {
+                    unlink($srcUpdateDelete.$pathFotoNota);
+                }
             }
 
             if (!empty($pathFotoBarang)) {
-                    if (file_exists(public_path($pathFotoBarang))) {
-                        unlink(public_path($pathFotoBarang));
-                    }
+                 if (file_exists($srcUpdateDelete.$pathFotoBarang)) {
+                    unlink($srcUpdateDelete.$pathFotoBarang);
+                 }
             }
+            
+          
             // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $e->errors()]);
             // return redirect()->back()->withErrors($e->getMessages())->withInput();
             return redirect()->back()->withErrors($e->errors())->withInput();
@@ -363,15 +530,26 @@ class KlaimSupirController extends Controller
         } catch (\Throwable $th) {
             //throw $th;
             DB::rollBack();
-            if (!empty($pathFotoNota)) {
-                    if (file_exists(public_path($pathFotoNota))) {
-                        unlink(public_path($pathFotoNota));
-                    }
+            // if (!empty($pathFotoNota)) {
+            //         if (file_exists(public_path($pathFotoNota))) {
+            //             unlink(public_path($pathFotoNota));
+            //         }
+            // }
+            //   if (!empty($pathFotoBarang)) {
+            //         if (file_exists(public_path($pathFotoBarang))) {
+            //             unlink(public_path($pathFotoBarang));
+            //         }
+            // }
+              if (!empty($pathFotoNota)) {
+                if (file_exists($srcUpdateDelete.$pathFotoNota)) {
+                    unlink($srcUpdateDelete.$pathFotoNota);
+                }
             }
-              if (!empty($pathFotoBarang)) {
-                    if (file_exists(public_path($pathFotoBarang))) {
-                        unlink(public_path($pathFotoBarang));
-                    }
+
+            if (!empty($pathFotoBarang)) {
+                 if (file_exists($srcUpdateDelete.$pathFotoBarang)) {
+                    unlink($srcUpdateDelete.$pathFotoBarang);
+                 }
             }
             // return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
             return redirect()->back()->withErrors($th->getMessage())->withInput();
@@ -383,6 +561,7 @@ class KlaimSupirController extends Controller
     {
         $user = Auth::user()->id; 
         // dd($klaimSupir);   
+        $src="/home/pjexpres/tms.pjexpress.co.id";
         try{
             // $klaim_supir_riwayat = KlaimSupirRiawayat::where('is_aktif', 'Y')
             //                        ->where('id_klaim', $klaimSupir->id)
@@ -395,14 +574,28 @@ class KlaimSupirController extends Controller
             // $klaim_supir_riwayat->save();  
             $fotoNotaDB = $klaimSupir->foto_nota;
             $fotoBarangDB = $klaimSupir->foto_barang;
+            
+           
+            // if (!empty($fotoNotaDB)) {
+            //     if (file_exists(public_path($fotoNotaDB))) {
+            //         unlink(public_path($fotoNotaDB));
+            //     }
+                
+            // }
+            // if (!empty($fotoBarangDB)) {
+            //     if (file_exists(public_path($fotoBarangDB))) {
+            //         unlink(public_path($fotoBarangDB));
+            //     }
+            // }
             if (!empty($fotoNotaDB)) {
-                if (file_exists(public_path($fotoNotaDB))) {
-                    unlink(public_path($fotoNotaDB));
+                if (file_exists($src.$fotoNotaDB)) {
+                    unlink($src.$fotoNotaDB);
                 }
+                
             }
             if (!empty($fotoBarangDB)) {
-                if (file_exists(public_path($fotoBarangDB))) {
-                    unlink(public_path($fotoBarangDB));
+                if (file_exists($src.$fotoBarangDB)) {
+                    unlink($src.$fotoBarangDB);
                 }
             }
             $klaim_supir = KlaimSupir::where('is_aktif', 'Y')
@@ -537,7 +730,7 @@ class KlaimSupirController extends Controller
                     // {
                     //     $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                     //                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                    //                     ->where('jenis', 'uang_klaim_supir')
+                    //                     ->where('jenis', 'klaim_supir')
                     //                     ->first();
 
                     // }
@@ -550,7 +743,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //  dd($kas_bank_transaksi);
 
@@ -582,7 +775,7 @@ class KlaimSupirController extends Controller
 
                                 DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -613,7 +806,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -641,7 +834,7 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->save();
                                  DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -688,7 +881,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -714,9 +907,9 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->updated_by = $user;
                                 // $kas_bank_transaksi->is_aktif = 'N';
                                 // $kas_bank_transaksi->save();
-                                 DB::table('kas_bank_transaction')
+                                DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -740,7 +933,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat->save();   
 
                             //setelah itu update lagi kasbanknya, kan ini keluar uang kalo diterima
-                             $saldo = DB::table('kas_bank')
+                            $saldo = DB::table('kas_bank')
                                     ->select('*')
                                     ->where('is_aktif', '=', "Y")
                                     ->where('kas_bank.id', '=',  $data['kas'])
@@ -761,8 +954,8 @@ class KlaimSupirController extends Controller
                                     $tanggal_pencairan,//tanggal
                                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
-                                    1016, //kode coa
-                                    'uang_klaim_supir',
+                                    CoaHelper::DataCoa(5004), //kode coa
+                                    'klaim_supir',
                                     'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
                                     $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
@@ -813,7 +1006,7 @@ class KlaimSupirController extends Controller
                                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
-                                        'uang_klaim_supir',
+                                        'klaim_supir',
                                         'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
                                         $user,//created_by
@@ -940,7 +1133,7 @@ class KlaimSupirController extends Controller
                     // {
                     //     $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                     //                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                    //                     ->where('jenis', 'uang_klaim_supir')
+                    //                     ->where('jenis', 'klaim_supir')
                     //                     ->first();
 
                     // }
@@ -953,7 +1146,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //  dd($kas_bank_transaksi);
 
@@ -985,7 +1178,7 @@ class KlaimSupirController extends Controller
 
                                 DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -1016,7 +1209,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -1044,7 +1237,7 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->save();
                                 //  DB::table('kas_bank_transaction')
                                 //     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                //     ->where('jenis', 'uang_klaim_supir')
+                                //     ->where('jenis', 'klaim_supir')
                                 //     ->where('is_aktif', 'Y')
                                 //     ->update(array(
                                 //         'updated_at'=> now(),
@@ -1059,7 +1252,7 @@ class KlaimSupirController extends Controller
                                         $klaim_supir_riwayat->total_pencairan,// debit 
                                         0, //uang keluar (kredit)
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
-                                        'uang_klaim_supir',
+                                        'klaim_supir',
                                         'Uang kembali tolak Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'].'# Alasan revisi tolak: '.$data['alasan_tolak'], //keterangan_transaksi, //keterangan_transaksi
                                         $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                         $user,//created_by
@@ -1103,7 +1296,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'uang_klaim_supir')
+                                        ->where('jenis', 'klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -1131,7 +1324,7 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->save();
                                  DB::table('kas_bank_transaction')
                                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                    ->where('jenis', 'uang_klaim_supir')
+                                    ->where('jenis', 'klaim_supir')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'updated_at'=> now(),
@@ -1177,7 +1370,7 @@ class KlaimSupirController extends Controller
                                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
-                                    'uang_klaim_supir',
+                                    'klaim_supir',
                                     'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
                                     $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
@@ -1228,7 +1421,7 @@ class KlaimSupirController extends Controller
                                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
-                                        'uang_klaim_supir',
+                                        'klaim_supir',
                                         'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
                                         $user,//created_by

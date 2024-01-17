@@ -52,85 +52,9 @@
                             </tr>
                           </thead>
                         <tbody>
-                            @if (isset($dataKlaimSupir))
-                                @foreach ($dataKlaimSupir as $item)
-                                <tr>
-                                    <td>{{ $item->nama_supir}} ({{ $item->telp}})</td>
-                                    <td>{{ $item->jenis_klaim}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_klaim)->format('d-M-Y') }}</td>
-                                    <td>Rp. {{number_format($item->total_klaim,2)  }}
-                                        {{-- <br>
-                                        @if($item->status_klaim == 'ACCEPTED')
-                                            <b>Total dicairkan : Rp. {{number_format($item->total_pencairan,2) }}</b> 
-                                        @endif --}}
-
-                                    </td>
-                                     <td>
-                                        @if($item->status_klaim == 'ACCEPTED')
-                                            Rp. {{ number_format($item->total_pencairan,2) }}
-                                        @else
-                                         Tidak ada pencairan
-                                        @endif 
-                                    </td>
-                                    <td>
-                                        @if ($item->status_klaim == 'PENDING')
-                                         <span class="badge badge-warning">
-                                            MENUNGGU PERSETUJUAN
-                                            <i class="fas fa-solid fa-clock"></i>
-                                        </span>
-                                        @elseif($item->status_klaim == 'ACCEPTED')
-                                         <span class="badge badge-success">
-                                            DITERIMA
-                                             <i class="fas fa-regular fa-thumbs-up"></i>
-                                         </span>
-                                        @else
-                                         <span class="badge badge-danger">
-                                            DITOLAK
-                                             <i class="fas fa-regular fa-thumbs-down"></i>
-                                        
-                                        </span>
-                                            
-                                        @endif
-
-                                    </td>
-                                   
-
-                                    <td>{{ $item->keterangan_klaim }}</td>
-                                    <td>
-                                        <div class="btn-group dropleft">
-                                            <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa fa-list"></i>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                               
-                                                
-                                                {{-- @if ($item->status_klaim == 'PENDING')
-                                                    <a href="{{route('klaim_supir.edit',[$item->id_klaim])}}" class="dropdown-item ">
-                                                        <span class="fas fa-edit mr-3"></span> Edit
-                                                    </a>
-                                                    <a href="{{ route('klaim_supir.destroy', [$item->id_klaim]) }}" class="dropdown-item" data-confirm-delete="true">
-                                                        <span class="fas fa-trash mr-3"></span> Hapus
-                                                    </a>
-                                                    <a href="{{route('pencairan_klaim_supir.edit',[$item->id_klaim])}}" class="dropdown-item ">
-                                                        <span class="nav-icon fas fa-dollar-sign mr-3"></span> Pencairan
-                                                    </a>
-                                                @else --}}
-                                                    <a href="{{route('pencairan_klaim_supir_revisi.edit',[$item->id_klaim])}}" class="dropdown-item ">
-                                                        <span class="nav-icon fas fa-dollar-sign mr-3"></span> Edit Pencairan
-                                                    </a>
-                                                {{-- @endif --}}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            @endif
-                           
+                         
                         </tbody>
-                        
                     </table>
-                  
-
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -143,7 +67,44 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
-
+ var table = $('#TabelKlaim').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('klaim_supir_revisi.load_data_revisi_server') }}",
+           
+            columns: [
+                {data: 'Supir', name: 'Supir'},
+                {data: 'Jenis_Klaim', name: 'Jenis_Klaim'},
+                {data: 'Tanggal_Klaim', name: 'Tanggal_Klaim'},
+                {data: 'Jumlah_Klaim', name: 'Jumlah_Klaim'},
+                {data: 'Jumlah_Dicairkan', name: 'Jumlah_Dicairkan'},
+                {data: 'Status_Klaim', name: 'Status_Klaim'},
+                {data: 'Keterangan', name: 'Keterangan'},
+                {
+                    data: 'action', 
+                    name: 'action', 
+                    orderable: false, 
+                    searchable: false
+                },
+            ],
+             order: [
+                    [0, 'asc'],
+                ],
+            rowGroup: {
+                dataSrc: ['Supir']//grouping per supir pake nama datanya, kalo bukan serverside nembak index
+            },
+            columnDefs: [
+                {
+                    targets: [0],
+                    visible: false
+                },
+                {
+                    "orderable": false,
+                    "targets": [0,1,2,3,4,5,6,7]
+                }
+        
+            ],
+        });
     $('#tanggal_klaim').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
@@ -250,25 +211,25 @@ $(document).ready(function () {
             $('#driver_nama').val(nama_driver);
 
 		});
-    new DataTable('#TabelKlaim', {
-        order: [
-            [0, 'asc'],
-        ],
-        rowGroup: {
-            dataSrc: [0]
-        },
-        columnDefs: [
-            {
-                targets: [0],
-                visible: false
-            },
-            {
-                "orderable": false,
-                "targets": [0,1,2,3,4,5,6,7]
-            }
+    // new DataTable('#TabelKlaim', {
+    //     order: [
+    //         [0, 'asc'],
+    //     ],
+    //     rowGroup: {
+    //         dataSrc: [0]
+    //     },
+    //     columnDefs: [
+    //         {
+    //             targets: [0],
+    //             visible: false
+    //         },
+    //         {
+    //             "orderable": false,
+    //             "targets": [0,1,2,3,4,5,6,7]
+    //         }
     
-        ],
-    }); 
+    //     ],
+    // }); 
     $('#post_data').submit(function(event) {
             event.preventDefault();
             Swal.fire({

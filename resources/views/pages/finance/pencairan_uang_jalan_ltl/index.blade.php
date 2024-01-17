@@ -13,7 +13,7 @@
 
 @section('content')
 <style>
-  
+
 </style>
 <div class="container-fluid">
     <div class="card radiusSendiri">
@@ -25,13 +25,15 @@
                             <div class="col-sm-12 col-md-4 col-lg-4 bg-white pb-3">
                                 <div class="form-group">
                                     <label for="">Kendaraan</label> 
-                                    <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                    <select class=" select2" required name="item" id="item" data-width="100%" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                         <option value="">­­— PILIH KENDARAAN —</option>
-                                        @foreach ($data as $item)
-                                            @if ($item['total_uang_jalan'] == 0)
-                                                <option value="{{ $item['no_polisi'] }}">{{ $item['no_polisi'] }}</option>
-                                            @endif
-                                        @endforeach
+                                        @if ($data)
+                                            @foreach ($data as $item)
+                                                @if ($item['total_uang_jalan'] == 0)
+                                                    <option value="{{ $item['no_polisi'] }}" tanggal_berangkat="{{ date('Y-m-d', strtotime($item['tanggal_berangkat'])) }}">{{ $item['no_polisi'] }} ({{ date('d-M-Y', strtotime($item['tanggal_berangkat'])) }})</option>
+                                                @endif
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                             </div>
@@ -93,7 +95,7 @@
 
                                     </div>
                                 </div>
-                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Tol<span class="text-red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -102,7 +104,7 @@
                                     <input type="text" id="tol" name="tol" class="form-control uang numaja" >
                                     </div>
                                 </div>
-                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Bensin<span class="text-red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -137,7 +139,8 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                    <input type="text" id="diterima" name="diterima" class="form-control uang numaja" readonly>
+                                        <input type="text" id="diterima" name="diterima" class="form-control uang numaja" readonly>
+                                        <input type="hidden" id="tujuan_modal" name="tujuan" class="form-control" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -160,95 +163,39 @@
     </form>
 </div>
 
-{{-- logic save --}}
-<script type="text/javascript">
-    $(document).ready(function() {
-        // $('#save').submit(function(event) {
-        //     var item = $('#item').val();
-        //     var isOk = 0;
-
-        //     // check apakah sudah ada yg dicentang?
-        //         var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-        //         checkboxes.forEach(function(checkbox) {
-        //             if (checkbox.checked) {
-        //                 isOk = 1;
-        //             }
-        //         });
-        //     //
-
-        //     // validasi sebelum di submit
-        //         if (item == '' || item == null || isOk == 0) {
-        //             event.preventDefault(); // Prevent form submission
-        //             Swal.fire({
-        //                 icon: 'error',
-        //                 text: 'Harap pilih item dahulu!',
-        //             })
-        //             return;
-        //         }
-        //     //
-        //     event.preventDefault(); // Prevent form submission
-
-        //     Swal.fire({
-        //         title: 'Apakah Anda yakin data sudah benar ?',
-        //         text: "Periksa kembali data anda",
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         cancelButtonColor: '#d33',
-        //         confirmButtonColor: '#3085d6',
-        //         cancelButtonText: 'Batal',
-        //         confirmButtonText: 'Ya',
-        //         reverseButtons: true
-        //     }).then((result) => {
-        //         if (result.isConfirmed) {
-        //             this.submit();
-        //         }else{
-        //             const Toast = Swal.mixin({
-        //                 toast: true,
-        //                 position: 'top',
-        //                 timer: 2500,
-        //                 showConfirmButton: false,
-        //                 timerProgressBar: true,
-        //                 didOpen: (toast) => {
-        //                     toast.addEventListener('mouseenter', Swal.stopTimer)
-        //                     toast.addEventListener('mouseleave', Swal.resumeTimer)
-        //                 }
-        //             })
-
-        //             Toast.fire({
-        //                 icon: 'warning',
-        //                 title: 'Batal Disimpan'
-        //             })
-        //             event.preventDefault();
-        //         }
-        //     })
-        // });
-    });
-</script>
 <script>
     $(document).ready(function() {
+        $('#item').select2({width: 'resolve'});
+
 
         $(document).on('change', '#item', function(e) {  
             var item = $('#item').val();
+            let tanggal =  $("#item").select2().find(":selected")[0].getAttribute('tanggal_berangkat');
+
             if(item != ''){
-                showTable(item);
+                showTable(item, tanggal);
             }else{
                 // $('#ltl').dataTable().fnClearTable();
             }
 		});        
 
-         function showTable(item){
+        function showTable(item, tanggal){
             var baseUrl = "{{ asset('') }}";
-            var url = baseUrl+`pencairan_uang_jalan_ltl/getData/${item}`;
+            var url = baseUrl+`pencairan_uang_jalan_ltl/getData`;
+            data = {
+                item: item,
+                tanggal: tanggal
+            };
 
             $.ajax({
                 method: 'GET',
                 url: url,
-                dataType: 'JSON',
-                contentType: false,
-                cache: false,
-                processData:false,
+                data: data,
+                // dataType: 'JSON',
+                // contentType: false,
+                // cache: false,
+                // processData:false,
                 success: function(response) {
-                    // $("#hasil").empty();
                     $('#ltl').dataTable().fnClearTable();
                     $("#ltl").dataTable().fnDestroy();
 
@@ -260,9 +207,16 @@
                                         `);
 
                     var data = response.data;
-                    console.log('data', data);
+                    let tujuan = '';
+                    let inputTujuan = '';
+
                     if(data.length > 0){
-                        for (var i = 0; i <data.length; i++) {
+                        for (var i = 0; i < data.length; i++) {
+                            tujuan = tujuan + ' #'+data[i].nama_tujuan; 
+                            if(i==(data.length-1)){
+                                inputTujuan = `<input type="hidden" id="tujuan" value="${tujuan}" />`;
+                            }
+
                             if(data[i].total_dicairkan == null){
                                 var row = $("<tr></tr>");
 
@@ -286,7 +240,9 @@
                                         </div>
                                     </td>`);
                                 row.append(`<td></td>`);
-                                row.append(`<td>${dateMask(data[i].tanggal_berangkat)}</td>`);
+                                row.append(`<td>${dateMask(data[i].tanggal_berangkat)} 
+                                            ${inputTujuan}
+                                            </td>`);
                                 row.append(`<td>${data[i].nama_tujuan}</td>`);
                                 $("#hasil").append(row);
                             }
@@ -329,7 +285,7 @@
             hitungHutangMax();
 
 		}); 
-         $(document).on('keyup', '#tol, #bensin', function(e) {  
+        $(document).on('keyup', '#tol, #bensin', function(e) {  
             
             var tol = !isNaN(normalize($('#tol').val()))? normalize($('#tol').val()):0;
             var bensin = !isNaN(normalize($('#bensin').val()))? normalize($('#bensin').val()):0;
@@ -346,7 +302,7 @@
             // console.log('ph :'+ph);
             // console.log('ph1 :'+$('#potong_hutang').val());
 
-             if($('#total_hutang').val()!=''){
+            if($('#total_hutang').val()!=''){
                 var total_hutang =escapeComma($('#total_hutang').val());
             }else{
                 var total_hutang =0;
@@ -366,7 +322,7 @@
             // $('#diterima').val(moneyMask(uj-ph));
         }
         function hitungHutangMax(){
-             if($('#total_hutang').val()!=''){
+            if($('#total_hutang').val()!=''){
                 var total_hutang =escapeComma($('#total_hutang').val());
             }else{
                 var total_hutang =0;
@@ -400,7 +356,10 @@
         $(document).on('click', '.openModal', function(event){
             var id = this.value;
             $('#key').val(id);
+
             let driver = $('#driver_'+id).val();
+            $('#tujuan_modal').val( $('#tujuan').val() );
+
             if(driver == "null"){
                 $('.is_potong_hutang').hide();
                 $('.is_total_hutang').hide();
@@ -418,7 +377,7 @@
             // uang_jalan
             // tol
             // bensin
-             const Toast = Swal.mixin({
+            const Toast = Swal.mixin({
                             toast: true,
                             position: 'top',
                             timer: 2500,

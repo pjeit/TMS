@@ -29,19 +29,15 @@ class PembayaranGajiController extends Controller
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
-        $dataKaryawan = DB::table('karyawan as k')
-            ->select('k.id as idKaryawan','k.nama_panggilan','k.nama_lengkap','k.gaji','kh.total_hutang')
-            ->leftJoin('karyawan_hutang as kh', function($join) {
-                    $join->on('k.id', '=', 'kh.id_karyawan')->where('kh.is_aktif', '=', "Y");
-                })
-            ->where('k.is_aktif', '=', "Y")
-            ->where('k.is_keluar', '=', "N")
-            ->orderBy('k.nama_lengkap', 'ASC')
+        $dataPembayaranGaji = DB::table('pembayaran_gaji as pg')
+            ->select('pg.*')
+            ->where('pg.is_aktif', '=', "Y")
+            ->orderBy('pg.id', 'ASC')
             ->get();
         return view('pages.hrd.pembayaran_gaji.index',[
             'judul' => "Pembayaran Gaji",
             'dataKas' => $dataKas,
-            'dataKaryawan' => $dataKaryawan,
+            'dataPembayaranGaji' => $dataPembayaranGaji,
         ]);
     }
 
@@ -53,6 +49,24 @@ class PembayaranGajiController extends Controller
     public function create()
     {
         //
+         $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
+        $dataKaryawan = DB::table('karyawan as k')
+            ->select('k.id as idKaryawan','k.nama_panggilan','k.nama_lengkap','k.gaji','kh.total_hutang')
+            ->leftJoin('karyawan_hutang as kh', function($join) {
+                    $join->on('k.id', '=', 'kh.id_karyawan')->where('kh.is_aktif', '=', "Y");
+                })
+            ->where('k.is_aktif', '=', "Y")
+            ->where('k.is_keluar', '=', "N")
+            ->orderBy('k.nama_lengkap', 'ASC')
+            ->get();
+        return view('pages.hrd.pembayaran_gaji.create',[
+            'judul' => "Pembayaran Gaji",
+            'dataKas' => $dataKas,
+            'dataKaryawan' => $dataKaryawan,
+        ]);
     }
 
     /**
@@ -165,7 +179,7 @@ class PembayaranGajiController extends Controller
                                 (float)str_replace(',', '', $data['total']), //kredit
                                 CoaHelper::DataCoa(5021), //kode coa gaji
                                 'gaji',
-                                'Pembayaran Gaji'.' - '.$data['catatan'], //keterangan_transaksi
+                                'Pembayaran Gaji'.' - '.$data['catatan'].' - '.$data['tahun_periode'].' - '.$data['nama_periode'], //keterangan_transaksi
                                 $bayar_gaji->id,//keterangan_kode_transaksi
                                 $user,//created_by
                                 now(),//created_at
@@ -207,9 +221,35 @@ class PembayaranGajiController extends Controller
      * @param  \App\Models\PembayaranGaji  $pembayaranGaji
      * @return \Illuminate\Http\Response
      */
-    public function edit(PembayaranGaji $pembayaranGaji)
+    public function edit(PembayaranGaji $pembayaran_gaji)
     {
         //
+        $dataKas = DB::table('kas_bank')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->get();
+        $dataKaryawan = DB::table('karyawan as k')
+            ->select('k.id as idKaryawan','k.nama_panggilan','k.nama_lengkap','k.gaji','kh.total_hutang')
+            ->leftJoin('karyawan_hutang as kh', function($join) {
+                    $join->on('k.id', '=', 'kh.id_karyawan')->where('kh.is_aktif', '=', "Y");
+                })
+            ->where('k.is_aktif', '=', "Y")
+            ->where('k.is_keluar', '=', "N")
+            ->orderBy('k.nama_lengkap', 'ASC')
+            ->get();
+        $pembayaran_gaji_detail= DB::table('pembayaran_gaji_detail')
+            ->select('*')
+            ->where('is_aktif', '=', "Y")
+            ->where('pembayaran_gaji_id', $pembayaran_gaji->id)
+            ->get();
+        return view('pages.hrd.pembayaran_gaji.edit',[
+            'judul' => "Pembayaran Gaji",
+            'dataKas' => $dataKas,
+            'dataKaryawan' => $dataKaryawan,
+            'pembayaran_gaji'=>$pembayaran_gaji,
+            'pembayaran_gaji_detail'=>$pembayaran_gaji_detail
+
+        ]);
     }
 
     /**
@@ -219,7 +259,7 @@ class PembayaranGajiController extends Controller
      * @param  \App\Models\PembayaranGaji  $pembayaranGaji
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, PembayaranGaji $pembayaranGaji)
+    public function update(Request $request, PembayaranGaji $pembayaran_gaji)
     {
         //
     }

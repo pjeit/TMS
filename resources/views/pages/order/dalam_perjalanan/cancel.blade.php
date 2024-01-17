@@ -26,8 +26,8 @@
                 <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
             <div class="card-body">
-               
-               <div class="row">
+                
+                <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12" style=" border-right: 1px solid rgb(172, 172, 172);">
                         <div class="row">
                             <div class="col-6">
@@ -128,12 +128,12 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $data->getUJRiwayat[0]->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                            <input readonly="" value="{{ number_format(($data->getUJRiwayat[0]->total_uang_jalan + $data->getUJRiwayat[0]->total_tl)-$data->getUJRiwayat[0]->potong_hutang ) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
                                         </div>
                                     </div>
 
                                     <div class="form-group col-12">
-                                        <label for="uang_jalan_kembali">Uang Jalan Kembali<span class="text-red">*</span></label>
+                                        <label for="">Uang Jalan Kembali<span class="text-red">*</span></label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
@@ -157,15 +157,12 @@
                             
                         </div>
                     </div>
-               </div>
+                </div>
             </div>
         </div> 
     </form>
 </div>
 
-
-         
- 
 <script type="text/javascript">
 $(document).ready(function() {
 

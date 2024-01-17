@@ -151,7 +151,7 @@
                         </ul>
 
                         <div class="tab-content">
-                            {{-- @if ($errors->any())
+                            @if ($errors->any())
                                 @foreach ($errors->all() as $error)
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                     {{ $error }}
@@ -161,7 +161,7 @@
                                 </div>
                                 @endforeach
 
-                            @endif --}}
+                            @endif
                             {{-- data --}}
 
                                 <div class="tab-pane fade show active" id="justify-data" role="tabpanel" aria-labelledby="justify-data-tab">
@@ -236,11 +236,11 @@
                                                         <label for="">Jenis Klaim<span class="text-red">*</span></label>
                                                         <select class="form-control select2  @error('select_klaim') is-invalid @enderror" style="width: 100%;" id='select_klaim' name="select_klaim">
                                                             <option value="" >Pilih Jenis Klaim</option>
-                                                            <option value="Ban" {{old('select_klaim')=='Ban'?'selected':''}}>Ban</option>
-                                                            <option value="CuciMobil" {{old('select_klaim')=='CuciMobil'?'selected':''}}>Cuci Mobil</option>
-                                                            <option value="Sparepart" {{old('select_klaim')=='Sparepart'?'selected':''}}>Sparepart</option>
-                                                            <option value="Tol" {{old('select_klaim')=='Tol'?'selected':''}}>Tol</option>
-                                                            <option value="Lainlain" {{old('select_klaim')=='Lainlain'?'selected':''}}>Lain-lain</option>
+                                                            <option value="BAN" {{old('select_klaim')=='BAN'?'selected':''}}>Ban</option>
+                                                            <option value="CUCI MOBIL" {{old('select_klaim')=='CUCI MOBIL'?'selected':''}}>Cuci Mobil</option>
+                                                            <option value="SPARE PART" {{old('select_klaim')=='SPARE PART'?'selected':''}}>Spare Part</option>
+                                                            <option value="TOL" {{old('select_klaim')=='TOL'?'selected':''}}>Tol</option>
+                                                            <option value="LAIN LAIN" {{old('select_klaim')=='LAIN LAIN'?'selected':''}}>Lain-lain</option>
 
                                                             {{-- @foreach ($datajO as $jo)
                                                                 <option value="{{$jo->id}}-{{$jo->id_customer}}">{{ $jo->no_bl }} / {{ $jo->getCustomer->kode }} / {{ $jo->getSupplier->nama }}</option>

@@ -190,7 +190,7 @@
         <tfoot>
         </tfoot>
     </table> --}}
-
+    @if ($TotalBiayaRev>0)
     <h3 class="text" style="text-align: center;background-color: rgb(54, 78, 163);color:aliceblue;">Biaya pelayaran</h3>
     <table class="border-table td-atas"  id="sortable" >
         <thead>
@@ -248,6 +248,7 @@
         <tfoot>
         </tfoot>
     </table>
+    @endif
         @php
             $total = 0;
         @endphp
@@ -271,7 +272,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal Jaminan</td>
-                            <td>: {{\Carbon\Carbon::parse($JobOrder->tgl_bayar)->format('d-M-Y')}}</td>
+                            <td>: {{\Carbon\Carbon::parse($dataJaminan->tgl_bayar)->format('d-M-Y')}}</td>
                         </tr>
                         @endif
                     {{-- <tr>
@@ -308,15 +309,23 @@
                 <tfoot>
                 </tfoot>
             </table> --}}
-             <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
+            <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
         @else
-             @php $total = $TotalBiayaRev @endphp
-              <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
+            @php $total = $TotalBiayaRev @endphp
+            <p class="text">Total Biaya : Rp. {{number_format($total,2) }}</p>
         @endif
-        @if($JobOrder->id_supplier == $dataSupplier->id)
-            <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$dataSupplier->bank}} </b><br> 
-            atas nama : <b>{{$dataSupplier->rek_nama}} </b><br>
-            dengan nomor {{$dataSupplier->is_virtual_acc == "Y"?'virtual account':'rekening'}} : <b><u>{{$dataSupplier->no_rek}}</u></b></p>
+        @if ($JobOrder->no_va != null)
+            @if($JobOrder->id_supplier == $dataSupplier->id)
+                <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$JobOrder->va_bank}} </b><br> 
+                atas nama : <b>{{$JobOrder->va_nama}} </b><br>
+                dengan nomor : <b><u>{{$JobOrder->no_va}}</u></b></p>
+            @endif
+        @else
+            @if($JobOrder->id_supplier == $dataSupplier->id)
+                <p class="text-kecil">Biaya Pelayaran, dan Jaminan dapat di transfer ke rekening <b>{{$dataSupplier->bank}} </b><br> 
+                atas nama : <b>{{$dataSupplier->rek_nama}} </b><br>
+                dengan nomor {{$dataSupplier->is_virtual_acc == "Y"?'virtual account':'rekening'}} : <b><u>{{$dataSupplier->no_rek}}</u></b></p>
+            @endif
         @endif
         {{-- <div style="display: flex; justify-content: space-between;">
             <div style="flex-basis: 49%;">
@@ -334,7 +343,7 @@
         </div> --}}
 <br/>
 <table class="table-bawah" >
-      <thead>
+    <thead>
         
         </thead>
         <tbody> 
@@ -342,18 +351,18 @@
                 {{-- customer --}}
                 <td style="text-align: left; ">Di siapkan Oleh :</td> 
                 <td style="text-align: right; padding-left: 550px;">
-                   Di setujui Oleh :
+                    Di setujui Oleh :
                 </td>
             </tr>
             <br>
             <br/>
             <br/>
             <br/>
-             <tr>
+            <tr>
                 {{-- customer --}}
                 <td style="text-align: left; ">({{Auth::user()->username}})</td> 
                 <td style="text-align: right; padding-left: 550px;">
-                   (.........................)
+                    (.........................)
                 </td>
             </tr>
         

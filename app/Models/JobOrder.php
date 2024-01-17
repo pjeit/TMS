@@ -8,71 +8,65 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class JobOrder extends Model
 {
-    use HasFactory;
-    protected $table = 'job_order';
-    protected $primaryKey='id';
-    protected $fillable=[
-        'id',
-        'no_jo',
-        'tgl_book',
-        'id_customer',
-        'id_supplier',
-        'id_booking',
-        'id_jaminan',
-        'pelabuhan_muat',
-        'pelabuhan_bongkar',
-        'no_bl',
-        'no_bl',
-        'tgl_sandar',
-        'free_time',
-        'jo_expired',
-        'thc',
-        'lolo',
-        'apbs',
-        'cleaning',
-        'foc_fee',
-        'total_biaya_sebelum_dooring',
-        'total_storage',
-        'total_demurage',
-        'total_detention',
-        'total_repair_washing',
-        'total_biaya_setelah_dooring',
-        'status',
-        
-        'created_at',
-        'created_by',
-        'updated_at',
-        'updated_by',
-        'is_aktif',
-   ];
+     use HasFactory;
+     protected $table = 'job_order';
+     protected $primaryKey='id';
+     protected $fillable=[
+     'id',
+     'no_jo',
+     'tgl_book',
+     'id_customer',
+     'id_supplier',
+     'id_booking',
+     'id_jaminan',
+     'pelabuhan_muat',
+     'pelabuhan_bongkar',
+     'no_bl',
+     'tgl_sandar',
+     'free_time',
+     'jo_expired',
+     'thc',
+     'lolo',
+     'apbs',
+     'cleaning',
+     'foc_fee',
+     'total_biaya_sebelum_dooring',
+     'total_storage',
+     'total_demurage',
+     'total_detention',
+     'total_repair_washing',
+     'total_biaya_setelah_dooring',
+     'status',
+     
+     'created_at',
+     'created_by',
+     'updated_at',
+     'updated_by',
+     'is_aktif',
+     ];
 
-    //    public function getGrupId(){
-    //         $idTuj = Customer::where('is_aktif', 'Y')->select('grup_id')->where('id', $id)->first();
-
-    //         return $idTuj;
-    //    }
 
      public function getDetails()
      {
-          return $this->hasMany(JobOrderDetail::class, 'id_jo', 'id');
+          return $this->hasMany(JobOrderDetail::class, 'id_jo', 'id')->where('is_aktif', 'Y');
      }
 
      public function getKarantina()
      {
-          return $this->hasMany(JobOrderDetail::class, 'id_jo', 'id')->where('is_karantina', 'N');
+          return $this->hasMany(JobOrderDetail::class, 'id_jo', 'id')->where('is_karantina', 'N')->where('is_aktif', 'Y');
      }
 
      public function countIsKarantina()
      {
           return $this->hasMany(JobOrderDetail::class, 'id_jo', 'id');
           $jobOrders = JobOrder::withCount(['countIsKarantina' => function ($query) {
-               $query->where('is_karantina', 'N');
-           }])->get();
-           
-           foreach ($jobOrders as $jobOrder) {
-               $count = $jobOrder->count_is_karantina; // Access the count as an attribute
-               // Use $count as needed
-           }
+               $query->where('is_karantina', 'N')->where('is_aktif', 'Y');
+          }])->get();
+          
+          foreach ($jobOrders as $jobOrder) {
+          $count = $jobOrder->count_is_karantina; // Access the count as an attribute
+          // Use $count as needed
+          }
      }
      
 
@@ -83,7 +77,7 @@ class JobOrder extends Model
 
      public function jaminan()
      {
-          return $this->hasOne(Jaminan::class, 'id_job_order', 'id');
+          return $this->hasOne(Jaminan::class, 'id_job_order', 'id')->where('is_aktif', 'Y');
      }
 
      public function getCustomer()
@@ -101,9 +95,9 @@ class JobOrder extends Model
           return $this->hasOne(Customer::class, 'id', 'id_customer');
      }
      
-     public function hasSewa()
+     public function getSewa()
      {
-          return $this->hasOne(Sewa::class, 'id', 'id_customer');
+          return $this->hasOne(Sewa::class, 'id', 'id_customer')->where('is_aktif', 'Y');
      }
 
 

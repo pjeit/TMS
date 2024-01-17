@@ -1,10 +1,9 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
@@ -13,13 +12,14 @@
 
 @section('content')
 <style>
-  
+
 </style>
 <div class="container-fluid">
     {{-- <div class="radiusSendiri sticky-top " style="margin-bottom: -15px;">
         <div class="card radiusSendiri" style="">
             <div class="p-3">
-                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
+                        class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
         </div>
     </div> --}}
@@ -32,15 +32,17 @@
                         <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
                             <label for="">&nbsp;</label>
                             <div class="form-group" style="width: 400px;">
-                                <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <select class="form-control selectpicker" required name="item" id="item"
+                                    data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                     <option value="">­­— PILIH DATA —</option>
                                     <option value="TALLY">TALLY</option>
                                     <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                    <option value="OPERASIONAL">ALAT</option>
+                                    <option value="ALAT">ALAT</option>
                                     <option value="TIMBANG">TIMBANG</option>
                                     <option value="BURUH">BURUH</option>
                                     <option value="LEMBUR">LEMBUR</option>
                                     <option value="KARANTINA">KARANTINA</option>
+                                    <option value="LAIN-LAIN">LAIN-LAIN</option>
                                 </select>
                                 <input type="hidden" id="alasan" name="alasan" value="">
                                 <input type="hidden" id="type" name="type" value="">
@@ -50,17 +52,22 @@
                             <label for="">&nbsp;</label>
                             <div class="d-flex">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-success ml-3 popUp" id="btnSave" value="save"><i class="fa fa-save" aria-hidden="true" ></i> Simpan</button>
+                                    <button type="button" class="btn btn-success ml-3 popUp" id="btnSave"
+                                        value="save"><i class="fa fa-save" aria-hidden="true"></i> Simpan</button>
                                 </div>
+                                @can('DELETE_REVISI_BIAYA_OPERASIONAL')
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-danger ml-3 popUp" id="btnDelete" value="delete"><i class="fa fa-trash-alt" aria-hidden="true" ></i> Hapus</button>
+                                    <button type="button" class="btn btn-danger ml-3 popUp" id="btnDelete"
+                                        value="delete"><i class="fa fa-trash-alt" aria-hidden="true"></i> Hapus</button>
                                 </div>
+                                @endcan
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        
+
             <div class="card-body">
                 <section class="col-lg-12" id="show_report">
                     <table id="rowGroup" class="table table-bordered table-hover" width="100%">
@@ -229,36 +236,48 @@
                             });
 
                         }else{
-                            $("thead tr").append(`<th>Grup</th><th>Customer</th><th>Tujuan</th><th>Driver</th>`);
-                            $("thead tr").append("<th>Total</th>");
+                            $("thead tr").append(`<th>Grup</th><th>Customer</th><th>Tujuan</th>`);
+                            if(item == 'LAIN-LAIN'){
+                                $("thead tr").append("<th>Deskripsi</th>");
+                            }
+                            $("thead tr").append("<th>Driver</th><th>Total</th>");
                             $("thead tr").append(`  <th>Dicairkan</th>
                                                     <th>Catatan</th>
                                                 `);  // <th class='text-center' style='width: 30px;'></th> // <input id='check_all' type='checkbox'>
                             // if(item == 'OPERASIONAL' || item == 'TALLY' || item == 'SEAL PELAYARAN'){
                                 for (var i = 0; i <data.length; i++) {
-                                    var row = $("<tr></tr>");
-                                    row.append(`<td style='background: #efefef'>
-                                                        <b> 
-                                                            <span> ${data[i].get_operasional[0].get_sewa.get_tujuan.get_grup.nama_grup}</span> 
-                                                        </b>
-                                                </td>`);
-                                    row.append(`<td style='background: #efefef'>
-                                                        <b> 
-                                                            <span>► ${data[i].get_operasional[0].get_sewa.get_customer.nama}</span> 
-                                                        </b>
-                                                </td>`);
-                                    row.append(`<td> ${data[i].get_operasional[0].get_sewa.nama_tujuan} </td>`);
-                                    row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" class="form-control" title="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" readonly />`).join('<br>')}</td>`);
-                                    row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
-                                    row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
-                                                                                            <input type="hidden" value="${item.total_dicairkan}" id="hidden_dicairkan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />
-                                                                                            `).join('<br>')}</td>`);
-                                    row.append(`<td> ${data[i].get_operasional.map(item => `<div class='d-flex'>
-                                                                                                <input type="text" value="${item.catatan != null? item.catatan:''}" id="catatan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][catatan]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
-                                                                                                <input type="hidden" value="${item.catatan != null? item.catatan:''}" id="hidden_catatan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
-                                                                                                <input type="checkbox" value="${item.id}" name="data[${item.id_pembayaran}][${item.id}][check]" class="ml-3 mt-2 centang" /> 
-                                                                                            </div>`).join('<br>')}</td>`);
-                                    $("#tbodyId").append(row);
+                                    // let cek_status = data[i].get_operasional;
+                                    if(cek_status != 'SELESAI' || cek_status != 'MENUNGGU PEMBAYARAN INVOICE'){
+                                        console.log('cek_status', data[i].get_operasional);
+                                        var row = $("<tr></tr>");
+                                        row.append(`<td style='background: #efefef'>
+                                                            <b> 
+                                                                <span> ${data[i].get_operasional[0].get_sewa.get_customer.get_grup.nama_grup}</span> 
+                                                            </b>
+                                                    </td>`);
+                                        row.append(`<td style='background: #efefef'>
+                                                            <b> 
+                                                                <span>► ${data[i].get_operasional[0].get_sewa.get_customer.nama}</span> 
+                                                            </b>
+                                                    </td>`);
+                                        row.append(`<td> ${data[i].get_operasional[0].get_sewa.nama_tujuan} </td>`);
+                                        if(item == 'LAIN-LAIN'){
+                                            row.append(`<td>
+                                                            <span>${data[i].get_operasional[0].deskripsi}</span> 
+                                                        </td>`);
+                                        }
+                                        row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" class="form-control" title="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" readonly />`).join('<br>')}</td>`);
+                                        row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
+                                        row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
+                                                                                                <input type="hidden" value="${item.total_dicairkan}" id="hidden_dicairkan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />
+                                                                                                `).join('<br>')}</td>`);
+                                        row.append(`<td> ${data[i].get_operasional.map(item => `<div class='d-flex'>
+                                                                                                    <input type="text" value="${item.catatan != null? item.catatan:''}" id="catatan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][catatan]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
+                                                                                                    <input type="hidden" value="${item.catatan != null? item.catatan:''}" id="hidden_catatan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
+                                                                                                    <input type="checkbox" value="${item.id}" name="data[${item.id_pembayaran}][${item.id}][check]" class="ml-3 mt-2 centang" /> 
+                                                                                                </div>`).join('<br>')}</td>`);
+                                        $("#tbodyId").append(row);
+                                    }
                                 }
                             // }
                                 
@@ -309,7 +328,6 @@
             if(this.checked == true){
                 $('#dicairkan_'+id).prop('readonly', false);
                 $('#catatan_'+id).prop('readonly', false);
-
             }else{
                 $('#dicairkan_'+id).prop('readonly', true);
                 $('#catatan_'+id).prop('readonly', true);
@@ -320,13 +338,6 @@
         });
 
         $(document).on('click', '#btnDelete', function(e){
-            // $('#key').val('');
-            // $('#modal_item').val('');
-            // $('#key').val(this.value);
-            // $('#modal_item').val( $('#item').val() );
-            // $('#modal_delete').modal('show');
-            console.log('this.value', this.value);
-
             Swal.fire({
                 title: 'Apakah data sudah benar?',
                 text: "Periksa kembali data anda",
@@ -375,12 +386,6 @@
         });
 
         $(document).on('click', '#btnSave', function(e){
-            // $('#key').val('');
-            // $('#modal_item').val('');
-            // $('#key').val(this.value);
-            // $('#modal_item').val( $('#item').val() );
-            // $('#modal_save').modal('show');
-            console.log('this.value', this.value);
             Swal.fire({
                 title: 'Apakah data sudah benar?',
                 text: "Periksa kembali data anda",

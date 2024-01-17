@@ -130,7 +130,17 @@ class StorageDemurageController extends Controller
 
         $jobOrder = JobOrder::where('is_aktif', 'Y')->find($detail['id_jo']);
         $data['JO'] = $jobOrder;
-
+        $customerGrup = DB::table('customer')
+            ->select('*')
+            ->where('customer.id',  $jobOrder->id_customer)
+            ->first();
+        $customer = DB::table('customer')
+            ->select('*')
+            ->where('customer.is_aktif', "Y")
+            ->where('customer.grup_id',  $customerGrup->grup_id)
+            ->orderBy('nama')
+            ->get();
+        $data['customer'] = $customer;
         return view('pages.order.storage_demurage.edit',[
             'judul'=>"Input Storage Demurage Detention",
             'data' => $data,
@@ -153,22 +163,66 @@ class StorageDemurageController extends Controller
         try {
             if(isset($data['data'])){
                 foreach ($data['data'] as $key => $value) {
-                    $newBiaya = new JobOrderDetailBiaya();
-                    $newBiaya->id_jo = $data['id_jo'];
-                    $newBiaya->id_jo_detail = $id;
-                    $newBiaya->storage = floatval(str_replace(',', '', $value['storage']));
-                    $newBiaya->demurage = floatval(str_replace(',', '', $value['demurage']));
-                    $newBiaya->detention = floatval(str_replace(',', '', $value['detention']));
-                    $newBiaya->repair = floatval(str_replace(',', '', $value['repair']));
-                    $newBiaya->washing = floatval(str_replace(',', '', $value['washing']));
-                    $newBiaya->status_bayar = "MENUNGGU PEMBAYARAN";
-                    $newBiaya->created_by = $user;
-                    $newBiaya->created_at = now();
-                    $newBiaya->save();
+
+                    if(isset($value['id_detail_biaya']))
+                    {
+                        
+                        $oldBiaya = JobOrderDetailBiaya::where('is_aktif', 'Y')->find($value['id_detail_biaya']);
+                        // dd($oldBiaya->status_bayar == "DIBAYAR CUSTOMER");
+                        if($oldBiaya->status_bayar == "MENUNGGU PEMBAYARAN" || $oldBiaya->status_bayar == "DIBAYAR CUSTOMER")
+                        {
+                            // dd($oldBiaya);  
+                            $oldBiaya->storage = floatval(str_replace(',', '', $value['storage']));
+                            $oldBiaya->demurage = floatval(str_replace(',', '', $value['demurage']));
+                            $oldBiaya->detention = floatval(str_replace(',', '', $value['detention']));
+                            $oldBiaya->repair = floatval(str_replace(',', '', $value['repair']));
+                            $oldBiaya->washing = floatval(str_replace(',', '', $value['washing']));
+                            if($value['id_pembayaran_customer']=="dibayar_pje")
+                            {
+                                $oldBiaya->id_customer = null;
+                                $oldBiaya->status_bayar = "MENUNGGU PEMBAYARAN";
+                            }
+                            else
+                            {
+                                $oldBiaya->id_customer = $value['id_pembayaran_customer'];
+                                $oldBiaya->status_bayar = "DIBAYAR CUSTOMER";
+                            }
+                            $oldBiaya->updated_at = now();
+                            $oldBiaya->updated_by = $user;
+                            $oldBiaya->is_aktif = $value['is_aktif'];
+                            $oldBiaya->save();
+                        }
+
+                    }
+                    else
+                    {
+                        $newBiaya = new JobOrderDetailBiaya();
+                        $newBiaya->id_jo = $data['id_jo'];
+                        $newBiaya->id_jo_detail = $id;
+                        $newBiaya->storage = floatval(str_replace(',', '', $value['storage']));
+                        $newBiaya->demurage = floatval(str_replace(',', '', $value['demurage']));
+                        $newBiaya->detention = floatval(str_replace(',', '', $value['detention']));
+                        $newBiaya->repair = floatval(str_replace(',', '', $value['repair']));
+                        $newBiaya->washing = floatval(str_replace(',', '', $value['washing']));
+                        if($value['id_pembayaran_customer']=="dibayar_pje")
+                        {
+                            $newBiaya->id_customer = null;
+                            $newBiaya->status_bayar = "MENUNGGU PEMBAYARAN";
+                        }
+                        else
+                        {
+                            $newBiaya->id_customer = $value['id_pembayaran_customer'];
+                            $newBiaya->status_bayar = "DIBAYAR CUSTOMER";
+                        }
+                        $newBiaya->created_by = $user;
+                        $newBiaya->created_at = now();
+                        $newBiaya->save();
+                    }
+
                 }
             }
 
-            return redirect()->route('storage_demurage.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambahkan Data']);
+            return redirect()->route('storage_demurage.edit',[$id])->with(['status' => 'Success', 'msg' => 'Sukses mengubah data S/D/T']);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -196,7 +250,7 @@ class StorageDemurageController extends Controller
 
             $dataJO = DB::table('job_order AS jo')
                     ->select('jo.*','jod.*','jo.status as statusJO','jod.status as statusDetail','c.kode AS kode', 'c.nama AS nama_cust', 's.nama AS nama_supp')
-   
+            
                     ->leftJoin('customer AS c', 'c.id', '=', 'jo.id_customer')
                     ->leftJoin('supplier AS s', 's.id', '=', 'jo.id_supplier')
                     ->join('job_order_detail AS jod', function($join){
@@ -222,11 +276,5 @@ class StorageDemurageController extends Controller
             return response()->json(["result" => "error",'message' => $th->getMessage()], 500);
 
         }
-       
-        // return view('pages.order.job_order.unloading_plan',[
-        //         'judul'=>"Uloading Plan Job Order",
-        //         'dataJO' => $dataJO,
-        //         // 'dataJODetail'=>$dataJODetail
-        //     ]);
     }
 }

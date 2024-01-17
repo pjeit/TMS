@@ -34,119 +34,118 @@
         </div>
         @endforeach
     @endif
-    <div class="row">
-        <div class="col-12">
-            <div class="card radiusSendiri">
-                <div class="card-header">
-                    <button class="btn btn-primary btn-responsive float-left radiusSendiri" data-toggle="modal" data-target="#modal_tambah">
-                        <i class="fa fa-plus-circle"> </i> Tambah Data
-                    </button>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table id="datatable" class="table table-bordered table-striped" width="100%">
-                        <thead>
-                            <tr>
-                                <th>No.Polisi</th>
-                                <th>Tgl.Mulai</th>
-                                <th>Detail Perawatan</th>
-                                <th></th>
-                            </tr>
-                          </thead>
-                        <tbody>
-                            @if (isset($dataStatusKendaraan))
-                                @foreach ($dataStatusKendaraan as $item)
-                                <tr>
-                                    <td>{{$item->no_polisi}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d-M-Y')}}</td>
-                                    <td>{{$item->detail_perawatan}}</td>
-                                    <td>
-                                        <div class="btn-group dropleft">
-                                            <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa fa-list"></i>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a href="{{route('status_kendaraan.edit',[$item->id])}}" class="dropdown-item ">
-                                                    <span class="fas fa-edit mr-3"></span> Edit
-                                                </a>
-                                                <a href="{{ route('status_kendaraan.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
-                                                    <span class="fas fa-trash mr-3"></span> Hapus
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+
+    <div class="card radiusSendiri">
+        <div class="card-header">
+            <button class="btn btn-primary btn-responsive float-left radiusSendiri" data-toggle="modal" data-target="#modal_tambah">
+                <i class="fa fa-plus-circle"> </i> Tambah Data
+            </button>
         </div>
-        <!-- /.col -->
-    </div>
-    <!-- /.row -->
-</div>
-<div class="modal fade" id="modal_tambah" >
-        <div class="modal-dialog modal-lg ">
-             <form action="{{ route('status_kendaraan.store') }}" id="post_data" method="POST" >
-              @csrf
-                <div class="modal-content radiusSendiri">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Form Data</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="tanggal_mulai">Tanggal Mulai<span style='color:red'>*</span></label>
-                                <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                </div>
-                                <input type="text" autocomplete="off" name="tanggal_mulai" class="form-control" id="tanggal_mulai" placeholder="dd-M-yyyy" value="">
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                <label for="tanggal_selesai">Tanggal Selesai</label>
-                                <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><input type="checkbox" id="check_is_selesai" ></span>
-                                </div>
-                                <input type="hidden" id="is_selesai" name='is_selesai' value="N">
-                                <input type="text" autocomplete="off" name="tanggal_selesai" class="form-control" id="tanggal_selesai" placeholder="dd-M-yyyy"  readonly value="">
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                    <select class="form-control select2  @error('select_kendaraan') is-invalid @enderror" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
-                                    <option value="">Pilih Jenis Kendaraan</option>
-                                    @foreach ($dataKendaraan as $data)
-                                        <option value="{{$data->id}}" {{old('select_kendaraan')==$data->id?'selected':''}} >{{ $data->no_polisi }} ({{$data->kategoriKendaraan}})</option>
-                                    @endforeach
-                                </select>
-                                @error('select_kendaraan')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table id="datatable" class="table table-bordered table-striped" width="100%">
+                <thead>
+                    <tr>
+                        <th>No.Polisi</th>
+                        <th>Tgl.Mulai</th>
+                        <th>Detail Perawatan</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (isset($dataStatusKendaraan))
+                        @foreach ($dataStatusKendaraan as $item)
+                        <tr>
+                            <td>{{$item->no_polisi}}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->tanggal_mulai)->format('d-M-Y')}}</td>
+                            <td>{{$item->detail_perawatan}}</td>
+                            <td>
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        @can('EDIT_STATUS_KENDARAAN')
+                                            <a href="{{route('status_kendaraan.edit',[$item->id])}}" class="dropdown-item ">
+                                                <span class="fas fa-edit mr-3"></span> Edit
+                                            </a>
+                                        @endcan
+                                        @can('DELETE_STATUS_KENDARAAN')
+                                            <a href="{{ route('status_kendaraan.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
+                                                <span class="fas fa-trash mr-3"></span> Hapus
+                                            </a>
+                                        @endcan
                                     </div>
-                                @enderror   
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+</div>
+
+<div class="modal fade" id="modal_tambah" >
+    <div class="modal-dialog modal-lg ">
+        <form action="{{ route('status_kendaraan.store') }}" id="post_data" method="POST" >
+            @csrf
+            <div class="modal-content radiusSendiri">
+                <div class="modal-header">
+                    <h5 class="modal-title">Form Data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                            <label for="tanggal_mulai">Tanggal Mulai<span style='color:red'>*</span></label>
+                            <div class="input-group mb-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                             </div>
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="detail_perawatan">Detail Perawatan<span style='color:red'>*</span></label>
-                                <textarea rows="4" name="detail_perawatan" class="form-control" id="detail_perawatan" placeholder=""></textarea> 
+                            <input type="text" autocomplete="off" name="tanggal_mulai" class="form-control" id="tanggal_mulai" placeholder="dd-M-yyyy" value="">
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-danger radiusSendiri p-2" style='width:85px' data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-sm btn-success radiusSendiri p-2" id="" style='width:85px'><i class="fa fa-fw fa-save"></i> Simpan</button> 
+                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                            <label for="tanggal_selesai">Tanggal Selesai</label>
+                            <div class="input-group mb-0">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><input type="checkbox" id="check_is_selesai" ></span>
+                            </div>
+                            <input type="hidden" id="is_selesai" name='is_selesai' value="N">
+                            <input type="text" autocomplete="off" name="tanggal_selesai" class="form-control" id="tanggal_selesai" placeholder="dd-M-yyyy"  readonly value="">
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                            <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
+                                <select class="form-control select2  @error('select_kendaraan') is-invalid @enderror" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
+                                <option value="">Pilih Jenis Kendaraan</option>
+                                @foreach ($dataKendaraan as $data)
+                                    <option value="{{$data->id}}" {{old('select_kendaraan')==$data->id?'selected':''}} >{{ $data->no_polisi }} ({{$data->kategoriKendaraan}})</option>
+                                @endforeach
+                            </select>
+                            @error('select_kendaraan')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror   
+                        </div>
+                        <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                            <label for="detail_perawatan">Detail Perawatan<span style='color:red'>*</span></label>
+                            <textarea rows="4" name="detail_perawatan" class="form-control" id="detail_perawatan" placeholder=""></textarea> 
+                        </div>
                     </div>
                 </div>
-              </form> 
-        </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-danger radiusSendiri p-2" style='width:85px' data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-sm btn-success radiusSendiri p-2" id="" style='width:85px'><i class="fa fa-fw fa-save"></i> Simpan</button> 
+                </div>
+            </div>
+        </form> 
+    </div>
 </div>
 <script type="text/javascript">
 $(document).ready(function () {

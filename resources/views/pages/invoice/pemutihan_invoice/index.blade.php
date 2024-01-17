@@ -11,7 +11,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
 <style>
-   
+
 </style>
 
 <div class="container-fluid">
@@ -24,8 +24,8 @@
                         {{-- <a href="{{ route("invoice.create") }}" class="btn btn-primary btn-responsive radiusSendiri"  id="sewaAdd">
                             <i class="fa fa-plus-circle" aria-hidden="true"> </i> Buat Invoice
                         </a>  --}}
-                          {{-- <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="sewaAdd">
-                             <i class="fa fa-credit-card"></i> Bayar
+                        {{-- <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="sewaAdd">
+                            <i class="fa fa-credit-card"></i> Bayar
                         </button> --}}
                     </div>
                 </div>

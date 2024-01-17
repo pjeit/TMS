@@ -28,11 +28,13 @@ class PencairanUangJalanLTLController extends Controller
     {
         $data = Sewa::where('is_aktif', 'Y')
             ->where('jenis_tujuan', 'LTL')
-            ->whereNull('id_supplier')
-            ->groupBy('no_polisi')
+            ->where('status', 'PROSES DOORING')
+            ->orderBy('id_sewa', 'ASC')
+            ->groupBy('no_polisi', 'tanggal_berangkat')
             ->get();
+
         $kas = KasBank::where('is_aktif', 'Y')->get();
-        // dd($data);
+
         return view('pages.finance.pencairan_uang_jalan_ltl.index',[
             'judul' => "Pencairan Uang  LTL",
             'data' => $data,
@@ -64,7 +66,7 @@ class PencairanUangJalanLTLController extends Controller
         $uj = floatval(str_replace(',', '', $data['uang_jalan']));
         $diterima = floatval(str_replace(',', '', $data['diterima']));
         DB::beginTransaction(); 
-        // dd($data);
+
         try {
             $sewa = Sewa::where('is_aktif', 'Y')->find($data['key']);
 
@@ -146,7 +148,7 @@ class PencairanUangJalanLTLController extends Controller
                                     $diterima, //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5002), //kode coa uang jalan
                                     'uang_jalan',
-                                    'UJ LTL: #'.$sewa->no_polisi. ' #'.$sewa->nama_driver, //keterangan_transaksi
+                                    'UJ LTL: #'.$sewa->no_polisi. ' #'.$sewa->nama_driver . ' ' . $data['tujuan'], //keterangan_transaksi
                                     $ujr->id, //keterangan_kode_transaksi
                                     $user, //created_by
                                     now(), //created_at
@@ -157,7 +159,7 @@ class PencairanUangJalanLTLController extends Controller
                             );
                         }
                         DB::commit();
-                }
+                    }
                 }
             }
 
@@ -212,21 +214,23 @@ class PencairanUangJalanLTLController extends Controller
         //
     }
 
-    public function get_data($item)
+    public function get_data(Request $request)
     {
+        $nopol = $request['item'];
+        $tanggal = $request['tanggal'];
         $data = Sewa::where('is_aktif', 'Y')->where('jenis_tujuan', 'LTL')
                         ->with('getCustomer')
                         ->with('getKaryawan.getHutang')
-                        ->where('no_polisi', $item)
-                        // ->where('status', 'PROSES DOORING')
-                        ->whereNull('id_supplier')
+                        ->where('no_polisi', $nopol)
+                        ->where('tanggal_berangkat', $tanggal)
+                        ->where('status', 'PROSES DOORING')
+                        // ->whereNull('id_supplier')
+                        ->orderBy('id_sewa', 'ASC')
                         ->get();
-        // dd($data);
-        if($data[0]['total_uang_jalan'] != 0){
+        if($data[0]->total_uang_jalan != 0){
             return response()->json(["result" => "error", 'data' => null], 404);
         }else{
             return response()->json(["result" => "success", 'data' => $data], 200);
         }
-        
     }
 }

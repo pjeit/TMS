@@ -12,11 +12,15 @@ use App\Models\JobOrderDetail;
 use App\Models\JobOrderDetailBiaya;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Barryvdh\DomPDF\Facade\PDF; // use PDF;
+use Barryvdh\DomPDF\Facade\Pdf; // use PDF;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\HtmlString;
 use App\Helper\UserHelper;
+use App\Models\Customer;
+use App\Models\M_Kota;
+use App\Models\PengaturanKeuangan;
+use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 // use Barryvdh\DomPDF\PDF;
@@ -34,10 +38,6 @@ class JobOrderController extends Controller
 
     public function index()
     {
-        // $this->authorize('read JO');
-        // if(!Gate::allows('read JO')){
-        //     abort(403, 'Anda tidak memiliki akses ke halaman ini');
-        // }
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
@@ -46,8 +46,6 @@ class JobOrderController extends Controller
         
         $id_role = Auth::user()->role_id; 
         $cabang = UserHelper::getCabang();
-
-        // dd(User::find(1)->HasRole('Super User'));
 
         $dataJO = DB::table('job_order as jo')
             ->leftJoin('user as u', 'u.id', '=', 'jo.created_by')
@@ -69,12 +67,11 @@ class JobOrderController extends Controller
             ->OrderBy('jo.status', 'ASC')
             ->OrderBy('jo.created_at', 'ASC')
             ->get();
-            // dd($dataJO);
         
-            return view('pages.order.job_order.index',[
-                'judul'=>"Job Order",
-                'dataJO' => $dataJO,
-            ]);
+        return view('pages.order.job_order.index',[
+            'judul'=>"Job Order",
+            'dataJO' => $dataJO,
+        ]);
     }
 
     /**
@@ -84,31 +81,24 @@ class JobOrderController extends Controller
      */
     public function create()
     {
-        // $this->authorize('create JO');
+        $dataSupplier = Supplier::where('supplier.is_aktif', '=', "Y")
+                                ->where('jenis_supplier_id', 7) // jenis pelayaran
+                                ->orderBy('nama')
+                                ->get();
+        $dataCustomer = Customer::where('customer.is_aktif', "Y")
+                                ->orderBy('kode')
+                                ->orderBy('nama')
+                                ->get();
+        $dataPengaturanKeuangan = PengaturanKeuangan::where('pengaturan_keuangan.is_aktif', '=', "Y")->get();
 
-        $dataSupplier = DB::table('supplier')
-            ->select('*')
-            ->where('supplier.is_aktif', '=', "Y")
-            ->where('jenis_supplier_id', 6) // jenis pelayaran
-            ->orderBy('nama')
-            ->get();
-        $dataCustomer = DB::table('customer')
-            ->select('*')
-            ->where('customer.is_aktif', "Y")
-            ->orderBy('nama')
-            ->get();
-        $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
-            ->select('*')
-            ->where('pengaturan_keuangan.is_aktif', '=', "Y")
-            ->get();
-        // dd($dataPengaturanKeuangan[0]);
+        $kota = M_Kota::get();
 
         return view('pages.order.job_order.create',[
             'judul'=>"Job Order",
             'dataSupplier' => $dataSupplier,
             'dataCustomer' =>$dataCustomer,
             'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
-
+            'kota' => $kota,
         ]);
     }
 
@@ -125,7 +115,7 @@ class JobOrderController extends Controller
             $data = $request->post();
             $currentYear = Carbon::now()->format('y');
             $currentMonth = Carbon::now()->format('m');
-            // dd($data);
+            DB::beginTransaction();
 
             $kode = DB::table('customer')
                 ->select('kode')
@@ -145,7 +135,7 @@ class JobOrderController extends Controller
             //strpad itu nambah 00 yang awalnya cuman 4 jd 004
             $no_jo = 'JO/'. $kode->kode . '/' . $now . str_pad($max_jo, 3, '0', STR_PAD_LEFT);
             
-            // dd($data);
+            // dd($data);   
             $newJO = new JobOrder();
             $newJO->no_jo = $no_jo;
             $newJO->id_customer = $data['customer'];
@@ -162,10 +152,15 @@ class JobOrderController extends Controller
             $newJO->cleaning = isset($data['checkbox_CLEANING'])? floatval(str_replace(',', '', $data['total_cleaning'])):0;
             $newJO->doc_fee = isset($data['checkbox_DOC_FEE'])? floatval(str_replace(',', '', $data['DOC_FEE'])):0;
             $newJO->catatan = $data['catatan'];
+            if($data['no_va'] != null){
+                $newJO->no_va = $data['no_va'];
+                $newJO->va_nama = $data['va_nama'];
+                $newJO->va_bank = $data['va_bank'];
+            }
             $newJO->created_by = $user;
             $newJO->created_at = now();
             $newJO->is_aktif = 'Y';
-       
+            
             if( $newJO->thc == 0 && $newJO->lolo == 0 && $newJO->apbs == 0 && 
                     $newJO->cleaning == 0 && $newJO->doc_fee == 0 && 
                     ($data['tgl_bayar_jaminan'] == null || $data['total_jaminan'] == null) ){
@@ -246,17 +241,20 @@ class JobOrderController extends Controller
                     $newJO->cleaning != 0 || $newJO->doc_fee != 0 || 
                     $data['tgl_bayar_jaminan'] != null || $data['total_jaminan'] != null ){
 
+                DB::commit();
                 return redirect()->route('job_order.index')
-                ->with('id_print_jo', $id_print_jo)
-                ->with(['status' => 'Success', 'msg' => 'Data berhasil tersimpan']);
+                    ->with('id_print_jo', $id_print_jo)
+                    ->with(['status' => 'Success', 'msg' => 'Data berhasil tersimpan']);
             }else{
+                DB::commit();
                 return redirect()->route('job_order.index')
                 ->with(['status' => 'Success', 'msg' => 'Data berhasil tersimpan']);
             }
             
 
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            DB::rollBack();
+            return redirect()->back()->with(['status' => 'Error', 'msg' => 'Terjadi kesalahan saat menyimpan']);
         }
     }
 
@@ -304,8 +302,19 @@ class JobOrderController extends Controller
             ->leftJoin('booking as b', function($leftJoin){
                 $leftJoin->on('b.id_jo_detail', '=', "jod.id")->where('b.is_aktif',"Y");
             })
-            ->leftJoin('sewa as s', function($leftJoin){
-                $leftJoin->on('s.id_jo_detail', '=', "jod.id")->where('s.is_aktif',"Y");
+            // ->leftJoin('sewa as s', function($leftJoin){
+            //     $leftJoin->on('s.id_jo_detail', '=', "jod.id")->where('s.is_aktif',"Y");
+            // })
+            ->leftJoin('sewa AS s', function($join) {
+                $join->on('jod.id', '=', 's.id_jo_detail')
+                ->where('s.is_aktif', '=', 'Y')
+                //where ini buat ambil id sewa yang terakir, kan bisa aja sewanya cancel, trs input lagi
+                ->where('s.id_sewa', '=', function ($query) {
+                $query->select(DB::raw('MAX(id_sewa)'))
+                        ->from('sewa as s')
+                        ->where('s.is_aktif', '=', 'Y')
+                        ->whereColumn('s.id_jo_detail', 'jod.id');
+                });
             })
             ->where('jod.id_jo', $jobOrder->id)
             ->where('jod.is_aktif', "Y")
@@ -337,12 +346,18 @@ class JobOrderController extends Controller
     public function update(Request $request, JobOrder $jobOrder)
     {
         try {
-            // var_dump($request->post()); die;
             $user = Auth::user()->id;
             $data = $request->post();
             $currentYear = Carbon::now()->format('y');
             $currentMonth = Carbon::now()->format('m');
             // dd($data);
+
+            if(isset($data['tgl_sandar'])){
+                $jobOrder->tgl_sandar = date_create_from_format('d-M-Y', $data['tgl_sandar']);
+                $jobOrder->updated_by = $user;
+                $jobOrder->updated_at = now();
+                $jobOrder->save();
+            }
 
             if(isset($data['detail'])){
                 foreach ($data['detail'] as $key => $detail) {
@@ -400,19 +415,31 @@ class JobOrderController extends Controller
                 }
             }
             
-            // if(isset($data['id_jaminan'])){
-            //     $jaminan = Jaminan::where('is_aktif', 'Y')->find($data['id_jaminan']);
-            //     $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
-            //     $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
-            //     $jaminan->catatan = $data['catatan'];
-            //     $jaminan->updated_by = $user;
-            //     $jaminan->updated_at = now();
-            //     $jaminan->save();
-            // }
+            if(isset($data['id_jaminan']) && isset($data['total_jaminan'])){
+                if($data['id_jaminan'] != null){
+                    $jaminan = Jaminan::where('is_aktif', 'Y')->find($data['id_jaminan']);
+                    $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
+                    $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
+                    $jaminan->catatan = $data['catatan'];
+                    $jaminan->updated_by = $user;
+                    $jaminan->updated_at = now();
+                    $jaminan->save();
+                }else{
+                    $jaminan = new Jaminan();
+                    $jaminan->id_job_order = $jobOrder['id'];
+                    $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
+                    $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
+                    $jaminan->catatan = $data['catatan'];
+                    $jaminan->status = 'MENUNGGU PEMBAYARAN';
+                    $jaminan->created_by = $user;
+                    $jaminan->created_at = now();
+                    $jaminan->save();
+                }
+            }
 
-            return redirect()->route('job_order.index')->with('status','Success');
+            return redirect()->route('job_order.index')->with(['status' => 'Success', 'msg' => 'Berhasil update data.']);
         } catch (ValidationException $e) {
-            return redirect()->route('job_order.index')->with('status','Error');
+            return redirect()->route('job_order.index')->with(['status' => 'Error', 'msg' => 'Terjadi kesalahan.']);
             // return redirect()->back()->withErrors($e->errors())->withInput();
         }
     }
@@ -426,49 +453,49 @@ class JobOrderController extends Controller
     public function destroy(JobOrder $jobOrder)
     {
         // dd($jobOrder);
-         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        DB::beginTransaction();
 
-        // try{
+        try{
             DB::table('job_order')
-            ->where('id', $jobOrder['id'])
-            ->update(array(
-                'is_aktif' => "N",
-                'updated_at'=> now(),
-                'updated_by'=> $user, 
-              )
+                ->where('id', $jobOrder['id'])
+                ->update(array(
+                    'is_aktif' => "N",
+                    'updated_at'=> now(),
+                    'updated_by'=> $user, 
+                )
             );
             DB::table('job_order_detail')
-            ->where('id_jo', $jobOrder['id'])
-            ->update(array(
-                'is_aktif' => "N",
-                'updated_at'=> now(),
-                'updated_by'=> $user, 
-              )
+                ->where('id_jo', $jobOrder['id'])
+                ->update(array(
+                    'is_aktif' => "N",
+                    'updated_at'=> now(),
+                    'updated_by'=> $user, 
+                )
             );
             $jaminan = Jaminan::where('id_job_order', $jobOrder->id)->where('is_aktif', 'Y')->first();
-            if($jaminan)
-            {
+            if($jaminan){
                 DB::table('jaminan')
-               ->where('id_job_order', $jobOrder['id'])
-               ->update(array(
-                   'is_aktif' => "N",
-                   'updated_at'=> now(),
-                   'updated_by'=> $user, 
-                 )
-               );
+                ->where('id_job_order', $jobOrder['id'])
+                ->update(array(
+                    'is_aktif' => "N",
+                    'updated_at'=> now(),
+                    'updated_by'=> $user, 
+                    )
+                );
             }
 
-             return redirect()->route('job_order.index')->with('status','Berhasil menghapus data!');
-
-        // }
-        // catch (ValidationException $e) {
-        //     return redirect()->back()->withErrors($e->errors());
-        // }
+            DB::commit();
+            return redirect()->route('job_order.index')->with(['status' => 'Success', 'message' => 'Data berhasil dihapus.']);
+        }
+        catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->back()->with(['status' => 'Error', 'message' => 'Terjadi kesalahan saat menghapus.']);
+        }
     }
 
     public function printJO(JobOrder $JobOrder)
     {
-        //
         $dataSupplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
@@ -479,56 +506,23 @@ class JobOrderController extends Controller
             ->where('customer.is_aktif', '=', "Y")
             ->where('customer.id', '=', $JobOrder->id_customer)
             ->get();
- 
         $dataJaminan = DB::table('jaminan')
             ->select('*')
             ->where('jaminan.is_aktif', '=', "Y")
             ->where('jaminan.id_job_order', '=', $JobOrder->id)
             ->first();
-        // var_dump(( isset($dataJaminan) ? 'xx':'zzz')); die;
-        // $totalThc =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%THC%')
-        //     ->sum('nominal');
-        // $totalLolo =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%LOLO%')
-        //     ->sum('nominal');
-        // $totalApbs =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%APBS%')
-        //     ->sum('nominal');
-        //  $totalCleaning =  DB::table('job_order_detail_biaya')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%CLEANING%')
-        //     ->sum('nominal');
-        //  $Docfee =  DB::table('job_order_detail_biaya')
-        //     ->select('nominal')
-        //     ->where('id_jo', $JobOrder->id)
-        //     ->where('keterangan', 'LIKE', '%DOC_FEE%')
-        //     ->first();
-        // $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
-        // dd($TotalBiaya);
 
         $TotalBiayaRev = $JobOrder->thc+$JobOrder->lolo+$JobOrder->apbs+$JobOrder->cleaning+$JobOrder->doc_fee;
 
-        // dd($dataJoDetail);   
-        $pdf = PDF::loadView('pages.order.job_order.print',[
+        $pdf = Pdf::loadView('pages.order.job_order.print',[
             'judul'=>"Job Order",
             'JobOrder'=>$JobOrder,
             'dataSupplier'=>$dataSupplier,
             'dataCustomer'=>$dataCustomer,
             'dataJaminan'=>$dataJaminan,
-            // 'totalThc'=> $totalThc,
-            // 'totalLolo'=> $totalLolo,
-            // 'totalApbs'=> $totalApbs,
-            // 'totalCleaning'=>$totalCleaning,
-            // 'Docfee'=>$Docfee,
-            // 'TotalBiaya'=>$TotalBiaya
             'TotalBiayaRev'=>$TotalBiayaRev
 
         ]); 
-        // dd($JobOrder);
         // $pdf->setPaper('A5', 'landscape');
         $pdf->setPaper('A5', 'portrait');
 
@@ -540,18 +534,112 @@ class JobOrderController extends Controller
             //  'isRemoteEnabled', true
              'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
         ]);
+        
         // langsung download
         // return $pdf->download('fileCoba.pdf'); 
+
         // preview dulu
         return $pdf->stream($JobOrder->no_jo.'.pdf'); 
+    }
 
-        //  return view('pages.order.job_order.print',[
+    public function cetak_job_order(JobOrder $JobOrder)
+    {
+        //
+        $dataSupplier = DB::table('supplier')
+            ->select('*')
+            ->where('supplier.is_aktif', '=', "Y")
+            ->where('supplier.id', '=', $JobOrder->id_supplier)
+            ->first();
+        $dataCustomer = DB::table('customer')
+            ->select('*')
+            ->where('customer.is_aktif', '=', "Y")
+            ->where('customer.id', '=', $JobOrder->id_customer)
+            ->first();
+ 
+        $dataJaminan = DB::table('jaminan')
+            ->select('*')
+            ->where('jaminan.is_aktif', '=', "Y")
+            ->where('jaminan.id_job_order', '=', $JobOrder->id)
+            ->first();
+        $data_kontainer = DB::table('job_order_detail as jod')
+            ->select('jod.no_kontainer',
+            'jod.seal',
+            'gt.nama_tujuan',
+            DB::raw('MAX(s.no_polisi) as no_polisi'),
+            DB::raw('MAX(s.tanggal_berangkat) as tanggal_berangkat'),
+            DB::raw('SUM(jodb.storage) as storage'),
+            DB::raw('SUM(jodb.demurage) as demurage'),
+            DB::raw('SUM(jodb.detention) as detention'),
+            DB::raw('SUM(jodb.repair) as repair'),
+            DB::raw('SUM(jodb.washing) as washing'),
+            )
+            //join grup tujuan buat ngambil nama tujuan
+            ->leftJoin('grup_tujuan AS gt', function($join) {
+                $join->on('jod.id_grup_tujuan', '=', 'gt.id')->where('gt.is_aktif', '=', 'Y');
+            })
+            //join sewa buat ngambil nopol sama tgl berangkat
+            ->leftJoin('sewa AS s', function($join) {
+                $join->on('jod.id', '=', 's.id_jo_detail')
+                ->where('s.is_aktif', '=', 'Y')
+                //where ini buat ambil id sewa yang terakir, kan bisa aja sewanya cancel, trs input lagi
+                ->where('s.id_sewa', '=', function ($query) {
+                $query->select(DB::raw('MAX(id_sewa)'))
+                        ->from('sewa as s')
+                        ->where('s.is_aktif', '=', 'Y')
+                        ->whereColumn('s.id_jo_detail', 'jod.id');
+                });
+            })
+            ->leftJoin('job_order_detail_biaya AS jodb', function($join) {
+                $join->on('jod.id', '=', 'jodb.id_jo_detail')
+                ->where('jodb.status_bayar', 'SELESAI PEMBAYARAN')
+                ->where('jodb.is_aktif', '=', 'Y');
+            })
+            ->where('jod.is_aktif', '=', "Y")
+            ->where('jod.id_jo', '=', $JobOrder->id)
+            ->groupBy('jod.no_kontainer', 
+            'jod.seal', 
+            'gt.nama_tujuan', 
+            's.no_polisi', 
+            's.tanggal_berangkat',
+            // 'jodb.storage',
+            // 'jodb.demurage',
+            // 'jodb.detention',
+            // 'jodb.repair',
+            // 'jodb.washing',
+            )
+            ->get();
+        // dd($data_kontainer);
+        $TotalBiayaRev = $JobOrder->thc+$JobOrder->lolo+$JobOrder->apbs+$JobOrder->cleaning+$JobOrder->doc_fee;
+
+        // dd($dataJoDetail);   
+        $pdf = Pdf::loadView('pages.order.job_order.cetak_job_order',[
+            'judul'=>"Job Order",
+            'JobOrder'=>$JobOrder,
+            'dataSupplier'=>$dataSupplier,
+            'dataCustomer'=>$dataCustomer,
+            'dataJaminan'=>$dataJaminan,
+            'TotalBiayaRev'=>$TotalBiayaRev,
+            'data_kontainer'=>$data_kontainer
+        ]); 
+        // dd($JobOrder);
+        // $pdf->setPaper('A5', 'landscape');
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true, // Enable HTML5 parser
+            'isPhpEnabled' => true, // Enable inline PHP execution
+            'defaultFont' => 'sans-serif',
+             'dpi' => 200, // Set a high DPI for better resolution
+            //  'isRemoteEnabled', true
+             'chroot' => public_path('/img') // harus tambah ini buat gambar kalo nggk dia unknown
+        ]);
+        return $pdf->stream($JobOrder->no_jo.'.pdf'); 
+        // return view('pages.order.job_order.cetak_job_order',[
         //     'judul'=>"Job Order",
         //     'JobOrder'=>$JobOrder,
         //     'dataSupplier'=>$dataSupplier,
         //     'dataCustomer'=>$dataCustomer,
-        //     'dataJoDetail'=>$dataJoDetail,
         //     'dataJaminan'=>$dataJaminan,
+        //     'TotalBiayaRev'=>$TotalBiayaRev
 
         // ]);
     }
@@ -618,5 +706,130 @@ class JobOrderController extends Controller
         //         'dataJO' => $dataJO,
         //         // 'dataJODetail'=>$dataJODetail
         //     ]);
+    }
+
+    public function cetak_si($id){
+        $data = JobOrder::with('getSupplier', 'getDetails.getTujuan', 'getCustomer')->where('is_aktif', 'Y')->find($id);
+        $user = Auth::user()->username;
+
+        // dd($data);
+        // Creating the new document...
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+        $section = $phpWord->addSection();
+        
+        // Define styles
+        $multiTabStyle = 'multipleTab';
+        $phpWord->addParagraphStyle(
+            $multiTabStyle,
+            [
+                'tabs' => [
+                    new \PhpOffice\PhpWord\Style\Tab('left', 3200),
+                    new \PhpOffice\PhpWord\Style\Tab('left', 3200),
+                ],
+            ]
+        );
+
+        $leftTabStyle = 'leftTab';
+        $phpWord->addParagraphStyle($leftTabStyle, ['tabs' => [new \PhpOffice\PhpWord\Style\Tab('left', 5000)]]);
+        
+        $rightTabStyle = 'rightTab';
+        $phpWord->addParagraphStyle($rightTabStyle, ['tabs' => [new \PhpOffice\PhpWord\Style\Tab('right', 9090)]]);
+
+        $styleCenter = 'pStyle';
+        $phpWord->addParagraphStyle($styleCenter, ['alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 100]);
+
+        $section->addText(
+            'SHIPPING INSTRUCTION',
+            array('name' => 'Cambria', 'size' => 10, 'bold' => true, 'underline' => 'single'), $styleCenter
+        );
+
+        $section->addText(
+            '',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $section->addText(
+            'Kepada',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $kepada = strtoupper($data->getSupplier->nama);
+        $section->addText(
+            $kepada. ' <w:br/><w:br/>',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $section->addText(
+            'Dengan ini Kami sampaikan Shipping Instruction ( Instruksi Pengapalan ) sebagai berikut :',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        // Add listitem elements
+        $pengirim = strtoupper($data->getCustomer->nama);
+        $containers = $data->getDetails;
+        $countContainers = count($containers);
+        $containersType = $containers[0]['tipe_kontainer'];
+        // dd($containers);
+        
+        $section->addText("Shipper \t : \t $pengirim", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Consignee \t : \t $pengirim", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Notify Party \t : \t  AS CONSIGNEE", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Quantity \t : \t $countContainers  X $containersType  CONTAINER", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Goods \t : \t -", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+        $section->addText("Vessel Name \t : \t $data->kapal $data->voyage", array('name' => 'Cambria', 'size' => 10), $multiTabStyle);
+
+        $fancyTableStyleName = 'Table';
+        $fancyTableStyle = ['borderSize' => 4, 'borderColor' => '006699', 'cellMargin' => 20, 'alignment' => \PhpOffice\PhpWord\SimpleType\JcTable::CENTER, 'cellSpacing' => 25];
+        $fancyTableFirstRowStyle = ['borderBottomSize' => 5, 'borderBottomColor' => '0000FF', 'bgColor' => '66BBFF'];
+        $fancyTableCellStyle = ['valign' => 'center',];
+        $fancyTableFontStyle = ['bold' => true];
+        $phpWord->addTableStyle($fancyTableStyleName, $fancyTableStyle, $fancyTableFirstRowStyle);
+        $table = $section->addTable($fancyTableStyleName);
+        $table->addRow(400);
+        $table->addCell(2000, $fancyTableCellStyle)->addText('NO. CONTAINER', array('name' => 'Cambria', 'size' => 10) , $styleCenter, $fancyTableFontStyle);
+        $table->addCell(2000, $fancyTableCellStyle)->addText('SEAL', array('name' => 'Cambria', 'size' => 10) , $styleCenter, $fancyTableFontStyle);
+        $table->addCell(2000, $fancyTableCellStyle)->addText('CARGO', array('name' => 'Cambria', 'size' => 10) , $styleCenter, $fancyTableFontStyle);
+        // for ($i = 1; $i <= $countContainers; ++$i) {
+        //     $table->addRow();
+        //     $table->addCell(2000)->addText("SPNU 310724-5", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+        //     $table->addCell(2000)->addText("E22.514192", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+        //     $table->addCell(2000)->addText("MAKANAN", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+        // }
+        foreach ($containers as $key => $value) {
+            $kargo = $value->getTujuan->kargo;
+            $table->addRow();
+            $table->addCell(2000)->addText("$value->no_kontainer", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+            $table->addCell(2000)->addText("$value->seal", array('name' => 'Cambria', 'size' => 10), $styleCenter);
+            $table->addCell(2000)->addText("$kargo", array('name' => 'Cambria', 'size' => 10), $styleCenter);        }
+
+        $section->addText(
+            '<w:br/><w:br/>',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $monthNames = [ 1 => "Januari", 2 => "Februari", 3 => "Maret", 4 => "April", 5 => "Mei", 6 => "Juni", 7 => "Juli", 8 => "Agustus", 9 => "September", 10 => "Oktober", 11 => "November", 12 => "Desember"];
+
+        $tanggal = date('d', strtotime(now()));
+        $bulan = $monthNames[date('m', strtotime(now()))];
+        $tahun = date('Y', strtotime(now()));
+        $section->addText(
+            'Surabaya,  '.$tanggal.' '.$bulan.' '.$tahun,
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $section->addText(
+            '<w:br/><w:br/> Lastri',
+            array('name' => 'Cambria', 'size' => 10)
+        );
+
+        $filename = $data->no_bl;
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save($filename);
+
+        header("Content-Disposition: attachment; filename=$filename.docx");
+        readfile($filename); // or echo file_get_contents($filename);
+        unlink($filename);  // remove temp file
+
     }
 }

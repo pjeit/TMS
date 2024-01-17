@@ -16,142 +16,132 @@
 @section('content')
 @include('sweetalert::alert')
 
-<br>
 <style>
-   
+
 </style>
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card radiusSendiri">
-                <div class="card-header">
-                    <a href="{{route('supplier.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
-                        <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
-                    </a> 
-                </div>
-                <div class="card-body">
-                    {{-- <div class="form-group">
-                        <label>Filter Supplier</label>
-                        <form action="/supplier/jenisFilter/" method="get">
-                            <div class="input-group col-md-4">
-                                <select class="form-control selectpicker" name="jenisFilter" id="jenisFilter" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
-                                        <option value="">--Pilih Jenis Supplier--</option>
-                                    
-                                    @foreach($dataJenisFilter as $dat)
-                                        <option value="{{$dat->id}}">{{$dat->nama}}</option>
-                                    @endforeach
-                                </select>
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-lg btn-default">
-                                        <i class="fa fa-search"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div> --}}
-                    <div class="form-group w-25">
-                        <form id="filterForm" action="{{ route('filterSupplier.cari')}}" method="get">
-                            <label>Filter Supplier</label>
-                             <select class="form-control select2" style="width: 100%;" id='jenisFilter' name="jenisFilter">
-                                <option value="">ALL</option>
-        
-                                @foreach($dataJenisFilter as $dat)
-                                        <option value="{{$dat->id}}" id="">{{$dat->nama}}</option>
-                                @endforeach
-                                <input type="hidden" id="SimpenId">
-                                
-                            </select>
-                                {{-- <select class="form-control select2" name="jenisFilter" id="jenisFilter" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
-                                    @foreach($dataJenisFilter as $dat)
-                                        <option value="{{$dat->id}}" id="">{{$dat->nama}}</option>
-                                    @endforeach
-                                    <option value="">ALL</option>
-
-                                </select>
-                                <input type="hidden" id="SimpenId"> --}}
-                        </form>
+    <div class="card radiusSendiri">
+        <div class="card-header">
+            <a href="{{route('supplier.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
+                <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Data
+            </a> 
+        </div>
+        <div class="card-body">
+            {{-- <div class="form-group">
+                <label>Filter Supplier</label>
+                <form action="/supplier/jenisFilter/" method="get">
+                    <div class="input-group col-md-4">
+                        <select class="form-control selectpicker" name="jenisFilter" id="jenisFilter" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Agama">
+                                <option value="">--Pilih Jenis Supplier--</option>
+                            
+                            @foreach($dataJenisFilter as $dat)
+                                <option value="{{$dat->id}}">{{$dat->nama}}</option>
+                            @endforeach
+                        </select>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-lg btn-default">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div id="data">
-                        <table id="datatable" class="table table-bordered table-striped" width='100%'>
-                            <thead>
-                                <tr>
-                                <th>Jenis Supplier</th>
-                                <th>Nama</th>
-                                <th>Alamat</th>
-                                <th>Telp</th>
-                                <th>Lokasi Supplier</th>
-                                <th>Catatan</th>
-                                <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($data as $item)
-                                <tr>
-                                    <td>{{ $item->jenis }}</td>
-                                    <td>{{ $item->nama }}</td>
-                                    <td>{{ $item->alamat }}</td>  
-                                    <td>0{{ $item->telp }}</td>  
-                                    <td>{{ $item->kota }}</td>
-                                    <td>{{ $item->catatan }}</td>
-                                    <td>                                    
-                                        {{-- <a class="btn btn-default bg-info radiusSendiri" href="{{route('supplier.edit',[$item->id])}}">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>   
-                                                <!-- Button trigger modal -->
-                                        <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
-                                                <i class="fas fa-trash"></i> Hapus
-                                        </button>   
-                                         --}}
-                                        <div class="btn-group dropleft">
-                                            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <i class="fa fa-list"></i>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a href="{{route('supplier.edit',[$item->id])}}" class="dropdown-item">
-                                                    <span class="fas fa-edit mr-3"></span> Edit
-                                                </a>
-                                                
-                                                <a href="{{ route('supplier.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
-                                                    <span class="fas fa-trash mr-3"></span> Delete
-                                                </a>
-                                                
-                                            </div>
-                                        </div>   
-                                        
-                                    </td>
-                                    {{-- <!-- Modal -->
-                                    <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            </div>
-                                            <div class="modal-body">
-                                            <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
-                                            </div>
-                                        <div class="modal-footer">
-                                                <form action="{{route('supplier.destroy',[$item->id])}}" method="POST" class="btn btn-responsive">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button action="{{route('supplier.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
-                                                </form>
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal" >Tidak</button>
-                                        </div>
-                                        </div>
-                                        </div>
-                                    </div> --}}
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    {{-- {{ $data->links('pagination::bootstrap-4') }} --}}
-                    </div>
+                </form>
+            </div> --}}
+            <div class="form-group w-25">
+                <form id="filterForm" action="{{ route('filterSupplier.cari')}}" method="get">
+                    <label>Filter Supplier</label>
+                        <select class="form-control select2" style="width: 100%;" id='jenisFilter' name="jenisFilter">
+                        <option value="">ALL</option>
 
-                </div>
+                        @foreach($dataJenisFilter as $dat)
+                                <option value="{{$dat->id}}" id="">{{$dat->nama}}</option>
+                        @endforeach
+                        <input type="hidden" id="SimpenId">
+                        
+                    </select>
+                </form>
             </div>
+            <div id="data">
+                <table id="datatable" class="table table-bordered table-striped" width='100%'>
+                    <thead>
+                        <tr>
+                        <th>Jenis Supplier</th>
+                        <th>Nama</th>
+                        <th>Alamat</th>
+                        <th>Telp</th>
+                        <th>Lokasi Supplier</th>
+                        <th>Catatan</th>
+                        <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($data as $item)
+                        <tr>
+                            <td>{{ $item->jenis }}</td>
+                            <td>{{ $item->nama }}</td>
+                            <td>{{ $item->alamat }}</td>  
+                            <td>0{{ $item->telp }}</td>  
+                            <td>{{ $item->kota }}</td>
+                            <td>{{ $item->catatan }}</td>
+                            <td>                                    
+                                {{-- <a class="btn btn-default bg-info radiusSendiri" href="{{route('supplier.edit',[$item->id])}}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>   
+                                        <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-danger radiusSendiri" data-toggle="modal" data-target="#modalHapus">
+                                        <i class="fas fa-trash"></i> Hapus
+                                </button>   
+                                    --}}
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        @can('EDIT_SUPPLIER')
+                                            <a href="{{route('supplier.edit',[$item->id])}}" class="dropdown-item">
+                                                <span class="fas fa-edit mr-3"></span> Edit
+                                            </a>
+                                        @endcan
+                                        
+                                        @can('DELETE_SUPPLIER')
+                                            <a href="{{ route('supplier.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                <span class="fas fa-trash mr-3"></span> Delete
+                                            </a>
+                                        @endcan
+                                    </div>
+                                </div>   
+                                
+                            </td>
+                            {{-- <!-- Modal -->
+                            <div class="modal fade" id="modalHapus" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <p>Apakah anda yakin ingin menghapus data secara permanen?</p>
+                                    </div>
+                                <div class="modal-footer">
+                                        <form action="{{route('supplier.destroy',[$item->id])}}" method="POST" class="btn btn-responsive">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button action="{{route('supplier.destroy',[$item->id])}}" class="btn btn-primary">Ya</button>
+                                        </form>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" >Tidak</button>
+                                </div>
+                                </div>
+                                </div>
+                            </div> --}}
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            {{-- {{ $data->links('pagination::bootstrap-4') }} --}}
+            </div>
+
         </div>
     </div>
 </div>

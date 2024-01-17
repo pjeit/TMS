@@ -1,10 +1,9 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
@@ -13,15 +12,16 @@
 
 @section('content')
 <style>
-  
+
 </style>
 <div class="container-fluid">
     {{-- <div class="radiusSendiri sticky-top " style="margin-bottom: -15px;">
         <div class="card radiusSendiri" style="">
             <div class="p-3">
-                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
+                        class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
-        </div>
+        </div>  
     </div> --}}
     <div class="card radiusSendiri">
         <form id="save" action="{{ route('biaya_operasional.store') }}" method="POST">
@@ -30,52 +30,53 @@
                 <div class="card-header" style="border: 2px solid #bbbbbb;">
                     <ul class="list-inline">
                         <div class="row">
-                            {{-- <li class="list-inline-item"> --}}
-                                <div class="col-sm-12 col-md-3 col-lg-3 bg-white pb-3">
-                                    <div class="form-group">
-                                        <label for="">Jenis Biaya</label> 
-                                        <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                            <option value="">­­— PILIH DATA —</option>
-                                            <option value="TALLY">TALLY</option>
-                                            <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                            <option value="OPERASIONAL">ALAT</option>
-                                            <option value="TIMBANG">TIMBANG</option>
-                                            <option value="BURUH">BURUH</option>
-                                            <option value="LEMBUR">LEMBUR</option>
-                                            <option value="KARANTINA">KARANTINA</option>
-                                        </select>
-                                    </div>
+                            <div class="col-sm-12 col-md-3 col-lg-3 bg-white pb-3">
+                                <div class="form-group">
+                                    <label for="">Jenis Biaya</label>
+                                    <select class="form-control selectpicker" required name="item" id="item"
+                                        data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                        <option value="">­­— PILIH DATA —</option>
+                                        <option value="TALLY">TALLY</option>
+                                        <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
+                                        <option value="ALAT">ALAT</option>
+                                        <option value="TIMBANG">TIMBANG</option>
+                                        <option value="BURUH">BURUH</option>
+                                        <option value="LEMBUR">LEMBUR</option>
+                                        <option value="KARANTINA">KARANTINA</option>
+                                    </select>
                                 </div>
-                  
-                                <div class="col-sm-12 col-md-4 col-lg-4 bg-white pb-3">
-                                    <ul class="list-group mt-4">
-                                        <li class="list-group-item d-flex justify-content-between lh-sm card-outline card-primary">
-                                            <div>
-                                                <span class="text-primary"><b>Grand Total</b></span>
-                                            </div>
-                                            <span class="text-bold t_total">Rp. 0</span>
-                                            <input type="hidden" id='t_total' name='t_total'>
-                                        </li>
-                                    </ul>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 col-lg-4 bg-white pb-3">
+                                <ul class="list-group mt-4">
+                                    <li
+                                        class="list-group-item d-flex justify-content-between lh-sm card-outline card-primary">
+                                        <div>
+                                            <span class="text-primary"><b>Grand Total</b></span>
+                                        </div>
+                                        <span class="text-bold t_total">Rp. 0</span>
+                                        <input type="hidden" id='t_total' name='t_total'>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="col-sm-12 col-md-5 col-lg-5 bg-white pb-3">
+                                <div class="input-group mt-4">
+                                    <select class="form-control selectpicker" required id='pembayaran' name="pembayaran"
+                                        data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                        <option value="">── PILIH PEMBAYARAN ──</option>
+                                        @foreach ($dataKas as $kas)
+                                        <option value="{{$kas->id}}">{{ $kas->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
                                 </div>
-                       
-                                <div class="col-sm-12 col-md-5 col-lg-5 bg-white pb-3">
-                                    <div class="input-group mt-4">
-                                        <select class="form-control selectpicker" required id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                            <option value="">── PILIH PEMBAYARAN ──</option>
-                                            @foreach ($dataKas as $kas)
-                                                <option value="{{$kas->id}}" {{$kas->id == '1'? 'selected':''}} >{{ $kas->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                        <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
-                                    </div>
-                                </div>
-                            {{-- </li> --}}
+                            </div>
                         </div>
                     </ul>
                 </div>
             </div>
-        
+
             <div class="card-body">
                 <section class="col-lg-12" id="show_report">
                     <table id="rowGroup" class="table table-bordered table-hover" width="100%">
@@ -163,6 +164,16 @@
             var item = $('#item').val();
             var totalElement = document.querySelector('.t_total');
             totalElement.textContent = "Rp. 0"; 
+            console.log('item', item);
+
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                let bank = $('#pembayaran').selectpicker('val', 1);
+            }else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'){
+                let bank = $('#pembayaran').selectpicker('val', 2);
+            }else{
+                let bank = $('#pembayaran').selectpicker('val', '');
+            }
+
             if(item != null){
                 showTable(item);
             }else{
@@ -170,17 +181,7 @@
                 tbody.innerHTML = "";
             }
 		});        
-        // var textDicairkan = $('.dicairkan');
-        
-        // timot nambah ini buat yang bug buruh sama timbang gak ke set
-        $(document).on('keyup', '.dicairkan', function() {  
-            var row = $(this).closest('tr');
-            var item = $('#item').val();
-            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
-                // hidden biaya nominal di cet sama dengan nominal dicairkan
-                row.find('.hiddenNominal').val(row.find('.dicairkan').val())
-            }
-        });
+
         function showTable(item){
             if(item == ''){
                 var table = document.getElementById("rowGroup");
@@ -206,24 +207,23 @@
                     processData:false,
                     success: function(response) {
                         $("#rowGroup").dataTable().fnDestroy();
+                        $("th").remove();
+                        $("#hasil").empty();
                         var item = $('#item').val();
                         var data = response.data;
                         console.log('data', data);
-                        
-                        if(item == 'KARANTINA'){
-                            $("th").remove();
 
-                            $("thead tr").append(`<th>Grup</th>
+                        if(item == 'KARANTINA'){
+                            $("thead tr").append(`  <th>Grup</th>
                                                     <th>Customer</th>
                                                     <th>No. BL</th>
                                                     <th>Kapal / Voyage</th>
-                                                    <th>Biaya</th>
                                                     <th>Ditagihkan</th>
+                                                    <th>Dicairkan</th>
                                                     <th>Catatan</th>    
                                                 `);
                             $("thead tr").append("<th class='text-center' style='width: 30px;'><input id='check_all' type='checkbox'></th>");
                             
-                            $("#hasil").empty();
                             if(data.length > 0){
                                 for (var i = 0; i <data.length; i++) {
                                     var row = $("<tr></tr>");
@@ -231,7 +231,7 @@
                                                 <div class="d-flex justify-content-between" style="margin-right: -13px;">
                                                     <div>${data[i].get_customer.get_grup.nama_grup}</div>
                                                     <div style="width: 55px; text-align: center">                                            
-                                                        <input class='check_item check_grup' grup_parent='${data[i].get_customer.get_grup.id}' type='checkbox'>
+                                                        <input class='grup' id='grup_${data[i].get_customer.get_grup.id}' value="${data[i].get_customer.get_grup.id}" type='checkbox'>
                                                     </div>
                                                 </div>
                                                 </td>`);
@@ -239,7 +239,7 @@
                                                 <div class="d-flex justify-content-between" style="margin-right: -13px;">
                                                     <div>► ${data[i].get_customer.nama}</div>
                                                     <div style="width: 55px; text-align: center">                                            
-                                                        <input class='check_item check_cust' grup_child='${data[i].get_customer.get_grup.id}' cust_parent='${data[i].get_customer.id}' type='checkbox'>
+                                                        <input class='grup_${data[i].get_customer.get_grup.id} customer' id="customer_${data[i].get_customer.id}" id_grup="${data[i].get_customer.get_grup.id}" value='${data[i].get_customer.id}' type='checkbox'>
                                                     </div>
                                                 </div>
                                                 </td>`);
@@ -247,70 +247,49 @@
                                     row.append(`<td>${data[i].get_j_o.kapal} ( ${data[i].get_j_o.voyage} )</td>`);
                                     row.append(`<td>${moneyMask(data[i].total_operasional)}</td>`);
                                     row.append(`<td>
-                                                    <input type='hidden' id='biaya_${data[i].id}' name='data[${data[i].id}][nominal]' value='${data[i].total_operasional}' class='form-control hiddenNominal' readonly>
-                                                    <input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].get_customer.id} open_grup_${data[i].get_customer.get_grup.id}" id='open_${data[i].id}' name='data[${data[i].id}][dicairkan]' sewaOprs='${data[i].id}' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                    <input type="text" class="form-control uang numaja dicairkan item_dicairkan grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id} item_${data[i].id}" id="item_${data[i].id}" item="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                    <input type='hidden' id='biaya_${data[i].id}' name='data[${data[i].id}][nominal]' value='${data[i].total_operasional}' class='form-control' readonly>
                                                 </td>`);
                                     row.append(`<td class='text-center'> 
-                                                    <input class="form-control open_cust_cttn_${data[i].get_customer.id} open_grup_cttn_${data[i].get_customer.get_grup.id}" id='open_cttn_${data[i].id}' name='data[${data[i].id}][catatan]' sewaOprsCttn='${data[i].id}' type="text" readonly/> 
+                                                    <input class="form-control item_catatan grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id} item_${data[i].id}" name='data[${data[i].id}][catatan]' type="text" readonly/> 
                                                 </td>`);
                                     row.append(`<td> 
                                                     <div style="text-align: center">
-                                                        <input class='check_item check_container' id_sewa="${data[i].id}" grup_child='${data[i].get_customer.get_grup.id}' cust_child='${data[i].get_customer.id}'  name="data[${data[i].id}][item]" type='checkbox'>
+                                                        <input class='item grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id}' id_grup="${data[i].get_customer.get_grup.id}" id_customer="${data[i].get_customer.id}" name="data[${data[i].id}][item]" value="${data[i].id}" type='checkbox'>
                                                     </div>
                                                 </td>`);
                                     $("#hasil").append(row);
                                 }
                             }
-                            new DataTable('#rowGroup', {
-                                    order: [
-                                        [0, 'asc'],
-                                        [1, 'asc']
-                                    ],
-                                    rowGroup: {
-                                        dataSrc: [0,1]
-                                    },
-                                    columnDefs: [
-                                        {
-                                            targets: [0,1],
-                                            visible: false
-                                        },
-                                        { orderable: false, targets: -1 }
-
-                                    ]
-                                });
                         }else{
-                            $("th").remove();
                             $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
-                            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
-                                
-                            }else{
-                                $("thead tr").append("<th>Total</th>");
+                            if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                                $("thead tr").append("<th>Ditagihkan</th>");
                             }
-                            $("thead tr").append("<th>Dicairkan</th>");
-                            $("thead tr").append("<th>Catatan</th>");
-                            $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
-                            $("#hasil").html("");
-                            var ord = 7;
-                            var dataCustomer = null;
-                            console.log('data.length', data);
+                            $("thead tr").append(`<th>Dicairkan</th>
+                                                    <th>Catatan</th>
+                                                    <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+
                             if(data.length > 0){
-                                for (var i = 0; i <data.length; i++) {
+                                for (var i = 0; i < data.length; i++) {
                                     if(data[i].total_dicairkan == null){
+                                        console.log('ok');
                                         var start = data[i].deskripsi_so;
-                                        var row = $("<tr></tr>");
-                                        row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input class='check_item check_grup' grup_parent='${data[i].grup_id}' type='checkbox'> </span> </div> </b></td>`);
-                                        row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input class='check_item check_cust' grup_child='${data[i].grup_id}' cust_parent='${data[i].id_customer}' type='checkbox'> </span> </div> </b></td>`);
-                                    
-                                        row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' / '+data[i].no_polisi:'' } / ${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier} </td>`);
-                                        row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
                                         var nominal = 0;
+                                        var row = $("<tr></tr>");
+                                        row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
+                                        row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
+                                        row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
+                                        row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
                                         if(data[i].jenis_order == 'INBOUND'){
                                             if(data[i].tipe_kontainer=='20'){
-                                                if(data[i].pick_up == 'DEPO'){
+                                                if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                    // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
                                                     nominal = 15000;
                                                 }
                                             }else{
-                                                if(data[i].pick_up == 'DEPO'){
+                                                if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                    // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
                                                     nominal = 25000;
                                                 }
                                             }
@@ -326,68 +305,60 @@
                                         }else if(item == 'SEAL PELAYARAN'){
                                             nominal = data[i].seal_pelayaran;       
                                         }
-                                        if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR' || item == 'TAMBAHAN UJ'){
-                                            if(item == 'TAMBAHAN UJ'){
-                                                // nominal = data[i].uj_tujuan - data[i].uj_sewa;
-                                            }
-                                            ord = 6;
+                                        if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                                            nominal = 200000; // set default value biar kalau angka 0 di hidden
                                         }else{
                                             row.append(`<td> ${nominal.toLocaleString()} </td>`);
                                         }
                                         var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
                                         var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
-                                        var tambahanUJ = '';
-        
-                                        if(item == 'TAMBAHAN UJ'){
-                                            var inputan = `<input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${moneyMask(data[i].uj_tujuan - data[i].uj_sewa)}' readonly/>`; 
-                                            tambahanUJ =`<input type="hidden" name="data[${data[i].id_sewa}][tambahan_uj]" value="Y" />`;
-                                        }else{
-                                            var inputan = `<input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>`; 
-                                        }
+                                        
                                         row.append(`<td> 
-                                                        ${inputan}
-                                                        ${tambahanUJ}
+                                                        <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                        <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? '' : nominal}' class='form-control' readonly>
                                                         <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
                                                         <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
                                                     </td>`);
                                         row.append(`<td class='text-center'> 
-                                                        <input class="form-control open_cust_cttn_${data[i].id_customer} open_grup_cttn_${data[i].grup_id}" id='open_cttn_${data[i].id_sewa}' name='data[${data[i].id_sewa}][catatan]' sewaOprsCttn='${data[i].id_sewa}' type="text" readonly/> 
+                                                        <input class="form-control item_catatan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" name='data[${data[i].id_sewa}][catatan]' type="text" readonly/> 
                                                     </td>`);
                                         row.append(`<td class='text-center'> 
-                                                        <input class='check_item check_container' id_sewa="${data[i].id_sewa}" grup_child='${data[i].grup_id}' cust_child='${data[i].id_customer}'  name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                                        <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? $('#open_' + data[i].id_sewa).val() : nominal}' class='form-control hiddenNominal' readonly>
+                                                        <input class='item grup_${data[i].grup_id} customer_${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" id_grup="${data[i].grup_id}" id_customer="${data[i].id_customer}" type='checkbox' value="${data[i].id_sewa}"> 
                                                         <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
                                                         <input type='hidden' name='data[${data[i].id_sewa}][supplier]' value='${data[i].namaSupplier}' class='form-control' readonly>
                                                         <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
                                                         <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
                                                         <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
                                                     </td>`);
-                                        $("#hasil").append(row);
+                                                    
+                                        // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
+                                        if(nominal != 0){
+                                            $("#hasil").append(row);
+                                        }
                                     }
                                 }
-                                
-                                new DataTable('#rowGroup', {
-                                    order: [
-                                        [0, 'asc'], // 0 = grup
-                                        [1, 'asc'] // 1 = customer
-                                    ],
-                                    rowGroup: {
-                                        dataSrc: [0, 1] // di order grup dulu, baru customer
-                                    },
-                                    columnDefs: [
-                                        {
-                                            targets: [0, 1], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
-                                            visible: false
-                                        },
-                                        {
-                                            targets: [ord, ord-1],
-                                            orderable: false, // matiin sortir kolom centang
-                                        },
-                                    ],
-                                });
                             }
                         }
 
+                        new DataTable('#rowGroup', {
+                            order: [
+                                [0, 'asc'], // 0 = grup
+                                [1, 'asc'], // 1 = customer
+                            ],
+                            rowGroup: {
+                                dataSrc: [0, 1] // di order grup dulu, baru customer
+                            },
+                            columnDefs: [
+                                {
+                                    targets: [0, 1], 
+                                    visible: false
+                                },
+                                {
+                                    targets: [-1],
+                                    orderable: false, // matiin sortir kolom centang
+                                },
+                            ],
+                        });
                         
                     },error: function (xhr, status, error) {
                         $("#loading-spinner").hide();
@@ -403,190 +374,87 @@
                 });
             }
         }
-
-        
         
         // check all
-            // function toggleReadonlyAll() {
-            //     var isChecked = $('#check_all').prop('checked');
-            //     $('[id^="open_"]').prop('readonly', !isChecked);
-            // }
-            function toggleReadonlyAll(inputId) {
-                var item = $('#item').val();
-                var isChecked = $('#check_all').prop('checked');
-                var readonlyValue = isChecked ? false : true; // Set to true when not checked (isChecked is false)
-                if(readonlyValue == true){
-                    if(item != 'TAMBAHAN UJ'){
-                        $(`[id^="open_"]`).val('');
-                    }else{
-                        $(`[id^="open_cttn_"]`).val('');
-                    }
-                }
-                if(item != 'TAMBAHAN UJ'){
-                    $('[id^="open_"]').prop('readonly', readonlyValue);
-                }else{
-                    $('[id^="open_cttn_"]').prop('readonly', readonlyValue);
-                }
-            }
-            $(document).on('change', '#check_all', function() {  
-                toggleReadonlyAll();
-                $(".check_item").prop('checked', $(this).prop('checked'));
+            $(document).on('click', '#check_all', function() {  
+                let isChecked = this.checked;
+                $(".grup").prop('checked', isChecked);
+                $(".customer").prop('checked', isChecked);
+                $(".item").prop('checked', isChecked);
+                $(".item_dicairkan").prop('readonly', !isChecked);
+                $(".item_catatan").prop('readonly', !isChecked);
                 hitung();
-            });
-            $(document).on('change', '#check_all_pick_up', function() {  
-                $(".check_item_pick_up").prop('checked', $(this).prop('checked'));
             });
         //
 
         // check per grup
-            function toggleReadonlyGrup(grup_id) {
-                var item = $('#item').val();
-                var checkbox = $(`.check_grup[grup_parent="${grup_id}"]`);
-                var inputElements = $('.open_grup_' + grup_id);
-                var cttnElements = $('.open_grup_cttn_' + grup_id);
-                if (checkbox.prop('checked')) {
-                    if(item != 'TAMBAHAN UJ'){
-                        inputElements.prop('readonly', false);
-                    }
-                    cttnElements.prop('readonly', false);
-                } else {
-                    if(item != 'TAMBAHAN UJ'){
-                        inputElements.val('');
-                    }
-                    cttnElements.val('');
-                    inputElements.prop('readonly', true);
-                    cttnElements.prop('readonly', true);
-                    caps();
-                }
-                hitung();
-            }
-            $(document).on('change', '.check_grup, .check_grup_tps, .check_grup_ttl, .check_grup_depo', function() {
-                var opr = $(this).attr('opr');
-                var grup_id = $(this).attr('grup_parent');
-                var child = $(`input[grup_child="${grup_id}"]`);
-                var child_opr = $(`input[grup_child_${opr}="${grup_id}"]`);
-                child.prop('checked', $(this).prop('checked'));
-                child_opr.prop('checked', $(this).prop('checked'));
-                $("#check_all").prop('checked', false);
+            $(document).on('click', '.grup', function() {
+                let id_grup = this.value;
+                let isChecked = this.checked;
 
-                toggleReadonlyGrup(grup_id);
+                $(".grup_"+id_grup).prop('checked', isChecked);
+                $(".grup_"+id_grup).prop('readonly', !isChecked);
+                $("#check_all").prop('checked', false);
+                hitung();
             });
         //
  
         // check per customer
-            function toggleReadonlyCust(cust_id) {
-                var item = $('#item').val();
-                var checkbox = $(`.check_cust[cust_parent="${cust_id}"]`);
-                var inputElements = $('.open_cust_' + cust_id);
-                var cttnElements = $('.open_cust_cttn_' + cust_id);
+            $(document).on('click', '.customer', function() {
+                let customer_id = this.value;
+                let id_grup = this.getAttribute('id_grup');
+                let isChecked = this.checked;
 
-                if (checkbox.prop('checked')) {
-                    if(item != 'TAMBAHAN UJ'){
-                        inputElements.prop('readonly', false);
-                    }
-                    cttnElements.prop('readonly', false);
-                } else {
-                    if(item != 'TAMBAHAN UJ'){
-                        inputElements.val('');
-                    }
-                    cttnElements.val('');
-                    inputElements.prop('readonly', true);
-                    cttnElements.prop('readonly', true);
-                }
-                hitung();
-            }
-            $(document).on('change', '.check_cust, .check_cust_tps, .check_cust_ttl, .check_cust_depo', function() {
-                var opr = $(this).attr('opr');
-                var cust_id = $(this).attr('cust_parent');
-                var child = $(`input[cust_child="${cust_id}"]`);
-                var child_opr = $(`input[cust_child_${opr}="${cust_id}"]`);
-                child.prop('checked', $(this).prop('checked'));
-                child_opr.prop('checked', $(this).prop('checked'));
-
-                var grup_id = $(this).attr('grup_child');
+                $(".customer_"+customer_id).prop('checked', isChecked);
+                $(".customer_"+customer_id).prop('readonly', !isChecked);
                 $("#check_all").prop('checked', false);
-
-                toggleReadonlyCust(cust_id);
+                $("#grup_"+id_grup).prop('checked', false);
+                hitung();
             });
         //
 
-        // uncheck all
-            // function toggleReadonly(inputId) {
-            //     var isChecked = $(`input[id_sewa='${inputId}']`).prop('checked');
-            //     $(`#open_${inputId}`).prop('readonly', !isChecked);
-            // }
-            function toggleReadonly(inputId) {
-                var isChecked = $(`input[id_sewa='${inputId}']`).prop('checked');
-                var readonlyValue = isChecked ? false : true; // Set to true when not checked (isChecked is false)
-                var item = $('#item').val();
-                
-                if(readonlyValue == true){
-                    if(item != 'TAMBAHAN UJ'){
-                        $(`#open_${inputId}`).val('');
-                    }
-                    $(`#open_cttn_${inputId}`).val('');
-                }
-      
-                if(item != 'TAMBAHAN UJ'){
-                    $(`#open_${inputId}`).prop('readonly', readonlyValue);
-                }
-                $(`#open_cttn_${inputId}`).prop('readonly', readonlyValue);
-                hitung();
-                caps();
-            }
-            $(document).on('click', '.check_container', function (event) {
-                $("#check_all").prop('checked', false);
-                var cust_id = $(this).attr('cust_child');
-                var grup_id = $(this).attr('grup_child');
-                var cust_x = $(this).attr('cust_child');
-                var id_sewa = $(this).attr('id_sewa');
-                // $(`input[cust_parent="${cust_id}"]`).val();
-                $(`input[cust_parent="${cust_id}"]`).prop('checked', false);
-                $(`input[grup_parent="${grup_id}"]`).prop('checked', false);
+        // per item
+            $(document).on('click', '.item', function (event) {
+                let id = this.value;
+                let id_grup = this.getAttribute('id_grup');
+                let id_customer = this.getAttribute('id_customer');
+                let isChecked = this.checked;
 
-                toggleReadonly(id_sewa);
+                $(".item_"+id).prop('checked', isChecked);
+                $(".item_"+id).prop('readonly', !isChecked);
+                $("#check_all").prop('checked', false);
+                $("#grup_"+id_grup).prop('checked', false);
+                $("#customer_"+id_customer).prop('checked', false);
+                hitung();
             });
         //
         
         $(document).on('keyup', '.dicairkan', function(){
-            var idOprs = $(this).attr('sewaOprs');
-            var inputed = parseFloat(this.value.replace(/,/g, ''));
-            var max = $('#biaya_'+idOprs).val();
+            let id = this.getAttribute('item');
+            var inputed = normalize(this.value);
 
-            if (inputed > max && item.value != 'TIMBANG' && item.value != 'BURUH') {
-                $('#open_'+idOprs).val(parseFloat(max).toLocaleString()); // Explicitly specify the locale
+            if(item.value == 'TIMBANG' || item.value == 'BURUH' || item.value == 'LEMBUR'){
+                $('#biaya_'+id).val(inputed);
+            }else{
+                var max = $('#biaya_'+id).val();
+                if(inputed > max){
+                    $('#item_'+id).val(parseFloat(max).toLocaleString()); 
+                }
             }
             hitung();
         });
 
         function hitung(){
-            var item = $('#item').val();
-            console.log('item', item);
             var totalCair = 0;
             var dicairkan = document.querySelectorAll('.dicairkan');
 
-            if(item == 'TAMBAHAN UJ'){
-                // Get all checked checkboxes with the class .check_container
-                var checkedCheckboxes = document.querySelectorAll('.check_container:checked');
-
-                // Loop through each checked checkbox and get the id_sewa attribute
-                checkedCheckboxes.forEach(function(checkbox) {
-                    var idSewa = checkbox.getAttribute('id_sewa');
-                    totalCair += parseFloat(escapeComma($('#open_'+idSewa).val()));
-                });
-
-                var totalElement = document.querySelector('.t_total');
-                $('#t_total').val(totalCair);
-                totalElement.textContent = "Rp. "+(totalCair).toLocaleString();
-            }else{
-                for (var i = 0; i < dicairkan.length; i++) {
-                    totalCair += parseFloat(dicairkan[i].value.replace(/,/g, '')) || 0; // Convert to a number or use 0 if NaN
-                }
-
-                var totalElement = document.querySelector('.t_total');
-                $('#t_total').val(totalCair);
-                totalElement.textContent = "Rp. "+(totalCair).toLocaleString();
+            for (var i = 0; i < dicairkan.length; i++) {
+                totalCair += parseFloat(dicairkan[i].value.replace(/,/g, '')) || 0; // Convert to a number or use 0 if NaN
             }
+
+            var totalElement = document.querySelector('.t_total');
+            $('#t_total').val(totalCair);
+            totalElement.textContent = "Rp. "+(totalCair).toLocaleString();
         }
 
         function caps(){

@@ -44,7 +44,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="">Billing To</label>
-                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required disabled
+                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required disabled>
                                             <option value="">── BILLING TO ──</option>
                                             @foreach ($dataCustomers as $cust)
                                                 <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" {{ $cust->id == $idCust? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
@@ -131,7 +131,7 @@
                                 </div>
                             </div>
                             <div class="row" id="showTunai">
-                               
+                            
                             </div>
                             <div class="row" id="showCek">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -497,17 +497,17 @@
         }
 
         $(document).on('keyup', '#modal_diterima', function(){ // kalau berubah, hitung total 
-            // var sisaInvoice = parseFloat(escapeComma($('#modal_sisa_invoice').val()));
-            // sisaInvoice = (sisaInvoice !== null && !isNaN(sisaInvoice) && sisaInvoice !== "") ? sisaInvoice : 0;
-            // var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
-            // diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
-            // if(diterima > sisaInvoice){
-            //     $('#modal_diterima').val(moneyMask(sisaInvoice));
-            //     $('#modal_pph23').val(0);
-            // }else{
-            //     $('#modal_pph23').val(moneyMask(sisaInvoice-diterima));
-            // }
-            // dibayar();
+            var sisaInvoice = parseFloat(escapeComma($('#modal_sisa_invoice').val()));
+            sisaInvoice = (sisaInvoice !== null && !isNaN(sisaInvoice) && sisaInvoice !== "") ? sisaInvoice : 0;
+            var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
+            diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
+            var pph = parseFloat(escapeComma($('#modal_pph23').val()));
+            pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;
+            if((diterima+pph) > sisaInvoice){
+                $('#modal_diterima').val(moneyMask(sisaInvoice));
+                $('#modal_pph23').val(0);
+            }
+            dibayar();
         });
 
 
@@ -549,7 +549,7 @@
             $('#total_pph23').val(moneyMask(total_pph23));
             $('#total_dibayar').val(moneyMask(total_diterima+total_pph23));
         }
-     
+        
         function dibayar(){
             var pph = parseFloat(escapeComma($('#modal_pph23').val()));
             pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;

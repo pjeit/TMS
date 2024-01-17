@@ -18,7 +18,6 @@
 </style>
 <div class="container-fluid">
     <div class="card">
-        {{-- <div class="row"> --}}
             <div class="card-header ">
                 {{-- <div class="" style="position: relative; left: 0px; top: 0px; background-color:#edf4fc;"> --}}
                     <div class="card-header" style="border: 2px solid #bbbbbb;">
@@ -36,7 +35,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                     <div class="col-4">
+                                    <div class="col-4">
                                         <div class="form-group">
                                             <label for="">Pelayaran</label>
                                             <select class="form-control selectpicker" name="pelayaran" id="pelayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
@@ -56,7 +55,7 @@
                                     </div>
                                     
                                 </div>
-                               
+                            
                             </form>
                             <div class="form-group">
                                 {{-- <button type="button" class="btn btn-sm btn-success" onclick="download_report()"><i class="fas fa-file-excel"></i> Export to Excel</button> --}}
@@ -66,29 +65,27 @@
             </div>
             
             <div class="card-body">
-               <section class="col-lg-12" id="show_report">
+                <section class="col-lg-12" id="show_report">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>No. Kontainer</th>
+                                <th>Pengirim</th>
+                                <th>Pelayaran</th>
+                                <th>Belum Dibayar</th>
+                                <th style="width:30px"><div class="btn-group"></div></th>
+                            </tr>
+                        </thead>
+                        <tbody id="hasil">
+                            {{-- <tr id="loading-spinner" style="display: none;">
+                                <td colspan="6"><i class="fas fa-spinner fa-spin"></i> Harap tunggu data sedang di proses...</td>
+                            </tr> --}}
+                        
 
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>No. Kontainer</th>
-                            <th>Pengirim</th>
-                            <th>Pelayaran</th>
-                            <th>Belum Dibayar</th>
-                            <th style="width:30px"><div class="btn-group"></div></th>
-                        </tr>
-                    </thead>
-                    <tbody id="hasil">
-                         {{-- <tr id="loading-spinner" style="display: none;">
-                            <td colspan="6"><i class="fas fa-spinner fa-spin"></i> Harap tunggu data sedang di proses...</td>
-                        </tr> --}}
-                    
-
-                    </tbody>
-                </table>
-               </section>
+                        </tbody>
+                    </table>
+                </section>
             </div>
-        {{-- </div> --}}
     </div>
 </div>
 <script>
@@ -124,7 +121,7 @@
                             if (data[i].id_jo !== JO) {
                                 var row = $("<tr></tr>");
                                 row.append("<td colspan='4' style='background: #efefef'><b>" + data[i].no_jo + "<br> No. BL : " + data[i].no_bl + "</td>");
-                                row.append(`<td style='background: #efefef'> <a class="btn btn-sm btn-primary radiusSendiri" href="{!! url('/pembayaran_sdt/${data[i].id_jo}/edit') !!}">
+                                row.append(`<td style='background: #efefef'> <a class="btn btn-sm btn-success radiusSendiri" href="{!! url('/pembayaran_sdt/${data[i].id_jo}/edit') !!}">
                                     <i class="fas fa-dollar-sign"> </i> <span class="fa fa-reply-all" ></span> 
                                     </a> </td>`)
                                 $("#hasil").append(row);
