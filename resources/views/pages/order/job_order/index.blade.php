@@ -57,7 +57,16 @@
                             <td>{{ $item->no_bl }}</td>
                             <td>{{ $item->kode }} - {{ $item->nama_cust }}</td>
                             <td>{{ $item->nama_supp }}</td>
-                            <td>{{ $item->status}}</td>
+                            <td>
+                                @if ($item->status == 'MENUNGGU PEMBAYARAN')
+                                    <span class="badge badge-warning">   {{ $item->status}}</span>
+                                @elseif ($item->status == 'PROSES DOORING')
+                                    <span class="badge badge-primary">   {{ $item->status}}</span>
+                                @else
+                                    <span class="badge badge-success">   {{ $item->status}}</span>
+                                @endif
+                                {{-- {{ $item->status}} --}}
+                            </td>
                             <td >                                    
                                 <!-- Default dropleft button -->
                                 <div class="btn-group dropleft">

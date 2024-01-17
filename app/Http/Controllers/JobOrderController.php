@@ -24,7 +24,7 @@ use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 // use Barryvdh\DomPDF\PDF;
-
+use App\Models\JobOrderBiaya;
 
 class JobOrderController extends Controller
 {
@@ -160,17 +160,38 @@ class JobOrderController extends Controller
             $newJO->created_by = $user;
             $newJO->created_at = now();
             $newJO->is_aktif = 'Y';
+            dd($data['data_lain']);
+            $cek_biaya_lain = false;
+            foreach ($data['data_lain'] as $value) {
+                if ($value != null) {
+                    $cek_biaya_lain = true;
+                }
+            }
+            // dd($cek_biaya_lain);
             
             if( $newJO->thc == 0 && $newJO->lolo == 0 && $newJO->apbs == 0 && 
-                    $newJO->cleaning == 0 && $newJO->doc_fee == 0 && 
+                    $newJO->cleaning == 0 && $newJO->doc_fee == 0 && !$cek_biaya_lain &&
                     ($data['tgl_bayar_jaminan'] == null || $data['total_jaminan'] == null) ){
 
                 $newJO->status = 'PROSES DOORING'; // MENUNGGU PEMBAYARAN, PROSES DOORING
             }else{
                 $newJO->status = 'MENUNGGU PEMBAYARAN'; // MENUNGGU PEMBAYARAN, PROSES DOORING
             }
-
             if($newJO->save()){
+                if ($cek_biaya_lain) {
+                    foreach ($data['data_lain']as $value) {
+                        if ($value != null) {
+                            $jo_biaya = new JobOrderBiaya();
+                            $jo_biaya->id_jo = $newJO->id; // get id jo
+                            $jo_biaya->deskripsi = $value['deskripsi'];
+                            $jo_biaya->biaya = isset($value['biaya'])? floatval(str_replace(',', '', $value['biaya'])):0;
+                            $jo_biaya->created_by = $user;
+                            $jo_biaya->created_at = now();
+                            $jo_biaya->is_aktif = 'Y';
+                            $jo_biaya->save();
+                        }
+                    }
+                }
                 // create JO detail 
                 if(isset($data['detail'])){
                     foreach ($data['detail'] as $key => $detail) {
@@ -296,7 +317,9 @@ class JobOrderController extends Controller
         $dataPengaturanKeuangan = DB::table('pengaturan_keuangan')
             ->select('*')
             ->where('pengaturan_keuangan.is_aktif', '=', "Y")
-            ->get();
+            ->first();
+        $dataJobOrderBiaya = 
+        // dd($dataPengaturanKeuangan);
         $detail = DB::table('job_order_detail as jod')
             ->select('jod.*', 'b.id as id_booking', 'b.tgl_booking as tgl_booking','s.id_sewa as sewa_id')
             ->leftJoin('booking as b', function($leftJoin){
@@ -351,13 +374,18 @@ class JobOrderController extends Controller
             $currentYear = Carbon::now()->format('y');
             $currentMonth = Carbon::now()->format('m');
             // dd($data);
-
-            if(isset($data['tgl_sandar'])){
-                $jobOrder->tgl_sandar = date_create_from_format('d-M-Y', $data['tgl_sandar']);
+            
+                // if(isset($data['tgl_sandar'])){
+                    // }
+                $tgl_sandar = isset($data['tgl_sandar'])?date_create_from_format('d-M-Y', $data['tgl_sandar']):null;
+                $jobOrder->tgl_sandar = isset($tgl_sandar)? date_format($tgl_sandar, 'Y-m-d H:i:s'):$jobOrder->tgl_sandar;
+                // $jobOrder->tgl_sandar = date_create_from_format('d-M-Y', $data['tgl_sandar']);
+                $jobOrder->no_bl = $data['no_bl'];
+                $jobOrder->kapal = $data['kapal'];
+                $jobOrder->voyage = $data['voyage'];
                 $jobOrder->updated_by = $user;
                 $jobOrder->updated_at = now();
                 $jobOrder->save();
-            }
 
             if(isset($data['detail'])){
                 foreach ($data['detail'] as $key => $detail) {
