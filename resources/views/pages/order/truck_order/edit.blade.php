@@ -251,15 +251,35 @@
                                     </select>
                                     <input type="hidden" id="driver_nama" name="driver_nama" value="{{$data->nama_driver}}" placeholder="driver_nama">
                                 </div>
-                                <div class="form-group" id="stack_tl_form">
-                                    <label for="select_driver">Stack Full</label>
-                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
-                                        <option value="">── Pilih Stack ──</option>
-                                            <option value="tl_perak" {{ $data['stack_tl'] == 'tl_perak'? 'selected':'' }}>Perak</option>
-                                        <option value="tl_priuk" {{ $data['stack_tl'] == 'tl_priuk'? 'selected':'' }}>Priuk</option>
-                                        <option value="tl_teluk_lamong" {{ $data['stack_tl'] == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
-                                    </select>
-                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+                                <div class="row">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="stack_tl_form">
+                                        <label for="select_driver">Stack Full</label>
+                                            <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
+                                            <option value="">── Pilih Stack ──</option>
+                                                <option value="tl_perak" {{ $data['stack_tl'] == 'tl_perak'? 'selected':'' }}>Perak</option>
+                                            <option value="tl_priuk" {{ $data['stack_tl'] == 'tl_priuk'? 'selected':'' }}>Priuk</option>
+                                            <option value="tl_teluk_lamong" {{ $data['stack_tl'] == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
+                                        </select>
+                                        <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+                                    </div>
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12" id="buruh_pje_form">
+                                        <label for="select_driver">Apakah ada Buruh?</label>
+                                        <br>
+                                        {{-- <input type="checkbox" id="buruh_pje" value="Y"> --}}
+                                        <div class="icheck-primary d-inline">
+                                            <input id="buruh_pje_Y" type="radio" name="buruh_pje" value="Y" {{ $data['buruh_pje'] == 'Y'? 'checked':'' }}>
+                                            <label class="form-check-label" for="buruh_pje_Y">Ya</label>
+                                        </div>
+                                        <div class="icheck-primary d-inline ml-5">
+                                            <input id="buruh_pje_N" type="radio" name="buruh_pje" value="N" {{ $data['buruh_pje'] == 'N'? 'checked':'' }}>
+                                            <label class="form-check-label" for="buruh_pje_N">Tidak</label><br>
+                                        </div>
+                                        {{-- <select class="form-control select2" style="width: 100%;" id='buruh_pje' name="buruh_pje">
+                                            <option value="N">Tidak</option>
+                                            <option value="Y">Ada</option>
+                                        </select> --}}
+                                        <input type="hidden" id="buruh_pje_hidden" name="buruh_pje_hidden" value="" placeholder="stack_teluk_lamong_hidden">
+                                    </div>
                                 </div>
                             </div>
                         </div>

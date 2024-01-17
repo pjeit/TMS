@@ -18,14 +18,14 @@
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
-            <ul class="nav nav-treeview">
+            {{-- <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="{{route('dashboard.reset')}}" class="nav-link">
                   <i class="far fa-check-circle nav-icon"></i>
                   <p>Reset Data <small class="text-warning">(Dev only)</small></p>
                 </a>
               </li>
-            </ul>
+            </ul> --}}
           </li>
 
           @php
@@ -963,7 +963,7 @@
           $revisi = [
           'READ_REVISI_TL', 'READ_REVISI_UANG_JALAN', 'READ_REVISI_BIAYA_OPERASIONAL', 'READ_REVISI_KLAIM_SUPIR',
           'READ_REVISI_INVOICE_TRUCKING', 'READ_REVISI_TAGIHAN_REKANAN', 'READ_REVISI_TAGIHAN_PEMBELIAN',
-          'READ_REVISI_PEMBAYARAN_INVOICE'
+          'READ_REVISI_INVOICE_TRUCKING'
           ];
           @endphp
           {{-- REVISI --}}
@@ -1095,9 +1095,9 @@
               </li>
               @endif
 
-              @can('READ_REVISI_PEMBAYARAN_INVOICE')
+              @can('READ_REVISI_INVOICE_TRUCKING')
               <li class="nav-item">
-                <a href="#" class="nav-link {{request()->url() === route('invoice.index')? ' active' : '' }} "
+                <a href="{{route('revisi_invoice_trucking.index')}}" class="nav-link {{request()->url() === route('revisi_invoice_trucking.index')? ' active' : '' }} "
                   style="font-weight: 500;">
                   <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                   <p>

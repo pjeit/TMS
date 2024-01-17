@@ -111,7 +111,7 @@ class LaporanBankController extends Controller
                     AND is_aktif = 'Y'
                     --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                 ) AS d 
-                ORDER BY cast(tanggal as datetime) desc,id     
+                ORDER BY cast(tanggal as datetime) asc,id     
             ");
             
             $kas = DB::table('kas_bank')->find($tipe);
@@ -119,7 +119,8 @@ class LaporanBankController extends Controller
             // ini ngeget seluruh data dari awal record sampai dengan tanggal awal yg diinput buat dapetin saldo awal
             $transaction = KasBankTransaction::where('is_aktif', 'Y')
                                             ->where('id_kas_bank', $tipe)
-                                            ->whereBetween('tanggal', [$tgl_default, $tgl_awal]) 
+                                            // ->whereBetween('tanggal', [$tgl_default, $tgl_awal]) 
+                                            ->where('tanggal','<', $tgl_awal)
                                             ->get();
             
             $sumKredit  = $transaction->sum('kredit'); // ini hitung sum kreditnya

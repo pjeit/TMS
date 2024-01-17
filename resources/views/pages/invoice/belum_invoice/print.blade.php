@@ -6,6 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <style type="text/css">
+   
+        img.watermark {
+            position: absolute;
+            margin-top: 500px;
+            margin-left: 470px;
+            z-index: -1;
+            opacity: 20%;
+             transform: rotate(-45deg);
+        }
+    
         :root {
             margin: 55px;
             padding: 2px;
@@ -33,9 +43,15 @@
         }
         .text-center{
             text-align: center;
+            padding: 40px;
         }
         .text-right{
             text-align: right;
+            padding: 20px;
+        }
+          .text-left{
+            text-align: left;
+            padding: 40px;
         }
         .text-bold{
             font-weight: bold;
@@ -137,13 +153,14 @@
                 </tr>
             </thead>
         </table>
-
+        {{-- <img class="watermark" src="{{ public_path("img/belum_lunas_invoice.png") }}" width="1000" height="600"> --}}
+        {{-- <img style="position: absolute;margin-top: 500px;margin-left: 470px;z-index:-1;opacity:20%;" src="{{ public_path("img/belum_lunas_invoice.png") }}" width="1000" height="600"> --}}
         <table class="border-table"  style='margin-bottom: 50px;'>
             <thead >
                 <tr class="bg-gray text-center text-bold">
-                    <td style="border: 1px solid black; border-collapse: collapse;">NO</td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">TGL. BERANGKAT <br> TUJUAN</td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">
+                    <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">NO</td>
+                    <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">TGL. BERANGKAT <br> TUJUAN</td>
+                    <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">
                         @if ($data->invoiceDetails[0]->sewa->jenis_tujuan == 'LTL')
                             NO. KOLI
                             <br>NO. SURAT JALAN 
@@ -152,7 +169,7 @@
                             <br>NO. SEGEL
                         @endif
                     </td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">NOPOL</td>
+                    <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">NOPOL</td>
                         {{-- @if ($is_reimburse == TRUE)
                             @if ($data->invoiceDetails[0]->sewa->jenis_tujuan == 'LTL')
                                 <td style="border: 1px solid black; border-collapse: collapse;">JUMLAH MUATAN</td>
@@ -162,15 +179,18 @@
                                 <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
                             @endif
                         @else  --}}
-                    <td style="border: 1px solid black; border-collapse: collapse;">DISKON</td>
                     @if ($is_reimburse == FALSE)
-                        <td style="border: 1px solid black; border-collapse: collapse;">HARGA</td>
+                        <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">DISKON</td>
+                        <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">HARGA</td>
+                        <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">BIAYA TAMBAHAN</td>
+                    @else
+                        <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">HARGA REIMBURSE</td>
                     @endif
-                    <td style="border: 1px solid black; border-collapse: collapse;">BIAYA TAMBAHAN</td>
-                    <td style="border: 1px solid black; border-collapse: collapse;">SUBTOTAL</td>
+                    <td style="border: 1px solid black; border-collapse: collapse; padding: 20px;">SUBTOTAL</td>
                 </tr>
             </thead>
-            <tbody >
+            <tbody>
+                
                 @php
                     $total = 0;
                     $diskon = 0;
@@ -179,13 +199,13 @@
                 @php
                     $i++;
                 @endphp
-                <tr >
-                    <td class="text-center">{{ $i }} <br> &nbsp;</td>
+                <tr style="{{ $i % 2 == 0 ? 'background-color: rgb(232, 229, 229);' : '' }}">
+                    <td class="text-left">{{ $i }} <br> &nbsp;</td>
                     <td>
                         {{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }}
                         <br>{{ $detail->sewa->nama_tujuan }}
                     </td>
-                        <td class="text-center">
+                        <td class="text-left">
                             {{ $detail->sewa->no_kontainer }}
                             <br>
                             @if ($data->invoiceDetails[0]->sewa->jenis_tujuan == 'LTL')
@@ -199,9 +219,9 @@
                             <br>( {{ $detail->sewa->tipe_kontainer . '"' }} )
                             @endisset 
                         </td>
-                        <td class="text-center">{{ number_format($detail->diskon) }}</td>
                         @if ($is_reimburse == FALSE)
-                            <td class="text-center">{{ number_format($detail->tarif) }}</td>
+                            <td class="text-right">{{ number_format($detail->diskon) }}</td>
+                            <td class="text-right">{{ number_format($detail->tarif) }}</td>
                         @endif
                         <td class="text-right">
                             @if ($detail->invoiceDetailsAddCost != null)
@@ -209,7 +229,7 @@
                                     @if ($key != 0)
                                         <br> 
                                     @endif
-                                    <span style="font-size: 20px;">({{$add_cost->sewaOperasional->deskripsi}})</span>  {{ number_format($add_cost->sewaOperasional->total_dicairkan)}}
+                                    <span style="font-size: 20px;">({{$add_cost->sewaOperasional->deskripsi}})</span>  {{ number_format($add_cost->sewaOperasional->total_operasional)}}
                                 @endforeach
                             @else
                                 -
@@ -226,7 +246,7 @@
                 <tr>
                         @php
                             if($is_reimburse == TRUE){
-                                $span = 6;
+                                $span = 5;
                             }else{
                                 $span = 7;
                             }
@@ -250,23 +270,25 @@
             Pembayaran dapat dilakukan pembukaan cek atas nama <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b>
             <br>Atau transfer ke rekening
             <br>BCA: <b><u>51308 14141</u></b> / Mandiri: <b><u>14000 41415 135</u></b>
-            <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b><br>
+            <br>atas nama: <b><u>PT. PRIMATRANS JAYA EXPRESS</u></b>{{--</br>
+            </br>
+            </br><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" > --}}
+
         </span>    
     
-        <table class="table-bawah" style="margin-top: 50px;">
+        <table class="table-bawah" style="margin-top: 50px;" >
             <tbody> 
                 <tr>
+                    <td><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" ></td>
                     <td width="800px;">&nbsp;</td>
                     <td class="text-right" style="padding-right: 50px;">Hormat Kami,</td>
                 </tr>
             </tbody>
             <br>
+            <br>
             <tfoot>
                 <tr>
-                    <td width="800px;">&nbsp;</td>
-                    <td class="text-right" style="padding-right: 50px;"><img src="data:image/png;base64,{{ base64_encode($qrcode) }}" alt="QR Code" ></td>
-                </tr>
-                <tr>
+                    <td></td>
                     <td width="800px;">&nbsp;</td>
                     {{-- <td class="text-right" >(..................................)</td> --}}
                     <td class="text-right" style="padding-right: 50px;">({{Auth::user()->username}})</td>

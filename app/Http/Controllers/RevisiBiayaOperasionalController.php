@@ -63,7 +63,7 @@ class RevisiBiayaOperasionalController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        dd($data);
+        // dd($data);
 
         if($data['type'] == 'save'){
             try {
@@ -500,7 +500,7 @@ class RevisiBiayaOperasionalController extends Controller
                                         ->with('getOperasional.getSewa.getSupplier')
                                         ->get();
             }
-            
+             
             return response()->json(["result" => "success",'data' => $data], 200);
         } catch (\Throwable $th) {
             return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);

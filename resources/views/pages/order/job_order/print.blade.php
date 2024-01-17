@@ -43,8 +43,6 @@
             text-transform: uppercase;
             font-family: Arial, sans-serif;
             font-size: 20px;
-
-              
         }
         .text-kecil{
             font-family: Arial, sans-serif;

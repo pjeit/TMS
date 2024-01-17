@@ -292,7 +292,7 @@
                                     tagihBayar
                                     +`
                                     <th >Catatan</th>
-                                    <th width="5px;"></th>
+                                    
                                     <th width="5px;"></th>
                                 </tr>
                     `;
@@ -321,20 +321,20 @@
                             row.append(`<td> ${ data[i].total_sisa.toLocaleString()}</td>`);
                             row.append(`<td>${data[i].catatan == null? '':data[i].catatan}</td>`);
                             var jenis =  `<input type="checkbox" name="idInvoice[]" class="sewa_centang float-right" custId="${data[i].billing_to}" grupId="${data[i].id_grup}" value="${data[i].id}">`;
-                            row.append(`<td class='text-center' style="text-align:center">
-                                    <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-list"></i>
-                                        </button>
-                                        @can('EDIT_PEMBAYARAN_INVOICE')
-                                        <div class="dropdown-menu" >
-                                            `+
-                                                btn_edit
-                                            +`
-                                        </div>
-                                        @endcan
-                                    </div>
-                                </td>`);
+                            // row.append(`<td class='text-center' style="text-align:center">
+                            //         <div class="btn-group dropleft">
+                            //             <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            //                 <i class="fa fa-list"></i>
+                            //             </button>
+                            //             @can('EDIT_PEMBAYARAN_INVOICE')
+                            //             <div class="dropdown-menu" >
+                            //                 `+
+                            //                     btn_edit
+                            //                 +`
+                            //             </div>
+                            //             @endcan
+                            //         </div>
+                            //     </td>`);
                             row.append(`<td class='text-center' style="text-align:center">${jenis}</td>`);
                             $("#hasil").append(row);
                         }
@@ -353,7 +353,7 @@
                                 visible: false
                             },
                             {
-                                targets: [7, 8],
+                                targets: [6, 7],
                                 orderable: false, // matiin sortir kolom centang
                             },
                         ],

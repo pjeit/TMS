@@ -193,7 +193,7 @@ class RevisiInvoiceTruckingController extends Controller
             // nonaktifkan kas bank transaction
             $oldTransaction = KasBankTransaction::where([
                                                         'is_aktif' => 'Y',
-                                                        'jenis' => 'BAYAR INVOICE',
+                                                        'jenis' => 'pembayaran_invoice',
                                                         'keterangan_kode_transaksi' => $id
                                                         ])->first();
             $oldTransaction->keterangan_transaksi = 'REVISI - '. $oldTransaction->keterangan_transaksi;
@@ -209,14 +209,14 @@ class RevisiInvoiceTruckingController extends Controller
             $kasbank->updated_at = now();
             $kasbank->save();
 
-            // kembalikan kredit customer
-            $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
-            if($cust){
-                $cust->kredit_sekarang += $oldTransaction->debit;
-                $cust->updated_by = $user;
-                $cust->updated_at = now();
-                $cust->save();
-            }
+            // // kembalikan kredit customer
+            // $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
+            // if($cust){
+            //     $cust->kredit_sekarang += $oldTransaction->debit;
+            //     $cust->updated_by = $user;
+            //     $cust->updated_at = now();
+            //     $cust->save();
+            // }
 
             // dd($kasbank);
 
@@ -250,14 +250,23 @@ class RevisiInvoiceTruckingController extends Controller
                         if($invoice){
                             $invoice->id_pembayaran = $pembayaran->id;
                             $invoice->pph = $value['pph23'];
+                            $invoice->total_sisa = $invoice->total_tagihan; // dikembaliin jadi full dulu baru dikurangin lagi
                             if($i == 0){
                                 $invoice->total_dibayar = $value['total_dibayar'] - $biaya_admin;
                                 $invoice->biaya_admin = $biaya_admin;
+                                $invoice->total_sisa -= $value['total_dibayar'] + $value['pph23']+$biaya_admin;
                             }else{
                                 $invoice->total_dibayar = $value['total_dibayar'];
+                                $invoice->total_sisa -= $value['total_dibayar'] + $value['pph23'];
                             }
-                            $invoice->total_sisa = $invoice->total_tagihan; // dikembaliin jadi full dulu baru dikurangin lagi
-                            $invoice->total_sisa -= $value['total_dibayar'] + $value['pph23'];
+                            // dd($value['total_dibayar']);
+                            // dd($value['pph23']);
+                            // dd($biaya_admin);
+
+                            // dd($invoice->total_sisa);
+                            // dd($invoice->total_dibayar);
+
+
                             if($invoice->total_sisa < 0){
                                 $isErr = true; // ini error karna minus
                             }
@@ -270,6 +279,45 @@ class RevisiInvoiceTruckingController extends Controller
                             $invoice->updated_by = $user;
                             $invoice->updated_at = now();
                             if($invoice->save()){
+                                // if($currentStatus == 'SELESAI PEMBAYARAN INVOICE'){
+                                //     $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
+                                //     if($invoiceDetail){
+                                //         foreach ($invoiceDetail as $i => $item) {
+                                //             $check = InvoiceDetail::leftJoin('invoice', 'invoice.id', '=', 'invoice_detail.id_invoice')
+                                //                                     ->where('invoice_detail.is_aktif', 'Y')
+                                //                                     ->where('invoice.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                                //                                     ->where('id_sewa', $item->id_sewa)->get();
+                                //             // ini ngecek
+                                //             // apakah masih ada invoice yg statusnya masih menunggu pembayaran?
+                                //             // kalau tidak ada, berarti invoice sudah dibayar lunas semua
+                                //             // kalau dibayar lunas semua, kita lanjut update status sewa sama update kredit customer
+                                //             if($check->isEmpty()) {
+                                //                 $updateSewa = Sewa::where('is_aktif', 'Y')->find($item->id_sewa);
+                                //                 $updateSewa->status = 'SELESAI PEMBAYARAN';
+                                //                 $updateSewa->updated_by = $user;
+                                //                 $updateSewa->updated_at = now();
+                                //                 $updateSewa->save();
+
+                                //                 // trigger update status jo detail jika semua sewa sudah selesai 
+                                //                 // trigger update status jo jika semua jo detail sudah selesai 
+
+                                //                 // rubah kredit customer
+                                //                 // cari data kredit customer berdasarkan sewa yg ada, lalu dikurangi biaya tarif sewanya
+                                //                 // dengan cara ini kredit customer bakal match, nambah berapa dan berkurang berapa
+                                //                 // ini kredit customer berdasarkan sewa, jadi meski di invoice billing to dirubah2, 
+                                //                 // tetep sewa itu bakal yg dikurangi, bukan kredit customer yg di billing to
+                                //                 $cust = Customer::where('is_aktif', 'Y')->findOrFail($updateSewa['id_customer']);
+                                //                 if($cust){
+                                //                     $kredit_sekarang = $cust->kredit_sekarang - $updateSewa->total_tarif;
+                                //                     $cust->kredit_sekarang = $kredit_sekarang;
+                                //                     $cust->updated_by = $user;
+                                //                     $cust->updated_at = now();
+                                //                     $cust->save();
+                                //                 }
+                                //             }
+                                //         }
+                                //     }
+                                // }
                             }else{
                                 $isErr = true;
                             }
@@ -287,7 +335,7 @@ class RevisiInvoiceTruckingController extends Controller
                         $total_bayar, //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
                         CoaHelper::DataCoa(1100), //kode coa invoice
-                        'BAYAR INVOICE',
+                        'pembayaran_invoice',
                         $keterangan_transaksi, //keterangan_transaksi
                         $pembayaran->id, // keterangan_kode_transaksi - id pembayaran
                         $user,//created_by
@@ -303,18 +351,18 @@ class RevisiInvoiceTruckingController extends Controller
                 $kas_bank->updated_at = now();
                 $kas_bank->save();
 
-                $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
-                if($cust){
-                    $kredit_sekarang = $cust->kredit_sekarang - $total_bayar;
-                    if($kredit_sekarang < 0){
-                        $isErr = true;
-                        // $kredit_sekarang = 0;
-                    }
-                    $cust->kredit_sekarang = $kredit_sekarang;
-                    $cust->updated_by = $user;
-                    $cust->updated_at = now();
-                    $cust->save();
-                }
+                // $cust = Customer::where('is_aktif', 'Y')->findOrFail($data['billingTo']);
+                // if($cust){
+                //     $kredit_sekarang = $cust->kredit_sekarang - $total_bayar;
+                //     if($kredit_sekarang < 0){
+                //         $isErr = true;
+                //         // $kredit_sekarang = 0;
+                //     }
+                //     $cust->kredit_sekarang = $kredit_sekarang;
+                //     $cust->updated_by = $user;
+                //     $cust->updated_at = now();
+                //     $cust->save();
+                // }
 
                 if($isErr === true){
                     db::rollBack();

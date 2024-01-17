@@ -246,7 +246,7 @@
                                                 `);  // <th class='text-center' style='width: 30px;'></th> // <input id='check_all' type='checkbox'>
                             // if(item == 'OPERASIONAL' || item == 'TALLY' || item == 'SEAL PELAYARAN'){
                                 for (var i = 0; i <data.length; i++) {
-                                    // let cek_status = data[i].get_operasional;
+                                    let cek_status = data[i].get_operasional;
                                     if(cek_status != 'SELESAI' || cek_status != 'MENUNGGU PEMBAYARAN INVOICE'){
                                         console.log('cek_status', data[i].get_operasional);
                                         var row = $("<tr></tr>");
@@ -266,7 +266,12 @@
                                                             <span>${data[i].get_operasional[0].deskripsi}</span> 
                                                         </td>`);
                                         }
-                                        row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" class="form-control" title="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan.nama_panggilan+ ')'}" readonly />`).join('<br>')}</td>`);
+                                         
+                                        // row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan?item.get_sewa.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" class="form-control" title="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan?item.get_sewa.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" readonly />`).join('<br>')}</td>`);
+                                        row.append(`<td>${data[i].get_operasional.map(item => 
+                                        `<input type="text" value="${item.get_sewa.no_polisi} (${item.get_sewa.get_karyawan ? item.get_sewa.get_karyawan.nama_panggilan : 'REKANAN'})" 
+                                        class="form-control" title="${item.get_sewa.no_polisi} (${item.get_sewa.get_karyawan ? item.get_sewa.get_karyawan.nama_panggilan : 'REKANAN'})" readonly />`
+                                        ).join('<br>')}</td>`);
                                         row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
                                         row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
                                                                                                 <input type="hidden" value="${item.total_dicairkan}" id="hidden_dicairkan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />

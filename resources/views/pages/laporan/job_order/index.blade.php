@@ -102,8 +102,10 @@
                     <tr>
                         <th>No. BL</th>
                         <th>No. Kontainer</th>
+                        <th>Kapal</th>
                         <th>Pengirim</th>
                         <th>Pelayaran</th>
+                        <th>Tujuan</th>
                         <th>Tgl Dooring</th>
                         <th>Tgl Sandar</th>
                         <th>Tgl JO Dibuat</th>
@@ -152,15 +154,17 @@
 
                 if(datas.result == 'success'){
                     const data = datas.data;
-                    // console.log('datas: '+ JSON.stringify(datas, null, 2));
+                    console.log('datas: '+ JSON.stringify(datas, null, 2));
 
                     if (data.length > 0) {
                         const rows = data.map(item => (
                             `<tr>
-                                <td><b>◾ ${item.get_j_o.no_bl}</b></td>
+                                <td><b>◾ ${item.get_j_o.no_bl} </b></td>
                                 <td>${item.no_kontainer}</td>
+                                <td>${item.get_j_o.kapal} ${item.get_j_o.voyage}</td>
                                 <td> [${item.get_j_o.get_customer.kode}] ${item.get_j_o.get_customer.nama}</td>
                                 <td>${item.get_j_o.get_supplier.nama}</td>
+                                <td>${item.get_tujuan?item.get_tujuan.nama_tujuan:'Belum Ada Tujuan'}</td>
                                 <td><small>${item.tgl_dooring != null? dateMask(item.tgl_dooring):''}</small></td>
                                 <td><small>${dateMask(item.get_j_o.tgl_sandar)}</small></td>
                                 <td><small>${dateMask(item.get_j_o.created_at)}</small></td>
@@ -171,7 +175,7 @@
                     }
                 }
                 
-                var fileName = 'Laporan Invoice Trucking ' +  dateMask(Date.now());
+                var fileName = 'Laporan JO ' +  dateMask(Date.now());
                 
                 $('#invoice').DataTable({
                     dom: 'Bfrtip',

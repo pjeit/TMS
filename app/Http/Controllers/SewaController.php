@@ -122,6 +122,7 @@ class SewaController extends Controller
             $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
             $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
             $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:"";
+            $sewa->buruh_pje = $data['buruh_pje'];
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
@@ -349,6 +350,7 @@ class SewaController extends Controller
                 $sewa->id_karyawan = $data['select_driver']? $data['select_driver']:null;
                 $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
                 $sewa->stack_tl = $data['stack_tl']? $data['stack_tl']:"";
+                $sewa->buruh_pje = $data['buruh_pje'];
                 $sewa->catatan = $data['catatan']? $data['catatan']:null;
                 $sewa->no_kontainer = $data['no_kontainer']? $data['no_kontainer']:null;
                 $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;

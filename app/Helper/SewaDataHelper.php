@@ -137,6 +137,12 @@ class SewaDataHelper
                             $query->where('k.id_kategori', '!=', 1);
                         });
                 })
+                ->leftJoin('status_kendaraan AS sk', function($join) {
+                    $join->on('k.id', '=', 'sk.kendaraan_id')
+                    ->where('sk.is_selesai', '=', 'N')
+                    ->where('sk.is_aktif', '=', 'Y');
+                })
+                ->whereNull('sk.id')
                 ->where('k.is_aktif', '=', 'Y')
                 ->whereNotNull('k.driver_id')
                 ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
@@ -326,6 +332,12 @@ class SewaDataHelper
                         //     $query->where('k.id_kategori', '!=', 1);
                         // });
                 })
+                ->leftJoin('status_kendaraan AS sk', function($join) {
+                    $join->on('k.id', '=', 'sk.kendaraan_id')
+                    ->where('sk.is_selesai', '=', 'N')
+                    ->where('sk.is_aktif', '=', 'Y');
+                })
+                ->whereNull('sk.id')
                 ->where('k.is_aktif', '=', 'Y')
                 ->whereNotNull('k.driver_id')
                 ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')

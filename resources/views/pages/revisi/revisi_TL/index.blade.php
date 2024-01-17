@@ -93,7 +93,7 @@
                         row.append(`<td>${data[i].no_polisi}</td>`);
                         row.append(`<td>${data[i].no_sewa}</td>`);
                         row.append(`<td>${dateMask(data[i].tanggal_berangkat)}</td>`);
-                        row.append(`<td>${data[i].alamat_tujuan}</td>`);
+                        row.append(`<td>${data[i].nama_tujuan}</td>`);
                         row.append(`<td>${data[i].nama_driver}</td>`);
                         row.append(`<td>${data[i].status}</td>`);
                         if(status == 'Add TL'){

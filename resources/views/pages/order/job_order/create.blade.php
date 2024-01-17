@@ -209,10 +209,10 @@
                         </div>
                         <div class="card-body ">
                             <div class="d-flex justify-content-between" style="gap: 10px;">
-                                <table class="table table-bordered card-outline card-primary" id="sortable">
+                                <table class="table table-bordered card-outline card-primary" id="tabel_biaya_belum_dooring">
                                     <thead>
                                         <tr>
-                                            <th colspan="2">BIAYA SEBELUM DOORING</th>
+                                            <th colspan="3">BIAYA SEBELUM DOORING</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -261,17 +261,61 @@
                                                 <input type="text" name="DOC_FEE" id="DOC_FEE" value="0" class="form-control uang numaja" readonly hidden>
                                             </td>
                                         </tr>
+                                        {{-- <tr>
+                                            <td colspan="2">
+                                                Biaya Pelayaran
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label for="">Deskripsi</label>
+                                            </td>
+                                            <td>
+                                                <label for="">Biaya</label>
+                                            </td>
+                                        </tr> --}}
+                                        {{-- <tr>
+                                            <th>
+                                                <div class="form-group">
+                                                    <input type="text" id="deskripsi_1" name="data_lain[deskripsi][0]" class="form-control desksipsi_lain" >                         
+                                                </div>
+                                            </th>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" id="biaya_1" name="data_lain[biaya][0]" class="form-control biaya_lain uang numaja" >                         
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <div class="form-group">
+                                                    <input type="text" id="deskripsi_2" name="data_lain[deskripsi][1]" class="form-control desksipsi_lain" >                         
+                                                </div>
+                                            </th>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" id="biaya_2" name="data_lain[biaya][1]" class="form-control biaya_lain uang numaja" >                         
+                                                </div>
+                                            </td>
+                                        </tr> --}}
                                         <tr>
                                             <th>SUB TOTAL</th>
                                             <td>
                                                 <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" value="0" class="form-control uang numaja" readonly>
                                             </td>
                                         </tr>
+                                        {{-- <tr>
+                                            <td colspan="2">
+                                                <input type="hidden" id="indexBiayaLain" value="0">
+                                                <button type="button" id="tambah_biaya_lain" class="btn btn-success float-right radiusSendiri mb-2 mt-2">
+                                                    <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Biaya
+                                                </button>
+                                            </td>
+                                        </tr> --}}
                                     </tbody>
                                     <tfoot>
                                     </tfoot>
                                 </table>
-
                                 <table class="table table-bordered card-outline card-primary" id="sortable">
                                     <thead>
                                         <tr>
@@ -459,7 +503,7 @@
                 });
             });
         // end of handling tgl
-
+        
         $(document).on('click', '#isVA', function(event) {
             $('#no_va').prop('readonly', !this.checked);
             $('#va_nama').prop('readonly', !this.checked);
@@ -520,6 +564,67 @@
                 }
             });
         });
+
+        $(document).on('click', '#tambah_biaya_lain', function(event) {
+        // $('#tambah_biaya_lain').on('click', function () {
+            // Append a new row after the specified <tr>
+            var counter= $("#indexBiayaLain").val();
+            counter++;
+            var newRow = `<tr id='${counter}'>
+                            <th>
+                                <div class="form-group">
+                                    <input type="text" id="deskripsi_${counter}" name="data_lain[deskripsi][${counter}]" class="form-control desksipsi_lain" >                         
+                                </div>
+                            </th>
+                            <td>
+                                <div class="form-group">
+                                    <input type="text" id="biaya_${counter}" name="data_lain[biaya][${counter}]" class="form-control biaya_lain uang numaja" >                         
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" data-toggle="tooltip" data-placement="right" title="Hapus" data-row="${counter}" class="btn btn-sm btn-danger deleteRow">
+                                    <i class="fa fa-fw fa-trash-alt"></i>
+                                </button>
+                            </td>
+                        </tr>`
+            $("#indexBiayaLain").val(counter);
+            // Append the new row after the specified <tr>
+            $('#tabel_biaya_belum_dooring tbody tr').eq(4).append().after(newRow);
+        });
+          // Delete button click event
+        $(document).on('click', '.deleteRow', function () {
+            // // Get the data-row attribute to identify the row
+            // var rowToDelete = $(this).data('row');
+            
+            // // Remove the corresponding row
+            // $('#sortable tbody tr').eq(rowToDelete).remove();
+            var counter = $('#indexBiayaLain').val();
+            $(this).closest('tr').remove();
+            hitungTotal();
+            if($(this).closest('tr').attr('id') == counter)
+            {
+                counter--;
+                $("#indexBiayaLain").val(counter);
+
+            }
+            $('#maxIndex').val(counter);
+                const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                timer: 2500,
+                showConfirmButton: false,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+            Toast.fire({
+                icon: 'success',
+                title: 'Data biaya dihapus'
+            })
+        });
+        
 
         $("#addmore").on("click",function(event){
             var customerId = $("#customer").val();
@@ -795,6 +900,9 @@
                 hitungTotal();
             });
 
+            $( document ).on( 'keyup', '.biaya_lain', function (event) {
+                hitungTotal();
+            });
             function hitungTotal(){
                 var total_thc = parseFloat(($('#thc_cekbox').prop('checked')) ? parseFloat($('#total_thc').val().replace(/,/g, '')) : 0);
                 var total_lolo = parseFloat(($('#lolo_cekbox').prop('checked')) ? parseFloat($('#total_lolo').val().replace(/,/g, '')) : 0);
@@ -802,7 +910,13 @@
                 var total_cleaning = parseFloat(($('#cleaning_cekbox').prop('checked')) ? parseFloat($('#total_cleaning').val().replace(/,/g, '')) : 0);
                 var DOC_FEE = parseFloat(($('#doc_fee_cekbox').prop('checked')) ? parseFloat($('#DOC_FEE').val().replace(/,/g, '')) : 0);
                 
-                var total = parseFloat(total_thc + total_lolo + total_apbs + total_cleaning + DOC_FEE);
+                var total_biaya_lain = 0;
+                $('.biaya_lain').each(function () {
+                    var biaya_lain_value = $(this).val() ? parseFloat($(this).val().replace(/,/g, '')) : 0;
+                    total_biaya_lain += biaya_lain_value;
+                });
+
+                var total = parseFloat(total_thc + total_lolo + total_apbs + total_cleaning + DOC_FEE + total_biaya_lain);
 
                 var total_sblm_dooring = $('#total_sblm_dooring').val(total.toLocaleString());
             }
