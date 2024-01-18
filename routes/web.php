@@ -160,6 +160,7 @@ Route::middleware(['auth'])->group(function () {
 
 
         // ===================================FINANCE=========================================================
+        Route::get('/biaya_operasional/load_data_gabung/{item}/{supir}', 'App\Http\Controllers\BiayaOperasionalController@load_data_gabung')->name('biaya_operasional.load_data_gabung');
         Route::get('/biaya_operasional/load_data/{item}', 'App\Http\Controllers\BiayaOperasionalController@load_data')->name('biaya_operasional.load_data');
         Route::resource('biaya_operasional', 'App\Http\Controllers\BiayaOperasionalController');
 

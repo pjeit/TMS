@@ -12,8 +12,17 @@
 
 @section('content')
 <style>
-
+a {
+    cursor: pointer;
+}
 </style>
+<nav class="navbar navbar-expand-sm bg-light">
+
+<div class="container-fluid " >
+    
+</div>
+
+</nav>
 <div class="container-fluid">
     {{-- <div class="radiusSendiri sticky-top " style="margin-bottom: -15px;">
         <div class="card radiusSendiri" style="">
@@ -23,16 +32,62 @@
             </div>
         </div>  
     </div> --}}
+    <!-- Links -->
+
+    {{-- <div class="card p-2"> --}}
+        {{-- <div class="d-flex justify-content-center"> --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">ALAT</button>  --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X, DRIVER 1,2,3 --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">TALLY</button> --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X, DRIVER 1,2,3 --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">SEAL PELAYARAN</button> --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">BURUH</button> --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">TIMBANG</button> --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
+            {{-- <button class="btn btn-primary radiusSendiri">LEMBUR</button> --}}
+        {{-- </div> --}}
+    {{-- </div> --}}
     <div class="card radiusSendiri">
         <form id="save" action="{{ route('biaya_operasional.store') }}" method="POST">
             @csrf
             <div class="card-header ">
-                <div class="card-header" style="border: 2px solid #bbbbbb;">
+                {{-- style="border: 2px solid #bbbbbb;" --}}
+                <div class="card-header" >
+                    <ul class="nav nav-tabs mb-3 mt-3 nav-fill" id="justifyTab" role="tablist">
+                        <li class="nav-item">
+                            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X, DRIVER 1,2,3 (ALAT,TALLY,SEAL PELAYARAN)--}}
+                            <a class="nav-link nav-link-tab active" data-toggle="tab" id="btn_alat" aria-selected="true">ALAT</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_tally" aria-selected="false">TALLY</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_seal" aria-selected="false">SEAL PELAYARAN</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_depo" aria-selected="false">BIAYA DEPO</a>
+                        </li>
+                        <li class="nav-item" style="border-right: 2px solid black">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_karantina" aria-selected="false">KARANTINA</a>
+                        </li>
+                        <li class="nav-item">
+                            {{-- PENCAIRAN SENDIRI-SENDIRI, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_buruh" aria-selected="false">BURUH</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_timbang" aria-selected="false">TIMBANG</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_lembur" aria-selected="false">LEMBUR</a>
+                        </li>
+                    </ul>
                     <ul class="list-inline">
                         <div class="row">
                             <div class="col-sm-12 col-md-3 col-lg-3 bg-white pb-3">
 
-                                <div class="form-group">
+                                <div class="form-group" >
                                     <label for="">Jenis Biaya</label>
                                     {{-- <div class="icheck-primary d-inline">
                                         <input id="item" type="radio" name="item" value="TALLY" >
@@ -47,19 +102,33 @@
                                         <label class="form-check-label" for="item2">ALAT</label><br>
                                     </div> --}}
                                     <select class="form-control selectpicker" required name="item" id="item"
-                                        data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                        <option value="">­­— PILIH DATA —</option>
+                                        data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
+                                        {{-- <option value="">­­— PILIH DATA —</option> --}}
+                                        <option value="ALAT">ALAT</option>
                                         <option value="TALLY">TALLY</option>
                                         <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                        <option value="ALAT">ALAT</option>
-                                        <option value="TIMBANG">TIMBANG</option>
+                                        <option value="BIAYA DEPO">BIYA DEPO</option>
                                         <option value="BURUH">BURUH</option>
+                                        <option value="TIMBANG">TIMBANG</option>
                                         <option value="LEMBUR">LEMBUR</option>
                                         <option value="KARANTINA">KARANTINA</option>
                                     </select>
+                                    <br>
+                                    <br>
+
+                                    <div id="driver-div">
+                                        <label for="">Pilih Supir</label>
+                                        <select class="form-control selectpicker" id='supir' name="supir"
+                                            data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                            <option value="">── PILIH DRIVER ──</option>
+                                            @foreach ($dataDriver as $driver)
+                                            <option value="{{$driver->id}}">{{ $driver->nama_panggilan }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <input type="hidden" name="item_hidden" id="item_hidden" value="ALAT">
                                 </div>
                             </div>
-
                             <div class="col-sm-12 col-md-4 col-lg-4 bg-white pb-3">
                                 <ul class="list-group mt-4">
                                     <li
@@ -72,7 +141,6 @@
                                     </li>
                                 </ul>
                             </div>
-
                             <div class="col-sm-12 col-md-5 col-lg-5 bg-white pb-3">
                                 <div class="input-group mt-4">
                                     <select class="form-control selectpicker" required id='pembayaran' name="pembayaran"
@@ -89,7 +157,6 @@
                     </ul>
                 </div>
             </div>
-
             <div class="card-body">
                 <section class="col-lg-12" id="show_report">
                     <table id="rowGroup" class="table table-bordered table-hover" width="100%">
@@ -211,27 +278,92 @@
 </script>
 <script>
     $(document).ready(function() {
+        $('#driver-div').hide();
+        $(document).on('click', '#btn_alat', function(e) {  
+            $('#item').val('ALAT').trigger('change');
+            $('#supir').val('').trigger('change');
+            $('#driver-div').hide();
+		});   
+        $(document).on('click', '#btn_tally', function(e) {  
+            $('#item').val('TALLY').trigger('change');
+            $('#supir').val('').trigger('change');
+            $('#driver-div').hide();
+
+
+		}); 
+        $(document).on('click', '#btn_seal', function(e) {  
+            $('#item').val('SEAL PELAYARAN').trigger('change');
+            $('#supir').val('').trigger('change');
+            $('#driver-div').hide();
+
+		}); 
+        $(document).on('click', '#btn_depo', function(e) {  
+            $('#item').val('BIAYA DEPO').trigger('change');
+            $('#supir').val('').trigger('change');
+            $('#driver-div').hide();
+
+		}); 
+        $(document).on('click', '#btn_buruh', function(e) {  
+            $('#item').val('BURUH').trigger('change');
+            $('#supir').val('').trigger('change');
+            $('#driver-div').show();
+
+		}); 
+        $(document).on('click', '#btn_timbang', function(e) {  
+            $('#item').val('TIMBANG').trigger('change');
+            $('#supir').val('').trigger('change');
+            $('#driver-div').show();
+
+		});      
+        $(document).on('click', '#btn_lembur', function(e) {  
+            $('#item').val('LEMBUR').trigger('change');
+            $('#supir').val('').trigger('change');
+            $('#driver-div').show();
+
+		});
+        $(document).on('click', '#btn_karantina', function(e) {  
+            $('#item').val('KARANTINA').trigger('change');
+            $('#supir').val('').trigger('change');
+            $('#driver-div').hide();
+
+		});
         $(document).on('change', '#item', function(e) {  
             var item = $('#item').val();
+            $('#item_hidden').val(item);
             var totalElement = document.querySelector('.t_total');
             totalElement.textContent = "Rp. 0"; 
-            console.log('item', item);
+            // console.log('item', item);
+            var tbody = document.getElementById("hasil");
 
             if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
                 let bank = $('#pembayaran').selectpicker('val', 1);
-            }else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'){
-                let bank = $('#pembayaran').selectpicker('val', 2);
-            }else{
-                let bank = $('#pembayaran').selectpicker('val', '');
-            }
+                tbody.innerHTML = "Pilih Supir";
 
-            if(item != null){
+            }else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
+                let bank = $('#pembayaran').selectpicker('val', 2);
                 showTable(item);
             }else{
-                var tbody = document.getElementById("hasil");
+                let bank = $('#pembayaran').selectpicker('val', '');
                 tbody.innerHTML = "";
             }
+
+            // if(item != null){
+            //     showTable(item);
+            // }else{
+            //     var tbody = document.getElementById("hasil");
+            //     tbody.innerHTML = "";
+            // }
 		});        
+        showTable('ALAT');
+        var date = new Date();
+        var options = { day: 'numeric', month: 'short', year: 'numeric' };
+        var formattedDate = date.toLocaleDateString('en-US', options);
+
+        // console.log(date.getDate());
+        // console.log(date.getMonth());
+        console.log(dateMask(date).split('-')[0]-1);
+        console.log(dateMask(date).split('-')[1]);
+        console.log(dateMask(date).split('-')[2]);
 
         function showTable(item){
             if(item == ''){
@@ -277,6 +409,7 @@
                             
                             if(data.length > 0){
                                 for (var i = 0; i <data.length; i++) {
+                                    
                                     var row = $("<tr></tr>");
                                     row.append(`<td style='background: #efefef'>
                                                 <div class="d-flex justify-content-between" style="margin-right: -13px;">
@@ -314,79 +447,114 @@
                             }
                         }else{
                             $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
-                            if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                            // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
                                 $("thead tr").append("<th>Ditagihkan</th>");
-                            }
+                            // }
                             $("thead tr").append(`<th>Dicairkan</th>
                                                     <th>Catatan</th>
                                                     <th class='text-center'><input id='check_all' type='checkbox'></th>`);
 
                             if(data.length > 0){
                                 for (var i = 0; i < data.length; i++) {
-                                    if(data[i].total_dicairkan == null){
-                                        console.log('ok');
-                                        var start = data[i].deskripsi_so;
-                                        var nominal = 0;
-                                        var row = $("<tr></tr>");
-                                        row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
-                                        row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
-                                        row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
-                                        row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
-                                        if(data[i].jenis_order == 'INBOUND'){
-                                            if(data[i].tipe_kontainer=='20'){
-                                                if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
-                                                    // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
-                                                    nominal = 15000;
+                                    // console.log(
+                                    //  dateMask(data[i].tanggal_berangkat)[0]-1 == dateMask(date).split('-')[0]-1&&
+                                    //     dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                    //     ||
+                                    //     dateMask(data[i].tanggal_berangkat)[0] == dateMask(date).split('-')[0]&&
+                                    //     dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                    //     ||
+                                    //     dateMask(data[i].tanggal_berangkat)[0]+1 == dateMask(date).split('-')[0]+1&&
+                                    //     dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                    // );
+                                    
+                                    // if(
+                                        // dateMask(data[i].tanggal_berangkat)[0]-1 == dateMask(date).split('-')[0]-1&&
+                                        // dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                        // dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                        // ||
+                                        // dateMask(data[i].tanggal_berangkat)[0] == dateMask(date).split('-')[0]&&
+                                        // dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                        // dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                        // ||
+                                    //     dateMask(data[i].tanggal_berangkat)[0]+1 == dateMask(date).split('-')[0]+1&&
+                                    //     dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                    // )
+                                    // {
+                                        if(data[i].total_dicairkan == null){
+                                            console.log('ok');
+                                            var start = data[i].deskripsi_so;
+                                            var nominal = 0;
+                                            var row = $("<tr></tr>");
+                                            row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
+                                            row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
+                                            row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
+                                            row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                            if(data[i].jenis_order == 'INBOUND'){
+                                                if(data[i].tipe_kontainer=='20'){
+                                                    if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                        // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                        nominal = 15000;
+                                                    }
+                                                }else{
+                                                    if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                        // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                        nominal = 25000;
+                                                    }
                                                 }
                                             }else{
-                                                if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
-                                                    // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                if(data[i].tipe_kontainer=='20'){
+                                                    nominal = 15000;
+                                                }else{
                                                     nominal = 25000;
                                                 }
                                             }
-                                        }else{
-                                            if(data[i].tipe_kontainer=='20'){
-                                                nominal = 15000;
+                                            if(item == 'TALLY'){
+                                                nominal = data[i].tally;       
+                                            }else if(item == 'SEAL PELAYARAN'){
+                                                nominal = data[i].seal_pelayaran;       
+                                            }
+                                            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'|| item == 'BIAYA DEPO'){
+                                                nominal = 200000; // set default value biar kalau angka 0 di hidden
+                                                row.append(`<td> 
+                                                            <input type="text" class="uang numaja ditagihkan form-control item_ditagihkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_ditagihkan${data[i].id_sewa}" id="item_ditagihkan${data[i].id_sewa}" item_ditagihkan="${data[i].id_sewa}" name='data[${data[i].id_sewa}][nominal]' value='' readonly/>
+                                                    </td>`);
                                             }else{
-                                                nominal = 25000;
+                                                row.append(`<td> 
+                                                    <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? '' : nominal}' class='form-control' readonly>
+                                                    ${nominal.toLocaleString()} 
+                                                    </td>`);
+                                            }
+                                            var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
+                                            var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
+                                            
+                                            row.append(`<td> 
+                                                            <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class="form-control item_catatan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" name='data[${data[i].id_sewa}][catatan]' type="text" readonly/> 
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class='item grup_${data[i].grup_id} customer_${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" id_grup="${data[i].grup_id}" id_customer="${data[i].id_customer}" type='checkbox' value="${data[i].id_sewa}"> 
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][supplier]' value='${data[i].namaSupplier}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
+                                                        </td>`);
+                                                        
+                                            // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
+                                            if(nominal != 0){
+                                                $("#hasil").append(row);
                                             }
                                         }
-                                        if(item == 'TALLY'){
-                                            nominal = data[i].tally;       
-                                        }else if(item == 'SEAL PELAYARAN'){
-                                            nominal = data[i].seal_pelayaran;       
-                                        }
-                                        if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
-                                            nominal = 200000; // set default value biar kalau angka 0 di hidden
-                                        }else{
-                                            row.append(`<td> ${nominal.toLocaleString()} </td>`);
-                                        }
-                                        var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
-                                        var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
-                                        
-                                        row.append(`<td> 
-                                                        <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
-                                                        <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? '' : nominal}' class='form-control' readonly>
-                                                        <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
-                                                        <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
-                                                    </td>`);
-                                        row.append(`<td class='text-center'> 
-                                                        <input class="form-control item_catatan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" name='data[${data[i].id_sewa}][catatan]' type="text" readonly/> 
-                                                    </td>`);
-                                        row.append(`<td class='text-center'> 
-                                                        <input class='item grup_${data[i].grup_id} customer_${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" id_grup="${data[i].grup_id}" id_customer="${data[i].id_customer}" type='checkbox' value="${data[i].id_sewa}"> 
-                                                        <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
-                                                        <input type='hidden' name='data[${data[i].id_sewa}][supplier]' value='${data[i].namaSupplier}' class='form-control' readonly>
-                                                        <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
-                                                        <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
-                                                        <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
-                                                    </td>`);
-                                                    
-                                        // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
-                                        if(nominal != 0){
-                                            $("#hasil").append(row);
-                                        }
-                                    }
+
+                                    // }
                                 }
                             }
                         }
@@ -425,6 +593,227 @@
                 });
             }
         }
+        function showTableGabung(item,supir){
+            if(item == ''){
+                var table = document.getElementById("rowGroup");
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Biaya Operasional</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hasil">
+                    </tbody>
+                `;
+            }else{
+                var baseUrl = "{{ asset('') }}";
+                var url = baseUrl+`biaya_operasional/load_data_gabung/${item}/${supir}`;
+
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    dataType: 'JSON',
+                    contentType: false,
+                    cache: false,
+                    processData:false,
+                    success: function(response) {
+                        $("#rowGroup").dataTable().fnDestroy();
+                        $("th").remove();
+                        $("#hasil").empty();
+                        var item = $('#item').val();
+                        var data = response.data;
+                        console.log('data', data);
+                            $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                            // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                                $("thead tr").append("<th>Ditagihkan</th>");
+                            // }
+                            $("thead tr").append(`<th>Dicairkan</th>
+                                                    <th>Catatan</th>
+                                                    <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+
+                            if(data.length > 0){
+                                for (var i = 0; i < data.length; i++) {
+                                    console.log(
+                                     dateMask(data[i].tanggal_berangkat).split('-')[0]-1 == dateMask(date).split('-')[0]&&
+                                         dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                        ||
+                                        dateMask(data[i].tanggal_berangkat)[0] == dateMask(date).split('-')[0]+1&&
+                                        dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                        ||
+                                        dateMask(data[i].tanggal_berangkat)[0] == dateMask(date).split('-')[0]+1&&
+                                        dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                    );
+                                    // if(
+                                        // dateMask(data[i].tanggal_berangkat)[0]-1 == dateMask(date).split('-')[0]-1&&
+                                        // dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                        // dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                        // ||
+                                        // dateMask(data[i].tanggal_berangkat)[0] == dateMask(date).split('-')[0]&&
+                                        // dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                        // dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                        // ||
+                                    //     dateMask(data[i].tanggal_berangkat)[0]+1 == dateMask(date).split('-')[0]+1&&
+                                    //     dateMask(data[i].tanggal_berangkat)[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat)[2] == dateMask(date).split('-')[2]
+                                    // )
+                                    // {
+                                        if(data[i].total_dicairkan == null){
+                                            console.log('ok');
+                                            var start = data[i].deskripsi_so;
+                                            var nominal = 0;
+                                            var row = $("<tr></tr>");
+                                            row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
+                                            row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
+                                            row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
+                                            row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                            if(data[i].jenis_order == 'INBOUND'){
+                                                if(data[i].tipe_kontainer=='20'){
+                                                    if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                        // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                        nominal = 15000;
+                                                    }
+                                                }else{
+                                                    if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                        // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                        nominal = 25000;
+                                                    }
+                                                }
+                                            }else{
+                                                if(data[i].tipe_kontainer=='20'){
+                                                    nominal = 15000;
+                                                }else{
+                                                    nominal = 25000;
+                                                }
+                                            }
+                                            if(item == 'TALLY'){
+                                                nominal = data[i].tally;       
+                                            }else if(item == 'SEAL PELAYARAN'){
+                                                nominal = data[i].seal_pelayaran;       
+                                            }
+                                            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'|| item == 'BIAYA DEPO'){
+                                                nominal = 200000; // set default value biar kalau angka 0 di hidden
+                                                row.append(`<td> 
+                                                            <input type="text" class="uang numaja ditagihkan form-control item_ditagihkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_ditagihkan${data[i].id_sewa}" id="item_ditagihkan${data[i].id_sewa}" item_ditagihkan="${data[i].id_sewa}" name='data[${data[i].id_sewa}][nominal]' value='' readonly/>
+                                                    </td>`);
+                                            }else{
+                                                row.append(`<td> 
+                                                    <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? '' : nominal}' class='form-control' readonly>
+                                                    ${nominal.toLocaleString()} 
+                                                    </td>`);
+                                            }
+                                            var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
+                                            var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
+                                            
+                                            row.append(`<td> 
+                                                            <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class="form-control item_catatan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" name='data[${data[i].id_sewa}][catatan]' type="text" readonly/> 
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class='item grup_${data[i].grup_id} customer_${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" id_grup="${data[i].grup_id}" id_customer="${data[i].id_customer}" type='checkbox' value="${data[i].id_sewa}"> 
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][supplier]' value='${data[i].namaSupplier}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
+                                                        </td>`);
+                                                        
+                                            // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
+                                            if(nominal != 0){
+                                                $("#hasil").append(row);
+                                            }
+                                        }
+
+                                    // }
+                                }
+                            }
+                        
+
+                        new DataTable('#rowGroup', {
+                            order: [
+                                [0, 'asc'], // 0 = grup
+                                [1, 'asc'], // 1 = customer
+                            ],
+                            rowGroup: {
+                                dataSrc: [0, 1] // di order grup dulu, baru customer
+                            },
+                            columnDefs: [
+                                {
+                                    targets: [0, 1], 
+                                    visible: false
+                                },
+                                {
+                                    targets: [-1],
+                                    orderable: false, // matiin sortir kolom centang
+                                },
+                            ],
+                        });
+                        
+                    },error: function (xhr, status, error) {
+                        $("#loading-spinner").hide();
+                        if ( xhr.responseJSON.result == 'error') {
+                            console.log("Error:", xhr.responseJSON.message);
+                            console.log("XHR status:", status);
+                            console.log("Error:", error);
+                            console.log("Response:", xhr.responseJSON);
+                        } else {
+                            toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                        }
+                    }
+                });
+            }
+        }
+        $(document).on('change', '#supir', function(e) {  
+            var item = $('#item_hidden').val();
+            $('#item_hidden').val(item);
+            var totalElement = document.querySelector('.t_total');
+            totalElement.textContent = "Rp. 0"; 
+            // console.log('item', item);
+            var tbody = document.getElementById("hasil");
+
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                let bank = $('#pembayaran').selectpicker('val', 1);
+                if($(this).val())
+                {
+                    showTableGabung(item,$(this).val());
+                }
+                else
+                {
+                    // $("#rowGroup").dataTable().fnDestroy();
+                    // $("th").remove();
+                    // $("#hasil").empty();
+                    $("#rowGroup").dataTable().fnDestroy();
+                        $("th").remove();
+                        $("#hasil").empty();
+                        var item = $('#item').val();
+                            $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                            // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                                $("thead tr").append("<th>Ditagihkan</th>");
+                            // }
+                            $("thead tr").append(`<th>Dicairkan</th>
+                                                    <th>Catatan</th>
+                                                    <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+                }
+            }else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
+                let bank = $('#pembayaran').selectpicker('val', 2);
+            }else{
+                let bank = $('#pembayaran').selectpicker('val', '');
+                tbody.innerHTML = "";
+            }
+
+            // if(item != null){
+            //     showTable(item);
+            // }else{
+            //     var tbody = document.getElementById("hasil");
+            //     tbody.innerHTML = "";
+            // }
+		});   
         
         // check all
             $(document).on('click', '#check_all', function() {  
@@ -433,6 +822,7 @@
                 $(".customer").prop('checked', isChecked);
                 $(".item").prop('checked', isChecked);
                 $(".item_dicairkan").prop('readonly', !isChecked);
+                $(".item_ditagihkan").prop('readonly', !isChecked);
                 $(".item_catatan").prop('readonly', !isChecked);
                 hitung();
             });
@@ -473,6 +863,8 @@
 
                 $(".item_"+id).prop('checked', isChecked);
                 $(".item_"+id).prop('readonly', !isChecked);
+                $(".item_ditagihkan"+id).prop('readonly', !isChecked);
+
                 $("#check_all").prop('checked', false);
                 $("#grup_"+id_grup).prop('checked', false);
                 $("#customer_"+id_customer).prop('checked', false);

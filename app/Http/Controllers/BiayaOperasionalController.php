@@ -17,7 +17,7 @@ use Carbon\Carbon;
 use App\Helper\CoaHelper;
 use App\Models\KasBank;
 use App\Models\SewaOperasionalPembayaran;
-
+use App\Models\Karyawan;
 class BiayaOperasionalController extends Controller
 {
     public function __construct()
@@ -40,10 +40,27 @@ class BiayaOperasionalController extends Controller
         ->select('*')
         ->where('is_aktif', '=', "Y")
         ->get();
+        $dataDriver = DB::table('karyawan')
+        ->select('karyawan.*')
+        ->distinct()
+        ->Join('sewa as s', function($join) {
+                    $join->on('karyawan.id', '=', 's.id_karyawan')
+                    ->whereNull('s.id_supplier') 
+                    // ->where('s.status_pencairan_driver', 'BELUM DICAIRKAN')
+                    // ->where('s.total_komisi_driver', '!=', 0)
+                    ->where('s.is_aktif', '=', "Y")
+                    ;
+                })
+        ->where('karyawan.is_aktif', 'Y')
+        ->where('karyawan.role_id', 5)//5 itu driver
+        ->orderBy('karyawan.nama_panggilan', 'asc')
+        ->get();
 
         return view('pages.finance.biaya_operasional.index',[
             'judul' => "Biaya Operasional",
             'dataKas' => $dataKas,
+            'dataDriver' => $dataDriver,
+
         ]);
     }
 
@@ -70,7 +87,7 @@ class BiayaOperasionalController extends Controller
         try {
             $user = Auth::user()->id;
             $data = $request->post();
-            $item = $data['item'];
+            $item = $data['item_hidden'];
             $storeData = [];
             // dd($data);   
             
@@ -273,17 +290,14 @@ class BiayaOperasionalController extends Controller
                                             'Y'
                                         ) 
                                     );
-                
                                     $saldo = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
                                     $saldo->saldo_sekarang -= $dump['dicairkan'];
                                     $saldo->updated_by = $user;
                                     $saldo->updated_at = now();
                                     $saldo->save();
                             }
-                         }
+                        }
                     }
-               
-    
                 DB::commit();
             }
             DB::commit();
@@ -369,9 +383,77 @@ class BiayaOperasionalController extends Controller
                         })
                         ->where('s.status', 'PROSES DOORING')
                         ->where('s.jenis_tujuan', 'FTL')
-                        ->where(function($where) use($item){
-                            if($item == 'TAMBAHAN UJ'){
-                                $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
+                        // ->where(function($where) use($item){
+                        //     // if($item == 'TAMBAHAN UJ'){
+                        //     //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
+                        //     // }
+                        //     // if($item == 'BURUH' || $item == 'TIMBANG' || $item == 'LEMBUR'){
+                        //     //     $where->where('s.id_supplier', '=', null);
+                        //     // }
+                        // })
+                        ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
+                        ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+                        ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')
+                        ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
+                        ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
+                        ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
+                        ->select(
+                            's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer', 'c.grup_id',
+                            's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
+                            'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 'so.total_dicairkan',
+                            'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
+                            DB::raw('COALESCE(gt.tally, 0) as tally'), // ini get data tally di grup tujuan (gt), kalau di gt gak diset, nanti nominal 0, kalau 0 ga bakal muncul di frontend
+                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), // ini get data seal di grup tujuan (gt), kalau di gt gak diset, nanti nominal 0, kalau 0 ga bakal muncul di frontend
+                            'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
+                            'c.nama as customer',
+                            'g.nama_grup as nama_grup',
+                            'sp.nama as namaSupplier','s.tanggal_berangkat'
+                        )
+                        
+                        ->orderBy('s.id_sewa', 'DESC')
+                        ->orderBy('s.tanggal_berangkat', 'DESC')
+                        ->get();
+                        // intinya, pertama get data sewa
+                        // terus kamu left join ke data sewa operasional, kalau misal ada sewa operasional, dengan deskripsi tersebut
+                        // pasti bakal muncul nominalnya, misal buruh 15000, alat 30000, tp misal waktu di join ga ada, maka nanti nominal 0
+                        // nah, kalau data 0, nanti datanya dimunculin di frontend, kalau ga 0, ga dimunculin
+                        // tapi kalau tally sama seal pelayaran, pokok data master di grup tujuan, baru muncul jika ada angkanya
+                        // kebalikan dari sewa operasional
+                        // sewa operasional = ketika join data 0, ga muncul di front end
+                        // grup tujuan (tally, seal) = ketika data TIDAK 0, maka muncul di front end
+            }
+            
+            return response()->json(["result" => "success",'data' => $data], 200);
+        } catch (\Throwable $th) {
+            return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
+        }
+    }
+    public function load_data_gabung($item,$supir){
+        try {
+                $data = DB::table('sewa AS s')
+                        ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
+                            if($item == 'ALAT'){
+                                $join->on('s.id_sewa', '=', 'so.id_sewa')
+                                    ->where('so.is_aktif', 'Y')
+                                    ->where('so.deskripsi', 'like', $item.'%');
+                                    // ini nge get data alat, pakai like soalnya ALAT blablabla
+                            }else {
+                                $join->on('s.id_sewa', '=', 'so.id_sewa')
+                                    ->where('so.is_aktif', 'Y')
+                                    ->where('so.deskripsi', '=', $item);
+                                    // ini get kalau misal selain alat, langsung get datanya gapake like, karna udah fix deskripsinya
+                            }
+                        })
+                        ->where('s.status', 'PROSES DOORING')
+                        ->where('s.jenis_tujuan', 'FTL')
+                        ->where(function($where) use($item,$supir){
+                            // if($item == 'TAMBAHAN UJ'){
+                            //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
+                            // }
+                            $where->where('s.id_supplier', '=', null)
+                                ->where('s.id_karyawan', '=', $supir);
+                            if($item == 'BURUH' /*|| $item == 'TIMBANG' || $item == 'LEMBUR'*/){
+                                $where->where('s.buruh_pje', '=', 'Y');
                             }
                         })
                         ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
@@ -392,6 +474,7 @@ class BiayaOperasionalController extends Controller
                             'g.nama_grup as nama_grup',
                             'sp.nama as namaSupplier','s.tanggal_berangkat'
                         )
+                        
                         ->orderBy('s.id_sewa', 'DESC')
                         ->orderBy('s.tanggal_berangkat', 'DESC')
                         ->get();
@@ -403,11 +486,10 @@ class BiayaOperasionalController extends Controller
                         // kebalikan dari sewa operasional
                         // sewa operasional = ketika join data 0, ga muncul di front end
                         // grup tujuan (tally, seal) = ketika data TIDAK 0, maka muncul di front end
-            }
             
             return response()->json(["result" => "success",'data' => $data], 200);
         } catch (\Throwable $th) {
-            return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
+            return response()->json(["result" => "error", 'message' => $th->getMessage(),'supir'=>$supir], 500);
         }
     }
 }
