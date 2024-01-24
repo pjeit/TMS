@@ -399,7 +399,6 @@ class TransaksiLainController extends Controller
                                         'keterangan_transaksi'=>$data['nama_coa_hidden'].'-'.$data['catatan'],
                                         'updated_at'=> now(),
                                         'updated_by'=> $user,
-
                                     )
                                 );
                             //   $coa->tipe=='penerimaan'?(float)str_replace(',', '', $data['total']):0,// debit 

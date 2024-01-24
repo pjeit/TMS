@@ -105,7 +105,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" name="tgl_sandar" autocomplete="off" class="datepicker form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{ date('d-M-Y', strtotime($data['JO']->tgl_sandar))}}" {{ $data['JO']->status == 'MENUNGGU PEMBAYARAN'? '':'disabled' }}>
+                                        <input type="text" name="tgl_sandar" autocomplete="off" class="datepicker form-control" id="tgl_sandar" placeholder="dd-M-yyyy" value="{{ date('d-M-Y', strtotime($data['JO']->tgl_sandar))}}" >
                                     </div>
                                 </div>
                             </div>
@@ -145,19 +145,19 @@
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
-                                            <input type="checkbox" id="isVA" value="Y" {{ $data['JO']->no_va != null? 'checked':'' }} {{$data['JO']->status == "PROSES DOORING"?'readonly':''}}>
+                                            <input type="checkbox" id="isVA" value="Y" {{ $data['JO']->no_va != null? 'checked':'' }} {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}>
                                         </span>
                                     </div>
-                                    <input required type="text" id="no_va" name="no_va" class="form-control numaja" value="{{ $data['JO']->no_va }}" readonly> 
+                                    <input required type="text" id="no_va" name="no_va" class="form-control numaja" value="{{ $data['JO']->no_va }}" {{$data['JO']->status == "PROSES DOORING"?'readonly':''}}> 
                                 </div>
                             </div>
                             <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                 <label for="">Atas Nama</label>
-                                <input required type="text" id="va_nama" name="va_nama" class="form-control" value="{{ $data['JO']->va_nama }}" readonly>                         
+                                <input required type="text" id="va_nama" name="va_nama" class="form-control" value="{{ $data['JO']->va_nama }}" {{$data['JO']->status == "PROSES DOORING"?'readonly':''}}>                         
                             </div>
                             <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                 <label for="">Bank</label>
-                                <input required type="text" id="va_bank" name="va_bank" class="form-control" value="{{ $data['JO']->va_bank }}" readonly>                         
+                                <input required type="text" id="va_bank" name="va_bank" class="form-control" value="{{ $data['JO']->va_bank }}" {{$data['JO']->status == "PROSES DOORING"?'readonly':''}}>                         
                             </div>
                             <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
@@ -166,10 +166,11 @@
                                 </div>
                             </div>
                         </div>
-
-                        {{-- <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2 mt-2">
-                            <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Kontainer
-                        </button> --}}
+                        @if ($data['JO']->status == "MENUNGGU PEMBAYARAN")
+                            <button type="button" id="addmore" class="btn btn-primary radiusSendiri mb-2 mt-2">
+                                <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Kontainer
+                            </button>
+                        @endif
                         <div class="table_wrapper">
                             <table id="tabelJO" class="tabelJO table table-striped hover">
                                 <thead>
@@ -861,39 +862,39 @@
                     $('#tb').append(`
                         <tr id="row`+i+`">
                             <td>
-                                <span class="text-bold">${i}</span>
+                                <span class="text-bold">.</span>
                             </td>
                             <td>
-                                <input type="text" id="no_kontainer" name="detail[${i}][no_kontainer]"class="form-control no_kontainerx" maxlength="20" value="">
+                                <input type="text" id="no_kontainer" name="detail_baru[${i}][no_kontainer]"class="form-control no_kontainerx" maxlength="20" value="">
                             </td>
                             <td>
-                                <input type="text" id="seal" name="detail[${i}][seal]"class="form-control" maxlength="10" value="">
+                                <input type="text" id="seal" name="detail_baru[${i}][seal]"class="form-control" maxlength="10" value="">
                             </td>
                             <td>
-                                <select class="form-control selectpicker tipeKontainer" name="detail[${i}][tipe]" id="tipe${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <select class="form-control selectpicker tipeKontainer" name="detail_baru[${i}][tipe]" id="tipe${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                     <option value="">--Pilih Tipe--</option>
                                     <option value="20">20Ft</option>
                                     <option value="40">40Ft</option>
                                 </select>
-                                <input type="hidden" readonly id="h_thc${i}" class="hargaThc" hargaThc_${i} name="detail[${i}][hargaThc]" value="">
-                                <input type="hidden" readonly id="h_lolo${i}" class="hargaLolo" hargaLolo_${i} name="detail[${i}][hargaLolo]" value="">
-                                <input type="hidden" readonly id="h_apbs${i}" class="hargaApbs" hargaApbs_${i} name="detail[${i}][hargaApbs]" value="">
-                                <input type="hidden" readonly id="h_cleaning${i}" class="hargaCleaning" hargaCleaning_${i} name="detail[${i}][hargaCleaning]" value="">
+                                <input type="hidden" readonly id="h_thc${i}" class="hargaThc" hargaThc_${i} name="detail_baru[${i}][hargaThc]" value="">
+                                <input type="hidden" readonly id="h_lolo${i}" class="hargaLolo" hargaLolo_${i} name="detail_baru[${i}][hargaLolo]" value="">
+                                <input type="hidden" readonly id="h_apbs${i}" class="hargaApbs" hargaApbs_${i} name="detail_baru[${i}][hargaApbs]" value="">
+                                <input type="hidden" readonly id="h_cleaning${i}" class="hargaCleaning" hargaCleaning_${i} name="detail_baru[${i}][hargaCleaning]" value="">
                             </td>
                             <td>
                                 <div class="form-group mb-0">
                                     <div class="icheck-primary">
-                                        <input id="thcLuar${i}" dataId="${i}" class="stripping" type="radio" name="detail[${i}][stripping]" value="luar" checked>
+                                        <input id="thcLuar${i}" dataId="${i}" class="stripping" type="radio" name="detail_baru[${i}][stripping]" value="luar" checked>
                                         <label class="form-check-label" for="thcLuar${i}">Luar</label>
                                     </div>
                                     <div class="icheck-primary mt-3">
-                                        <input id="thcDalam${i}" dataId="${i}" class="stripping" type="radio" name="detail[${i}][stripping]" value="dalam" >
+                                        <input id="thcDalam${i}" dataId="${i}" class="stripping" type="radio" name="detail_baru[${i}][stripping]" value="dalam" >
                                         <label class="form-check-label" for="thcDalam${i}">Dalam</label><br>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <select class="form-control selectpicker pick_up" name="detail[${i}][pick_up]" id="pick_up${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <select class="form-control selectpicker pick_up" name="detail_baru[${i}][pick_up]" id="pick_up${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                     <option value="">─ Pick Up ─</option>
                                     <option value="TTL">TTL</option>
                                     <option value="TPS">TPS</option>
@@ -901,13 +902,13 @@
                                 </select>
                             </td>
                             <td>
-                                <select class="form-control selectpicker tujuanC" name="detail[${i}][tujuan]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                                <select class="form-control selectpicker tujuanC" name="detail_baru[${i}][tujuan]" id="tujuan" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
                                     <option value="">--Pilih Tujuan--</option>
                                     `+dataOption+`
                                 </select>
                             </td>
                             <td>
-                                <input type="text" name="detail[${i}][tgl_booking]"  autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
+                                <input type="text" name="detail_baru[${i}][tgl_booking]"  autocomplete="off" class="date form-control tgl_booking" placeholder="dd-M-yyyy" value="{{old('tgl_booking','')}}">     
                             </td>
                         
                             <td align="center" class="text-danger">
@@ -920,7 +921,7 @@
                                     <span class="input-group-text d-sm-none d-md-none d-lg-block"><i
                                             class="far fa-calendar-alt"></i></span>
                                 </div>
-                                <input type="text" name="detail[{{$key}}][tgl_booking]"
+                                <input type="text" name="detail_baru[{{$key}}][tgl_booking]"
                                     id='tgl_booking{{$key}}' tgl_booking_check="{{$key}}"
                                     {{isset($item->sewa_id)? 'disabled':''}} autocomplete="off" class="date
                                 form-control tgl_booking" placeholder="dd-M-yyyy"
@@ -1105,17 +1106,19 @@
             function getThc(id){
                 var tipeKontainer = $('#tipe'+id).val();
                 var stripping = $("input[name='detail[" + id + "][stripping]']:checked").val();
+                var stripping_baru = $("input[name='detail_baru[" + id + "][stripping]']:checked").val();
+
                 
                 console.log('tipeKontainer '+ tipeKontainer);
                 console.log('stripping '+ stripping);
                 console.log('harga40Ft.thcLuar '+ harga40Ft.thcLuar);
 
                 if(tipeKontainer == '20'){
-                    $('#h_thc'+id).val(stripping == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
-                    $('#h_lolo'+id).val(stripping == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
+                    $('#h_thc'+id).val(stripping || stripping_baru == 'luar' ? harga20Ft.thcLuar : harga20Ft.thcDalam);
+                    $('#h_lolo'+id).val(stripping || stripping_baru == 'luar' ? harga20Ft.loloLuar : harga20Ft.loloDalam);
                 }else if(tipeKontainer == '40'){
-                    $('#h_thc'+id).val(stripping == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
-                    $('#h_lolo'+id).val(stripping == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
+                    $('#h_thc'+id).val(stripping || stripping_baru == 'luar' ? harga40Ft.thcLuar : harga40Ft.thcDalam);
+                    $('#h_lolo'+id).val(stripping || stripping_baru == 'luar' ? harga40Ft.loloLuar : harga40Ft.loloDalam);
                 }else{
                     $('#h_thc'+id).val(0);
                     $('#h_lolo'+id).val(0);

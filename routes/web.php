@@ -160,7 +160,9 @@ Route::middleware(['auth'])->group(function () {
 
 
         // ===================================FINANCE=========================================================
-        Route::get('/biaya_operasional/load_data_gabung/{item}/{supir}', 'App\Http\Controllers\BiayaOperasionalController@load_data_gabung')->name('biaya_operasional.load_data_gabung');
+        Route::get('/biaya_operasional/load_customer_sewa/{item}', 'App\Http\Controllers\BiayaOperasionalController@load_customer_sewa')->name('biaya_operasional.load_customer_sewa');
+        Route::get('/biaya_operasional/load_tujuan_sewa/{customer}/{item}', 'App\Http\Controllers\BiayaOperasionalController@load_tujuan_sewa')->name('biaya_operasional.load_tujuan_sewa');
+        Route::get('/biaya_operasional/load_data_gabung/{item}/{customer}/{tujuan}', 'App\Http\Controllers\BiayaOperasionalController@load_data_gabung')->name('biaya_operasional.load_data_gabung');
         Route::get('/biaya_operasional/load_data/{item}', 'App\Http\Controllers\BiayaOperasionalController@load_data')->name('biaya_operasional.load_data');
         Route::resource('biaya_operasional', 'App\Http\Controllers\BiayaOperasionalController');
 
@@ -184,6 +186,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan'])->name('pencairan_klaim_supir.edit');
         Route::post('/klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
         Route::resource('klaim_supir', 'App\Http\Controllers\KlaimSupirController');
+
+        Route::get('/lembur_mekanik/pencairan/{id}', [App\Http\Controllers\LemburMekanikController::class, 'pencairan'])->name('pencairan_lembur_mekanik.edit');
+        Route::post('/lembur_mekanik/pencairan_save/{id}', [App\Http\Controllers\LemburMekanikController::class, 'pencairan_save'])->name('pencairan_lembur_mekanik.save');
+        Route::resource('lembur_mekanik', 'App\Http\Controllers\LemburMekanikController');
+
+        Route::resource('bonus_supir', 'App\Http\Controllers\BonusSupirController');
+
+
 
         Route::post('tagihan_rekanan/bayar_save', [App\Http\Controllers\TagihanRekananController::class, 'bayar_save'])->name('tagihan_rekanan.bayar_save');
         Route::post('tagihan_rekanan/bayar', [App\Http\Controllers\TagihanRekananController::class, 'bayar'])->name('tagihan_rekanan.bayar');

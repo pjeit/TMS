@@ -261,6 +261,7 @@ height: 20px;
                                                 </td>
                                             @endif
                                             @php
+                                            //kalo deskripsi nya ada di dalam ini deskripnsinya gaboleh diedit sama dicairkannya
                                                 $deskripsi1 = ['STORAGE', 
                                                 'DEMURAGE', 
                                                 'DETENTION', 
@@ -272,7 +273,8 @@ height: 20px;
                                                 'TALLY', 
                                                 'TIMBANG', 
                                                 'BURUH', 
-                                                'LEMBUR', 'THC', 'LOLO', 'APBS', 'TL', 'DOCFEE'];
+                                                'LEMBUR', 'THC', 'LOLO', 'APBS', 'TL', 'DOCFEE','BIAYA DEPO'];
+                                                //kalo deskripsi ga nya ada di dalam ini deskripnsinya boleh diedit semua
                                                 $deskripsi2 = ['STORAGE', 
                                                 'DEMURAGE', 
                                                 'DETENTION', 
@@ -284,7 +286,7 @@ height: 20px;
                                                 'TALLY', 
                                                 'TIMBANG', 
                                                 'BURUH', 
-                                                'LEMBUR',  'INAP', 'CLEANING','THC', 'LOLO', 'APBS', 'TL', 'DOCFEE'];
+                                                'LEMBUR',  'INAP', 'CLEANING','THC', 'LOLO', 'APBS', 'TL', 'DOCFEE','BIAYA DEPO'];
                                             @endphp
                                             @if (in_array($value->deskripsi, $deskripsi1))
                                                 <td id="deskripsi_tabel_{{$index}}" >
@@ -974,7 +976,7 @@ height: 20px;
                         <td id="catatan_tabel_${maxID}">
                             <input type="text" name="dataLain[${maxID}][catatan_data]" id="catatan_data_${maxID}"  value="" class="form-control catatan">
                         </td>
-                     <td align="center" class="text-danger"><button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove"  class="btn btn-danger radiusSendiri btnDelete"><i class="fa fa-fw fa-trash-alt"></i></button></td>
+                    <td align="center" class="text-danger"><button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove"  class="btn btn-danger radiusSendiri btnDelete"><i class="fa fa-fw fa-trash-alt"></i></button></td>
 
                     </tr>
                 `

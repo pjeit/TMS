@@ -511,7 +511,7 @@ class DalamPerjalananController extends Controller
                                 'TALLY', 
                                 'TIMBANG', 
                                 'BURUH', 
-                                'LEMBUR', 'THC', 'LOLO', 'APBS', 'TL', 'DOCFEE'];
+                                'LEMBUR', 'THC', 'LOLO', 'APBS', 'TL', 'DOCFEE','BIAYA DEPO'];
                 foreach ($data['data'] as $key => $value) {
                     // dd(isset($value['masuk_db'][1]));
 

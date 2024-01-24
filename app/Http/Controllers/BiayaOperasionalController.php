@@ -55,12 +55,40 @@ class BiayaOperasionalController extends Controller
         ->where('karyawan.role_id', 5)//5 itu driver
         ->orderBy('karyawan.nama_panggilan', 'asc')
         ->get();
+        $currentDate = Carbon::now();
+        // $dataCustomerSewa = Sewa::with('getCustomer')
+        // ->where('is_aktif', "Y")
+        // ->where('status', "PROSES DOORING")
+        // ->where(function ($where) use ($currentDate) {
+        //     $where->where(function ($query) use ($currentDate) {
+        //         // h-1 
+        //         $query->whereDay('tanggal_berangkat', '=', $currentDate->subDay()->day)
+        //             ->whereMonth('tanggal_berangkat', '=', $currentDate->month)
+        //             ->whereYear('tanggal_berangkat', '=', $currentDate->year);
+        //     })
+        //     ->orWhere(function ($query) use ($currentDate) {
+        //         // h0 
+        //         $query->whereDay('tanggal_berangkat', '=', $currentDate->day)
+        //             ->whereMonth('tanggal_berangkat', '=', $currentDate->month)
+        //             ->whereYear('tanggal_berangkat', '=', $currentDate->year);
+        //     })
+        //     ->orWhere(function ($query) use ($currentDate) {
+        //         // h+1 
+        //         $query->whereDay('tanggal_berangkat', '=', $currentDate->addDay()->day) // Add 2 to get h+1
+        //             ->whereMonth('tanggal_berangkat', '=', $currentDate->month)
+        //             ->whereYear('tanggal_berangkat', '=', $currentDate->year);
+        //     });
+        // })
+        // ->distinct('id_customer') 
+        // ->get();
+
+        // dd($dataCustomerSewa);
 
         return view('pages.finance.biaya_operasional.index',[
             'judul' => "Biaya Operasional",
             'dataKas' => $dataKas,
             'dataDriver' => $dataDriver,
-
+            // 'dataCustomerSewa' => $dataCustomerSewa,
         ]);
     }
 
@@ -147,8 +175,8 @@ class BiayaOperasionalController extends Controller
                 foreach ($data['data'] as $key => $value) {
                     $keterangan = $item.' : ';
                     // dd('masuk');
-                    if($value['dicairkan'] != null){
-                        $total_operasional = floatval(str_replace(',', '', $value['nominal']));
+                    if($value['cek_cair'] == 'Y'){
+                        $total_operasional = floatval(str_replace(',', '', $value['total_operasional']));
                         $dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
                         // dd('masuk');
                         // dd($dicairkan);
@@ -182,15 +210,15 @@ class BiayaOperasionalController extends Controller
                                 // ketika item == alat, tally, seal
                                 // data bakal dikumpulin ke array, selain 3 data itu, langsung dicairin ke dump
     
-                                if($value['dicairkan'] != null){
+                                // if($value['dicairkan'] != null){
                                     if (array_key_exists($value['tujuan'], $storeData)) {
                                         // tambah data jika tujuan sudah ada
                                         // ini ngedit datanya, misal X tadi udah di input
                                         // kalau udah ada, di concat data yg lama, misal tujuan X, tadi sudah ada driver Y,
                                         // nah didata selanjutnya ada driver Z ke tujuan X juga, data di concat jadi driver: #Y #Z
-                                        // terus nominal di increment 100+200 
+                                        // terus total_operasional di increment 100+200 
                                         // intinya disini ngeconcat data yg ada
-                                        $storeData[$value['tujuan']]['operasional'] += floatval(str_replace(',', '', $value['nominal']));
+                                        $storeData[$value['tujuan']]['operasional'] += floatval(str_replace(',', '', $value['total_operasional']));
                                         $storeData[$value['tujuan']]['dicairkan'] += floatval(str_replace(',', '', $value['dicairkan']));
                                         $storeData[$value['tujuan']]['driver'] .= ' #'. $value['nopol'] .' ('.$driver.')';
                                         $storeData[$value['tujuan']]['id_opr'][] = $sewa_o->id;
@@ -199,14 +227,14 @@ class BiayaOperasionalController extends Controller
                                         // buat data baru kalau data tujuan belum ada
                                         // ini nyimpen data per tujuan, misal tujuan X, driver Y, dicairkan 100
                                         $storeData[$value['tujuan']] = [
-                                            'operasional' => floatval(str_replace(',', '', $value['nominal'])),
+                                            'operasional' => floatval(str_replace(',', '', $value['total_operasional'])),
                                             'dicairkan' => floatval(str_replace(',', '', $value['dicairkan'])),
                                             'driver' => '#'. $value['nopol'] .' ('.$driver.')',
                                             'id_opr' => [$sewa_o->id],
                                             'index' => $i,
                                         ];
                                     }
-                                }
+                                // }
                             }else{
                                 $pembayaran = new SewaOperasionalPembayaran();
                                 $pembayaran->deskripsi = $item;
@@ -272,7 +300,7 @@ class BiayaOperasionalController extends Controller
                                                     ->update(['id_pembayaran' => $pembayaran->id]);
                                     
                                     // ini ngedump data array yg concat tadi
-                                    // misal tujuan X, driver #Y #Z, nominal 300
+                                    // misal tujuan X, driver #Y #Z, total_operasional 300
                                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                         array(
                                             $data['pembayaran'], //id kas_bank dr form
@@ -363,7 +391,9 @@ class BiayaOperasionalController extends Controller
     }
 
     public function load_data($item){
+        
         try {
+            $currentDate = Carbon::now();
             if($item == 'KARANTINA'){
                 $data = Karantina::where('is_aktif', 'Y')->where('total_dicairkan', NULL)->with('details', 'getJO', 'getCustomer.getGrup')->get();
             }else{
@@ -373,6 +403,7 @@ class BiayaOperasionalController extends Controller
                                 $join->on('s.id_sewa', '=', 'so.id_sewa')
                                     ->where('so.is_aktif', 'Y')
                                     ->where('so.deskripsi', 'like', $item.'%');
+                                    
                                     // ini nge get data alat, pakai like soalnya ALAT blablabla
                             }else {
                                 $join->on('s.id_sewa', '=', 'so.id_sewa')
@@ -381,16 +412,40 @@ class BiayaOperasionalController extends Controller
                                     // ini get kalau misal selain alat, langsung get datanya gapake like, karna udah fix deskripsinya
                             }
                         })
+                        ->whereNull('so.total_dicairkan')
                         ->where('s.status', 'PROSES DOORING')
                         ->where('s.jenis_tujuan', 'FTL')
-                        // ->where(function($where) use($item){
-                        //     // if($item == 'TAMBAHAN UJ'){
-                        //     //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
-                        //     // }
-                        //     // if($item == 'BURUH' || $item == 'TIMBANG' || $item == 'LEMBUR'){
-                        //     //     $where->where('s.id_supplier', '=', null);
-                        //     // }
-                        // })
+                        ->where(function($where) use($item){
+                            // if($item == 'TAMBAHAN UJ'){
+                            //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
+                            // }
+                            // if($item == 'BURUH' || $item == 'TIMBANG' || $item == 'LEMBUR'){
+                            //     $where->where('s.id_supplier', '=', null);
+                            // }
+                            if($item == 'SEAL PELAYARAN'){
+                                $where->where('s.jenis_order', 'OUTBOUND');
+                            }
+                        })
+                        ->where(function ($where) use ($currentDate) {
+                            $where->where(function ($query) use ($currentDate) {
+                                // h-1 
+                                $query->whereDay('s.tanggal_berangkat', '=', $currentDate->subDay()->day)
+                                    ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
+                                    ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
+                            })
+                            ->orWhere(function ($query) use ($currentDate) {
+                                // h0 
+                                $query->whereDay('s.tanggal_berangkat', '=', $currentDate->day)
+                                    ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
+                                    ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
+                            })
+                            ->orWhere(function ($query) use ($currentDate) {
+                                // h+1 
+                                $query->whereDay('s.tanggal_berangkat', '=', $currentDate->addDay()->day) // Add 2 to get h+1
+                                    ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
+                                    ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
+                            });
+                        })
                         ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
                         ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
                         ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')
@@ -402,8 +457,8 @@ class BiayaOperasionalController extends Controller
                             's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
                             'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 'so.total_dicairkan',
                             'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
-                            DB::raw('COALESCE(gt.tally, 0) as tally'), // ini get data tally di grup tujuan (gt), kalau di gt gak diset, nanti nominal 0, kalau 0 ga bakal muncul di frontend
-                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), // ini get data seal di grup tujuan (gt), kalau di gt gak diset, nanti nominal 0, kalau 0 ga bakal muncul di frontend
+                            DB::raw('COALESCE(gt.tally, 0) as tally'), // ini get data tally di grup tujuan (gt), kalau di gt gak diset, nanti total_operasional 0, kalau 0 ga bakal muncul di frontend
+                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), // ini get data seal di grup tujuan (gt), kalau di gt gak diset, nanti total_operasional 0, kalau 0 ga bakal muncul di frontend
                             'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
                             'c.nama as customer',
                             'g.nama_grup as nama_grup',
@@ -415,7 +470,7 @@ class BiayaOperasionalController extends Controller
                         ->get();
                         // intinya, pertama get data sewa
                         // terus kamu left join ke data sewa operasional, kalau misal ada sewa operasional, dengan deskripsi tersebut
-                        // pasti bakal muncul nominalnya, misal buruh 15000, alat 30000, tp misal waktu di join ga ada, maka nanti nominal 0
+                        // pasti bakal muncul total_operasionalnya, misal buruh 15000, alat 30000, tp misal waktu di join ga ada, maka nanti total_operasional 0
                         // nah, kalau data 0, nanti datanya dimunculin di frontend, kalau ga 0, ga dimunculin
                         // tapi kalau tally sama seal pelayaran, pokok data master di grup tujuan, baru muncul jika ada angkanya
                         // kebalikan dari sewa operasional
@@ -428,32 +483,54 @@ class BiayaOperasionalController extends Controller
             return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
         }
     }
-    public function load_data_gabung($item,$supir){
+    public function load_data_gabung($item,$customer,$tujuan){
         try {
+                $currentDate = Carbon::now();
                 $data = DB::table('sewa AS s')
                         ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
-                            if($item == 'ALAT'){
-                                $join->on('s.id_sewa', '=', 'so.id_sewa')
-                                    ->where('so.is_aktif', 'Y')
-                                    ->where('so.deskripsi', 'like', $item.'%');
-                                    // ini nge get data alat, pakai like soalnya ALAT blablabla
-                            }else {
-                                $join->on('s.id_sewa', '=', 'so.id_sewa')
-                                    ->where('so.is_aktif', 'Y')
-                                    ->where('so.deskripsi', '=', $item);
-                                    // ini get kalau misal selain alat, langsung get datanya gapake like, karna udah fix deskripsinya
-                            }
+                            $join->on('s.id_sewa', '=', 'so.id_sewa')
+                                ->where('so.is_aktif', 'Y')
+                                ->where('so.deskripsi', '=', $item);
+                                // ini get kalau misal selain alat, langsung get datanya gapake like, karna udah fix deskripsinya
                         })
-                        ->where('s.status', 'PROSES DOORING')
+                        ->whereNull('so.total_dicairkan')
                         ->where('s.jenis_tujuan', 'FTL')
-                        ->where(function($where) use($item,$supir){
+                        ->where('s.status', 'PROSES DOORING')
+                        ->where(function ($where) use ($currentDate) {
+                            $where->where(function ($query) use ($currentDate) {
+                                // h-1 
+                                $query->whereDay('s.tanggal_berangkat', '=', $currentDate->subDay()->day)
+                                    ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
+                                    ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
+                            })
+                            ->orWhere(function ($query) use ($currentDate) {
+                                // h0 
+                                $query->whereDay('s.tanggal_berangkat', '=', $currentDate->day)
+                                    ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
+                                    ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
+                            })
+                            ->orWhere(function ($query) use ($currentDate) {
+                                // h+1 
+                                $query->whereDay('s.tanggal_berangkat', '=', $currentDate->addDay()->day) // Add 2 to get h+1
+                                    ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
+                                    ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
+                            });
+                        })
+                        ->where(function($where) use($item,$customer,$tujuan){
                             // if($item == 'TAMBAHAN UJ'){
                             //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
                             // }
-                            $where->where('s.id_supplier', '=', null)
-                                ->where('s.id_karyawan', '=', $supir);
+                            $where->where('s.id_supplier', '=', null);
                             if($item == 'BURUH' /*|| $item == 'TIMBANG' || $item == 'LEMBUR'*/){
                                 $where->where('s.buruh_pje', '=', 'Y');
+                            }
+                            if($customer!='ALL')
+                            {
+                                $where->where('s.id_customer', '=', $customer);
+                            }
+                            if($tujuan!='ALL')
+                            {
+                                $where->where('s.id_grup_tujuan', '=', $tujuan);
                             }
                         })
                         ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
@@ -467,8 +544,8 @@ class BiayaOperasionalController extends Controller
                             's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
                             'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 'so.total_dicairkan',
                             'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
-                            DB::raw('COALESCE(gt.tally, 0) as tally'), // ini get data tally di grup tujuan (gt), kalau di gt gak diset, nanti nominal 0, kalau 0 ga bakal muncul di frontend
-                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), // ini get data seal di grup tujuan (gt), kalau di gt gak diset, nanti nominal 0, kalau 0 ga bakal muncul di frontend
+                            DB::raw('COALESCE(gt.tally, 0) as tally'), // ini get data tally di grup tujuan (gt), kalau di gt gak diset, nanti total_operasional 0, kalau 0 ga bakal muncul di frontend
+                            DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), // ini get data seal di grup tujuan (gt), kalau di gt gak diset, nanti total_operasional 0, kalau 0 ga bakal muncul di frontend
                             'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
                             'c.nama as customer',
                             'g.nama_grup as nama_grup',
@@ -480,7 +557,7 @@ class BiayaOperasionalController extends Controller
                         ->get();
                         // intinya, pertama get data sewa
                         // terus kamu left join ke data sewa operasional, kalau misal ada sewa operasional, dengan deskripsi tersebut
-                        // pasti bakal muncul nominalnya, misal buruh 15000, alat 30000, tp misal waktu di join ga ada, maka nanti nominal 0
+                        // pasti bakal muncul total_operasionalnya, misal buruh 15000, alat 30000, tp misal waktu di join ga ada, maka nanti total_operasional 0
                         // nah, kalau data 0, nanti datanya dimunculin di frontend, kalau ga 0, ga dimunculin
                         // tapi kalau tally sama seal pelayaran, pokok data master di grup tujuan, baru muncul jika ada angkanya
                         // kebalikan dari sewa operasional
@@ -489,7 +566,114 @@ class BiayaOperasionalController extends Controller
             
             return response()->json(["result" => "success",'data' => $data], 200);
         } catch (\Throwable $th) {
-            return response()->json(["result" => "error", 'message' => $th->getMessage(),'supir'=>$supir], 500);
+            return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
+        }
+    }
+    
+    public function load_customer_sewa($item){
+        try {
+            $currentDate = Carbon::now();
+            $dataCustomerSewa = Sewa::with('getCustomer')
+            // ->distinct('sewa.id_customer') 
+            // ->Join('customer AS c', function ($join) use($item) {
+            //         $join->on('sewa.id_customer', '=', 'c.id')
+            //             ->where('c.is_aktif', 'Y');
+            // })
+            ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
+                if($item == 'ALAT'){
+                    $join->on('sewa.id_sewa', '=', 'so.id_sewa')
+                        ->where('so.is_aktif', 'Y')
+                        ->where('so.deskripsi', 'like', $item.'%');
+                        
+                        // ini nge get data alat, pakai like soalnya ALAT blablabla
+                }else {
+                    $join->on('sewa.id_sewa', '=', 'so.id_sewa')
+                        ->where('so.is_aktif', 'Y')
+                        ->where('so.deskripsi', '=', $item);
+                        // ini get kalau misal selain alat, langsung get datanya gapake like, karna udah fix deskripsinya
+                }
+            })
+            
+            ->whereNull('so.total_dicairkan')
+            ->where('sewa.is_aktif', "Y")
+            ->where('sewa.status', "PROSES DOORING")
+            ->where(function($where) use($item){
+                // if($item == 'TAMBAHAN UJ'){
+                //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
+                // }
+                $where->where('sewa.id_supplier', '=', null);
+                if($item == 'BURUH' /*|| $item == 'TIMBANG' || $item == 'LEMBUR'*/){
+                    $where->where('buruh_pje', '=', 'Y');
+                }
+            })
+            ->where(function ($where) use ($currentDate) {
+                $where->where(function ($query) use ($currentDate) {
+                    // h-1 
+                    $query->whereDay('sewa.tanggal_berangkat', '=', $currentDate->subDay()->day)
+                        ->whereMonth('sewa.tanggal_berangkat', '=', $currentDate->month)
+                        ->whereYear('sewa.tanggal_berangkat', '=', $currentDate->year);
+                })
+                ->orWhere(function ($query) use ($currentDate) {
+                    // h0 
+                    $query->whereDay('sewa.tanggal_berangkat', '=', $currentDate->day)
+                        ->whereMonth('sewa.tanggal_berangkat', '=', $currentDate->month)
+                        ->whereYear('sewa.tanggal_berangkat', '=', $currentDate->year);
+                })
+                ->orWhere(function ($query) use ($currentDate) {
+                    // h+1 
+                    $query->whereDay('sewa.tanggal_berangkat', '=', $currentDate->addDay()->day) // Add 2 to get h+1
+                        ->whereMonth('sewa.tanggal_berangkat', '=', $currentDate->month)
+                        ->whereYear('sewa.tanggal_berangkat', '=', $currentDate->year);
+                });
+            })
+            ->groupBy('sewa.id_customer')
+            ->get();
+            return response()->json(["result" => "success",'data' => $dataCustomerSewa], 200);
+        } catch (\Throwable $th) {
+            return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
+        }
+    }
+    public function load_tujuan_sewa($customer,$item){
+        try {
+            $currentDate = Carbon::now();
+            $dataTujuanSewa = Sewa::with('getTujuan')
+            ->where('is_aktif', "Y")
+            ->where('status', "PROSES DOORING")
+            ->where('id_customer', $customer)
+            ->where(function($where) use($item){
+                // if($item == 'TAMBAHAN UJ'){
+                //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
+                // }
+                $where->where('id_supplier', '=', null);
+                if($item == 'BURUH' /*|| $item == 'TIMBANG' || $item == 'LEMBUR'*/){
+                    $where->where('buruh_pje', '=', 'Y');
+                }
+            })
+            ->where(function ($where) use ($currentDate) {
+                $where->where(function ($query) use ($currentDate) {
+                    // h-1 
+                    $query->whereDay('tanggal_berangkat', '=', $currentDate->subDay()->day)
+                        ->whereMonth('tanggal_berangkat', '=', $currentDate->month)
+                        ->whereYear('tanggal_berangkat', '=', $currentDate->year);
+                })
+                ->orWhere(function ($query) use ($currentDate) {
+                    // h0 
+                    $query->whereDay('tanggal_berangkat', '=', $currentDate->day)
+                        ->whereMonth('tanggal_berangkat', '=', $currentDate->month)
+                        ->whereYear('tanggal_berangkat', '=', $currentDate->year);
+                })
+                ->orWhere(function ($query) use ($currentDate) {
+                    // h+1 
+                    $query->whereDay('tanggal_berangkat', '=', $currentDate->addDay()->day) // Add 2 to get h+1
+                        ->whereMonth('tanggal_berangkat', '=', $currentDate->month)
+                        ->whereYear('tanggal_berangkat', '=', $currentDate->year);
+                });
+            })
+            ->groupBy('sewa.id_grup_tujuan')
+            ->get();
+            return response()->json(["result" => "success",'data' => $dataTujuanSewa], 200);
+        } catch (\Throwable $th) {
+            return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);
         }
     }
 }

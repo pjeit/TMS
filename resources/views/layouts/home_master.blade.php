@@ -20,6 +20,20 @@
   textarea{
     text-transform: uppercase;
   }
+  #scrollToTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99;
+    border-radius: 100%;
+    /* padding: 10px; */
+    background-color: #3e3e3e; /* Change this to your desired button color */
+    border-color: white 2px;
+    color: #fff;
+    cursor: pointer;
+}
+
 
 </style>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -48,6 +62,10 @@
           {{-- @include('sweetalert::alert') --}}
           
         </section>
+
+        {{-- <button id="scrollToTopBtn" class="btn btn-primary" title="Go to top">Top</button> --}}
+        <button id="scrollToTopBtn" class="btn btn-secondary" title="Go to top">↑</button>
+
       </div>
     @include('layouts.footer')
 
@@ -63,7 +81,25 @@
 </body>
 
 <script>
-     $(document).ready(function() {
+  // document.addEventListener("DOMContentLoaded", function () {
+  //       var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+  //       window.addEventListener("scroll", function () {
+  //           // Show or hide the button based on the scroll position
+  //           if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+  //               scrollToTopBtn.style.display = "block";
+  //           } else {
+  //               scrollToTopBtn.style.display = "none";
+  //           }
+  //       });
+
+  //       // Scroll to the top when the button is clicked
+  //       scrollToTopBtn.addEventListener("click", function () {
+  //           document.body.scrollTop = 0; // For Safari
+  //           document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE, and Opera
+  //       });
+  //   });
+    $(document).ready(function() {
         var sessionStatus = "<?= session()->has('status') ? session()->get('status') : null ?>";
         var sessionMsg = "<?= session()->has('msg') ? session()->get('msg') : null ?>";
         // console.log('sessionMsg', sessionMsg);
@@ -93,6 +129,18 @@
                 title: sessionMsg
             })
         }
+          $(window).scroll(function () {
+            if ($(this).scrollTop() > 100) {
+                $('#scrollToTopBtn').fadeIn();
+            } else {
+                $('#scrollToTopBtn').fadeOut();
+            }
+        });
+
+        // Smooth scroll to top when the button is clicked
+        $('#scrollToTopBtn').click(function () {
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+        });
     });
 </script>
 

@@ -462,6 +462,9 @@
                   request()->is('pembayaran_sdt*') ||
                   request()->is('pencairan_komisi_driver*')||
                   request()->is('klaim_supir*')||
+                  request()->is('lembur_mekanik*')||
+                  request()->is('bonus_supir*')||
+
                   request()->is('tagihan_rekanan*')||
                   request()->is('tagihan_pembayaran*')||
                   request()->is('pencairan_komisi_customer*')||
@@ -492,7 +495,17 @@
               </li>
             </ul>
             @endcan
-
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('bonus_supir.index')}}"
+                  class="nav-link {{request()->is('bonus_supir*')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Bonus Supir
+                  </p>
+                </a>
+              </li>
+            </ul>
             @can('READ_KLAIM_SUPIR')
             <ul class="nav nav-treeview">
               <li class="nav-item">
@@ -506,7 +519,18 @@
               </li>
             </ul>
             @endcan
-
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{route('lembur_mekanik.index')}}"
+                  class="nav-link {{request()->is('lembur_mekanik*')? ' active' : '' }} " style="font-weight: 500;">
+                  <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                  <p>
+                    Lembur Mekanik
+                  </p>
+                </a>
+              </li>
+            </ul>
+            
             <ul class="nav nav-treeview">
               <li class="nav-item   {{ 
                         request()->is('pembayaran_jo*') ||
