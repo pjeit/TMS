@@ -109,7 +109,8 @@ class CoaController extends Controller
                 )
             ); 
             
-            return redirect()->route('coa.index')->with('status','Sukses Menambahkan Coa Baru!!');
+            return redirect()->route('coa.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambah data coa!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -196,7 +197,9 @@ class CoaController extends Controller
                     'is_aktif' => "Y",
                 )
             );
-            return redirect()->route('coa.index')->with('status','Sukses Mengubah Data Coa!!');
+            // return redirect()->route('coa.index')->with('status','Sukses Mengubah Data Coa!!');
+            return redirect()->route('coa.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data coa!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -221,6 +224,8 @@ class CoaController extends Controller
             'updated_by'=> $user, // masih hardcode nanti diganti cookies
             )
         );
-        return redirect()->route('coa.index')->with('status','Sukses menghapus Data Coa!!');
+        // return redirect()->route('coa.index')->with('status','Sukses menghapus Data Coa!!');
+            return redirect()->route('coa.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data coa!']);
+
     }
 }

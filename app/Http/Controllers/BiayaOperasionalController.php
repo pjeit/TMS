@@ -423,7 +423,10 @@ class BiayaOperasionalController extends Controller
                             //     $where->where('s.id_supplier', '=', null);
                             // }
                             if($item == 'SEAL PELAYARAN'){
-                                $where->where('s.jenis_order', 'OUTBOUND');
+                                $where->where('s.jenis_order', 'OUTBOUND')->where('gt.seal_pelayaran','!=',0);
+                            }
+                            if($item == 'TALLY'){
+                                $where->where('gt.tally','!=',0);
                             }
                         })
                         ->where(function ($where) use ($currentDate) {

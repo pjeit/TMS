@@ -37,13 +37,12 @@
                     <table id="TabelLembur" class="table table-bordered table-striped" width="100%">
                         <thead>
                             <tr>
-                                <th>Supir</th>
-                                <th>Jenis Lembur</th>
                                 <th>Tanggal Lembur</th>
+                                <th>Mekanik</th>
                                 <th>Jam Mulai Lembur</th>
                                 <th>Jam Selesai Lembur</th>
                                 <th>Nominal Lembur</th>
-                                <th>Statu</th>
+                                <th>Status</th>
                                 <th>Keterangan</th>
                                 <th></th>
                             </tr>
@@ -52,9 +51,8 @@
                             @if (isset($dataLemburMekanik))
                                 @foreach ($dataLemburMekanik as $item)
                                 <tr>
-                                    <td>{{ $item->karyawan->nama_panggilan}} ({{ $item->karyawan->telp1}})</td>
-                                    <td>{{ $item->jenis_lembur}}</td>
                                     <td>{{ date("d-M-Y", strtotime($item->tanggal_lembur))}}</td>
+                                    <td>{{ $item->karyawan->nama_panggilan}} ({{ $item->karyawan->telp1}})</td>
                                     <td>{{ $item->jam_mulai_lembur}}</td>
                                     <td>{{ $item->jam_akhir_lembur}}</td>
                                     <td>Rp. {{number_format($item->nominal_lembur,2)  }}
@@ -130,8 +128,8 @@
 </div>
 <div class="modal fade" id="modal" >
         <div class="modal-dialog modal-lg ">
-             <form action="{{ route('lembur_mekanik.store') }}" id="post_data" method="POST" enctype="multipart/form-data">
-              @csrf
+            <form action="{{ route('lembur_mekanik.store') }}" id="post_data" method="POST" enctype="multipart/form-data">
+            @csrf
                 <div class="modal-content radiusSendiri">
                     <div class="modal-header">
                         <h5 class="modal-title">Form Data</h5>
@@ -167,7 +165,7 @@
                                         <div class='row'>
                                             <div class="col-lg-12">
                                                 <div class="row">
-                                                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                                         <label for="tanggal_lembur">Tanggal Lembur<span style="color:red">*</span></label>
                                                         <div class="input-group mb-0">
                                                             <div class="input-group-prepend">
@@ -181,10 +179,27 @@
                                                             @enderror
                                                         </div>
                                                     </div>
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                        {{-- <button class="btn btn-primary radiusSendiri mt-2 mb-2" type="button" id="btn_tambah">
+                                                            <i class="fa fa-plus-circle"> </i> Tambah Mekanik
+                                                        </button> --}}
+                                                        <label for="select_mekanik">Mekanik<span style="color:red">*</span></label>
+                                                        <select class="form-control select2  @error('select_mekanik') is-invalid @enderror" style="width: 100%;" id='select_mekanik' name="select_mekanik">
+                                                            <option value="">Pilih Mekanik</option>
+                                                            @foreach ($dataDriver as $drvr)
+                                                                <option value="{{$drvr->id}}" {{old('select_mekanik')==$drvr->id?'selected':''}} nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('select_mekanik')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror   
+                                                    </div>
                                                     
                                                 </div>
                                                 <div class="row">
-                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
                                                         <label for="jam_mulai">Jam Mulai<span style="color:red">*</span></label>
                                                         <input class="form-control" name="jam_mulai" type="time" id="jam_mulai" value="17:00" min="17:00" max="08:15">
                                                         {{-- <select class="form-control select2" name="jam_mulai" data-live-search="true" data-show-subtext="true">
@@ -200,7 +215,7 @@
                                                             </div>
                                                         @enderror
                                                     </div>
-                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
                                                         <label for="jam_selesai">Jam Selesai<span style="color:red">*</span></label>
                                                         <input class="form-control" name="jam_selesai" type="time" id="jam_selesai" min="17:00" max="08:15">
                                                         {{-- <select class="form-control select2" name="jam_selesai" data-live-search="true" data-show-subtext="true">
@@ -216,25 +231,7 @@
                                                             </div>
                                                         @enderror
                                                     </div>
-                                                </div>
-                                                
-                                                <div class="row">
-                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                                        <label for="select_mekanik">Mekanik<span style="color:red">*</span></label>
-                                                            <select class="form-control select2  @error('select_mekanik') is-invalid @enderror" style="width: 100%;" id='select_mekanik' name="select_mekanik">
-                                                            <option value="">Pilih Mekanik</option>
-                                                            @foreach ($dataDriver as $drvr)
-                                                                <option value="{{$drvr->id}}" {{old('select_mekanik')==$drvr->id?'selected':''}} nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('select_mekanik')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror   
-                                                        <input type="hidden" id="driver_nama" name="driver_nama" value="" placeholder="driver_nama">
-                                                    </div>
-                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
                                                         <label for="total_nominal">Nominal Lembur<span style="color:red">*</span></label>
                                                         <div class="input-group mb-0">
                                                             <div class="input-group-prepend">
@@ -247,10 +244,28 @@
                                                                 </div>
                                                             @enderror
                                                         </div>
-                                                        
                                                     </div>
-
                                                 </div>
+                                                
+                                                {{-- <div class="row">
+                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                                        <button class="btn btn-primary radiusSendiri mt-2 mb-2" type="button" id="btn_tambah">
+                                                            <i class="fa fa-plus-circle"> </i> Tambah Mekanik
+                                                        </button>
+                                                        <label for="select_mekanik">Mekanik<span style="color:red">*</span></label>
+                                                        <select class="form-control select2  @error('select_mekanik') is-invalid @enderror" style="width: 100%;" id='select_mekanik' name="select_mekanik">
+                                                            <option value="">Pilih Mekanik</option>
+                                                            @foreach ($dataDriver as $drvr)
+                                                                <option value="{{$drvr->id}}" {{old('select_mekanik')==$drvr->id?'selected':''}} nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
+                                                            @endforeach
+                                                        </select>
+                                                        @error('select_mekanik')
+                                                            <div class="invalid-feedback">
+                                                                {{ $message }}
+                                                            </div>
+                                                        @enderror   
+                                                    </div>
+                                                </div> --}}
                                             </div>
                                         </div>
                                 </div>
@@ -258,7 +273,9 @@
                             {{-- kendaraan --}}
                                 <div class="tab-pane fade" id="justify-kendaraan" role="tabpanel" aria-labelledby="justify-kendaraan-tab">
                                     <input type="hidden" id="maxID" value="0">
-                                    <button class="btn btn-primary radiusSendiri mt-2 mb-2" type="button" id="btn_tambah">Tambah Kendaraan</button>
+                                    <button class="btn btn-primary radiusSendiri mt-2 mb-2" type="button" id="btn_tambah">
+                                        <i class="fa fa-plus-circle"> </i> Tambah Kendaraan
+                                    </button>
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -502,14 +519,14 @@ $(document).ready(function () {
         $('#maxID').val(maxID);
     });
     $(document).on('click','.btnDelete',function(){
-        var maxID = $('#maxIndex').val();
+        var maxID = $('#maxID').val();
         $(this).closest('tr').remove();
 
         if($(this).closest('tr').attr('id') == maxID)
         {
             maxID--;
         }
-        $('#maxIndex').val(maxID);
+        $('#maxID').val(maxID);
             const Toast = Swal.mixin({
             toast: true,
             position: 'top',
@@ -598,7 +615,7 @@ $(document).ready(function () {
             },
             {
                 "orderable": false,
-                "targets": [0,1,2,3,4,5,6]
+                "targets": [0,1,2,3,4,5]
             }
     
         ],

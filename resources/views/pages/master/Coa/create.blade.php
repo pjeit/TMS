@@ -76,12 +76,12 @@
                         <label for="tipe">Masuk dalam transaksi non operasional ?</label>
                         <br>
                         <div class="icheck-primary d-inline">
-                            <input id="is_kas_bank_lain_Y" type="radio" name="is_kas_bank_lain" value="Y" checked>
-                            <label class="form-check-label" for="is_kas_bank_lain_Y">Ya</label>
+                            <input id="is_show_Y" type="radio" name="is_show" value="Y" checked>
+                            <label class="form-check-label" for="is_show_Y">Ya</label>
                         </div>
                         <div class="icheck-primary d-inline ml-5">
-                            <input id="is_kas_bank_lain_N" type="radio" name="is_kas_bank_lain" value="N" >
-                            <label class="form-check-label" for="is_kas_bank_lain_N">Tidak</label><br>
+                            <input id="is_show_N" type="radio" name="is_show" value="N" >
+                            <label class="form-check-label" for="is_show_N">Tidak</label><br>
                         </div>
                     </div>
                 </div>

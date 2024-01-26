@@ -824,7 +824,9 @@ class KaryawanController extends Controller
                 'updated_by' => $user, // masih hardcode nanti diganti cookies
               )
             );
-             return redirect()->route('karyawan.index')->with('status','Sukses Menghapus Data Karyawan!');
+            // return redirect()->route('karyawan.index')->with('status','Sukses Menghapus Data Karyawan!');
+            return redirect()->route('karyawan.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data karyawan!']);
+
 
         }
         catch (ValidationException $e) {

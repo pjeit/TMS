@@ -29,7 +29,7 @@
         <div class="container-fluid">
             <div class="card radiusSendiri">
                 <div class="card-header ">
-                    <a href="{{ route('pembayaran_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                    <a href="{{ route('cetak_invoice.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                     <button type="button" class="btn btn-success radiusSendiri" id="btnSimpan">
                         <i class="fa fa-fw fa-save"></i> Simpan    
                     </button>
@@ -197,7 +197,7 @@
                 </thead>
                 <tbody>
                 @php
-                    $iteration = 0;
+                    $iteration = 1;
                 @endphp
                 {{-- @dd($data->invoiceDetails); --}}
                 @isset($data)
@@ -616,7 +616,6 @@
             addCostPisah(parseFloat(ketentuan_bayar));
         }
 
-        calculateGrandTotal(); // pas load awal langsung hitung grand total
 
         $(document).on('keyup', '#diskon', function(){ // kalau diskon berubah, hitung total 
             var id_sewa = $('#key').val();
@@ -644,83 +643,6 @@
             }
 
 		});
-
-        function getDate(hari){
-            var today = new Date();
-            var set_hari = new Date(today);
-            set_hari.setDate(today.getDate() + hari);
-
-            $('#jatuh_tempo').datepicker({
-                autoclose: false,
-                format: "dd-M-yyyy",
-                todayHighlight: true,
-                language: 'en',
-                // endDate: '+0d',
-                startDate: today,
-            }).datepicker("setDate", set_hari);
-
-        }
-
-        function addCostPisah(set_hari_jatuh_tempo){
-            var total = 0;
-            $(".addcost_pisah").each(function() {
-                var value = parseFloat($(this).val()) || 0;
-                total += value;
-            });
-            // console.log('total', total);
-            $("#total_pisah").val(total);
-
-            var today = new Date();
-            var set_hari = new Date(today);
-            set_hari.setDate(today.getDate() + set_hari_jatuh_tempo);
-
-            $('#jatuh_tempo_pisah').datepicker({
-                autoclose: false,
-                format: "dd-M-yyyy",
-                todayHighlight: true,
-                language: 'en',
-                startDate: today,
-            }).datepicker("setDate", set_hari);
-            
-            if($("#total_pisah").val()==0)
-            {
-                $('#jatuh_tempo_pisah_kontainer').hide();
-            }
-            else
-            {
-                $('#jatuh_tempo_pisah_kontainer').show();
-            }
-        }
-
-        function calculateGrandTotal(){ // hitung grand total buat ditagihkan 
-            var grandTotal = 0; 
-            var grandTotalMuatan = 0; 
-
-            var grandTotalText = document.getElementById("total_tagihan_text");
-
-            var subtotals = document.querySelectorAll('.hitung_subtotal');
-            var muatan_satuan = document.querySelectorAll('.muatan_satuan');
-
-            muatan_satuan.forEach(function(muatan) {
-                grandTotalMuatan += parseFloat(muatan.value); // Convert the value to a number
-            });
-
-            subtotals.forEach(function(subtotal) {
-                grandTotal += parseFloat(subtotal.value); // Convert the value to a number
-            });
-            if(grandTotal && grandTotal >= 0){
-                $('#total_tagihan').val(moneyMask(grandTotal));
-                var total_dibayar = $('#total_dibayar').val() == 0 || $('#total_dibayar').val() == NULL? 0:$('#total_dibayar').val();
-                var total_sisa = grandTotal - parseFloat( total_dibayar );
-                $('#total_sisa').val( moneyMask(total_sisa) );
-                grandTotalText.textContent = "Rp. " + moneyMask(grandTotal); // Change the text content of the span
-            }
-
-            if(grandTotalMuatan && grandTotalMuatan >= 0)
-            {
-                $('#total_jumlah_muatan').val(grandTotalMuatan);
-            }
-        }
 
         $(document).on('click', '.detail', function(){ // open detail 
             clearData(); // execute clear data dulu tiap open modal
@@ -778,8 +700,8 @@
         $(document).on('change', '#addcost_sewa', function(){ 
             let index = $("#addcost_sewa option:selected").attr('index');
             // console.log(index);
-            let selected_sewa = $("#addcost_sewa").val();
-            let key = $('#key').val();
+            let selected_sewa = $("#select_modal_sewa").val(); // ini ambil value id sewa dari
+            let key = $('#key').val(); // ini index doang
             if(key != selected_sewa){
                 $('#is_berubah').val('TRUE');
             }else{
@@ -790,45 +712,6 @@
 
             updateDetail(index);
         });
-
-        function updateDetail(index){
-            const data = dataSewa[index];
-            // console.log(data==undefined);
-            if(data!=undefined)
-            {
-                $('#tanggal_berangkat').val( dateMask(data.tanggal_berangkat) );
-                $('#nama_tujuan').val( data.nama_tujuan ); 
-                $('#no_kontainer').val( data.no_kontainer ); 
-                $('#no_seal').val( data.seal_pelayaran ); 
-                $('#no_sj').val( data.no_surat_jalan ); 
-                $('#catatan').val( data.catatan ); 
-                $('#tarif').val( moneyMask(data.total_tarif) ); 
-                $('#addcost').val(''); 
-                $('#diskon').val(''); 
-                // $('#subtotal').val(moneyMask(data.total_tarif)); 
-                if(data.sewa_operasional.length > 0){
-                    showAddcostDetails(index, 'update');
-                }
-                // else{
-                //     hitung();
-                // }
-                // hitung();
-
-            }
-            else
-            {
-                $('#tanggal_berangkat').val('');
-                $('#nama_tujuan').val(''); 
-                $('#no_kontainer').val(''); 
-                $('#no_seal').val(''); 
-                $('#no_sj').val(''); 
-                $('#catatan').val(''); 
-                $('#tarif').val(''); 
-                $('#addcost').val(''); 
-                $('#diskon').val(''); 
-                $('#subtotal').val(''); 
-            }
-        }
 
         $(document).on('click', '.save_detail', function(event){ // save detail
             var key = $('#key').val(); 
@@ -896,13 +779,234 @@
         $(document).on('click', '#save_sewa_baru', function(event){ // save detail
 
             save_sewa('baru',  null);
+            var key = $('#key').val(); 
+            var selectedOption = $('#billingTo').find('option:selected');
+            var ketentuan_bayar = selectedOption.attr('ketentuan_bayar');
+            
+            if(ketentuan_bayar==undefined){
+                getDate(0);
+                addCostPisah(0);
+            }else{
+                getDate(parseFloat(ketentuan_bayar) );
+                addCostPisah(parseFloat(ketentuan_bayar));
+            }
+
             // updateAddCost($('#addcost_sewa').val()); //update data addcost yg berubah
             // calculateGrandTotal(); //pas load awal langsung hitung grand total
             // cekPisahInvoice();
+            // hitung();
             // clearData();
             $('#modal_detail').modal('hide'); // close modal
         });
+        
+        $(document).on('click', '.check_tagih', function (event) {
+            const id_tagih = this.getAttribute('id_tagih');
+            var di_pisah = document.getElementById('addcost_is_dipisahkan_' + id_tagih);
 
+            if (this.checked == false) {
+                di_pisah.checked = false;
+                $("#addcost_is_dipisahkan_" + id_tagih).prop("disabled", true);
+            }else{
+                $("#addcost_is_dipisahkan_" + id_tagih).prop("disabled", false);
+            }
+
+            hitungAddCost();
+        });
+        
+        $(document).on('click', '.check_pisah', function (event) {
+            hitungAddCost();
+        });
+
+        $(document).on('click', '#tambah', function (event) {
+            let lastRow = $("#tabel_addcost > tbody tr:last");
+            let id = 0;
+            
+            if (lastRow.length >= 0) {
+                id = lastRow.attr("id");
+                if(id == undefined){
+                    id = 0;
+                }else{
+                    id++;
+                }
+            }
+            
+            $('#tabel_addcost > tbody:last-child').append(
+                `
+                    <tr id="${id}" id_addcost="x_${id}">
+                        <td>
+                            <input type="text" id="addcost_deskripsi_x_${id}" class="form-control" />
+                        </td>
+                        <td>
+                            <input type="text" id="addcost_total_operasional_x_${id}" id_add_cost="x_${id}" class="form-control numaja uang hitungBiaya hitungAddCost" />
+                        </td>
+                        <td style="text-align:center;">
+                            <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_x_${id}" id_tagih="x_${id}" name="addcost_is_ditagihkan_x_${id}" >
+                        </td>
+                        <td style="text-align:center;">
+                            <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_x_${id}" id_pisah="x_${id}" name="addcost_is_dipisahkan_x_${id}" disabled>
+                        </td>
+                        <td>
+                            <input type="text" id="addcost_catatan_x_${id}" class="form-control w-auto" />
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger delete" value="x_${id}"><i class="fa fa-trash-alt"></i></button>
+                        </td>
+                    </tr>
+                `
+            );
+
+            $("input").focusout(function () {
+                this.value = this.value.toLocaleUpperCase();
+            });
+            $("textarea").focusout(function () {
+                this.value = this.value.toLocaleUpperCase();
+            });
+        });
+        //INI DELETE ADDCOST YANG ADA DIDALEM MODAL
+        $(document).on('click', '.delete', function (event) {
+            var closestTR = this.closest('tr');
+            closestTR.remove();
+            hitungAddCost();
+
+        });
+
+        var deletedValues = [];
+
+        $(document).on('click', '.deleteParent', function (event) {
+
+            var closestTR = this.closest('tr');
+            closestTR.remove();
+
+            deletedValues.push(this.value);
+            $('#deleted').val(deletedValues);
+            console.log();
+            // $('#deleted').val(deletedValues.join(','));
+            cekPisahInvoice();
+            calculateGrandTotal();
+            hitung();
+        });
+
+        $(document).on('keyup', '.hitungBiaya', function (event) {
+            hitungAddCost();
+        });
+
+        // ==============================METHOD ==============================
+        calculateGrandTotal(); // pas load awal langsung hitung grand total
+        cekPisahInvoice();
+
+        
+        function addCostPisah(set_hari_jatuh_tempo){
+            var total = 0;
+            $(".addcost_pisah").each(function() {
+                var value = parseFloat($(this).val()) || 0;
+                total += value;
+            });
+            // console.log('total', total);
+            $("#total_pisah").val(total);
+
+            var today = new Date();
+            var set_hari = new Date(today);
+            set_hari.setDate(today.getDate() + set_hari_jatuh_tempo);
+
+            $('#jatuh_tempo_pisah').datepicker({
+                autoclose: false,
+                format: "dd-M-yyyy",
+                todayHighlight: true,
+                language: 'en',
+                startDate: today,
+            }).datepicker("setDate", set_hari);
+            
+            if($("#total_pisah").val()==0)
+            {
+                $('#jatuh_tempo_pisah_kontainer').hide();
+            }
+            else
+            {
+                $('#jatuh_tempo_pisah_kontainer').show();
+            }
+        }
+        function calculateGrandTotal(){ // hitung grand total buat ditagihkan (yang diatas total semuanya)
+            var grandTotal = 0; 
+            var grandTotalMuatan = 0; 
+
+            var grandTotalText = document.getElementById("total_tagihan_text");
+
+            var subtotals = document.querySelectorAll('.hitung_subtotal');
+            var muatan_satuan = document.querySelectorAll('.muatan_satuan');
+
+            muatan_satuan.forEach(function(muatan) {
+                grandTotalMuatan += parseFloat(muatan.value); // Convert the value to a number
+            });
+
+            subtotals.forEach(function(subtotal) {
+                grandTotal += parseFloat(subtotal.value); // Convert the value to a number
+            });
+            if(/*grandTotal && */grandTotal >= 0){
+                $('#total_tagihan').val(moneyMask(grandTotal));
+                var total_dibayar = $('#total_dibayar').val() == 0 || $('#total_dibayar').val() == NULL? 0:$('#total_dibayar').val();
+                var total_sisa = grandTotal - parseFloat( total_dibayar );
+                $('#total_sisa').val( moneyMask(total_sisa) );
+                grandTotalText.textContent = "Rp. " + moneyMask(grandTotal); // Change the text content of the span
+            }
+
+            if(/*grandTotalMuatan && */grandTotalMuatan >= 0)
+            {
+                $('#total_jumlah_muatan').val(grandTotalMuatan);
+            }
+        }
+        function getDate(hari){
+            var today = new Date();
+            var set_hari = new Date(today);
+            set_hari.setDate(today.getDate() + hari);
+
+            $('#jatuh_tempo').datepicker({
+                autoclose: false,
+                format: "dd-M-yyyy",
+                todayHighlight: true,
+                language: 'en',
+                // endDate: '+0d',
+                startDate: today,
+            }).datepicker("setDate", set_hari);
+
+        }
+        function updateDetail(index){
+            const data = dataSewa[index];
+            // console.log(data==undefined);
+            if(data!=undefined)
+            {
+                $('#tanggal_berangkat').val( dateMask(data.tanggal_berangkat) );
+                $('#nama_tujuan').val( data.nama_tujuan ); 
+                $('#no_kontainer').val( data.no_kontainer ); 
+                $('#no_seal').val( data.seal_pelayaran ); 
+                $('#no_sj').val( data.no_surat_jalan ); 
+                $('#catatan').val( data.catatan ); 
+                $('#tarif').val( moneyMask(data.total_tarif) ); 
+                $('#addcost').val(''); 
+                $('#diskon').val(''); 
+                // $('#subtotal').val(moneyMask(data.total_tarif)); 
+                if(data.sewa_operasional.length > 0){
+                    showAddcostDetails(index, 'update');
+                }
+                // else{
+                //     hitung();
+                // }
+                // hitung();
+
+            }
+            else
+            {
+                $('#tanggal_berangkat').val('');
+                $('#nama_tujuan').val(''); 
+                $('#no_kontainer').val(''); 
+                $('#no_seal').val(''); 
+                $('#no_sj').val(''); 
+                $('#catatan').val(''); 
+                $('#tarif').val(''); 
+                $('#addcost').val(''); 
+                $('#diskon').val(''); 
+                $('#subtotal').val(''); 
+            }
+        }
         function save_sewa(jenis, key){
             let index = $("#addcost_sewa option:selected").attr('index');
             const data = dataSewa[index];
@@ -1023,12 +1127,13 @@
             });
 
             $("#total_pisah").val(total);
+            updateSewa(data.id_sewa);
             updateAddCost(data.id_sewa); //update data addcost yg berubah
             calculateGrandTotal(); //pas load awal langsung hitung grand total
             cekPisahInvoice();
             clearData();
+            // hitung();
         }
-
         function updateSewa(key){
             let selected_sewa = $('#addcost_sewa').val();
             let selected_index = $("#addcost_sewa option:selected").attr('index');
@@ -1051,6 +1156,7 @@
             $('#hidden_id_jo_'+key).val( data.id_jo );
             $('#hidden_id_jo_detail_'+key).val( data.id_jo_detail );
             $('#subtotal_hidden_'+key).val( normalize($('#subtotal').val()) );
+            console.log($('#subtotal').val());
             $('#muatan_satuan_'+key).val( data.jumlah_muatan != null? data.jumlah_muatan:'0' );
             $('#hidden_nama_tujuan_'+key).val( data.nama_tujuan );
             $('#hidden_driver_'+key).val( data.nama_driver != null? data.no_polisi + ' ' + data.nama_driver:'DRIVER REKANAN' );
@@ -1062,7 +1168,6 @@
             $('#hidden_diskon_'+key).val( !isNaN(parseFloat($('#diskon').val()))? normalize($('#diskon').val()):0 );
             
         } 
-        
         function updateAddCost(key){
             let id_sewa = $('#hidden_id_sewa_'+key).val();
             let cekAddCost = $('#tabel_addcost > tbody > tr');
@@ -1115,7 +1220,6 @@
                 // $('#uang_jalan_'+key).val(total_biaya.toLocaleString());
             }
         }
-
         function showAddcostDetails(key, type){
             const data = dataSewa[key];
             let details = '';
@@ -1165,7 +1269,6 @@
                 // hitung();
             }
         }
-
         function showAddcostDetailsBaru(key){
             var details = $('#detail_addcost_baru_'+key).val(); 
             if (details && (details != null)) { // cek apakah ada isi detail addcost
@@ -1201,97 +1304,6 @@
             $('.select2').select2({
             })
         }
-
-        $(document).on('click', '.check_tagih', function (event) {
-            const id_tagih = this.getAttribute('id_tagih');
-            var di_pisah = document.getElementById('addcost_is_dipisahkan_' + id_tagih);
-
-            if (this.checked == false) {
-                di_pisah.checked = false;
-                $("#addcost_is_dipisahkan_" + id_tagih).prop("disabled", true);
-            }else{
-                $("#addcost_is_dipisahkan_" + id_tagih).prop("disabled", false);
-            }
-
-            hitungAddCost();
-        });
-        
-        $(document).on('click', '.check_pisah', function (event) {
-            hitungAddCost();
-        });
-
-        $(document).on('click', '#tambah', function (event) {
-            let lastRow = $("#tabel_addcost > tbody tr:last");
-            let id = 0;
-            
-            if (lastRow.length >= 0) {
-                id = lastRow.attr("id");
-                if(id == undefined){
-                    id = 0;
-                }else{
-                    id++;
-                }
-            }
-            
-            $('#tabel_addcost > tbody:last-child').append(
-                `
-                    <tr id="${id}" id_addcost="x_${id}">
-                        <td>
-                            <input type="text" id="addcost_deskripsi_x_${id}" class="form-control" />
-                        </td>
-                        <td>
-                            <input type="text" id="addcost_total_operasional_x_${id}" id_add_cost="x_${id}" class="form-control numaja uang hitungBiaya hitungAddCost" />
-                        </td>
-                        <td style="text-align:center;">
-                            <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_x_${id}" id_tagih="x_${id}" name="addcost_is_ditagihkan_x_${id}" >
-                        </td>
-                        <td style="text-align:center;">
-                            <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_x_${id}" id_pisah="x_${id}" name="addcost_is_dipisahkan_x_${id}" disabled>
-                        </td>
-                        <td>
-                            <input type="text" id="addcost_catatan_x_${id}" class="form-control w-auto" />
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger delete" value="x_${id}"><i class="fa fa-trash-alt"></i></button>
-                        </td>
-                    </tr>
-                `
-            );
-
-            $("input").focusout(function () {
-                this.value = this.value.toLocaleUpperCase();
-            });
-            $("textarea").focusout(function () {
-                this.value = this.value.toLocaleUpperCase();
-            });
-        });
-
-        $(document).on('click', '.delete', function (event) {
-            var closestTR = this.closest('tr');
-            closestTR.remove();
-            hitungAddCost();
-
-        });
-
-        var deletedValues = [];
-
-        $(document).on('click', '.deleteParent', function (event) {
-
-            var closestTR = this.closest('tr');
-            closestTR.remove();
-
-            deletedValues.push(this.value);
-            $('#deleted').val(deletedValues);
-            // $('#deleted').val(deletedValues.join(','));
-            cekPisahInvoice();
-            calculateGrandTotal();
-            
-        });
-
-        $(document).on('keyup', '.hitungBiaya', function (event) {
-            hitungAddCost();
-        });
-
         function hitung(){ // hitung tarif + addcost - diskon 
             var id_sewa = $('#key').val();
             // var tarif = parseFloat($('#tarif').val().replace(/,/g, ''));
@@ -1310,7 +1322,6 @@
             // console.log(addcost);
             $('#subtotal').val(moneyMask(subtotal));
         }
-
         function hitungAddCost(){
             let addCost = document.querySelectorAll('.hitungAddCost');
             let total_add_cost = 0;
@@ -1335,7 +1346,6 @@
             $('#addcost_pisah').val(moneyMask(total_add_cost_pisah));
             $('#subtotal').val( moneyMask(tarif+total_add_cost) );
         }
-
         function clearData(){ // clear data sebelum buka modal 
             $('#tanggal_berangkat').val('');
             $('#tanggal_berangkat').val('');
@@ -1352,8 +1362,6 @@
             $('#addcost_sewa').empty();
             $('#tabel_addcost tbody').empty(); // clear tabel detail addcost di dalam modal
         }
-        
-        cekPisahInvoice();
         function cekPisahInvoice(){ //pisah_invoice
             $('#is_pisah_invoice').val('FALSE');
 

@@ -538,7 +538,7 @@ height: 20px;
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja" readonly>
+                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format(0) }}" class="form-control uang numaja" readonly>
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
                                                         <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
@@ -592,7 +592,7 @@ height: 20px;
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja" readonly>
+                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format(0) }}" class="form-control uang numaja" readonly>
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
                                                         <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
@@ -654,7 +654,7 @@ height: 20px;
             format: "dd-M-yyyy",
             todayHighlight: true,
             language:'en',
-            endDate: "0d"
+            // endDate: "0d"
         });
         // var centangCheckbox = $('.centang_cekbox');
         var cek_tagih = $('.cek_tagih');

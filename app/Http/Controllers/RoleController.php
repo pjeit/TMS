@@ -78,7 +78,7 @@ class RoleController extends Controller
             ], $pesanKustom);
 
             $data = $request->collect();
-          
+
             $dataRolemaxID = DB::table('roles')
             ->where('is_aktif', '=', 'Y')
             ->max('id');
@@ -87,15 +87,18 @@ class RoleController extends Controller
                 ->insert(array(
                     'id'=>$dataRolemaxID+1,
                     'name' => strtoupper($data['nama']),
-                    'created_at'=>VariableHelper::TanggalFormat(), 
+                    'guard_name' => 'web',
                     'created_by'=> $user,
-                    'updated_at'=> VariableHelper::TanggalFormat(),
+                    'created_at'=>VariableHelper::TanggalFormat(), 
                     'updated_by'=> $user,
+                    'updated_at'=> VariableHelper::TanggalFormat(),
                     'is_aktif' => "Y",
 
                 )
             ); 
-            return redirect()->route('role.index')->with('status','Sukses Menambahkan Role Baru!!');
+            // return redirect()->route('role.index')->with('status','Sukses Menambahkan Role Baru!!');
+            return redirect()->route('role.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambah data role!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -121,7 +124,7 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         //
-          return view('pages.master.role.edit',[
+        return view('pages.master.role.edit',[
             'role'=>$role,
             'judul'=>"Role",
 
@@ -145,9 +148,7 @@ class RoleController extends Controller
         try {
 
             $pesanKustom = [
-             
                 'nama.required' => 'Nama Role Harus diisi!',
-      
             ];
             
             $request->validate([
@@ -155,7 +156,6 @@ class RoleController extends Controller
             ], $pesanKustom);
 
             $data = $request->collect();
-          
             DB::table('roles')
             ->where('id', $role['id'])
             ->update(array(
@@ -166,7 +166,9 @@ class RoleController extends Controller
 
                 )
             ); 
-            return redirect()->route('role.index')->with('status','Sukses Mengubah Data role!!');
+            // return redirect()->route('role.index')->with('status','Sukses Mengubah Data role!!');
+            return redirect()->route('role.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data role!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -191,9 +193,11 @@ class RoleController extends Controller
                 'is_aktif' => "N",
                 'updated_at'=> VariableHelper::TanggalFormat(),
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
-              )
+            )
             );
-             return redirect()->route('role.index')->with('status','Sukses Menghapus Data Role!!');
+            // return redirect()->route('role.index')->with('status','Sukses Menghapus Data Role!!');
+            return redirect()->route('role.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data role!']);
+
 
         }
         catch (ValidationException $e) {

@@ -100,8 +100,8 @@ class CustomerController extends Controller
             //         $grup->save();
             //     }
             // }
+            return redirect()->route('customer.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambah data customer!']);
 
-            return redirect()->route('customer.index')->with('status','Success!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -198,7 +198,8 @@ class CustomerController extends Controller
             //     }
             // }
 
-            return redirect()->route('customer.index')->with('status','Success!!');
+            return redirect()->route('customer.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data customer!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -218,6 +219,7 @@ class CustomerController extends Controller
         $customer->is_aktif = "N";
         $customer->save();
 
-        return redirect()->route('customer.index')->with('status','Success!!');
+        return redirect()->route('customer.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data customer!']);
+
     }
 }

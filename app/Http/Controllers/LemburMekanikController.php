@@ -127,7 +127,7 @@ class LemburMekanikController extends Controller
                     {
                         foreach ($data['kendaraan'] as $key => $value) {
                             $pathFotoLembur = "";
-                            if ($value['foto_lembur']) {
+                            if (isset($value['foto_lembur'])) {
                                 $fotoNota = $value['foto_lembur'];
                                 $ekstensiGambar = $fotoNota->getClientOriginalExtension();
                                 $nama_gambar = time().'_'.$value['no_polisi'].'_foto_lembur'.'.' . $ekstensiGambar;
@@ -218,6 +218,15 @@ class LemburMekanikController extends Controller
             // ->where('grup_tujuan.is_aktif', '=', "Y")
             // ->orderBy('grup_tujuan.nama_tujuan')
             ->get();
+        $dataMekanik = Karyawan::where('is_aktif',"Y")
+            // ->where('grup_tujuan.is_aktif', '=', "Y")
+            // ->orderBy('grup_tujuan.nama_tujuan')
+            ->get();
+        $dataLemburMekanikKendaraan = LemburMekanikKendaraan::where('is_aktif',"Y")
+            ->with('kendaraan')
+            ->where('id_lembur_mekanik',$lemburMekanik->id)
+            ->get();
+        
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
@@ -228,7 +237,8 @@ class LemburMekanikController extends Controller
             'dataLemburMekanik' => $dataLemburMekanik,
             'dataKendaraan' => SewaDataHelper::DataKendaraan(),
             // 'dataDriver' => SewaDataHelper::DataDriver(),
-            'dataMekanik' => $dataMekanik
+            'dataMekanik' => $dataMekanik,
+            'dataLemburMekanikKendaraan' => $dataLemburMekanikKendaraan
         ]);
     }
 
@@ -246,7 +256,7 @@ class LemburMekanikController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         $src="/home/pjexpres/tms.pjexpress.co.id/img/lembur_mekanik/";
         $srcUpdateDelete="/home/pjexpres/tms.pjexpress.co.id";
-        $fotoLemburDB = $lemburMekanik->foto_lembur;
+        // $fotoLemburDB = $lemburMekanik->foto_lembur;
 
         try {
             // $pesanKustom = [
@@ -270,58 +280,111 @@ class LemburMekanikController extends Controller
             //     // 'keterangan' => 'Keterangan harap diisi!',
             //     // 'foto_lembur' => 'required|image|mimes:jpg,png,jpeg|max:2048',
             // ],$pesanKustom);
-            $pathFotoLembur = "";
-            if ($request->hasFile('foto_lembur')) {
-                if (!empty($fotoLemburDB)) {
-                    if (file_exists($srcUpdateDelete.$fotoLemburDB)) {
-                        unlink($srcUpdateDelete.$fotoLemburDB);
-                    }
-                }
-                $fotoNota = $request->file('foto_lembur');
-                $ekstensiGambar = $fotoNota->getClientOriginalExtension();
-                $nama_gambar = time().'_foto_lembur'.'.' . $ekstensiGambar;
-                // Convert and save the image to WebP format
-                $webp = Webp::make($fotoNota);
-                $webp->save(public_path('/img/lembur_mekanik/' . $nama_gambar ),20);
-                // $webp->save($src.$nama_gambar ,20);
-                $pathFotoLembur = '/img/lembur_mekanik/' . $nama_gambar;
-            }
 
-            $data = $request->collect();
-            // dd($data);
+            $data = $request->all();
             $tanggal_lembur= date_create_from_format('d-M-Y', $data['tanggal_lembur']);
-
+            // dd($data);   
             $lembur_mekanik = LemburMekanik::where('is_aktif', 'Y')->findOrFail($lemburMekanik->id);
             $lembur_mekanik->id_karyawan = $data['select_mekanik'];
-            $lembur_mekanik->id_kendaraan = $data['select_kendaraan'];
             $lembur_mekanik->tanggal_lembur = date_format($tanggal_lembur, 'Y-m-d');
             $lembur_mekanik->jam_mulai_lembur = $data['jam_mulai'];
             $lembur_mekanik->jam_akhir_lembur = $data['jam_selesai'];
             $lembur_mekanik->nominal_lembur =floatval(str_replace(',', '', $data['total_nominal']));
-            $lembur_mekanik->jenis_lembur = null;
-            // $lembur_mekanik->status = 'PENDING';
-            $lembur_mekanik->keterangan = $data['keterangan'];
-            if ($request->hasFile('foto_lembur')) {
-                $lembur_mekanik->foto_lembur = $pathFotoLembur;
-            }
             $lembur_mekanik->updated_by = $user;
             $lembur_mekanik->updated_at = now();
             $lembur_mekanik->is_aktif = 'Y';
-            $lembur_mekanik->save();
+            // $lembur_mekanik->save();
+            if ($lembur_mekanik->save()) {
+                if(isset($data['kendaraan']))
+                {
+                    foreach ($data['kendaraan'] as $key => $value) {
+                        if($value['id_database']=='data_baru')
+                        {
+                            $pathFotoLembur = "";
+                            if (isset($value['foto_lembur'])) {
+                                $fotoNota = $value['foto_lembur'];
+                                $ekstensiGambar = $fotoNota->getClientOriginalExtension();
+                                $nama_gambar = time().'_'.$value['no_polisi'].'_foto_lembur'.'.' . $ekstensiGambar;
+                                // Convert and save the image to WebP format
+                                $webp = Webp::make($fotoNota);
+                                $webp->save(public_path('/img/lembur_mekanik/' . $nama_gambar ),20);
+                                // $webp->save($src.$nama_gambar ,20);
+                                $pathFotoLembur = '/img/lembur_mekanik/' . $nama_gambar;
+                            }
+                            $lembur_mekanik_kendaraan = new LemburMekanikKendaraan();
+                            $lembur_mekanik_kendaraan->id_lembur_mekanik = $lembur_mekanik->id;
+                            $lembur_mekanik_kendaraan->id_kendaraan = $value['select_kendaraan'];
+                            $lembur_mekanik_kendaraan->no_pol = $value['no_polisi'];
+                            $lembur_mekanik_kendaraan->keterangan = $value['keterangan'];
+                            $lembur_mekanik_kendaraan->foto_lembur = $pathFotoLembur;
+                            $lembur_mekanik_kendaraan->created_by = $user;
+                            $lembur_mekanik_kendaraan->created_at = now();
+                            $lembur_mekanik_kendaraan->is_aktif = $value['is_aktif'];
+                            $lembur_mekanik_kendaraan->save();
+                        }
+                        else if ($value['id_database']!='data_baru' && $value['is_aktif']=='N')
+                        {
+                            $lembur_mekanik_kendaraan = LemburMekanikKendaraan::where('is_aktif', 'Y')->findOrFail($value['id_database']);
+                            $lembur_mekanik_kendaraan->updated_by = $user;
+                            $lembur_mekanik_kendaraan->updated_at = now();
+                            $lembur_mekanik_kendaraan->is_aktif = $value['is_aktif'];
+                            $lembur_mekanik_kendaraan->save();
+                            if (!empty($lembur_mekanik_kendaraan->foto_lembur)) {
+                                if (file_exists(public_path($lembur_mekanik_kendaraan->foto_lembur))) {
+                                    unlink(public_path($lembur_mekanik_kendaraan->foto_lembur));
+                                }
+                                // if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
+                                //     unlink($srcUpdateDelete.$pathFotoLembur);
+                                // }
+                            }
+                        }
+                        else if ($value['id_database']!='data_baru' && $value['is_aktif']=='Y')
+                        {
+                            $pathFotoLembur = "";
+                            $lembur_mekanik_kendaraan = LemburMekanikKendaraan::where('is_aktif', 'Y')->findOrFail($value['id_database']);
+                            $lembur_mekanik_kendaraan->id_kendaraan = $value['select_kendaraan'];
+                            $lembur_mekanik_kendaraan->no_pol = $value['no_polisi'];
+                            $lembur_mekanik_kendaraan->keterangan = $value['keterangan'];
+                            if (isset($value['foto_lembur'])) {
+                                if (!empty($lembur_mekanik_kendaraan->foto_lembur)) {
+                                    if (file_exists(public_path($lembur_mekanik_kendaraan->foto_lembur))) {
+                                        unlink(public_path($lembur_mekanik_kendaraan->foto_lembur));
+                                    }
+                                    // if (file_exists($srcUpdateDelete.$fotoLemburDB)) {
+                                    //     unlink($srcUpdateDelete.$fotoLemburDB);
+                                    // }
+                                }
+                                $fotoNota = $value['foto_lembur'];
+                                $ekstensiGambar = $fotoNota->getClientOriginalExtension();
+                                $nama_gambar = time().'_'.$value['no_polisi'].'_foto_lembur'.'.' . $ekstensiGambar;
+                                // Convert and save the image to WebP format
+                                $webp = Webp::make($fotoNota);
+                                $webp->save(public_path('/img/lembur_mekanik/' . $nama_gambar ),20);
+                                // $webp->save($src.$nama_gambar ,20);
+                                $pathFotoLembur = '/img/lembur_mekanik/' . $nama_gambar;
+                                $lembur_mekanik_kendaraan->foto_lembur = $pathFotoLembur;
+                            }
+                            $lembur_mekanik_kendaraan->updated_by = $user;
+                            $lembur_mekanik_kendaraan->updated_at = now();
+                            $lembur_mekanik_kendaraan->is_aktif = $value['is_aktif'];
+                            $lembur_mekanik_kendaraan->save();
+                        }
+                    }
+                }
+            }
+            
             DB::commit();
-            return redirect()->route('lembur_mekanik.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambahkan data lembur mekanik!']);
+            return redirect()->route('lembur_mekanik.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data lembur mekanik!']);
 
         } catch (ValidationException $e) {
             DB::rollBack();
             if (!empty($pathFotoLembur)) {
-                    if (file_exists(public_path($pathFotoLembur))) {
-                        unlink(public_path($pathFotoLembur));
-                    }
-                    // if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
-                    //     unlink($srcUpdateDelete.$pathFotoLembur);
-                    // }
-                    
-                    
+                if (file_exists(public_path($pathFotoLembur))) {
+                    unlink(public_path($pathFotoLembur));
+                }
+                // if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
+                //     unlink($srcUpdateDelete.$pathFotoLembur);
+                // }
             }
             // return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => $e->errors()]);
             // return redirect()->back()->withErrors($e->getMessages())->withInput();
@@ -345,7 +408,7 @@ class LemburMekanikController extends Controller
         }
     }
 
-     private function methodEdit($id) {
+    private function methodEdit($id) {
         $dataKas = KasBank::where('is_aktif', 'Y')->orderBy('nama', 'ASC')->get();
         $dataLemburMekanik = LemburMekanik::where('is_aktif',"Y")
             ->with('karyawan')
@@ -361,8 +424,10 @@ class LemburMekanikController extends Controller
             // ->where('grup_tujuan.is_aktif', '=', "Y")
             // ->orderBy('grup_tujuan.nama_tujuan')
             ->get();
-   
-        
+        $dataLemburMekanikKendaraan = LemburMekanikKendaraan::where('is_aktif',"Y")
+            ->with('kendaraan')
+            ->where('id_lembur_mekanik',$id)
+            ->get();
 
         return [
             'dataLemburMekanik' => $dataLemburMekanik,
@@ -370,6 +435,8 @@ class LemburMekanikController extends Controller
             'dataKendaraan' => SewaDataHelper::DataKendaraan(),
             'dataMekanik' => $dataMekanik,
             'dataKas' => $dataKas,
+            'dataLemburMekanikKendaraan' => $dataLemburMekanikKendaraan,
+
         ];
     }
     
@@ -385,7 +452,8 @@ class LemburMekanikController extends Controller
             'dataLemburMekanikRiwayat' => $data['dataLemburMekanikRiwayat'],
             'dataKendaraan' =>  $data['dataKendaraan'],
             'dataMekanik' => $data['dataMekanik'],
-            'dataKas' => $data['dataKas']
+            'dataKas' => $data['dataKas'],
+            'dataLemburMekanikKendaraan' => $data['dataLemburMekanikKendaraan']
         ]);
     }
     public function pencairan_save(Request $request, $id)
@@ -397,7 +465,7 @@ class LemburMekanikController extends Controller
         try {
             $data = $request->collect();
             // dd($data);
-           /* if($data['status']=='PENDING')
+            /* if($data['status']=='PENDING')
             {
                 $pesanKustom = [
                     'tanggal_pencairan.required' => 'Tanggal Pencairan harap diisi!',

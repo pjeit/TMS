@@ -224,7 +224,7 @@ class RevisiInvoiceTruckingController extends Controller
                 $keterangan_transaksi = 'REVISI PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
                 $id_invoices = '';
                 $biaya_admin = isset($data['biaya_admin'])? floatval(str_replace(',', '', $data['biaya_admin'])):0;
-                $total_pph = isset($data['total_pph23'])? floatval(str_replace(',', '', $data['total_pph23'])):0;
+                $total_pph = isset($data['total_pph'])? floatval(str_replace(',', '', $data['total_pph'])):0;
                 $i = 0;
 
                 $pembayaran = new InvoicePembayaran();

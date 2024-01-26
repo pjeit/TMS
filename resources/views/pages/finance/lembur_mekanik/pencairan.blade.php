@@ -266,15 +266,80 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    {{-- <div class="row">
+                                    <div class="row">
                                         <div class=" col-lg-12 col-md-12 col-sm-12">
-                                            <div class="form-group text-center">
-                                                <a href="#" class="pop">
-                                                    <img src="{{ $dataLemburMekanik->foto_lembur ? asset($dataLemburMekanik->foto_lembur) : asset('img/gambar_add.png') }}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_lembur">
-                                                </a>
-                                            </div>
+                                            <input type="hidden" id="maxID" value="0">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Kendaraan</th>
+                                                        <th>Keterangan</th>
+                                                        <th>Foto</th>
+                                                        <th>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tabel_kendaraan">
+                                                    @php
+                                                        $counter = 1;
+                                                    @endphp
+                                                    @foreach ($dataLemburMekanikKendaraan as $data)
+                                                        <tr id="{{$counter}}">
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <select class="form-control select_kendaraan select2 @error('select_kendaraan') is-invalid @enderror" style="width: 100%;" id='select_kendaraan_{{$counter}}' name="kendaraan[{{$counter}}][select_kendaraan]" disabled>
+                                                                        <option value="">Pilih Kendaraan</option>
+                                                                        @foreach ($dataKendaraan as $kendaraan)
+                                                                            <option value="{{$kendaraan->kendaraanId}}"
+                                                                                noPol='{{$kendaraan->no_polisi}}'
+                                                                                kategoriKendaraan='{{$kendaraan->kategoriKendaraan}}'
+                                                                                tipeKontainerKendaraanDariChassis = '{{$kendaraan->tipeKontainerKendaraanDariChassis}}'
+                                                                                id_counter = '{{$counter}}'
+                                                                                {{$data->id_kendaraan == $kendaraan->kendaraanId?'selected':''}}
+                                                                                >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                    @error('select_kendaraan')
+                                                                        <div class="invalid-feedback">
+                                                                            {{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                    <input type="hidden" id="no_polisi_{{$counter}}" name="kendaraan[{{$counter}}][no_polisi]" value="" placeholder="no_polisi">
+                                                                </div>  
+                                                            </td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control @error('keterangan') is-invalid @enderror" id="keterangan_{{$counter}}" name="kendaraan[{{$counter}}][keterangan]" value="{{old('keterangan',$data->keterangan)}}" readonly>
+                                                                    @error('keterangan')
+                                                                        <div class="invalid-feedback">
+                                                                            {{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                </div>  
+                                                            </td>
+                                                            <td>
+                                                                <div class=" col-lg-12 col-md-12 col-sm-12">
+                                                                    <div class="form-group text-center">
+                                                                            <img src="{{ $data->foto_lembur ? asset($data->foto_lembur) : asset('img/gambar_add.png') }}" class="img-fluid preview_foto_lembur" id_preview_lembur="{{$counter}}" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_lembur_{{$counter}}">
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            {{-- <td align="center" class="text-danger">
+                                                                <button type="button" data-toggle="tooltip" data-placement="right" title="Click To Remove" id_database="{{$data->id}}"  class="btn btn-danger radiusSendiri btnDelete">
+                                                                    <i class="fa fa-fw fa-trash-alt"></i>
+                                                                </button>
+                                                                <input type="hidden" name="kendaraan[{{$counter}}][is_aktif]" value="{{$data->is_aktif}}" id="is_aktif">
+                                                                <input type="hidden" name="kendaraan[{{$counter}}][id_database]" value="{{$data->id}}" id="id_database">
+                                                            </td> --}}
+                                                        </tr>
+                                                    @php
+                                                        $counter ++;
+                                                    @endphp
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </div>
-                                    </div> --}}
+                                    </div>
                                 </div>
                             {{-- end data --}}
                         </div>
@@ -300,6 +365,47 @@
 
    
     $(document).ready(function() {
+          function readURLLembur(input,id_foto_lembur) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                //load ke previewnya
+                reader.onload = function(e) {
+                    $("#preview_foto_lembur_"+id_foto_lembur).attr('src', e.target.result);
+                }
+                
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+        $('body').on('change','.foto_lembur',function(){
+
+            var id_inputan_foto =$(this).attr('id_lembur');
+            console.log(id_inputan_foto);
+            readURLLembur(this,id_inputan_foto); // this itu input filenya dr input type file
+        });
+    // ==================end untuk preview foto lemburrr=================
+    var zoom_in = false;
+    function ZoomPreviewFoto(id) {
+        if (zoom_in) {
+            $('#preview_foto_lembur_' + id).css('transform', 'scale(1)');
+            $('#preview_foto_lembur_' + id).css('transform', 'scale(1)');
+            $('#preview_foto_lembur_' + id).css('transition', 'transform 0.5s ease');
+            $('#preview_foto_lembur_' + id).css('z-index', '100');
+
+            $('#div_foto_lembur_' + id).show();
+        } else {
+            $('#preview_foto_lembur_' + id).css('transform', 'scale(3.5)');
+            $('#preview_foto_lembur_' + id).css('transition', 'transform 0.5s ease');
+            $('#preview_foto_lembur_' + id).css('z-index', '100');
+            $('#div_foto_lembur_' + id).hide();
+        }
+        zoom_in = !zoom_in;
+    }
+    $('body').on('click','.preview_foto_lembur',function(){
+        var id =$(this).attr('id_preview_lembur');
+        console.log(id);
+        ZoomPreviewFoto(id);
+    });
         function cek_status(){
             var status = $("input[name='status']:checked").val();
             if(status=="PENDING")

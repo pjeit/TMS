@@ -184,8 +184,8 @@
                                                     <input type="hidden" value="{{ $item->is_aktif }}" name="data[{{$key}}][is_aktif]" id="is_aktif_{{$key}}">
                                                     <select  {{$item->status_bayar=='SELESAI PEMBAYARAN'?'disabled':''}} class="form-control select2" name="data[{{$key}}][id_pembayaran_customer]" id="id_pembayaran_customer_{{$key}}">
                                                         <option value="dibayar_pje" {{ $item->status_bayar == 'dibayar_pje'? 'selected':'' }}>PJE</option>
-                                                        <option value="DIBAYAR CUSTOMER" {{ $item->status_bayar == 'DIBAYAR CUSTOMER'? 'selected':'' }}>­­CUSTOMER</option>
-                                                        <option value="DIBAYAR PENERIMA" {{ $item->status_bayar == 'DIBAYAR PENERIMA'? 'selected':'' }}>PENERIMA</option>
+                                                        <option value="dibayar_customer" {{ $item->status_bayar == 'DIBAYAR CUSTOMER'? 'selected':'' }}>­­CUSTOMER</option>
+                                                        <option value="dibayar_penerima" {{ $item->status_bayar == 'DIBAYAR PENERIMA'? 'selected':'' }}>PENERIMA</option>
                                                     </select>
                                                     @if ($item->id_customer == null)
                                                         @if ($item->status_bayar=='MENUNGGU PEMBAYARAN')
@@ -357,8 +357,8 @@
                             <input type="hidden" value="" name="data[${i}][id_detail_biaya]">
                             <select class="form-control select2" name="data[${i}][id_pembayaran_customer]" id="id_pembayaran_customer_${i}">
                                 <option value="dibayar_pje">­­PJE</option>
-                                <option value="DIBAYAR CUSTOMER">CUSTOMER</option>
-                                <option value="DIBAYAR PENERIMA">PENERIMA</option>
+                                <option value="dibayar_customer">CUSTOMER</option>
+                                <option value="dibayar_penerima">PENERIMA</option>
                             </select>
                         </div>
                     </td>

@@ -37,13 +37,14 @@
 
 </style>
 <body class="hold-transition sidebar-mini layout-fixed">
+{{-- <body class="hold-transition layout-top-nav sidebar-closed sidebar-collapse ">  --}}
 
   <div class="wrapper">
 
     @include('layouts.navbar')
 
     @include('layouts.sidebar')
-      <div class="content-wrapper">
+      <div class="content-wrapper ">
         <br>
       
         <section class="content">

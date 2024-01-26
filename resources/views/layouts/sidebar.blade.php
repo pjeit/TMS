@@ -3,12 +3,12 @@
     <a href="/home" class="brand-link d-flex align-items-center "
       style="background: linear-gradient(to bottom, #0071BD, #00BFFF); ">
       <img src="{{ asset('img/LOGO_PJE_CLEAR.png') }}" alt="PJE Logo" class="brand-image img-circle ">
-      <span class="brand-text mx-2 text-bold font-italic"><b>PRIMATRANS</b></span>
+      <span class="brand-text mx-2 text-bold text-black font-italic"><b>PRIMATRANS</b></span>
     </a>
 
     <div class="sidebar">
       <nav class="mt-2 ">
-        <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent w-50" data-widget="treeview" role="menu"
+        <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent w-100" data-widget="treeview" role="menu"
           data-accordion="false">
           <li class="nav-item">
             <a href="#" class="nav-link hover-item" style="font-weight: 700;">

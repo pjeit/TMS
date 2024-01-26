@@ -169,7 +169,7 @@ class StorageDemurageController extends Controller
                         
                         $oldBiaya = JobOrderDetailBiaya::where('is_aktif', 'Y')->find($value['id_detail_biaya']);
                         // dd($oldBiaya->status_bayar == "DIBAYAR CUSTOMER");
-                        if($oldBiaya->status_bayar == "MENUNGGU PEMBAYARAN" || $oldBiaya->status_bayar == "DIBAYAR CUSTOMER")
+                        if($oldBiaya->status_bayar == "MENUNGGU PEMBAYARAN" || $oldBiaya->status_bayar == "DIBAYAR CUSTOMER" ||$oldBiaya->status_bayar == "DIBAYAR PENERIMA")
                         {
                             // dd($oldBiaya);  
                             $oldBiaya->storage = floatval(str_replace(',', '', $value['storage']));
@@ -177,15 +177,18 @@ class StorageDemurageController extends Controller
                             $oldBiaya->detention = floatval(str_replace(',', '', $value['detention']));
                             $oldBiaya->repair = floatval(str_replace(',', '', $value['repair']));
                             $oldBiaya->washing = floatval(str_replace(',', '', $value['washing']));
+                            $oldBiaya->id_customer = null;
                             if($value['id_pembayaran_customer']=="dibayar_pje")
                             {
-                                $oldBiaya->id_customer = null;
                                 $oldBiaya->status_bayar = "MENUNGGU PEMBAYARAN";
+                            }
+                            else if ($value['id_pembayaran_customer']=="dibayar_customer")
+                            {
+                                $oldBiaya->status_bayar = "DIBAYAR CUSTOMER";
                             }
                             else
                             {
-                                $oldBiaya->id_customer = $value['id_pembayaran_customer'];
-                                $oldBiaya->status_bayar = "DIBAYAR CUSTOMER";
+                                $oldBiaya->status_bayar = "DIBAYAR PENERIMA";
                             }
                             $oldBiaya->updated_at = now();
                             $oldBiaya->updated_by = $user;
@@ -204,15 +207,18 @@ class StorageDemurageController extends Controller
                         $newBiaya->detention = floatval(str_replace(',', '', $value['detention']));
                         $newBiaya->repair = floatval(str_replace(',', '', $value['repair']));
                         $newBiaya->washing = floatval(str_replace(',', '', $value['washing']));
+                        $newBiaya->id_customer = null;
                         if($value['id_pembayaran_customer']=="dibayar_pje")
                         {
-                            $newBiaya->id_customer = null;
                             $newBiaya->status_bayar = "MENUNGGU PEMBAYARAN";
+                        }
+                        else if ($value['id_pembayaran_customer']=="dibayar_customer")
+                        {
+                            $newBiaya->status_bayar = "DIBAYAR CUSTOMER";
                         }
                         else
                         {
-                            $newBiaya->id_customer = $value['id_pembayaran_customer'];
-                            $newBiaya->status_bayar = "DIBAYAR CUSTOMER";
+                            $newBiaya->status_bayar = "DIBAYAR PENERIMA";
                         }
                         $newBiaya->created_by = $user;
                         $newBiaya->created_at = now();

@@ -290,7 +290,7 @@ class DalamPerjalananController extends Controller
                 if ($value->doc_fee||$value->doc_fee != 0) {
                     $objdoc_fee = [
                         'id_jo'=>$value->id,
-                        'deskripsi' => 'DOC_FEE',
+                        'deskripsi' => 'DOCFEE',
                         'biaya' =>$value->doc_fee,
                     ];
                     array_push($array_inbound_parent, $objdoc_fee);
@@ -1483,7 +1483,8 @@ class DalamPerjalananController extends Controller
                             floatval(str_replace(',', '', $data['total_diterima'])), //uang keluar (kredit)
                             CoaHelper::DataCoa(5002), //kode coa
                             'uang_jalan',
-                            'Pencairan Uang jalan dari supir'.' #'.'['.$sewa->no_sewa.']'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.'ke supir -> '.' #'.$data['no_polisi'].'('.$data['driver_nama'].')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
+                            'Pencairan Uang jalan'.' #'.'['.$sewa->no_sewa.']'.$sewa->no_polisi.' supir -> '.' #'.$data['no_polisi'].'('.$data['driver_nama'].')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
+                            // 'Pencairan Uang jalan dari supir'.' #'.'['.$sewa->no_sewa.']'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.'ke supir -> '.' #'.$data['no_polisi'].'('.$data['driver_nama'].')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
                             $ujr->id,//keterangan_kode_transaksi
                             $user,//created_by
                             now(),//created_at

@@ -170,7 +170,8 @@ class SupplierController extends Controller
             $supplier->is_aktif = "Y";
             $supplier->save();
 
-            return redirect()->route('supplier.index')->with('status','Sukses Menambahkan Supplier Baru!!');
+            return redirect()->route('supplier.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambah data supplier!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -252,13 +253,15 @@ class SupplierController extends Controller
                     'bank' => $data['bank'],
                     'cabang' => $data['cabang'],
                     'catatan' => $data['catatan'],
-                      'pph' => $data['pph'],
+                    'pph' => $data['pph'],
                     'updated_at'=> date("Y-m-d h:i:s"),
                     'updated_by'=> $user,// masih hardcode nanti diganti cookies
                     'is_aktif' => "Y",
                 )
             );
-            return redirect()->route('supplier.index')->with('status','Sukses Merubah Data Supplier!!');
+
+            return redirect()->route('supplier.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data supplier!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -281,6 +284,8 @@ class SupplierController extends Controller
             'updated_by'=> $user, // masih hardcode nanti diganti cookies
           )
         );
-        return redirect()->route('supplier.index')->with('status','Sukses Menghapus Data Supplier!');
+
+        return redirect()->route('supplier.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data supplier!']);
+
     }
 }

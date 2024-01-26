@@ -115,7 +115,9 @@ class KasBankController extends Controller
 
                 )
             ); 
-            return redirect()->route('kas_bank.index')->with('status','Sukses menambahkan Kas Bank Baru!!');
+            // return redirect()->route('kas_bank.index')->with('status','Sukses menambahkan Kas Bank Baru!!');
+            return redirect()->route('kas_bank.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambahkan data kas!']);
+            
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -206,7 +208,7 @@ class KasBankController extends Controller
             DB::table('kas_bank')
             ->where('id', $KasBank['id'])
             ->update(array(
-                   'nama' => strtoupper($data['nama']),
+                    'nama' => strtoupper($data['nama']),
                     'no_akun' => $data['no_akun']==null ? null :strtoupper($data['no_akun']) ,
                     'tipe' => $data['tipe']==1?'KAS':'BANK',
                     'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
@@ -221,7 +223,9 @@ class KasBankController extends Controller
                 )
             );
         
-            return redirect()->route('kas_bank.index')->with('status','Sukses Mengubah Data Kas Bank!!');
+            // return redirect()->route('kas_bank.index')->with('status','Sukses Mengubah Data Kas Bank!!');
+            return redirect()->route('kas_bank.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data kas!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -247,7 +251,9 @@ class KasBankController extends Controller
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
               )
             );
-             return redirect()->route('kas_bank.index')->with('status','Sukses Menghapus Data Kas Bank!!');
+            //  return redirect()->route('kas_bank.index')->with('status','Sukses Menghapus Data Kas Bank!!');
+            return redirect()->route('kas_bank.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data kas!']);
+
 
         }
         catch (ValidationException $e) {
