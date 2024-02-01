@@ -97,7 +97,7 @@
                                                         <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa PJE
                                                     </a>
                                                 @endcan
-                                                @if ($item->jenis_order == 'OUTBOUND')
+                                                {{-- @if ($item->jenis_order == 'OUTBOUND') --}}
                                                     @can('CANCEL_DALAM_PERJALANAN')
                                                         <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-undo mr-3"></span> Batal muat
@@ -106,13 +106,13 @@
                                                             <span class="nav-icon fas fa-times mr-3"></span> Cancel
                                                         </a>
                                                     @endcan
-                                                @else
+                                                {{-- @else
                                                     @can('CANCEL_DALAM_PERJALANAN')
                                                         <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-times mr-3"></span> Cancel
                                                         </a>
                                                     @endcan
-                                                @endif
+                                                @endif --}}
                                                     <a href="{{route('dalam_perjalanan.ubah_supir',[$item->id_sewa])}}" class="dropdown-item">
                                                         <span class="nav-icon fas fa-user mr-3"></span> Ubah Supir
                                                     </a>

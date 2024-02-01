@@ -62,6 +62,8 @@
                                     <span class="badge badge-warning">   {{ $item->status}}</span>
                                 @elseif ($item->status == 'PROSES DOORING')
                                     <span class="badge badge-primary">   {{ $item->status}}</span>
+                                @elseif ($item->status == 'SELESAI DOORING')
+                                    <span class="badge badge-secondary">   {{ $item->status}}</span>
                                 @else
                                     <span class="badge badge-success">   {{ $item->status}}</span>
                                 @endif

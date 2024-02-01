@@ -485,19 +485,20 @@ class DalamPerjalananController extends Controller
             $dalam_perjalanan->updated_by = $user;
             $dalam_perjalanan->updated_at = now();
             $dalam_perjalanan->save();
-            if($dalam_perjalanan->jenis_order=='INBOUND'){
+            // diganti trigger
+            // if($dalam_perjalanan->jenis_order=='INBOUND'){
 
-                if(isset($data['is_kembali']))
-                {
-                    if($data['is_kembali']=='Y')
-                    {
-                        $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($data['id_jo_detail_hidden']);
-                        $JOD->status = 'MENUNGGU INVOICE';
-                        $JOD->save();
-                    }
-                }
+            //     if(isset($data['is_kembali']))
+            //     {
+            //         if($data['is_kembali']=='Y')
+            //         {
+            //             $JOD = JobOrderDetail::where('is_aktif', 'Y')->find($data['id_jo_detail_hidden']);
+            //             $JOD->status = 'MENUNGGU INVOICE';
+            //             $JOD->save();
+            //         }
+            //     }
                 
-            }
+            // }
             //ini kalo dicentang yang harcode di html
             if(isset($data['data_hardcode']))
             {
@@ -526,7 +527,7 @@ class DalamPerjalananController extends Controller
             //ini kalo ada data di db
             if(isset($data['data']))
             {
-                 $deskripsi1 = ['STORAGE', 
+                $deskripsi1 = ['STORAGE', 
                                 'DEMURAGE', 
                                 'DETENTION', 
                                 'REPAIR', 
