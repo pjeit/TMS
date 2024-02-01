@@ -45,7 +45,7 @@
                                 <td id="catatan_{{ $item->id }}">{{ $item->catatan }}</td>
                                 <td id="total_{{ $item->id }}">{{ number_format($item->jaminan->nominal) }}</td>
                                 <td id="status_{{ $item->id }}">{{ $item->status }}</td>
-        dd($data);
+        {{-- dd($data); --}}
                                 <td id="tgl_request_{{ $item->id }}">{{ isset($item->jaminan->tgl_request)? date("d-M-Y", strtotime($item->jaminan->tgl_request)):'' }}</td>
                                 <td>
                                     <div class="btn-group btn-sm dropleft">

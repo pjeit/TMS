@@ -187,15 +187,15 @@
                                     @if ($oprs->is_aktif == 'Y' && 
                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N'||
                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'N')
-                                        <input type="hidden" class="addcost_{{ $data->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_dicairkan }}">
+                                        <input type="hidden" class="addcost_{{ $data->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
                                         @php
-                                            $total_addcost += $oprs->total_dicairkan;
+                                            $total_addcost += $oprs->total_operasional;
                                         @endphp
                                     @elseif ($oprs->is_aktif == 'Y' && 
                                         $oprs->status == 'SUDAH DICAIRKAN'&&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y'||
                                         $oprs->status == 'TAGIHKAN DI INVOICE' &&$oprs->is_ditagihkan == 'Y'&&$oprs->is_dipisahkan == 'Y')
                                         @php
-                                            $total_addcost_pisah += $oprs->total_dicairkan;
+                                            $total_addcost_pisah += $oprs->total_operasional;
                                         @endphp
                                     @endif
                                 @endforeach
@@ -367,19 +367,19 @@
                                 <form name="add_addcost_detail" id="add_addcost_detail">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-bold">Detail Add Cost</span>
-                                        {{-- <div class="d-flex justify-content-center align-items-center">
-                                            <div id="is_bank" class="mb-2 ">
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            {{--  <div id="is_bank" class="mb-2 ">
                                                 <select name="bank" class="select2 select2border" style="width: 200px; border: 3px solid #f239;" id="bank">
                                                     <option value="">─ Pilih Kas ─</option>
                                                     @foreach ($bank as $item)
                                                         <option value="{{ $item->id }}" {{ $item->id == 1? 'selected':'' }}>{{ $item->nama }}</option>
                                                     @endforeach
                                                 </select>
-                                            </div>
+                                            </div>--}}
                                             <div>
                                                 <button type="button" id="tambah" class="btn btn-primary btn-sm mb-2 ml-3"> <i class="fa fa-plus-circle"></i> Tambah Add Cost</button>
                                             </div>
-                                        </div> --}}
+                                        </div> 
                                     </div>
                                     <input type="hidden" id="deleted_temp" name="deleted_temp" placeholder="deleted_temp">
                                     <table class="table table-hover table-bordered table-striped text-nowrap" id="tabel_addcost">
@@ -728,7 +728,7 @@
                         myjson = `{"id":${JSON.stringify(id)},
                                     "id_sewa":${JSON.stringify(key)},
                                     "deskripsi":${JSON.stringify( $('#addcost_deskripsi_'+id).val() )},
-                                    "total_dicairkan":${JSON.stringify( normalize($('#addcost_total_dicairkan_'+id).val()) )},
+                                    "total_operasional":${JSON.stringify( normalize($('#addcost_total_operasional_'+id).val()) )},
                                     "is_ditagihkan":${JSON.stringify( tagih )},
                                     "is_dipisahkan":${JSON.stringify( pisah )},
                                     "catatan":${JSON.stringify( $('#addcost_catatan_'+id).val() )}
@@ -768,7 +768,7 @@
                                     <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" title="${item.deskripsi}" class="form-control" readonly/>
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_total_dicairkan_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost" ${is_readonly} readonly/>
+                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_operasional)}" class="form-control numaja uang hitungBiaya hitungAddCost" ${is_readonly} readonly/>
                                 </td>
                                 <td style="text-align:center;">
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} ${isDisabledLTL} >
@@ -802,7 +802,7 @@
                                     <input type="text" id="addcost_deskripsi_${item.id}" value="${item.deskripsi}" title="${item.deskripsi}" class="form-control" />
                                 </td>
                                 <td>
-                                    <input type="text" id="addcost_total_dicairkan_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_dicairkan)}" class="form-control numaja uang hitungBiaya hitungAddCost"  />
+                                    <input type="text" id="addcost_total_operasional_${item.id}" id_add_cost="${item.id}" value="${moneyMask(item.total_operasional)}" class="form-control numaja uang hitungBiaya hitungAddCost"  />
                                 </td>
                                 <td style="text-align:center;">
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
@@ -865,7 +865,7 @@
                             <input type="text" id="addcost_deskripsi_x_${id}" class="form-control" />
                         </td>
                         <td>
-                            <input type="text" id="addcost_total_dicairkan_x_${id}" id_add_cost="x_${id}" class="form-control numaja uang hitungBiaya hitungAddCost" />
+                            <input type="text" id="addcost_total_operasional_x_${id}" id_add_cost="x_${id}" class="form-control numaja uang hitungBiaya hitungAddCost" />
                         </td>
                         <td style="text-align:center;">
                             <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_x_${id}" id_tagih="x_${id}" name="addcost_is_ditagihkan_x_${id}" >
@@ -940,7 +940,7 @@
                 var id = add_cost.getAttribute('id_add_cost');
                 var di_tagih = document.getElementById('addcost_is_ditagihkan_' + id);
                 var di_pisah = document.getElementById('addcost_is_dipisahkan_' + id);
-                var add_cost = $('#addcost_total_dicairkan_' + id).val();
+                var add_cost = $('#addcost_total_operasional_' + id).val();
                 if(di_tagih.checked == true && di_pisah.checked == false){
                     total_add_cost += normalize(add_cost);
                 }

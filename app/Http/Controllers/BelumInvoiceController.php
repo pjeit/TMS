@@ -51,7 +51,7 @@ class BelumInvoiceController extends Controller
                 ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
-                ->where('s.status', 'MENUNGGU INVOICE')
+                ->whereIn('s.status', ['MENUNGGU INVOICE','BATAL MUAT'])
                 ->orderBy('c.id','ASC')
                 ->orderBy('s.no_sewa','ASC')
                 ->orderBy('s.tanggal_berangkat','ASC')
@@ -402,7 +402,7 @@ class BelumInvoiceController extends Controller
                                         $sewa_oprs->deskripsi = $addcost->deskripsi;
                                         $sewa_oprs->total_operasional = $addcost->total_operasional;
                                         // $sewa_oprs->total_dicairkan = $addcost->total_dicairkan;
-                                        $sewa_oprs->tgl_dicairkan = now();
+                                        // $sewa_oprs->tgl_dicairkan = now();
                                         $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                         $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
                                         $sewa_oprs->status = 'TAGIHKAN DI INVOICE';
@@ -764,7 +764,6 @@ class BelumInvoiceController extends Controller
         $data = $request->collect();
         DB::beginTransaction(); 
         // dd($data);
-
         try {
             foreach ($data['detail'] as $key => $value) {
                 // data addcost lama
@@ -773,134 +772,34 @@ class BelumInvoiceController extends Controller
                     $sewa_oprs = SewaOperasional::where('is_aktif', 'Y')
                                                 ->where('id_sewa', $addcost->id_sewa)
                                                 ->find($addcost->id);
-
                     if($sewa_oprs){
-                        // ini comment dulu aja, nanti misal butuh bisa edit jumlah yg dicairkan bisa lewat sini
-                        // if($sewa_oprs->total_dicairkan != $addcost->total_dicairkan){
-                        //     $pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($sewa_oprs->id_pembayaran);
-                        //     $pembayaran->total_dicairkan = $addcost->total_dicairkan;
-                        //     $pembayaran->updated_by = $user;
-                        //     $pembayaran->updated_at = now();
-                        //     if($pembayaran->save()){
-                        //         // rollback transaksi lama
-                        //         $transaction = KasBankTransaction::where('is_aktif', 'Y')
-                        //                             ->where('jenis', 'pencairan_operasional')
-                        //                             ->where('keterangan_kode_transaksi', $pembayaran->id)
-                        //                             ->first();
-                        //         if($transaction){
-                        //             $transaction->is_aktif = 'N';
-                        //             $transaction->updated_by = $user;
-                        //             $transaction->updated_at = now();
-                        //             if($transaction->save()){
-                        //                 $saldo = KasBank::where('is_aktif', 'Y')->find($transaction->id_kas_bank);
-                        //                 if($saldo){
-                        //                     $saldo->saldo_sekarang += $transaction->kredit;
-                        //                     $saldo->updated_by = $user;
-                        //                     $saldo->updated_at = now();
-                        //                     $saldo->save();
-                        //                 }
-                        //             }
-                        //         }
-
-                        //         // buat data transaction baru
-                        //         $keterangan_transaksi = substr($transaction->keterangan_transaksi, 0, 9) == "REVISI - "? $transaction->keterangan_transaksi: 'REVISI - '.$transaction->keterangan_transaksi;
-                        //         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                        //             array(
-                        //                 $data['bank'], //id kas_bank dr form
-                        //                 now(), //tanggal
-                        //                 0, //debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                        //                 $addcost->total_dicairkan, //uang keluar (kredit)
-                        //                 CoaHelper::DataCoa(5007), //kode coa
-                        //                 'pencairan_operasional',
-                        //                 $keterangan_transaksi, //keterangan_transaksi
-                        //                 $pembayaran->id, //keterangan_kode_transaksi // id_sewa_operasional_pembayaran
-                        //                 $user, //created_by
-                        //                 now(), //created_at
-                        //                 $user, //updated_by
-                        //                 now(), //updated_at
-                        //                 'Y'
-                        //             ) 
-                        //         );
-            
-                        //         $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
-                        //         $saldo->saldo_sekarang -= $addcost->total_dicairkan;
-                        //         $saldo->updated_by = $user;
-                        //         $saldo->updated_at = now();
-                        //         $saldo->save();
-                        //     }
-                        // }
-                        // $sewa_oprs->total_dicairkan = $addcost->total_dicairkan;
                         $sewa_oprs->total_dicairkan = $addcost->total_operasional;
                         $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                         $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
-                        $sewa_oprs->catatan = $addcost->catatan;
+                        $sewa_oprs->catatan = '[EDIT DI BELUM INVOICE]';
                         $sewa_oprs->updated_by = $user;
                         $sewa_oprs->updated_at = now();
                         $sewa_oprs->save();
                     }
                 }
-
                 // data addcost baru
                 $new_addcosts = json_decode($value['addcost_baru']);
                 if($new_addcosts != null){
-                    // if($data['bank'] == null){
-                    //     db::rollBack();
-                    //     return redirect()->route('belum_invoice.index')->with(['status' => 'error', 'msg' => 'Harap isi bank dahulu untuk pencairan!']);
-                    // }
-
                     foreach ($new_addcosts as $new_addcost) {
-                        // $pembayaran = new SewaOperasionalPembayaran();
-                        // $pembayaran->deskripsi = $new_addcost->deskripsi;
-                        // $pembayaran->total_operasional = $new_addcost->total_dicairkan;
-                        // $pembayaran->total_dicairkan = $new_addcost->total_dicairkan;
-                        // $pembayaran->created_by = $user;
-                        // $pembayaran->created_at = now();
-                        // $pembayaran->save();
-
                         $sewa_oprs = new SewaOperasional();
                         $sewa_oprs->id_sewa = $new_addcost->id_sewa;
-                        // $sewa_oprs->id_pembayaran = $pembayaran->id;
                         $sewa_oprs->deskripsi = $new_addcost->deskripsi;
-                        // $sewa_oprs->total_dicairkan = $new_addcost->total_dicairkan;
-                        // $sewa_oprs->total_dicairkan = 0;
                         $sewa_oprs->total_operasional = $new_addcost->total_operasional;
-                        $sewa_oprs->tgl_dicairkan = now();
                         $sewa_oprs->is_ditagihkan = $new_addcost->is_ditagihkan;
                         $sewa_oprs->is_dipisahkan = $new_addcost->is_dipisahkan;
                         $sewa_oprs->catatan = $new_addcost->catatan;
-                        $sewa_oprs->status = 'TAGIHKAN DI INVOICE';
+                        $sewa_oprs->status = '[DATA BARU DARI BELUM INVOICE]';
                         $sewa_oprs->created_by = $user;
                         $sewa_oprs->created_at = now();
                         $sewa_oprs->save();
-
-                        // $deskripsi = $new_addcost->deskripsi . ' : ' . $value['nama_tujuan'] . ' #' . $value['driver'];
-                        // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                        //     array(
-                        //         $data['bank'], // id kas_bank dr form
-                        //         now(), //tanggal
-                        //         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                        //         $new_addcost->total_dicairkan, //uang keluar (kredit)
-                        //         1015, //kode coa
-                        //         'pencairan_operasional',
-                        //         $deskripsi, // keterangan_transaksi
-                        //         $pembayaran->id, //keterangan_kode_transaksi // id_pembayaran
-                        //         $user, //created_by
-                        //         now(), //created_at
-                        //         $user, //updated_by
-                        //         now(), //updated_at
-                        //         'Y'
-                        //     ) 
-                        // );
-
-                        // $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
-                        // $saldo->saldo_sekarang -= $new_addcost->total_dicairkan;
-                        // $saldo->updated_by = $user;
-                        // $saldo->updated_at = now();
-                        // $saldo->save();
                     }
                 }
             }
-
             DB::commit();
             return redirect()->route('belum_invoice.index')->with(['status' => 'Success', 'msg'  => 'Edit data berhasil!']);
         } catch (ValidationException $e) {
@@ -908,6 +807,157 @@ class BelumInvoiceController extends Controller
             return redirect()->route('belum_invoice.index')->with(['status' => 'error', 'msg' => 'Edit data gagal!']);
         }
     }
+
+    // public function updateBackup(Request $request, $id)
+    // {
+    //     $user = Auth::user()->id;
+    //     $data = $request->collect();
+    //     DB::beginTransaction(); 
+    //     // dd($data);
+
+    //     try {
+    //         foreach ($data['detail'] as $key => $value) {
+    //             // data addcost lama
+    //             $dataAddcost = json_decode($value['addcost_details']);
+    //             foreach ($dataAddcost as $i => $addcost) {
+    //                 $sewa_oprs = SewaOperasional::where('is_aktif', 'Y')
+    //                                             ->where('id_sewa', $addcost->id_sewa)
+    //                                             ->find($addcost->id);
+
+    //                 if($sewa_oprs){
+    //                     // ini comment dulu aja, nanti misal butuh bisa edit jumlah yg dicairkan bisa lewat sini
+    //                     // if($sewa_oprs->total_dicairkan != $addcost->total_dicairkan){
+    //                     //     $pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($sewa_oprs->id_pembayaran);
+    //                     //     $pembayaran->total_dicairkan = $addcost->total_dicairkan;
+    //                     //     $pembayaran->updated_by = $user;
+    //                     //     $pembayaran->updated_at = now();
+    //                     //     if($pembayaran->save()){
+    //                     //         // rollback transaksi lama
+    //                     //         $transaction = KasBankTransaction::where('is_aktif', 'Y')
+    //                     //                             ->where('jenis', 'pencairan_operasional')
+    //                     //                             ->where('keterangan_kode_transaksi', $pembayaran->id)
+    //                     //                             ->first();
+    //                     //         if($transaction){
+    //                     //             $transaction->is_aktif = 'N';
+    //                     //             $transaction->updated_by = $user;
+    //                     //             $transaction->updated_at = now();
+    //                     //             if($transaction->save()){
+    //                     //                 $saldo = KasBank::where('is_aktif', 'Y')->find($transaction->id_kas_bank);
+    //                     //                 if($saldo){
+    //                     //                     $saldo->saldo_sekarang += $transaction->kredit;
+    //                     //                     $saldo->updated_by = $user;
+    //                     //                     $saldo->updated_at = now();
+    //                     //                     $saldo->save();
+    //                     //                 }
+    //                     //             }
+    //                     //         }
+
+    //                     //         // buat data transaction baru
+    //                     //         $keterangan_transaksi = substr($transaction->keterangan_transaksi, 0, 9) == "REVISI - "? $transaction->keterangan_transaksi: 'REVISI - '.$transaction->keterangan_transaksi;
+    //                     //         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    //                     //             array(
+    //                     //                 $data['bank'], //id kas_bank dr form
+    //                     //                 now(), //tanggal
+    //                     //                 0, //debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+    //                     //                 $addcost->total_dicairkan, //uang keluar (kredit)
+    //                     //                 CoaHelper::DataCoa(5007), //kode coa
+    //                     //                 'pencairan_operasional',
+    //                     //                 $keterangan_transaksi, //keterangan_transaksi
+    //                     //                 $pembayaran->id, //keterangan_kode_transaksi // id_sewa_operasional_pembayaran
+    //                     //                 $user, //created_by
+    //                     //                 now(), //created_at
+    //                     //                 $user, //updated_by
+    //                     //                 now(), //updated_at
+    //                     //                 'Y'
+    //                     //             ) 
+    //                     //         );
+            
+    //                     //         $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
+    //                     //         $saldo->saldo_sekarang -= $addcost->total_dicairkan;
+    //                     //         $saldo->updated_by = $user;
+    //                     //         $saldo->updated_at = now();
+    //                     //         $saldo->save();
+    //                     //     }
+    //                     // }
+    //                     // $sewa_oprs->total_dicairkan = $addcost->total_dicairkan;
+    //                     $sewa_oprs->total_dicairkan = $addcost->total_operasional;
+    //                     $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
+    //                     $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
+    //                     $sewa_oprs->catatan = $addcost->catatan;
+    //                     $sewa_oprs->updated_by = $user;
+    //                     $sewa_oprs->updated_at = now();
+    //                     $sewa_oprs->save();
+    //                 }
+    //             }
+
+    //             // data addcost baru
+    //             $new_addcosts = json_decode($value['addcost_baru']);
+    //             if($new_addcosts != null){
+    //                 // if($data['bank'] == null){
+    //                 //     db::rollBack();
+    //                 //     return redirect()->route('belum_invoice.index')->with(['status' => 'error', 'msg' => 'Harap isi bank dahulu untuk pencairan!']);
+    //                 // }
+    //                 // dd($new_addcosts );
+    //                 foreach ($new_addcosts as $new_addcost) {
+    //                     // $pembayaran = new SewaOperasionalPembayaran();
+    //                     // $pembayaran->deskripsi = $new_addcost->deskripsi;
+    //                     // $pembayaran->total_operasional = $new_addcost->total_dicairkan;
+    //                     // $pembayaran->total_dicairkan = $new_addcost->total_dicairkan;
+    //                     // $pembayaran->created_by = $user;
+    //                     // $pembayaran->created_at = now();
+    //                     // $pembayaran->save();
+
+    //                     $sewa_oprs = new SewaOperasional();
+    //                     $sewa_oprs->id_sewa = $new_addcost->id_sewa;
+    //                     // $sewa_oprs->id_pembayaran = $pembayaran->id;
+    //                     $sewa_oprs->deskripsi = $new_addcost->deskripsi;
+    //                     // $sewa_oprs->total_dicairkan = $new_addcost->total_dicairkan;
+    //                     // $sewa_oprs->total_dicairkan = 0;
+    //                     $sewa_oprs->total_operasional = $new_addcost->total_operasional;
+    //                     // $sewa_oprs->tgl_dicairkan = now();
+    //                     $sewa_oprs->is_ditagihkan = $new_addcost->is_ditagihkan;
+    //                     $sewa_oprs->is_dipisahkan = $new_addcost->is_dipisahkan;
+    //                     $sewa_oprs->catatan = $new_addcost->catatan;
+    //                     $sewa_oprs->status = 'TAGIHKAN DI INVOICE';
+    //                     $sewa_oprs->created_by = $user;
+    //                     $sewa_oprs->created_at = now();
+    //                     $sewa_oprs->save();
+
+    //                     // $deskripsi = $new_addcost->deskripsi . ' : ' . $value['nama_tujuan'] . ' #' . $value['driver'];
+    //                     // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+    //                     //     array(
+    //                     //         $data['bank'], // id kas_bank dr form
+    //                     //         now(), //tanggal
+    //                     //         0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+    //                     //         $new_addcost->total_dicairkan, //uang keluar (kredit)
+    //                     //         1015, //kode coa
+    //                     //         'pencairan_operasional',
+    //                     //         $deskripsi, // keterangan_transaksi
+    //                     //         $pembayaran->id, //keterangan_kode_transaksi // id_pembayaran
+    //                     //         $user, //created_by
+    //                     //         now(), //created_at
+    //                     //         $user, //updated_by
+    //                     //         now(), //updated_at
+    //                     //         'Y'
+    //                     //     ) 
+    //                     // );
+
+    //                     // $saldo = KasBank::where('is_aktif', 'Y')->find($data['bank']);
+    //                     // $saldo->saldo_sekarang -= $new_addcost->total_dicairkan;
+    //                     // $saldo->updated_by = $user;
+    //                     // $saldo->updated_at = now();
+    //                     // $saldo->save();
+    //                 }
+    //             }
+    //         }
+
+    //         DB::commit();
+    //         return redirect()->route('belum_invoice.index')->with(['status' => 'Success', 'msg'  => 'Edit data berhasil!']);
+    //     } catch (ValidationException $e) {
+    //         db::rollBack();
+    //         return redirect()->route('belum_invoice.index')->with(['status' => 'error', 'msg' => 'Edit data gagal!']);
+    //     }
+    // }
 
     /**
      * Remove the specified resource from storage.

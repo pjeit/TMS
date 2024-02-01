@@ -302,7 +302,7 @@ class RevisiBiayaOperasionalController extends Controller
                         $is_delete = false;
                         foreach ($operasionals as $keyOprs => $value) {
                             $jenis = 'pencairan_operasional';
-                            $coa = 1015;
+                            $coa = CoaHelper::DataCoa(5009);
         
                             if(isset($value['check'])){ // ini data yg dihapus
                                 $oprs = SewaOperasional::where('is_aktif', 'Y')->find($keyOprs);
@@ -431,11 +431,11 @@ class RevisiBiayaOperasionalController extends Controller
             if($data['modal_item'] == 'KARANTINA'){
                 $oprs = Karantina::where('is_aktif', 'Y')->find($data['key']);
                 $jenis = 'karantina';
-                $coa = 1015;
+                $coa = CoaHelper::DataCoa(5003);
             }else{
                 $oprs = SewaOperasional::where('is_aktif', 'Y')->find($data['key']);
                 $jenis = 'pencairan_operasional';
-                $coa = 1015;
+                $coa =CoaHelper::DataCoa(5009);
             }
             $oprs->catatan =  'REVISI OFF - '. $data['alasan'] . ' | ' .$oprs->catatan;
             $oprs->updated_by = $user;
@@ -486,7 +486,7 @@ class RevisiBiayaOperasionalController extends Controller
                 $data = SewaOperasionalPembayaran::where('is_aktif', 'Y')
                                         ->where(function($where) use($item){
                                             if($item == 'LAIN-LAIN'){
-                                                $where->whereNotIn('deskripsi', ['SEAL PELAYARAN','TALLY','OPERASIONAL','TIMBANG','BURUH','LEMBUR','KARANTINA']);
+                                                $where->whereNotIn('deskripsi', ['ALAT','TALLY','SEAL PELAYARAN','BIAYA DEPO','KARANTINA','BURUH','TIMBANG','LEMBUR']);
                                             }else{
                                                 $where->where('deskripsi', $item);
                                             }

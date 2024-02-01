@@ -52,9 +52,9 @@
                                 <label for="">Tujuan</label>
                                 <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{ $sewa->nama_tujuan }}" readonly>                         
                             </div>  
-                            <div class="form-group col-12" style="opacity: 0%;">
-                                <label for="" >a</label>
-                                <input type="text" id="hidden" name="hidden" class="form-control"  >                         
+                            <div class="form-group col-12">
+                                <label for="" >Uang Jalan Driver</label>
+                                <input type="text" id="hidden" name="hidden" class="form-control" value="{{ number_format( $sewa->total_uang_jalan )}}" readonly >                         
                             </div>  
                         </div>
                         <div class="row">
@@ -106,9 +106,9 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Rp</span>
                                 </div>
-                                <!-- <input type="text" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                          -->
+                                <!-- <input type="text" class="form-control uang numajaMinDesimal" value="{{ number_format($data_uj->total_uang_jalan<1000000?$jumlah:0) }}" readonly>                          -->
                                 {{-- <input type="hidden" name="jumlah" value="{{ $jumlah }}"> --}}
-                                <input type="text" id="jumlah" name="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($jumlah) }}" readonly>                         
+                                <input type="text" id="jumlah" name="jumlah" class="form-control uang numajaMinDesimal" value="{{ number_format($data_uj->total_uang_jalan<1000000?$jumlah:0) }}" readonly>                         
                             </div>
                         </div>
                         <div class="form-group col-4">

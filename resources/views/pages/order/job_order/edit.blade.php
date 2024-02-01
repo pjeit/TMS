@@ -148,16 +148,16 @@
                                             <input type="checkbox" id="isVA" value="Y" {{ $data['JO']->no_va != null? 'checked':'' }} {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}>
                                         </span>
                                     </div>
-                                    <input required type="text" id="no_va" name="no_va" class="form-control numaja" value="{{ $data['JO']->no_va }}" {{$data['JO']->status == "PROSES DOORING"?'readonly':''}}> 
+                                    <input required type="text" id="no_va" name="no_va" class="form-control numaja" value="{{ $data['JO']->no_va }}" {{ $data['JO']->no_va == null || $data['JO']->status == "PROSES DOORING"? 'readonly':'' }}> 
                                 </div>
                             </div>
                             <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                 <label for="">Atas Nama</label>
-                                <input required type="text" id="va_nama" name="va_nama" class="form-control" value="{{ $data['JO']->va_nama }}" {{$data['JO']->status == "PROSES DOORING"?'readonly':''}}>                         
+                                <input required type="text" id="va_nama" name="va_nama" class="form-control" value="{{ $data['JO']->va_nama }}" {{ $data['JO']->no_va == null || $data['JO']->status == "PROSES DOORING"? 'readonly':'' }}>                         
                             </div>
                             <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                 <label for="">Bank</label>
-                                <input required type="text" id="va_bank" name="va_bank" class="form-control" value="{{ $data['JO']->va_bank }}" {{$data['JO']->status == "PROSES DOORING"?'readonly':''}}>                         
+                                <input required type="text" id="va_bank" name="va_bank" class="form-control" value="{{ $data['JO']->va_bank }}" {{ $data['JO']->no_va == null || $data['JO']->status == "PROSES DOORING"? 'readonly':'' }}>                         
                             </div>
                             <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">

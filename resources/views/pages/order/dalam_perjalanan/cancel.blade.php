@@ -44,7 +44,7 @@
                                 </div> 
                             </div>
                             <div class="col-6">
-                                 <div class="form-group ">
+                                <div class="form-group ">
                                     <label for="tanggal_cancel">Tanggal Cancel<span style="color:red">*</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
@@ -66,12 +66,12 @@
                             <label for="no_akun">Tujuan</label>
                             <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$data->nama_tujuan}}" readonly>                         
                         </div>  
-                        <div class="form-group">
-                            <label for="no_akun">{{$data->jenis_tujuan == "FTL"?'No. Kontainer':'No. Koli'}}<span class="text-red">*</span></label>
+                        {{-- <div class="form-group">
+                            <label for="no_akun">{{$data->jenis_tujuan == "FTL"?'No. Kontainer':'No. Koli'}}</label>
                             @if ($data->no_kontainer_jod && $data->jenis_order =="INBOUND")
                                 <input type="text" id="no_kontainer" name="no_kontainer" class="form-control" readonly value="{{$data->no_kontainer_jod}}" >                         
                             @else
-                                <input type="text" id="no_kontainer" required ="no_kontainer" class="form-control" value="{{$data->no_kontainer}}" >                         
+                                <input type="text" id="no_kontainer"  ="no_kontainer" class="form-control" value="{{$data->no_kontainer}}" >                         
                             @endif
                         </div> 
                             @if ($data->seal_pelayaran_jod&&$data->jenis_order =="INBOUND")
@@ -82,9 +82,9 @@
                         @endif
                         
                         <div class="form-group">
-                            <label for="no_akun">No. Surat Jalan<span class="text-red">*</span></label>
-                            <input type="text" id="surat_jalan" required name="surat_jalan" class="form-control" value="{{$data->no_surat_jalan}}" >                         
-                        </div> 
+                            <label for="no_akun">No. Surat Jalan</label>
+                            <input type="text" id="surat_jalan"  name="surat_jalan" class="form-control" value="{{$data->no_surat_jalan}}" >                         
+                        </div>  --}}
 
                         <div class="form-group">
                             <label for="alasan_cancel">Alasan Cancel Perjalanan<span style="color: red;">*</span></label>
@@ -138,7 +138,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" >
+                                            <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" value="{{ number_format(($data->getUJRiwayat[0]->total_uang_jalan + $data->getUJRiwayat[0]->total_tl)-$data->getUJRiwayat[0]->potong_hutang ) }}">
                                         </div>
                                     </div>
 
@@ -146,7 +146,7 @@
                                         <label for="">Kas / Bank<span class="text-red">*</span></label>
                                         <select class="form-control select2" name="pembayaran" id="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" required>
                                             @foreach ($dataKas as $kb)
-                                                <option value="{{$kb->id}}" <?= $kb->id == 1 ? 'selected':''; ?> >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                                <option value="{{$kb->id}}" >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                             @endforeach
                                                 <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option>
                                         </select>
@@ -158,8 +158,93 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div> 
+        <div class="card radiusSendiri">
+            <div class="card-header">
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered card-outline card-primary table-hover" id="sortable" >
+                        <thead>
+                            <tr>
+                                <th colspan="7">BIAYA OPERASIONAL</th>
+                            </tr>
+                        <tr>
+                            <th></th>
+                            <th>Deskripsi</th>
+                            <th>Total Dicairkan</th>
+                            {{-- <th>Catatan</th> --}}
+                            <th>Kas Kembali</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tampunganTabel">
+                        @php
+                            $index=0;
+                        @endphp
+                        @foreach ($dataOperasional as $key => $value)
+                                <tr id="{{$index}}">
+                                    <td id="id_sewa_operasional_tabel_{{$index}}" >
+                                        @php
+                                            $data_id_sewa = explode(',',$value->so_id_sewa);
+                                            $id_operasional = explode(',',$value->so_id);
+                                        @endphp
+                                        {{-- @foreach ( $data_id_sewa as $id_sewa ) --}}
+                                            <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->so_id_sewa}}" readonly>
+                                        {{-- @endforeach --}}
+                                        {{-- @foreach ( $id_operasional as $id_ops ) --}}
+                                            <input type="hidden" id="id_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_operasional_data]" value="{{$value->so_id}}" readonly>
+                                        {{-- @endforeach --}}
+                                        <input type="hidden" id="id_pembayaran_operasional_{{$index}}"  class="id_pembayaran_operasional" name="data[{{$index}}][id_pembayaran_operasional]" value="{{$value->so_id_pembayaran}}" readonly>
+                                    </td>
+                                    <td id="deskripsi_tabel_{{$index}}" >
+                                        <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->so_deskripsi}}" class="form-control deskripsi_hardcode ambil_text_deskripsi" readonly>
+                                        {{-- <span class="badge badge-success">Data Yang Tersimpan</span> --}}
+                                    </td>
+                                    <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                        <input type="text" name="data[{{$index}}][total_dicairkan]" id="total_dicairkan_{{$index}}" value="{{number_format($value->so_total_dicairkan) }}" class="form-control uang numaja nominal_hardcode"readonly>
+                                        <input type="hidden" name="data[{{$index}}][rincian]" value="UANG KEMBALI ({{$value->counter_data}}X {{$value->so_deskripsi}})->KENDARAAN : [{{$value->sewa_kendaraan}}] - DRIVER:({{$value->sewa_driver}}) - SEWA :({{$value->no_sewa}})">
+                                        <label for="">Rincian Biaya Operasional:</label>
+                                        @foreach ($data_rincian as $rinci )
+                                            @if ($value->so_id_pembayaran == $rinci['id_bayar'] && $value->so_deskripsi == $rinci['deskripsi'])
+                                                <span class="badge badge-danger">[{{$rinci['kendaraan']}}] {{$rinci['driver']}} Rp.{{number_format($rinci['rincian'])}}</span> <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @if ($value->so_id_pembayaran == null)
+                                            <div class="form-group col-12">
+                                                <input type="hidden" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" value="DATA_DI_HAPUS" class="form-control" readonly>
+                                                <span class="badge badge-warning">Data Dihapus !</span> <br>
+                                                
+                                            </div>
+                                        @else
+                                            <div class="form-group col-12">
+                                                <select class="form-control select2" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" width="100">
+                                                    @if ($value->so_deskripsi=="SEAL PELAYARAN"||$value->so_deskripsi=="PLASTIK")
+                                                        <option value="KEMBALI_STOK" >KEMBALI SEBAGAI STOK</option>
+                                                    @endif
+                                                    @foreach ($dataKas as $kb)
+                                                        <option value="{{$kb->id}}" {{ $kb->id == 2? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                                    @endforeach
+                                                    
+                                                </select>
+                                            </div>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @php
+                                $index+=1;
+                                @endphp
+                            @endforeach
+                    
+                        
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
     </form>
 </div>
 

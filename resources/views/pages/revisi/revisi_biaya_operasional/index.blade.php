@@ -343,6 +343,21 @@
         });
 
         $(document).on('click', '#btnDelete', function(e){
+            var isOk = 0;
+            var checkboxes = document.querySelectorAll('.centang');
+                checkboxes.forEach(function(checkbox) {
+                    if (checkbox.checked) {
+                        isOk = 1;
+                    }
+                });
+            if (isOk == 0) {
+                    event.preventDefault(); // Prevent form submission
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Harap pilih item dahulu!',
+                    })
+                    return;
+                }
             Swal.fire({
                 title: 'Apakah data sudah benar?',
                 text: "Periksa kembali data anda",
@@ -391,6 +406,21 @@
         });
 
         $(document).on('click', '#btnSave', function(e){
+            var isOk = 0;
+            var checkboxes = document.querySelectorAll('.centang');
+                checkboxes.forEach(function(checkbox) {
+                    if (checkbox.checked) {
+                        isOk = 1;
+                    }
+                });
+            if (isOk == 0) {
+                    event.preventDefault(); // Prevent form submission
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Harap pilih item dahulu!',
+                    })
+                    return;
+                }
             Swal.fire({
                 title: 'Apakah data sudah benar?',
                 text: "Periksa kembali data anda",

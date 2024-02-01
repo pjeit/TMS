@@ -656,7 +656,9 @@
             $('#key').val(key); // id key buat nge get data yg di hidden, key = id_sewa
             $("#save_detail").show();
             $("#save_sewa_baru").hide();
+            $("#addcost_sewa").attr('disabled',true);
 
+            
             $('#tanggal_berangkat').val( $('#hidden_tgl_berangkat_'+key).val() );
             $('#nama_tujuan').val( $('#hidden_nama_tujuan_'+key).val() ); 
             $('#no_kontainer').val( $('#hidden_no_kontainer_'+key).val() ); 
@@ -666,7 +668,7 @@
             $('#tarif').val( moneyMask($('#hidden_tarif_'+key).val()) ); 
             $('#addcost').val( moneyMask($('#addcost_hidden_'+key).val()) ); 
             $('#addcost_pisah').val( moneyMask($('#addcost_pisah_hidden_'+key).val()) ); 
-            $('#diskon').val( !isNaN($('#hidden_diskon_'+key).val())? moneyMask($('#hidden_diskon_'+key).val()):'' ); 
+            $('#diskon').val( !isNaN($('#hidden_diskon_'+key).val())? moneyMask($('#hidden_diskon_'+key).val()):0 ); 
 
             let all_id_sewa = [];
 
@@ -709,6 +711,11 @@
             }
 
             $('#tabel_addcost tbody').empty();
+            hitung();
+            // $('#tarif').val( moneyMask(data.total_tarif) );
+            $('#subtotal').val($('#tarif').val()) 
+            // $('#subtotal').val(moneyMask(data.total_tarif)); 
+            // $('#subtotal').val(moneyMask(data.total_tarif)); 
 
             updateDetail(index);
         });
@@ -771,6 +778,7 @@
                 
                 $('#addcost_sewa').append(option);
             });
+            $("#addcost_sewa").attr('disabled',false);
 
             hitung();
             $('#modal_detail').modal('show');
@@ -983,7 +991,7 @@
                 $('#tarif').val( moneyMask(data.total_tarif) ); 
                 $('#addcost').val(''); 
                 $('#diskon').val(''); 
-                // $('#subtotal').val(moneyMask(data.total_tarif)); 
+                $('#subtotal').val(moneyMask(data.total_tarif)); 
                 if(data.sewa_operasional.length > 0){
                     showAddcostDetails(index, 'update');
                 }
@@ -1227,7 +1235,11 @@
 
             if(type == 'detail'){
                 details = $('#detail_addcost_'+key).val(); 
-                oprs = JSON.parse(details);
+                console.log(details);
+                if(details)
+                {
+                    oprs = JSON.parse(details);
+                }
             }else if(type == 'update'){
                 details = data.sewa_operasional; 
                 oprs = details;
@@ -1319,7 +1331,10 @@
 
             var subtotal = tarif + addcost - diskon;
             calculateGrandTotal();
-            // console.log(addcost);
+            console.log(tarif);
+            console.log(addcost);
+            console.log(diskon);
+            console.log(subtotal);
             $('#subtotal').val(moneyMask(subtotal));
         }
         function hitungAddCost(){

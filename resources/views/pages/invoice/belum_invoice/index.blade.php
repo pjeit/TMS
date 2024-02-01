@@ -479,33 +479,29 @@
                
 
             }
-            
 
-            
-            
-           
 		})
-     new DataTable('#tabelBelumInvoice', {
-        ordering: false,
-        order: [
-            [0, 'asc'],
-            [1, 'asc']
-        ],
-        rowGroup: {
-            dataSrc: [0, 1]
-        },
-        columnDefs: [
-            {
-                targets: [0, 1],
-                visible: false
+        new DataTable('#tabelBelumInvoice', {
+            paging: false,
+            ordering: false,
+            order: [
+                [0, 'asc'],
+                [1, 'asc']
+            ],
+            rowGroup: {
+                dataSrc: [0, 1]
             },
-            {
-                // orderable: false,
-                // "targets": [0,1,2,3,4,5,6,7]
-            }
-       
-        ],
-    });
+            columnDefs: [
+                {
+                    targets: [0, 1],
+                    visible: false
+                },
+                {
+                    // orderable: false,
+                    "targets": [0,1,2,3,4,5,6,7]
+                }
+            ],
+        });
 
 });
 

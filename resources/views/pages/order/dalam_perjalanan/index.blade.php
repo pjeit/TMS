@@ -106,16 +106,22 @@
                                                             <span class="nav-icon fas fa-times mr-3"></span> Cancel
                                                         </a>
                                                     @endcan
+                                                @else
+                                                    @can('CANCEL_DALAM_PERJALANAN')
+                                                        <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
+                                                            <span class="nav-icon fas fa-times mr-3"></span> Cancel
+                                                        </a>
+                                                    @endcan
                                                 @endif
                                                     <a href="{{route('dalam_perjalanan.ubah_supir',[$item->id_sewa])}}" class="dropdown-item">
                                                         <span class="nav-icon fas fa-user mr-3"></span> Ubah Supir
                                                     </a>
                                                 @if ($item->jenis_tujuan == 'FTL')
-                                                    @can('CANCEL_DALAM_PERJALANAN')
+                                                    {{-- @can('CANCEL_DALAM_PERJALANAN')
                                                         <a href="{{route('dalam_perjalanan.cancel_uang_jalan',[$item->id_sewa])}}" class="dropdown-item">
                                                             <span class="nav-icon fas fa-dollar-sign mr-3"></span> Cancel Uang Jalan
                                                         </a>
-                                                    @endcan
+                                                    @endcan --}}
                                                 @endif
                                             @endif
                                         </div>

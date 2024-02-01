@@ -80,7 +80,7 @@ class RoleController extends Controller
             $data = $request->collect();
 
             $dataRolemaxID = DB::table('roles')
-            ->where('is_aktif', '=', 'Y')
+            // ->where('is_aktif', '=', 'Y')
             ->max('id');
             // dd($dataRolemaxID+1);
             DB::table('roles')

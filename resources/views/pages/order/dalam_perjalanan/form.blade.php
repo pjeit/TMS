@@ -484,7 +484,7 @@ height: 20px;
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja" readonly>
+                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format(0) }}" class="form-control uang numaja" readonly>
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
                                                         <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
@@ -1218,6 +1218,14 @@ height: 20px;
 
             var tanggalBerangkat = new Date(tanggalBerangkatStr);
             var tanggalKembali = new Date(tanggalKembaliStr);
+            if ($("#is_kembali").val()=='N') {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `TANGGAL KEMBALI BELUM DIISI!`,
+                    })
+                return;
+            } 
             if ($("#is_kembali").val()=='Y' && tanggalKembali<tanggalBerangkat) {
                     event.preventDefault(); 
                     Toast.fire({

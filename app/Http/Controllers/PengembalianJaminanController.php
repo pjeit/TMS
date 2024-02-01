@@ -89,7 +89,15 @@ class PengembalianJaminanController extends Controller
                     $kasBank->created_by = $user;
                     $kasBank->created_at = now();
                     $kasBank->is_aktif = "Y";
-                    $kasBank->save();
+                    // $kasBank->save();
+                    if($kasBank->save())
+                    {
+                        $kasBankSaldo = KasBank::where('is_aktif', 'Y')->where('id', $data['id_kas'])->first();
+                        $kasBankSaldo->saldo_sekarang+=$total;
+                        $kasBankSaldo->updated_by = $user;
+                        $kasBankSaldo->updated_at = now();
+                        $kasBankSaldo->save();
+                    }
                     DB::commit();
                     return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'Success', 'msg' => 'Pengembalian berhasil!']);
                 }

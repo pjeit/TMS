@@ -99,6 +99,7 @@ class PencairanUangJalanController extends Controller
     public function store(Request $request)
     {
         $data = $request->post();
+        // DD($data);
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         DB::beginTransaction(); 
         try {
@@ -152,20 +153,21 @@ class PencairanUangJalanController extends Controller
                         if (isset($data['teluk_lamong'])&&(float)str_replace(',', '', $data['teluk_lamong'])>0) {
 
                             $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
-                            $SOP = new SewaOperasional();
-                            $SOP->id_sewa = $data['id_sewa_defaulth']; 
-                            $SOP->deskripsi = 'TL';
-                            $SOP->total_operasional = (float)str_replace(',', '', $data['teluk_lamong']);
-                            $SOP->total_dicairkan = (float)str_replace(',', '', $data['teluk_lamong']);
-                            $SOP->tgl_dicairkan = now();
-                            $SOP->is_ditagihkan = 'N';
-                            $SOP->is_dipisahkan = 'N';
-                            $SOP->status = "SUDAH DICAIRKAN";
-                            $SOP->catatan = "PENCAIRAN DI UANG JALAN";
-                            $SOP->created_by = $user;
-                            $SOP->created_at = now();
-                            $SOP->is_aktif = 'Y';
-                            $SOP->save();
+                            // $SOP = new SewaOperasional();
+                            // $SOP->id_sewa = $data['id_sewa_defaulth']; 
+                            // $SOP->deskripsi = 'TL';
+                            // $SOP->total_operasional = (float)str_replace(',', '', $data['teluk_lamong']);
+                            // // $SOP->total_dicairkan = (float)str_replace(',', '', $data['teluk_lamong']);
+                            // $SOP->total_dicairkan = 0;
+                            // // $SOP->tgl_dicairkan = now();
+                            // $SOP->is_ditagihkan = 'N';
+                            // $SOP->is_dipisahkan = 'N';
+                            // $SOP->status = "TAGIHKAN DI INVOICE";
+                            // $SOP->catatan = "[TIDAK-ADA-PENCAIRAN] PENCAIRAN DI UANG JALAN";
+                            // $SOP->created_by = $user;
+                            // $SOP->created_at = now();
+                            // $SOP->is_aktif = 'Y';
+                            // $SOP->save();
                             
                         } else {
                             $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN';
@@ -194,22 +196,22 @@ class PencairanUangJalanController extends Controller
                 {
                     if (isset($data['teluk_lamong'])&&(float)str_replace(',', '', $data['teluk_lamong'])>0) {
                         // $nominal =(float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']);
-                 
                         $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
-                        $SOP = new SewaOperasional();
-                        $SOP->id_sewa = $data['id_sewa_defaulth']; 
-                        $SOP->deskripsi = 'TL';
-                        $SOP->total_operasional = (float)str_replace(',', '', $data['teluk_lamong']);
-                        $SOP->total_dicairkan = (float)str_replace(',', '', $data['teluk_lamong']);
-                        $SOP->tgl_dicairkan = now();
-                        $SOP->is_ditagihkan = 'N';
-                        $SOP->is_dipisahkan = 'N';
-                        $SOP->status = "SUDAH DICAIRKAN";
-                        $SOP->catatan = "PENCAIRAN DI UANG JALAN";
-                        $SOP->created_by = $user;
-                        $SOP->created_at = now();
-                        $SOP->is_aktif = 'Y';
-                        $SOP->save();
+                        // $SOP = new SewaOperasional();
+                        // $SOP->id_sewa = $data['id_sewa_defaulth']; 
+                        // $SOP->deskripsi = 'TL';
+                        // $SOP->total_operasional = (float)str_replace(',', '', $data['teluk_lamong']);
+                        // // $SOP->total_dicairkan = (float)str_replace(',', '', $data['teluk_lamong']);
+                        // $SOP->total_dicairkan = 0;
+                        // // $SOP->tgl_dicairkan = now();
+                        // $SOP->is_ditagihkan = 'N';
+                        // $SOP->is_dipisahkan = 'N';
+                        // $SOP->status = "TAGIHKAN DI INVOICE";
+                        // $SOP->catatan = "[TIDAK-ADA-PENCAIRAN] PENCAIRAN DI UANG JALAN";
+                        // $SOP->created_by = $user;
+                        // $SOP->created_at = now();
+                        // $SOP->is_aktif = 'Y';
+                        // $SOP->save();
                         
                     } else {
                         // $nominal =(float)str_replace(',', '', $data['total_diterima']);

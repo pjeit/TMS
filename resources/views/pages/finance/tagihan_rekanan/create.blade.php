@@ -114,7 +114,7 @@
             <table class="table table-hover table-bordered table-striped " width='100%' id="tabel_tagihan">
                 <thead>
                     <tr>
-                        <th>Data Sewa</th>
+                        <th>Data Order</th>
                         <th style="width: 200px;">Tarif</th>
                         <th style="width: 200px;">Ditagihkan</th>
                         <th>Catatan</th>
@@ -192,6 +192,8 @@
             if(this.value != null){
                 showTable(this.value);
             }
+            $('#tagihan').val(0);
+
         });
         
         var today = new Date();

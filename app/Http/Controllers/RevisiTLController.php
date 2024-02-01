@@ -78,11 +78,15 @@ class RevisiTLController extends Controller
             ->select('*')
             ->where('is_aktif', '=', "Y")
             ->get();
-
+        $data_uj = UangJalanRiwayat::where('is_aktif', '=', "Y")
+            ->where('sewa_id', $id)
+            ->first();
+        // dd( $data_uj);
         return view('pages.revisi.revisi_TL.cair',[
             'judul' => "Pencairan TL",
             'sewa' => $sewa,
             'jumlah' => $pengaturan[$sewa['stack_tl']],
+            'data_uj' => $data_uj,
             'dataKas' => $dataKas,
             'id_sewa' => $id,
         ]);
@@ -162,19 +166,21 @@ class RevisiTLController extends Controller
                         'is_aktif' => "Y",
                     )
                 ); 
-            $SOP = new SewaOperasional();
-            $SOP->id_sewa = $data['id_sewa']; 
-            $SOP->deskripsi = 'TL';
-            $SOP->total_operasional = (float)str_replace(',', '', $data['jumlah']);
-            $SOP->total_dicairkan = (float)str_replace(',', '', $data['total_diterima']);
-            $SOP->tgl_dicairkan = now();
-            $SOP->is_ditagihkan = 'N';
-            $SOP->is_dipisahkan = 'N';
-            $SOP->status = "SUDAH DICAIRKAN";
-            $SOP->created_by = $user;
-            $SOP->created_at = now();
-            $SOP->is_aktif = 'Y';
-            $SOP->save();
+            // $SOP = new SewaOperasional();
+            // $SOP->id_sewa = $data['id_sewa']; 
+            // $SOP->deskripsi = 'TL';
+            // $SOP->total_operasional = (float)str_replace(',', '', $data['jumlah']);
+            // // $SOP->total_dicairkan = (float)str_replace(',', '', $data['total_diterima']);
+            // $SOP->total_dicairkan = 0;
+            // $SOP->tgl_dicairkan = now();
+            // $SOP->is_ditagihkan = 'N';
+            // $SOP->is_dipisahkan = 'N';
+            // $SOP->status = "TAGIHKAN DI INVOICE";
+            // $SOP->catatan = "[TIDAK-ADA-PENCAIRAN] PENCAIRAN DI REVISI TL";
+            // $SOP->created_by = $user;
+            // $SOP->created_at = now();
+            // $SOP->is_aktif = 'Y';
+            // $SOP->save();
 
             $uang_jalan_riwayat = UangJalanRiwayat::where('is_aktif', 'Y')
                                     ->where('sewa_id', $data['id_sewa'])
@@ -282,15 +288,15 @@ class RevisiTLController extends Controller
                 )
             );
 
-            DB::table('sewa_operasional')
-                ->where('id_sewa', $data['id_sewa'])
-                ->where('deskripsi', 'TL')
-                ->update(array(
-                    'updated_at' => now(),
-                    'updated_by' => $user,
-                    'is_aktif' => "N",
-                )
-            );
+            // DB::table('sewa_operasional')
+            //     ->where('id_sewa', $data['id_sewa'])
+            //     ->where('deskripsi', 'TL')
+            //     ->update(array(
+            //         'updated_at' => now(),
+            //         'updated_by' => $user,
+            //         'is_aktif' => "N",
+            //     )
+            // );
 
             $datauang_jalan_riwayat = DB::table('uang_jalan_riwayat')
                     ->select('*')
@@ -414,6 +420,8 @@ class RevisiTLController extends Controller
                         // ->orWhereNull('stack_tl')
                         // ->orWhere('stack_tl', NULL)
                         ->where('status', 'PROSES DOORING')
+                         // hanya keluar kalau data uang jalan driver kurang dari 1 juta, soalnya kalau lebih dr 1 juta ga ada biaya TL
+                        ->where('total_uang_jalan','<' ,1000000)
                         ->orderBy('created_at', 'DESC')
                         ->get();
 
@@ -448,6 +456,8 @@ class RevisiTLController extends Controller
                             ->doesntHave('getSewaBiayaAddTL') // Use doesntHave to filter where getSewaBiayaAddTL is null
                             ->where('stack_tl', 'tl_teluk_lamong')
                             ->where('status', 'PROSES DOORING')
+                            // hanya keluar kalau data uang jalan driver kurang dari 1 juta, soalnya kalau lebih dr 1 juta ga ada biaya TL
+                            ->where('total_uang_jalan','<' ,1000000)
                             ->orderBy('created_at', 'DESC')
                             ->get();
 

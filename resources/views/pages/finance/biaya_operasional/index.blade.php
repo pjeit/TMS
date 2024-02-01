@@ -59,44 +59,44 @@ a {
                         <li class="nav-item">
                             {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X, DRIVER 1,2,3 (ALAT,TALLY,SEAL PELAYARAN)--}}
                             <a class="nav-link nav-link-tab active" data-toggle="tab" id="btn_alat" aria-selected="true">
-                                <span class="text-bold">ALAT</span>
+                                <span class="text-bold">ALAT</span> [Semua sewa pje]
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_tally" aria-selected="false">
-                                <span class="text-bold">TALLY</span>
+                                <span class="text-bold">TALLY</span> [Master]
                             </a>
                         </li>
                         <li class="nav-item" style="border-right: 2px solid black">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_seal" aria-selected="false">
-                                <span class="text-bold">SEAL PELAYARAN</span>
+                                <span class="text-bold">SEAL PELAYARAN</span> [Master]
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_depo" aria-selected="false">
                                 <span class="text-bold">BIAYA DEPO</span> 
-                                [Shifting]
+                                [Shifting]-[Semua sewa pje]
                             </a>
                         </li>
                         <li class="nav-item" style="border-right: 2px solid black">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_karantina" aria-selected="false">
-                                <span class="text-bold">KARANTINA</span>
+                                <span class="text-bold">KARANTINA </span> [Master Karantina]
                             </a>
                         </li>
                         <li class="nav-item">
                             {{-- PENCAIRAN SENDIRI-SENDIRI, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_buruh" aria-selected="false">
-                                <span class="text-bold">BURUH</span>
+                                <span class="text-bold">BURUH </span> [Semua sewa pje flag buruh]
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_timbang" aria-selected="false">
-                                <span class="text-bold">TIMBANG</span>
+                                <span class="text-bold">TIMBANG </span> [Semua sewa pje]
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_lembur" name="test" value="asdasd" aria-selected="false">
-                                <span class="text-bold">LEMBUR</span>
+                                <span class="text-bold">LEMBUR </span> [Semua sewa pje]
                             </a>
                         </li>
                     </ul>
@@ -396,6 +396,8 @@ a {
         // console.log(dateMask(date).split('-')[0]-1);
         // console.log(dateMask(date).split('-')[1]);
         // console.log(dateMask(date).split('-')[2]);
+
+        //buat yang alat,tally,seal pelayaran,karantina,biaya depo
         function showTable(item){
             if(item == ''){
                 var table = document.getElementById("rowGroup");
@@ -464,6 +466,8 @@ a {
                                     row.append(`<td>
                                                     <input type="text" class="form-control uang numaja dicairkan item_dicairkan grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id} item_${data[i].id}" id="item_${data[i].id}" item="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
                                                     <input type='hidden' id='biaya_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional}' class='form-control' readonly>
+                                                    <input type='hidden' class='cek_cair cek_cair_grup_${data[i].grup_id} cek_cair_customer_${data[i].id_customer} cek_cair_item_${data[i].id_sewa}' name='data[${data[i].id_sewa}][cek_cair]' value='N' class='form-control' readonly>
+
                                                 </td>`);
                                     row.append(`<td class='text-center'> 
                                                     <input class="form-control item_catatan grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id} item_${data[i].id}" name='data[${data[i].id}][catatan]' type="text" readonly/> 
@@ -505,23 +509,23 @@ a {
                                     //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
                                     // );
                                     
-                                    if(
-                                         //misal tgl berangkat = 18 terus tgl hari ini 19 , jadi masik true
-                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])-1&& // h-1
-                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
-                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
-                                        ||
-                                        //misal tgl berangkat = 18 terus tgl hari ini 18 , jadi masik true
-                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])&& //hari ini
-                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
-                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
-                                        ||
-                                        //misal tgl berangkat = 18 terus tgl hari ini 18+1 = 19 , jadi masik true
-                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])+1&& // h+1
-                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
-                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
-                                    )
-                                    {
+                                    // if(
+                                    //      //misal tgl berangkat = 18 terus tgl hari ini 19 , jadi masik true
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])-1&& // h-1
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    //     ||
+                                    //     //misal tgl berangkat = 18 terus tgl hari ini 18 , jadi masik true
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])&& //hari ini
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    //     ||
+                                    //     //misal tgl berangkat = 18 terus tgl hari ini 18+1 = 19 , jadi masik true
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])+1&& // h+1
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    // )
+                                    // {
                                         if(data[i].total_dicairkan == null){
                                             // console.log('ok');
                                             var start = data[i].deskripsi_so;
@@ -566,8 +570,8 @@ a {
                                                 total_dicairkan = data[i].seal_pelayaran;
                                             }
                                             else if(item == 'BIAYA DEPO'){
-                                                total_operasional = 0;  
-                                                total_dicairkan = 0;
+                                                total_operasional = 20000;  
+                                                total_dicairkan = 20000;
                                             }
                                             /*if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'|| item == 'BIAYA DEPO'){
                                                 total_operasional = 200000; // set default value biar kalau angka 0 di hidden
@@ -620,12 +624,11 @@ a {
                                                         </td>`);
                                                         
                                             // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
-                                            // if(total_operasional != 0){
+                                            if(total_dicairkan != 0){
                                                 $("#hasil").append(row);
-                                            // }
+                                            }
                                         }
-
-                                    }
+                                    // }
                                 }
                             }
                         }
@@ -664,6 +667,7 @@ a {
                 });
             }
         }
+        //buat yang buruh,timbang,lembur
         function showTableGabung(item,customer,tujuan){
             if(item == ''){
                 var table = document.getElementById("rowGroup");
@@ -705,23 +709,23 @@ a {
                             if(data.length > 0){
                                 console.log(data);
                                 for (var i = 0; i < data.length; i++) {
-                                    if(
-                                        //misal tgl berangkat = 18 terus tgl hari ini 19 , jadi masik true
-                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])-1&& // h-1
-                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
-                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
-                                        ||
-                                        //misal tgl berangkat = 18 terus tgl hari ini 18 , jadi masik true
-                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])&& //hari ini
-                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
-                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
-                                        ||
-                                        //misal tgl berangkat = 18 terus tgl hari ini 18+1 = 19 , jadi masik true
-                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])+1&& // h+1
-                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
-                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
-                                    )
-                                    {
+                                    // if(
+                                    //     //misal tgl berangkat = 18 terus tgl hari ini 19 , jadi masik true
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])-1&& // h-1
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    //     ||
+                                    //     //misal tgl berangkat = 18 terus tgl hari ini 18 , jadi masik true
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])&& //hari ini
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    //     ||
+                                    //     //misal tgl berangkat = 18 terus tgl hari ini 18+1 = 19 , jadi masik true
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])+1&& // h+1
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    // )
+                                    // {
                                         if(data[i].total_dicairkan == null){
                                             console.log('ok');
                                             var start = data[i].deskripsi_so;
@@ -733,16 +737,17 @@ a {
                                             row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
                                             row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
                                             if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
-                                                total_operasional = 200000; // set default value biar kalau angka 0 di hidden
+                                                total_operasional = 20000; // set default value biar kalau angka 0 di hidden
+                                                total_dicairkan = 20000; // set default value biar kalau angka 0 di hidden
                                                 row.append(`<td> 
-                                                            <input type="text" class="uang numaja ditagihkan form-control item_ditagihkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_ditagihkan${data[i].id_sewa}" id="item_ditagihkan${data[i].id_sewa}" item_ditagihkan="${data[i].id_sewa}" name='data[${data[i].id_sewa}][total_operasional]' value='' readonly/>
+                                                            <input type="text" class="uang numaja ditagihkan form-control item_ditagihkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_ditagihkan${data[i].id_sewa}" id="item_ditagihkan${data[i].id_sewa}" item_ditagihkan="${data[i].id_sewa}" name='data[${data[i].id_sewa}][total_operasional]' value='${moneyMask(total_operasional)}' readonly/>
                                                     </td>`);
                                             }
                                             var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
                                             var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
                                             
                                             row.append(`<td> 
-                                                            <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                            <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? moneyMask(total_dicairkan) :data[i].total_dicairkan}' readonly/>
                                                             <input type='hidden' class='cek_cair cek_cair_grup_${data[i].grup_id} cek_cair_customer_${data[i].id_customer} cek_cair_item_${data[i].id_sewa}' name='data[${data[i].id_sewa}][cek_cair]' value='N' class='form-control' readonly>
                                                             <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
                                                             <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
@@ -764,8 +769,7 @@ a {
                                                 $("#hasil").append(row);
                                             // }
                                         }
-
-                                    }
+                                    // }
                                 }
                             }
                         
@@ -978,6 +982,10 @@ a {
             $(".grup").prop('checked', isChecked);
             $(".customer").prop('checked', isChecked);
             $(".item").prop('checked', isChecked);
+            // $(".cek_cair_grup_"+id_grup).val('Y');
+            // $(".cek_cair_customer_"+customer_id).val('Y');
+            $(".cek_cair").val('Y');
+
             $(".item_dicairkan").prop('readonly', !isChecked);
             $(".item_ditagihkan").prop('readonly', !isChecked);
             $(".item_catatan").prop('readonly', !isChecked);
