@@ -145,19 +145,19 @@
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">
-                                            <input type="checkbox" id="isVA" value="Y" {{ $data['JO']->no_va != null? 'checked':'' }} {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}>
+                                            <input type="checkbox" id="isVA" value="Y" {{ $data['JO']->no_va != null? 'checked':'' }} {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'disabled':''}}>
                                         </span>
                                     </div>
-                                    <input required type="text" id="no_va" name="no_va" class="form-control numaja" value="{{ $data['JO']->no_va }}" {{ $data['JO']->no_va == null || $data['JO']->status == "PROSES DOORING"? 'readonly':'' }}> 
+                                    <input required type="text" id="no_va" name="no_va" class="form-control numaja" value="{{ $data['JO']->no_va }}" {{ $data['JO']->no_va == null || $data['JO']->status != "MENUNGGU PEMBAYARAN"? 'readonly':'' }}> 
                                 </div>
                             </div>
                             <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                 <label for="">Atas Nama</label>
-                                <input required type="text" id="va_nama" name="va_nama" class="form-control" value="{{ $data['JO']->va_nama }}" {{ $data['JO']->no_va == null || $data['JO']->status == "PROSES DOORING"? 'readonly':'' }}>                         
+                                <input required type="text" id="va_nama" name="va_nama" class="form-control" value="{{ $data['JO']->va_nama }}" {{ $data['JO']->no_va == null || $data['JO']->status != "MENUNGGU PEMBAYARAN"? 'readonly':'' }}>                         
                             </div>
                             <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                 <label for="">Bank</label>
-                                <input required type="text" id="va_bank" name="va_bank" class="form-control" value="{{ $data['JO']->va_bank }}" {{ $data['JO']->no_va == null || $data['JO']->status == "PROSES DOORING"? 'readonly':'' }}>                         
+                                <input required type="text" id="va_bank" name="va_bank" class="form-control" value="{{ $data['JO']->va_bank }}" {{ $data['JO']->no_va == null || $data['JO']->status != "MENUNGGU PEMBAYARAN"? 'readonly':'' }}>                         
                             </div>
                             <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                 <div class="form-group">
@@ -289,7 +289,7 @@
                                                     <input id="thcLuar{{$key}}" dataId="{{$key}}" class="stripping" type="radio"
                                                         name="detail[{{$key}}][stripping]" value="luar"
                                                         <?=$item->stripping== 'luar'? 'checked':''; ?> 
-                                                        {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}
+                                                        {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'disabled':''}}
                                                         >
                                                     <label class="form-check-label" for="thcLuar{{$key}}"><span
                                                             class="opacit">Luar</span></label>
@@ -298,7 +298,7 @@
                                                     <input id="thcDalam{{$key}}" dataId="{{$key}}" class="stripping" type="radio"
                                                         name="detail[{{$key}}][stripping]" value="dalam"
                                                         <?=$item->stripping== 'dalam'? 'checked':''; ?> 
-                                                        {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}
+                                                        {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'disabled':''}}
                                                         >
                                                     <label class="form-check-label" for="thcDalam{{$key}}"><span
                                                             class="opacit">Dalam</span></label><br>
@@ -384,7 +384,7 @@
                                     <tr>
                                         <th><span> <input type="checkbox" class="checkitem" name="thc_cekbox" 
                                             id="thc_cekbox" <?=($data['JO']['thc']==0) ? '' :'checked'; ?> 
-                                            {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}
+                                            {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'disabled':''}}
                                             ></span> THC</th>
                                         <td name="">
                                             @if ($data['JO']['thc']==0)
@@ -400,7 +400,7 @@
                                     <tr>
                                         <th><span> <input type="checkbox" class="checkitem" name="lolo_cekbox"
                                             id="lolo_cekbox" <?=$data['JO']['lolo']==0 ? '' :'checked'; ?> 
-                                            {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}
+                                            {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'disabled':''}}
                                             ></span> LOLO</th>
                                         <td name=""> 
                                             @if ($data['JO']['lolo']==0)
@@ -417,7 +417,7 @@
                                     <tr>
                                         <th><span> <input type="checkbox" class="checkitem" name="apbs_cekbox" 
                                             id="apbs_cekbox" <?=($data['JO']['apbs']==0) ? '' :'checked'; ?> 
-                                            {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}
+                                            {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'disabled':''}}
                                             ></span> APBS</th>
                                         <td name="">
                                             @if ($data['JO']['apbs']==0)
@@ -436,7 +436,7 @@
                                     <tr>
                                         <th><span> <input type="checkbox" class="checkitem" name="cleaning_cekbox"
                                                     id="cleaning_cekbox" <?=($data['JO']['cleaning']==0) ? '' :'checked'; ?>
-                                                    {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}
+                                                    {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'disabled':''}}
                                                 ></span> CLEANING</th>
                                         <td name="">
                                             @if ($data['JO']['apbs']==0)
@@ -458,7 +458,7 @@
                                         <th><span> 
                                             <input type="checkbox" class="checkitem" name="doc_fee_cekbox"
                                                     id="doc_fee_cekbox" <?=($data['JO']['doc_fee']==0) ? '' :'checked'; ?>
-                                                    {{$data['JO']->status == "PROSES DOORING"?'disabled':''}}
+                                                    {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'disabled':''}}
                                                 >
                                             </span> DOC FEE
                                         </th>
