@@ -31,7 +31,7 @@ class GrupTujuanController extends Controller
         $data = Grup::select('grup.*', DB::raw('SUM(CASE WHEN grup_tujuan.is_aktif = "Y" THEN 1 ELSE 0 END) AS total_tujuan'))
             ->leftJoin('grup_tujuan', 'grup_tujuan.grup_id', '=', 'grup.id')
             ->where('grup.is_aktif', 'Y')
-            ->groupBy('grup.id', 'grup.nama_grup', /* other columns you need */)
+            ->groupBy('grup.id', 'grup.nama_grup' /* other columns you need */)
             ->orderBy('nama_grup', 'ASC')
             ->get();
     
@@ -101,8 +101,8 @@ class GrupTujuanController extends Controller
         $data['grup'] = Grup::where('is_aktif', 'Y')->findOrFail($id);
         $tujuan = GrupTujuan::where('grup_id', $id)->where('is_aktif', 'Y')->get();
         foreach ($tujuan as $key => $value) {
-            $biaya = GrupTujuanBiaya::where('grup_id', $id)
-                                ->where('is_aktif', 'Y')
+            $biaya = GrupTujuanBiaya::/*where('grup_id', $id)
+                                ->*/where('is_aktif', 'Y')
                                 ->where('grup_tujuan_id', $value->id)
                                 ->get();
 
@@ -232,7 +232,7 @@ class GrupTujuanController extends Controller
                                         }else{
                                             $new_biaya = new GrupTujuanBiaya();
                                             $new_biaya->grup_id = $value['grup_hidden'];
-                                            $new_biaya->grup_tujuan_id = $edit_tujuan->id;
+                                            // $new_biaya->grup_tujuan_id = $edit_tujuan->id;
                                             $new_biaya->biaya = $biaya;
                                             $new_biaya->deskripsi = $item['deskripsi'];
                                             $new_biaya->catatan = $item['catatan'];
@@ -283,7 +283,7 @@ class GrupTujuanController extends Controller
                                 $biaya = ($item['biaya'] != '')? floatval(str_replace(',', '', $item['biaya'])):0;
     
                                 $new_biaya = new GrupTujuanBiaya();
-                                $new_biaya->grup_id = $value['grup_hidden'];
+                                // $new_biaya->grup_id = $value['grup_hidden'];
                                 $new_biaya->grup_tujuan_id = $new_tuj->id;
                                 $new_biaya->biaya = $biaya;
                                 $new_biaya->deskripsi = $item['deskripsi'];
@@ -360,7 +360,7 @@ class GrupTujuanController extends Controller
                             }
                         }else{
                             $new = new GrupTujuanBiaya();
-                            $new->grup_id = $data['grup_id'];
+                            // $new->grup_id = $data['grup_id'];
                             $new->grup_tujuan_id = $data['tujuan_id'];
                             $new->deskripsi = $biaya['deskripsi'];
                             $new->biaya = floatval(str_replace(',', '', $biaya['biaya']));
@@ -400,7 +400,7 @@ class GrupTujuanController extends Controller
                     if(isset($data['biaya'])){
                         foreach ($data['biaya'] as $key => $biaya) {
                             $new = new GrupTujuanBiaya();
-                            $new->grup_id = $data['grup_id'];
+                            // $new->grup_id = $data['grup_id'];
                             $new->grup_tujuan_id = $new_grup_tujuan->id;
                             $new->deskripsi = $biaya['deskripsi'];
                             $new->biaya = floatval(str_replace(',', '', $biaya['biaya']));
