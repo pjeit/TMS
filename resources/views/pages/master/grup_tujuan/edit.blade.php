@@ -61,6 +61,7 @@
                     </div>
                 </div>
             </div>
+           
             
             <div class="col-12">
                 <div class="card radiusSendiri">
@@ -73,7 +74,11 @@
                     <div class="card-body" >
                         <input type="hidden" id="deleted_tujuan" name="data[deleted_tujuan]" placeholder="deleted_tujuan">
                         <input type="hidden" id="deleted_biaya" name="data[deleted_biaya]" placeholder="deleted_biaya">
-        
+                        <div class="form-group" style="">
+                            <label for="">Nama grup</label>
+                            <input type="text" value="{{$data['grup']->nama_grup}}" class="form-control"
+                                disabled>
+                        </div>
                         <div class="table-responsive p-0">
                                 <form name="add_name" id="add_name">
                                     <table class="table table-hover table-bordered table-striped text-nowrap" id="dynamic_field">
@@ -376,7 +381,7 @@
             <div class="modal-dialog modal-sm" >
                 <div class="modal-content">
                     <div class="modal-header">
-                    <h5 class="modal-title">Confirmation</h5>
+                    <h5 class="modal-title">Konfirmasi</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span></button>
                     </div>
@@ -398,6 +403,7 @@
 
 <script>
     $(document).ready(function() {
+        
         $('#post_tujuan').submit(function(event) {
             // Calculate totals
             var tarifTotal = 0;
@@ -474,6 +480,28 @@
 <script>
     $(document).ready(function(){
          // master harga tipe
+        $('#dynamic_field').DataTable({
+                    // order: [
+                    //     [0, 'asc'],
+                    // ],
+                    // rowGroup: {
+                    //     dataSrc: [0] // kalau mau grouping pake ini
+                    // },
+                    columnDefs: [
+                        // {
+                        //     targets: [0],
+                        //     visible: false
+                        // },
+                        // { orderable: true, targets: 0 }, // Enable ordering for the first column (index 0)
+                        { orderable: false, targets: '_all' } // Disable ordering for all other columns
+                    ],
+                    info: false,
+                    searching: true,
+                    paging: true,
+                    language: {
+                        emptyTable: "Data tidak ditemukan."
+                    }
+        });
         var master = <?php echo json_encode($dataPengaturanKeuangan[0]); ?>;
             var uang = {
                 'seal_pje': master.seal_pje,
