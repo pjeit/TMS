@@ -159,7 +159,7 @@
                                 <div class="tab-pane fade" id="justify-kendaraan" role="tabpanel" aria-labelledby="justify-kendaraan-tab">
 
                                     <button class="btn btn-primary radiusSendiri mt-2 mb-2" type="button" id="btn_tambah">Tambah Kendaraan</button>
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered" id="tabel_kendaraan_parent">
                                         <thead>
                                             <tr>
                                                 <th>Kendaraan</th>
@@ -202,7 +202,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control @error('keterangan') is-invalid @enderror" id="keterangan_{{$counter}}" name="kendaraan[{{$counter}}][keterangan]" value="{{old('keterangan',$data->keterangan)}}">
+                                                            <input type="text" class="form-control keterangan @error('keterangan') is-invalid @enderror" id="keterangan_{{$counter}}" name="kendaraan[{{$counter}}][keterangan]" value="{{old('keterangan',$data->keterangan)}}">
                                                             @error('keterangan')
                                                                 <div class="invalid-feedback">
                                                                     {{ $message }}
@@ -364,7 +364,7 @@ $(document).ready(function () {
                     </td>
                     <td>
                         <div class="form-group">
-                            <input type="text" class="form-control @error('keterangan') is-invalid @enderror" id="keterangan_${maxID}" name="kendaraan[${maxID}][keterangan]" value="{{old('keterangan')}}">
+                            <input type="text" class="form-control keterangan @error('keterangan') is-invalid @enderror" id="keterangan_${maxID}" name="kendaraan[${maxID}][keterangan]" value="{{old('keterangan')}}">
                             @error('keterangan')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -513,69 +513,104 @@ $(document).ready(function () {
     $('#post_data').submit(function(event) {
         
             
-            // if($("#tanggal_lembur").val()=='')
+             if($("#tanggal_lembur").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `TANGGAL LEMBUR BELUM DIISI!`,
+                })
+                
+                return;
+            }
+            if($("#jam_mulai").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `JAM MULAI BELUM DIPILIH!`,
+                })
+                
+                return;
+            }
+            if($("#jam_selesai").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `JAM SELESAI BELUM DIPILIH!`,
+                })
+                
+                return;
+            }
+            // if($("#select_kendaraan").val()=='')
             // {
             //     event.preventDefault(); 
             //     Toast.fire({
             //         icon: 'error',
-            //         text: `TANGGAL LEMBUR BELUM DIISI!`,
+            //         text: `KENDARAAN BELUM DIPILIH!`,
             //     })
                 
             //     return;
             // }
-            // if($("#jam_mulai").val()=='')
-            // {
-            //     event.preventDefault(); 
-            //     Toast.fire({
-            //         icon: 'error',
-            //         text: `JAM MULAI BELUM DIPILIH!`,
-            //     })
+            if($("#select_mekanik").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `MEKANIK BELUM DIPILIH!`,
+                })
                 
-            //     return;
-            // }
-            // if($("#jam_selesai").val()=='')
-            // {
-            //     event.preventDefault(); 
-            //     Toast.fire({
-            //         icon: 'error',
-            //         text: `JAM SELESAI BELUM DIPILIH!`,
-            //     })
-                
-            //     return;
-            // }
-           
-            // if($("#select_mekanik").val()=='')
-            // {
-            //     event.preventDefault(); 
-            //     Toast.fire({
-            //         icon: 'error',
-            //         text: `MEKANIK BELUM DIPILIH!`,
-            //     })
-                
-            //     return;
-            // }
+                return;
+            }
             
-            // if($("#total_nominal").val()=='')
-            // {
-            //     event.preventDefault(); 
-            //     Toast.fire({
-            //         icon: 'error',
-            //         text: `TOTAL NOMINAL BELUM DIISI (harap pilih jam mulai-selesai)!`,
-            //     })
+            if($("#total_nominal").val()=='')
+            {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `TOTAL NOMINAL BELUM DIISI (harap pilih jam milai-selesai)!`,
+                })
                 
-            //     return;
-            // }
+                return;
+            }
             
-            // if( $('#foto_lembur')[0].files.length === 0)
-            // {
-            //     event.preventDefault(); 
-            //     Toast.fire({
-            //         icon: 'error',
-            //         text: `FOTO BUKTI LEMBUR TIDAK BOLEH KOSONG!`,
-            //     })
+            let barisTabel = $("#tabel_kendaraan_parent > tbody tr");
+            console.log(barisTabel.length + 'baris tabel');
+            if (barisTabel.length == 0) {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `Detail kendaraan Tidak boleh Kosong!`,
+                })
+                return;
                 
-            //     return;
-            // }
+            }
+            var flagError = false;
+            for (var i = 0; i < $(".foto_lembur").length; i++) {
+                var indexFoto = $(".foto_lembur").eq(i);
+                var row = indexFoto.closest('tr');
+                var select_kendaraan=row.find('.select_kendaraan').val();
+                // var foto_lembur=row.find('.foto_lembur').val();
+                var keterangan=row.find('.keterangan').val();
+
+                
+                if(select_kendaraan=="" ||keterangan=="")
+                {
+                    flagError = true;
+                    break; 
+                }
+
+            }
+            if (flagError) {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `detail kendaraan harus diisi`,
+                })
+                return;
+                
+            }
             
             event.preventDefault();
             Swal.fire({

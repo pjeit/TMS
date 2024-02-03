@@ -126,6 +126,9 @@ class LemburMekanikController extends Controller
                     if(isset($data['kendaraan']))
                     {
                         foreach ($data['kendaraan'] as $key => $value) {
+                            if (!isset($value['foto_lembur'])) {
+                                return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => 'Foto lembur minimal diisi 1']);
+                            }
                             $pathFotoLembur = "";
                             if (isset($value['foto_lembur'])) {
                                 $fotoNota = $value['foto_lembur'];
@@ -133,8 +136,8 @@ class LemburMekanikController extends Controller
                                 $nama_gambar = time().'_'.$value['no_polisi'].'_foto_lembur'.'.' . $ekstensiGambar;
                                 // Convert and save the image to WebP format
                                 $webp = Webp::make($fotoNota);
-                                $webp->save(public_path('/img/lembur_mekanik/' . $nama_gambar ),20);
-                                // $webp->save($src.$nama_gambar ,20);
+                                // $webp->save(public_path('/img/lembur_mekanik/' . $nama_gambar ),20);
+                                $webp->save($src.$nama_gambar ,20);
                                 $pathFotoLembur = '/img/lembur_mekanik/' . $nama_gambar;
                             }
                             $lembur_mekanik_kendaraan = new LemburMekanikKendaraan();
@@ -158,12 +161,12 @@ class LemburMekanikController extends Controller
             DB::rollBack();
             // cuman sekali aja, karenakan kalau gagal pasti ke index pertama dulu
             if (!empty($pathFotoLembur)) {
-                    if (file_exists(public_path($pathFotoLembur))) {
-                        unlink(public_path($pathFotoLembur));
-                    }
-                    // if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
-                    //     unlink($srcUpdateDelete.$pathFotoLembur);
+                    // if (file_exists(public_path($pathFotoLembur))) {
+                    //     unlink(public_path($pathFotoLembur));
                     // }
+                    if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
+                        unlink($srcUpdateDelete.$pathFotoLembur);
+                    }
                     
             }
             // return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => $e->errors()]);
@@ -175,12 +178,12 @@ class LemburMekanikController extends Controller
             //throw $th;
             DB::rollBack();
             if (!empty($pathFotoLembur)) {
-                    if (file_exists(public_path($pathFotoLembur))) {
-                        unlink(public_path($pathFotoLembur));
-                    }
-                    // if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
-                    //     unlink($srcUpdateDelete.$pathFotoLembur);
+                    // if (file_exists(public_path($pathFotoLembur))) {
+                    //     unlink(public_path($pathFotoLembur));
                     // }
+                    if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
+                        unlink($srcUpdateDelete.$pathFotoLembur);
+                    }
             }
             
             // return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
@@ -298,17 +301,18 @@ class LemburMekanikController extends Controller
                 if(isset($data['kendaraan']))
                 {
                     foreach ($data['kendaraan'] as $key => $value) {
+                            $pathFotoLembur = "";
+
                         if($value['id_database']=='data_baru')
                         {
-                            $pathFotoLembur = "";
                             if (isset($value['foto_lembur'])) {
                                 $fotoNota = $value['foto_lembur'];
                                 $ekstensiGambar = $fotoNota->getClientOriginalExtension();
                                 $nama_gambar = time().'_'.$value['no_polisi'].'_foto_lembur'.'.' . $ekstensiGambar;
                                 // Convert and save the image to WebP format
                                 $webp = Webp::make($fotoNota);
-                                $webp->save(public_path('/img/lembur_mekanik/' . $nama_gambar ),20);
-                                // $webp->save($src.$nama_gambar ,20);
+                                // $webp->save(public_path('/img/lembur_mekanik/' . $nama_gambar ),20);
+                                $webp->save($src.$nama_gambar ,20);
                                 $pathFotoLembur = '/img/lembur_mekanik/' . $nama_gambar;
                             }
                             $lembur_mekanik_kendaraan = new LemburMekanikKendaraan();
@@ -330,12 +334,12 @@ class LemburMekanikController extends Controller
                             $lembur_mekanik_kendaraan->is_aktif = $value['is_aktif'];
                             $lembur_mekanik_kendaraan->save();
                             if (!empty($lembur_mekanik_kendaraan->foto_lembur)) {
-                                if (file_exists(public_path($lembur_mekanik_kendaraan->foto_lembur))) {
-                                    unlink(public_path($lembur_mekanik_kendaraan->foto_lembur));
-                                }
-                                // if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
-                                //     unlink($srcUpdateDelete.$pathFotoLembur);
+                                // if (file_exists(public_path($lembur_mekanik_kendaraan->foto_lembur))) {
+                                //     unlink(public_path($lembur_mekanik_kendaraan->foto_lembur));
                                 // }
+                                if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
+                                    unlink($srcUpdateDelete.$pathFotoLembur);
+                                }
                             }
                         }
                         else if ($value['id_database']!='data_baru' && $value['is_aktif']=='Y')
@@ -347,20 +351,20 @@ class LemburMekanikController extends Controller
                             $lembur_mekanik_kendaraan->keterangan = $value['keterangan'];
                             if (isset($value['foto_lembur'])) {
                                 if (!empty($lembur_mekanik_kendaraan->foto_lembur)) {
-                                    if (file_exists(public_path($lembur_mekanik_kendaraan->foto_lembur))) {
-                                        unlink(public_path($lembur_mekanik_kendaraan->foto_lembur));
-                                    }
-                                    // if (file_exists($srcUpdateDelete.$fotoLemburDB)) {
-                                    //     unlink($srcUpdateDelete.$fotoLemburDB);
+                                    // if (file_exists(public_path($lembur_mekanik_kendaraan->foto_lembur))) {
+                                    //     unlink(public_path($lembur_mekanik_kendaraan->foto_lembur));
                                     // }
+                                    if (file_exists($srcUpdateDelete.$lembur_mekanik_kendaraan->foto_lembur)) {
+                                        unlink($srcUpdateDelete.$lembur_mekanik_kendaraan->foto_lembur);
+                                    }
                                 }
                                 $fotoNota = $value['foto_lembur'];
                                 $ekstensiGambar = $fotoNota->getClientOriginalExtension();
                                 $nama_gambar = time().'_'.$value['no_polisi'].'_foto_lembur'.'.' . $ekstensiGambar;
                                 // Convert and save the image to WebP format
                                 $webp = Webp::make($fotoNota);
-                                $webp->save(public_path('/img/lembur_mekanik/' . $nama_gambar ),20);
-                                // $webp->save($src.$nama_gambar ,20);
+                                // $webp->save(public_path('/img/lembur_mekanik/' . $nama_gambar ),20);
+                                $webp->save($src.$nama_gambar ,20);
                                 $pathFotoLembur = '/img/lembur_mekanik/' . $nama_gambar;
                                 $lembur_mekanik_kendaraan->foto_lembur = $pathFotoLembur;
                             }
@@ -379,12 +383,12 @@ class LemburMekanikController extends Controller
         } catch (ValidationException $e) {
             DB::rollBack();
             if (!empty($pathFotoLembur)) {
-                if (file_exists(public_path($pathFotoLembur))) {
-                    unlink(public_path($pathFotoLembur));
-                }
-                // if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
-                //     unlink($srcUpdateDelete.$pathFotoLembur);
+                // if (file_exists(public_path($pathFotoLembur))) {
+                //     unlink(public_path($pathFotoLembur));
                 // }
+                if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
+                    unlink($srcUpdateDelete.$pathFotoLembur);
+                }
             }
             // return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => $e->errors()]);
             // return redirect()->back()->withErrors($e->getMessages())->withInput();
@@ -395,12 +399,12 @@ class LemburMekanikController extends Controller
             //throw $th;
             DB::rollBack();
             if (!empty($pathFotoLembur)) {
-                    if (file_exists(public_path($pathFotoLembur))) {
-                        unlink(public_path($pathFotoLembur));
-                    }
-                    // if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
-                    //     unlink($srcUpdateDelete.$pathFotoLembur);
+                    // if (file_exists(public_path($pathFotoLembur))) {
+                    //     unlink(public_path($pathFotoLembur));
                     // }
+                    if (file_exists($srcUpdateDelete.$pathFotoLembur)) {
+                        unlink($srcUpdateDelete.$pathFotoLembur);
+                    }
             }
             
             // return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
@@ -428,7 +432,10 @@ class LemburMekanikController extends Controller
             ->with('kendaraan')
             ->where('id_lembur_mekanik',$id)
             ->get();
+        // dd($dataLemburMekanikKendaraan);
+       
 
+        // dd($dataDumpMekanik->nama_mekanik);
         return [
             'dataLemburMekanik' => $dataLemburMekanik,
             'dataLemburMekanikRiwayat' => $dataLemburMekanikRiwayat,
@@ -464,6 +471,19 @@ class LemburMekanikController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
         try {
             $data = $request->collect();
+            $dataDumpMekanik = DB::table('lembur_mekanik')
+            ->join('lembur_mekanik_kendaraan', 'lembur_mekanik.id', '=', 'lembur_mekanik_kendaraan.id_lembur_mekanik')
+            ->join('karyawan', 'lembur_mekanik.id_karyawan', '=', 'karyawan.id')
+            ->select(
+                'karyawan.nama_lengkap as nama_mekanik',
+                'lembur_mekanik.jam_mulai_lembur as jam_mulai_lembur',
+                'lembur_mekanik.jam_akhir_lembur as jam_akhir',
+                DB::raw("GROUP_CONCAT(lembur_mekanik_kendaraan.no_pol) as no_pol")
+            )
+            ->where('lembur_mekanik.is_aktif', 'Y')
+            ->where('lembur_mekanik.id', $id)
+            ->groupBy('lembur_mekanik.id')
+            ->first();
             // dd($data);
             /* if($data['status']=='PENDING')
             {
@@ -491,7 +511,7 @@ class LemburMekanikController extends Controller
             {
                 $pesanKustom = [
                     'tanggal_pencairan.required' => 'Tanggal Pencairan harap diisi!',
-                    'catatan_pencairan.required' => 'Catatan Pencairan harap diisi!',
+                    // 'catatan_pencairan.required' => 'Catatan Pencairan harap diisi!',
                     // 'tanggal_pencatatan.required' => 'Tanggal pencatatan harap diisi!',
                     'total_pencairan.required' => 'Total Pencairan harap diisi!',
                     'kas.required' => 'Kas bank harap diisi!',
@@ -499,7 +519,7 @@ class LemburMekanikController extends Controller
                 
                 $request->validate([
                     'tanggal_pencairan' => 'required',
-                    'catatan_pencairan' => 'required',
+                    // 'catatan_pencairan' => 'required',
                     // 'tanggal_pencatatan' => 'required',
                     'total_pencairan' => 'required',
                     'kas' => 'required',
@@ -757,7 +777,7 @@ class LemburMekanikController extends Controller
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5021), //kode coa gaji (beban gaji pegawai)
                                     'lembur_mekanik',
-                                    'LEMBUR MEKANIK:'.$lembur_mekanik_riwayat->id.' #'.$data['no_polisi'].' #'.$data['nama_mekanik'], //keterangan_transaksi, //keterangan_transaksi
+                                    'LEMBUR MEKANIK:'.$dataDumpMekanik->nama_mekanik.' # ('.$dataDumpMekanik->no_pol.')'.'['.$dataDumpMekanik->jam_mulai_lembur .'-'.$dataDumpMekanik->jam_akhir.']', //keterangan_transaksi, //keterangan_transaksi
                                     $lembur_mekanik_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
                                     now(),//created_at
@@ -800,6 +820,7 @@ class LemburMekanikController extends Controller
                                         'updated_by'=> $user,
                                     )
                                 );
+                                
                                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                     array(
                                         $data['kas'],// id kas_bank dr form
@@ -808,7 +829,7 @@ class LemburMekanikController extends Controller
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         CoaHelper::DataCoa(5021), //kode coa gaji (beban gaji pegawai)
                                         'lembur_mekanik',
-                                        'LEMBUR MEKANIK:'.$lembur_mekanik_riwayat_baru->id.' #'.$data['no_polisi'].' #'.$data['nama_mekanik'], //keterangan_transaksi
+                                        'LEMBUR MEKANIK:'.$dataDumpMekanik->nama_mekanik.' # ('.$dataDumpMekanik->no_pol.')'.'['.$dataDumpMekanik->jam_mulai_lembur .'-'.$dataDumpMekanik->jam_akhir.']', //keterangan_transaksi, //keterangan_transaksi
                                         $lembur_mekanik_riwayat_baru->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at
@@ -833,13 +854,14 @@ class LemburMekanikController extends Controller
             // return redirect()->back()->withErrors($e->getMessages())->withInput();
             return redirect()->back()->withErrors($e->errors())->withInput();
 
-        } catch (\Throwable $th) {
-            //throw $th;
-            DB::rollBack();
-            // return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
-            return redirect()->back()->withErrors($th->getMessage())->withInput();
+        } 
+        // catch (\Throwable $th) {
+        //     //throw $th;
+        //     DB::rollBack();
+        //     // return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
+        //     return redirect()->back()->withErrors($th->getMessage())->withInput();
 
-        }
+        // }
     }
 
     /**

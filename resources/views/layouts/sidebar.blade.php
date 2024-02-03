@@ -181,7 +181,7 @@
                     </a>
                   </li>
                   @endcan
-                  @can('READ_MUTASI_KENDARAAN')
+                  {{-- @can('READ_MUTASI_KENDARAAN')
                   <li class="nav-item">
                     <a href="{{route('mutasi_kendaraan.index')}}" style="font-weight: 500;"
                       class="nav-link {{request()->is('mutasi_kendaraan*') ? ' active' : '' }}">
@@ -191,7 +191,7 @@
                       </p>
                     </a>
                   </li>
-                  @endcan
+                  @endcan --}}
                 </ul>
               </li>
               @endcan

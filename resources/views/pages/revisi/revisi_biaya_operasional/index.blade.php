@@ -42,6 +42,7 @@
                                     <option value="BURUH">BURUH</option>
                                     <option value="LEMBUR">LEMBUR</option>
                                     <option value="KARANTINA">KARANTINA</option>
+                                    <option value="BIAYA DEPO">BIAYA DEPO</option>
                                     <option value="LAIN-LAIN">LAIN-LAIN</option>
                                 </select>
                                 <input type="hidden" id="alasan" name="alasan" value="">

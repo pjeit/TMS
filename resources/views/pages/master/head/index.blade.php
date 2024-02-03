@@ -52,7 +52,7 @@
                                 </button>      --}}
                                 
                                 <div class="btn-group dropleft">
-                                    <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" class="btn btn-sm btn-secondary dropdown-toggle radiusSendiri p-2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu">
@@ -63,9 +63,9 @@
                                         @endcan
                                         
                                         @can('DELETE_HEAD')
-                                            {{-- <a href="{{ route('head.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                            <a href="{{ route('head.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
                                                 <span class="fas fa-trash mr-3"></span> Delete
-                                            </a> --}}
+                                            </a>
                                         @endcan
                                     </div>
                                 </div>

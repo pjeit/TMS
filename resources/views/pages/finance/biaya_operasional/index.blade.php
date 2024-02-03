@@ -59,44 +59,44 @@ a {
                         <li class="nav-item">
                             {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X, DRIVER 1,2,3 (ALAT,TALLY,SEAL PELAYARAN)--}}
                             <a class="nav-link nav-link-tab active" data-toggle="tab" id="btn_alat" aria-selected="true">
-                                <span class="text-bold">ALAT</span> [Semua sewa pje]
+                                <span class="text-bold">ALAT</span>{{-- [Semua sewa pje]--}}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_tally" aria-selected="false">
-                                <span class="text-bold">TALLY</span> [Master]
+                                <span class="text-bold">TALLY</span> {{--[Master]--}}
                             </a>
                         </li>
                         <li class="nav-item" style="border-right: 2px solid black">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_seal" aria-selected="false">
-                                <span class="text-bold">SEAL PELAYARAN</span> [Master]
+                                <span class="text-bold">SEAL PELAYARAN</span> {{--[Master]--}}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_depo" aria-selected="false">
                                 <span class="text-bold">BIAYA DEPO</span> 
-                                [Shifting]-[Semua sewa pje]
+                                {{-- [Shifting]-[Semua sewa pje] --}}
                             </a>
                         </li>
                         <li class="nav-item" style="border-right: 2px solid black">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_karantina" aria-selected="false">
-                                <span class="text-bold">KARANTINA </span> [Master Karantina]
+                                <span class="text-bold">KARANTINA </span> {{--[Master Karantina]--}}
                             </a>
                         </li>
                         <li class="nav-item">
                             {{-- PENCAIRAN SENDIRI-SENDIRI, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_buruh" aria-selected="false">
-                                <span class="text-bold">BURUH </span> [Semua sewa pje flag buruh]
+                                <span class="text-bold">BURUH </span> {{--[Semua sewa pje flag buruh]--}}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_timbang" aria-selected="false">
-                                <span class="text-bold">TIMBANG </span> [Semua sewa pje]
+                                <span class="text-bold">TIMBANG </span> {{--[Semua sewa pje]--}}
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_lembur" name="test" value="asdasd" aria-selected="false">
-                                <span class="text-bold">LEMBUR </span> [Semua sewa pje]
+                                <span class="text-bold">LEMBUR </span> {{--[Semua sewa pje]--}}
                             </a>
                         </li>
                     </ul>

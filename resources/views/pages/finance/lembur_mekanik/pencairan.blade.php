@@ -565,15 +565,15 @@
                 //     })
                 //     return;
                 // }
-                if(catatan_pencairan.trim()=='')
-                {
-                    event.preventDefault(); 
-                    Toast.fire({
-                        icon: 'error',
-                        text: `CATATAN PENCAIRAN WAJIB DIISI!`,
-                    })
-                    return;
-                }
+                // if(catatan_pencairan.trim()=='')
+                // {
+                //     event.preventDefault(); 
+                //     Toast.fire({
+                //         icon: 'error',
+                //         text: `CATATAN PENCAIRAN WAJIB DIISI!`,
+                //     })
+                //     return;
+                // }
             }
             event.preventDefault();
             Swal.fire({

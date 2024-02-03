@@ -87,6 +87,7 @@
                             <th>Grup</th>
                             <th>Customer</th>
                             <th>No. Polisi Kendaraan</th>
+                            <th>Status</th>
                             <th>No. Sewa</th>
                             <th>Tgl Berangkat</th>
                             <th>Tujuan</th>
@@ -115,8 +116,16 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{{ $item->no_polisi }}</td>
-                                    <td>{{ $item->no_sewa }}</td>
+                                    <td>
+                                        {{ $item->no_polisi }}
+
+                                    </td>
+                                    <td>
+                                        <span style="font-size:11pt;" class="badge {{$item->status=='BATAL MUAT'?'bg-dark':'bg-danger'}}">{{$item->status}}</span>
+                                    </td>
+                                    <td>
+                                        {{ $item->no_sewa }}
+                                    </td>
                                     <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                     <td>{{ $item->nama_tujuan }} ({{ $item->jenis_tujuan }})</td>
                                     <td>

@@ -51,6 +51,7 @@ class BelumInvoiceController extends Controller
                 ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
                 ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
                 ->where('s.is_aktif', '=', 'Y')
+                ->where('s.total_tarif', '>', 0)  
                 ->whereIn('s.status', ['MENUNGGU INVOICE','BATAL MUAT'])
                 ->orderBy('c.id','ASC')
                 ->orderBy('s.no_sewa','ASC')
@@ -129,11 +130,13 @@ class BelumInvoiceController extends Controller
         $grup = session()->get('grup'); //buat ambil session
         try {
             $data = Sewa::whereIn('sewa.id_sewa', $sewa)
-                ->leftJoin('supplier AS sp', 'sewa.id_supplier', '=', 'sp.id')
-                ->where('sewa.status', 'MENUNGGU INVOICE')
-                ->where('sewa.is_aktif', '=', 'Y')
-                ->select('sewa.*','sp.nama as namaSupplier')
-                ->get();
+                    ->leftJoin('supplier AS sp', 'sewa.id_supplier', '=', 'sp.id')
+                    ->whereIn('sewa.status', ['BATAL MUAT', 'MENUNGGU INVOICE'])
+                    ->where('sewa.total_tarif', '>', 0)  
+                    ->where('sewa.is_aktif', '=', 'Y')
+                    ->select('sewa.*', 'sp.nama as namaSupplier')
+                    ->get();
+            // dd($data);
             $checkBedaJenisTujuan = false;
             $checkLTL = false;
             
@@ -160,7 +163,15 @@ class BelumInvoiceController extends Controller
                         ->leftJoin('customer as c', 'c.id', 'id_customer')
                         ->where('c.grup_id', $grup[0])
                         ->where('sewa.is_aktif', '=', 'Y')
-                        ->where('sewa.status', 'MENUNGGU INVOICE')
+                        ->whereIn('sewa.status', ['BATAL MUAT','MENUNGGU INVOICE'])
+                        ->where('sewa.total_tarif', '>', 0)
+                        // ->where(function ($query) {
+                        //     $query->where('sewa.status', 'MENUNGGU INVOICE')  // Exclude the condition if status is not 'BATAL MUAT'
+                        //         ->orWhere(function ($subquery) {
+                        //             $subquery->where('sewa.status','BATAL MUAT')
+                        //                 ->where('sewa.total_tarif', '>', 0);
+                        //         });
+                        // })
                         ->select('sewa.*')
                         ->get();
     

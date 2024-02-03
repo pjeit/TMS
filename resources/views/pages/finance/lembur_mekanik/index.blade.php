@@ -276,7 +276,7 @@
                                     <button class="btn btn-primary radiusSendiri mt-2 mb-2" type="button" id="btn_tambah">
                                         <i class="fa fa-plus-circle"> </i> Tambah Kendaraan
                                     </button>
-                                    <table class="table table-bordered">
+                                    <table class="table table-bordered" id="tabel_kendaraan_parent">
                                         <thead>
                                             <tr>
                                                 <th>Kendaraan</th>
@@ -484,7 +484,7 @@ $(document).ready(function () {
                     </td>
                     <td>
                         <div class="form-group">
-                            <input type="text" class="form-control @error('keterangan') is-invalid @enderror" id="keterangan_${maxID}" name="kendaraan[${maxID}][keterangan]" value="{{old('keterangan')}}">
+                            <input type="text" class="form-control keterangan @error('keterangan') is-invalid @enderror" id="keterangan_${maxID}" name="kendaraan[${maxID}][keterangan]" value="{{old('keterangan')}}">
                             @error('keterangan')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -652,16 +652,16 @@ $(document).ready(function () {
                 
                 return;
             }
-            if($("#select_kendaraan").val()=='')
-            {
-                event.preventDefault(); 
-                Toast.fire({
-                    icon: 'error',
-                    text: `KENDARAAN BELUM DIPILIH!`,
-                })
+            // if($("#select_kendaraan").val()=='')
+            // {
+            //     event.preventDefault(); 
+            //     Toast.fire({
+            //         icon: 'error',
+            //         text: `KENDARAAN BELUM DIPILIH!`,
+            //     })
                 
-                return;
-            }
+            //     return;
+            // }
             if($("#select_mekanik").val()=='')
             {
                 event.preventDefault(); 
@@ -683,27 +683,43 @@ $(document).ready(function () {
                 
                 return;
             }
-            if($("#keterangan").val()=='')
-            {
-                event.preventDefault(); 
-                Toast.fire({
-                    icon: 'error',
-                    text: `KETERANGAN KLAIM BELUM DIISI!`,
-                })
-                
-                return;
-            }
-            if( $('#foto_lembur')[0].files.length === 0)
-            {
-                event.preventDefault(); 
-                Toast.fire({
-                    icon: 'error',
-                    text: `FOTO BUKTI LEMBUR TIDAK BOLEH KOSONG!`,
-                })
-                
-                return;
-            }
             
+            let barisTabel = $("#tabel_kendaraan_parent > tbody tr");
+            console.log(barisTabel.length + 'baris tabel');
+            if (barisTabel.length == 0) {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `Detail kendaraan Tidak boleh Kosong!`,
+                })
+                return;
+                
+            }
+            var flagError = false;
+            for (var i = 0; i < $(".foto_lembur").length; i++) {
+                var indexFoto = $(".foto_lembur").eq(i);
+                var row = indexFoto.closest('tr');
+                var select_kendaraan=row.find('.select_kendaraan').val();
+                var foto_lembur=row.find('.foto_lembur').val();
+                var keterangan=row.find('.keterangan').val();
+
+                
+                if(select_kendaraan=="" ||foto_lembur==""||keterangan=="")
+                {
+                    flagError = true;
+                    break; 
+                }
+
+            }
+            if (flagError) {
+                event.preventDefault(); 
+                Toast.fire({
+                    icon: 'error',
+                    text: `detail kendaraan harus diisi`,
+                })
+                return;
+                
+            }
             event.preventDefault();
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar?',

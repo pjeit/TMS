@@ -138,7 +138,8 @@ class DalamPerjalananController extends Controller
             //         ->whereNotNull('job.id_grup_tujuan');
             //     })
             ->where('jodb.id_jo_detail', '=', $dalam_perjalanan->id_jo_detail)
-            ->where('status_bayar' ,'like','%SELESAI PEMBAYARAN%')
+            // ->where('status_bayar' ,'SELESAI PEMBAYARAN')
+            ->whereIn('status_bayar', ['DIBAYAR PENERIMA', 'DIBAYAR CUSTOMER', 'SELESAI PEMBAYARAN'])
             ->where('jodb.is_aktif', '=', "Y")
             ->get();
         // $dataOpreasional = DB::table('sewa_operasional AS so')
