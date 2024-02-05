@@ -121,54 +121,57 @@ class BiayaOperasionalController extends Controller
             
             if($item == 'KARANTINA'){
                 foreach ($data['data'] as $key => $value) {
-                    if($value['dicairkan'] != 0 || $value['dicairkan'] != null){
-                        $karantina = Karantina::where('is_aktif', 'Y')->find($key);
-                        $karantina->total_dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
-                        $karantina->catatan = $value['catatan'];
-                        $karantina->is_ditagihkan = 'Y';
-                        $karantina->updated_by = $user;
-                        $karantina->updated_at = now();
-                        $karantina->save();
-                        
-
-                        $no_kontainer = ' - No. Kontainer:';
-                        $detail = KarantinaDetail::where('is_aktif', 'Y')->where('id_karantina', $key)->get();
-                        foreach ($detail as $key => $item) {
-                            $no_kontainer .= ' #'.$item->getJOD->no_kontainer;
+                    if($value['cek_cair'] == 'Y'){
+                        if($value['dicairkan'] != 0 || $value['dicairkan'] != null){
+                            $karantina = Karantina::where('is_aktif', 'Y')->find($key);
+                            $karantina->total_dicairkan = floatval(str_replace(',', '', $value['dicairkan']));
+                            $karantina->catatan = $value['catatan'];
+                            $karantina->is_ditagihkan = 'Y';
+                            $karantina->updated_by = $user;
+                            $karantina->updated_at = now();
+                            $karantina->save();
+                            
+    
+                            $no_kontainer = ' - No. Kontainer:';
+                            $detail = KarantinaDetail::where('is_aktif', 'Y')->where('id_karantina', $key)->get();
+                            foreach ($detail as $key => $item) {
+                                $no_kontainer .= ' #'.$item->getJOD->no_kontainer;
+                            }
+    
+                            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                array(
+                                    $data['pembayaran'], // id kas_bank dr form
+                                    now(), //tanggal
+                                    0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                    floatval(str_replace(',', '', $value['dicairkan'])), //uang keluar (kredit)
+                                    CoaHelper::DataCoa(5003), //kode coa karantina
+                                    'karantina',
+                                    'No. BL: '.$karantina->getJO->no_bl . ' #Kapal: '.$karantina->getJO->kapal .' #Voyage: '. $karantina->getJO->voyage . $no_kontainer, //keterangan_transaksi
+                                    $karantina->id, //keterangan_kode_transaksi
+                                    $user, //created_by
+                                    now(), //created_at
+                                    $user, //updated_by
+                                    now(), //updated_at
+                                    'Y'
+                                ) 
+                            );
+                            $saldo = DB::table('kas_bank')
+                                        ->select('*')
+                                        ->where('is_aktif', '=', "Y")
+                                        ->where('kas_bank.id', '=', $data['pembayaran'])
+                                        ->first();
+                            $saldo_baru = $saldo->saldo_sekarang -  floatval(str_replace(',', '', $value['dicairkan']));
+                            DB::table('kas_bank')
+                                ->where('id', $data['pembayaran'])
+                                ->update(array(
+                                    'saldo_sekarang' => $saldo_baru,
+                                    'updated_at'=> now(),
+                                    'updated_by'=> $user,
+                                )
+                            );
                         }
-
-                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                            array(
-                                $data['pembayaran'], // id kas_bank dr form
-                                now(), //tanggal
-                                0, // debit 0 soalnya kan ini uang keluar, ga ada uang masuk
-                                floatval(str_replace(',', '', $value['dicairkan'])), //uang keluar (kredit)
-                                CoaHelper::DataCoa(5003), //kode coa karantina
-                                'karantina',
-                                'No. BL: '.$karantina->getJO->no_bl . ' #Kapal: '.$karantina->getJO->kapal .' #Voyage: '. $karantina->getJO->voyage . $no_kontainer, //keterangan_transaksi
-                                $karantina->id, //keterangan_kode_transaksi
-                                $user, //created_by
-                                now(), //created_at
-                                $user, //updated_by
-                                now(), //updated_at
-                                'Y'
-                            ) 
-                        );
-                        $saldo = DB::table('kas_bank')
-                                    ->select('*')
-                                    ->where('is_aktif', '=', "Y")
-                                    ->where('kas_bank.id', '=', $data['pembayaran'])
-                                    ->first();
-                        $saldo_baru = $saldo->saldo_sekarang -  floatval(str_replace(',', '', $value['dicairkan']));
-                        DB::table('kas_bank')
-                            ->where('id', $data['pembayaran'])
-                            ->update(array(
-                                'saldo_sekarang' => $saldo_baru,
-                                'updated_at'=> now(),
-                                'updated_by'=> $user,
-                            )
-                        );
                     }
+
                 }
                 DB::commit();
             }else{

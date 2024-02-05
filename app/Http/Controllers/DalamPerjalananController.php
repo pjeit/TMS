@@ -1097,25 +1097,25 @@ class DalamPerjalananController extends Controller
                 if($sewa->id_supplier==null)
                 {
                     $uj_kembali = isset($data['uang_jalan_kembali'])? floatval(str_replace(',', '', $data['uang_jalan_kembali'])):0;
-                    $cancel = new SewaBatalCancel();
-                    $cancel->id_sewa = $sewa->id_sewa;
-                    $cancel->jenis = 'CANCEL';
-                    $cancel->tgl_batal_muat_cancel = date_format($tgl_cancel, 'Y-m-d H:i:s');
-                    $cancel->total_uang_jalan_kembali = $uj_kembali;
-                    if(isset($data['pembayaran'])){
-                        if($data['pembayaran'] != 'HUTANG KARYAWAN'){
-                            $cancel->id_kas_bank = $data['pembayaran'];
-                        }else{
-                            $cancel->id_karyawan_hutang = $data['id_karyawan'];
-                        }
-                    }
-                    $cancel->tgl_kembali = date_format($tgl_kembali, 'Y-m-d H:i:s');
-                    $cancel->alasan_batal = $data['alasan_cancel'];
-                    $cancel->created_by = $user;
-                    $cancel->created_at = now();
-                    $cancel->is_aktif = 'Y';
+                    // $cancel = new SewaBatalCancel();
+                    // $cancel->id_sewa = $sewa->id_sewa;
+                    // $cancel->jenis = 'CANCEL';
+                    // $cancel->tgl_batal_muat_cancel = date_format($tgl_cancel, 'Y-m-d H:i:s');
+                    // $cancel->total_uang_jalan_kembali = $uj_kembali;
+                    // if(isset($data['pembayaran'])){
+                    //     if($data['pembayaran'] != 'HUTANG KARYAWAN'){
+                    //         $cancel->id_kas_bank = $data['pembayaran'];
+                    //     }else{
+                    //         $cancel->id_karyawan_hutang = $data['id_karyawan'];
+                    //     }
+                    // }
+                    // $cancel->tgl_kembali = date_format($tgl_kembali, 'Y-m-d H:i:s');
+                    // $cancel->alasan_batal = $data['alasan_cancel'];
+                    // $cancel->created_by = $user;
+                    // $cancel->created_at = now();
+                    // $cancel->is_aktif = 'Y';
     
-                    if($cancel->save()){
+                    // if($cancel->save()){
                         if(isset($data['pembayaran'])){
                             $riwayat_uang_jalan = UangJalanRiwayat::where('is_aktif', 'Y')->where('sewa_id', $sewa->id_sewa)->first();
 
@@ -1265,21 +1265,21 @@ class DalamPerjalananController extends Controller
                                 //         ]); 
                             }
                         }
-                    }
+                    // }
                 }
                 else
                 {
-                    $cancel_rekanan = new SewaBatalCancel();
-                    $cancel_rekanan->id_sewa = $sewa->id_sewa;
-                    $cancel_rekanan->jenis = 'CANCEL';
-                    $cancel_rekanan->tgl_batal_muat_cancel = date_format($tgl_cancel, 'Y-m-d H:i:s');
-                    $cancel_rekanan->tgl_kembali = date_format($tgl_kembali, 'Y-m-d H:i:s');
-                    $cancel_rekanan->alasan_batal = $data['alasan_cancel'].'['.$data['no_sewa'] .']'.'-'.'[rekanan cancel]';
-                    $cancel_rekanan->created_by = $user;
-                    $cancel_rekanan->created_at = now();
-                    $cancel_rekanan->is_aktif = 'Y';
-                    $cancel_rekanan->save();
-                    DB::commit();
+                    // $cancel_rekanan = new SewaBatalCancel();
+                    // $cancel_rekanan->id_sewa = $sewa->id_sewa;
+                    // $cancel_rekanan->jenis = 'CANCEL';
+                    // $cancel_rekanan->tgl_batal_muat_cancel = date_format($tgl_cancel, 'Y-m-d H:i:s');
+                    // $cancel_rekanan->tgl_kembali = date_format($tgl_kembali, 'Y-m-d H:i:s');
+                    // $cancel_rekanan->alasan_batal = $data['alasan_cancel'].'['.$data['no_sewa'] .']'.'-'.'[rekanan cancel]';
+                    // $cancel_rekanan->created_by = $user;
+                    // $cancel_rekanan->created_at = now();
+                    // $cancel_rekanan->is_aktif = 'Y';
+                    // $cancel_rekanan->save();
+                    // DB::commit();
                 }
             }
             DB::commit();

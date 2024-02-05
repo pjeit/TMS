@@ -466,7 +466,7 @@ a {
                                     row.append(`<td>
                                                     <input type="text" class="form-control uang numaja dicairkan item_dicairkan grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id} item_${data[i].id}" id="item_${data[i].id}" item="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
                                                     <input type='hidden' id='biaya_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional}' class='form-control' readonly>
-                                                    <input type='hidden' class='cek_cair cek_cair_grup_${data[i].grup_id} cek_cair_customer_${data[i].id_customer} cek_cair_item_${data[i].id_sewa}' name='data[${data[i].id_sewa}][cek_cair]' value='N' class='form-control' readonly>
+                                                    <input type='hidden' class='cek_cair cek_cair_grup_${data[i].get_customer.get_grup.id} cek_cair_customer_${data[i].get_customer.id} cek_cair_item_${data[i].id}' name='data[${data[i].id}][cek_cair]' value='N' class='form-control' readonly>
 
                                                 </td>`);
                                     row.append(`<td class='text-center'> 
