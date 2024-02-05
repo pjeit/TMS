@@ -14,7 +14,7 @@ use App\Http\Controllers\SupplierController;
 use App\Models\Karyawan;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Routing\Router;
-
+use App\Models\Role;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -53,6 +53,15 @@ Route::post('custom-registration', [CustomAuthController::class, 'customRegistra
 // Route::group(['middleware' => ['auth']], function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
+        \Artisan::call('cache:clear');
+        \Artisan::call('route:clear');
+        \Artisan::call('optimize:clear');
+        \Artisan::call('storage:link');
+         // Get the currently authenticated user
+        $user = Auth::user();
+        $roles = Role::where('is_aktif', 'Y')->find($user->role_id);
+        // Synchronize roles (replace 'admin' with your desired role)
+        $user->syncRoles($roles->name);
         return view('home', [
             'judul'=>'Home'
         ]);

@@ -24,16 +24,16 @@ class PaymentJobController extends Controller
     {
         // use App\Helper\UserHelper;
         $id_role = Auth::user()->role_id; 
-        $cabang = UserHelper::getCabang();
+        // $cabang = UserHelper::getCabang();
 
         $data = DB::table('job_order')
                 ->leftJoin('user as u', 'u.id', '=', 'job_order.created_by')
                 ->leftJoin('karyawan as k', 'k.id', '=', 'u.karyawan_id')
-                ->where(function ($query) use ($id_role, $cabang) {
-                    if(!in_array($id_role, [1,3])){
-                        $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
-                    }
-                })
+                // ->where(function ($query) use ($id_role, $cabang) {
+                //     if(!in_array($id_role, [1,3])){
+                //         $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
+                //     }
+                // })
                 ->select('job_order.id','job_order.no_jo','customer.nama as namaCustomer','supplier.nama as namaSupplier','job_order.pelabuhan_muat','job_order.pelabuhan_bongkar','job_order.tgl_sandar','job_order.status')
                 ->Join('supplier', 'job_order.id_supplier', '=', 'supplier.id')
                 ->Join('customer', 'job_order.id_customer', '=', 'customer.id')

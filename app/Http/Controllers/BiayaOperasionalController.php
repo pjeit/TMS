@@ -235,6 +235,20 @@ class BiayaOperasionalController extends Controller
                                         $storeData[$value['tujuan']]['driver'] .= ' #'. $value['nopol'] .' ('.$driver.')';
                                         $storeData[$value['tujuan']]['id_opr'][] = $sewa_o->id;
                                         $storeData[$value['tujuan']]['index'] += 1;
+                                        // CONTOHNYA:
+                                        // array:1 [▼
+                                        // "**PT. Cargil Indonesia - PIER  20 (Perak)" => array:5 [▼
+                                        //         "operasional" => 45000.0
+                                        //         "dicairkan" => 45000.0
+                                        //         "driver" => "#L 8902 UUC (BASMAN) #L 9813 UC (HASAN) #L 8901 UUC (TAROM)"
+                                        //         "id_opr" => array:3 [▼
+                                        //         0 => 9567
+                                        //         1 => 9568
+                                        //         2 => 9569
+                                        //         ]
+                                        //         "index" => 3
+                                        //     ]
+                                        // ]
                                     } else {
                                         // buat data baru kalau data tujuan belum ada
                                         // ini nyimpen data per tujuan, misal tujuan X, driver Y, dicairkan 100
@@ -470,20 +484,20 @@ class BiayaOperasionalController extends Controller
                         //             ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
                         //     });
                         // })
-                        ->when($currentDate, function ($query) use ($currentDate) {
-                            $query->where(function ($query) use ($currentDate) {
-                                // h-1 
-                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
-                            })
-                            ->orWhere(function ($query) use ($currentDate) {
-                                // h0 
-                                $query->whereDate('tanggal_berangkat', $currentDate);
-                            })
-                            ->orWhere(function ($query) use ($currentDate) {
-                                // h+1 
-                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
-                            });
-                        })
+                        // ->when($currentDate, function ($query) use ($currentDate) {
+                        //     $query->where(function ($query) use ($currentDate) {
+                        //         // h-1 
+                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
+                        //     })
+                        //     ->orWhere(function ($query) use ($currentDate) {
+                        //         // h0 
+                        //         $query->whereDate('tanggal_berangkat', $currentDate);
+                        //     })
+                        //     ->orWhere(function ($query) use ($currentDate) {
+                        //         // h+1 
+                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
+                        //     });
+                        // })
                         // ->where(function($where) use($item){
                         //     // if($item == 'TAMBAHAN UJ'){
                         //     //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
@@ -577,20 +591,20 @@ class BiayaOperasionalController extends Controller
                         //             ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
                         //     });
                         // })
-                        ->when($currentDate, function ($query) use ($currentDate) {
-                            $query->where(function ($query) use ($currentDate) {
-                                // h-1 
-                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
-                            })
-                            ->orWhere(function ($query) use ($currentDate) {
-                                // h0 
-                                $query->whereDate('tanggal_berangkat', $currentDate);
-                            })
-                            ->orWhere(function ($query) use ($currentDate) {
-                                // h+1 
-                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
-                            });
-                        })
+                        // ->when($currentDate, function ($query) use ($currentDate) {
+                        //     $query->where(function ($query) use ($currentDate) {
+                        //         // h-1 
+                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
+                        //     })
+                        //     ->orWhere(function ($query) use ($currentDate) {
+                        //         // h0 
+                        //         $query->whereDate('tanggal_berangkat', $currentDate);
+                        //     })
+                        //     ->orWhere(function ($query) use ($currentDate) {
+                        //         // h+1 
+                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
+                        //     });
+                        // })
                         ->where(function($where) use($item,$customer,$tujuan){
                             // if($item == 'TAMBAHAN UJ'){
                             //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));

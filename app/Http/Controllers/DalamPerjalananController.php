@@ -21,6 +21,9 @@ use App\Helper\CoaHelper;
 use App\Models\Customer;
 use App\Models\SewaBiaya;
 use App\Models\SewaOperasionalPembayaran;
+use App\Models\SewaOperasionalRefund;
+use App\Models\SewaOperasionalKembaliStok;
+
 
 class DalamPerjalananController extends Controller
 {
@@ -904,33 +907,94 @@ class DalamPerjalananController extends Controller
         //     })
         //     ->groupBy( 'id_pembayaran')
         //     ->get();
+        // $dataOperasional = SewaOperasional::selectRaw('
+        // GROUP_CONCAT( sewa_operasional.id_sewa) as so_id_sewa, 
+        // COUNT( sewa_operasional.id_sewa) as counter_data, 
+        // GROUP_CONCAT( sewa_operasional.id) as so_id, 
+        // GROUP_CONCAT( s.no_polisi) as sewa_kendaraan, 
+        // GROUP_CONCAT(COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama))) as sewa_driver, 
+        // GROUP_CONCAT( s.no_sewa) as no_sewa, 
+        // GROUP_CONCAT( sewa_operasional.catatan) as so_catatan,
+        // sewa_operasional.id_pembayaran as so_id_pembayaran, 
+        // SUM(sewa_operasional.total_dicairkan) as so_total_dicairkan, 
+        // GROUP_CONCAT(sewa_operasional.total_dicairkan) as so_dicairkan, 
+        // sewa_operasional.deskripsi as so_deskripsi')
+        // ->where('sewa_operasional.is_aktif', '=', 'Y')
+        // ->where(function ($query) use ($sewa) {
+        //     //seelect id sewa di ops yang sama dengan id sewanya
+        //     $query->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
+        //         //atau select sewa yang id pembayarannya sama (karena ini mbatalin pembayaran)
+        //         ->orWhereIn('sewa_operasional.id_pembayaran', function ($subquery) use ($sewa) {
+        //             $subquery->select('id_pembayaran')
+        //                 ->from('sewa_operasional')
+        //                 ->where('id_sewa', '=', $sewa->id_sewa);
+        //         });
+        // })
+        // ->leftJoin('sewa AS s', function($join) {
+        //             $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
+        //             ->where('s.is_aktif', 'Y')
+        //             ->where('s.status', 'PROSES DOORING')
+        //             ;
+        //         })
+        // ->leftJoin('supplier AS sp', function($join) {
+        //             $join->on('s.id_supplier', '=', 'sp.id')
+        //             ->where('sp.is_aktif', '=', 'Y');
+        //         })
+        // ->where(function ($query) {
+        //     $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
+        //         ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
+        // })
+        // ->groupBy('id_pembayaran','sewa_operasional.deskripsi')
+        // // ->with('getSewas')
+        // ->get();
+
+        // // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 );
+        // // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 ); // berarti ada data
+        // // dd(explode(',',$dataOperasional[1]->so_id_sewa));
+        // $data_rincian = [];
+
+        // foreach ($dataOperasional as $value) {
+        //     $kendaraan = explode(',', $value->sewa_kendaraan);
+        //     $driver = explode(',', $value->sewa_driver);
+        //     $rincian_cair = explode(',', $value->so_dicairkan);
+
+        //     foreach ($kendaraan as $key => $kendaraanValue) {
+        //         $data_rincian[] = [
+        //             'id_bayar'=>$value->so_id_pembayaran,
+        //             'deskripsi'=>$value->so_deskripsi,
+        //             'kendaraan' => $kendaraanValue,
+        //             'driver' => $driver[$key],
+        //             'rincian' => $rincian_cair[$key],
+        //         ];
+        //     }
+        // }
+
+        // dd($data_rincian);
+        // dd($dataOperasional);
+
         $dataOperasional = SewaOperasional::selectRaw('
-        GROUP_CONCAT( sewa_operasional.id_sewa) as so_id_sewa, 
-        COUNT( sewa_operasional.id_sewa) as counter_data, 
-        GROUP_CONCAT( sewa_operasional.id) as so_id, 
-        GROUP_CONCAT( s.no_polisi) as sewa_kendaraan, 
-        GROUP_CONCAT(COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama))) as sewa_driver, 
-        GROUP_CONCAT( s.no_sewa) as no_sewa, 
-        GROUP_CONCAT( sewa_operasional.catatan) as so_catatan,
+        sewa_operasional.id_sewa as so_id_sewa, 
+        sewa_operasional.id as so_id, 
+        s.no_polisi as sewa_kendaraan, 
+        s.nama_tujuan as sewa_tujuan, 
+        COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama)) as sewa_driver, 
+        s.no_sewa as no_sewa, 
+        sewa_operasional.catatan as so_catatan,
         sewa_operasional.id_pembayaran as so_id_pembayaran, 
-        SUM(sewa_operasional.total_dicairkan) as so_total_dicairkan, 
-        GROUP_CONCAT(sewa_operasional.total_dicairkan) as so_dicairkan, 
+        sewa_operasional.total_dicairkan as so_total_dicairkan, 
+        sop.id_kas_bank as id_kas_bank, 
         sewa_operasional.deskripsi as so_deskripsi')
         ->where('sewa_operasional.is_aktif', '=', 'Y')
-        ->where(function ($query) use ($sewa) {
-            //seelect id sewa di ops yang sama dengan id sewanya
-            $query->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
-                //atau select sewa yang id pembayarannya sama (karena ini mbatalin pembayaran)
-                ->orWhereIn('sewa_operasional.id_pembayaran', function ($subquery) use ($sewa) {
-                    $subquery->select('id_pembayaran')
-                        ->from('sewa_operasional')
-                        ->where('id_sewa', '=', $sewa->id_sewa);
-                });
-        })
+        ->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
         ->leftJoin('sewa AS s', function($join) {
                     $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
                     ->where('s.is_aktif', 'Y')
                     ->where('s.status', 'PROSES DOORING')
+                    ;
+                })
+        ->leftJoin('sewa_operasional_pembayaran AS sop', function($join) {
+                    $join->on('sop.id', '=', 'sewa_operasional.id_pembayaran')
+                    ->where('sop.is_aktif', 'Y')
                     ;
                 })
         ->leftJoin('supplier AS sp', function($join) {
@@ -941,33 +1005,8 @@ class DalamPerjalananController extends Controller
             $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
                 ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
         })
-        ->groupBy('id_pembayaran','sewa_operasional.deskripsi')
-        // ->with('getSewas')
         ->get();
 
-        // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 );
-        // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 ); // berarti ada data
-        // dd(explode(',',$dataOperasional[1]->so_id_sewa));
-        $data_rincian = [];
-
-        foreach ($dataOperasional as $value) {
-            $kendaraan = explode(',', $value->sewa_kendaraan);
-            $driver = explode(',', $value->sewa_driver);
-            $rincian_cair = explode(',', $value->so_dicairkan);
-
-            foreach ($kendaraan as $key => $kendaraanValue) {
-                $data_rincian[] = [
-                    'id_bayar'=>$value->so_id_pembayaran,
-                    'deskripsi'=>$value->so_deskripsi,
-                    'kendaraan' => $kendaraanValue,
-                    'driver' => $driver[$key],
-                    'rincian' => $rincian_cair[$key],
-                ];
-            }
-        }
-
-        // dd($data_rincian);
-        // dd($dataOperasional);
 
         $ujr = UangJalanRiwayat::where([
                                         'is_aktif' => 'Y',
@@ -981,7 +1020,6 @@ class DalamPerjalananController extends Controller
             'supplier' => $supplier,
             'ujr' => $ujr,
             'dataOperasional' => $dataOperasional,
-            'data_rincian' => $data_rincian,
         ]);
     }
 
@@ -1042,50 +1080,91 @@ class DalamPerjalananController extends Controller
                             $catatan = '[CANCEL UANG KEMBALI]';
                         }
                         SewaOperasional::where('is_aktif', '=', 'Y')
-                        ->whereIn('id',  explode(',' ,$value['id_operasional_data']))
+                        // ->whereIn('id',  explode(',' ,$value['id_operasional_data']))
+                        ->where('id', $value['id_operasional_data'])
                         ->update([
                                 'is_aktif' => 'N',
-                                'STATUS' =>  $status,
+                                'STATUS' => $status,
                                 'catatan'=>$catatan
                             ]);
 
                         if(isset($value['id_pembayaran_operasional']))
                         {
                             $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
-                            if($so_pembayaran){
-                                $so_pembayaran->catatan = $catatan;
+                            if($value['kembali']!='KEMBALI_STOK'&&$value['kembali']!='DATA_DI_HAPUS')
+                            {
+                                $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
+                                if($so_pembayaran){
+                                    $so_pembayaran->total_refund += (float)str_replace(',', '', $value['total_dicairkan']);
+                                    $so_pembayaran->updated_by = $user;
+                                    $so_pembayaran->updated_at = now();
+                                    // $so_pembayaran->is_aktif = 'N';
+                                    // $so_pembayaran->save();
+                                    if ($so_pembayaran->save()) {
+    
+                                        $so_refund = new SewaOperasionalRefund();
+                                        $so_refund ->id_kas_bank = $value['kembali'];
+                                        $so_refund ->tanggal_refund = now();
+                                        $so_refund ->id_sewa_ops = $value['id_operasional_data'];
+                                        $so_refund ->id_sewa =  $sewa->id_sewa;
+                                        $so_refund ->no_sewa =  $sewa->no_sewa;
+                                        $so_refund ->id_pembayaran = $so_pembayaran->id;
+                                        $so_refund ->deskripsi_ops = $value['deskripsi_data'];
+                                        $so_refund ->total_refund = (float)str_replace(',', '', $value['total_dicairkan']);
+                                        $so_refund->created_by = $user;
+                                        $so_refund->created_at = now();
+                                        $so_refund->is_aktif = 'Y';
+                                        // $so_refund->save();
+                                        if($so_refund->save())
+                                        {
+                                            
+                                                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                                    array(
+                                                        $value['kembali'],// id kas_bank dr form
+                                                        now(),//tanggal
+                                                        (float)str_replace(',', '', $value['total_dicairkan']),// debit 
+                                                        0, //uang keluar (kredit)
+                                                        CoaHelper::DataCoa(1100), //kode coa piutang usaha
+                                                        'operasional_refund',
+                                                        $value['rincian'], //keterangan_transaksi
+                                                        $so_refund->id,//keterangan_kode_transaksi id refundnya
+                                                        $user,//created_by
+                                                        now(),//created_at
+                                                        $user,//updated_by
+                                                        now(),//updated_at
+                                                        'Y'
+                                                    ) 
+                                                );
+                                                $kas_bank = KasBank::where('is_aktif', 'Y')->find($value['kembali']);
+                                                $kas_bank->saldo_sekarang += (float)str_replace(',', '', $value['total_dicairkan']);
+                                                $kas_bank->updated_by = $user;
+                                                $kas_bank->updated_at = now();
+                                                $kas_bank->save();
+                                        }
+                                    }
+                                }
+                            }
+                            else if($value['kembali']=='KEMBALI_STOK')
+                            {
+                                $so_pembayaran->total_kembali_stok += 1; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
                                 $so_pembayaran->updated_by = $user;
                                 $so_pembayaran->updated_at = now();
-                                $so_pembayaran->is_aktif = 'N';
                                 // $so_pembayaran->save();
-                                if ($so_pembayaran->save()) {
-                                    if($value['kembali']!='KEMBALI_STOK'&&$value['kembali']!='DATA_DI_HAPUS')
-                                    {
-                                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                            array(
-                                                $value['kembali'],// id kas_bank dr form
-                                                now(),//tanggal
-                                                (float)str_replace(',', '', $value['total_dicairkan']),// debit 
-                                                0, //uang keluar (kredit)
-                                                CoaHelper::DataCoa(1100), //kode coa piutang usaha
-                                                'operasional_kembali',
-                                                $value['rincian'], //keterangan_transaksi
-                                                $so_pembayaran->id,//keterangan_kode_transaksi
-                                                $user,//created_by
-                                                now(),//created_at
-                                                $user,//updated_by
-                                                now(),//updated_at
-                                                'Y'
-                                            ) 
-                                        );
-                                        
-                                        $kas_bank = KasBank::where('is_aktif', 'Y')->find($value['kembali']);
-                                        $kas_bank->saldo_sekarang += (float)str_replace(',', '', $value['total_dicairkan']);
-                                        $kas_bank->updated_by = $user;
-                                        $kas_bank->updated_at = now();
-                                        $kas_bank->save();
-
-                                    }
+                                if($so_pembayaran->save())
+                                {
+                                    $so_stok = new SewaOperasionalKembaliStok();
+                                    $so_stok ->id_sewa_ops = $value['id_operasional_data'];
+                                    $so_stok ->id_sewa =  $sewa->id_sewa;
+                                    $so_stok ->no_sewa =  $sewa->no_sewa;
+                                    $so_stok ->id_pembayaran = $so_pembayaran->id;
+                                    $so_stok ->deskripsi_ops = $value['deskripsi_data'];
+                                    $so_stok->tanggal_stok = now();
+                                    $so_stok->stok_masuk = 1;
+                                    $so_stok->stok_keluar = 0;
+                                    $so_stok->created_by = $user;
+                                    $so_stok->created_at = now();
+                                    $so_stok->is_aktif = 'Y';
+                                    $so_stok->save();
                                 }
                             }
                         }

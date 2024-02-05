@@ -161,11 +161,11 @@
                 
             </div>
         </div> 
-        <div class="card radiusSendiri">
+        <div class="card radiusSendiri w-50">
             <div class="card-header">
             </div>
             <div class="card-body">
-                <table class="table table-bordered card-outline card-primary table-hover" id="sortable" >
+                {{-- <table class="table table-bordered card-outline card-primary table-hover" id="sortable" >
                         <thead>
                             <tr>
                                 <th colspan="7">BIAYA OPERASIONAL</th>
@@ -174,7 +174,6 @@
                             <th></th>
                             <th>Deskripsi</th>
                             <th>Total Dicairkan</th>
-                            {{-- <th>Catatan</th> --}}
                             <th>Kas Kembali</th>
                         </tr>
                         </thead>
@@ -189,17 +188,12 @@
                                             $data_id_sewa = explode(',',$value->so_id_sewa);
                                             $id_operasional = explode(',',$value->so_id);
                                         @endphp
-                                        {{-- @foreach ( $data_id_sewa as $id_sewa ) --}}
                                             <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->so_id_sewa}}" readonly>
-                                        {{-- @endforeach --}}
-                                        {{-- @foreach ( $id_operasional as $id_ops ) --}}
                                             <input type="hidden" id="id_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_operasional_data]" value="{{$value->so_id}}" readonly>
-                                        {{-- @endforeach --}}
                                         <input type="hidden" id="id_pembayaran_operasional_{{$index}}"  class="id_pembayaran_operasional" name="data[{{$index}}][id_pembayaran_operasional]" value="{{$value->so_id_pembayaran}}" readonly>
                                     </td>
                                     <td id="deskripsi_tabel_{{$index}}" >
                                         <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->so_deskripsi}}" class="form-control deskripsi_hardcode ambil_text_deskripsi" readonly>
-                                        {{-- <span class="badge badge-success">Data Yang Tersimpan</span> --}}
                                     </td>
                                     <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                         <input type="text" name="data[{{$index}}][total_dicairkan]" id="total_dicairkan_{{$index}}" value="{{number_format($value->so_total_dicairkan) }}" class="form-control uang numaja nominal_hardcode"readonly>
@@ -228,6 +222,66 @@
                                                         <option value="{{$kb->id}}" {{ $kb->id == 2? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                                     @endforeach
                                                     
+                                                </select>
+                                            </div>
+                                        @endif
+                                    </td>
+                                </tr>
+                                @php
+                                $index+=1;
+                                @endphp
+                            @endforeach
+                    
+                        
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table> --}}
+                <table class="table table-bordered card-outline card-primary table-hover" id="sortable" >
+                        <thead>
+                            <tr>
+                                <th colspan="7">BIAYA OPERASIONAL</th>
+                            </tr>
+                        <tr>
+                            <th></th>
+                            <th>Deskripsi</th>
+                            <th>Total Dicairkan</th>
+                            <th>Operasional Kembali</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tampunganTabel">
+                        @php
+                            $index=0;
+                        @endphp
+                        @foreach ($dataOperasional as $key => $value)
+                                <tr id="{{$index}}">
+                                    <td id="id_sewa_operasional_tabel_{{$index}}" >
+                                            <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->so_id_sewa}}" readonly>
+                                            <input type="hidden" id="id_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_operasional_data]" value="{{$value->so_id}}" readonly>
+                                        <input type="hidden" id="id_pembayaran_operasional_{{$index}}"  class="id_pembayaran_operasional" name="data[{{$index}}][id_pembayaran_operasional]" value="{{$value->so_id_pembayaran}}" readonly>
+                                    </td>
+                                    <td id="deskripsi_tabel_{{$index}}" >
+                                        <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->so_deskripsi}}" class="form-control deskripsi_hardcode ambil_text_deskripsi" readonly>
+                                    </td>
+                                    <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                        <input type="text" name="data[{{$index}}][total_dicairkan]" id="total_dicairkan_{{$index}}" value="{{number_format($value->so_total_dicairkan) }}" class="form-control uang numaja nominal_hardcode"readonly>
+                                        <input type="hidden" name="data[{{$index}}][rincian]" value="UANG KEMBALI (1X: {{$value->so_deskripsi}})->KENDARAAN : [{{$value->sewa_kendaraan}}] - DRIVER:({{$value->sewa_driver}}) - TUJUAN :({{$value->sewa_tujuan}}) - SEWA :({{$value->no_sewa}})">
+                                    </td>
+                                    <td>
+                                        @if ($value->so_id_pembayaran == null)
+                                            <div class="form-group col-12">
+                                                <input type="hidden" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" value="DATA_DI_HAPUS" class="form-control" readonly>
+                                                <span class="badge badge-warning">Data Dihapus</span><br>
+                                            </div>
+                                        @else
+                                            <div class="form-group col-12">
+                                                <select class="form-control select2" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" width="100">
+                                                    @if ($value->so_deskripsi=="SEAL PELAYARAN"||$value->so_deskripsi=="PLASTIK")
+                                                        <option value="KEMBALI_STOK" >KEMBALI SEBAGAI STOK</option>
+                                                    @endif
+                                                    @foreach ($dataKas as $kb)
+                                                        <option value="{{$kb->id}}" {{ $kb->id == $value->id_kas_bank? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         @endif

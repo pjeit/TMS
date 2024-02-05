@@ -239,6 +239,8 @@ $(document).ready(function () {
     var table = $('#tabel_transaksi_lain').DataTable({
             processing: true,
             serverSide: true,
+            paging: true,
+            
             ajax: "{{ route('transaksi_lain.index_server') }}",
             columns: [
                 {data: 'tgl_transaksi', name: 'tgl_transaksi'},
@@ -252,6 +254,12 @@ $(document).ready(function () {
                     orderable: false, 
                     searchable: false
                 },
+            ],
+            // lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Rows per page options
+            // pageLength: 10, // Default number of rows per page
+            // pagingType: 'full_numbers', // Pagination control style
+            order: [
+                [0, 'asc'],
             ],
             //  order: [
             //         [0, 'asc'],

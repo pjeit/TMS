@@ -543,22 +543,22 @@ a {
                                                         if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
                                                             // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
                                                             total_dicairkan = 15000;
-                                                            total_operasional = 0;
+                                                            total_operasional = 15000;
                                                         }
                                                     }else{
                                                         if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
                                                             // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
                                                             total_dicairkan = 25000;
-                                                            total_operasional = 0;
+                                                            total_operasional = 25000;
                                                         }
                                                     }
                                                 }else{
                                                     if(data[i].tipe_kontainer=='20'){
                                                         total_dicairkan = 15000;
-                                                        total_operasional = 0;
+                                                        total_operasional = 15000;
                                                     }else{
                                                         total_dicairkan = 25000;
-                                                        total_operasional = 0;
+                                                        total_operasional = 25000;
                                                     }
                                                 }
                                             }
@@ -1044,7 +1044,7 @@ a {
             let id = this.getAttribute('item');
             var inputed = normalize(this.value);
 
-            if(item.value == 'TIMBANG' || item.value == 'BURUH' || item.value == 'LEMBUR'|| item.value == 'ALAT'|| item.value == 'BIAYA DEPO'){
+            if(item.value == 'TIMBANG' || item.value == 'BURUH' || item.value == 'LEMBUR'|| item.value == 'ALAT'|| item.value == 'TALLY'|| item.value == 'SEAL PELAYARAN'||item.value == 'BIAYA DEPO'){
                 $('#biaya_'+id).val(inputed);
             }else{
                 var max = $('#biaya_'+id).val();

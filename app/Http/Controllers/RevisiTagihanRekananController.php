@@ -118,7 +118,7 @@ class RevisiTagihanRekananController extends Controller
         // history kas bank di nonaktifkan
         $history = KasBankTransaction::where('is_aktif','Y')
                                     ->where('keterangan_kode_transaksi', $id)
-                                    ->where('jenis', 'TAGIHAN_REKANAN')
+                                    ->where('jenis', 'tagihan_rekanan')
                                     ->first();
         $history->keterangan_transaksi = 'REVISI OFF - CATATAN: '. $data['catatan'] . ' || ' .$history->keterangan_transaksi;
         $history->is_aktif = 'N';
@@ -192,7 +192,7 @@ class RevisiTagihanRekananController extends Controller
             $new_history->debit = 0;
             $new_history->kredit = floatval(str_replace(',', '', $data['total_bayar']));
             $new_history->kode_coa = CoaHelper::DataCoa(5005); // coa rekanan
-            $new_history->jenis = 'TAGIHAN_REKANAN';
+            $new_history->jenis = 'tagihan_rekanan';
             $new_history->keterangan_transaksi = $keterangan . '(REVISI) - ' . $data['catatan'];
             $new_history->keterangan_kode_transaksi = $pembayaran->id;
             $new_history->created_by = $user;

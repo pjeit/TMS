@@ -186,7 +186,7 @@ class RevisiTagihanPembelianController extends Controller
                 $new_history->debit = 0;
                 $new_history->kredit = floatval(str_replace(',', '', $data['total_bayar']));
                 $new_history->kode_coa = CoaHelper::DataCoa(2010); //  coa tagihan pembelian
-                $new_history->jenis = 'TAGIHAN_PEMBELIAN';
+                $new_history->jenis = 'tagihan_pembelian';
                 $new_history->keterangan_transaksi = $keterangan . '(REVISI) - ' . $data['catatan'];
                 $new_history->keterangan_kode_transaksi = $pembayaran->id;
                 $new_history->created_by = $user;
@@ -232,7 +232,7 @@ class RevisiTagihanPembelianController extends Controller
                         $value->updated_by = $user;
                         $value->updated_at = now();
                         if($value->save()){
-                            $details = TagihanPembelianDetail::where('is_aktif', 'Y')->where('id_TAGIHAN_PEMBELIAN', $value->id)->get();
+                            $details = TagihanPembelianDetail::where('is_aktif', 'Y')->where('id_tagihan_pembelian', $value->id)->get();
                             foreach ($details as $key => $detail) {
                                 $detail->is_aktif = 'N';
                                 $detail->updated_by = $user;
@@ -245,7 +245,7 @@ class RevisiTagihanPembelianController extends Controller
     
                 $history = KasBankTransaction::where('is_aktif','Y')
                             ->where('keterangan_kode_transaksi', $id)
-                            ->where('jenis', 'TAGIHAN_PEMBELIAN')
+                            ->where('jenis', 'tagihan_pembelian')
                             ->first();
                 $history->keterangan_transaksi = 'HAPUS - ' . isset($history->keterangan_transaksi)? $history->keterangan_transaksi:'';
                 $history->is_aktif = 'N';
