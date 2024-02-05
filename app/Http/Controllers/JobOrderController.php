@@ -45,16 +45,16 @@ class JobOrderController extends Controller
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         
         $id_role = Auth::user()->role_id; 
-        $cabang = UserHelper::getCabang();
+        // $cabang = UserHelper::getCabang();
 
         $dataJO = DB::table('job_order as jo')
             ->leftJoin('user as u', 'u.id', '=', 'jo.created_by')
             ->leftJoin('karyawan as k', 'k.id', '=', 'u.karyawan_id')
-            ->where(function ($query) use ($id_role, $cabang) {
-                if(!in_array($id_role, [1,3])){
-                    $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
-                }
-            })
+            // ->where(function ($query) use ($id_role, $cabang) {
+            //     if(!in_array($id_role, [1,3])){
+            //         $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
+            //     }
+            // })
             // ->select('jo.id as id_jo', 'jo.no_jo', 'u.id as id_user', 'u.karyawan_id as id_karyawan', 'u.username', 'k.cabang_id')
             ->select('jo.*','ja.id as idJaminan', DB::raw('jo.thc + jo.lolo + jo.apbs + jo.cleaning as Jumlah_sblm_dooring'),'c.kode as kode', 'c.nama as nama_cust', 's.nama as nama_supp')
             ->leftJoin('customer as c', 'c.id', '=', 'jo.id_customer')
