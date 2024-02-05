@@ -251,7 +251,7 @@ class StorageDemurageController extends Controller
             $pengirim  = $data['pengirim'];
             $pelayaran   =  $data['pelayaran'];
             $id_role = Auth::user()->role_id; 
-            $cabang = UserHelper::getCabang();
+            // $cabang = UserHelper::getCabang();
             // var_dump($statusJO);die;
 
             $dataJO = DB::table('job_order AS jo')
@@ -266,11 +266,11 @@ class StorageDemurageController extends Controller
                     })
                     ->leftJoin('user as u', 'u.id', '=', 'jod.created_by')
                     ->leftJoin('karyawan as k', 'k.id', '=', 'u.karyawan_id')
-                    ->where(function ($query) use ($id_role, $cabang) {
-                        if(!in_array($id_role, [1,3])){
-                            $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
-                        }
-                    })
+                    // ->where(function ($query) use ($id_role, $cabang) {
+                    //     if(!in_array($id_role, [1,3])){
+                    //         $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
+                    //     }
+                    // })
                     ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
                     ->where('jo.is_aktif', '=', 'Y')
                         ->where('jo.status', 'like', "PROSES DOORING")
