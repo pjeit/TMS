@@ -89,6 +89,10 @@
   font-size: 36px !important;
   line-height: 43px !important;
 }
+.customer-list {
+        list-style-type: square; /* Apply a different list style to the customer names */
+        margin-left: 20px; /* Adjust margin for better indentation */
+    }
 body{
   font-family: "Rubik" !important;
   /* font-style: normal !important; */

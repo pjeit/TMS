@@ -84,9 +84,9 @@
                                         <a href="{{route('cetak_job_order.print',[$item->id])}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
                                             <span class="fas fa-print mr-3"></span> Cetak JO
                                         </a>
-                                        <a href="{{route('job_order.cetak_si',[$item->id])}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
+                                        {{-- <a href="{{route('job_order.cetak_si',[$item->id])}}" method="get" rel="noopener" target="_blank"  class="dropdown-item">
                                             <span class="fas fa-print mr-3"></span> Cetak SI
-                                        </a>
+                                        </a> --}}
                                         @php
                                             $kondisi = $item->Jumlah_sblm_dooring==0&&$item->idJaminan==null
                                         @endphp

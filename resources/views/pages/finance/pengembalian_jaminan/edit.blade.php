@@ -1,561 +1,274 @@
 
 @extends('layouts.home_master')
+
 @if(session()->has('message'))
-    <div class="alert alert-success">
+    <div class="alert alert-success alert-dismissible">
         {{ session()->get('message') }}
     </div>
 @endif
+
 @section('pathjudul')
-<li class="breadcrumb-item"><a href="/">Home</a></li>
-<li class="breadcrumb-item">Master</li>
-<li class="breadcrumb-item"><a href="{{route('booking.index')}}">Customer</a></li>
-<li class="breadcrumb-item">Create</li>
 
 @endsection
 
 @section('content')
 <style>
-    #inbound {
-        cursor: pointer;
-    }
-    #outbound {
-        cursor: pointer;
-    }
-     #inbound:hover,#outbound:hover {
-        background-color: rgb(196, 223, 255);
-        /* border-block-end: 1px solid #007bff; */
-        /* border-block-start: 1px solid #007bff; */
-    }
-    .aktif {
-        background-color: #e0efff;
-    }
+   
 </style>
 <div class="container-fluid">
-  
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ $error }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        @endforeach
-
-    @endif
-    <form action="{{ route('add_return_tl.update', ['add_return_tl' => $data]) }}" method="POST" >
-    @method('PUT')
-    @csrf
-    {{-- <div class="row">
-        <div class="col">
-  
-        </div>
-    </div>
-    <hr> --}}
-        <div class="row">
-            <div class="col">
-                <div class="card radiusSendiri card-outline card-primary">
-                    <div class="card-header">
-                        <a href="{{ route('add_return_tl.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
-                        <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
-                        {{-- <button type="submit">wet</button> --}}
-                    </div>
-                    <div class="card-body">
-                         <div class="row mb-2">
-                            <div class="col-6 text-center radiusSendiri " id="inbound" >
-                                <label class="p-1">BONGKAR (INBOUND)</label>
-                                <hr style="border: 0.5px solid #007bff; " id="garisInbound">
-                            </div>
-
-                            <div class="col-6 text-center radiusSendiri"id="outbound" >
-                                <label class=" p-1">MUAT (OUTBOUND)</label>
-                                <hr style="border: 0.5px solid #007bff;" id="garisOutbound">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                 <div class="form-group">
-                                    <label for="credit_customer">Kredit Customer</label>
-                                    <div class="progress">
-                                        <div class="progress-bar " role="progressbar" aria-valuenow="" aria-valuemin="100" aria-valuemax="100" name="credit_customer" id="credit_customer" style=""></div>
+    <div class="card radiusSendiri">
+        <form action="{{ route('pengembalian_jaminan.update',[$data->jaminan->id]) }}" id="save_pengembalian_jaminan" method="POST" >
+                @csrf
+                @method('PUT')
+                <div class="card-header">
+                    <button type="submit" class="btn btn-sm btn-success save_detail"  style='width:85px'><b>SIMPAN</b></button> 
+                </div>
+                <div class="card-body">
+                    <div class='row'>
+                        <div class="col-lg-12">
+                            <div class="row">
+                                <div class="form-group col-lg-4 col-md-12 col-sm-12">
+                                    <label for="">Customer</label>
+                                    <input type="text" class="form-control" id="customer" name="customer" readonly value="{{ $data->getCustomer->nama }}">
+                                    <input type="hidden" id="id_jo" name="id_jo" readonly>
+                                </div>   
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                    <label for="">Supplier</label>
+                                    <input type="text" class="form-control" id="supplier" name="supplier" readonly value="{{ $data->getSupplier->nama }}">
+                                </div>   
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                    <label for="">No. BL</label>
+                                    <input type="text" class="form-control" id="no_bl" name="no_bl" readonly value="{{ $data->no_bl}}"> 
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label>Tanggal Kembali</label>
+                                    <div class="input-group mb-0 ">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        <input type="text" name="tgl_kembali" class="date form-control" id="tgl_kembali" autocomplete="off" value="{{ date("d-M-Y", strtotime($data->jaminan->tgl_kembali))}}">
                                     </div>
-                                    <div class="d-flex justify-content-center mt-1">
-                                        <span class="rubik-w400-12" id="persenanCredit"></span>
-                                    </div>
-                                    <input type="hidden" name="sewa_id" id="sewa_id" class="form-control" value="{{$data['id_sewa']}}">
-                                    <input type="hidden" name="cred_now" id="cred_now" class="form-control" value="0">
-                                    <input type="hidden" name="cred_val" id="cred_val" class="form-control" value="0">
-                                    <input type="hidden" name="cred_val_max" id="cred_val_max" class="form-control" value="0">
                                 </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group" id="outboundData">
-                                    <label for="">No. Booking</label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_booking' name="select_booking" disabled>
-                                        <option value="">Pilih No Booking</option>
-                                        @foreach ($dataBooking as $book)
-                                            <option value="{{$book->idBooking}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y')}}" {{$book->idBooking==$data['id_booking']? 'selected':''}} >{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y') }} / {{ $book->nama_tujuan }} / {{ $book->kode }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>  
-                                <div class="form-group" id="inboundData">
-                                    <div class="form-group">
-                                        <label for="">No. Job Order</label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_jo' name="select_jo" disabled>
-                                            <option value="">Pilih No JO</option>
-                                            @foreach ($datajO as $jo)
-                                                <option value="{{$jo->id}}-{{$jo->id_customer}}" {{$jo->id == $data['id_jo']? 'selected':''}}>{{ $jo->no_bl }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>  
-                                    <div class="form-group">
-                                        <label for="">No. Kontainer</label>
-                                        <select class="form-control select2" style="width: 100%;" id='select_jo_detail' name="select_jo_detail" disabled>
-                                            @isset($data['id_jo_detail'])
-                                                <option value="{{$data->getJOD->id}}-{{$data->getJOD->id_grup_tujuan}}-{{$data->getJOD->no_kontainer}}" selected>{{$data->getJOD->no_kontainer}}</option>
-                                            @endisset
-                                        </select>
-                                        <input type="hidden" name="no_kontainer" id="no_kontainer" value="" placeholder="no_kontainer">
-                                    </div> 
-                                </div>
-                                <div class="form-group">
-                                        <label for="no_sewa">No. Sewa</label>
-                                        <input type="text" class="form-control" id="no_sewa" placeholder="Otomatis" readonly="" value="{{$data["no_sewa"]}}">    
-                                        <input type="hidden" id="status" value="">
-                                </div>
-                                <div class="form-group">
-                                    <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Total Jaminan</label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            <span class="input-group-text">Rp.</span>
                                         </div>
-                                        <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="">
+                                        <input type="text" class="form-control" id="total_jaminan" name="total_jaminan" readonly value="{{number_format($data->jaminan->nominal)}}"> 
                                     </div>
-                                    
                                 </div>
-                                <div class="form-group">
-                                        <label for="catatan">Catatan</label>
-                                        <input readonly type="text" name="catatan" class="form-control" id="catatan" name="catatan" placeholder="" value="{{$data['catatan']}}"> 
-                                    </div>
-                            </div>
-                            <div class="col-6">
-                               
-                                <div class="form-group">
-                                    <label for="select_customer">Customer<span style="color:red">*</span></label>
-                                    <select disabled class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" disabled>
-                                        <option value="">Pilih Customer</option>
-                                        @foreach ($dataCustomer as $cust)                                        
-                                            <option value="{{$cust->idCustomer}}" <?= $cust->idCustomer==$data['id_customer']? 'selected':''  ?> > {{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
+
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                    <label for="">Kas Bank<span class="text-red">*</span></label>
+                                    <select name="id_kas" class="form-control select2" required>
+                                        <option value="">──PILIH KAS──</option>
+                                        @foreach ($bank as $item)
+                                            <option value="{{ $item->id }}" {{ $item->id == $data->jaminan->id_kas? 'selected':'' }}>{{ $item->nama }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" id="customer_id" name="customer_id" value="" placeholder="customer_id">
-                                    <input type="hidden" id="booking_id" name="booking_id" value="" placeholder="booking_id">
-                                    <input type="hidden" id="jenis_order" name="jenis_order" value="{{$data['jenis_order']}}" placeholder="jenis_order">
-                                </div>
-                                <div class="form-group">
-                                    <label for="select_tujuan">Tujuan<span style="color:red">*</span></label>
-                                    <select disabled class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan" disabled>
-                                        @isset($data['id_grup_tujuan'])
-                                            <option value="{{$data['id_grup_tujuan']}}">{{$data->getTujuan->nama_tujuan}}</option>
-                                        @endisset
-                                    </select>
+                                </div>   
 
-                                    <input type="hidden" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
-                                    <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="" placeholder="id_jo_detail">
-                                    <input type="hidden" name="id_jo" id="id_jo" value="" placeholder="id_jo">
-                                    <input type="hidden" id="nama_tujuan" name="nama_tujuan" value="">
-                                    <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="">
-                                    <input type="hidden" id="tarif" name="tarif" value="">
-                                    <input type="hidden" id="uang_jalan" name="uang_jalan" value="">
-                                    <input type="hidden" id="komisi" name="komisi" value="">
-                                    <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value="">
-                                    <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0">
-                                    <input type="hidden" id="min_muatan" name="min_muatan" value="0">
-
-                                    <input type="hidden" id="seal_pje" name="seal_pje" value="">
-                                    <input type="hidden" id="plastik" name="plastik" value="">
-                                    <input type="hidden" id="tally" name="tally" value="">
-                                    <input type="hidden" id="kargo" name="kargo" value="">
-
-                                    <input type="hidden" id="biayaDetail" name="biayaDetail">
-                                    <input type="hidden" id="biayaTambahTarif" name="biayaTambahTarif">
-                                    <input type="hidden" id="biayaTambahSDT" name="biayaTambahSDT">
-                                </div>
-
-                                <div class="row">
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        {{-- <div class="form-group" id="inboundDataKontainer">
-                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
-                                            <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="">    
-                                            <input type="hidden" id="status" value="">
-                                        </div> --}}
-                                        <div class="form-group" id="outbondDataKontainer">
-                                            <label for="">Tipe Kontainer<span class="text-red">*</span></label>
-                                            <select disabled class="form-control selectpicker tipeKontainer" id="tipe_kontainer_out"  data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                                <option value="">── Tipe ──</option>
-                                                <option value='20' {{ $data['tipe_kontainer'] == '20'? 'selected':'' }}>20"</option>
-                                                <option value='40' {{ $data['tipe_kontainer'] == '40'? 'selected':'' }}>40"</option>
-                                            </select>
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                    <label for="">Potongan</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp.</span>
                                         </div>
-                                        <input type="hidden" name="tipe_kontainer" id="tipe_kontainer">
-                                    </div>    
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                        <select disabled class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
-                                            <option value="">Pilih Kendaraan</option>
-                                            @foreach ($dataKendaraan as $kendaraan)
-                                                <option value="{{$kendaraan->kendaraanId}}-{{$kendaraan->chassisId}}-{{$kendaraan->no_polisi}}-{{$kendaraan->driver_id}}"  {{$kendaraan->kendaraanId == $data['id_kendaraan']? 'selected':''}}>{{ $kendaraan->no_polisi }}</option>
-                                            @endforeach
-                                        </select>
-                                        <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="">
-                                        <input type="hidden" id="no_polisi" name="no_polisi" value="">
+                                        <input type="text" name="potongan" class="form-control numaja uang" id="potongan" placeholder="" {{!$data->jaminan->potongan_jaminan?"readonly":""}} value="{{number_format($data->jaminan->potongan_jaminan)}}"> 
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><input type="checkbox" id="check_potongan" name="check_potongan" {{$data->jaminan->potongan_jaminan?"checked":""}}></span>
+                                        </div>
                                     </div>
                                 </div>
-                              
-                                <div class="form-group">
-                                    <label for="select_ekor">Chassis<span style="color:red">*</span></label>
-                                        <select disabled class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis">
-                                        <option value="">Pilih Chassis</option>
 
-                                        @foreach ($dataChassis as $cha)
-                                            <option value="{{$cha->id}}" {{$cha->id==$data['id_chassis']? 'selected':''}}>{{ $cha->kode }} - {{ $cha->karoseri }}</option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" id="ekor_id" name="ekor_id" value="">
-                                    <input type="hidden" id="karoseri" name="karoseri" value="">
-
-                                </div>
-                                <div class="form-group">
-                                    <label for="select_driver">Driver<span style="color:red">*</span></label>
-                                        <select disabled class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver">
-                                        <option value="">Pilih Driver</option>
-
-                                        @foreach ($dataDriver as $drvr)
-                                            <option value="{{$drvr->id}}" {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
-                                        @endforeach
-                                    </select>
-                                    <input type="hidden" id="driver_nama" name="driver_nama" value="">
-                                </div>
-                                <div class="form-group">
-                                    <label for="select_driver">Stack TL</label>
-                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
-                                        <option value="">Pilih TL</option>
-                                        <option value="tl_perak" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_perak'? 'selected':''):'' }}>Perak</option>
-                                        <option value="tl_priuk" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_priuk'? 'selected':''):'' }}>Priuk</option>
-                                        <option value="tl_teluk_lamong" {{ isset($checkTL)? ($checkTL['catatan'] == 'tl_teluk_lamong'? 'selected':''):'' }}>Teluk Lamong</option>
-                                    </select>
-                                </div>
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                    <label for="">Total<span class="text-red">*</span></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp.</span>
+                                        </div>
+                                        <input type="text" class="form-control numaja uang" id="total" name="total" required value="{{number_format($data->jaminan->nominal_kembali)}}">
+                                    </div>
+                                </div>   
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="">Catatan</label>
+                                    <input type="text" class="form-control" id="catatan" name="catatan" value="{{$data->jaminan->catatan_kembali}}">
+                                </div>   
+                                
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
-
 <script>
     $(document).ready(function() {
-        getDate();
-        var jenis = $('#jenis_order').val();
-
-        if(jenis == 'INBOUND'){
-            $("#inbound").addClass("aktif");
-            $("#outbound").removeClass("aktif");
-            $('#inboundData').show();
-            $('#garisInbound').show();
-            $('#outboundData').hide();
-            $('#garisOutbound').hide();
-        } else {
-        $("#inbound").removeClass("aktif");
-        $("#outbound").addClass("aktif");
-            $('#inboundData').hide();
-            $('#garisInbound').hide();
-            $('#outboundData').show();
-            $('#garisOutbound').show();
-        }
+        // save data
         
-        $('body').on('change','#select_booking',function()
-		{
-            var selectedValue = $(this).val();
-            var splitValue = selectedValue.split('-');
-            var booking_id=splitValue[0];
-            var idCustomer=splitValue[1];
-            var idTujuan=splitValue[2];
-            var tanggalBerangkat=splitValue[3];
-            var bulanBerangkat=splitValue[4];
-            var tahunBerangkat=splitValue[5];
-            var gabungan = tanggalBerangkat+"-"+bulanBerangkat+"-"+tahunBerangkat
-            $('#select_customer').val(idCustomer).trigger('change');
-            $('#select_grup_tujuan').val(idTujuan).trigger('change');
-            $('#booking_id').val(booking_id).trigger('change');
-            $('#select_customer').attr('disabled',true);
-            $('#select_grup_tujuan').attr('disabled',true);
-            // $('#tanggal_berangkat').val(gabungan);
-            if(selectedValue=="")
-            {
-              $('#select_customer').attr('disabled',false).val('').trigger('change');
-              $('#select_grup_tujuan').attr('disabled',false).val('').trigger('change');
-            }
-		});
-        
-        var customerLoad = false;
-
-        // logic select jo jika ada
-        var selectedJO = $('#select_jo').val();
-        
-        if(selectedJO > 0){
-            var splitValue = selectedJO.split('-');
-            var idJo=splitValue[0];
-            var idCustomer=splitValue[1];
-            $('#select_customer').val(idCustomer).trigger('change');
-            $('#customer_id').val(idCustomer);
-            $('#id_jo').val(idJo);
-
-            var baseUrl = "{{ asset('') }}";
-            $.ajax({
-                url: `${baseUrl}truck_order/getJoDetail/${idJo}`, 
-                method: 'GET', 
-                success: function(response) {
-                    if(response&&customerLoad)
-                    {
-                        var jo_detail = $('#select_jo_detail');
-                        jo_detail.attr('disabled',false);
-                        jo_detail.empty(); 
-                        jo_detail.append('<option value="">Pilih Kontainer</option>');
-                        if(selectedJO!="")
+        $('#datatableSD').DataTable({
+                    // order: [
+                    //     [0, 'asc'],
+                    // ],
+                    rowGroup: {
+                        dataSrc: [0] // kalau mau grouping pake ini
+                    },
+                    columnDefs: [
                         {
-                            response.forEach(joDetail => {
-                                const option = document.createElement('option');
-                                option.value = joDetail.id+"-"+joDetail.id_grup_tujuan+"-"+joDetail.no_kontainer;
-                                option.setAttribute('booking_id', joDetail.booking_id);
-                                option.textContent = joDetail.no_kontainer ;
-                                // if (selected_marketing == marketing.id) {
-                                //     option.selected = true;
-                                // }
-                                 jo_detail.append(option);
-                            });
-                        }
-
+                            targets: [0],
+                            visible: false
+                        },
+                        { orderable: true, targets: 0 }, // Enable ordering for the first column (index 0)
+                        { orderable: false, targets: '_all' } // Disable ordering for all other columns
+                    ],
+                    info: false,
+                    searching: true,
+                    paging: true,
+                    language: {
+                        emptyTable: "Data tidak ditemukan."
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
+        });
+        $('#save_pengembalian_jaminan').submit(function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                    // return;
+                }
+            })
+        });
+
+        var checkbox = document.getElementById("check_potongan");
+            var input = document.getElementById("potongan");
+
+            checkbox.addEventListener("change", function() {
+                if (checkbox.checked) {
+                    input.removeAttribute("readonly");
+                    totalChange($('#total').val());
+                    potChange($('#potongan').val());
+                } else {
+                    input.setAttribute("readonly", "readonly");
+                    $('#potongan').val(0);
                 }
             });
-        }
+
+        $('#save_request').submit(function(event) {
+        });
+
+        $(".showRequest").click(function (event) {
+            clear();
+            var customer = $('#customer_'+this.value).html();
+            var supplier = $('#supplier_'+this.value).html();
+            var no_bl    = $('#no_bl_'+this.value).html();
+            var total    = $('#total_'+this.value).html();
+            var catatan  = $('#catatan_'+this.value).html();
+            console.log('first:', this.value);
+
+            $('#id_jo_req').val(this.value);
+            $('#customer_req').val(customer);
+            $('#supplier_req').val(supplier);
+            $('#no_bl_req').val(no_bl);
+            $('#total_jaminan_req').val(total);
+            $('#catatan_req').val(catatan);
     
-        // logic ganti kendaraan
-            // var selectedKendaraan = $('#select_kendaraan').val();
-            // if(selectedKendaraan != null){
-            //     changeKendaraan(selectedKendaraan);
-            // }
-            setValKendaraan();
-            
-            $('#select_kendaraan').on("select2:select", function(e) { 
-                var selectedKendaraan = $('#select_kendaraan').val();
-                changeKendaraan(selectedKendaraan);
-            });
-
-            function changeKendaraan(selectedKendaraan){
-                var split = selectedKendaraan.split("-");
-                var idKendaraan = split[0];
-                var idChassis = split[1];
-                var nopol = split[2];
-                var supir = split[3];
-                console.log(split);
-                setValKendaraan();
-                
-                $('#select_chassis').val(idChassis).trigger('change');
-                $('#select_driver').val(supir).trigger('change');
-            }
-            function setValKendaraan(){
-                var selectedKendaraan = $('#select_kendaraan').val();
-                var split = selectedKendaraan.split("-");
-                var idKendaraan = split[0];
-                var idChassis = split[1];
-                var nopol = split[2];
-                var supir = split[3];
-
-                $('#kendaraan_id').val(idKendaraan);
-                $('#no_polisi').val(nopol);
-                $('#ekor_id').val(idChassis);
-            }
-        //
-            var selectedValue = $('#select_customer').val();
-            var baseUrl = "{{ asset('') }}";
-            $.ajax({
-                url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
-                method: 'GET', 
-                success: function(response) {
-                    if(response)
-                    {
-                        customerLoad = true;
-                        // console.log(customerLoad);
-                        // console.log(response.dataKredit.kreditCustomer);
-                        // console.log(response.dataKredit.maxGrup);
-
-                        // ==============================kredit=================
-                        
-                        let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
-                        creds_now = creds_now.toFixed(1);
-                        // persenanCredit
-                        const persen = document.getElementById('persenanCredit');
-
-                        const cred = document.getElementById('credit_customer');
-                        if(creds_now<80)
-                        {
-                            persen.innerHTML = creds_now+"%";
-                            cred.style.width = creds_now+"%";
-                            cred.style.backgroundColor = "#53de02";
-                            cred.style.color = "black";
-                            
-                        }
-                        else if(creds_now >=80 && creds_now <= 90)
-                        {
-                            persen.innerHTML = creds_now+"%";
-                            cred.style.width = creds_now+"%";
-                            cred.style.backgroundColor = "#deab02";
-                            cred.style.color = "black";
-                        }
-                        else if(creds_now>=90)
-                        {
-                            persen.innerHTML = creds_now+"%";
-                            cred.style.width = creds_now+"%";
-                            cred.style.backgroundColor = "#de0202";
-                            cred.style.color = "black";
-                        }
-                        else if(creds_now>100)
-                        {
-                            persen.innerHTML = creds_now+"%";
-                            cred.style.width = "100%";
-                            cred.style.backgroundColor = "#de0202";
-                            cred.style.color = "black";
-                        }
-                        // ==============================kredit=================
-
-                    }else{
-                        customerLoad = false;
-                            const persen = document.getElementById('persenanCredit');
-                            const cred = document.getElementById('credit_customer');
-                            persen.innerHTML = 0+"%";
-                            cred.style.width = 0+"%";
-                            cred.style.backgroundColor = "#53de02";
-                            cred.style.color = "black";
-
-                    }
-        
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-
-        // $('body').on('change','#select_customer',function()
-		// {
-        //     var selectedValue = $('#select_customer').val();
-        //     $('#customer_id').val(selectedValue);
-        //     var baseUrl = "{{ asset('') }}";
-
-           
-        //     $.ajax({
-        //         url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
-        //         method: 'GET', 
-        //         success: function(response) {
-        //             if(response)
-        //             {
-        //                 customerLoad = true;
-        //                 // console.log(customerLoad);
-        //                 // console.log(response.dataKredit.kreditCustomer);
-        //                 // console.log(response.dataKredit.maxGrup);
-
-        //                 // ==============================kredit=================
-                        
-        //                 let creds_now = (response.dataKredit.kreditCustomer/response.dataKredit.maxGrup) * 100;
-        //                 creds_now = creds_now.toFixed(1);
-        //                 // persenanCredit
-        //                 const persen = document.getElementById('persenanCredit');
-
-        //                 const cred = document.getElementById('credit_customer');
-        //                 if(creds_now<80)
-        //                 {
-        //                     persen.innerHTML = creds_now+"%";
-        //                     cred.style.width = creds_now+"%";
-        //                     cred.style.backgroundColor = "#53de02";
-        //                     cred.style.color = "black";
-                            
-        //                 }
-        //                 else if(creds_now >=80 && creds_now <= 90)
-        //                 {
-        //                     persen.innerHTML = creds_now+"%";
-        //                     cred.style.width = creds_now+"%";
-        //                     cred.style.backgroundColor = "#deab02";
-        //                     cred.style.color = "black";
-        //                 }
-        //                 else if(creds_now>=90)
-        //                 {
-        //                     persen.innerHTML = creds_now+"%";
-        //                     cred.style.width = creds_now+"%";
-        //                     cred.style.backgroundColor = "#de0202";
-        //                     cred.style.color = "black";
-        //                 }
-        //                 else if(creds_now>100)
-        //                 {
-        //                     persen.innerHTML = creds_now+"%";
-        //                     cred.style.width = "100%";
-        //                     cred.style.backgroundColor = "#de0202";
-        //                     cred.style.color = "black";
-        //                 }
-        //                 // ==============================kredit=================
-
-        //             }else{
-        //                 customerLoad = false;
-        //                     const persen = document.getElementById('persenanCredit');
-        //                     const cred = document.getElementById('credit_customer');
-        //                     persen.innerHTML = 0+"%";
-        //                     cred.style.width = 0+"%";
-        //                     cred.style.backgroundColor = "#53de02";
-        //                     cred.style.color = "black";
-
-        //             }
-        
-        //         },
-        //         error: function(xhr, status, error) {
-        //             console.error('Error:', error);
-        //         }
-        //     });
-           
+            setDate();
+            $("#modal_request").modal("show");   
+        });
 
 
-		// });
-
-
-
-        $('body').on('change','#select_driver',function()
-		{
-            var selectedValue = $(this).val();
-            var split = selectedValue.split("-");
-
-            var idKendaraan = split[0];
-            var idChassis = split[1];
-            var nopol = split[2];
-            $('#driver_nama').val(idChassis);
-		});
-   
-        function getDate(){
-            var today = new Date();
-            var tomorrow = new Date(today);
-            tomorrow.setDate(today.getDate() + 1);
-
-            $('#tanggal_berangkat').datepicker({
+            $('#tgl_kembali').datepicker({
                 autoclose: true,
                 format: "dd-M-yyyy",
                 todayHighlight: true,
                 language: 'en',
-                startDate: tomorrow,
-            }).datepicker("setDate", tomorrow);
+                orientation: 'bottom auto',
+                endDate: today
+            })/*.datepicker('setDate', today)*/;
+        
+
+        // potongan
+            // trigger ketika angkat di ketik
+            $(document).on('keyup', '#potongan', function(){ 
+                potChange(this.value);
+            });
+            // trigger ketika focus lepas dari input form
+            $('#potongan').blur(function() {
+                potChange(this.value);
+            });
+
+            function potChange(val){
+                var total = normalize($('#total_jaminan').val());
+                val = normalize(val);
+                if(val > total){
+                    $('#potongan').val(moneyMask(total));
+                }
+
+                if( $('#potongan').val() != ''){
+                    $('#total').val(moneyMask(total-normalize($('#potongan').val())));
+                }
+            }
+        //
+
+        $(document).on('keyup', '#total', function(){ 
+            totalChange(this.value);
+        });
+        $('#total').blur(function() {
+            totalChange(this.value);
+        });
+
+        function totalChange(val){
+            var total = normalize($('#total_jaminan').val());
+            val = normalize(val);
+            if(val > total){
+                $('#total').val(moneyMask(total));
+            }
+
+            if( $('#total').val() != ''){
+                var isChecked = $("#check_potongan").prop("checked");
+                if (isChecked) {
+                    $('#potongan').val(moneyMask(total-normalize($('#total').val())));
+                }
+            }
         }
+
+        function clear(){
+            $('#customer').val('');
+            $('#supplier').val('');
+            $('#no_bl').val('');
+            $('#total_jaminan').val('');
+            $('#potongan').val('');
+            $('#total').val('');
+            $('#catatan').val('');
+        };
     });
-   
 </script>
 @endsection

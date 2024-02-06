@@ -78,11 +78,11 @@ a {
                                 {{-- [Shifting]-[Semua sewa pje] --}}
                             </a>
                         </li>
-                        <li class="nav-item" style="border-right: 2px solid black">
+                        {{-- <li class="nav-item" style="border-right: 2px solid black">
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_karantina" aria-selected="false">
-                                <span class="text-bold">KARANTINA </span> {{--[Master Karantina]--}}
+                                <span class="text-bold">KARANTINA </span> 
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="nav-item">
                             {{-- PENCAIRAN SENDIRI-SENDIRI, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
                             <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_buruh" aria-selected="false">
@@ -140,7 +140,7 @@ a {
                                     <option value="BURUH">BURUH</option>
                                     <option value="TIMBANG">TIMBANG</option>
                                     <option value="LEMBUR">LEMBUR</option>
-                                    <option value="KARANTINA">KARANTINA</option>
+                                    {{-- <option value="KARANTINA">KARANTINA</option> --}}
                                 </select>
                                 <br>
                                 <br>

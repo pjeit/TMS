@@ -33,8 +33,9 @@ class GrupTujuanController extends Controller
             ->where('grup.is_aktif', 'Y')
             ->groupBy('grup.id', 'grup.nama_grup' /* other columns you need */)
             ->orderBy('nama_grup', 'ASC')
+            ->with('customers')
             ->get();
-    
+        // dd($data[0]->customers[0]->nama);
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
@@ -98,7 +99,10 @@ class GrupTujuanController extends Controller
      */
     public function edit($id)
     {
-        $data['grup'] = Grup::where('is_aktif', 'Y')->findOrFail($id);
+        $data['grup'] = Grup::where('is_aktif', 'Y')
+        ->with('customers')
+        ->findOrFail($id);
+
         $tujuan = GrupTujuan::where('grup_id', $id)->where('is_aktif', 'Y')->get();
         foreach ($tujuan as $key => $value) {
             $biaya = GrupTujuanBiaya::/*where('grup_id', $id)

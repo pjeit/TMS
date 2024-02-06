@@ -31,7 +31,14 @@
                         <tbody>
                             @foreach($data as $item)
                             <tr>
-                                <td>{{ $item->nama_grup }}</td>
+                                <td>
+                                    <span class="text-bold"> {{ $item->nama_grup }}</span>
+                                    <ul class="customer-list">
+                                        @foreach($item->customers as $dataCust)
+                                        <li>{{ $dataCust->nama }}</li>
+                                        @endforeach
+                                    </ul>
+                                </td>
                                 <td>{{ $item->total_tujuan == 0 ? '-':$item->total_tujuan .' Tujuan' }}</td>
                                 <td style="text-align: center">                                    
                                     {{-- <div class="btn-group dropleft">

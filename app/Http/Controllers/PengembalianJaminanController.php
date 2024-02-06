@@ -26,13 +26,13 @@ class PengembalianJaminanController extends Controller
         $data = JobOrder::where('is_aktif', 'Y')->with('getDetails.getSewa', 'jaminan')
                         ->whereHas('jaminan',function ($query) {
                             $query->where('is_aktif', 'Y')
-                            ->whereIn('status', ['DIBAYARKAN', 'REQUEST']);
+                            ->whereIn('status', ['DIBAYARKAN', 'REQUEST','KEMBALI']);
                         })
-                        ->whereHas('getDetails.getSewa',function ($query) {
+                        // ->whereIn('status',['SELESAI DOORING','SELESAI'])
+                        /*->whereHas('getDetails.getSewa',function ($query) {
                             $query->where('is_aktif', 'Y')
                             ->whereIn('status', ['MENUNGGU INVOICE', 'MENUNGGU PEMBAYARAN INVOICE', 'SELESAI PEMBAYARAN']);
-                        })->get();
-
+                        })*/->get();
         $bank = KasBank::where('is_aktif', 'Y')->get();
         return view('pages.finance.pengembalian_jaminan.index',[
             'judul' => 'Pengembalian Jaminan',
@@ -69,23 +69,24 @@ class PengembalianJaminanController extends Controller
         try {
             $jaminan = Jaminan::where('is_aktif', 'Y')->where('id_job_order', $data['id_jo'])->first();
             if($jaminan){
-                $jaminan->tgl_kembali = now();
+                $jaminan->tgl_kembali = date_create_from_format('d-M-Y', $data['tgl_kembali']);
                 $jaminan->potongan_jaminan = $potongan;
                 $jaminan->nominal_kembali = $total;
-                $jaminan->alasan = $data['catatan'];
+                $jaminan->id_kas = $data['id_kas'];
+                $jaminan->catatan_kembali = $data['catatan'];
                 $jaminan->status = "KEMBALI";
                 $jaminan->updated_by = $user;
                 $jaminan->updated_at = now();
                 if($jaminan->save()){
                     $kasBank = new KasBankTransaction();
                     $kasBank->id_kas_bank = $data['id_kas'];
-                    $kasBank->tanggal = now();
+                    $kasBank->tanggal = date_create_from_format('d-M-Y', $data['tgl_kembali']);
                     $kasBank->debit = $total;
                     $kasBank->kredit = 0; 
                     $kasBank->kode_coa =  CoaHelper::DataCoa(5003); //coa biaya pelayaran
-                    $kasBank->jenis = "PENGEMBALIAN_JAMINAN"; 
+                    $kasBank->jenis = "pengembalian_jaminan"; 
                     $kasBank->keterangan_transaksi = "PENGEMBALIAN JAMINAN - " .$data['catatan'] . " - " . $data['customer'] ." - ". $data['supplier'] . $ket_potongan;
-                    $kasBank->keterangan_kode_transaksi = $data['id_jo'];
+                    $kasBank->keterangan_kode_transaksi = $jaminan->id;
                     $kasBank->created_by = $user;
                     $kasBank->created_at = now();
                     $kasBank->is_aktif = "Y";
@@ -120,10 +121,10 @@ class PengembalianJaminanController extends Controller
             $jaminan = Jaminan::where('is_aktif', 'Y')->where('id_job_order', $data['id_jo'])->first();
             if($jaminan){
                 $jaminan->status = 'REQUEST';
-                $jaminan->catatan = $data['catatan'];
+                $jaminan->catatan_request = $data['catatan'];
                 $jaminan->tgl_request = date_create_from_format('d-M-Y', $data['tgl_request']);
                 $jaminan->updated_by = $user;
-                $jaminan->updated_by = now();
+                $jaminan->updated_at = now();
                 $jaminan->save();
 
                 DB::commit();
@@ -156,6 +157,23 @@ class PengembalianJaminanController extends Controller
     public function edit($id)
     {
         //
+        $data = JobOrder::where('is_aktif', 'Y')->with('getDetails.getSewa', 'jaminan')
+                        ->whereHas('jaminan',function ($query) use ($id){
+                            $query->where('is_aktif', 'Y')->where('id',$id);
+                            // ->whereIn('status', ['DIBAYARKAN', 'REQUEST','KEMBALI']);
+                        })
+                        // ->whereIn('status',['SELESAI DOORING','SELESAI'])
+                        /*->whereHas('getDetails.getSewa',function ($query) {
+                            $query->where('is_aktif', 'Y')
+                            ->whereIn('status', ['MENUNGGU INVOICE', 'MENUNGGU PEMBAYARAN INVOICE', 'SELESAI PEMBAYARAN']);
+                        })*/->first();
+        // dd($data);
+        $bank = KasBank::where('is_aktif', 'Y')->get();
+        return view('pages.finance.pengembalian_jaminan.edit',[
+            'judul' => 'Revisi Pengembalian Jaminan',
+            'data' => $data,
+            'bank' => $bank,
+        ]);
     }
 
     /**
@@ -168,6 +186,61 @@ class PengembalianJaminanController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $data = $request->collect();
+        $ket_potongan = isset($data['potongan'])? " (POTONGAN: ". $data['potongan'].")":'';
+        $total = floatval(str_replace(',', '', $data['total']));
+        $potongan = isset($data['potongan'])? floatval(str_replace(',', '', $data['potongan'])):NULL;
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        DB::beginTransaction(); 
+
+        try {
+            $jaminan = Jaminan::where('is_aktif', 'Y')->where('id', $id)->first();
+            if($jaminan){
+                $kasBankSaldoLama = KasBank::where('is_aktif', 'Y')->where('id', $data['id_kas'])->first();
+                $kasBankSaldoLama->saldo_sekarang-=floatval(str_replace(',', '', $jaminan->nominal_kembali));
+                $kasBankSaldoLama->updated_by = $user;
+                $kasBankSaldoLama->updated_at = now();
+                // $kasBankSaldoLama->save();
+                if($kasBankSaldoLama->save())
+                {
+                    $jaminan->tgl_kembali = date_create_from_format('d-M-Y', $data['tgl_kembali']);
+                    $jaminan->potongan_jaminan = $potongan;
+                    $jaminan->nominal_kembali = $total;
+                    $jaminan->catatan_kembali = $data['catatan'];
+                    $jaminan->updated_by = $user;
+                    $jaminan->updated_at = now();
+                    if($jaminan->save()){
+                        $kasBank = KasBankTransaction::where('is_aktif', 'Y')->where('jenis','pengembalian_jaminan')->where('keterangan_kode_transaksi',$id)->first();
+                        // dd(  $kasBank);
+                        $kasBank->id_kas_bank = $data['id_kas'];
+                        $kasBank->tanggal = date_create_from_format('d-M-Y', $data['tgl_kembali']);
+                        $kasBank->debit = $total;
+                        $kasBank->keterangan_transaksi = "REVISI PENGEMBALIAN JAMINAN - " .$data['catatan'] . " - " . $data['customer'] ." - ". $data['supplier'] . $ket_potongan;
+                        $kasBank->keterangan_kode_transaksi = $jaminan->id;
+                        $kasBank->created_by = $user;
+                        $kasBank->created_at = now();
+                        $kasBank->is_aktif = "Y";
+                        // $kasBank->save();
+                        if($kasBank->save())
+                        {
+                            $kasBankSaldo = KasBank::where('is_aktif', 'Y')->where('id', $data['id_kas'])->first();
+                            $kasBankSaldo->saldo_sekarang+=$total;
+                            $kasBankSaldo->updated_by = $user;
+                            $kasBankSaldo->updated_at = now();
+                            $kasBankSaldo->save();
+                        }
+                        DB::commit();
+                        return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'Success', 'msg' => 'Pengembalian berhasil!']);
+                    }
+                }
+            }
+            DB::rollBack();
+            return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'Error', 'msg' => 'Data tidak ditemukan!']);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'Error', 'msg' => 'Pengembalian gagal!']);
+        }
     }
 
     /**

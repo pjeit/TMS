@@ -6,18 +6,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
-use App\Models\JobOrder;
 use App\Models\Sewa;
 use App\Models\SewaOperasional;
-use App\Helper\VariableHelper;
-use App\Models\JobOrderDetail;
 use App\Models\Karantina;
 use App\Models\KarantinaDetail;
 use Carbon\Carbon;
 use App\Helper\CoaHelper;
 use App\Models\KasBank;
 use App\Models\SewaOperasionalPembayaran;
-use App\Models\Karyawan;
 class BiayaOperasionalController extends Controller
 {
     public function __construct()

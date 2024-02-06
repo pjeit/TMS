@@ -247,7 +247,7 @@
                                 
                                 <div class="row">
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12" id="stack_tl_form">
-                                        <label for="select_driver">Stack Full</label>
+                                        <label for="select_driver" id="stack_tl_label">Stack Full</label>
                                             <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                             <option value="">── Pilih Stack ──</option>
                                             <option value="tl_perak">Perak</option>
@@ -321,6 +321,8 @@
             hideMenuTujuan();
             refreshBar();
             setKendaraan('');
+            
+            $('#stack_tl_label').text('Pick Up Full');
 
             $('#kontainer_div').show();
             $('#chassis_div').show();
@@ -379,7 +381,7 @@
             hideMenuTujuan();
             refreshBar();
             setKendaraan('');
-
+            $('#stack_tl_label').text('Stack Full');
             $('#kontainer_div').show();
             $('#chassis_div').show();
             $('#stack_tl_form').show();

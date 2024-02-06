@@ -23,9 +23,10 @@
         
         <div class="card-body">
             {{-- <div style="overflow: auto;"> --}}
-                <table id="datatable" class="table table-bordered table-striped" width='100%'>
+                <table id="datatableSD" class="table table-bordered table-striped" width='100%'>
                     <thead>
                         <tr>
+                            <th>Status</th>
                             <th>Customer</th>
                             <th>Supplier</th>
                             <th>No. BL</th>
@@ -39,6 +40,14 @@
                     <tbody id="hasil">
                         @foreach ($data as $key => $item)
                             <tr>
+                                <td id="status_{{ $item->id }}">
+                                    @if ($item->jaminan->status == 'DIBAYARKAN')
+                                        MENUNGGU REQUEST
+                                    @endif
+                                    @if ($item->jaminan->status == 'REQUEST' || $item->jaminan->status == 'KEMBALI')
+                                    {{$item->jaminan->status}}
+                                    @endif
+                                </td>
                                 <td id="customer_{{ $item->id }}">{{ $item->getCustomer->nama }}</td>
                                 <td id="supplier_{{ $item->id }}">{{ $item->getSupplier->nama }}</td>
                                 <td id="no_bl_{{ $item->id }}">{{ $item->no_bl }}</td>
@@ -58,12 +67,16 @@
                                                     <i class="fa fa-sticky-note mr-2"> </i> <b>Request</b>
                                                 </button>
                                             @endif
-                                            @if ($item->jaminan->status == 'REQUEST')
+                                            @if ($item->jaminan->status == 'REQUEST' )
                                                 <button value="{{ $item->id }}" class="btn-sm dropdown-item showBayar"> 
                                                     <i class="fas fa-dollar-sign mr-2"> </i> <b>Pengembalian</b>
                                                 </button>
                                             @endif
-
+                                            @if ( $item->jaminan->status == 'KEMBALI')
+                                                <a href="{{route('pengembalian_jaminan.edit',[$item->jaminan->id])}}" class="dropdown-item ">
+                                                    <span class="fas fa-edit mr-3"></span> Revisi Pengembalian
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
                                 </td>
@@ -74,8 +87,6 @@
             {{-- </div> --}}
         </div>
     </div>
-
-
     <div class="modal fade" id="modal" tabindex='-1'>
         <div class="modal-dialog modal-lg">
             <form action="{{ route('pengembalian_jaminan.store') }}" id="save_pengembalian_jaminan" method="POST" >
@@ -91,23 +102,30 @@
                         <div class='row'>
                             <div class="col-lg-12">
                                 <div class="row">
-                                    <div class="form-group col-lg-6 col-md-12 col-sm-12">
+                                    <div class="form-group col-lg-4 col-md-12 col-sm-12">
                                         <label for="">Customer</label>
                                         <input type="text" class="form-control" id="customer" name="customer" readonly>
                                         <input type="hidden" id="id_jo" name="id_jo" readonly>
                                     </div>   
-
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <div class="form-group col-lg-4 col-md-6 col-sm-12">
                                         <label for="">Supplier</label>
                                         <input type="text" class="form-control" id="supplier" name="supplier" readonly>
                                     </div>   
-
                                     <div class="form-group col-lg-4 col-md-6 col-sm-12">
                                         <label for="">No. BL</label>
                                         <input type="text" class="form-control" id="no_bl" name="no_bl" readonly> 
                                     </div>
-
-                                    <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                        <label>Tanggal Kembali</label>
+                                        <div class="input-group mb-0 ">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="text" name="tgl_kembali" class="date form-control" id="tgl_kembali" autocomplete="off" >
+                                        </div>
+                                    </div>
+                                   
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                         <label for="">Total Jaminan</label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
@@ -116,7 +134,17 @@
                                             <input type="text" class="form-control" id="total_jaminan" name="total_jaminan" readonly> 
                                         </div>
                                     </div>
-                                    
+
+                                    <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                        <label for="">Kas Bank<span class="text-red">*</span></label>
+                                        <select name="id_kas" class="form-control select2" required>
+                                            <option value="">──PILIH KAS──</option>
+                                            @foreach ($bank as $item)
+                                                <option value="{{ $item->id }}" {{ $item->id == 1? 'selected':'' }}>{{ $item->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>   
+
                                     <div class="form-group col-lg-4 col-md-6 col-sm-12">
                                         <label for="">Potongan</label>
                                         <div class="input-group mb-0">
@@ -130,17 +158,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        <label for="">Kas Bank<span class="text-red">*</span></label>
-                                        <select name="id_kas" class="form-control select2" required>
-                                            <option value="">──PILIH KAS──</option>
-                                            @foreach ($bank as $item)
-                                                <option value="{{ $item->id }}" {{ $item->id == 1? 'selected':'' }}>{{ $item->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>   
-
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <div class="form-group col-lg-4 col-md-6 col-sm-12">
                                         <label for="">Total<span class="text-red">*</span></label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
@@ -149,8 +167,6 @@
                                             <input type="text" class="form-control numaja uang" id="total" name="total" required required>
                                         </div>
                                     </div>   
-                                  
-                                    
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="">Catatan</label>
                                         <input type="text" class="form-control" id="catatan" name="catatan">
@@ -243,6 +259,29 @@
 <script>
     $(document).ready(function() {
         // save data
+        
+        $('#datatableSD').DataTable({
+                    // order: [
+                    //     [0, 'asc'],
+                    // ],
+                    rowGroup: {
+                        dataSrc: [0] // kalau mau grouping pake ini
+                    },
+                    columnDefs: [
+                        {
+                            targets: [0],
+                            visible: false
+                        },
+                        { orderable: true, targets: 0 }, // Enable ordering for the first column (index 0)
+                        { orderable: false, targets: '_all' } // Disable ordering for all other columns
+                    ],
+                    info: false,
+                    searching: true,
+                    paging: true,
+                    language: {
+                        emptyTable: "Data tidak ditemukan."
+                    }
+        });
         $('#save_pengembalian_jaminan').submit(function(event) {
             event.preventDefault();
             Swal.fire({
@@ -298,7 +337,7 @@
      
             var checkbox = document.getElementById("check_potongan");
             var input = document.getElementById("potongan");
-
+            setDate();
             checkbox.addEventListener("change", function() {
                 if (checkbox.checked) {
                     input.removeAttribute("readonly");
@@ -338,6 +377,14 @@
 
         function setDate(){
             $('#tgl_request').datepicker({
+                autoclose: true,
+                format: "dd-M-yyyy",
+                todayHighlight: true,
+                language: 'en',
+                orientation: 'bottom auto',
+                endDate: today
+            }).datepicker('setDate', today);
+            $('#tgl_kembali').datepicker({
                 autoclose: true,
                 format: "dd-M-yyyy",
                 todayHighlight: true,

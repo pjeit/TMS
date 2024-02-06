@@ -78,6 +78,11 @@
                             <label for="">Nama grup</label>
                             <input type="text" value="{{$data['grup']->nama_grup}}" class="form-control"
                                 disabled>
+                            <ul  class="customer-list">
+                                @foreach($data['grup']->customers as $dataCust)
+                                <li>{{ $dataCust->nama }}</li>
+                                @endforeach
+                            </ul>
                         </div>
                         <div class="table-responsive p-0">
                                 <form name="add_name" id="add_name">

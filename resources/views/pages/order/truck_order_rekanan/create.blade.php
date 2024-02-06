@@ -220,7 +220,7 @@
                                     </div>
 
                                     <div class="form-group col-lg-4 col-md-4 col-sm-12" id="stack_tl_form">
-                                        <label for="select_driver">Stack Full</label>
+                                        <label for="select_driver" id="stack_tl_label">Stack Full</label>
                                             <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                             <option value="">── Pilih TL ──</option>
                                             <option value="tl_perak">Perak</option>
@@ -306,6 +306,7 @@
             $('#biayaTambahTarif').val('');
 
             $('#kontainer').val('');
+            $('#stack_tl_label').text('Pick Up Full');
 
 		});
 
@@ -316,9 +317,9 @@
 
             hideMenuTujuan();
             refreshBar();
-             $('#kontainer_div').show();
-                    $('#stack_tl_form').show();
-                    $('.open_harga_tujuan').show();
+            $('#kontainer_div').show();
+            $('#stack_tl_form').show();
+            $('.open_harga_tujuan').show();
             $('#harga_tujuan').val(0);
             $('#inboundDataKontainer').hide();
             $('#outbondDataKontainer').show();
@@ -353,6 +354,8 @@
             $('#biayaTambahTarif').val('');
             $('#kontainer').val('');
             getDate();
+            $('#stack_tl_label').text('Stack Full');
+
 		});
 
         $('body').on('change','#select_booking',function()

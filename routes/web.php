@@ -203,6 +203,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('bonus_supir', 'App\Http\Controllers\BonusSupirController');
 
 
+        Route::resource('pembayaran_karantina', 'App\Http\Controllers\PembayaranKarantinaController');
 
         Route::post('tagihan_rekanan/bayar_save', [App\Http\Controllers\TagihanRekananController::class, 'bayar_save'])->name('tagihan_rekanan.bayar_save');
         Route::post('tagihan_rekanan/bayar', [App\Http\Controllers\TagihanRekananController::class, 'bayar'])->name('tagihan_rekanan.bayar');
