@@ -45,7 +45,9 @@
                                     <select name="supplier" class="select2" style="width: 100%" id="supplier" required disabled>
                                         <option value="">── PILIH SUPPLIER ──</option>
                                         @foreach ($supplier as $item)
+                                        @if ($item->getSupplier)
                                             <option value="{{ $item->getSupplier->id }}" {{ $item->getSupplier->id == $data_tagihan[0]->id_supplier? 'selected':'' }}>{{ $item->getSupplier->nama }}</option>
+                                        @endif
                                         @endforeach
                                     </select>
                                     <input type="hidden" name="id_supplier" value="{{ $data_tagihan[0]->id_supplier }}">
@@ -68,7 +70,7 @@
                                 <div class="form-group">
                                     <label for="">Pilih Kas<span style="color:red">*</span></label>
                                     <select name="id_kas" class="select2" style="width: 100%" id="id_kas" required>
-                                        <option value="">── PILIH SUPPLIER ──</option>
+                                        <option value="">── PILIH KAS ──</option>
                                         @foreach ($dataKas as $item)
                                             <option value="{{ $item->id }}" {{ $item->id == 1? 'selected':'' }}>{{ $item->nama }}</option>
                                         @endforeach

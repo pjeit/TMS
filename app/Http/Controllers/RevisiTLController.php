@@ -81,7 +81,21 @@ class RevisiTLController extends Controller
         $data_uj = UangJalanRiwayat::where('is_aktif', '=', "Y")
             ->where('sewa_id', $id)
             ->first();
-        // dd( $data_uj);
+        if($data_uj)
+        {
+            return view('pages.revisi.revisi_TL.cair',[
+                'judul' => "Pencairan TL",
+                'sewa' => $sewa,
+                'jumlah' => $pengaturan[$sewa['stack_tl']],
+                'data_uj' => $data_uj,
+                'dataKas' => $dataKas,
+                'id_sewa' => $id,
+            ]);
+        }
+        else
+        {
+            return redirect()->route('revisi_tl.index')->with(['status' => 'error', 'msg' => 'Data Uang Jalan tidak ada (karena migrasi)']);
+        }
         return view('pages.revisi.revisi_TL.cair',[
             'judul' => "Pencairan TL",
             'sewa' => $sewa,

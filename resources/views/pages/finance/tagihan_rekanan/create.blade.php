@@ -47,7 +47,7 @@
                                         <option value="">── PILIH SUPPLIER ──</option>
                                         @foreach ($supplier as $item)
                                         @if ($item->getSupplier)
-                                        <option n value="{{ $item->getSupplier->id }}">{{ $item->getSupplier->nama }}
+                                        <option value="{{ $item->getSupplier->id }}">{{ $item->getSupplier->nama }}
                                         </option>
                                         @endif
                                         @endforeach

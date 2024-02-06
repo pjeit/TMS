@@ -142,6 +142,9 @@
         $('#scrollToTopBtn').click(function () {
             $('html, body').animate({ scrollTop: 0 }, 'slow');
         });
+        $(document).on('select2:open', () => {
+          document.querySelector('.select2-search__field').focus();
+        });
     });
 </script>
 

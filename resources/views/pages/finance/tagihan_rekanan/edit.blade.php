@@ -44,7 +44,9 @@
                                     <select name="supplier" class="select2" style="width: 100%" id="supplier" required disabled>
                                         <option value="">── PILIH SUPPLIER ──</option>
                                         @foreach ($supplier as $item)
-                                            <option value="{{ $item->getSupplier->id }}" {{ $item->id == $tagihan->id_supplier? 'selected':'' }}>{{ $item->getSupplier->nama }}</option>
+                                            @if ($item->getSupplier)
+                                                <option value="{{ $item->getSupplier->id }}" {{ $item->id == $tagihan->id_supplier? 'selected':'' }}>{{ $item->getSupplier->nama }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                     <input type="hidden" name="id_supplier" value="{{ $tagihan->id_supplier }}">
