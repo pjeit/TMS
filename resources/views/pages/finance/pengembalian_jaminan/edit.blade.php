@@ -21,7 +21,8 @@
                 @csrf
                 @method('PUT')
                 <div class="card-header">
-                    <button type="submit" class="btn btn-sm btn-success save_detail"  style='width:85px'><b>SIMPAN</b></button> 
+                    <a href="{{ route('pengembalian_jaminan.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
+                    <button type="submit" class="btn btn-sm btn-success radiusSendiri save_detail"  style='width:85px'><i class="fa fa-credit-card" aria-hidden="true"> Simpan</button> 
                 </div>
                 <div class="card-body">
                     <div class='row'>

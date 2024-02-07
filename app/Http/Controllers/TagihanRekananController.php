@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Helper\CoaHelper;
 use App\Models\KasBank;
+use Exception;
+
 class TagihanRekananController extends Controller
 {
     public function __construct()

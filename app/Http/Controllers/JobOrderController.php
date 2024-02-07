@@ -249,7 +249,7 @@ class JobOrderController extends Controller
                     $jaminan->id_job_order = $newJO->id;
                     $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
                     $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
-                    $jaminan->catatan = $data['catatan'];
+                    $jaminan->catatan_jaminan = $data['catatan'];
                      // 'MENUNGGU PEMBAYARAN','DIBAYARKAN','KEMBALI'
                     $jaminan->status = 'MENUNGGU PEMBAYARAN';
                     $jaminan->created_by = $user;
@@ -511,7 +511,7 @@ class JobOrderController extends Controller
                     $jaminan = Jaminan::where('is_aktif', 'Y')->find($data['id_jaminan']);
                     $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
                     $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
-                    $jaminan->catatan = $data['catatan'];
+                    $jaminan->catatan_jaminan = $data['catatan'];
                     $jaminan->updated_by = $user;
                     $jaminan->updated_at = now();
                     $jaminan->save();
@@ -520,7 +520,7 @@ class JobOrderController extends Controller
                     $jaminan->id_job_order = $jobOrder['id'];
                     $jaminan->nominal = floatval(str_replace(',', '', $data['total_jaminan']));
                     $jaminan->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar_jaminan']);
-                    $jaminan->catatan = $data['catatan'];
+                    $jaminan->catatan_jaminan = $data['catatan'];
                     $jaminan->status = 'MENUNGGU PEMBAYARAN';
                     $jaminan->created_by = $user;
                     $jaminan->created_at = now();

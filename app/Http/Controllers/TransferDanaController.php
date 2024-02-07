@@ -213,7 +213,7 @@ class TransferDanaController extends Controller
         //                                 ->where('jenis', 'transfer_dana')
         //                                 ->get();
         // dd( $kas_bank_transaksi[0]->id);
-          return view('pages.finance.transfer_dana.edit',[
+        return view('pages.finance.transfer_dana.edit',[
             'dataKasTransfer'=>$dataKasTransfer,
             'dataKas'=>$dataKas,
             'judul'=>"Trnasfer Dana",

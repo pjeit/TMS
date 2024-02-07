@@ -92,6 +92,8 @@
                     @endif --}}
                 </tbody>
             </table>
+            {{-- <span style="float: right;">{{ $dataKasLain->links('pagination::bootstrap-4') }}</span>  --}}
+
         </div>
     </div>
 </div>
@@ -236,49 +238,57 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function () {
-    var table = $('#tabel_transaksi_lain').DataTable({
-            processing: true,
-            serverSide: true,
-            paging: true,
+    // var table = $('#datatable').DataTable({
+    //     "processing": true,
+    //     "serverSide": true,
+    //     "ajax": {
+    //         "url": "{{ route('transaksi_lain.index_server') }}",
+    //         "type": "GET",
+    //         "data": function (d) {
+    //             d.start = d.start || 0;
+    //         },
             
-            ajax: "{{ route('transaksi_lain.index_server') }}",
-            columns: [
-                {data: 'tgl_transaksi', name: 'tgl_transaksi'},
-                {data: 'jenis', name: 'jenis'},
-                {data: 'kas_bank', name: 'kas_bank'},
-                {data: 'total_nominal', name: 'total_nominal'},
-                {data: 'catatan', name: 'catatan'},
-                {
-                    data: 'action', 
-                    name: 'action', 
-                    orderable: false, 
-                    searchable: false
-                },
-            ],
-            // lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Rows per page options
-            // pageLength: 10, // Default number of rows per page
-            // pagingType: 'full_numbers', // Pagination control style
-            order: [
-                [0, 'asc'],
-            ],
-            //  order: [
-            //         [0, 'asc'],
-            //     ],
-            // rowGroup: {
-            //     dataSrc: ['Supir']//grouping per supir pake nama datanya, kalo bukan serverside nembak index
+    //     },
+    //      "columns": [
+    //             {data: 'tanggal', name: 'tgl_transaksi'},
+    //             {data: 'jenis', name: 'jenis'},
+    //             {data: 'kas_bank', name: 'kas_bank'},
+    //             {data: 'total_nominal', name: 'total_nominal'},
+    //             {data: 'catatan', name: 'catatan'},
+    //             {
+    //                 data: 'action', 
+    //                 name: 'action', 
+    //                 orderable: false, 
+    //                 searchable: false
+    //             },
+    //         ],
+    // });
+    var table = $('#tabel_transaksi_lain').DataTable({
+        processing: true,
+        serverSide: true,
+        paging: true,
+        // lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Rows per page options
+        pageLength: 10, // Default number of rows per page
+        // ajax: "{{ route('transaksi_lain.index_server') }}",
+        ajax: {
+            url: "{{ route('transaksi_lain.index_server') }}",
+            type: "GET",
+            // data: function (d) {
+            //     d.start = d.start || 0;
             // },
-            // columnDefs: [
-            //     {
-            //         targets: [0],
-            //         visible: false
-            //     },
-            //     {
-            //         "orderable": false,
-            //         "targets": [0,1,2,3,4,5,6,7]
-            //     }
-        
-            // ],
-        });
+        },
+        columns: [
+            {data: 'tanggal', name: 'tgl_transaksi'},
+            {data: 'nama_jenis', name: 'jenis'},
+            {data: 'nama_bank', name: 'kas_bank'},
+            {data: 'nominal', name: 'total_nominal'},
+            {data: 'catatan', name: 'catatan'},
+            {data: 'action', name: 'action', orderable: false, searchable: true},
+        ],
+        order: [
+            [0, 'asc'],
+        ],
+    });
     $('#tanggal_transaksi').datepicker({
         autoclose: true,
         format: "dd-M-yyyy",

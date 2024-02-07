@@ -14,6 +14,8 @@ use Carbon\Carbon;
 use App\Helper\CoaHelper;
 use App\Models\KasBank;
 use App\Models\SewaOperasionalPembayaran;
+use Exception;
+
 class BiayaOperasionalController extends Controller
 {
     public function __construct()

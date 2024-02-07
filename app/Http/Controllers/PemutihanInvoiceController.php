@@ -12,6 +12,8 @@ use Illuminate\Validation\ValidationException;
 use App\Models\PemutihanInvoice;
 use App\Models\InvoiceDetail;
 use App\Models\Sewa;
+use Exception;
+
 class PemutihanInvoiceController extends Controller
 {
     public function __construct()

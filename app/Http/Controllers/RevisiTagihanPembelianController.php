@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helper\CoaHelper;
+use Exception;
+
 class RevisiTagihanPembelianController extends Controller
 {
     public function __construct()

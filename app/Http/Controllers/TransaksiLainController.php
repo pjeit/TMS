@@ -13,6 +13,7 @@ use App\Models\Coa;
 use Exception;
 use Yajra\DataTables\Facades\DataTables;
 
+
 class TransaksiLainController extends Controller
 {
     public function __construct()
@@ -34,7 +35,8 @@ class TransaksiLainController extends Controller
                     ->where('c.is_aktif', '=', "Y");
                 })
             ->where('ksl.is_aktif', '=', "Y")
-            ->get();
+            ->paginate(10);
+        // dd($dataKasLain);
         $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
@@ -63,79 +65,60 @@ class TransaksiLainController extends Controller
     }
     public function index_server(Request $request)
     {
+        
         if ($request->ajax()) {
-            $dataKasLain= DB::table('kas_bank_lain as ksl')
-                ->select('ksl.*','c.nama_jenis')
+                $query = DB::table('kas_bank_lain as ksl')
+                ->select('ksl.*','c.nama_jenis','kb.nama as nama_bank', DB::raw("date_format(tanggal,'%d-%b-%Y') as tanggal"), DB::raw('CONCAT("Rp.", FORMAT(ksl.total,0))  as nominal'))
                 ->leftJoin('coa as c', function($join) {
                         $join->on('ksl.coa_id', '=', 'c.id')
-                        ->where('c.is_show', '=', "Y")
+                        // ->where('c.is_show', '=', "Y")
                         ->where('c.is_aktif', '=', "Y");
                     })
-                ->where('ksl.is_aktif', '=', "Y")
-                ->get();
-            $dataKas = DB::table('kas_bank')
-                ->select('*')
-                ->where('is_aktif', '=', "Y")
-                // ->paginate(10);
-                ->get();
-            return DataTables::of($dataKasLain)
-                ->addIndexColumn()
-                ->addColumn('tgl_transaksi', function($item){ // edit supplier
-                    // var_dump($item);
-                    return date("d-M-Y", strtotime($item->tanggal));
-                }) 
-                ->addColumn('jenis', function($item){ // edit supplier
-                    return $item->nama_jenis;
-                })
-                ->addColumn('kas_bank', function($item)use ($dataKas){ // edit format uang
-                    $kasBankName = '';
-                    foreach ($dataKas as $kas) {
-                        if ($kas->id == $item->kas_bank_id) {
-                            $kasBankName = $kas->nama;
-                            break; 
-                        }
-                    }
-                    return $kasBankName;
-                }) 
-                ->addColumn('total_nominal', function($item){ // edit format uang
-                    return number_format($item->total);
-                }) 
-                ->addColumn('catatan', function($item){ // edit format uang
-                    return $item->catatan;
-                }) 
-                ->addColumn('action', function($row){
-                    $edit = auth()->user()->can('EDIT_TRANSAKSI_NON_OPERASIONAL')?
-                            '<a href="/transaksi_lain/'.$row->id.'/edit" class="dropdown-item edit">
-                                <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
-                            </a>':'';
+                ->leftJoin('kas_bank as kb', function($join) {
+                        $join->on('ksl.kas_bank_id', '=', 'kb.id')
+                        // ->where('c.is_show', '=', "Y")
+                        ->where('kb.is_aktif', '=', "Y");
+                    })
+                ->orderByDesc('ksl.tanggal')
+                ->where('ksl.is_aktif', '=', "Y");
+            $totalData = $query->count();
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $query->skip($start)->take($length);
+            $data = $query->get();
 
-                    $delete = auth()->user()->can('DELETE_TRANSAKSI_NON_OPERASIONAL')?
-                                '<a href="/transaksi_lain/'.$row->id.'" class="dropdown-item destroy" data-confirm-delete="true">
-                                    <span class="fas fa-trash mr-3"></span> Hapus
-                                </a>':'';
-
+            $campur_data = [];
+            foreach ($data as $value) {
+                    # code...
+                    $edit = auth()->user()->can('EDIT_TRANSAKSI_NON_OPERASIONAL') ?
+                        '<a href="/transaksi_lain/' . $value->id . '/edit" class="dropdown-item edit">
+                                        <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                                    </a>' : '';
+                    $delete = auth()->user()->can('DELETE_TRANSAKSI_NON_OPERASIONAL') ?
+                        '<a href="/transaksi_lain/' . $value->id . '" class="dropdown-item destroy" data-confirm-delete="true">
+                                            <span class="fas fa-trash mr-3"></span> Hapus
+                                        </a>' : '';
                     $actionBtn = '
-                                <div class="btn-group dropleft">
-                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-list"></i>
-                                    </button>
-                                    <div class="dropdown-menu" >
-                                    '.$edit . $delete .'  
-                                    </div>
-                                </div>';
-                                    // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
-                                    // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
-                    return $actionBtn;
-                })
-                ->rawColumns(['action', 
-                'tgl_transaksi', 
-                'jenis', 
-                'kas_bank',
-                'total_nominal',
-                'catatan'
-                ]) // ini buat render raw html, kalo ga pake nanti jadi text biasa
-                ->make(true);
-        }
+                                        <div class="btn-group dropleft">
+                                            <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                            <div class="dropdown-menu" >
+                                            ' . $edit . $delete . '  
+                                            </div>
+                                        </div>';
+                    $obj_button = [
+                        'action'=> $actionBtn,
+                    ];
+                    $campur_data[] = array_merge((array)$value, $obj_button);
+                }
+                return response()->json([
+                    'draw' => $request->input('draw'),
+                    'recordsTotal' => $totalData,
+                    'recordsFiltered' => $totalData,
+                    'data' => $campur_data
+                ]);
+            }
     }
 
     /**
@@ -272,7 +255,7 @@ class TransaksiLainController extends Controller
             ->select('ksl.*','ksl.id as id_kas_lain','c.tipe as tipe_coa')
             ->leftjoin('coa as c', function($join) {
                 $join->on('ksl.coa_id', '=', 'c.id')
-                    ->where('c.is_show', '=', "Y")
+                    // ->where('c.is_show', '=', "Y")
                     ->where('c.is_aktif', '=', "Y");
                 })
             ->where('ksl.is_aktif', '=', "Y")
@@ -284,17 +267,16 @@ class TransaksiLainController extends Controller
             ->where('is_aktif', '=', "Y")
             // ->paginate(10);
             ->get();
-         $dataCOA = DB::table('coa')
+        $dataCOA = DB::table('coa')
             // ->paginate(10);
             ->select('coa.*')
             ->where('coa.is_aktif', '=', "Y")
-            ->where('coa.is_show', '=', "Y")
-
+            // ->where('coa.is_show', '=', "Y")
             // ->paginate(10);
             ->get();
         
         return view('pages.finance.transaksi_lain.edit',[
-             'judul'=>"Transaksi Lain",
+            'judul'=>"Transaksi Lain",
             'dataKasLain' => $dataKasLain,
             'dataKas' => $dataKas,
             'dataCOA' => $dataCOA,

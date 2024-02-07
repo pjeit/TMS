@@ -42,6 +42,7 @@
                         <div class="row">
                             <div class="form-group col-6">
                                 <label for="">No. JO<span class="text-red">*</span></label>
+                                <input  type="hidden" class="form-control" name="id_jo" value="{{$data['JO']->id}}" >
                                 <input  type="text" class="form-control" value="{{$data['JO']->no_jo}}" readonly>
                             </div>  
                             <div class="form-group col-6">
@@ -112,12 +113,26 @@
                             <tfoot>
                                 <tr>
                                     <th colspan="2" class="pl-4">Total</th>
-                                    <th style="text-align: right;">{{ number_format($t_storage) }}</th>
-                                    <th style="text-align: right;">{{ number_format($t_demurage) }}</th>
-                                    <th style="text-align: right;">{{ number_format($t_detention) }}</th>
-                                    <th style="text-align: right;">{{ number_format($t_repair) }}</th>
-                                    <th style="text-align: right;">{{ number_format($t_washing) }}</th>
-
+                                    <th style="text-align: right;">
+                                        {{ number_format($t_storage) }}
+                                        <input type="hidden" name="total_storage" value="{{$t_storage}}">
+                                    </th>
+                                    <th style="text-align: right;">
+                                        {{ number_format($t_demurage) }}
+                                        <input type="hidden" name="total_demurage" value="{{$t_demurage}}">
+                                    </th>
+                                    <th style="text-align: right;">
+                                        {{ number_format($t_detention) }}
+                                        <input type="hidden" name="total_detention" value="{{$t_detention}}">
+                                    </th>
+                                    <th style="text-align: right;">
+                                        {{ number_format($t_repair) }}
+                                        <input type="hidden" name="total_repair" value="{{$t_repair}}">
+                                    </th>
+                                    <th style="text-align: right;">
+                                        {{ number_format($t_washing) }}
+                                        <input type="hidden" name="total_washing" value="{{$t_washing}}">
+                                    </th>
                                 </tr>
                                 <tr>
                                     <th colspan="2" class="pl-4">Grand Total</th>
@@ -126,12 +141,21 @@
                                 </tr>
                             </tfoot>
                         </table>
-
+                    </div>
+                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                        <label>Tanggal Bayar</label>
+                        <div class="input-group mb-0 ">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                            </div>
+                            <input type="text" name="tgl_bayar" class="date form-control" id="tgl_bayar" autocomplete="off">
+                        </div>
                     </div>
                     <div class="col-12">
                         {{-- <h4 class="d-flex justify-content-between align-items-center mb-3"> --}}
                             {{-- <span class="badge bg-primary rounded-pill">3</span> --}}
                         {{-- </h4> --}}
+                        
                         <ul class="list-group mb-3">
                             <div class="list-group-item">
                                 <div class="row">
@@ -168,6 +192,21 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+       // Get today's date
+        var today = new Date();
+
+        // Format the date as "dd-M-yyyy"
+        var formattedDate = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+
+        // Set the default date for the date picker
+        $('#tgl_bayar').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language: 'en',
+            orientation: 'bottom auto',
+            endDate: today
+        }).datepicker('setDate', formattedDate);
         $('#post_data').submit(function(event) {
             var kas = $('#pembayaran').val();
             if (kas == '' || kas == null) {

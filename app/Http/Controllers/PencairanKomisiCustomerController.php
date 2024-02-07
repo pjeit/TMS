@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\PencairanKomisi;
 use App\Models\PencairanKomisiDetail;
 use App\Helper\CoaHelper;
+use Exception;
+
 class PencairanKomisiCustomerController extends Controller
 {
     public function __construct()

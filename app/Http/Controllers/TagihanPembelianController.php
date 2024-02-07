@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Models\KasBank;
 use App\Helper\CoaHelper;
+use Exception;
+
 class TagihanPembelianController extends Controller
 {
     public function __construct()

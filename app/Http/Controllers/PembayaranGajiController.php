@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\CoaHelper;
+use Exception;
+
 class PembayaranGajiController extends Controller
 {
     public function __construct()

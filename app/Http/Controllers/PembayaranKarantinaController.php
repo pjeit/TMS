@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\KarantinaDetail;
 use App\Helper\CoaHelper;
 use App\Models\KasBank;
+use Exception;
 
 class PembayaranKarantinaController extends Controller
 {

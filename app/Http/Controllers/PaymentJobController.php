@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
 use App\Helper\UserHelper;
 use App\Helper\CoaHelper;
+use Exception;
+
 class PaymentJobController extends Controller
 {
     public function __construct()
@@ -219,14 +221,14 @@ class PaymentJobController extends Controller
                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                         $data['total_sblm_dooring']+$dataJaminan->nominal, //uang keluar (kredit)
                         CoaHelper::DataCoa(5003), //kode coa pelayaran
-                        'pembayaran_jaminan',
+                        'biaya_pelayaran',
                         'UANG KELUAR # BIAYA PELAYARAN + UANG JAMINAN # '.$pembayaran_jo->no_jo.
                         '# PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.
                         '# PELABUHAN BONGKAR : '.$pembayaran_jo->pelabuhan_bongkar.
                         '# BIAYA SEBELUM DOORING : '.number_format( $data['total_sblm_dooring']).
                         '# BIAYA JAMINAN : '.number_format( $dataJaminan->nominal).
                         '# TOTAL BIAYA : '.number_format( $data['total_sblm_dooring']+$dataJaminan->nominal), //keterangan_transaksi
-                        $pembayaran_jo->no_jo,//keterangan_kode_transaksi
+                        $pembayaran_jo->id,//keterangan_kode_transaksi
                         $user,//created_by
                         now(),//created_at
                         $user,//updated_by
@@ -260,7 +262,7 @@ class PaymentJobController extends Controller
                     '# BIAYA SEBELUM DOORING : '.number_format( $data['total_sblm_dooring']).
                     // '# BIAYA JAMINAN : 0'.
                     '# TOTAL BIAYA : '.number_format( $data['total_sblm_dooring']), //keterangan_transaksi
-                    $pembayaran_jo->no_jo,//keterangan_kode_transaksi
+                    $pembayaran_jo->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at
                     $user,//updated_by

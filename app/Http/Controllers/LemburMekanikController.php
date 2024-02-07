@@ -15,6 +15,8 @@ use App\Models\LemburMekanikRiwayat;
 use App\Helper\CoaHelper;
 use App\Models\KasBankTransaction;
 use App\Models\LemburMekanikKendaraan;
+use Exception;
+
 class LemburMekanikController extends Controller
 {
     /**

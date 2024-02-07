@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helper\CoaHelper;
+use Exception;
 
 class RevisiBiayaOperasionalController extends Controller
 {
@@ -93,7 +94,7 @@ class RevisiBiayaOperasionalController extends Controller
                                         $history->keterangan_transaksi = 'REVISI - ' .$keterangan_transaksi;
                                         $history->updated_by = $user;
                                         $history->updated_at = now();
-                                        // $history->is_aktif = 'N';
+                                        $history->is_aktif = 'N';
                                         if($history->save()){
                                             // uang kasbank dikembalikan
                                             $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);

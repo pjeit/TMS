@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use Illuminate\Support\Facades\Auth;
 use DataTables;
+use Exception;
 
 class KasBankController extends Controller
 {

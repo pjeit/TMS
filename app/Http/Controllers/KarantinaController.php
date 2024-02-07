@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Barryvdh\DomPDF\Facade\Pdf; // use PDF;
+use Exception;
+
 class KarantinaController extends Controller
 {
     public function __construct()

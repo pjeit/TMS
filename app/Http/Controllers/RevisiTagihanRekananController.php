@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\Facades\DataTables;
 use App\Helper\CoaHelper;
+use Exception;
+
 class RevisiTagihanRekananController extends Controller
 {
     public function __construct()

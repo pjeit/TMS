@@ -128,13 +128,18 @@ class BonusSupirController extends Controller
 
             // return redirect()->route('transfer_dana.index')->with(['status' => 'error', 'msg' => $e->errors()]);
             return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->route('bonus_supir.index')->with(['status' => 'error', 'msg'  => $e->errors()]);
+
 
         }   
         catch (Exception $ex) {
             // cancel input db
             DB::rollBack();
-            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+            // return redirect()->back()->withErrors($ex->getMessage())->withInput();
+            return redirect()->route('bonus_supir.index')->with(['status' => 'error', 'msg'  => $ex->getMessage()]);
+
         }
+        
     }
 
     /**
@@ -259,17 +264,21 @@ class BonusSupirController extends Controller
                 }
                 DB::commit();
                 return redirect()->route('bonus_supir.index')->with(['status' => 'Success', 'msg'  => 'Berhasil mengubah data pencairan supir!']);
-        } catch (ValidationException $e) {
+         } catch (ValidationException $e) {
             DB::rollBack();
 
             // return redirect()->route('transfer_dana.index')->with(['status' => 'error', 'msg' => $e->errors()]);
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            // return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->route('bonus_supir.index')->with(['status' => 'error', 'msg'  => $e->errors()]);
+
 
         }   
         catch (Exception $ex) {
             // cancel input db
             DB::rollBack();
-            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+            // return redirect()->back()->withErrors($ex->getMessage())->withInput();
+            return redirect()->route('bonus_supir.index')->with(['status' => 'error', 'msg'  => $ex->getMessage()]);
+
         }
     }
 

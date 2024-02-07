@@ -532,7 +532,7 @@
                                     <tr>
                                         <th>Catatan</th>
                                         <td>
-                                            <textarea name="catatan" class="form-control" id="catatan" cols="50" rows="10" {{ $data['JO']['status'] == 'MENUNGGU PEMBAYARAN'? '':'disabled' }}>{{ $data['jaminan'] != null ? $data['jaminan']['catatan']:null }}</textarea>
+                                            <textarea name="catatan" class="form-control" id="catatan" cols="50" rows="10" {{ $data['JO']['status'] == 'MENUNGGU PEMBAYARAN'? '':'disabled' }}>{{ $data['jaminan'] != null ? $data['jaminan']['catatan_jaminan']:null }}</textarea>
                                         </td>
                                     </tr>
                                 </tbody>

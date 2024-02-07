@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException as ValidationValidationException;
 use App\Helper\CoaHelper;
+use Exception;
+
 class PembayaranInvoiceKarantinaController extends Controller
 {
     public function __construct()
@@ -110,9 +112,9 @@ class PembayaranInvoiceKarantinaController extends Controller
                         floatval(str_replace(',', '', $data['total_diterima'])), //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
                          CoaHelper::DataCoa(1100), //kode coa invoice
-                        'BAYAR_INVOICE_KARANTINA',
+                        'pembayaran_invoice_karantina',
                         'Pembayaran invoice karantina '. $no_invoices, //keterangan_transaksi
-                        substr($id_invoices, 0, -2), // keterangan_kode_transaksi // id invoices
+                        $pembayaran->id, // keterangan_kode_transaksi // id invoices
                         $user,//created_by
                         now(),//created_at
                         $user,//updated_by

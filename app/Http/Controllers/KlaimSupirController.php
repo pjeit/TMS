@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Helper\SewaDataHelper;
 use Illuminate\Validation\ValidationException;
 use Yajra\DataTables\Facades\DataTables;
-
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use Buglinjo\LaravelWebp\Webp;
 use App\Models\KasBank;

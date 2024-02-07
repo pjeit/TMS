@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\CoaHelper;
+
 class KaryawanHutangController extends Controller
 {
     public function __construct()
