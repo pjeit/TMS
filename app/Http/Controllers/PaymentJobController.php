@@ -11,7 +11,7 @@ use App\Helper\VariableHelper;
 use App\Helper\UserHelper;
 use App\Helper\CoaHelper;
 use Exception;
-
+use App\Models\JobOrderBiaya;
 class PaymentJobController extends Controller
 {
     public function __construct()
@@ -105,7 +105,12 @@ class PaymentJobController extends Controller
             ->select('*')
             ->where('pengaturan_keuangan.is_aktif', '=', "Y")
             ->get();
-     
+        $JobOrderBiaya = JobOrderBiaya::where('is_aktif','Y')->where('id_jo',$pembayaran_jo->id)->get();
+        $JobOrderBiayaSum = JobOrderBiaya::where('is_aktif','Y')
+        ->where('id_jo',$pembayaran_jo->id)
+        ->select(DB::raw('COALESCE(SUM(biaya),0) as sum_biaya'))
+        ->first();
+        // dd($JobOrderBiayaSum->sum_biaya);
         $dataJaminan = DB::table('jaminan')
             ->select('*')
             ->where('jaminan.is_aktif', '=', "Y")
@@ -144,7 +149,7 @@ class PaymentJobController extends Controller
             //     ->where('keterangan', 'LIKE', '%DOC_FEE%')
             //     ->first();
             // $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
-        $TotalBiayaRev = $pembayaran_jo->thc+$pembayaran_jo->lolo+$pembayaran_jo->apbs+$pembayaran_jo->cleaning+$pembayaran_jo->doc_fee;
+        $TotalBiayaRev = $pembayaran_jo->thc+$pembayaran_jo->lolo+$pembayaran_jo->apbs+$pembayaran_jo->cleaning+$pembayaran_jo->doc_fee+$JobOrderBiayaSum->sum_biaya;
 
         return view('pages.finance.pembayaran_order.edit',[
             'judul'=>"Pembayaran Job Order",
@@ -154,7 +159,8 @@ class PaymentJobController extends Controller
             'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
             'dataJaminan' =>$dataJaminan,
             'dataKas'=>$dataKas,
-            'TotalBiayaRev'=>$TotalBiayaRev
+            'TotalBiayaRev'=>$TotalBiayaRev,
+            'JobOrderBiaya'=> $JobOrderBiaya
         ]);
     }
 

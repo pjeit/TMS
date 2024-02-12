@@ -181,6 +181,7 @@ class JobOrderController extends Controller
             }else{
                 $newJO->status = 'MENUNGGU PEMBAYARAN'; // MENUNGGU PEMBAYARAN, PROSES DOORING
             }
+            // dd($data);
             if($newJO->save()){
                 if ($cek_biaya_lain) {
                     foreach ($data['data_lain']as $value) {

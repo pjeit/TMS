@@ -105,7 +105,7 @@ class PencairanUangJalanController extends Controller
         DB::beginTransaction(); 
         try {
             $ujr = new UangJalanRiwayat();
-            $ujr->tanggal = now();
+            $ujr->tanggal = date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
             $ujr->tanggal_pencatatan = now();
             $ujr->sewa_id = $data['id_sewa_defaulth'];
             $ujr->total_uang_jalan = (float)str_replace(',', '', $data['uang_jalan']);
@@ -138,7 +138,7 @@ class PencairanUangJalanController extends Controller
                     $kht->refrensi_id = $ujr->id; // id uang jalan
                     $kht->refrensi_keterangan = 'UANG JALAN';
                     $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                    $kht->tanggal = now();
+                    $kht->tanggal = date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
                     $kht->debit = 0;
                     $kht->kredit = ($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0;
                     $kht->kas_bank_id = $data['pembayaran'];

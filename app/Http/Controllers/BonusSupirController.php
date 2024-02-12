@@ -84,7 +84,7 @@ class BonusSupirController extends Controller
                 $tanggal=date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
                 $bonus_supir = new BonusSupir();
                 $bonus_supir->id_karyawan = $data['select_driver'];
-                $bonus_supir->tanggal_pencairan = date_format($tanggal, 'Y-m-d h:i:s');
+                $bonus_supir->tanggal_pencairan = $tanggal;
                 $bonus_supir->total_pencairan = floatval(str_replace(',', '', $data['total']));
                 $bonus_supir->id_kas_bank = $data['select_bank'];
                 $bonus_supir->catatan = $data['catatan'];
@@ -105,7 +105,7 @@ class BonusSupirController extends Controller
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                 array(
                                     $data['select_bank'],// id kas_bank dr form
-                                    date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                    $tanggal,//tanggal
                                     0,// debit 
                                     (float)str_replace(',', '', $data['total']), //kredit
                                     CoaHelper::DataCoa(5021), //kode coa bonus, pakai coa gaji
@@ -216,7 +216,7 @@ class BonusSupirController extends Controller
 
                 $bonus_supir = BonusSupir::where('is_aktif', 'Y')->findOrFail($bonusSupir->id);
                 $bonus_supir->id_karyawan = $data['select_driver'];
-                $bonus_supir->tanggal_pencairan = date_format($tanggal, 'Y-m-d h:i:s');
+                $bonus_supir->tanggal_pencairan = $tanggal;
                 $bonus_supir->total_pencairan = floatval(str_replace(',', '', $data['total']));
                 $bonus_supir->id_kas_bank = $data['select_bank'];
                 $bonus_supir->catatan = $data['catatan'];
@@ -246,7 +246,7 @@ class BonusSupirController extends Controller
                         // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                         //         array(
                         //             $data['select_bank'],// id kas_bank dr form
-                        //             date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                        //             $tanggal,//tanggal
                         //             0,// debit 
                         //             (float)str_replace(',', '', $data['total']), //kredit
                         //             CoaHelper::DataCoa(5021), //kode coa bonus, pakai coa gaji
@@ -264,7 +264,7 @@ class BonusSupirController extends Controller
                 }
                 DB::commit();
                 return redirect()->route('bonus_supir.index')->with(['status' => 'Success', 'msg'  => 'Berhasil mengubah data pencairan supir!']);
-         } catch (ValidationException $e) {
+        } catch (ValidationException $e) {
             DB::rollBack();
 
             // return redirect()->route('transfer_dana.index')->with(['status' => 'error', 'msg' => $e->errors()]);

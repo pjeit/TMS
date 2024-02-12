@@ -40,7 +40,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                <input type="text" name="tanggal_pencairan" autocomplete="off" class="date form-control" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}" disabled>  
+                                <input type="text" name="tanggal_pencairan" autocomplete="off" class="date form-control" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}" readonly>  
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -272,7 +272,7 @@
                                             <td>${value.nama_tujuan}
                                                 <input type="hidden" name="data[${i}][nama_tujuan]" value="${value.nama_tujuan}">
                                             </td>
-                                            <td>${value.alamat_tujuan}
+                                            <td>${value.alamat_tujuan?value.alamat_tujuan:'tidak ada alamat'}
                                                 <input type="hidden" name="data[${i}][alamat_tujuan]" value="${value.alamat_tujuan}">
                                             </td>
                                             <td>Rp. ${addPeriodType(value.total_komisi_driver,',')}

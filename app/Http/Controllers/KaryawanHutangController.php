@@ -117,7 +117,7 @@ class KaryawanHutangController extends Controller
                     $kht_b->refrensi_id = null; // id ga ada soalnya kan bukan dr uj/sewa
                     $kht_b->refrensi_keterangan = 'BAYAR HUTANG KARYAWAN';
                     $kht_b->jenis = 'BAYAR'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                    $kht_b->tanggal =  date_format($tanggal, 'Y-m-d h:i:s');
+                    $kht_b->tanggal =  $tanggal;
                     $kht_b->debit = 0;
                     $kht_b->kredit = ($data['nominal']) ? (float)str_replace(',', '', $data['nominal']) : 0;
                     $kht_b->kas_bank_id = $data['select_kas_bank'];
@@ -140,7 +140,7 @@ class KaryawanHutangController extends Controller
                             DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                     array(
                                         $data['select_kas_bank'],// id kas_bank dr form
-                                        date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                        $tanggal,//tanggal
                                         $data['jenis']=='BAYAR'?(float)str_replace(',', '', $data['nominal']):0,// debit 
                                         0, //kredit
                                         CoaHelper::DataCoa(1151), //kode coa piutang karyawan
@@ -181,7 +181,7 @@ class KaryawanHutangController extends Controller
                     $kht->refrensi_id = null; // id ga ada soalnya kan bukan dr uj/sewa
                     $kht->refrensi_keterangan = 'TAMBAH HUTANG KARYAWAN';
                     $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                    $kht->tanggal =  date_format($tanggal, 'Y-m-d h:i:s');
+                    $kht->tanggal =  $tanggal;
                     $kht->debit = ($data['nominal']) ? (float)str_replace(',', '', $data['nominal']) : 0; // ARTINYA KAN UANG MASUK KE HUTANG (NAMBAH HUTANG KARYAWAN)
                     $kht->kredit = 0;
                     $kht->kas_bank_id = $data['select_kas_bank'];
@@ -204,7 +204,7 @@ class KaryawanHutangController extends Controller
                             DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                     array(
                                         $data['select_kas_bank'],// id kas_bank dr form
-                                        date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                        $tanggal,//tanggal
                                         0,// debit 
                                         $data['jenis']=='HUTANG'?(float)str_replace(',', '', $data['nominal']):0, //kredit
                                         CoaHelper::DataCoa(1151), //kode coa piutang karyawan

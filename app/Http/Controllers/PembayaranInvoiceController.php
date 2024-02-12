@@ -222,7 +222,7 @@ class PembayaranInvoiceController extends Controller
                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                     array(
                         $data['kas'],// id kas_bank dr form
-                        now(),//tanggal
+                        date_create_from_format('d-M-Y', $data['tanggal_pembayaran']),//tanggal
                         $total_bayar, //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
                         CoaHelper::DataCoa(1100), //kode coa invoice

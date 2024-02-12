@@ -682,7 +682,7 @@ class LemburMekanikController extends Controller
                         {
                             $lembur_mekanik_riwayat_baru = new LemburMekanikRiwayat();
                             $lembur_mekanik_riwayat_baru->id_klaim = $lembur_mekanik->id;
-                            $lembur_mekanik_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $lembur_mekanik_riwayat_baru->tanggal_pencairan = $tanggal_pencairan;
                             // $lembur_mekanik_riwayat_baru->tanggal_pencatatan = null;
                             $lembur_mekanik_riwayat_baru->total_klaim = $lembur_mekanik->nominal_lembur;
                             $lembur_mekanik_riwayat_baru->total_pencairan =0;
@@ -744,7 +744,7 @@ class LemburMekanikController extends Controller
                             }
                             $lembur_mekanik_riwayat->id_lembur_mekanik = $lembur_mekanik->id;
                             $lembur_mekanik_riwayat->id_kas_bank = $data['kas'];
-                            $lembur_mekanik_riwayat->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $lembur_mekanik_riwayat->tanggal_pencairan = $tanggal_pencairan;
                             // $lembur_mekanik_riwayat->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
                             $lembur_mekanik_riwayat->total_lembur = $lembur_mekanik->nominal_lembur;
                             $lembur_mekanik_riwayat->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
@@ -795,7 +795,7 @@ class LemburMekanikController extends Controller
                             $lembur_mekanik_riwayat_baru = new LemburMekanikRiwayat();
                             $lembur_mekanik_riwayat_baru->id_lembur_mekanik = $lembur_mekanik->id;
                             $lembur_mekanik_riwayat_baru->id_kas_bank = $data['kas'];
-                            $lembur_mekanik_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $lembur_mekanik_riwayat_baru->tanggal_pencairan = $tanggal_pencairan;
                             // $lembur_mekanik_riwayat_baru->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
                             $lembur_mekanik_riwayat_baru->total_lembur = $lembur_mekanik->nominal_lembur;
                             $lembur_mekanik_riwayat_baru->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));

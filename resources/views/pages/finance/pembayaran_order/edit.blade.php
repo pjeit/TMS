@@ -164,6 +164,16 @@
                             <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox" {{$pembayaran_jo->doc_fee!=0?'checked':''}}></span> DOC FEE</th>
                             <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($pembayaran_jo->doc_fee)}}" readonly></td>
                         </tr>
+                        @if (isset($JobOrderBiaya))
+                            @foreach ($JobOrderBiaya as $value)
+                                <tr>
+                                    <th>{{$value->deskripsi}}</th>
+                                    <td >
+                                        <input type="text" class="form-control" value="Rp. {{number_format($value->biaya)}}" readonly>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                         <tr>
                             <th class="text-blue">SUB TOTAL</th>
                             <th name="total_sblm_dooring" id="total_sblm_dooring" > <input type="text" class="form-control" readonly value="Rp. {{number_format($TotalBiayaRev)}}"> </th>

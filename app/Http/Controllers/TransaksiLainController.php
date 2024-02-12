@@ -79,7 +79,7 @@ class TransaksiLainController extends Controller
                         // ->where('c.is_show', '=', "Y")
                         ->where('kb.is_aktif', '=', "Y");
                     })
-                ->orderByDesc('ksl.tanggal')
+                ->orderByDesc('ksl.id')
                 ->where('ksl.is_aktif', '=', "Y");
             $totalData = $query->count();
             $start = $request->input('start');
@@ -164,7 +164,7 @@ class TransaksiLainController extends Controller
                 $tanggal=date_create_from_format('d-M-Y', $data['tanggal_transaksi']);
                 // dd(date_format($tanggal, 'Y-m-d h:i:s'));
                 $new_transaksi = new TransaksiLain();
-                $new_transaksi->tanggal = date_format($tanggal, 'Y-m-d h:i:s');
+                $new_transaksi->tanggal = $tanggal;
                 $new_transaksi->tanggal_catat = now();
                 $new_transaksi->coa_id = $data['select_coa'];
                 $new_transaksi->kas_bank_id = $data['select_bank'];
@@ -196,7 +196,8 @@ class TransaksiLainController extends Controller
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                 array(
                                     $data['select_bank'],// id kas_bank dr form
-                                    date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                    // date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                    $tanggal,
                                     $coa->tipe=='penerimaan'?(float)str_replace(',', '', $data['total']):0,// debit 
                                     $coa->tipe=='pengeluaran'?(float)str_replace(',', '', $data['total']):0, //kredit
                                     $data['id_coa_hidden'], //kode coa
@@ -342,7 +343,7 @@ class TransaksiLainController extends Controller
 
                 // if($kas_bank_old->save())
                 // {
-                    $transaksi->tanggal = date_format($tanggal, 'Y-m-d h:i:s');
+                    $transaksi->tanggal = $tanggal;
                     $transaksi->tanggal_catat = now();
                     $transaksi->coa_id = $data['select_coa'];
                     $transaksi->kas_bank_id = $data['select_bank'];
@@ -376,6 +377,7 @@ class TransaksiLainController extends Controller
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'id_kas_bank'=>$data['select_bank'],
+                                        'tanggal'=>$tanggal,
                                         'debit'=>$coa->tipe=='penerimaan'?(float)str_replace(',', '', $data['total']):0,
                                         'kredit'=> $coa->tipe=='pengeluaran'?(float)str_replace(',', '', $data['total']):0,
                                         'keterangan_transaksi'=>$data['nama_coa_hidden'].'-'.$data['catatan'],

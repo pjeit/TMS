@@ -273,8 +273,8 @@
                                             <td>
                                                 <label for="">Biaya</label>
                                             </td>
-                                        </tr> --}}
-                                        {{-- <tr>
+                                        </tr>
+                                        <tr>
                                             <th>
                                                 <div class="form-group">
                                                     <input type="text" id="deskripsi_1" name="data_lain[deskripsi][0]" class="form-control desksipsi_lain" >                         
@@ -304,14 +304,14 @@
                                                 <input type="text" name="total_sblm_dooring" id="total_sblm_dooring" value="0" class="form-control uang numaja" readonly>
                                             </td>
                                         </tr>
-                                        {{-- <tr>
+                                        <tr>
                                             <td colspan="2">
                                                 <input type="hidden" id="indexBiayaLain" value="0">
                                                 <button type="button" id="tambah_biaya_lain" class="btn btn-success float-right radiusSendiri mb-2 mt-2">
                                                     <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Biaya
                                                 </button>
                                             </td>
-                                        </tr> --}}
+                                        </tr>
                                     </tbody>
                                     <tfoot>
                                     </tfoot>
@@ -573,12 +573,12 @@
             var newRow = `<tr id='${counter}'>
                             <th>
                                 <div class="form-group">
-                                    <input type="text" id="deskripsi_${counter}" name="data_lain[deskripsi][${counter}]" class="form-control desksipsi_lain" >                         
+                                    <input type="text" id="deskripsi_${counter}" name="data_lain[${counter}][deskripsi]" class="form-control desksipsi_lain" >                         
                                 </div>
                             </th>
                             <td>
                                 <div class="form-group">
-                                    <input type="text" id="biaya_${counter}" name="data_lain[biaya][${counter}]" class="form-control biaya_lain uang numaja" >                         
+                                    <input type="text" id="biaya_${counter}" name="data_lain[${counter}][biaya]" class="form-control biaya_lain uang numaja" >                         
                                 </div>
                             </td>
                             <td>

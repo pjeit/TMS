@@ -75,6 +75,8 @@ class PembayaranInvoiceKarantinaController extends Controller
         try {
             $no_invoices = '';
             $id_invoices = '';
+            $tanggal_pembayaran = date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
+
             foreach ($data['detail'] as $key => $value) {
                 $invoice = InvoiceKarantina::where('is_aktif', 'Y')->find($key);
                 if($invoice){
@@ -89,7 +91,7 @@ class PembayaranInvoiceKarantinaController extends Controller
                         $pembayaran = new InvoiceKarantinaPembayaran();
                         $pembayaran->id_invoice_k = $key;
                         $pembayaran->billing_to = $data['billingTo'];
-                        $pembayaran->tgl_pembayaran = date("Y-m-d", strtotime($data['tanggal_pembayaran']));
+                        $pembayaran->tgl_pembayaran = $tanggal_pembayaran;
                         $pembayaran->total_diterima = $value['diterima'];
                         $pembayaran->cara_pembayaran = $data['cara_pembayaran'];
                         $pembayaran->id_kas = $data['kas'];
@@ -108,7 +110,7 @@ class PembayaranInvoiceKarantinaController extends Controller
             DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                     array(
                         $data['kas'], // id kas_bank dr form
-                        now(),//tanggal
+                        $tanggal_pembayaran,//tanggal
                         floatval(str_replace(',', '', $data['total_diterima'])), //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
                          CoaHelper::DataCoa(1100), //kode coa invoice

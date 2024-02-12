@@ -108,10 +108,12 @@ class PencairanKomisiCustomerController extends Controller
 
             $data = $request->collect();
             // dd($data);  
-            // $tanggal_pencairan = date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
+            $tanggal_pencairan = date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
             $arr_tampungan=[];
 
             $pencairan_komisi = new PencairanKomisi();
+            $pencairan_komisi->id_kas = $data['pembayaran'];
+            $pencairan_komisi->tanggal = $tanggal_pencairan;
             $pencairan_komisi->id_customer = $data['customer'];
             $pencairan_komisi->jenis_pencairan = 'CUSTOMER';
             $pencairan_komisi->total_komisi = floatval(str_replace(',', '', $data['total_komisi_customer']));
@@ -144,7 +146,7 @@ class PencairanKomisiCustomerController extends Controller
                     ->update(array(
                             'status_pencairan_customer' =>'SUDAH DICAIRKAN',
                             // 'tanggal_pencairan_driver' =>date_format($tanggal_pencairan, 'Y-m-d'),
-                            'tanggal_pencairan_customer' =>now(),
+                            'tanggal_pencairan_customer' =>$tanggal_pencairan,
                             'updated_at'=> now(),
                             'updated_by'=> $user,
                         )
@@ -168,7 +170,8 @@ class PencairanKomisiCustomerController extends Controller
                     array(
                         $data['pembayaran'],// id kas_bank dr form
                         // date_format($tanggal_pencairan, 'Y-m-d'),//tanggal
-                        now(),
+                        // now(),
+                        $tanggal_pencairan,
                         0,// uang masuk (debit)
                         floatval(str_replace(',', '', $data['total_komisi_customer'])), //uang keluar (kredit)
                         CoaHelper::DataCoaBank($data['pembayaran']), //kode coa dari bank mana (parameter id bank)

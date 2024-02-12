@@ -11,6 +11,8 @@ class PencairanKomisi extends Model
     protected $table = 'pencairan_komisi';
     protected $primaryKey='id';
     protected $fillable=[
+       'id_kas',
+       'tanggal',
        'jenis_pencairan',
        'id_driver',
        'id_customer',

@@ -104,7 +104,7 @@ class PembayaranGajiController extends Controller
             $tanggal=date_create_from_format('d-M-Y', $data['tanggal']);
             // dd(date_format($tanggal, 'Y-m-d h:i:s'));
             $bayar_gaji = new PembayaranGaji();
-            $bayar_gaji->tanggal = date_format($tanggal, 'Y-m-d h:i:s');
+            $bayar_gaji->tanggal = $tanggal;
             $bayar_gaji->tanggal_catat = now();
             $bayar_gaji->tahun_periode = $data['tahun_periode'];
             $bayar_gaji->bulan_periode = $data['select_bulan'];
@@ -150,7 +150,7 @@ class PembayaranGajiController extends Controller
                                     $kht->refrensi_id = $gaji_detail->id; // id uang jalan
                                     $kht->refrensi_keterangan = 'potong_gaji';
                                     $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                                    $kht->tanggal = now();
+                                    $kht->tanggal =$tanggal;
                                     $kht->debit = 0;
                                     $kht->kredit = $gaji_detail->potong_hutang;
                                     $kht->kas_bank_id = NULL;
@@ -176,7 +176,7 @@ class PembayaranGajiController extends Controller
                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
                                 $data['kas'],// id kas_bank dr form
-                                date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                $tanggal,//tanggal
                                 0,// debit 
                                 (float)str_replace(',', '', $data['total']), //kredit
                                 CoaHelper::DataCoa(5021), //kode coa gaji

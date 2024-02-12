@@ -93,7 +93,7 @@ class TransferDanaController extends Controller
                 $tanggal=date_create_from_format('d-M-Y', $data['tanggal_transaksi']);
                 // dd(date_format($tanggal, 'Y-m-d h:i:s'));
                 $new_transfer = new TransferDana();
-                $new_transfer->tanggal = date_format($tanggal, 'Y-m-d h:i:s');
+                $new_transfer->tanggal = $tanggal;
                 $new_transfer->kas_bank_id_dari = $data['select_bank_dari'];
                 $new_transfer->kas_bank_id_ke = $data['select_bank_ke'];
                 $new_transfer->total = floatval(str_replace(',', '', $data['total']));
@@ -116,7 +116,8 @@ class TransferDanaController extends Controller
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                 array(
                                     $data['select_bank_dari'],// id kas_bank dr form
-                                    date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                    // date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                    $tanggal,
                                     0,// debit 
                                     (float)str_replace(',', '', $data['total']), //kredit
                                     1001, //kode coa
@@ -143,7 +144,8 @@ class TransferDanaController extends Controller
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                 array(
                                     $data['select_bank_ke'],// id kas_bank dr form
-                                    date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                    // date_format($tanggal, 'Y-m-d h:i:s'),//tanggal
+                                    $tanggal,
                                     (float)str_replace(',', '', $data['total']),//debit
                                     0,//kredit
                                     1001, //kode coa
@@ -305,13 +307,14 @@ class TransferDanaController extends Controller
                     $kas_bank_dari->updated_by = $user;
                     $kas_bank_dari->save();
 
-                     DB::table('kas_bank_transaction')
+                    DB::table('kas_bank_transaction')
                                     ->where('id',  $kas_bank_transaksi[0]->id)
                                     ->where('keterangan_kode_transaksi', $transfer->id)
                                     ->where('jenis', 'transfer_dana')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
                                         'id_kas_bank'=>$data['select_bank_dari'],
+                                        'tanggal'=>$tanggal,
                                         'kredit'=>floatval(str_replace(',', '', $data['total'])),
                                         'updated_at'=> now(),
                                         'updated_by'=> $user,
@@ -333,6 +336,7 @@ class TransferDanaController extends Controller
                                     ->where('jenis', 'transfer_dana')
                                     ->where('is_aktif', 'Y')
                                     ->update(array(
+                                        'tanggal'=>$tanggal,
                                         'id_kas_bank'=>$data['select_bank_ke'],
                                         'debit'=>floatval(str_replace(',', '', $data['total'])),
                                         'updated_at'=> now(),

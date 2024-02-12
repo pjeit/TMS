@@ -105,7 +105,7 @@
             </a>
         </div>
         <div class="col-12 col-sm-6 col-md-3 col-lg-3">
-            <a href="{{route('dalam_perjalanan.index')}}">
+            <a href="{{route('pencairan_uang_jalan.index')}}">
                 <div class="info-box shadow">
                     {{-- <span class="info-box-icon bg-warning"><i class="far fa-copy"></i></span> --}}
                     <div class="info-box-content">

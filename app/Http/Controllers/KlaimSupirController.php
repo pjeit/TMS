@@ -859,7 +859,7 @@ class KlaimSupirController extends Controller
                         {
                             $klaim_supir_riwayat_baru = new KlaimSupirRiawayat();
                             $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
-                            $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $klaim_supir_riwayat_baru->tanggal_pencairan = $tanggal_pencairan;
                             // $klaim_supir_riwayat_baru->tanggal_pencatatan = null;
                             $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat_baru->total_pencairan =0;
@@ -921,7 +921,7 @@ class KlaimSupirController extends Controller
                             }
                             $klaim_supir_riwayat->id_klaim = $klaim_supir->id;
                             $klaim_supir_riwayat->kas_bank_id = $data['kas'];
-                            $klaim_supir_riwayat->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $klaim_supir_riwayat->tanggal_pencairan = $tanggal_pencairan;
                             // $klaim_supir_riwayat->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
                             $klaim_supir_riwayat->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
@@ -972,7 +972,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat_baru = new KlaimSupirRiawayat();
                             $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
                             $klaim_supir_riwayat_baru->kas_bank_id = $data['kas'];
-                            $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $klaim_supir_riwayat_baru->tanggal_pencairan = $tanggal_pencairan;
                             // $klaim_supir_riwayat_baru->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
                             $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat_baru->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
@@ -1277,7 +1277,7 @@ class KlaimSupirController extends Controller
                         {
                             $klaim_supir_riwayat_baru = new KlaimSupirRiawayat();
                             $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
-                            $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $klaim_supir_riwayat_baru->tanggal_pencairan = $tanggal_pencairan;
                             // $klaim_supir_riwayat_baru->tanggal_pencatatan = null;
                             $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat_baru->total_pencairan =0;
@@ -1336,7 +1336,7 @@ class KlaimSupirController extends Controller
                             }
                             $klaim_supir_riwayat->id_klaim = $klaim_supir->id;
                             $klaim_supir_riwayat->kas_bank_id = $data['kas'];
-                            $klaim_supir_riwayat->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $klaim_supir_riwayat->tanggal_pencairan = $tanggal_pencairan;
                             // $klaim_supir_riwayat->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
                             $klaim_supir_riwayat->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
@@ -1387,7 +1387,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat_baru = new KlaimSupirRiawayat();
                             $klaim_supir_riwayat_baru->id_klaim = $klaim_supir->id;
                             $klaim_supir_riwayat_baru->kas_bank_id = $data['kas'];
-                            $klaim_supir_riwayat_baru->tanggal_pencairan = date_format($tanggal_pencairan, 'Y-m-d');
+                            $klaim_supir_riwayat_baru->tanggal_pencairan = $tanggal_pencairan;
                             // $klaim_supir_riwayat_baru->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
                             $klaim_supir_riwayat_baru->total_klaim = $klaim_supir->total_klaim;
                             $klaim_supir_riwayat_baru->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
