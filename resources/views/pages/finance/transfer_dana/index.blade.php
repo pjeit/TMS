@@ -29,7 +29,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="datatable" class="table table-bordered table-striped" width="100%">
+                    <table id="datatable" class="table table-bordered table-striped responsive" >
                         <thead>
                             <tr>
                                 <th>Tgl. Transfer</th>

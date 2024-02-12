@@ -342,7 +342,8 @@
 <script>
   $(document).ready(function() {
       $('#datatable').dataTable({
-          // scrollX: true,
+          scrollX: true,
+          responsive: true,
           "aaSorting": [],
           columnDefs: [
             { orderable: false, targets: -1 }
@@ -352,6 +353,7 @@
       $('#datatablex').dataTable({
           scrollX: true,
           "aaSorting": [],
+          responsive: true,
           columnDefs: [
             { orderable: false, targets: -1 }
           ]
@@ -359,6 +361,7 @@
 
       $('#dt').dataTable({
           // scrollX: true,
+          responsive: true,
           "aaSorting": []
       });
 

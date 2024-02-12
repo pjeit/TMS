@@ -267,15 +267,16 @@ $(document).ready(function () {
         processing: true,
         serverSide: true,
         paging: true,
+        "responsive": true,
         // lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Rows per page options
         pageLength: 10, // Default number of rows per page
         // ajax: "{{ route('transaksi_lain.index_server') }}",
         ajax: {
             url: "{{ route('transaksi_lain.index_server') }}",
             type: "GET",
-            // data: function (d) {
-            //     d.start = d.start || 0;
-            // },
+            data: function (d) {
+                console.log(d);
+            },
         },
         columns: [
             {data: 'tanggal', name: 'tgl_transaksi'},

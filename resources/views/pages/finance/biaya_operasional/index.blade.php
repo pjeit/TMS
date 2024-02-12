@@ -634,6 +634,7 @@ a {
                         }
 
                         new DataTable('#rowGroup', {
+                            responsive: true,
                             order: [
                                 [0, 'asc'], // 0 = grup
                                 [1, 'asc'], // 1 = customer

@@ -8,9 +8,20 @@
 
     <div class="sidebar">
       <nav class="mt-2 ">
+        <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent w-100">
+          <li class="nav-item">
+            <a href="{{route('dashboard.index')}}"  class="nav-link hover-item {{request()->is('dashboard') ? ' active' : '' }}" style="font-weight: 700;">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                DASHBOARD
+              </p>
+            </a>
+          </li>
+        </ul>
+      <nav class="mt-2 ">
         <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent w-100" data-widget="treeview" role="menu"
           data-accordion="false">
-          <li class="nav-item">
+          {{-- <li class="nav-item">
             <a href="#" class="nav-link hover-item" style="font-weight: 700;">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
@@ -18,15 +29,8 @@
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
-            {{-- <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('dashboard.reset')}}" class="nav-link">
-                  <i class="far fa-check-circle nav-icon"></i>
-                  <p>Reset Data <small class="text-warning">(Dev only)</small></p>
-                </a>
-              </li>
-            </ul> --}}
-          </li>
+          
+          </li> --}}
 
           @php
           $user = auth()->user();

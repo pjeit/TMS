@@ -22,7 +22,7 @@
         </div>
         
         <div class="card-body">
-            <table id="tabelSewa" class="table table-bordered table-striped" width=''>
+            <table id="tabelSewa" class="table table-bordered table-striped responsive">
                 <thead>
                     <tr>
                         <th>Custoemer</th>
@@ -139,7 +139,8 @@
 <script>
 $(document).ready(function () {
     new DataTable('#tabelSewa', {
-        "ordering": true,
+        // "ordering": true,
+        responsive: true,
         order: [
             [0, 'asc'],
         ],

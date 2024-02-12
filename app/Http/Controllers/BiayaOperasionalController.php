@@ -462,40 +462,21 @@ class BiayaOperasionalController extends Controller
                         ->whereNull('so.total_dicairkan')
                         ->where('s.status', 'PROSES DOORING')
                         ->where('s.jenis_tujuan', 'FTL')
-                        // ->where(function ($where) use ($currentDate) {
-                        //     $where->where(function ($query) use ($currentDate) {
-                        //         // h-1 
-                        //         $query->whereDay('s.tanggal_berangkat', '=', $currentDate->subDay()->day)
-                        //             // ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
-                        //             ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
-                        //     })
-                        //     ->orWhere(function ($query) use ($currentDate) {
-                        //         // h0 
-                        //         $query->whereDay('s.tanggal_berangkat', '=', $currentDate->day)
-                        //             // ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
-                        //             ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
-                        //     })
-                        //     ->orWhere(function ($query) use ($currentDate) {
-                        //         // h+1 
-                        //         $query->whereDay('s.tanggal_berangkat', '=', $currentDate->addDay()->day) // Add 2 to get h+1
-                        //             // ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
-                        //             ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
-                        //     });
-                        // })
-                        // ->when($currentDate, function ($query) use ($currentDate) {
-                        //     $query->where(function ($query) use ($currentDate) {
-                        //         // h-1 
-                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
-                        //     })
-                        //     ->orWhere(function ($query) use ($currentDate) {
-                        //         // h0 
-                        //         $query->whereDate('tanggal_berangkat', $currentDate);
-                        //     })
-                        //     ->orWhere(function ($query) use ($currentDate) {
-                        //         // h+1 
-                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
-                        //     });
-                        // })
+                       
+                        ->when($currentDate, function ($query) use ($currentDate) {
+                            $query->where(function ($query) use ($currentDate) {
+                                // h-1 
+                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
+                            })
+                            ->orWhere(function ($query) use ($currentDate) {
+                                // h0 
+                                $query->whereDate('tanggal_berangkat', $currentDate);
+                            })
+                            ->orWhere(function ($query) use ($currentDate) {
+                                // h+1 
+                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
+                            });
+                        })
                         // ->where(function($where) use($item){
                         //     // if($item == 'TAMBAHAN UJ'){
                         //     //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
@@ -569,40 +550,20 @@ class BiayaOperasionalController extends Controller
                         ->where('s.jenis_tujuan', 'FTL')
                         ->where('s.is_aktif', 'Y')
                         ->where('s.status', 'PROSES DOORING')
-                        // ->where(function ($where) use ($currentDate) {
-                        //     $where->where(function ($query) use ($currentDate) {
-                        //         // h-1 
-                        //         $query->whereDay('s.tanggal_berangkat', '=', $currentDate->subDay()->day)
-                        //             // ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
-                        //             ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
-                        //     })
-                        //     ->orWhere(function ($query) use ($currentDate) {
-                        //         // h0 
-                        //         $query->whereDay('s.tanggal_berangkat', '=', $currentDate->day)
-                        //             // ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
-                        //             ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
-                        //     })
-                        //     ->orWhere(function ($query) use ($currentDate) {
-                        //         // h+1 
-                        //         $query->whereDay('s.tanggal_berangkat', '=', $currentDate->addDay()->day) // Add 2 to get h+1
-                        //             // ->whereMonth('s.tanggal_berangkat', '=', $currentDate->month)
-                        //             ->whereYear('s.tanggal_berangkat', '=', $currentDate->year);
-                        //     });
-                        // })
-                        // ->when($currentDate, function ($query) use ($currentDate) {
-                        //     $query->where(function ($query) use ($currentDate) {
-                        //         // h-1 
-                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
-                        //     })
-                        //     ->orWhere(function ($query) use ($currentDate) {
-                        //         // h0 
-                        //         $query->whereDate('tanggal_berangkat', $currentDate);
-                        //     })
-                        //     ->orWhere(function ($query) use ($currentDate) {
-                        //         // h+1 
-                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
-                        //     });
-                        // })
+                        ->when($currentDate, function ($query) use ($currentDate) {
+                            $query->where(function ($query) use ($currentDate) {
+                                // h-1 
+                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
+                            })
+                            ->orWhere(function ($query) use ($currentDate) {
+                                // h0 
+                                $query->whereDate('tanggal_berangkat', $currentDate);
+                            })
+                            ->orWhere(function ($query) use ($currentDate) {
+                                // h+1 
+                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
+                            });
+                        })
                         ->where(function($where) use($item,$customer,$tujuan){
                             // if($item == 'TAMBAHAN UJ'){
                             //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
@@ -675,26 +636,6 @@ class BiayaOperasionalController extends Controller
                     $where->where('sewa.buruh_pje', 'Y');
                 }
             })
-            // ->where(function ($where) use ($currentDate) {
-            //     $where->where(function ($query) use ($currentDate) {
-            //         // h-1 
-            //         $query->whereDay('sewa.tanggal_berangkat', '=', $currentDate->subDay()->day)
-            //             // ->whereMonth('sewa.tanggal_berangkat', '=', $currentDate->month)
-            //             ->whereYear('sewa.tanggal_berangkat', '=', $currentDate->year);
-            //     })
-            //     ->orWhere(function ($query) use ($currentDate) {
-            //         // h0 
-            //         $query->whereDay('sewa.tanggal_berangkat', '=', $currentDate->day)
-            //             // ->whereMonth('sewa.tanggal_berangkat', '=', $currentDate->month)
-            //             ->whereYear('sewa.tanggal_berangkat', '=', $currentDate->year);
-            //     })
-            //     ->orWhere(function ($query) use ($currentDate) {
-            //         // h+1 
-            //         $query->whereDay('sewa.tanggal_berangkat', '=', $currentDate->addDay()->day) // Add 2 to get h+1
-            //             // ->whereMonth('sewa.tanggal_berangkat', '=', $currentDate->month)
-            //             ->whereYear('sewa.tanggal_berangkat', '=', $currentDate->year);
-            //     });
-            // })
             ->when($currentDate, function ($query) use ($currentDate) {
                 $query->where(function ($query) use ($currentDate) {
                     // h-1 
@@ -732,26 +673,7 @@ class BiayaOperasionalController extends Controller
                     $where->where('buruh_pje', '=', 'Y');
                 }
             })
-            // ->where(function ($where) use ($currentDate) {
-            //     $where->where(function ($query) use ($currentDate) {
-            //         // h-1 
-            //         $query->whereDay('tanggal_berangkat', '=', $currentDate->subDay()->day)
-            //             // ->whereMonth('tanggal_berangkat', '=', $currentDate->month)
-            //             ->whereYear('tanggal_berangkat', '=', $currentDate->year);
-            //     })
-            //     ->orWhere(function ($query) use ($currentDate) {
-            //         // h0 
-            //         $query->whereDay('tanggal_berangkat', '=', $currentDate->day)
-            //             // ->whereMonth('tanggal_berangkat', '=', $currentDate->month)
-            //             ->whereYear('tanggal_berangkat', '=', $currentDate->year);
-            //     })
-            //     ->orWhere(function ($query) use ($currentDate) {
-            //         // h+1 
-            //         $query->whereDay('tanggal_berangkat', '=', $currentDate->addDay()->day) // Add 2 to get h+1
-            //             // ->whereMonth('tanggal_berangkat', '=', $currentDate->month)
-            //             ->whereYear('tanggal_berangkat', '=', $currentDate->year);
-            //     });
-            // })
+            
             ->when($currentDate, function ($query) use ($currentDate) {
                 $query->where(function ($query) use ($currentDate) {
                     // h-1 

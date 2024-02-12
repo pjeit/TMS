@@ -62,14 +62,17 @@ Route::middleware(['auth'])->group(function () {
         $roles = Role::where('is_aktif', 'Y')->find($user->role_id);
         // Synchronize roles (replace 'admin' with your desired role)
         $user->syncRoles($roles->name);
-        return view('home', [
-            'judul'=>'Home'
-        ]);
+        // return view('home', [
+        //     'judul'=>'Home'
+        // ]);
+        return redirect("dashboard");
+
     });
 
     // Route::middleware(['is_','is_superadminadmin'])->group(function () {
         // ===================================MASTER=========================================================
         Route::get('/dashboard/reset', [App\Http\Controllers\DashboardController::class, 'reset'])->name('dashboard.reset');
+        Route::resource('dashboard', App\Http\Controllers\DashboardController::class);
 
         Route::resource('coa', 'App\Http\Controllers\CoaController');
 
