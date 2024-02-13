@@ -231,31 +231,48 @@
                 </tr>
             </thead>
             <tbody > 
-                <tr>
-                    <td class="p-10 bold">THC</td>
-                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->thc,2) }}</td>
-                </tr>
-                <tr>
-                    <td class="p-10 bold">LOLO</td>
-                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->lolo,2)}}</td>
-                </tr>
-                <tr>
-                    <td class="p-10 bold">APBS</td>
-                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->apbs,2)}}</td>
-                </tr>
-                <tr>
-                    <td class="p-10 bold">Cleaning</td>
-                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->cleaning,2)}}</td>
-
-                </tr>
-                <tr>
-                    <td class="p-10 bold">Docfee</td>
-                    <td class="p-10 align-uang">Rp. {{number_format($JobOrder->doc_fee,2)}}</td>
-
-                </tr>
+                {{-- @if ($JobOrder->thc) --}}
+                    <tr>
+                        <td class="p-10 bold">THC</td>
+                        <td class="p-10 align-uang">Rp. {{number_format($JobOrder->thc) }}</td>
+                    </tr>
+                {{-- @endif --}}
+                {{-- @if ($JobOrder->lolo) --}}
+                    <tr>
+                        <td class="p-10 bold">LOLO</td>
+                        <td class="p-10 align-uang">Rp. {{number_format($JobOrder->lolo)}}</td>
+                    </tr>
+                {{-- @endif --}}
+                {{-- @if ($JobOrder->apbs) --}}
+                    <tr>
+                        <td class="p-10 bold">APBS</td>
+                        <td class="p-10 align-uang">Rp. {{number_format($JobOrder->apbs)}}</td>
+                    </tr>
+                {{-- @endif --}}
+                {{-- @if ($JobOrder->cleaning) --}}
+                    <tr>
+                        <td class="p-10 bold">Cleaning</td>
+                        <td class="p-10 align-uang">Rp. {{number_format($JobOrder->cleaning)}}</td>
+                    </tr>
+                {{-- @endif --}}
+                {{-- @if ($JobOrder->doc_fee) --}}
+                    <tr>
+                        <td class="p-10 bold">Docfee</td>
+                        <td class="p-10 align-uang">Rp. {{number_format($JobOrder->doc_fee)}}</td>
+                    </tr>
+                {{-- @endif --}}
+                @if (isset($JobOrderBiaya))
+                    @foreach ($JobOrderBiaya as $value)
+                        <tr>
+                            <td class="p-10 bold">{{$value->deskripsi}}</td>
+                            <td class="p-10 align-uang">Rp. {{number_format($value->biaya)}}</td>
+                                {{-- <input type="text" class="form-control" value="Rp. {{number_format($value->biaya)}}" readonly> --}}
+                        </tr>
+                    @endforeach
+                @endif
                 <tr>
                     <td class="p-10 bold">Subtotal</td>
-                    <td class="p-10 align-uang">Rp. {{number_format($TotalBiayaRev,2)}}</td>
+                    <td class="p-10 align-uang">Rp. {{number_format($TotalBiayaRev)}}</td>
                 </tr>
             </tbody>
             <tfoot>

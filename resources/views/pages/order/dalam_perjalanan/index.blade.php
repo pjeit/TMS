@@ -39,10 +39,24 @@
                             $simpenIdCust = null; 
                         @endphp
                         @foreach($dataSewa as $item)
+                            @php
+                                $cek_operasional = false;
+                                foreach ($sewa_operasional as  $value) {
+                                    if( $value->id_sewa== $item->id_sewa )
+                                    {
+                                        $cek_operasional = true;
+                                        break;
+                                    }
+                                }
+                            @endphp
                             <tr>
                                 <td>{{ $item->nama_cust}}</td>
                                 <td>
                                     {{ $item->nama_tujuan }}
+                                    @if ($cek_operasional)
+                                        <span class="badge badge-danger">ada operasional !</span>
+                                    @endif
+
                                 </td>
                                 <td>
                                     {{ $item->no_polisi}}
@@ -74,7 +88,11 @@
                                             <a href="{{route('dalam_perjalanan.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                 <span class="fas fa-truck mr-3"></span> Input Kendaraan Kembali
                                             </a>
-                                            
+                                            @if ($cek_operasional)
+                                            <a href="{{route('dalam_perjalanan.refund_operasional',[$item->id_sewa])}}" class="dropdown-item">
+                                                <span class="nav-icon fas fa-times mr-3"></span> Refund Operasional
+                                            </a>
+                                            @endif
                                             @if ($item->id_supplier)
                                                 @can('EDIT_DALAM_PERJALANAN')
                                                     <a href="{{route('truck_order_rekanan.edit',[$item->id_sewa])}}" class="dropdown-item">

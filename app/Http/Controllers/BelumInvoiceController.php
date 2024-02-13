@@ -43,6 +43,13 @@ class BelumInvoiceController extends Controller
         if (session()->has('sewa') || session()->has('cust') || session()->has('grup')) {
             session()->forget(['sewa', 'cust', 'grup']);
         }
+        $data_sewa_invoice= InvoiceDetail::where('is_aktif','Y')->select('id_sewa')->get();
+        // dd($data_sewa_invoice);
+        $data_id_sewa=[];
+        foreach ($data_sewa_invoice as $value) {
+            # code...
+            array_push($data_id_sewa,$value->id_sewa);
+        }
         $dataSewa =  DB::table('sewa AS s')
                 ->select('s.*','s.id_sewa as idSewanya','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup','g.id as id_grup','gt.nama_tujuan','k.nama_panggilan as supir','k.telp1 as telpSupir','sp.nama as namaSupplier')
                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
@@ -53,11 +60,12 @@ class BelumInvoiceController extends Controller
                 ->where('s.is_aktif', '=', 'Y')
                 ->where('s.total_tarif', '>', 0)  
                 ->whereIn('s.status', ['MENUNGGU INVOICE','BATAL MUAT'])
+                // ->whereNotIn('s.id_sewa',[$data_id_sewa])
                 ->orderBy('c.id','ASC')
                 ->orderBy('s.no_sewa','ASC')
                 ->orderBy('s.tanggal_berangkat','ASC')
                 ->get();
-    
+        // dd($dataSewa);
         return view('pages.invoice.belum_invoice.index',[
             'judul'=>"BELUM INVOICE",
             'dataSewa' => $dataSewa,
@@ -1017,7 +1025,8 @@ class BelumInvoiceController extends Controller
         try {
             $data = Sewa::where('sewa.id_sewa', $id)
                 ->leftJoin('supplier AS sp', 'sewa.id_supplier', '=', 'sp.id')
-                ->where('sewa.status', 'MENUNGGU INVOICE')
+                // ->where('sewa.status', 'MENUNGGU INVOICE')
+                ->whereIn('sewa.status', ['MENUNGGU INVOICE','BATAL MUAT'])
                 ->where('sewa.is_aktif', '=', 'Y')
                 ->select('sewa.*','sp.nama as namaSupplier')
                 ->first();
@@ -1035,7 +1044,7 @@ class BelumInvoiceController extends Controller
                     ->leftJoin('customer as c', 'c.id', 'id_customer')
                     ->where('c.grup_id', $data->getTujuan->grup_id)
                     ->where('sewa.is_aktif', '=', 'Y')
-                    ->where('sewa.status', 'MENUNGGU INVOICE')
+                    ->whereIn('sewa.status', ['MENUNGGU INVOICE','BATAL MUAT'])
                     ->select('sewa.*')
                     ->get();
 
@@ -1056,7 +1065,7 @@ class BelumInvoiceController extends Controller
             
         } catch (\Throwable $th) {
             return redirect()->route('belum_invoice.index')
-                    ->with(['status' => 'Gagal', 'msg' => 'Tidak ada sewa yang terpilih!']);
+                    ->with(['status' => 'Gagal', 'msg' => $th->getMessage()]);
         }
     }
 

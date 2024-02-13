@@ -229,7 +229,7 @@
 
                 </tr>
             @endif
-                @if ($JobOrder->doc_fee)
+            @if ($JobOrder->doc_fee)
                 
                 <tr>
                     <td>DOC FEE</td>
@@ -237,10 +237,18 @@
 
                 </tr>
             @endif
+            @if (isset($JobOrderBiaya))
+                @foreach ($JobOrderBiaya as $value)
+                    <tr>
+                        <td>{{$value->deskripsi}}</td>
+                        <td>: Rp. {{number_format($value->biaya)}}</td>
+                            {{-- <input type="text" class="form-control" value="Rp. {{number_format($value->biaya)}}" readonly> --}}
+                    </tr>
+                @endforeach
+            @endif
             <tr>
                 <td>SUB TOTAL</td>
                 <td>: Rp. {{number_format($TotalBiayaRev,2)}}</td>
-
             </tr>
         </tbody>
         <tfoot>

@@ -81,7 +81,83 @@ class BiayaOperasionalController extends Controller
         // ->get();
 
         // dd($dataCustomerSewa);
+        // $item = "ALAT";
+        // $data = DB::table('sewa AS s')
+        //                 ->select(
+        //                     's.id_sewa', 's.no_sewa', 's.id_jo', 's.id_jo_detail', 's.id_customer', 'c.grup_id',
+        //                     's.id_grup_tujuan', 's.jenis_order', 's.tipe_kontainer', 's.no_polisi as no_polisi',
+        //                     'so.id AS so_id', 'so.deskripsi AS deskripsi_so', 'so.id as id_oprs', 'so.total_dicairkan',
+        //                     'so.total_operasional AS so_total_oprs','k.nama_panggilan','jod.pick_up',
+        //                     DB::raw('COALESCE(gt.tally, 0) as tally'), // ini get data tally di grup tujuan (gt), kalau di gt gak diset, nanti total_operasional 0, kalau 0 ga bakal muncul di frontend
+        //                     DB::raw('COALESCE(gt.seal_pelayaran, 0) as seal_pelayaran'), // ini get data seal di grup tujuan (gt), kalau di gt gak diset, nanti total_operasional 0, kalau 0 ga bakal muncul di frontend
+        //                     'gt.nama_tujuan', 'gt.uang_jalan as uj_tujuan', 's.total_uang_jalan as uj_sewa',
+        //                     'c.nama as customer',
+        //                     'g.nama_grup as nama_grup',
+        //                     'sp.nama as namaSupplier','s.tanggal_berangkat'
+        //                 )
+        //                 ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
+        //                     if($item == 'ALAT'){
+        //                         $join->on('s.id_sewa', '=', 'so.id_sewa')
+        //                             ->where('so.is_aktif', 'Y')
+        //                             ->where('so.deskripsi', 'like', $item.'%');
+                                    
+        //                             // ini nge get data alat, pakai like soalnya ALAT blablabla
+        //                     }else {
+        //                         $join->on('s.id_sewa', '=', 'so.id_sewa')
+        //                             ->where('so.is_aktif', 'Y')
+        //                             ->where('so.deskripsi', '=', $item);
+        //                             // ini get kalau misal selain alat, langsung get datanya gapake like, karna udah fix deskripsinya
+        //                     }
+        //                 })
+        //                 ->leftJoin('grup_tujuan AS gt', 'gt.id', '=', 's.id_grup_tujuan')
+        //                 ->leftJoin('customer AS c', 'c.id', '=', 's.id_customer')
+        //                 ->leftJoin('grup AS g', 'g.id', '=', 'gt.grup_id')
+        //                 ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
+        //                 ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
+        //                 ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
+        //                 ->where('s.is_aktif', 'Y')
+        //                 // ->whereNotNull('so.total_dicairkan')
+        //                 ->where('s.status', 'PROSES DOORING')
+        //                 ->where('s.jenis_tujuan', 'FTL')
+        //                 // ->when($currentDate, function ($query) use ($currentDate) {
+        //                 //     $query->where(function ($query) use ($currentDate) {
+        //                 //         // h-1 
+        //                 //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
+        //                 //     })
+        //                 //     ->orWhere(function ($query) use ($currentDate) {
+        //                 //         // h0 
+        //                 //         $query->whereDate('tanggal_berangkat', $currentDate);
+        //                 //     })
+        //                 //     ->orWhere(function ($query) use ($currentDate) {
+        //                 //         // h+1 
+        //                 //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
+        //                 //     });
+        //                 // })
+        //                 // ->where(function($where) use($item){
+        //                 //     // if($item == 'TAMBAHAN UJ'){
+        //                 //     //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
+        //                 //     // }
+        //                 //     // if($item == 'BURUH' || $item == 'TIMBANG' || $item == 'LEMBUR'){
+        //                 //     //     $where->where('s.id_supplier', '=', null);
+        //                 //     // }
+        //                 //     if($item == 'SEAL PELAYARAN'){
+        //                 //         $where->where('s.jenis_order', 'OUTBOUND')->where('gt.seal_pelayaran','!=',0);
+        //                 //     }
+        //                 //     else if($item == 'TALLY'){
+        //                 //         $where->where('gt.tally','!=',0);
+        //                 //     }
+        //                 // })
+        //                 ->when($item == 'SEAL PELAYARAN', function ($query) {
+        //                     $query->where('s.jenis_order', 'OUTBOUND')->where('gt.seal_pelayaran', '!=', 0);
+        //                 })
+        //                 ->when($item == 'TALLY', function ($query) {
+        //                     $query->where('gt.tally', '!=', 0);
 
+        //                 })
+        //                 ->orderBy('s.id_sewa', 'DESC')
+        //                 ->orderBy('s.tanggal_berangkat', 'DESC')
+        //                 ->get();
+        // dd($data);
         return view('pages.finance.biaya_operasional.index',[
             'judul' => "Biaya Operasional",
             'dataKas' => $dataKas,
@@ -458,46 +534,52 @@ class BiayaOperasionalController extends Controller
                         ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
                         ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
                         ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
-                        ->where('s.is_aktif', 'Y')
-                        ->whereNull('so.total_dicairkan')
-                        ->where('s.status', 'PROSES DOORING')
-                        ->where('s.jenis_tujuan', 'FTL')
-                       
-                        ->when($currentDate, function ($query) use ($currentDate) {
-                            $query->where(function ($query) use ($currentDate) {
-                                // h-1 
-                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
-                            })
-                            ->orWhere(function ($query) use ($currentDate) {
-                                // h0 
-                                $query->whereDate('tanggal_berangkat', $currentDate);
-                            })
-                            ->orWhere(function ($query) use ($currentDate) {
-                                // h+1 
-                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
-                            });
-                        })
-                        // ->where(function($where) use($item){
-                        //     // if($item == 'TAMBAHAN UJ'){
-                        //     //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
-                        //     // }
-                        //     // if($item == 'BURUH' || $item == 'TIMBANG' || $item == 'LEMBUR'){
-                        //     //     $where->where('s.id_supplier', '=', null);
-                        //     // }
-                        //     if($item == 'SEAL PELAYARAN'){
-                        //         $where->where('s.jenis_order', 'OUTBOUND')->where('gt.seal_pelayaran','!=',0);
-                        //     }
-                        //     else if($item == 'TALLY'){
-                        //         $where->where('gt.tally','!=',0);
-                        //     }
+                        // ->where('s.is_aktif', 'Y')
+                        // ->whereNull('so.total_dicairkan')
+                        // ->where('s.status', 'PROSES DOORING')
+                        // ->where('s.jenis_tujuan', 'FTL')
+                        // ->when($currentDate, function ($query) use ($currentDate) {
+                        //     $query->where(function ($query) use ($currentDate) {
+                        //         // h-1 
+                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
+                        //     })
+                        //     ->orWhere(function ($query) use ($currentDate) {
+                        //         // h0 
+                        //         $query->whereDate('tanggal_berangkat', $currentDate);
+                        //     })
+                        //     ->orWhere(function ($query) use ($currentDate) {
+                        //         // h+1 
+                        //         $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
+                        //     });
                         // })
-                        ->when($item == 'SEAL PELAYARAN', function ($query) {
-                            $query->where('s.jenis_order', 'OUTBOUND')->where('gt.seal_pelayaran', '!=', 0);
+                        ->where(function ($query) use ($currentDate) {
+                            $query->whereBetween('tanggal_berangkat', [
+                                $currentDate->copy()->subDay()->startOfDay(),
+                                $currentDate->copy()->addDay()->endOfDay()
+                            ]);
                         })
-                        ->when($item == 'TALLY', function ($query) {
-                            $query->where('gt.tally', '!=', 0);
+                        ->where(function ($query) use ($currentDate, $item, ) {
+                            // $query->whereNull('s.id_supplier');
+                            $query->whereNull('so.total_dicairkan');
+                            $query->where('s.jenis_tujuan', 'FTL');
+                            $query->where('s.is_aktif', 'Y');
+                            $query->where('s.status', 'PROSES DOORING');
+                            if ($item == 'SEAL PELAYARAN') {
+                                $query->where('s.jenis_order', 'OUTBOUND')->where('gt.seal_pelayaran', '!=', 0);
 
+                            }
+                            else if ($item == 'TALLY') {
+                                $query->where('gt.tally', '!=', 0);
+
+                            }
                         })
+                        // ->when($item == 'SEAL PELAYARAN', function ($query) {
+                        //     $query->where('s.jenis_order', 'OUTBOUND')->where('gt.seal_pelayaran', '!=', 0);
+                        // })
+                        // ->when($item == 'TALLY', function ($query) {
+                        //     $query->where('gt.tally', '!=', 0);
+
+                        // })
                         ->orderBy('s.id_sewa', 'DESC')
                         ->orderBy('s.tanggal_berangkat', 'DESC')
                         ->get();
@@ -532,7 +614,8 @@ class BiayaOperasionalController extends Controller
                             's.total_uang_jalan as uj_sewa',
                             'c.nama as customer',
                             'g.nama_grup as nama_grup',
-                            'sp.nama as namaSupplier','s.tanggal_berangkat'
+                            'sp.nama as namaSupplier','s.tanggal_berangkat',
+                            's.buruh_pje'
                         )
                         ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
                             $join->on('s.id_sewa', '=', 'so.id_sewa')
@@ -546,39 +629,28 @@ class BiayaOperasionalController extends Controller
                         ->leftJoin('karyawan AS k', 'k.id', '=', 's.id_karyawan')
                         ->leftJoin('job_order_detail AS jod', 'jod.id', '=', 's.id_jo_detail')
                         ->leftJoin('supplier AS sp', 's.id_supplier', '=', 'sp.id')
-                        ->whereNull('so.total_dicairkan')
-                        ->where('s.jenis_tujuan', 'FTL')
-                        ->where('s.is_aktif', 'Y')
-                        ->where('s.status', 'PROSES DOORING')
-                        ->when($currentDate, function ($query) use ($currentDate) {
-                            $query->where(function ($query) use ($currentDate) {
-                                // h-1 
-                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
-                            })
-                            ->orWhere(function ($query) use ($currentDate) {
-                                // h0 
-                                $query->whereDate('tanggal_berangkat', $currentDate);
-                            })
-                            ->orWhere(function ($query) use ($currentDate) {
-                                // h+1 
-                                $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
-                            });
+                        ->where(function ($query) use ($currentDate) {
+                            $query->whereBetween('tanggal_berangkat', [
+                                $currentDate->copy()->subDay()->startOfDay(),
+                                $currentDate->copy()->addDay()->endOfDay()
+                            ]);
                         })
-                        ->where(function($where) use($item,$customer,$tujuan){
-                            // if($item == 'TAMBAHAN UJ'){
-                            //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
-                            // }
-                            $where->where('s.id_supplier', '=', null);
-                            if($item == 'BURUH' /*|| $item == 'TIMBANG' || $item == 'LEMBUR'*/){
-                                $where->where('s.buruh_pje', '=', 'Y');
+                        ->where(function ($query) use ($currentDate, $item, $customer, $tujuan) {
+                            $query->whereNull('s.id_supplier');
+                            $query->whereNull('so.total_dicairkan');
+                            $query->where('s.jenis_tujuan', 'FTL');
+                            $query->where('s.is_aktif', 'Y');
+                            $query->where('s.status', 'PROSES DOORING');
+                            if ($item == 'BURUH') {
+                                $query->where('s.buruh_pje', 'Y');
                             }
                             if($customer!='ALL')
                             {
-                                $where->where('s.id_customer', '=', $customer);
+                                $query->where('s.id_customer', '=', $customer);
                             }
                             if($tujuan!='ALL')
                             {
-                                $where->where('s.id_grup_tujuan', '=', $tujuan);
+                                $query->where('s.id_grup_tujuan', '=', $tujuan);
                             }
                         })
                         ->orderBy('s.id_sewa', 'DESC')
@@ -603,53 +675,30 @@ class BiayaOperasionalController extends Controller
         try {
             $currentDate = Carbon::now();
             $dataCustomerSewa = Sewa::with('getCustomer')
-            // ->distinct('sewa.id_customer') 
-            // ->Join('customer AS c', function ($join) use($item) {
-            //         $join->on('sewa.id_customer', '=', 'c.id')
-            //             ->where('c.is_aktif', 'Y');
-            // })
             ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
-                /*if($item == 'ALAT'){
-                    $join->on('sewa.id_sewa', '=', 'so.id_sewa')
-                        ->where('so.is_aktif', 'Y')
-                        ->where('so.deskripsi', 'like', $item.'%');
-                        
-                        // ini nge get data alat, pakai like soalnya ALAT blablabla
-                }else {*/
                     $join->on('sewa.id_sewa', '=', 'so.id_sewa')
                         ->where('so.is_aktif', 'Y')
                         ->where('so.deskripsi', '=', $item);
-                        // ini get kalau misal selain alat, langsung get datanya gapake like, karna udah fix deskripsinya
-                // }
             })
-            
             ->whereNull('so.total_dicairkan')
             ->where('sewa.is_aktif', "Y")
             ->where('sewa.status', "PROSES DOORING")
-            ->where(function($where) use($item){
-                // if($item == 'TAMBAHAN UJ'){
-                //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
-                // }
-                // $where->where('sewa.id_supplier', '=', null);
-                $where->whereNull('sewa.id_supplier');
-                if($item == 'BURUH' /*|| $item == 'TIMBANG' || $item == 'LEMBUR'*/){
-                    $where->where('sewa.buruh_pje', 'Y');
+            ->where(function ($query) use ($currentDate) {
+                $query->whereBetween('tanggal_berangkat', [
+                    $currentDate->copy()->subDay()->startOfDay(),
+                    $currentDate->copy()->addDay()->endOfDay()
+                ]);
+            })
+            ->where(function ($query) use ( $item) {
+                // Other conditions
+                $query->where('sewa.id_supplier', '=', null);
+
+                if ($item == 'BURUH') {
+                    $query->where('sewa.buruh_pje', 'Y');
                 }
+                
             })
-            ->when($currentDate, function ($query) use ($currentDate) {
-                $query->where(function ($query) use ($currentDate) {
-                    // h-1 
-                    $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
-                })
-                ->orWhere(function ($query) use ($currentDate) {
-                    // h0 
-                    $query->whereDate('tanggal_berangkat', $currentDate);
-                })
-                ->orWhere(function ($query) use ($currentDate) {
-                    // h+1 
-                    $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
-                });
-            })
+            
             ->groupBy('sewa.id_customer')
             ->get();
             return response()->json(["result" => "success",'data' => $dataCustomerSewa], 200);
@@ -664,29 +713,19 @@ class BiayaOperasionalController extends Controller
             ->where('is_aktif', "Y")
             ->where('status', "PROSES DOORING")
             ->where('id_customer', $customer)
-            ->where(function($where) use($item){
-                // if($item == 'TAMBAHAN UJ'){
-                //     $where->where('gt.uang_jalan', '>', DB::raw('s.total_uang_jalan'));
-                // }
-                $where->whereNull('id_supplier');
-                if($item == 'BURUH' /*|| $item == 'TIMBANG' || $item == 'LEMBUR'*/){
-                    $where->where('buruh_pje', '=', 'Y');
-                }
+            ->where(function ($query) use ($currentDate) {
+                $query->whereBetween('tanggal_berangkat', [
+                    $currentDate->copy()->subDay()->startOfDay(),
+                    $currentDate->copy()->addDay()->endOfDay()
+                ]);
             })
-            
-            ->when($currentDate, function ($query) use ($currentDate) {
-                $query->where(function ($query) use ($currentDate) {
-                    // h-1 
-                    $query->whereDate('tanggal_berangkat', $currentDate->copy()->subDay());
-                })
-                ->orWhere(function ($query) use ($currentDate) {
-                    // h0 
-                    $query->whereDate('tanggal_berangkat', $currentDate);
-                })
-                ->orWhere(function ($query) use ($currentDate) {
-                    // h+1 
-                    $query->whereDate('tanggal_berangkat', $currentDate->copy()->addDay());
-                });
+            ->where(function ($query) use ($item) {
+                $query->where('sewa.id_supplier', '=', null);
+
+                if ($item == 'BURUH') {
+                    $query->where('sewa.buruh_pje', 'Y');
+                }
+                
             })
             ->groupBy('sewa.id_grup_tujuan')
             ->get();

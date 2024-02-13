@@ -250,7 +250,7 @@
                                     $total_addcost = 0;
                                     $total_addcost_pisah = 0;
                                 @endphp
-                                @foreach ($item->sewaOperasional as $i => $oprs)
+                                @foreach ($item->sewaOperasionalInvoice as $i => $oprs)
                                     @if ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y' && $oprs->is_dipisahkan == 'N')
                                         <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
                                         @php
@@ -265,7 +265,7 @@
                                     @endif
                                 @endforeach
                                 <span id="text_addcost_{{ $item->id_sewa }}">{{ number_format($total_addcost) }}</span>
-                                <input type="hidden" class="cek_detail_addcost" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_details]" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
+                                <input type="hidden" class="cek_detail_addcost" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_details]" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasionalInvoice) }}" />
                                 <input type="hidden" class="cek_detail_addcost_baru" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_baru]" id="detail_addcost_baru_{{ $item->id_sewa }}" value="" />
                                 <input type="hidden" class="addcost_{{ $item->id_sewa }} " name='detail[{{ $item->id_sewa }}][addcost]' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
                                 <input type="hidden" class="addcost_pisah addcost_pisah_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost_pisah]' id='addcost_pisah_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost_pisah }}">

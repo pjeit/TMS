@@ -43,15 +43,15 @@
         }
         .text-center{
             text-align: center;
-            /* padding: 30px; */
+            padding: 40px;
         }
         .text-right{
             text-align: right;
-            /* padding: 10px; */
+            padding: 20px;
         }
-        .text-left{
+          .text-left{
             text-align: left;
-            padding: 30px;
+            padding: 40px;
         }
         .text-bold{
             font-weight: bold;
@@ -62,9 +62,6 @@
         }
         thead{
             display:table-header-group;
-        }
-        li{
-            list-style-type: none;
         }
     </style>
 </head>
@@ -162,7 +159,7 @@
             <thead >
                 <tr class="bg-gray text-center text-bold">
                     <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">NO</td>
-                    <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">TGL. BERANGKAT <br>  TUJUAN </td>
+                    <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">TGL. BERANGKAT <br> TUJUAN</td>
                     <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">
                         @if ($data->invoiceDetails[0]->sewa->jenis_tujuan == 'LTL')
                             NO. KOLI
@@ -183,9 +180,9 @@
                             @endif
                         @else  --}}
                     @if ($is_reimburse == FALSE)
-                    <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">HARGA</td>
                         <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">DISKON</td>
-                        {{-- <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">BIAYA TAMBAHAN</td> --}}
+                        <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">HARGA</td>
+                        <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">BIAYA TAMBAHAN</td>
                     @else
                         <td style="border: 1px solid black; border-collapse: collapse;padding: 20px;">HARGA REIMBURSE</td>
                     @endif
@@ -205,97 +202,28 @@
                 <tr style="{{ $i % 2 == 0 ? 'background-color: rgb(232, 229, 229);' : '' }}">
                     <td class="text-left">{{ $i }} <br> &nbsp;</td>
                     <td>
-                        {{-- {{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }}
-                        <br>{{ $detail->sewa->nama_tujuan }} --}}
-                        <ul>
-                            <li>({{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }})</li>
-                            <br>
-                            <li>{{ $detail->sewa->nama_tujuan }}</li>
-                            <br>
-                            @if ($detail->invoiceDetailsAddCost != null)
-                                @foreach ($detail->invoiceDetailsAddCost as $key => $add_cost)
-                                @if ($key != 0)
-                                <br> 
-                                @endif
-                                <li>    
-                                    - {{ $add_cost->sewaOperasional->deskripsi}}
-                                </li>
-                                @endforeach
-                            @else
-                                -
-                            @endif
-                        </ul>
+                        {{ date("d-M-Y", strtotime($detail->sewa->tanggal_berangkat)) }}
+                        <br>{{ $detail->sewa->nama_tujuan }}
                     </td>
                         <td class="text-left">
-                            <ul>
-                                <li>
-                                    {{ $detail->sewa->no_kontainer }}
-                                </li>
-                                <br>
-                                <li>
-                                    @if ($data->invoiceDetails[0]->sewa->jenis_tujuan == 'LTL')
-                                        {{ $detail->sewa->no_surat_jalan }}
-                                    @else
-                                        {{ $detail->sewa->seal_pelayaran }}
-                                    @endif
-                                </li>
-                                <br>
-                            </ul>
+                            {{ $detail->sewa->no_kontainer }}
                             <br>
-                        </td>
-                        <td class="text-center">
-                            <ul>
-                                <li>{{ $detail->sewa->no_polisi }}  </li>
-                                <li>    
-                                    @isset($detail->sewa->tipe_kontainer)
-                                    ( {{ $detail->sewa->tipe_kontainer . '"' }} )
-                                    @endisset 
-                                </li>
-                                <br>
-                                <br>
-                            </ul>
-                        </td>
-                        {{-- @if ($is_reimburse == FALSE) --}}
-                        
-                            <td class="text-right">
-                                <ul>
-                                @if ($is_reimburse == FALSE)
-                                    <li>{{ number_format($detail->tarif) }}</li>
-                                @endif
-                                    <br>
-                                    <br>
-                                    <br>
-                                    @if ($detail->invoiceDetailsAddCost != null)
-                                        @foreach ($detail->invoiceDetailsAddCost as $key => $add_cost)
-                                        @if ($key != 0)
-                                        <br> 
-                                        @endif
-                                        <li>    
-                                            {{ number_format($add_cost->sewaOperasional->total_operasional)}}
-                                        </li>
-                                        @endforeach
-                                    @else
-                                        -
-                                    @endif
-                                </ul>
-                            
-                            </td>
-                            @if ($is_reimburse == FALSE)
-                                <td class="text-right">
-                                    <ul>
-                                        <li>
-                                            {{ number_format($detail->diskon) }}
-                                        </li>
-                                        <br>
-                                        <br>
-                                        <br>
-                                        
-                                    </ul>
-                                </td>
+                            @if ($data->invoiceDetails[0]->sewa->jenis_tujuan == 'LTL')
+                                {{ $detail->sewa->no_surat_jalan }}
+                            @else
+                                {{ $detail->sewa->seal_pelayaran }}
                             @endif
-
-                        {{-- @endif --}}
-                        {{-- <td class="text-right">
+                        </td>
+                        <td class="text-center">{{ $detail->sewa->no_polisi }}  
+                            @isset($detail->sewa->tipe_kontainer)
+                            <br>( {{ $detail->sewa->tipe_kontainer . '"' }} )
+                            @endisset 
+                        </td>
+                        @if ($is_reimburse == FALSE)
+                            <td class="text-right">{{ number_format($detail->diskon) }}</td>
+                            <td class="text-right">{{ number_format($detail->tarif) }}</td>
+                        @endif
+                        <td class="text-right">
                             @if ($detail->invoiceDetailsAddCost != null)
                                 @foreach ($detail->invoiceDetailsAddCost as $key => $add_cost)
                                     @if ($key != 0)
@@ -305,19 +233,9 @@
                                 @endforeach
                             @else
                                 -
-                            @endif 
-                        </td> --}}
-                    <td class="text-right" style="padding-right: 20px;">
-                        <ul>
-                            <li>
-                                {{ number_format($detail->sub_total) }} 
-                            </li>
-                            <br>
-                            <br>
-                            <br>
-
-                        </ul>
-                    </td>
+                            @endif
+                        </td>
+                    <td class="text-right" style="padding-right: 20px;">{{ number_format($detail->sub_total) }} </td>
                 </tr>
                 @php
                     $total += $detail->sub_total;                 
@@ -330,7 +248,7 @@
                             if($is_reimburse == TRUE){
                                 $span = 5;
                             }else{
-                                $span = 6;
+                                $span = 7;
                             }
                         @endphp
                         <td colspan="{{ $span }}" class="text-right" style="padding-right: 15px; border-top: 1px solid black; border-collapse: collapse;"><strong>Total</strong></td>

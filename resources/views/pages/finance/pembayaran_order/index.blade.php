@@ -23,6 +23,7 @@
                 <thead>
                     <tr>
                         <th>Kode JO</th>
+                        <th>NO. BL</th>
                         <th>Pengirim (Customer)</th>
                         <th>Pelayaran (Supplier)</th>
                         <th>Status</th>
@@ -33,6 +34,7 @@
                     @foreach($data as $item)
                         <tr>
                         <td>{{ $item->no_jo }}</td>
+                        <td>{{ $item->no_bl }}</td>
                         <td>{{ $item->namaCustomer }}</td>
                         <td>{{ $item->namaSupplier }}</td>
                         <td>{{ $item->status}}</td>

@@ -11,7 +11,10 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
 <style>
-   
+
+td {
+    /* border: solid 2px lightgrey; */
+}
 </style>
 
 <div class="container-fluid">
@@ -59,9 +62,8 @@
                                         <td>{{ $item->no_invoice }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tgl_invoice)) }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
-                                        <td class="float-right">{{ number_format($item->total_sisa) }}
-                                        <td>{{ $item->catatan }}
-                                        </td>
+                                        <td class="text-right">Rp. {{ number_format($item->total_sisa) }} </td>
+                                        <td>{{ $item->catatan }} </td>
                                         <td style="text-align: center;"> 
                                             <div class="btn-group dropleft">
                                                     <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

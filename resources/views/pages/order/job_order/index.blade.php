@@ -41,6 +41,7 @@
             <table id="dt" class="table table-bordered table-striped" width='100%'>
                 <thead>
                     <tr>
+                        <th>Tanggal Dibuat</th>
                         <th>Kode JO</th>
                         <th>No BL</th>
                         <th>Pengirim (Customer)</th>
@@ -53,6 +54,7 @@
                     @if (isset($dataJO))
                         @foreach($dataJO as $item)
                         <tr>
+                            <td>{{ date('d-M-y',strtotime($item->created_at)) }}</td>
                             <td>{{ $item->no_jo }}</td>
                             <td>{{ $item->no_bl }}</td>
                             <td>{{ $item->kode }} - {{ $item->nama_cust }}</td>

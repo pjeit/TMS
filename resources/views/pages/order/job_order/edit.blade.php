@@ -475,8 +475,46 @@
 
                                         </td>
                                         <td></td>
+                                        
 
                                     </tr>
+                                    @if (isset($JobOrderBiaya))
+                                        @php
+                                            $counter = 0;
+                                        @endphp
+                                        @foreach ($JobOrderBiaya as $value)
+                                        @php
+                                            $counter+=1;
+                                        @endphp
+                                        {{-- {{$counter+=1}} --}}
+                                            <tr id='{{$counter}}'>
+                                                <th>
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="data_lain[{{$counter}}][id_biaya]" id="id_biaya_{{$counter}}" value="{{$value->id}}">
+                                                        <input type="hidden" name="data_lain[{{$counter}}][is_aktif]" id="is_aktif_{{$counter}}" value="{{$value->is_aktif}}">
+                                                        <input type="text" id="deskripsi_{{$counter}}" name="data_lain[{{$counter}}][deskripsi]" class="form-control desksipsi_lain" value="{{$value->deskripsi}}" {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'readonly':''}}>                         
+                                                    </div>
+                                                </th>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <input type="text" id="biaya_{{$counter}}" name="data_lain[{{$counter}}][biaya]" class="form-control biaya_lain uang numaja" value="{{number_format($value->biaya)}}" {{$data['JO']->status != "MENUNGGU PEMBAYARAN"?'readonly':''}}>                         
+                                                    </div>
+                                                </td>
+                                                @if ($data['JO']->status == "MENUNGGU PEMBAYARAN")
+                                                <td>
+                                                    <button type="button" data-toggle="tooltip" data-placement="right" title="Hapus" data-row="{{$counter}}" class="btn btn-sm btn-danger deleteRow">
+                                                        <i class="fa fa-fw fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                                @endif
+                                            </tr>
+                                            {{-- <tr>
+                                                <td>{{$value->deskripsi}}</td>
+                                                <td>: Rp. {{number_format($value->biaya)}}</td>
+                                            </tr> --}}
+                                        @endforeach
+                                    @endif
+                                    
                                     <tr>
                                         <th>SUB TOTAL</th>
                                         <td>
@@ -486,14 +524,16 @@
                                                 readonly>
                                         </td>
                                     </tr>
-                                    {{-- <tr>
-                                        <td colspan="2">
-                                            <input type="hidden" id="indexBiayaLain" value="0">
-                                            <button type="button" id="tambah_biaya_lain" class="btn btn-success float-right radiusSendiri mb-2 mt-2">
-                                                <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Biaya
-                                            </button>
-                                        </td>
-                                    </tr> --}}
+                                    @if ($data['JO']->status == "MENUNGGU PEMBAYARAN")
+                                        <tr>
+                                            <td colspan="2">
+                                                <input type="hidden" id="indexBiayaLain" value="{{$JobOrderBiayaCount}}">
+                                                <button type="button" id="tambah_biaya_lain" class="btn btn-success float-right radiusSendiri mb-2 mt-2">
+                                                    <i class="fa fa-plus-circle" aria-hidden="true"> </i> Tambah Biaya
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                                 <tfoot>
                                 </tfoot>
@@ -637,6 +677,7 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
+        hitungTotal();
         // get kode customer
             var selectElement = document.getElementById('customer');
             var selectedOption = selectElement.options[selectElement.selectedIndex];
@@ -755,12 +796,14 @@
             var newRow = `<tr id='${counter}'>
                             <th>
                                 <div class="form-group">
-                                    <input type="text" id="deskripsi_${counter}" name="data_lain[deskripsi][${counter}]" class="form-control desksipsi_lain" >                         
+                                    <input type="hidden" name="data_lain[${counter}][id_biaya]" id="id_biaya_${counter}" value="baru">
+                                    <input type="hidden" name="data_lain[${counter}][is_aktif]" id="is_aktif_${counter}" value="Y">
+                                    <input type="text" id="deskripsi_${counter}" name="data_lain[${counter}][deskripsi]" class="form-control desksipsi_lain" >                         
                                 </div>
                             </th>
                             <td>
                                 <div class="form-group">
-                                    <input type="text" id="biaya_${counter}" name="data_lain[biaya][${counter}]" class="form-control biaya_lain uang numaja" >                         
+                                    <input type="text" id="biaya_${counter}" name="data_lain[${counter}][biaya]" class="form-control biaya_lain uang numaja" >                         
                                 </div>
                             </td>
                             <td>
@@ -781,7 +824,18 @@
             // // Remove the corresponding row
             // $('#sortable tbody tr').eq(rowToDelete).remove();
             var counter = $('#indexBiayaLain').val();
-            $(this).closest('tr').remove();
+            var id_tr_table = $(this).closest('tr').attr('id');
+            if($("#id_biaya_"+id_tr_table).val()=="baru")
+            {
+                $(this).closest('tr').remove();
+            }
+            else
+            {
+                $(this).closest('tr').hide();
+                $("#is_aktif_"+id_tr_table).val('N');
+                $("#biaya_"+id_tr_table).val(0);
+
+            }
             hitungTotal();
             if($(this).closest('tr').attr('id') == counter)
             {
@@ -1143,7 +1197,9 @@
                 calculateTotalHarga();
                 hitungTotal();
             });
-
+            $( document ).on( 'keyup', '.biaya_lain', function (event) {
+                hitungTotal();
+            });
             function hitungTotal(){
                 var total_thc = parseFloat(($('#thc_cekbox').prop('checked')) ? parseFloat($('#total_thc').val().replace(/,/g, '')) : 0);
                 var total_lolo = parseFloat(($('#lolo_cekbox').prop('checked')) ? parseFloat($('#total_lolo').val().replace(/,/g, '')) : 0);
@@ -1151,7 +1207,12 @@
                 var total_cleaning = parseFloat(($('#cleaning_cekbox').prop('checked')) ? parseFloat($('#total_cleaning').val().replace(/,/g, '')) : 0);
                 var total_doc_fee = parseFloat(($('#doc_fee_cekbox').prop('checked')) ? parseFloat($('#total_doc_fee').val().replace(/,/g, '')) : 0);
                 
-                var total = parseFloat(total_thc + total_lolo + total_apbs + total_cleaning + total_doc_fee);
+                var total_biaya_lain = 0;
+                $('.biaya_lain').each(function () {
+                    var biaya_lain_value = $(this).val() ? parseFloat($(this).val().replace(/,/g, '')) : 0;
+                    total_biaya_lain += biaya_lain_value;
+                });
+                var total = parseFloat(total_thc + total_lolo + total_apbs + total_cleaning + total_doc_fee+ total_biaya_lain);
                 var total_sblm_dooring = $('#total_sblm_dooring').val(total.toLocaleString());
             }
 

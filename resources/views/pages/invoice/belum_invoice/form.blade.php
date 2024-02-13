@@ -234,7 +234,7 @@
                                     $total_addcost = 0;
                                     $total_addcost_pisah = 0;
                                 @endphp
-                                @foreach ($item->sewaOperasional as $i => $oprs)
+                                @foreach ($item->sewaOperasionalInvoice as $i => $oprs)
                                     @if ($oprs->is_aktif == 'Y' && $oprs->is_ditagihkan == 'Y'&& $oprs->is_dipisahkan == 'N')
                                         <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $oprs->deskripsi }}" value="{{ $oprs->total_operasional }}">
                                         @php
@@ -247,7 +247,7 @@
                                     @endif
                                 @endforeach
                                 <span class="text_addcost_{{ $item->id_sewa }}">{{ number_format($total_addcost) }}</span>
-                                <input type="hidden" class="cek_detail_addcost" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_details]" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasional) }}" />
+                                <input type="hidden" class="cek_detail_addcost" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_details]" id="detail_addcost_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasionalInvoice) }}" />
                                 {{-- <input type="text" name="detail[{{ $item->id_sewa }}][addcost_details_pisah]" id="detail_addcost_pisah_{{ $item->id_sewa }}" value="{{ json_encode($item->sewaOperasionalPisah) }}" /> --}}
                                 <input type="hidden" class="cek_detail_addcost_baru" id_sewa="{{ $item->id_sewa }}" name="detail[{{ $item->id_sewa }}][addcost_baru]" id="detail_addcost_baru_{{ $item->id_sewa }}" value="" />
                                 <input type="hidden" class="addcost_{{ $item->id_sewa }} {{ $item->deskripsi }}" name='detail[{{ $item->id_sewa }}][addcost]' id='addcost_hidden_{{ $item->id_sewa }}' value="{{ $total_addcost }}">
@@ -824,7 +824,7 @@
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} ${isDisabledLTL} >
                                 </td>
                                 <td style="text-align:center;">
-                                    <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} ${isDisabledLTL} >
+                                    <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y' ? 'checked' : (item.is_ditagihkan == 'Y' ? '' : 'disabled')} >
                                 </td>
                                 <td>
                                     <input type="text" id="addcost_catatan_${item.id}" value="${item.catatan == null? '':item.catatan}" title="${item.catatan == null? '':item.catatan}" ${item.catatan == 'PENCAIRAN DI UANG JALAN'? 'readonly':''} class="form-control w-auto" />
@@ -859,7 +859,7 @@
                                     <input type="checkbox" class="check_tagih" id="addcost_is_ditagihkan_${item.id}" id_tagih="${item.id}" name="addcost_is_ditagihkan_${item.id}" value="TAGIH_${item.id}" ${item.is_ditagihkan == 'Y'? 'checked':''} >
                                 </td>
                                 <td style="text-align:center;">
-                                    <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y'? 'checked':''} >
+                                    <input type="checkbox" class="check_pisah" id="addcost_is_dipisahkan_${item.id}" id_pisah="${item.id}" name="addcost_is_dipisahkan_${item.id}" value="PISAH_${item.id}" ${item.is_dipisahkan == 'Y' ? 'checked' : (item.is_ditagihkan == 'Y' ? '' : 'disabled')} >
                                 </td>
                                 <td>
                                     <input type="text" id="addcost_catatan_${item.id}" value="${item.catatan == null? '':item.catatan}" title="${item.catatan == null? '':item.catatan}" class="form-control w-auto" />
