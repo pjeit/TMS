@@ -522,7 +522,7 @@ class PembayaranInvoiceController extends Controller
                                 $sewa_oprs->total_operasional = $addcost->total_operasional;
                                 $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                 $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
-                                // $sewa_oprs->catatan = $addcost->catatan;
+                                $sewa_oprs->catatan = $addcost->catatan;
                                 $sewa_oprs->updated_by = $user;
                                 $sewa_oprs->updated_at = now();
                                 $sewa_oprs->save();
@@ -553,8 +553,9 @@ class PembayaranInvoiceController extends Controller
                                     // $sewa_oprs->tgl_dicairkan = now();
                                     $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                     $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
-                                    $sewa_oprs->catatan = '[TAMBAH DI PEMBAYARAN INVOICE]';
+                                    $sewa_oprs->catatan = $addcost->catatan;
                                     $sewa_oprs->status = 'TAGIHKAN DI INVOICE';
+                                    $sewa_oprs->keterangan_internal = "[DATA-BARU-SUDAH-INVOICE]";
                                     $sewa_oprs->created_by = $user;
                                     $sewa_oprs->created_at = now();
                                     $sewa_oprs->save();
@@ -624,7 +625,7 @@ class PembayaranInvoiceController extends Controller
                                         $sewa_oprs->total_operasional = $addcost->total_operasional;
                                         $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                         $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
-                                        // $sewa_oprs->catatan = $addcost->catatan;
+                                        $sewa_oprs->catatan = $addcost->catatan;
                                         $sewa_oprs->updated_by = $user;
                                         $sewa_oprs->updated_at = now();
                                         $sewa_oprs->save();
@@ -656,7 +657,8 @@ class PembayaranInvoiceController extends Controller
                                             // $sewa_oprs->tgl_dicairkan = now();
                                             $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                             $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
-                                            $sewa_oprs->catatan = '[TAMBAH DI PEMBAYARAN INVOICE]';
+                                            $sewa_oprs->catatan = $addcost->catatan;
+                                            $sewa_oprs->keterangan_internal = "[DATA-BARU-SUDAH-INVOICE]";
                                             $sewa_oprs->status = 'TAGIHKAN DI INVOICE';
                                             $sewa_oprs->created_by = $user;
                                             $sewa_oprs->created_at = now();

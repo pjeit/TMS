@@ -358,6 +358,8 @@ class BelumInvoiceController extends Controller
                                         $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                                         $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
                                         $sewa_oprs->status = 'TAGIHKAN DI INVOICE';
+                                        $sewa_oprs->keterangan_internal = "[DATA-BARU-BELUM-INVOICE]";
+
                                         $sewa_oprs->created_by = $user;
                                         $sewa_oprs->created_at = now();
                                         $sewa_oprs->save();
@@ -476,6 +478,7 @@ class BelumInvoiceController extends Controller
                                             $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
                                             $sewa_oprs->catatan = $addcost->catatan;
                                             $sewa_oprs->status = 'TAGIHKAN DI INVOICE';
+                                            $sewa_oprs->keterangan_internal = "[DATA-BARU-BELUM-INVOICE]";
                                             $sewa_oprs->created_by = $user;
                                             $sewa_oprs->created_at = now();
                                             $sewa_oprs->save();
@@ -1081,7 +1084,7 @@ class BelumInvoiceController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        // dd($data);
+        dd($data);
         try {
             foreach ($data['detail'] as $key => $value) {
                 // data addcost lama
@@ -1094,7 +1097,7 @@ class BelumInvoiceController extends Controller
                         $sewa_oprs->total_dicairkan = $addcost->total_operasional;
                         $sewa_oprs->is_ditagihkan = $addcost->is_ditagihkan;
                         $sewa_oprs->is_dipisahkan = $addcost->is_dipisahkan;
-                        $sewa_oprs->catatan = '[EDIT DI BELUM INVOICE]';
+                        $sewa_oprs->catatan = $addcost->catatan;
                         $sewa_oprs->updated_by = $user;
                         $sewa_oprs->updated_at = now();
                         $sewa_oprs->save();
@@ -1111,7 +1114,8 @@ class BelumInvoiceController extends Controller
                         $sewa_oprs->is_ditagihkan = $new_addcost->is_ditagihkan;
                         $sewa_oprs->is_dipisahkan = $new_addcost->is_dipisahkan;
                         $sewa_oprs->catatan = $new_addcost->catatan;
-                        $sewa_oprs->status = '[DATA BARU DARI BELUM INVOICE]';
+                        $sewa_oprs->status = 'TAGIHKAN DI INVOICE';
+                        $sewa_oprs->keterangan_internal = "[DATA-BARU-BELUM-INVOICE]";
                         $sewa_oprs->created_by = $user;
                         $sewa_oprs->created_at = now();
                         $sewa_oprs->save();

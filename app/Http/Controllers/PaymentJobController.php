@@ -36,7 +36,7 @@ class PaymentJobController extends Controller
                 //         $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
                 //     }
                 // })
-                ->select('job_order.id','job_order.no_jo','customer.nama as namaCustomer','supplier.nama as namaSupplier','job_order.pelabuhan_muat','job_order.pelabuhan_bongkar','job_order.tgl_sandar','job_order.status')
+                ->select('job_order.id','job_order.no_jo','customer.nama as namaCustomer','supplier.nama as namaSupplier','job_order.pelabuhan_muat','job_order.pelabuhan_bongkar','job_order.tgl_sandar','job_order.status','job_order.no_bl')
                 ->Join('supplier', 'job_order.id_supplier', '=', 'supplier.id')
                 ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
                 // ->join('jaminan', 'job_order.id', '=', 'jaminan.id_job_order')

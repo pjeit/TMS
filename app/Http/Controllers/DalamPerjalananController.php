@@ -521,7 +521,8 @@ class DalamPerjalananController extends Controller
                         $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
-                        $SOP->catatan = "[TIDAK-ADA-PENCAIRAN]".$value['catatan_data'];
+                        $SOP->catatan = $value['catatan_data'];
+                        $SOP->keterangan_internal = "[DATA-HARDCODE-DALAM-PERJALANAN]";
                         $SOP->status = "TAGIHKAN DI INVOICE";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
@@ -614,7 +615,8 @@ class DalamPerjalananController extends Controller
                         $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
-                        $SOP->catatan = "[TIDAK-ADA-PENCAIRAN]".$value['catatan_data'];
+                        $SOP->catatan = $value['catatan_data'];
+                        $SOP->keterangan_internal = "[DATA-MASTER-DALAM-PERJALANAN]";
                         $SOP->status = "TAGIHKAN DI INVOICE";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
@@ -640,7 +642,8 @@ class DalamPerjalananController extends Controller
                         $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
-                        $SOP->catatan = "[TIDAK-ADA-PENCAIRAN]".$value['catatan_data'];
+                        $SOP->catatan = $value['catatan_data'];
+                        $SOP->keterangan_internal = "[DATA-LAIN-DALAM-PERJALANAN]";
                         $SOP->status = "TAGIHKAN DI INVOICE";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
@@ -1103,27 +1106,26 @@ class DalamPerjalananController extends Controller
                         // dd($value['kembali']);
                         if ($value['kembali']=='KEMBALI_STOK') {
                             $status = 'STOK';
-                            $catatan = '[CANCEL MASUK STOK]';
+                            $keterangan_internal = '[REFUND-MASUK-STOK]';
                         }
                         else if($value['kembali']=='DATA_DI_HAPUS')
                         {
                             $status = 'HAPUS';
-                            $catatan = '[CANCEL TIDAK ADA PENCAIRAN]';
+                            $keterangan_internal = '[REFUND-TIDAK-ADA-PENCAIRAN]';
                         }
                         else
                         {
                             $status = 'HAPUS';
-                            $catatan = '[CANCEL UANG KEMBALI]';
+                            $keterangan_internal = '[REFUND-UANG-KEMBALI]';
                         }
                         SewaOperasional::where('is_aktif', '=', 'Y')
                         // ->whereIn('id',  explode(',' ,$value['id_operasional_data']))
                         ->where('id', $value['id_operasional_data'])
                         ->update([
                                 'is_aktif' => 'N',
-                                'STATUS' => $status,
-                                'catatan'=>$catatan
+                                'status' => $status,
+                                'keterangan_internal'=>$keterangan_internal
                             ]);
-
                         if(isset($value['id_pembayaran_operasional']))
                         {
                             $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
@@ -1262,25 +1264,26 @@ class DalamPerjalananController extends Controller
                         // dd($value['kembali']);
                         if ($value['kembali']=='KEMBALI_STOK') {
                             $status = 'STOK';
-                            $catatan = '[CANCEL MASUK STOK]';
+                            $keterangan_internal = '[CANCEL-MASUK-STOK]';
                         }
                         else if($value['kembali']=='DATA_DI_HAPUS')
                         {
                             $status = 'HAPUS';
-                            $catatan = '[CANCEL TIDAK ADA PENCAIRAN]';
+                            $keterangan_internal = '[CANCEL-TIDAK-ADA-PENCAIRAN]';
                         }
                         else
                         {
                             $status = 'HAPUS';
-                            $catatan = '[CANCEL UANG KEMBALI]';
+                            $keterangan_internal = '[CANCEL-UANG-KEMBALI]';
                         }
                         SewaOperasional::where('is_aktif', '=', 'Y')
                         // ->whereIn('id',  explode(',' ,$value['id_operasional_data']))
                         ->where('id', $value['id_operasional_data'])
                         ->update([
                                 'is_aktif' => 'N',
-                                'STATUS' => $status,
-                                'catatan'=>$catatan
+                                'status' => $status,
+                                'keterangan_internal'=>$keterangan_internal
+
                             ]);
 
                         if(isset($value['id_pembayaran_operasional']))

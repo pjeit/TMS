@@ -276,11 +276,15 @@ class BiayaOperasionalController extends Controller
                         $sewa_o->created_by = $user;
                         if ($value['dicairkan'] == 0) {
                             $sewa_o->status = 'TAGIHKAN DI INVOICE';
-                            $sewa_o->catatan = "[TIDAK-ADA-PENCAIRAN]".$value['catatan'];
+                            $sewa_o->catatan = $value['catatan'];
+                            $sewa_o->keterangan_internal = "[TIDAK-ADA-PENCAIRAN]";
+                            
 
                         } else {
                             $sewa_o->status = 'SUDAH DICAIRKAN';
                             $sewa_o->catatan = $value['catatan'];
+                            $sewa_o->keterangan_internal = "[ADA-PENCAIRAN]";
+
                         }
                         
                         $sewa_o->created_at = now();
@@ -558,7 +562,7 @@ class BiayaOperasionalController extends Controller
                                 $currentDate->copy()->addDay()->endOfDay()
                             ]);
                         })
-                        ->where(function ($query) use ($currentDate, $item, ) {
+                        ->where(function ($query) use ($currentDate, $item ) {
                             // $query->whereNull('s.id_supplier');
                             $query->whereNull('so.total_dicairkan');
                             $query->where('s.jenis_tujuan', 'FTL');
@@ -568,7 +572,7 @@ class BiayaOperasionalController extends Controller
                                 $query->where('s.jenis_order', 'OUTBOUND')->where('gt.seal_pelayaran', '!=', 0);
 
                             }
-                            else if ($item == 'TALLY') {
+                            if ($item == 'TALLY') {
                                 $query->where('gt.tally', '!=', 0);
 
                             }
