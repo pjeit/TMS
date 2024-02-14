@@ -6,6 +6,7 @@
         {{ session()->get('message') }}
     </div>
 @endif
+@include('sweetalert::alert')
 
 @section('content')
 <style>

@@ -6,6 +6,7 @@
         {{ session()->get('message') }}
     </div>
 @endif
+@include('sweetalert::alert')
 
 @section('pathjudul')
     <li class="breadcrumb-item"><a href="/">Home</a></li>
@@ -51,9 +52,9 @@
                                         </a>
                                     @endcan
                                     @can('DELETE_CHASSIS')
-                                        {{-- <a href="{{ route('chassis.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                        <a href="{{ route('chassis.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
                                             <span class="fas fa-trash mr-3"></span> Delete
-                                        </a> --}}
+                                        </a>
                                     @endcan
                                 </div>
                             </div>

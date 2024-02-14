@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\PairKendaraan;
 
 class HeadController extends Controller
 {
@@ -39,7 +39,7 @@ class HeadController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
-            return view('pages.master.head.index',[
+        return view('pages.master.head.index',[
             'judul'=>"Head",
             'data' => $data,
         ]);
@@ -348,20 +348,40 @@ class HeadController extends Controller
      */
     public function destroy($id)
     {
-        $user = Auth::user()->id;
-        $del_head = Head::where('id', $id)
-            ->update([
-                'is_aktif' => 'N',
-                'updated_by' => $user
-            ]);
-        if($del_head){
-            $del_doc = HeadDokumen::where('kendaraan_id', $id)
+        try {
+            //code...
+                $user = Auth::user()->id;
+            $del_head = Head::where('id', $id)
                 ->update([
                     'is_aktif' => 'N',
-                    'updated_by' => $user
+                    'updated_by' => $user,
+                    'updated_at' => now()
                 ]);
-        }
+            if($del_head){
+                $del_doc = HeadDokumen::where('kendaraan_id', $id)
+                    ->update([
+                        'is_aktif' => 'N',
+                        'updated_by' => $user,
+                        'updated_at' => now()
+                    ]);
+                $pair_kendaraan = PairKendaraan::where('kendaraan_id', $id)->where('is_aktif','Y')->first();
 
-        return redirect()->route('head.index')->with('status', 'Berhasil menghapus data!');
+                if($pair_kendaraan)
+                {
+                    $pair_kendaraan->updated_by =$user;
+                    $pair_kendaraan->updated_at =now();
+                    $pair_kendaraan->is_aktif ='N';
+                    $pair_kendaraan->save();
+                }
+            }
+
+            return redirect()->route('head.index')->with(['status' => 'Success', 'msg'  => 'Berhasil menghapus data kendaraan!']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('head.index')->with(['status' => 'error', 'msg' =>$th->getMessage()]);
+
+        }
+        
+
     }
 }
