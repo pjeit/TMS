@@ -24,6 +24,7 @@ use App\Models\SewaOperasionalPembayaran;
 use App\Models\SewaOperasionalRefund;
 use App\Models\SewaOperasionalKembaliStok;
 use Exception;
+use App\Helper\VariableHelper;
 
 
 class DalamPerjalananController extends Controller
@@ -1769,7 +1770,7 @@ class DalamPerjalananController extends Controller
             })
             ->where('k.is_aktif',"Y")
             ->where('k.is_keluar',"N")
-            ->where('k.role_id', 5)
+            ->where('k.role_id', VariableHelper::Role_id('Driver'))
             ->get();
 
         $dataUangJalanRiwayat= DB::table('uang_jalan_riwayat as ujr')

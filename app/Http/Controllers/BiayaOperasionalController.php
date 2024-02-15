@@ -15,6 +15,7 @@ use App\Helper\CoaHelper;
 use App\Models\KasBank;
 use App\Models\SewaOperasionalPembayaran;
 use Exception;
+use App\Helper\VariableHelper;
 
 class BiayaOperasionalController extends Controller
 {
@@ -50,7 +51,7 @@ class BiayaOperasionalController extends Controller
                     ;
                 })
         ->where('karyawan.is_aktif', 'Y')
-        ->where('karyawan.role_id', 5)//5 itu driver
+        ->where('karyawan.role_id', VariableHelper::Role_id('Driver'))//5 itu driver
         ->orderBy('karyawan.nama_panggilan', 'asc')
         ->get();
         $currentDate = Carbon::now();

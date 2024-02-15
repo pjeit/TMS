@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Access;
 
 class RoleController extends Controller
 {
@@ -85,7 +86,7 @@ class RoleController extends Controller
             // dd($dataRolemaxID+1);
             DB::table('roles')
                 ->insert(array(
-                    'id'=>$dataRolemaxID+1,
+                    // 'id'=>$dataRolemaxID+1,
                     'name' => strtoupper($data['nama']),
                     'guard_name' => 'web',
                     'created_by'=> $user,
@@ -195,6 +196,8 @@ class RoleController extends Controller
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
             )
             );
+            Access::where('is_aktif', 'Y')->where('role_id', $role['id'])->delete();
+
             // return redirect()->route('role.index')->with('status','Sukses Menghapus Data Role!!');
             return redirect()->route('role.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data role!']);
 

@@ -12,6 +12,7 @@ use App\Models\PencairanKomisi;
 use App\Models\PencairanKomisiDetail;
 use App\Helper\CoaHelper;
 use Exception;
+use App\Helper\VariableHelper;
 
 class PencairanKomisiDriverController extends Controller
 {
@@ -43,7 +44,7 @@ class PencairanKomisiDriverController extends Controller
                     ;
                 })
         ->where('karyawan.is_aktif', 'Y')
-        ->where('karyawan.role_id', 5)//5 itu driver
+        ->where('karyawan.role_id', VariableHelper::Role_id('Driver'))//5 itu driver
         ->orderBy('karyawan.nama_panggilan', 'asc')
         ->get();
 

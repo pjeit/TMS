@@ -1,6 +1,7 @@
 <?php 
 namespace App\Helper;
 use DateTime;
+use App\Models\Role;
 class VariableHelper
 {
      // Your new helper method
@@ -12,13 +13,25 @@ class VariableHelper
          return ( $now->format('Y-m-d H:i:s')); 
      }
 
-     public static function ShowTanggal()
+    public static function ShowTanggal()
      {
          // some logic to determine if the publisher is main
          return (date("dd-M-yyyy")); 
      }
-
-     function bulanKeRomawi($bulan) {
+     public static function Role_id($nama_role)
+     {
+         // some logic to determine if the publisher is main
+         try {
+            //code...
+            $data_role= Role::where('is_aktif','Y')->where('name','like','%'.$nama_role.'%')->first();
+            return ($data_role->id); 
+         
+        } catch (\Throwable $th) {
+            //throw $th;
+            return ('Tidak ada data role error!'); 
+         }
+     }
+    function bulanKeRomawi($bulan) {
         $romawi = [
             '01' => 'I', '02' => 'II', '03' => 'III', '04' => 'IV', '05' => 'V', '06' => 'VI',
             '07' => 'VII', '08' => 'VIII', '09' => 'IX', '10' => 'X', '11' => 'XI', '12' => 'XII'

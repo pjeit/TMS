@@ -98,22 +98,30 @@ class AccessController extends Controller
         DB::beginTransaction(); 
 
         try {
-            if($data['data'] != null){
-                $access = Access::where('is_aktif', 'Y')->where('role_id', $id)->delete();
-    
-                foreach ($data['data'] as $menus) {
-                    foreach ($menus as $key => $permission_id) {
-                        Access::create([
-                            'permission_id' => $permission_id,
-                            'role_id' => $id,
-                            'created_by' => $user,
-                            'created_at' => now(),
-                            'updated_by' => $user,
-                            'updated_at' => now(),
-                            'is_aktif' => 'Y',
-                        ]);
+            if(isset($data['data'])){
+
+                if($data['data'] != null)
+                {
+                    Access::where('is_aktif', 'Y')->where('role_id', $id)->delete();
+        
+                    foreach ($data['data'] as $menus) {
+                        foreach ($menus as $key => $permission_id) {
+                            Access::create([
+                                'permission_id' => $permission_id,
+                                'role_id' => $id,
+                                'created_by' => $user,
+                                'created_at' => now(),
+                                'updated_by' => $user,
+                                'updated_at' => now(),
+                                'is_aktif' => 'Y',
+                            ]);
+                        }
                     }
                 }
+            }
+            else 
+            {
+                Access::where('is_aktif', 'Y')->where('role_id', $id)->delete();
             }
             
             DB::commit();

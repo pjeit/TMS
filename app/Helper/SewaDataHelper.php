@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Customer;
 use App\Models\JobOrder;
 use App\Models\GrupTujuan;
+use App\Helper\VariableHelper;
 class SewaDataHelper
 {
     //=================================index================================
@@ -74,7 +75,7 @@ class SewaDataHelper
         return DB::table('karyawan')
             ->select('*')
             ->where('karyawan.is_aktif', "Y")
-            ->where('karyawan.role_id', 5)
+            ->where('karyawan.role_id', VariableHelper::Role_id('Driver'))
             ->orderBy('nama_lengkap')
             ->get();
      }

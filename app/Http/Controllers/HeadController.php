@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PairKendaraan;
+use App\Helper\VariableHelper;
 
 class HeadController extends Controller
 {
@@ -58,7 +59,7 @@ class HeadController extends Controller
         //                     ->get();
 
         // $d_supplier = Supplier::where('is_aktif', 'Y')->get();
-        $drivers = Karyawan::where('is_aktif', 'Y')->where('role_id', 5)->get();
+        $drivers = Karyawan::where('is_aktif', 'Y')->where('role_id', VariableHelper::Role_id('Driver'))->get();
         $kategoriTruck = DB::table('kendaraan_kategori')
         ->where('kendaraan_kategori.is_aktif', '=', "Y")
         ->get();
@@ -172,7 +173,7 @@ class HeadController extends Controller
 
         $data['berkas'] = json_encode($data_berkas);
         // var_dump( $data['berkas']); die;
-        $drivers = Karyawan::where('is_aktif', 'Y')->where('role_id', 5)->get();
+        $drivers = Karyawan::where('is_aktif', 'Y')->where('role_id', VariableHelper::Role_id('Driver'))->get();
        $kategoriTruck = DB::table('kendaraan_kategori')
         ->where('kendaraan_kategori.is_aktif', '=', "Y")
         ->get();
