@@ -18,6 +18,7 @@ class JobOrderDetailBiaya extends Model
         "detention"	,
         "repair",	
         "washing",	
+        "id_customer",
         "status_bayar",	
         "catatan"	,
         "tgl_bayar",	
@@ -26,8 +27,6 @@ class JobOrderDetailBiaya extends Model
         "updated_by",	
         "updated_at",	
         "is_aktif"	
-   ];
-
-   	
+    ];
 
 }

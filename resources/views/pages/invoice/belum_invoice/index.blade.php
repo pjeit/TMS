@@ -68,93 +68,106 @@
 </style>
 
 <div class="container-fluid">
-
-    <div class="row">
-        <div class="col-12">
-            <div class="card radiusSendiri">
-                <div class="card-header">
-                    <div class="">
-                        {{-- <a href="{{ route("invoice.create") }}" class="btn btn-primary btn-responsive radiusSendiri"  id="sewaAdd">
-                            <i class="fa fa-plus-circle" aria-hidden="true"> </i> Buat Invoice
-                        </a>  --}}
-                          <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="sewaAdd">
-                             <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table id="tabelInvoice" class="table table-bordered table-striped" width='100%'>
-                        <thead>
-                            <tr>
-                                <th>Grup</th>
-                                <th>Customer</th>
-                                <th>No. Polisi Kendaraan</th>
-                                <th>No. Sewa</th>
-                                <th>Tgl Berangkat</th>
-                                <th>Tujuan</th>
-                                <th>Driver</th>
-                                <th></th>
-                                {{-- <th>Status</th> --}}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (isset($dataSewa))
-                                @foreach($dataSewa as $item)
-                                    <tr>
-                                        <td >{{ $item->nama_grup }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="grup_centang" id_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td >{{ $item->nama_cust }} <span class="float-right"><input type="checkbox" style="margin-right: 7.5px;" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}"></span> </td>
-                                        <td>{{ $item->no_polisi }}</td>
-                                        <td>{{ $item->no_sewa }}</td>
-                                        <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
-                                        <td>{{ $item->nama_tujuan }}</td>
-                                        <td>
-                                           @if ($item->id_supplier)
-                                            DRIVER REKANAN  ({{ $item->namaSupplier }})
-
-                                            @else
-                                            {{ $item->supir }} ({{ $item->telpSupir }})
-
-                                                
-                                            @endif
-                                            <div class="btn-group dropleft float-right">
-                                                    <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="fa fa-list"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu" >
-                                                        <form action="{{route('belum_invoiceKembali.set')}}" method="POST" class="btn btn-responsive">
-                                                                    @csrf
-                                                                    <button class="dropdown-item" >
-                                                                        <span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin
-                                                                    </button>
-                                                                    <input type="hidden" name="idCust[]" placeholder="idCust">
-                                                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
-                                                                    <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
-                                                                    <input type="hidden" name="idJo" value="{{$item->id_jo}}">
-                                                                    <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
-                                                        </form>  
-                                                        {{-- <a class="dropdown-item" href="{{route('perjalanan_kembali.edit',[$item->id_sewa])}}"><span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin</a> --}}
-                                                        {{-- <a class="dropdown-item" href="{{route('invoiceKembali.set')}}"><span class="fas fa-reply" style="width:24px"></span>Kembalikan ke Admin</a>
-                                                        <input type="hidden" name="idCust[]" placeholder="idCust">
-                                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
-                                                        <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
-                                                        <input type="hidden" name="idJo" value="{{$item->id_jo}}">
-                                                        <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}"> --}}
-
-
-                                                    </div>
+    {{-- sticky header --}}
+    <div class="sticky-top radiusSendiri" style="margin-bottom: -15px;">
+        <div class="card radiusSendiri radiusSendiri" style="">
+            <div class="card-header " style="border-bottom: none;">
+                <button type="submit" class="btn btn-primary radiusSendiri" id="sewaAdd">
+                    <i class="fa fa-plus-circle" aria-hidden="true"></i> Buat Invoice
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="card radiusSendiri">
+        <div class="card-body">
+            <div class="m-3" style="overflow-x:auto; overflow-y:hidden">
+                <table id="tabelBelumInvoice" class="table table-bordered table-hover" width='100%'>
+                    <thead>
+                        <tr>
+                            <th>Grup</th>
+                            <th>Customer</th>
+                            <th>No. Polisi Kendaraan</th>
+                            <th>Status</th>
+                            <th>No. Sewa</th>
+                            <th>Tgl Berangkat</th>
+                            <th>Tujuan</th>
+                            <th>Driver</th>
+                            <th></th>
+                            <th style="width: 30px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (isset($dataSewa))
+                            @foreach($dataSewa as $item)
+                                <tr>
+                                    <td>
+                                        <div class="d-flex justify-content-between" style="margin-right: -13px;">
+                                            <div>{{ $item->nama_grup }}</div>
+                                            <div style="width: 55px; text-align: center;">                                            
+                                                <input type="checkbox" class="grup_centang" id_grup="{{ $item->id_grup }}">
                                             </div>
-                                        
-                                        </td>
-                                        {{-- <td>{{ $item->status }}</td> --}}
-                                        <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" value="{{ $item->idSewanya }}"></td>
-                                        <input type="hidden" name="idCust[]" placeholder="idCust">
-                                        <input type="hidden" name="idGrup[]" placeholder="idGrup">
-                                    </tr>
-                                @endforeach
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-between" style="margin-right: -13px;">
+                                            <div>► {{ $item->nama_cust }} </div>
+                                            <div style="width: 55px; text-align: center;">                                            
+                                                <input type="checkbox" class="customer_centang" id_customer="{{ $item->id_customer }}" id_customer_grup="{{ $item->id_grup }}" >
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {{ $item->no_polisi }}
+
+                                    </td>
+                                    <td>
+                                        <span style="font-size:11pt;" class="badge {{$item->status=='BATAL MUAT'?'bg-dark':'bg-danger'}}">{{$item->status}}</span>
+                                    </td>
+                                    <td>
+                                        {{ $item->no_sewa }}
+                                    </td>
+                                    <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
+                                    <td>{{ $item->nama_tujuan }} ({{ $item->jenis_tujuan }})</td>
+                                    <td>
+                                        @if ($item->id_supplier)
+                                            DRIVER REKANAN  ({{ $item->namaSupplier }})
+                                        @else
+                                            {{ $item->supir }} ({{ $item->telpSupir }})
+                                        @endif
+                                    </td>
+                                    <td style="text-align:center">
+                                        <div class="btn-group dropleft">
+                                            <button type="button" class="btn btn-sm btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fa fa-list"></i>
+                                            </button>
+                                            <div class="dropdown-menu" >
+                                                {{-- <form action="{{route('belum_invoiceKembali.set')}}" method="POST" >
+                                                    @csrf
+                                                    <button class="dropdown-item" >
+                                                        <span class="fas fa-reply" style="width:24px"></span> Kembalikan ke Admin
+                                                    </button>
+                                                    <input type="hidden" name="idCust[]" placeholder="idCust">
+                                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                                    <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
+                                                    <input type="hidden" name="idJo" value="{{$item->id_jo}}">
+                                                    <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
+                                                </form>   --}}
+                                                @can('EDIT_BELUM_INVOICE')
+                                                <a href="{{ route('belum_invoice.edit', [$item->id_sewa]) }}" class="btn dropdown-item" >
+                                                    <span class="fas fa-pencil-alt" style="width:24px"></span> Edit
+                                                </a>
+                                                @endcan
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;"> <input type="checkbox" name="idSewa[]" class="sewa_centang" custId="{{ $item->id_customer }}" grupId="{{ $item->id_grup }}" jenis_tujuan="{{ $item->jenis_tujuan }}"value="{{ $item->idSewanya }}"></td>
+                                    <input type="hidden" name="idCust[]" placeholder="idCust">
+                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -237,22 +250,17 @@
                 if(id_grup_semua_cekbox.attr('id_grup')==idCustParent.attr('id_customer_grup'))
                 {
                     if (id_grup_semua_cekbox.is(":checked")) {
-                            id_grup_semua_cekbox.prop('checked', true);
-    
-                        } else if (!id_grup_semua_cekbox.is(":checked")) {
-                            
-                            id_grup_semua_cekbox.prop('checked', false);
-                        }
+                        id_grup_semua_cekbox.prop('checked', true);
+                    } else if (!id_grup_semua_cekbox.is(":checked")) {
+                        id_grup_semua_cekbox.prop('checked', false);
+                    }
                 }
                 else
                 {
                     if(id_grup_semua_cekbox.attr('id_grup')!=idCustParent.attr('id_customer_grup'))
                     {
-                        
                         id_grup_semua_cekbox.prop('checked', false);
                         // idCustParent.prop('checked', false);
-
-
                     }
                 }
                 // if (id_grup_semua_cekbox.is(":checked")) {
@@ -392,21 +400,9 @@
             var selectedValues = [];
             var custId = [];
             var grupId = [];
-            $(".sewa_centang[type=checkbox]:checked").each(function() {
-                selectedValues.push($(this).val());
-                custId.push($(this).attr('custId'));
-                grupId.push($(this).attr('grupId'));
-            });
-            // console.log(selectedValues);
-            
-            if (selectedValues.length === 0) {
-                // event.preventDefault(); 
-                // Swal.fire({
-                //     icon: 'error',
-                //     text: 'Harap pilih sewa yang ingin dibuat invoice',
-                // });
-                // return;
-                const Toast = Swal.mixin({
+            var jenisTujuan = [];
+
+            const Toast = Swal.mixin({
                         toast: true,
                         position: 'top-end',
                         timer: 2500,
@@ -418,69 +414,103 @@
                         }
                     })
 
-                    Toast.fire({
-                        icon: 'error',
-                        title: 'Harap pilih sewa yang ingin dibuat invoice!'
-                    })
-                    event.preventDefault();
-           
+            $(".sewa_centang[type=checkbox]:checked").each(function() {
+                selectedValues.push($(this).val());
+                custId.push($(this).attr('custId'));
+                grupId.push($(this).attr('grupId'));
+                jenisTujuan.push($(this).attr('jenis_tujuan'));
+            });
+
+            
+            
+            if (selectedValues.length === 0) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Harap pilih sewa yang ingin dibuat invoice!'
+                })
+                event.preventDefault();
             }
             else
             {
-                $('#modal-loading').modal('show');
+                var checkBedaJenisTujuan = false;
+                if(jenisTujuan.length != 0 )
+                {
+                    for (let i = 0; i < jenisTujuan.length; i++) {
+                        if (jenisTujuan[i] !== jenisTujuan[0]) {
+                            checkBedaJenisTujuan = true; 
+                            break;
 
-                var baseUrl = "{{ asset('') }}";
-                $.ajax({
-                    url: `${baseUrl}belum_invoice/set_sewa_id`, 
-                    method: 'POST', 
-                    data: { 
-                        idSewa: selectedValues ,
-                        idCust: custId,
-                        idGrup: grupId,
-                        _token: $('meta[name="csrf-token"]').attr('content'),
-                    },
-                    success: function(response) {
-                        // console.log(response.status=='ok');
-                        if(response.status=='ok')
-                        {
-                            // console.log(response);
-                            window.location.href = '{{ route("belum_invoice.create") }}';
-    
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
                     }
-                });
-                // window.location.href = '{{ route("belum_invoice.create") }}';
+                    if(checkBedaJenisTujuan)
+                    {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Sewa yang dibuat Berbeda!'
+                        })
+                        event.preventDefault();
+                    }
+                    else
+                    {
+                        // Toast.fire({
+                        //     icon: 'success',
+                        //     title: 'Sewa yang dibuat sama!'
+                        // })
+                        // event.preventDefault();
+                        // $('#modal-loading').modal('show');
+
+                        var baseUrl = "{{ asset('') }}";
+                        $.ajax({
+                            url: `${baseUrl}belum_invoice/set_sewa_id`, 
+                            method: 'POST', 
+                            data: { 
+                                idSewa: selectedValues ,
+                                idCust: custId,
+                                idGrup: grupId,
+                                _token: $('meta[name="csrf-token"]').attr('content'),
+                            },
+                            success: function(response) {
+                                // console.log(response.status=='ok');
+                                if(response.status=='ok')
+                                {
+                                    // console.log(response);
+                                    window.location.href = '{{ route("belum_invoice.create") }}';
+            
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error:', error);
+                            }
+                        });
+                        // window.location.href = '{{ route("belum_invoice.create") }}';
+                    }
+                }
+               
 
             }
-            
 
-            
-            
-           
 		})
-     new DataTable('#tabelInvoice', {
-        order: [
-            [0, 'asc'],
-            [1, 'asc']
-        ],
-        rowGroup: {
-            dataSrc: [0, 1]
-        },
-        columnDefs: [
-            {
-                targets: [0, 1],
-                visible: false
+        new DataTable('#tabelBelumInvoice', {
+            paging: false,
+            ordering: false,
+            order: [
+                [0, 'asc'],
+                [1, 'asc']
+            ],
+            rowGroup: {
+                dataSrc: [0, 1]
             },
-            {
-                "orderable": false,
-                "targets": [0,1,2,3,4,5,6,7]
-            }
-       
-        ],
-    });
+            columnDefs: [
+                {
+                    targets: [0, 1],
+                    visible: false
+                },
+                {
+                    // orderable: false,
+                    "targets": [0,1,2,3,4,5,6,7]
+                }
+            ],
+        });
 
 });
 
@@ -488,7 +518,9 @@
 
 @if (session('id_print_invoice'))
 <script>
-    window.open("/belum_invoice/print/{{ session('id_print_invoice') }}", "_blank");
+    var baseUrl = "{{ asset('') }}";
+
+    window.open(`${baseUrl}belum_invoice/print/{{ session('id_print_invoice') }}`, "_blank");
 
     // di set null biar ga open new tab terus2an 
     setTimeout(function() {
@@ -496,25 +528,12 @@
     }, 1000); // Adjust the delay (in milliseconds) as needed
 </script>
 @endif
-{{-- @if (session('id_print_invoice')&&session('id_print_invoice_pisah'))
-<script>
-    window.open("/belum_invoice/print/{{ session('id_print_invoice') }}", "_blank");
 
-    // di set null biar ga open new tab terus2an 
-    setTimeout(function() {
-        sessionStorage.setItem('id_print_invoice', null);
-    }, 1000); // Adjust the delay (in milliseconds) as needed
-    window.open("/belum_invoice/print/{{ session('id_print_invoice_pisah') }}", "_blank");
-
-    // di set null biar ga open new tab terus2an 
-    setTimeout(function() {
-        sessionStorage.setItem('id_print_invoice_pisah', null);
-    }, 1000); // Adjust the delay (in milliseconds) as needed
-</script>
-@endif --}}
 @if (session('id_print_invoice_pisah'))
 <script>
-    window.open("/belum_invoice/print/{{ session('id_print_invoice_pisah') }}", "_blank");
+    var baseUrl = "{{ asset('') }}";
+
+    window.open(`${baseUrl}belum_invoice/print/{{ session('id_print_invoice_pisah') }}`, "_blank");
 
     // di set null biar ga open new tab terus2an 
     setTimeout(function() {

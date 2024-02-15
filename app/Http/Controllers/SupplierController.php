@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\ClearCache;
 use App\Models\JenisSupplier;
 use App\Models\M_Kota;
 use App\Models\Supplier;
@@ -9,14 +10,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
-
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_SUPPLIER', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_SUPPLIER', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_SUPPLIER', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_SUPPLIER', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = DB::table('supplier')
@@ -167,7 +170,8 @@ class SupplierController extends Controller
             $supplier->is_aktif = "Y";
             $supplier->save();
 
-            return redirect()->route('supplier.index')->with('status','Sukses Menambahkan Supplier Baru!!');
+            return redirect()->route('supplier.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambah data supplier!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -249,13 +253,15 @@ class SupplierController extends Controller
                     'bank' => $data['bank'],
                     'cabang' => $data['cabang'],
                     'catatan' => $data['catatan'],
-                      'pph' => $data['pph'],
+                    'pph' => $data['pph'],
                     'updated_at'=> date("Y-m-d h:i:s"),
                     'updated_by'=> $user,// masih hardcode nanti diganti cookies
                     'is_aktif' => "Y",
                 )
             );
-            return redirect()->route('supplier.index')->with('status','Sukses Merubah Data Supplier!!');
+
+            return redirect()->route('supplier.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data supplier!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -278,6 +284,8 @@ class SupplierController extends Controller
             'updated_by'=> $user, // masih hardcode nanti diganti cookies
           )
         );
-        return redirect()->route('supplier.index')->with('status','Sukses Menghapus Data Supplier!');
+
+        return redirect()->route('supplier.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data supplier!']);
+
     }
 }

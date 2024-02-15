@@ -19,13 +19,14 @@ class isSuperAdmin
         if (!auth()->check()) {
             return redirect()->route('login');
         }
+        return $next($request); // artinya di bolehin 
 
-        $user_role = auth()->user()->role_id;
-        if($user_role == 1){ 
-            // SU
+        // $user_role = auth()->user()->role_id;
+        // if($user_role == 1){ 
+        //     // SU
 
-            return $next($request); // artinya di bolehin 
-        }
-        return redirect('/')->with('error', "Access denied!!!! (isSuperAdmin)");
+        //     return $next($request); // artinya di bolehin 
+        // }
+        // return redirect('/')->with('error', "Access denied!!!! (isSuperAdmin)");
     }
 }

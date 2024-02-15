@@ -11,11 +11,12 @@ use Illuminate\Support\Facades\Auth;
 
 class PengaturanKeuanganController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PENGATURAN_KEUANGAN', ['only' => ['index']]);
+		$this->middleware('permission:EDIT_PENGATURAN_KEUANGAN', ['only' => ['edit','update']]);
+    }
+
     public function index()
     {
         $data = PengaturanKeuangan::where('id', 1)->first();

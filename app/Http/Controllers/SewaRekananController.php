@@ -17,11 +17,14 @@ use App\Models\JobOrder;
 use Illuminate\Support\Carbon;
 class SewaRekananController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_ORDER_REKANAN', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_ORDER_REKANAN', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_ORDER_REKANAN', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_ORDER_REKANAN', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         //
@@ -52,7 +55,7 @@ class SewaRekananController extends Controller
         $supplier = DB::table('supplier as s')
         ->select('s.*')
         ->where('s.is_aktif', '=', "Y")
-        ->where('s.jenis_supplier_id', '=', 1)
+        ->where('s.jenis_supplier_id', '=', 11) //jenis = tagihan rekanan
         ->get();
          return view('pages.order.truck_order_rekanan.create',[
             'judul'=>"Trucking Order Rekanan",
@@ -73,16 +76,11 @@ class SewaRekananController extends Controller
      */
     public function store(Request $request)
     {
-        //
-         $user = Auth::user()->id; 
-        // dd($user);
         try {
+            $user = Auth::user()->id; 
             $data = $request->collect();
-            // dd((float)str_replace(',', '', $data['harga_jual']));
-            // dd($data);
-            
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
-
+            // dd($data);
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
             $booking_id = isset($data['booking_id'])? $data['booking_id']:null; 
 
@@ -126,6 +124,9 @@ class SewaRekananController extends Controller
             $sewa->catatan = $data['catatan']? $data['catatan']:null;
             $sewa->is_kembali = 'N';
             $sewa->no_kontainer = $data['kontainer']? $data['kontainer']:null;
+            // if($data['jenis_tujuan'] == 'LTL'){
+            //     $sewa->no_kontainer = $data['no_koli'] . ' Koli';
+            // }
             $sewa->tipe_kontainer = $data['tipe_kontainer']? $data['tipe_kontainer']:null;
             // $sewa->nama_driver = $data['driver_nama']? $data['driver_nama']:null;
             $sewa->harga_jual = (float)str_replace(',', '', $data['harga_jual']);
@@ -151,9 +152,11 @@ class SewaRekananController extends Controller
                     $SOP->id_sewa = $sewa->id_sewa; 
                     $SOP->deskripsi = 'TL';
                     $SOP->total_operasional = $data['stack_teluk_lamong_hidden'];
+                    $SOP->total_dicairkan = $data['stack_teluk_lamong_hidden'];
                     $SOP->is_ditagihkan = 'N';
                     $SOP->is_dipisahkan = 'N';
                     $SOP->status = "TAGIHKAN DI INVOICE";
+                    $SOP->catatan = "TELUK LAMONG REKANAN [TIDAK ADA PENCAIRAN]";
                     $SOP->created_by = $user;
                     $SOP->created_at = now();
                     $SOP->is_aktif = 'Y';
@@ -163,11 +166,6 @@ class SewaRekananController extends Controller
                     ->select('c.*')
                     ->where('c.id', '=', $data['customer_id'])
                     ->where('c.is_aktif', '=', "Y")
-                    ->first();
-                $grup = DB::table('grup as g')
-                    ->select('g.*')
-                    ->where('g.id', '=', $customer->grup_id)
-                    ->where('g.is_aktif', '=', "Y")
                     ->first();
 
                 if ($data['jenis_tujuan'] === "LTL") {
@@ -181,14 +179,6 @@ class SewaRekananController extends Controller
                         ->where('id', $data['customer_id'])
                         ->update([
                             'kredit_sekarang' => (float)$customer->kredit_sekarang+$harga,
-                            'updated_at' => now(),
-                            'updated_by' => $user,
-                    ]);
-
-                    DB::table('grup')
-                        ->where('id', $customer->grup_id)
-                        ->update([
-                            'total_kredit' => (float)$grup->total_kredit+$harga,
                             'updated_at' => now(),
                             'updated_by' => $user,
                     ]);
@@ -294,7 +284,7 @@ class SewaRekananController extends Controller
         $supplier = DB::table('supplier as s')
         ->select('s.*')
         ->where('s.is_aktif', '=', "Y")
-        ->where('s.jenis_supplier_id', '=', 1)
+        ->where('s.jenis_supplier_id', '=', 11)
         ->get();
         $dataBooking = DB::table('booking as b')
                 ->select('*','b.id as idBooking')
@@ -349,11 +339,7 @@ class SewaRekananController extends Controller
                     ->where('c.id', '=', $sewa->id_customer)
                     ->where('c.is_aktif', '=', "Y")
                     ->first();
-            $grup_lama = DB::table('grup as g')
-                ->select('g.*')
-                ->where('g.id', '=', $customer_lama->grup_id)
-                ->where('g.is_aktif', '=', "Y")
-                ->first();
+          
             // kalo tujuan baru ga sama sama tujuan yang lama
             if($data['tujuan_id']!=$sewa->id_grup_tujuan &&$sewa->jenis_order == "OUTBOUND")
             {
@@ -366,13 +352,7 @@ class SewaRekananController extends Controller
                         'updated_at' => now(),
                         'updated_by' => $user,
                 ]);
-                DB::table('grup')
-                    ->where('id', $customer_lama->grup_id)
-                    ->update([
-                        'total_kredit' => (float)$grup_lama->total_kredit-$sewa->total_tarif< 0 ? 0 : $grup_lama->total_kredit-$sewa->total_tarif,
-                        'updated_at' => now(),
-                        'updated_by' => $user,
-                ]);
+               
                     $sewa->id_customer = $data['customer_id'];
                     $sewa->id_grup_tujuan = $data['tujuan_id'];
                     $sewa->jenis_tujuan = $data['jenis_tujuan'];
@@ -416,13 +396,7 @@ class SewaRekananController extends Controller
                         'updated_by' => $user,
                 ]);
 
-                DB::table('grup')
-                    ->where('id', $customer->grup_id)
-                    ->update([
-                        'total_kredit' => (float)$grup->total_kredit+$harga,
-                        'updated_at' => now(),
-                        'updated_by' => $user,
-                ]);
+               
                 $arrayBiaya = json_decode($data['biayaDetail'], true);
                 //   dd(isset($arrayBiaya));
 
@@ -478,9 +452,11 @@ class SewaRekananController extends Controller
                             $SOP->id_sewa = $sewa->id_sewa; 
                             $SOP->deskripsi = 'TL';
                             $SOP->total_operasional = $data['stack_teluk_lamong_hidden'];
+                            $SOP->total_dicairkan = $data['stack_teluk_lamong_hidden'];
                             $SOP->is_ditagihkan = 'N';
                             $SOP->is_dipisahkan = 'N';
                             $SOP->status = "TAGIHKAN DI INVOICE";
+                            $SOP->catatan = "TELUK LAMONG REKANAN [TIDAK ADA PENCAIRAN]";
                             $SOP->created_by = $user;
                             $SOP->created_at = now();
                             $SOP->is_aktif = 'Y';
@@ -565,9 +541,11 @@ class SewaRekananController extends Controller
                         $SOP->id_sewa = $sewa->id_sewa; 
                         $SOP->deskripsi = 'TL';
                         $SOP->total_operasional = $data['stack_teluk_lamong_hidden'];
+                        $SOP->total_dicairkan = $data['stack_teluk_lamong_hidden'];
                         $SOP->is_ditagihkan = 'N';
                         $SOP->is_dipisahkan = 'N';
                         $SOP->status = "TAGIHKAN DI INVOICE";
+                        $SOP->catatan = "TELUK LAMONG REKANAN [TIDAK ADA PENCAIRAN]";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
                         $SOP->is_aktif = 'Y';
@@ -643,7 +621,7 @@ class SewaRekananController extends Controller
             }
             
             
-            return redirect()->route('truck_order_rekanan.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data sewa rekanan!']);
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => 'Berhasil merubah data sewa rekanan!']);
             
         } catch (ValidationException $e) {
             //throw $th;

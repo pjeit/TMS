@@ -9,14 +9,18 @@ use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use Illuminate\Support\Facades\Auth;
 use DataTables;
+use Exception;
 
 class KasBankController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_KASBANK', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_KASBANK', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_KASBANK', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_KASBANK', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
          $dataKas = DB::table('kas_bank')
@@ -36,48 +40,6 @@ class KasBankController extends Controller
         ]);
 
     }
-
-    //  public function index(Request $request)
-    // {
-    //     if ($request->ajax()) {
-    //         $data = DB::table('kas_bank')
-    //         ->select('*')
-    //         ->where('is_aktif', '=', "Y")
-    //         ->get();
-
-    //         return Datatables::of($data)->addIndexColumn() //bukan error ga bisa
-    //             ->addColumn('action', function($row){
-    //                 // <a class="btn btn-default bg-info" href="{{route('kas_bank.edit',[$d->id])}}">
-    //                 //                     <i class="fas fa-edit"></i> Edit
-    //                 //                 </a>   
-    //                 //                         <!-- Button trigger modal -->
-    //                 //                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalHapus">
-    //                 //                            <i class="fas fa-trash"></i> Hapus
-    //                 //                 </button>  
-    //                 $btn = '<a class="btn btn-default bg-info" href="{{route('kas_bank.edit',[$d->id])}}';
-                    
-    //                 $btn+='<i class="fas fa-edit"></i> Edit </a>';
-    //                 return $btn;
-    //             })
-    //             ->addColumn('rekeningDB', function($row) {
-    //                 if ($row->tipe == "Bank") {
-    //                     $rekening = $row->bank .' - '. $row->no_akun .' - '.$row->rek_nama;
-    //                 } else {
-    //                     $rekening = ''; 
-    //                 }
-    //                 return $rekening;
-    //             })
-    //             ->rawColumns(['action','rekeningDB'])
-    //             ->make(true);
-    //     }
-    
-
-    //         return view('pages.master.kas_bank.index',[
-    //         'judul'=>"Kas Bank",
-    //         // 'dataKas' => $data,
-    //     ]);
-
-    // }
 
     /**
      * Show the form for creating a new resource.
@@ -134,7 +96,7 @@ class KasBankController extends Controller
             // $tanggal =$tanggal[2];
             // $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
             $tgl_saldo = date_create_from_format('d-M-Y', $data['tgl_saldo']);
-
+            // dd(date_format($tgl_saldo, 'm') == "11");
             DB::table('kas_bank')
                 ->insert(array(
                     'nama' => strtoupper($data['nama']),
@@ -154,7 +116,9 @@ class KasBankController extends Controller
 
                 )
             ); 
-            return redirect()->route('kas_bank.index')->with('status','Sukses menambahkan Kas Bank Baru!!');
+            // return redirect()->route('kas_bank.index')->with('status','Sukses menambahkan Kas Bank Baru!!');
+            return redirect()->route('kas_bank.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambahkan data kas!']);
+            
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -245,7 +209,7 @@ class KasBankController extends Controller
             DB::table('kas_bank')
             ->where('id', $KasBank['id'])
             ->update(array(
-                   'nama' => strtoupper($data['nama']),
+                    'nama' => strtoupper($data['nama']),
                     'no_akun' => $data['no_akun']==null ? null :strtoupper($data['no_akun']) ,
                     'tipe' => $data['tipe']==1?'KAS':'BANK',
                     'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
@@ -260,7 +224,9 @@ class KasBankController extends Controller
                 )
             );
         
-            return redirect()->route('kas_bank.index')->with('status','Sukses Mengubah Data Kas Bank!!');
+            // return redirect()->route('kas_bank.index')->with('status','Sukses Mengubah Data Kas Bank!!');
+            return redirect()->route('kas_bank.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data kas!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -286,7 +252,9 @@ class KasBankController extends Controller
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
               )
             );
-             return redirect()->route('kas_bank.index')->with('status','Sukses Menghapus Data Kas Bank!!');
+            //  return redirect()->route('kas_bank.index')->with('status','Sukses Menghapus Data Kas Bank!!');
+            return redirect()->route('kas_bank.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data kas!']);
+
 
         }
         catch (ValidationException $e) {

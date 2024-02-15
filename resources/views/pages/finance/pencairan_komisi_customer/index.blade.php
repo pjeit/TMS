@@ -12,7 +12,6 @@
 @endsection
 
 @section('content')
-<br>
 <style>
    
 </style>
@@ -41,7 +40,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                     </div>
-                                <input type="text" name="tanggal_pencairan" autocomplete="off" class="date form-control" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}" disabled>  
+                                <input type="text" name="tanggal_pencairan" autocomplete="off" class="date form-control" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{ date("d-M-Y") }}" readonly>  
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -88,11 +87,20 @@
                                 <ul class="list-group mb-1">
                                     <li class="list-group-item d-flex justify-content-between">
                                         <span>Total (IDR)</span>
-                                            <input type="hidden" name="total_komisi_customer" value="">
+                                            <input type="hidden" name="total_komisi_customer" id="total_komisi_customer" value="">
                                             <strong id="html_komisi_customer"></strong>
                                     </li>
                                 </ul>
                             </div>
+                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="no_akun">Total Pencairan</label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input onkeyup="cekPenerima();" type="text" id="total_pencairan" name="total_pencairan" class="form-control uang numaja" value="">                         
+                                </div>                      
+                            </div>  
                             <div class="form-group col-lg-12 col-md-12 col-sm-12" >
                                 <label for="pembayaran">Pilih Kas/Bank</label>
                                 <div class="input-group" style="gap: 10px;">
@@ -131,7 +139,30 @@
 
 </div>
 <script>
-     $(document).ready(function() {
+    function cekPenerima()
+    {
+        
+        if(total_komisi_customer!=''){
+            var total_komisi_customer=$('#total_komisi_customer').val();
+        }else{
+            var total_komisi_customer=0;
+        }
+
+        if(total_pencairan!=''){
+            var total_pencairan=escapeComma($('#total_pencairan').val());
+        }else{
+            var total_pencairan=0;
+        }
+
+        if(parseFloat(total_pencairan)>parseFloat(total_komisi_customer)){
+            $('#total_pencairan').val(moneyMask(total_komisi_customer,','));
+        }
+        else{
+            $('#total_pencairan').val(moneyMask(total_pencairan,','));
+        }
+
+    }
+    $(document).ready(function() {
         var today = new Date();
 
         $('#tanggal_awal').datepicker({
@@ -225,7 +256,7 @@
                                             <td>${value.nama_tujuan}
                                                 <input type="hidden" name="data[${i}][nama_tujuan]" value="${value.nama_tujuan}">
                                             </td>
-                                            <td>${value.alamat_tujuan}
+                                            <td>${value.alamat_tujuan?value.alamat_tujuan:'tidak ada alamat'}
                                                 <input type="hidden" name="data[${i}][alamat_tujuan]" value="${value.alamat_tujuan}">
                                             </td>
                                             <td>Rp. ${addPeriodType(value.total_komisi,',')}

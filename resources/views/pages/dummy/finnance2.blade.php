@@ -1,1 +1,0 @@
-<h1>ini Finnance 2</h1>

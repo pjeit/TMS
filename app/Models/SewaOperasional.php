@@ -15,14 +15,21 @@ class SewaOperasional extends Model
 
     public function getSewa()
     {
-         return $this->hasOne(Sewa::class, 'id_sewa', 'id_sewa');
+        return $this->hasOne(Sewa::class, 'id_sewa', 'id_sewa');
     }
+
+    public function getTransaction()
+    {
+        return $this->hasOne(KasBankTransaction::class, 'keterangan_kode_transaksi', 'like', '%727%')->where('is_aktif', 'Y');
+    }
+    
+
     public function getSewas()
     {
         return $this->hasMany(Sewa::class, 'id_sewa', 'id_sewa');
     }
 
-     public function invoiceDetailsAddCostOperasional()
+    public function invoiceDetailsAddCostOperasional()
     {
         return $this->hasMany(InvoiceDetailAddcost::class, 'id_sewa_operasional', 'id'); //id target, id sendiri
     } 

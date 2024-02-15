@@ -1,10 +1,9 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
@@ -13,13 +12,14 @@
 
 @section('content')
 <style>
-  
+
 </style>
 <div class="container-fluid">
     {{-- <div class="radiusSendiri sticky-top " style="margin-bottom: -15px;">
         <div class="card radiusSendiri" style="">
             <div class="p-3">
-                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
+                        class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
         </div>
     </div> --}}
@@ -33,8 +33,9 @@
                 <section class="col-lg-12" id="show_report">
                     <div class="col-sm-12 col-md-3 col-lg-3 ">
                         <div class="form-group">
-                            <label for="">Revisi</label> 
-                            <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
+                            <label for="">Revisi</label>
+                            <select class="form-control selectpicker" required name="item" id="item"
+                                data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                 <option value="TAMBAHAN UJ">Tambah UJ</option>
                                 <option value="KEMBALIKAN UJ">Kembalikan UJ</option>
                             </select>
@@ -53,7 +54,7 @@
                             </tr>
                         </thead>
                         <tbody id="hasil">
-                         
+
                         </tbody>
                     </table>
 
@@ -74,10 +75,11 @@
         
         function showTable(item){
             var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`revisi_uang_jalan/load_data/${item}`;
 
             $.ajax({
                 method: 'GET',
-                url: `revisi_uang_jalan/load_data/${item}`,
+                url: url,
                 dataType: 'JSON',
                 contentType: false,
                 cache: false,
@@ -115,7 +117,7 @@
                         }
                         row.append(`
                             <td>
-                               `+input+`
+                             `+input+`  
                             </td>
                             `);
                         $("#hasil").append(row);

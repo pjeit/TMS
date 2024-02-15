@@ -100,11 +100,11 @@
                                 </div>
                                 <div class='col-lg-3 col-md-6 col-sm-12'>
                                     <label for="nik">Nama Panggilan<span style='color:red'>*</span></label>
-                                    <input  ="text" name="nama_panggilan" class="form-control" id="panggilan" placeholder="" value="{{old('nama_panggilan',$karyawan->nama_panggilan)}}">    
+                                    <input name="nama_panggilan" class="form-control" id="panggilan" placeholder="" value="{{old('nama_panggilan',$karyawan->nama_panggilan)}}">    
                                 </div>
                                 <div class='col-lg-6 col-md-6 col-sm-12'>
                                     <label for="nama">Nama Lengkap<span style='color:red'>*</span></label>
-                                    <input  ="text" name="nama_lengkap" class="form-control" id="nama" placeholder="Nama sesuai KTP" value="{{old('nama_lengkap',$karyawan->nama_lengkap)}}"> 
+                                    <input name="nama_lengkap" class="form-control" id="nama" placeholder="Nama sesuai KTP" value="{{old('nama_lengkap',$karyawan->nama_lengkap)}}"> 
                                 </div>
                             </div>
                         </div>
@@ -413,7 +413,7 @@
                                 <select class="form-control selectpicker" name="role" id="role" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih ptkp">
                                     <option value="">--Pilih Posisi--</option>
                                     @foreach($dataRole as $data)
-                                        <option value="{{$data->id}}"{{$karyawan->role_id == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                        <option value="{{$data->id}}"{{$karyawan->role_id == $data->id? 'selected' :'' }}>{{$data->name}}</option>
                                     @endforeach
                                 </select>
                             </div>

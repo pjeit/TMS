@@ -11,7 +11,10 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
 <style>
-   
+
+td {
+    /* border: solid 2px lightgrey; */
+}
 </style>
 
 <div class="container-fluid">
@@ -36,8 +39,8 @@
                                 <th>Grup</th>
                                 <th>Customer</th>
                                 <th>No. Invoice</th>
-                                <th width='100'>Tgl Invoice</th>
-                                <th width='100'>Jatuh Tempo</th>
+                                <th width='120'>Tgl Invoice</th>
+                                <th width='120'>Jatuh Tempo</th>
                                 <th>Sisa Tagihan</th>
                                 <th>Catatan</th>
                                 <th></th>
@@ -46,23 +49,33 @@
                         <tbody>
                             @if (isset($dataInvoice))
                                 @foreach($dataInvoice as $item)
+                                @php
+                                    $is_reimburse = FALSE;
+                                    $noInvc = substr($item->no_invoice, -2);
+                                    if($noInvc == '/I'){
+                                        $is_reimburse = TRUE;
+                                    }
+                                @endphp
                                     <tr>
                                         <td >{{ $item->nama_grup }} </td>
                                         <td >{{ $item->nama_cust }} </td>
                                         <td>{{ $item->no_invoice }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->tgl_invoice)) }}</td>
                                         <td>{{ date("d-M-Y", strtotime($item->jatuh_tempo)) }}</td>
-                                        <td class="float-right">{{ number_format($item->total_sisa) }}
-                                        <td>{{ $item->catatan }}
-                                           
-                                        </td>
+                                        <td class="text-right">Rp. {{ number_format($item->total_sisa) }} </td>
+                                        <td>{{ $item->catatan }} </td>
                                         <td style="text-align: center;"> 
-                                              <div class="btn-group dropleft">
+                                            <div class="btn-group dropleft">
                                                     <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                         <i class="fa fa-list"></i>
                                                     </button>
                                                     <div class="dropdown-menu" >
-                                                        <a target="_blank"  class="dropdown-item" href="{{route('belum_invoice.print',[$item->id])}}"><span class="fas fa-print" style="width:24px"></span>Cetak</a>
+                                                        <a target="_blank"  class="dropdown-item" href="{{route('belum_invoice.print',[$item->id])}}"><span class="fas fa-print mr-3" style="width:24px"></span>Cetak</a>
+                                                        @if (!$is_reimburse)
+                                                            @can('EDIT_PEMBAYARAN_INVOICE')
+                                                            <a class="dropdown-item" href="{{route('pembayaran_invoice.edit',[$item->id])}}"><span class="fas fa-pencil-alt mr-3" style="width:24px"></span>Edit</a>
+                                                            @endcan
+                                                        @endif
                                                     </div>
                                             </div>
                                         </td>

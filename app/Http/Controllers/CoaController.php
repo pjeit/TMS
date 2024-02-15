@@ -12,11 +12,14 @@ use RealRashid\SweetAlert\Facades\Alert;
 
 class CoaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_COA', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_COA', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_COA', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_COA', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $dataCOA = DB::table('coa')
@@ -27,7 +30,7 @@ class CoaController extends Controller
             ->get();
 
 
-       $title = 'Data akan dihapus!';
+        $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
@@ -71,6 +74,8 @@ class CoaController extends Controller
                 'no_akun.required' => 'Nomor akun Harus diisi!',
                 'nama_jenis.required' => 'Jenis COA harus diisi!',
                 'tipe.required' => 'Tipe COA harap dipilih salah satu!',
+                'is_show.required' => 'kategori transaksi operasional harap dipilih salah satu!',
+
                 // 'catatan.required' => 'The Catatan field is required.',
             ];
             
@@ -78,6 +83,8 @@ class CoaController extends Controller
                 'no_akun' => 'required',
                 'nama_jenis' => 'required',
                 'tipe' => 'required|in:1,2',
+                'is_show' => 'required',
+
                 // 'catatan' => 'required',
             ], $pesanKustom);
     
@@ -87,7 +94,9 @@ class CoaController extends Controller
             DB::table('coa')
                 ->insert(array(
                     'no_akun' => strtoupper($data['no_akun']),
+                    'alias' => strtoupper($data['alias']),
                     'nama_jenis' => strtoupper($data['nama_jenis']),
+                    'is_show' => $data['is_show'],
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
                     // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'] == null?null:$data['jenis_laporan_keuangan'],
                     'catatan' => strtoupper($data['catatan']),
@@ -100,11 +109,11 @@ class CoaController extends Controller
                 )
             ); 
             
-            return redirect()->route('coa.index')->with('status','Sukses Menambahkan Coa Baru!!');
+            return redirect()->route('coa.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambah data coa!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
-       
     }
 
     /**
@@ -159,6 +168,8 @@ class CoaController extends Controller
                 'nama_jenis.required' => 'Jenis COA harus diisi!',
                 'tipe.required' => 'Tipe COA harap dipilih salah satu!',
                 // 'catatan.required' => 'The Catatan field is required.',
+                    'is_show.required' => 'kategori transaksi operasional harap dipilih salah satu!',
+
             ];
             
             $request->validate([
@@ -166,15 +177,19 @@ class CoaController extends Controller
                 'nama_jenis' => 'required',
                 'tipe' => 'required|in:1,2',
                 // 'catatan' => 'required',
+                'is_show' => 'required',
+
             ], $pesanKustom);
-    
+
             $data = $request->collect();
             DB::table('COA')
                 ->where('id', $coa['id'])
                 ->update(array(
-                  'no_akun' => strtoupper($data['no_akun']),
+                    'no_akun' => strtoupper($data['no_akun']),
+                    'alias' => strtoupper($data['alias']),
                     'nama_jenis' => strtoupper($data['nama_jenis']),
                     'tipe' => $data['tipe']==1?'pengeluaran':'penerimaan',
+                    'is_show' => $data['is_show'],
                     // 'jenis_laporan_keuangan' => $data['jenis_laporan_keuangan'] == null?null:$data['jenis_laporan_keuangan'],
                     'catatan' => strtoupper($data['catatan']),
                     'updated_at'=> VariableHelper::TanggalFormat(),
@@ -182,7 +197,9 @@ class CoaController extends Controller
                     'is_aktif' => "Y",
                 )
             );
-            return redirect()->route('coa.index')->with('status','Sukses Mengubah Data Coa!!');
+            // return redirect()->route('coa.index')->with('status','Sukses Mengubah Data Coa!!');
+            return redirect()->route('coa.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data coa!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -207,6 +224,8 @@ class CoaController extends Controller
             'updated_by'=> $user, // masih hardcode nanti diganti cookies
             )
         );
-        return redirect()->route('coa.index')->with('status','Sukses menghapus Data Coa!!');
+        // return redirect()->route('coa.index')->with('status','Sukses menghapus Data Coa!!');
+            return redirect()->route('coa.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data coa!']);
+
     }
 }

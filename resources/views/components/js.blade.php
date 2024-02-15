@@ -88,6 +88,10 @@
 {{-- script bikin capslock upper case --}}
 <script src="{{asset('assets/dist/js/capslock.js')}}"></script>
 
+{{-- script masking --}}
+{{-- <script src="{{asset('assets/dist/js/jquery.js')}}"></script> --}}
+<script src="{{asset('assets/dist/js/jquerymask.js')}}"></script>
+
 <script src="{{asset('assets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
 <script src="{{asset('assets/plugins/bootstrap-datepicker/datepicker-locale/bootstrap-datepicker.id.min.js')}}"></script>
 
@@ -127,13 +131,15 @@
     $(function() {
      
       $('.daterange').daterangepicker({
-      locale: {
-          format: 'DD/MM/YYYY'
-      }
-        });
+          locale: {
+              format: 'dd-M-yyyy'
+          }
+      });
+
+      var today = new Date();
       $('.date').datepicker({
           autoclose: true,
-          format: "dd/mm/yyyy",
+          format: "dd-M-yyyy",
           todayHighlight: true,
           language:'en',
           orientation: 'bottom auto'
@@ -175,7 +181,9 @@
 
       //Initialize Select2 Elements
       $('.select2').select2({
-        // dropdownAutoWidth: true
+        // dropdownAutoWidth: true,
+          // allowClear: true,
+            // minimumInputLength:1
       })
 
       //Initialize Select2 Elements
@@ -252,7 +260,8 @@
 <script>
   // masking uang 2 digit
   function moneyMask(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      let val = !isNaN(x)? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","):0;
+      return val;
   }
 
   var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -278,11 +287,17 @@
   function escapeComma(val){
     return val.replace(/,/g, '');
   }
+
+  function normalize(val){
+    return parseFloat(escapeComma(val));
+  }
 </script>
 
 {{-- masking no telp --}}
 <script>
-   $("#telp1").on("change", function() {
+    var today = new Date();
+
+    $("#telp1").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
             inputValue = "8" + inputValue.substring(2);
@@ -295,7 +310,7 @@
             $(this).val(inputValue);
         }
     });
-   $("#telp2").on("change", function() {
+    $("#telp2").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
             inputValue = "8" + inputValue.substring(2);
@@ -308,7 +323,7 @@
             $(this).val(inputValue);
         }
     });
-   $("#nomor_kontak_darurat").on("change", function() {
+    $("#nomor_kontak_darurat").on("change", function() {
         var inputValue = $(this).val();
         if (inputValue.startsWith("08")) {
             inputValue = "8" + inputValue.substring(2);
@@ -328,18 +343,33 @@
   $(document).ready(function() {
       $('#datatable').dataTable({
           scrollX: true,
-          "aaSorting": []
+          responsive: true,
+          "aaSorting": [],
+          columnDefs: [
+            { orderable: false, targets: -1 }
+          ]
       });
+
+      $('#datatablex').dataTable({
+          scrollX: true,
+          "aaSorting": [],
+          responsive: true,
+          columnDefs: [
+            { orderable: false, targets: -1 }
+          ]
+      });
+
       $('#dt').dataTable({
           // scrollX: true,
+          responsive: true,
           "aaSorting": []
       });
 
-      var datatable = document.getElementById('dataablex');
+      var datatable = document.getElementById('datatable');
       
       if(datatable != null){
         // Atur properti CSS width menjadi 100%
-        datatable.style.width = '100%';
+        // datatable.style.width = '100%';
       }
 
   });

@@ -44,26 +44,25 @@ class JobOrderDetail extends Model
         'updated_at',
         'updated_by',
         'is_aktif',
-   ];
+    ];
 
-   public function getJO()
-   {
-       $relation = $this->hasOne(JobOrder::class, 'id', 'id_jo');
-   
-       return $relation ? $relation : null;
-   }
+    public function getJO()
+    {
+        return $this->hasOne(JobOrder::class, 'id', 'id_jo');
+    }
 
-   public function getTujuan()
-   {
-       $relation = $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan')->select('id', 'nama_tujuan', 'alamat');
-   
-       return $relation ? $relation : null;
-   }
+    public function getTujuan()
+    {
+        return $this->hasOne(GrupTujuan::class, 'id', 'id_grup_tujuan');
+    }
 
-   public function getSewa()
-   {
-        return $this->hasOne(Sewa::class, 'id_jo_detail', 'id')->select('*');
-   }
-   
-   
+    public function getSewa()
+    {
+        return $this->hasOne(Sewa::class, 'id_jo_detail', 'id');
+    }
+
+    public function getSewaJaminan()
+    {
+        return $this->hasOne(Sewa::class, 'id_jo_detail', 'id')->whereIn('status', ['MENUNGGU PEMBAYARAN INVOICE', 'SELESAI'])->where('is_aktif', 'Y');
+    }
 }

@@ -42,20 +42,9 @@
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="row">
                                 <div class="col-12">
-                                        <div class="form-group">
-                                        <label for="tanggal_pembayaran">Tanggal Pembayaran<span style="color:red">*</span></label>
-                                        <div class="input-group mb-0">
-                                            <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                            </div>
-                                            <input type="text" autocomplete="off" name="tanggal_pembayaran" class="form-control date" id="tanggal_pembayaran" placeholder="dd-M-yyyy" value="">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12">
                                     <div class="form-group">
                                         <label for="">Billing To</label>
-                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required disabled
+                                        <select name="billingToDisabled" class="select2" style="width: 100%" id="billingToDisabled" required disabled>
                                             <option value="">── BILLING TO ──</option>
                                             @foreach ($dataCustomers as $cust)
                                                 <option value="{{ $cust->id }}" kode="{{ $cust->kode }}" {{ $cust->id == $idCust? 'selected':'' }}> {{ $cust->kode }} - {{ $cust->nama }}</option>
@@ -64,39 +53,33 @@
                                         <input type="hidden" name="billingTo" value="{{ $idCust }}">
                                     </div>  
                                 </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="">Tanggal Pembayaran<span style="color:red">*</span></label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="text" autocomplete="off" name="tanggal_pembayaran" class="form-control date" id="tanggal_pembayaran" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="">No. Bukti Potong</label>
+                                        <input type="text" name="no_bukti_potong" class="form-control" id="no_bukti_potong">
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Total Diterima</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                    </div>
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="">Catatan</label>
+                                    <input type="text" name="catatan" class="form-control">
+                                    <input type="hidden" id="firstId" value="{{ isset($data)? $data[0]['id']:NULL }}">
+                                    <input type="hidden" class="form-control" id="di_potong_admin" placeholder="di_potong_admin"> 
                                 </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Total PPh 23</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" id="total_pph23" name="total_pph23" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                        <input type="hidden" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                    </div>
-                                </div>
-                                {{-- <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                    <label for="">Total Bayar</label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
-                                        </div>
-                                        <input type="text" maxlength="100" id="total_dibayar" name="total_dibayar" class="form-control uang numajaMinDesimal" value="" readonly>                         
-                                    </div>
-                                </div> --}}
                             </div>
-
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12">
@@ -132,30 +115,23 @@
                                 </div>
                             </div>
                             <div class="row" id="showTransfer">
-                                <div class="form-group col-lg-4 col-md-4 col-sm-12">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="BiayaAdminCheck" value="ya">
-                                        <label class="form-check-label" for=""><b>Biaya Admin</b></label>
-                                    </div>
+                                <div class="form-group col-lg-4 col-md-5 col-sm-12">
+                                    <label class="" for="flexCheckDefault">
+                                        Biaya Admin
+                                    </label>
+                                    <input class="ml-3 form-check-input" type="checkbox" id="BiayaAdminCheck" value="ya">
                                 </div>
-                                <div class="form-group col-lg-8 col-md-8 col-sm-12">
-                                    {{-- <select name="jenis_badmin" class="select2" style="width: 100%" id="jenis_badmin" disabled>
-                                        <option value="">Pilih Metode</option>
-                                        <option value="kliring">Kliring</option>
-                                        <option value="RTGS">RTGS (Real Time Gross Settlement)</option>
-                                        <option value="RTO">RTO (Real Time Online)</option>
-                                        <option value="BIfast">BI Fast</option>
-                                    </select> --}}
+                                <div class="form-group col-lg-8 col-md-7 col-sm-12">
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
-                                            <span class="input-group-text">Rp</span>
+                                            <span class="input-group-text">Rp.</span>
                                         </div>
-                                        <input type="text" id="biaya_admin" name="biaya_admin" class="form-control uang" value="" readonly >
+                                        <input type="text" id="biaya_admin" name="biaya_admin" class="form-control uang numaja" value="" readonly >
                                     </div>
                                 </div>
                             </div>
                             <div class="row" id="showTunai">
-                               
+                            
                             </div>
                             <div class="row" id="showCek">
                                 <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -165,13 +141,27 @@
                             </div>
 
                             <div class="row">
-                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                    <label for="">Catatan</label>
-                                    <input type="text" name="catatan" class="form-control">
-                                    <input type="hidden" id="firstId" value="{{ isset($data)? $data[0]['id']:NULL }}">
-                                    <input type="hidden" class="form-control" id="di_potong_admin" placeholder="di_potong_admin"> 
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Total Diterima</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang numajaMinDesimal" value="" readonly>                         
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Total PPh 23</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" id="total_pph23" name="total_pph23" class="form-control uang" readonly>                         
+                                        <input type="hidden" id="total_dibayar" name="total_dibayar" class="form-control uang" readonly>                         
+                                    </div>
                                 </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -187,7 +177,6 @@
                         <th>Sisa Invoice</th>
                         <th>PPh 23</th>
                         <th>Diterima</th>
-                        {{-- <th>Dibayar</th> --}}
                         <th>Catatan</th>
                         <th style="width:30px"></th>
                     </tr>
@@ -218,10 +207,6 @@
                                 <span id="text_diterima_{{ $item->id }}"></span>
                                 <input type="hidden" class="total_diterima" id="total_diterima_{{ $item->id }}" name="detail[{{ $item->id }}][diterima]" value="{{ $item->diterima }}">
                             </td>
-                            {{-- <td>
-                                <span id="text_dibayar_{{ $item->id }}"></span>
-                                <input type="hidden" class="total_dibayar" id="total_dibayar_{{ $item->id }}" name="detail[{{ $item->id }}][dibayar]" value="{{ $item->dibayar }}">
-                            </td> --}}
                             <td>
                                 <span id="text_catatan_{{ $item->id }}">{{ $item->catatan }}</span>
                                 <input type="hidden" id="catatan_{{ $item->id }}" name="detail[{{ $item->id }}][catatan]" value="{{ $item->catatan }}">
@@ -268,22 +253,15 @@
                                         <select class="select2" style="width: 100%" id="modal_no_invoice" disabled>
                                             <option value="">── Pilih Invoice ──</option>
                                             @foreach ($dataInvoices as $inv)
-                                                <option value="{{ $inv->id }}">{{ $inv->no_invoice }} ({{ date("d-M-Y", strtotime($inv->tgl_invoice)) }}) - {{ number_format($inv->total_tagihan) }} </option>
+                                                <option value="{{ $inv->id }}">{{ $inv->no_invoice }} ({{ date("d-M-Y", strtotime($inv->tgl_invoice)) }}) </option>
                                             @endforeach
                                         </select>
                                     </div>   
-
-                                    <div class="form-group col-lg-12 col-md-12 col-sm-12" id="hide_bukti_potong">
-                                        <label for="">No. Bukti Potong</label>
-                                        <input  type="text" class="form-control" id="modal_no_bukti_potong" > 
-                                    </div>
-
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="">Catatan</label>
-                                        <input  type="text" class="form-control" id="modal_catatan" > 
+                                        <textarea name="modal_catatan" class="form-control" id="modal_catatan" rows="4"></textarea>
                                     </div>
                                 </div>
-                                
                             </div>
 
                             <div class="col-lg-6">
@@ -306,16 +284,7 @@
                                             <input type="text" class="form-control numaja uang" id="modal_sisa_invoice" placeholder="" readonly>
                                         </div>
                                     </div>
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        <label for="tarif">Diterima</label>
-                                        <div class="input-group mb-0">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Rp</span>
-                                            </div>
-                                            <input type="text" class="form-control numaja uang" id="modal_diterima" placeholder="" >
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="">PPh 23</label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
@@ -325,18 +294,16 @@
                                             <input type="hidden" class="form-control numaja uang" id="modal_dibayar" placeholder="" readonly>
                                         </div>
                                     </div>
-                                </div>
-                                {{-- <div class="row">
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                        <label for="">Dibayar</label>
+                                        <label for="tarif">Diterima<span class="text-red">*</span> </label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="hidden" class="form-control numaja uang" id="modal_dibayar" placeholder="" readonly>
+                                            <input type="text" class="form-control numaja uang" id="modal_diterima">
                                         </div>
                                     </div>
-                                </div> --}}
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -346,7 +313,6 @@
                     <button type="button" class="btn btn-sm btn-success save_detail" id="" style='width:85px'>OK</button> 
                 </div>
             </div>
-            <!-- /.modal-content -->
             </div>
         </div>
     </form>
@@ -358,6 +324,7 @@
         $('#save').submit(function(event) {
             // cek total_dibayar
                 var total_dibayar = $('#total_dibayar').val();
+                console.log('total_dibayar', total_dibayar);
                 if(escapeComma(total_dibayar) == 0 || escapeComma(total_dibayar) == ''){
                     Swal.fire(
                         'Data tidak valid',
@@ -418,12 +385,6 @@
             // startDate: today,
         }).datepicker("setDate", today);
 
-        // $("#jenis_badmin").select2({
-        //     placeholder: "Pilih Metode",
-        //     initSelection: function(element, callback) {                   
-        //     }
-        // });
-
         hitungAll();
 
         $(document).on('click', '.detail', function(){ // open detail 
@@ -441,7 +402,7 @@
             $('#modal_pph23').val( moneyMask($('#total_pph23_'+key).val()) );
             $('#modal_dibayar').val( moneyMask($('#total_dibayar_'+key).val()) );
             $('#modal_catatan').val( $('#catatan_'+key).val() );
-            $('#modal_no_bukti_potong').val( $('#no_bukti_potong_'+key).val() );
+            // $('#modal_no_bukti_potong').val( $('#no_bukti_potong_'+key).val() );
             $('#modal_total_invoice').val( moneyMask($('#total_tagihan_'+key).val()) );
             $('#modal_sisa_invoice').val( moneyMask($('#total_sisa_'+key).val()) );
 
@@ -450,24 +411,7 @@
                 $("#hide_bukti_potong").hide();
             }
 
-            // hide_bukti_potong
-
-            $(document).on('keyup', '#modal_pph23', function(){ // kalau berubah, hitung total 
-                hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
-            });
-
-            $(document).on('keyup', '#modal_diterima', function(){ // kalau berubah, hitung total 
-                var sisaInvoice = parseFloat(escapeComma($('#modal_sisa_invoice').val()));
-                sisaInvoice = (sisaInvoice !== null && !isNaN(sisaInvoice) && sisaInvoice !== "") ? sisaInvoice : 0;
-                var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
-                diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
-                if(diterima > sisaInvoice){
-                    $('#modal_diterima').val(moneyMask(sisaInvoice));
-                    $('#modal_pph23').val(0);
-                }
-                dibayar();
-            });
-
+            
             $('#modal_detail').modal('show');
         });
 
@@ -478,8 +422,8 @@
             $('#catatan_'+key).val( escapeComma($('#modal_catatan').val()) );
             document.getElementById("catatan_"+key).textContent = $('#modal_catatan').val();
             
-            $('#no_bukti_potong_'+key).val( escapeComma($('#modal_no_bukti_potong').val()) );
-            document.getElementById("no_bukti_potong_"+key).textContent = $('#modal_no_bukti_potong').val();
+            // $('#no_bukti_potong_'+key).val( escapeComma($('#modal_no_bukti_potong').val()) );
+            // document.getElementById("no_bukti_potong_"+key).textContent = $('#modal_no_bukti_potong').val();
             
             $('#total_diterima_'+key).val( escapeComma($('#modal_diterima').val()) );
             document.getElementById("text_diterima_"+key).textContent = $('#modal_diterima').val();
@@ -493,32 +437,9 @@
             $('#catatan_'+key).val( escapeComma($('#modal_catatan').val()) );
             document.getElementById("text_catatan_"+key).textContent = $('#modal_catatan').val();
 
-            // if(firstId == key){
-            //     if(escapeComma($('#modal_diterima').val()) == 0 || escapeComma($('#modal_diterima').val()) == ''){
-            //         clear();
-            //     }
-            // }
-
             hitungAll();
             $('#modal_detail').modal('hide'); // close modal
         });
-
-        // $(document.body).on("change","#jenis_badmin",function(){
-        //     if(this.value == 'kliring'){
-        //         $('#biaya_admin').val('5,000');
-        //     }else if(this.value == 'RTGS'){
-        //         $('#biaya_admin').val('25,000');
-        //     }else if(this.value == 'RTO'){
-        //         $('#biaya_admin').val('6,500');
-        //     }else if(this.value == 'BIfast'){
-        //         $('#biaya_admin').val('2,500');
-        //     }else{
-        //         $('#biaya_admin').val(0);
-        //     }
-        //     uang();
-        //     hitungBiayaAdmin();
-        //     hitungAll();
-        // });
 
         // cara_pembayaran
             $("#showTransfer, #showCek, #showTunai").hide();
@@ -552,8 +473,43 @@
                 }
                 hitungAll();
             });
-
         // 
+
+        // hide_bukti_potong
+        $(document).on('keyup', '#modal_pph23', function(){ // kalau berubah, hitung total 
+            hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+        });
+        $(document).on('change', '#modal_pph23', function(){ // kalau berubah, hitung total 
+            hitungPPh(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
+        });
+
+
+        function hitungPPh(){
+            var sisaInvoice = isNaN(normalize($('#modal_sisa_invoice').val())) ? 0 : normalize($('#modal_sisa_invoice').val());
+            var pph = isNaN(normalize($('#modal_pph23').val())) ? 0 : normalize($('#modal_pph23').val());
+
+            if(pph > sisaInvoice){
+                pph = sisaInvoice;
+                $('#modal_pph23').val(moneyMask(pph));
+            }
+            $('#modal_diterima').val(moneyMask(sisaInvoice-pph));
+            dibayar();
+        }
+
+        $(document).on('keyup', '#modal_diterima', function(){ // kalau berubah, hitung total 
+            var sisaInvoice = parseFloat(escapeComma($('#modal_sisa_invoice').val()));
+            sisaInvoice = (sisaInvoice !== null && !isNaN(sisaInvoice) && sisaInvoice !== "") ? sisaInvoice : 0;
+            var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
+            diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
+            var pph = parseFloat(escapeComma($('#modal_pph23').val()));
+            pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;
+            if((diterima+pph) > sisaInvoice){
+                $('#modal_diterima').val(moneyMask(sisaInvoice));
+                $('#modal_pph23').val(0);
+            }
+            dibayar();
+        });
+
 
         $(document).on('keyup', '#biaya_admin', function(){ // kalau berubah, hitung total 
             // hitungBiayaAdmin(); // execute fungsi hitung tiap perubahan value diskon, (tarif + addcost - diskon)
@@ -594,24 +550,6 @@
             $('#total_dibayar').val(moneyMask(total_diterima+total_pph23));
         }
         
-        function hitungPPh(){
-            var sisaInvoice = parseFloat(escapeComma($('#modal_sisa_invoice').val()));
-            sisaInvoice = (sisaInvoice !== null && !isNaN(sisaInvoice) && sisaInvoice !== "") ? sisaInvoice : 0;
-            var diterima = parseFloat(escapeComma($('#modal_diterima').val()));
-            diterima = (diterima !== null && !isNaN(diterima) && diterima !== "") ? diterima : 0;
-
-            var pph = parseFloat(escapeComma($('#modal_pph23').val()));
-            pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;
-            
-            diterima = (sisaInvoice - pph);
-            if(pph > sisaInvoice){
-                pph = sisaInvoice;
-                $('#modal_pph23').val(moneyMask(pph));
-            }
-            $('#modal_diterima').val(moneyMask(diterima));
-            dibayar();
-        }
-
         function dibayar(){
             var pph = parseFloat(escapeComma($('#modal_pph23').val()));
             pph = (pph !== null && !isNaN(pph) && pph !== "") ? pph : 0;

@@ -11,4 +11,14 @@ class InvoicePembayaran extends Model
     protected $table = 'invoice_pembayaran';
     protected $primaryKey = 'id';
 
+    public function getBillingTo()
+    {
+         return $this->hasOne(Customer::class, 'id', 'billing_to');
+    }
+  
+    public function getInvoices()
+    {
+         return $this->hasMany(Invoice::class, 'id_pembayaran', 'id');
+    }
+
 }

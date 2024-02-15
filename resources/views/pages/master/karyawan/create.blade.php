@@ -413,10 +413,10 @@
 
                             <div class="form-group col-sm-12 col-md-4 col-lg-4">
                                 <label>Role<span style='color:red'>*</span></label>
-                                <select class="form-control selectpicker" name="role" id="role" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Role">
+                                <select class="form-control selectpicker" name="roles" id="role" data-live-search="true" data-show-subtext="true" data-placement="bottom" data-placeholder="Pilih Role">
                                     <option value="">--Pilih Role--</option>
                                     @foreach($dataRole as $data)
-                                        <option value="{{$data->id}}"{{$data->nama == $data->id? 'selected' :'' }}>{{$data->nama}}</option>
+                                        <option value="{{$data->id}}">{{$data->name}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -697,8 +697,6 @@
         var tampungahJenis = pisahIDJenisSamaNama.split("-");
         if($('#jenis').val()==''){toastr.error('Jenis identitas harus diisi');return;}
         if($('#nomor').val()==''){toastr.error('Nomor identitas harus diisi');return;}
-
-        
         
         var exist=$('#table_identitas tbody').find('#'+key).attr('id');
         if(typeof exist === 'undefined') {
@@ -743,7 +741,6 @@
         }
     }
 
-    
     // untuk komponen
     function open_komponen(key){
         if(key===''){
@@ -782,9 +779,7 @@
             var dataKomponen = $('#table_komponen tbody').find('td[id^="nama_"]').filter(function() {
                 return $(this).text().trim() === komponenName;
             }).closest('tr');
-
             // console.log($('#table_komponen tbody').find('td[id^="nama_"]').text());
-            
             if (dataKomponen.length > 0 ) {
                 toastr.error('Komponen Sudah Ditambahkan');
                 $('#nama_komponen').val('');
@@ -797,7 +792,6 @@
             $('#komponen_id_'+key).text($('#komponen_id').val());
             $('#is_aktif_'+key).text('Y');
         }
-
       
         $('#komponen_dialog').modal('hide');
         hitung_gaji();
@@ -829,8 +823,8 @@
   $(document).ready(function() {
     $('#showKomponen').hide();
 
-    // encode ubah array jadi json
-    //decode ubah json jadi array
+        // encode ubah array jadi json
+        // decode ubah json jadi array
         function hitungPtkp(){
             var dataPtkp = <?php echo json_encode($dataPtkp); ?>;
             // Ambil value jumlah anak
@@ -891,7 +885,6 @@
             // for (const entry of formData.entries()) {
             //     console.log(entry[0], entry[1]);
             // }
-            
             
             // untuk komponen
             var array_komponen=[];

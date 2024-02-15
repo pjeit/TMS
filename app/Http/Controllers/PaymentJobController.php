@@ -9,29 +9,34 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
 use App\Helper\UserHelper;
-
+use App\Helper\CoaHelper;
+use Exception;
+use App\Models\JobOrderBiaya;
 class PaymentJobController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_PEMBAYARAN_JO', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_PEMBAYARAN_JO', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_PEMBAYARAN_JO', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_PEMBAYARAN_JO', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         // use App\Helper\UserHelper;
         $id_role = Auth::user()->role_id; 
-        $cabang = UserHelper::getCabang();
+        // $cabang = UserHelper::getCabang();
 
         $data = DB::table('job_order')
                 ->leftJoin('user as u', 'u.id', '=', 'job_order.created_by')
                 ->leftJoin('karyawan as k', 'k.id', '=', 'u.karyawan_id')
-                ->where(function ($query) use ($id_role, $cabang) {
-                    if(!in_array($id_role, [1,3])){
-                        $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
-                    }
-                })
-                ->select('job_order.id','job_order.no_jo','customer.nama as namaCustomer','supplier.nama as namaSupplier','job_order.pelabuhan_muat','job_order.pelabuhan_bongkar','job_order.tgl_sandar','job_order.status')
+                // ->where(function ($query) use ($id_role, $cabang) {
+                //     if(!in_array($id_role, [1,3])){
+                //         $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
+                //     }
+                // })
+                ->select('job_order.id','job_order.no_jo','customer.nama as namaCustomer','supplier.nama as namaSupplier','job_order.pelabuhan_muat','job_order.pelabuhan_bongkar','job_order.tgl_sandar','job_order.status','job_order.no_bl')
                 ->Join('supplier', 'job_order.id_supplier', '=', 'supplier.id')
                 ->Join('customer', 'job_order.id_customer', '=', 'customer.id')
                 // ->join('jaminan', 'job_order.id', '=', 'jaminan.id_job_order')
@@ -100,7 +105,12 @@ class PaymentJobController extends Controller
             ->select('*')
             ->where('pengaturan_keuangan.is_aktif', '=', "Y")
             ->get();
-     
+        $JobOrderBiaya = JobOrderBiaya::where('is_aktif','Y')->where('id_jo',$pembayaran_jo->id)->get();
+        $JobOrderBiayaSum = JobOrderBiaya::where('is_aktif','Y')
+        ->where('id_jo',$pembayaran_jo->id)
+        ->select(DB::raw('COALESCE(SUM(biaya),0) as sum_biaya'))
+        ->first();
+        // dd($JobOrderBiayaSum->sum_biaya);
         $dataJaminan = DB::table('jaminan')
             ->select('*')
             ->where('jaminan.is_aktif', '=', "Y")
@@ -139,7 +149,7 @@ class PaymentJobController extends Controller
             //     ->where('keterangan', 'LIKE', '%DOC_FEE%')
             //     ->first();
             // $TotalBiaya  = $totalThc+ $totalLolo +$totalApbs+$totalCleaning+$Docfee->nominal;
-        $TotalBiayaRev = $pembayaran_jo->thc+$pembayaran_jo->lolo+$pembayaran_jo->apbs+$pembayaran_jo->cleaning+$pembayaran_jo->doc_fee;
+        $TotalBiayaRev = $pembayaran_jo->thc+$pembayaran_jo->lolo+$pembayaran_jo->apbs+$pembayaran_jo->cleaning+$pembayaran_jo->doc_fee+$JobOrderBiayaSum->sum_biaya;
 
         return view('pages.finance.pembayaran_order.edit',[
             'judul'=>"Pembayaran Job Order",
@@ -149,7 +159,8 @@ class PaymentJobController extends Controller
             'dataPengaturanKeuangan' =>$dataPengaturanKeuangan,
             'dataJaminan' =>$dataJaminan,
             'dataKas'=>$dataKas,
-            'TotalBiayaRev'=>$TotalBiayaRev
+            'TotalBiayaRev'=>$TotalBiayaRev,
+            'JobOrderBiaya'=> $JobOrderBiaya
         ]);
     }
 
@@ -209,21 +220,21 @@ class PaymentJobController extends Controller
 
             if($dataJaminan){
                 $perhitunganSaldo = $data_saldo_kas_sekarang->saldo_sekarang - (($data['total_sblm_dooring']+$dataJaminan->nominal));
-                  DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                     array(
                         $data['pembayaran'],// id kas_bank dr form
                         now(),//tanggal
                         0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                         $data['total_sblm_dooring']+$dataJaminan->nominal, //uang keluar (kredit)
-                        $coaPelayaran->no_akun, //kode coa
-                        'biaya_pelayaran_jaminan',
+                        CoaHelper::DataCoa(5003), //kode coa pelayaran
+                        'biaya_pelayaran',
                         'UANG KELUAR # BIAYA PELAYARAN + UANG JAMINAN # '.$pembayaran_jo->no_jo.
                         '# PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.
                         '# PELABUHAN BONGKAR : '.$pembayaran_jo->pelabuhan_bongkar.
                         '# BIAYA SEBELUM DOORING : '.number_format( $data['total_sblm_dooring']).
                         '# BIAYA JAMINAN : '.number_format( $dataJaminan->nominal).
                         '# TOTAL BIAYA : '.number_format( $data['total_sblm_dooring']+$dataJaminan->nominal), //keterangan_transaksi
-                        $pembayaran_jo->no_jo,//keterangan_kode_transaksi
+                        $pembayaran_jo->id,//keterangan_kode_transaksi
                         $user,//created_by
                         now(),//created_at
                         $user,//updated_by
@@ -249,7 +260,7 @@ class PaymentJobController extends Controller
                     now(),//tanggal
                     0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
                     $data['total_sblm_dooring'], //uang keluar (kredit)
-                    $coaPelayaran->no_akun, //kode coa
+                    CoaHelper::DataCoa(5003), //kode coa pelayaran
                     'biaya_pelayaran',
                     'UANG KELUAR # BIAYA PELAYARAN # '.$pembayaran_jo->no_jo.
                     '# PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.
@@ -257,7 +268,7 @@ class PaymentJobController extends Controller
                     '# BIAYA SEBELUM DOORING : '.number_format( $data['total_sblm_dooring']).
                     // '# BIAYA JAMINAN : 0'.
                     '# TOTAL BIAYA : '.number_format( $data['total_sblm_dooring']), //keterangan_transaksi
-                    $pembayaran_jo->no_jo,//keterangan_kode_transaksi
+                    $pembayaran_jo->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at
                     $user,//updated_by

@@ -13,15 +13,18 @@ use App\Models\M_ModelChassis;
 use Mockery\Undefined;
 use Symfony\Component\VarDumper\VarDumper;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\PairKendaraan;
 
 class ChassisController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_CHASSIS', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_CHASSIS', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_CHASSIS', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_CHASSIS', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
         $data = DB::table('chassis as a')
@@ -258,29 +261,45 @@ class ChassisController extends Controller
      */
     public function destroy(Chassis $chassis)
     {
-        $user = Auth::user()->id; // masih hardcode nanti diganti cookies
+        try {
+            //code...
+             $user = Auth::user()->id; // masih hardcode nanti diganti cookies
 
-        $off_chassis = DB::table('chassis')
-            ->where('id', $chassis['id'])
-            ->update(array(
-                'is_aktif' => "N",
-                'updated_at'=> now(), // date("Y-m-d h:i:s"),
-                'updated_by'=> $user, 
-            )
-        );
+            $off_chassis = DB::table('chassis')
+                ->where('id', $chassis['id'])
+                ->update(array(
+                    'is_aktif' => "N",
+                    'updated_at'=> now(), // date("Y-m-d h:i:s"),
+                    'updated_by'=> $user, 
+                )
+            );
+            $pair_kendaraan = PairKendaraan::where('chassis_id', $chassis['id'])->where('is_aktif','Y')->first();
 
-        // sementara id comment, untuk keperluan history, jadi ketika di cek lagi akan terlihat
-        // dokumen mana saja yg aktif pada waktu chassis di offkan
-        // if($off_chassis){
-        //     $off_dokumen = DB::table('chassis_dokumen')
-        //         ->where('id', $chassis['id'])
-        //         ->update(array(
-        //             'is_aktif' => "N",
-        //             'updated_at'=> now(), // date("Y-m-d h:i:s"),
-        //             'updated_by'=> $user, 
-        //         )
-        //     );
-        // }
-        return redirect()->route('chassis.index')->with('status','Berhasil menghapus data!');
+            if($pair_kendaraan)
+            {
+                $pair_kendaraan->updated_by =$user;
+                $pair_kendaraan->updated_at =now();
+                $pair_kendaraan->is_aktif ='N';
+                $pair_kendaraan->save();
+            }
+            // sementara id comment, untuk keperluan history, jadi ketika di cek lagi akan terlihat
+            // dokumen mana saja yg aktif pada waktu chassis di offkan
+            // if($off_chassis){
+            //     $off_dokumen = DB::table('chassis_dokumen')
+            //         ->where('id', $chassis['id'])
+            //         ->update(array(
+            //             'is_aktif' => "N",
+            //             'updated_at'=> now(), // date("Y-m-d h:i:s"),
+            //             'updated_by'=> $user, 
+            //         )
+            //     );
+            // }
+            return redirect()->route('chassis.index')->with(['status' => 'Success', 'msg'  => 'Berhasil menghapus data ekor!']);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('chassis.index')->with(['status' => 'error', 'msg' =>$th->getMessage()]);
+
+        }
     }
 }

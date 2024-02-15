@@ -13,15 +13,15 @@ use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use Carbon\Carbon;
 class CetakInvoiceController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_CETAK_INVOICE', ['only' => ['index']]);
+    }
+    
     public function index()
     {
         //
-         $title = 'Data akan dihapus!';
+        $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
@@ -34,7 +34,8 @@ class CetakInvoiceController extends Controller
                 ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
                 ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
                 ->where('i.is_aktif', '=', 'Y')
-                ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                ->where('i.total_sisa', '!=', 0)
+                // ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
                 ->orderBy('i.id','ASC')
                 ->get();
         // dd($dataSewa);

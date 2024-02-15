@@ -13,8 +13,9 @@ class InvoiceDetail extends Model
 
     public function sewa()
     {
-         return $this->hasOne(sewa::class, 'id_sewa', 'id_sewa');
+        return $this->hasOne(Sewa::class, 'id_sewa', 'id_sewa');
     }
+    
     public function invoiceDetailsAddCost()
     {
         return $this->hasMany(InvoiceDetailAddcost::class, 'id_invoice_detail', 'id'); //id target, id sendiri

@@ -14,18 +14,21 @@ use Illuminate\Support\Facades\Auth;
 
 class MarketingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_MARKETING', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_MARKETING', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_MARKETING', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_MARKETING', ['only' => ['destroy']]);  
+    }
+    
     public function index()
     {
 
         $data = DB::table('grup_member as gm')
                         ->leftJoin('grup as g', 'gm.grup_id', '=', 'g.id')
-                        ->leftJoin('role as r', 'gm.role_id', '=', 'r.id')
-                        ->select('gm.*', 'g.nama_grup as nama_grup', 'r.nama as nama_role')
+                        ->leftJoin('roles as r', 'gm.role_id', '=', 'r.id')
+                        ->select('gm.*', 'g.nama_grup as nama_grup', 'r.name as nama_role')
                         ->where('gm.is_aktif', '=', "Y")
                         ->get();
         
@@ -85,7 +88,7 @@ class MarketingController extends Controller
         
             // hardcode langsung id marketing
             $role = 6;
-            $roleMarketing = Role::where('is_aktif', 'Y')->where('nama', 'Marketing')->first();
+            $roleMarketing = Role::where('is_aktif', 'Y')->where('name', 'Marketing')->first();
             if(isset($roleMarketing)){
                 $role = $roleMarketing->id;
             }
@@ -107,7 +110,7 @@ class MarketingController extends Controller
             $new_customer->is_aktif = 'Y';
             $new_customer->save();
 
-            return redirect()->route('marketing.index')->with('status','Success!!');
+                return redirect()->route('marketing.index')->with(['status' => 'Success', 'msg' => 'Data berhasil dibuat!']);
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }

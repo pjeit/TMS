@@ -3,7 +3,7 @@ namespace App\Helper;
 use Illuminate\Support\Facades\DB;
 use App\Models\Customer;
 use App\Models\JobOrder;
-
+use App\Models\GrupTujuan;
 class SewaDataHelper
 {
     //=================================index================================
@@ -18,7 +18,7 @@ class SewaDataHelper
             ->where('gt.is_aktif', '=', "Y")
             ->where('s.is_aktif', '=', "Y")
             ->whereNull('id_supplier') 
-            ->whereIn('s.status', ['MENUNGGU UANG JALAN', 'CANCEL', 'BATAL MUAT'])
+            ->whereIn('s.status', ['MENUNGGU UANG JALAN'/*, 'CANCEL', 'BATAL MUAT'*/])
             ->orderBy('created_at', 'DESC')
             ->get();
      }
@@ -137,6 +137,12 @@ class SewaDataHelper
                             $query->where('k.id_kategori', '!=', 1);
                         });
                 })
+                ->leftJoin('status_kendaraan AS sk', function($join) {
+                    $join->on('k.id', '=', 'sk.kendaraan_id')
+                    ->where('sk.is_selesai', '=', 'N')
+                    ->where('sk.is_aktif', '=', 'Y');
+                })
+                ->whereNull('sk.id')
                 ->where('k.is_aktif', '=', 'Y')
                 ->whereNotNull('k.driver_id')
                 ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
@@ -183,10 +189,17 @@ class SewaDataHelper
     public function getTujuanCust($id)
     {
         $cust = Customer::where('id', $id)->first();
-        $Tujuan = DB::table('grup_tujuan as gt')
-            ->select('gt.*')
-            ->where('gt.grup_id', '=',  $cust->grup_id)
-            ->where('gt.is_aktif', '=', "Y")
+        // $Tujuan = DB::table('grup_tujuan as gt')
+        //     ->select('gt.*')
+        //     ->where('gt.grup_id', '=',  $cust->grup_id)
+        //     ->where('gt.is_aktif', '=', "Y")
+        //     ->orderBy('gt.nama_tujuan')
+        //     ->get();
+        $Tujuan = GrupTujuan::where('is_aktif',"Y")
+            ->where('grup_tujuan.grup_id', '=',  $cust->grup_id)
+            ->where('grup_tujuan.is_aktif', '=', "Y")
+            ->with('getMarketing')
+            ->orderBy('grup_tujuan.nama_tujuan')
             ->get();
         $dataKredit = DB::table('customer')
             ->select('customer.id as idCustomer',
@@ -319,6 +332,12 @@ class SewaDataHelper
                         //     $query->where('k.id_kategori', '!=', 1);
                         // });
                 })
+                ->leftJoin('status_kendaraan AS sk', function($join) {
+                    $join->on('k.id', '=', 'sk.kendaraan_id')
+                    ->where('sk.is_selesai', '=', 'N')
+                    ->where('sk.is_aktif', '=', 'Y');
+                })
+                ->whereNull('sk.id')
                 ->where('k.is_aktif', '=', 'Y')
                 ->whereNotNull('k.driver_id')
                 ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')

@@ -8,14 +8,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\VariableHelper;
+use App\Models\KasBankTransaction;
+
 class LaporanKasController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
+  public function __construct()
+  {
+      $this->middleware('permission:READ_LAPORAN_KAS', ['only' => ['index']]);
+  }
+
+  public function index(Request $request)
     {
         $tanggal_awal   = $request->input('tanggal_awal');
         $tanggal_akhir  = $request->input('tanggal_akhir');
@@ -46,42 +48,74 @@ class LaporanKasController extends Controller
                 if(@subtotal >= 0, 0, abs(@subtotal)) as subtotal_kredit,
                 @kas_bank_id := d.id_kas_bank,
                 case
-                  when d.jenis = 'saldo_awal' then
-                    'Saldo Awal'
-                  when d.jenis = 'uang_jalan' then
-                    'Uang Jalan'
-                  when d.jenis = 'reimburse' then
-                    'Reimburse'
-                  when d.jenis = 'invoice_customer' then
-                    'Invoice'
-                  when d.jenis = 'tagihan_supplier' then
-                    'Pembelian'
-                  when d.jenis = 'hutang_karyawan' then
-                    'Hutang'
-                  when d.jenis = 'gaji' then
-                    'Gaji'
-                  when d.jenis = 'transfer_dana' then
-                    'Pindah Dana'
-                  when d.jenis = 'lainnya' then
-                    'Lainnya'
-                when d.jenis = 'biaya_admin' then
-                    'Biaya_admin'
-                when d.jenis = 'uang_klaim_supir' then
-                    'Klaim Supir'
+                  when d.jenis = 'saldo_awal' 
+                        then 'Saldo Awal'
+                    when d.jenis = 'uang_jalan' 
+                        then 'Uang Jalan'
+                    when d.jenis = 'reimburse' 
+                        then 'Reimburse'
+                    when d.jenis = 'invoice_customer' 
+                        then 'Invoice'
+                    when d.jenis = 'tagihan_supplier' 
+                        then 'Pembelian'
+                    when d.jenis = 'hutang_karyawan' 
+                        then 'Hutang'
+                    when d.jenis = 'gaji' 
+                        then 'Gaji'
+                    when d.jenis = 'transfer_dana' 
+                        then 'Pindah Dana'
+                    when d.jenis = 'lainnya' 
+                        then 'Lainnya'
+                    when d.jenis = 'biaya_admin' 
+                        then 'Biaya_admin'
+                    when d.jenis = 'klaim_supir' 
+                        then 'Klaim Supir'
+                    when d.jenis = 'pencairan_operasional' 
+                        then 'Pencairan Operasional'
+                    when d.jenis = 'pembayaran_invoice' 
+                        then 'Pembayaran Invoice'
+                    when d.jenis = 'tagihan_pembelian' 
+                        then 'Pembayaran Nota'
+                    when d.jenis = 'karantina' 
+                        then 'Karantina'
+                    when d.jenis = 'bonus_supir' 
+                        then 'Bonus Supir'
+                    when d.jenis = 'operasional_refund' 
+                        then 'Operasional Kembali'
+                    when d.jenis = 'biaya_pelayaran' 
+                        then 'Biaya Pelayaran'
+                    when d.jenis = 'biaya_sdt' 
+                        then 'Biaya S/D/T'
+                    when d.jenis = 'pembayaran_invoice_karantina' 
+                        then 'Pembayaran Invoice Karantina'
+                    when d.jenis = 'komisi_customer' 
+                        then 'Pencairan Komisi Customer'
+                    when d.jenis = 'komisi_driver' 
+                        then 'Pencairan Komisi Driver'
+                    when d.jenis = 'pengembalian_jaminan' 
+                        then 'Pengembalian Jaminan'
+                    when d.jenis = 'teluk_lamong ' 
+                        then 'Revisi Teluk Lamong'
+                    when d.jenis = 'rev_tambahan_uang_jalan ' 
+                        then 'Revisi Uang Jalan'
+                    when d.jenis = 'tagihan_rekanan' 
+                        then 'Pembayaran Gabungan'
+                    when d.jenis = 'lembur_mekanik' 
+                        then 'Lembur Mekanik'
                   end jenis_deskripsi
                 FROM (
-                    SELECT 
-                    id, id_kas_bank, CAST(DATE_ADD('$tgl_akhir', interval 1 day) AS DATE) AS tanggal, NULL AS jenis, 
-                    'Saldo Awal' AS keterangan_transaksi, NULL AS kode_coa, 
-                    IF(SUM(debit) - SUM(kredit) >= 0, ABS(SUM(debit) - SUM(kredit)), 0) AS debit,
-                    IF(SUM(debit) - SUM(kredit) >= 0, 0, ABS(SUM(debit) - SUM(kredit))) AS kredit,keterangan_kode_transaksi
-                    FROM kas_bank_transaction 
-                    WHERE id_kas_bank = 2
-                    AND CAST(tanggal AS DATE) BETWEEN date_add('$tgl_default', interval 1 day) 
-                    AND date_add('$tgl_awal', interval -1 day)
-                    AND is_aktif = 'Y'
-                    --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
-                    UNION ALL
+                    -- SELECT 
+                    -- id, id_kas_bank, CAST(DATE_ADD('$tgl_akhir', interval 1 day) AS DATE) AS tanggal, NULL AS jenis, 
+                    -- 'Saldo Awal' AS keterangan_transaksi, NULL AS kode_coa, 
+                    -- IF(SUM(debit) - SUM(kredit) >= 0, ABS(SUM(debit) - SUM(kredit)), 0) AS debit,
+                    -- IF(SUM(debit) - SUM(kredit) >= 0, 0, ABS(SUM(debit) - SUM(kredit))) AS kredit,keterangan_kode_transaksi
+                    -- FROM kas_bank_transaction 
+                    -- WHERE id_kas_bank = 2
+                    -- AND CAST(tanggal AS DATE) BETWEEN date_add('$tgl_default', interval 1 day) 
+                    -- AND date_add('$tgl_awal', interval -1 day)
+                    -- AND is_aktif = 'Y'
+                    -- --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
+                    -- UNION ALL
                     SELECT 
                         id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                     FROM kas_bank_transaction 
@@ -90,10 +124,17 @@ class LaporanKasController extends Controller
                     AND is_aktif = 'Y'
                     --  group by id, id_kas_bank, tanggal, jenis, keterangan_transaksi, kode_coa, debit, kredit,keterangan_kode_transaksi
                 ) AS d 
-                ORDER BY cast(tanggal as datetime) DESC,id     
+                ORDER BY cast(tanggal as datetime) asc,id     
             ");
 
-            $kas = DB::table('kas_bank')->where('id', 2)->first();
+            $kas = DB::table('kas_bank')->find(2);
+            $transaction = KasBankTransaction::where('is_aktif', 'Y')
+                                            ->where('id_kas_bank', 2)
+                                            // ->whereBetween('tanggal', [$tgl_default, $tgl_awal])
+                                            ->where('tanggal','<', $tgl_awal)
+                                            ->get();
+            $sumKredit  = $transaction->sum('kredit');
+            $sumDebit   = $transaction->sum('debit');
             $kasBank = DB::table('kas_bank')->where('is_aktif', 'Y')->orderBy('nama', 'asc')->get();
     
             return view('pages.laporan.Kas.index',[
@@ -102,6 +143,8 @@ class LaporanKasController extends Controller
                 'kas' => $kas,
                 'request' => $request,
                 'kasBank' => $kasBank,
+                'sumKredit' => $sumKredit,
+                'sumDebit' => $sumDebit,
             ]);
         }else{
             $kasBank = DB::table('kas_bank')->where('is_aktif', 'Y')->orderBy('nama', 'asc')->get();
@@ -113,6 +156,9 @@ class LaporanKasController extends Controller
                 'request' => $request,
                 'kas' => $kas,
                 'kasBank' => $kasBank,
+                'sumKredit' => NULL,
+                'sumDebit' => NULL,
+
             ]);
         }
        

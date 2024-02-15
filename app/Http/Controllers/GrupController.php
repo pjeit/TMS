@@ -9,24 +9,41 @@ use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use App\Models\GrupTujuan;
 use App\Models\GrupTujuanBiaya;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\VarDumper\VarDumper;
 use Illuminate\Support\Facades\Auth;
 use RealRashid\SweetAlert\Facades\Alert;
-
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Middlewares\RoleOrPermissionMiddleware;
+// use App\Models\Userl;
 class GrupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_GRUP', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_GRUP', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_GRUP', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_GRUP', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
-        $data = DB::table('grup')
-            ->where('is_aktif', '=', "Y")
-            ->orderBy('nama_grup', 'ASC')
-            ->orderBy('nama_pic', 'ASC')
-            ->get();
+        // $this->authorize('read_grup');
+        // if(!Gate::allows('read_grup')){
+        //     abort(403, 'Anda tidak memiliki akses ke halaman ini');
+        // }
+        // dd( auth()->user()->getRoleNames() );
+        //       $userAkses=auth()->user()->getAllPermissions()->pluck('name')->toArray();
+        //   $semuaAkses = \Spatie\Permission\Models\Permission::pluck('name')->toArray();
+        //   $hasAllPermissions = count(array_diff($semuaAkses, $userAkses)) === 0;
+        // dd($hasAllPermissions);
+
+        $data = Grup::where('is_aktif', "Y")->with('customers')
+                    ->orderBy('nama_grup', 'ASC')
+                    ->orderBy('nama_pic', 'ASC')
+                    ->get();
 
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
@@ -48,6 +65,8 @@ class GrupController extends Controller
      */
     public function create()
     {
+        // $this->authorize('create_grup');
+
         return view('pages.master.grup.create',[
             'judul' => "Grup",
         ]);
@@ -138,6 +157,8 @@ class GrupController extends Controller
      */
     public function edit(Grup $grup)
     {
+        // $this->authorize('edit_grup');
+
         $data = Grup::where('is_aktif', 'Y')->findOrFail($grup->id);
         $role_id = Auth::user()->role_id;
         // dd(Auth::user());
@@ -219,6 +240,8 @@ class GrupController extends Controller
      */
     public function destroy(Grup $grup)
     {
+        // $this->authorize('delete_grup');
+
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies
         // var_dump($grup); die;
         $del_grup = DB::table('grup')
@@ -246,7 +269,7 @@ class GrupController extends Controller
                                         ));
                 }
         }
-       
+        
         return redirect()->route('grup.index')->with('status', 'Berhasil menghapus data!');
         // return response()->json([
         //     'status' => 'success',

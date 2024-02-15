@@ -24,11 +24,20 @@
     </div>
     <div class="card-body">
       <p class="login-box-msg">Sign in to start your session</p>
+                  @if(session('status'))
+                        <div class="alert alert-danger">
+                            {{ session('status') }}
+                        </div>
+                    @endif
 
+                    {{-- @if($errors)
+                        <div class="alert alert-danger">
+                            {{ $errors->first('credentials') }}
+                        </div>
+                    @endif --}}
       <form method="POST" action="{{ route('login.custom') }}">
       @csrf
         <div class="input-group mb-3">
-           
           <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus placeholder="Username">
           <div class="input-group-append">
             <div class="input-group-text">
@@ -61,7 +70,7 @@
             <div class="icheck-primary">
               <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
               <label for="remember">
-                 {{ __('Remember Me') }}
+                {{ __('Remember Me') }}
               </label>
             </div>
           </div> -->

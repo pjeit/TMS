@@ -11,6 +11,7 @@ class Karyawan extends Model
     protected $table = 'karyawan';
     protected $primaryKey='id';
     protected $fillable = [
+      'role_id',
       'nik',
       'nama_lengkap',
       'nama_panggilan',
@@ -20,19 +21,18 @@ class Karyawan extends Model
       'tempat_lahir',
       'tanggal_lahir',
       'agama',
-      'm_kota_id',
+      'cabang_id',
       'alamat_ktp',
       'alamat_domisili',
-      'id_ptkp',
-      'status_pegawai',
+      'kota_ktp',
       'telp1',
       'telp2',
       'email',
       'norek',
       'rek_nama',
       'bank',
+      'cabang_bank',
       'tgl_gabung',
-      'role_id',
       'gaji',
       'is_keluar',
       'tgl_keluar',
@@ -44,10 +44,24 @@ class Karyawan extends Model
       'nomor_kontak_darurat',
       'alamat_kontak_darurat',
       'saldo_cuti',
+      'kota_domisili',
+      'ptkp_id',
+      'status_pegawai',
       'created_at',
       'created_by',
       'updated_at',
       'updated_by',
       'is_aktif',
   ];
+
+  
+  public function getHutang()
+  {
+       return $this->hasOne(KaryawanHutang::class, 'id_karyawan', 'id');
+  }
+
+  public function cabang()
+  {
+       return $this->hasOne(CabangPJE::class, 'id', 'cabang_id');
+  }
 }

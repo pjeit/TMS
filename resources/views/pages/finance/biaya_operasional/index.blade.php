@@ -1,10 +1,9 @@
-
 @extends('layouts.home_master')
 
 @if(session()->has('message'))
-    <div class="alert alert-success alert-dismissible">
-        {{ session()->get('message') }}
-    </div>
+<div class="alert alert-success alert-dismissible">
+    {{ session()->get('message') }}
+</div>
 @endif
 
 @section('pathjudul')
@@ -13,82 +12,172 @@
 
 @section('content')
 <style>
-  
+a {
+    cursor: pointer;
+}
 </style>
+<nav class="navbar navbar-expand-sm bg-light">
+
+<div class="container-fluid " >
+    
+</div>
+
+</nav>
 <div class="container-fluid">
     {{-- <div class="radiusSendiri sticky-top " style="margin-bottom: -15px;">
         <div class="card radiusSendiri" style="">
             <div class="p-3">
-                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
+                <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i
+                        class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
-        </div>
+        </div>  
     </div> --}}
+    <!-- Links -->
+
+    {{-- <div class="card p-2"> --}}
+        {{-- <div class="d-flex justify-content-center"> --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">ALAT</button>  --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X, DRIVER 1,2,3 --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">TALLY</button> --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X, DRIVER 1,2,3 --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">SEAL PELAYARAN</button> --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">BURUH</button> --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
+            {{-- <button class="btn btn-primary radiusSendiri mr-2">TIMBANG</button> --}}
+            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
+            {{-- <button class="btn btn-primary radiusSendiri">LEMBUR</button> --}}
+        {{-- </div> --}}
+    {{-- </div> --}}
     <div class="card radiusSendiri">
         <form id="save" action="{{ route('biaya_operasional.store') }}" method="POST">
             @csrf
             <div class="card-header ">
-                <div class="card-header" style="border: 2px solid #bbbbbb;">
+                {{-- style="border: 2px solid #bbbbbb;" --}}
+                <div class="card-header" >
+                    <ul class="nav nav-tabs mb-3 mt-3 nav-fill" id="justifyTab" role="tablist">
+                        <li class="nav-item">
+                            {{-- PENCAIRAN JADI SATU, MISAL TUJUAN X, DRIVER 1,2,3 (ALAT,TALLY,SEAL PELAYARAN)--}}
+                            <a class="nav-link nav-link-tab active" data-toggle="tab" id="btn_alat" aria-selected="true">
+                                <span class="text-bold">ALAT</span>{{-- [Semua sewa pje]--}}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_tally" aria-selected="false">
+                                <span class="text-bold">TALLY</span> {{--[Master]--}}
+                            </a>
+                        </li>
+                        <li class="nav-item" style="border-right: 2px solid black">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_seal" aria-selected="false">
+                                <span class="text-bold">SEAL PELAYARAN</span> {{--[Master]--}}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_depo" aria-selected="false">
+                                <span class="text-bold">BIAYA DEPO</span> 
+                                {{-- [Shifting]-[Semua sewa pje] --}}
+                            </a>
+                        </li>
+                        {{-- <li class="nav-item" style="border-right: 2px solid black">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_karantina" aria-selected="false">
+                                <span class="text-bold">KARANTINA </span> 
+                            </a>
+                        </li> --}}
+                        <li class="nav-item">
+                            {{-- PENCAIRAN SENDIRI-SENDIRI, MISAL TUJUAN X DRIVER 1, TUJUAN B DRIVER 2 --}}
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_buruh" aria-selected="false">
+                                <span class="text-bold">BURUH </span> {{--[Semua sewa pje flag buruh]--}}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_timbang" aria-selected="false">
+                                <span class="text-bold">TIMBANG </span> {{--[Semua sewa pje]--}}
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-tab" data-toggle="tab" id="btn_lembur" name="test" value="asdasd" aria-selected="false">
+                                <span class="text-bold">LEMBUR </span> {{--[Semua sewa pje]--}}
+                            </a>
+                        </li>
+                    </ul>
                     <ul class="list-inline">
                         <div class="row">
-                            {{-- <li class="list-inline-item"> --}}
-                                <div class="col-sm-12 col-md-3 col-lg-3 bg-white pb-3">
-                                    <div class="form-group">
-                                        <label for="">Jenis Biaya</label> 
-                                        <select class="form-control selectpicker" required name="item" id="item" data-live-search="true" data-show-subtext="true" data-placement="bottom" >
-                                            <option value="">­­— PILIH DATA —</option>
-                                            <option value="TALLY">TALLY</option>
-                                            <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                            <option value="OPERASIONAL">OPERASIONAL</option>
-                                            <option value="TIMBANG">TIMBANG</option>
-                                            <option value="BURUH">BURUH</option>
-                                            <option value="LEMBUR">LEMBUR</option>
-                                        </select>
-                                    </div>
+                            <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
+                                <ul class="list-group mt-4">
+                                    <li
+                                        class="list-group-item d-flex justify-content-between lh-sm card-outline card-primary">
+                                        <div>
+                                            <span class="text-primary"><b>Grand Total</b></span>
+                                        </div>
+                                        <span class="text-bold t_total">Rp. 0</span>
+                                        <input type="hidden" id='t_total' name='t_total'>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
+                                <div class="input-group mt-4">
+                                    <select class="form-control selectpicker" required id='pembayaran' name="pembayaran"
+                                        data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                        <option value="">── PILIH PEMBAYARAN ──</option>
+                                        @foreach ($dataKas as $kas)
+                                        <option value="{{$kas->id}}">{{ $kas->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
                                 </div>
-                            {{-- </li> --}}
-                            {{-- <li class="list-inline-item"> --}}
-                                <div class="col-sm-12 col-md-4 col-lg-4 bg-white pb-3">
-                                    <ul class="list-group mt-4">
-                                        <li class="list-group-item d-flex justify-content-between lh-sm card-outline card-primary">
-                                            <div>
-                                                <span class="text-primary"><b>Grand Total</b></span>
-                                            </div>
-                                            <span class="text-bold t_total">Rp. 0</span>
-                                            <input type="hidden" id='t_total' name='t_total'>
-                                        </li>
-                                    </ul>
-                                </div>
-                            {{-- </li> --}}
-                            {{-- <li class="list-inline-item"> --}}
-                                <div class="col-sm-12 col-md-5 col-lg-5 bg-white pb-3">
-                                    <div class="input-group mt-4">
-                                        <select class="form-control selectpicker" required id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                            <option value="">── PILIH PEMBAYARAN ──</option>
-                                            @foreach ($dataKas as $kas)
-                                                <option value="{{$kas->id}}" {{$kas->id == '1'? 'selected':''}} >{{ $kas->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                        <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true" ></i> Bayar</button>
-                                    </div>
-                                </div>
-                            {{-- </li> --}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            {{-- select ini dipakai buat akal-akalan menu diatas --}}
+                            <div class="form-group" style="display: none;">
+                                <select class="form-control selectpicker" required name="item" id="item"
+                                    data-live-search="true" data-show-subtext="true" data-placement="bottom" disabled>
+                                    {{-- <option value="">­­— PILIH DATA —</option> --}}
+                                    <option value="ALAT">ALAT</option>
+                                    <option value="TALLY">TALLY</option>
+                                    <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
+                                    <option value="BIAYA DEPO">BIYA DEPO</option>
+                                    <option value="BURUH">BURUH</option>
+                                    <option value="TIMBANG">TIMBANG</option>
+                                    <option value="LEMBUR">LEMBUR</option>
+                                    {{-- <option value="KARANTINA">KARANTINA</option> --}}
+                                </select>
+                                <br>
+                                <br>
+
+                                
+                            </div>
+                            <div class="customer_div form-group col-sm-12 col-md-6 col-lg-6 bg-white pb-3" id="customer_div">
+                                <label for="">Pilih Customer</label>
+                                <select class="form-control select2" id='select_customer' name="select_customer"
+                                    data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                    {{-- <option value="">── PILIH CUSTOMER ──</option>
+                                    @foreach ($dataCustomerSewa as $data)
+                                    <option value="{{$data->getCustomer->id}}">{{ $data->getCustomer->nama }} [{{ $data->getCustomer->kode }}]</option>
+                                    @endforeach --}}
+                                </select>
+                                <input type="hidden" name="item_hidden" id="item_hidden" value="ALAT">
+                            </div>
+                            <div class="customer_div form-group col-sm-12 col-md-6 col-lg-6 bg-white pb-3" id="tujuan_div">
+                                    <label for="select_tujuan">Tujuan</label>
+                                <select class="form-control select2" style="width: 100%;" id='select_grup_tujuan' name="select_grup_tujuan">
+                                </select>
+                            </div>
                         </div>
                     </ul>
                 </div>
             </div>
-        
             <div class="card-body">
                 <section class="col-lg-12" id="show_report">
-
-                <table id="rowGroup" class="table table-bordered table-hover" width="100%">
-                    <thead>
-                        <tr>
-                            <th>Biaya Operasional</th>
-                        </tr>
-                    </thead>
-                    <tbody id="hasil">
-                    </tbody>
-                </table>
+                    <table id="rowGroup" class="table table-bordered table-hover" width="100%">
+                        <thead>
+                            <tr>
+                                <th>Biaya Operasional</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hasil">
+                        </tbody>
+                    </table>
                 </section>
             </div>
         </form>
@@ -101,16 +190,54 @@
         $('#save').submit(function(event) {
             var item = $('#item').val();
             var isOk = 0;
+            var dicairkan_nol = false;
+            var dicairkan_null = false;
 
             // check apakah sudah ada yg dicentang?
-                var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                var checkboxes = document.querySelectorAll('.item');
                 checkboxes.forEach(function(checkbox) {
                     if (checkbox.checked) {
                         isOk = 1;
                     }
                 });
             //
+                var textbox_dicairkan = document.querySelectorAll('.item_dicairkan');
+                var textbox_catatan = document.querySelectorAll('.item_catatan');
 
+                for (var i = 0; i < textbox_dicairkan.length; i++) {
+                    console.log(checkboxes[i].value);
+                    console.log(textbox_dicairkan[i].value=='');
+                    console.log(checkboxes[i].value == textbox_dicairkan[i].getAttribute('item')&&checkboxes[i].checked && textbox_dicairkan[i].value == '');
+                    // item itu get idnya val itu di checkboxnya
+                    //misal val checkbox == 492 sama dengan item attr nya 492, jadi true
+                    if (checkboxes[i].value == textbox_dicairkan[i].getAttribute('item') &&checkboxes[i].checked && textbox_dicairkan[i].value == '') {
+                        event.preventDefault(); 
+                        Swal.fire({
+                            icon: 'error',
+                            text: 'Jumlah dicairkan harus diisi',
+                        });
+                        return; 
+                    }
+
+                    if (checkboxes[i].value == textbox_dicairkan[i].getAttribute('item') &&checkboxes[i].checked && textbox_dicairkan[i].value == 0&&textbox_catatan[i].value == '') {
+                        event.preventDefault(); 
+                        Swal.fire({
+                            icon: 'error',
+                            text: 'Catatan Harus diisi jika pencairan 0 (artinya tidak ada pencairan)',
+                        });
+                        return; 
+                    }
+                }
+                textbox_dicairkan.forEach(function(dicairkan) {
+                    if (dicairkan.value == 0) {
+                        dicairkan_nol = true;
+                    }
+                });
+                // console.log(dicairkan_null);
+            // if (isOk&&dicairkan_null) {
+                   
+            //     }
+                
             // validasi sebelum di submit
                 if (item == '' || item == null || isOk == 0) {
                     event.preventDefault(); // Prevent form submission
@@ -161,33 +288,116 @@
 </script>
 <script>
     $(document).ready(function() {
+        $('#customer_div').hide();
+        $('#tujuan_div').hide();
+
+        
+        $(document).on('click', '#btn_alat', function(e) {  
+            $('#item').val('ALAT').trigger('change');
+            $('#select_customer').empty();
+            $('#select_grup_tujuan').empty();
+            $('#customer_div').hide();
+            $('#tujuan_div').hide();
+
+		});   
+        $(document).on('click', '#btn_tally', function(e) {  
+            $('#item').val('TALLY').trigger('change');
+            $('#select_customer').empty();
+            $('#select_grup_tujuan').empty();
+            $('#customer_div').hide();
+            $('#tujuan_div').hide();
+
+
+		}); 
+        $(document).on('click', '#btn_seal', function(e) {  
+            $('#item').val('SEAL PELAYARAN').trigger('change');
+            $('#select_customer').empty();
+            $('#select_grup_tujuan').empty();
+            $('#customer_div').hide();
+            $('#tujuan_div').hide();
+
+		}); 
+        $(document).on('click', '#btn_depo', function(e) {  
+            $('#item').val('BIAYA DEPO').trigger('change');
+            $('#select_customer').empty();
+            $('#select_grup_tujuan').empty();
+            $('#customer_div').hide();
+            $('#tujuan_div').hide();
+
+		}); 
+        $(document).on('click', '#btn_buruh', function(e) {  
+            $('#item').val('BURUH').trigger('change');
+            $('#select_customer').empty();
+            $('#select_grup_tujuan').empty();
+            $('#customer_div').show();
+            $('#tujuan_div').show();
+
+		}); 
+        $(document).on('click', '#btn_timbang', function(e) {  
+            $('#item').val('TIMBANG').trigger('change');
+            $('#select_customer').empty();
+            $('#select_grup_tujuan').empty();
+            $('#customer_div').show();
+            $('#tujuan_div').show();
+
+		});      
+        $(document).on('click', '#btn_lembur', function(e) {  
+            $('#item').val('LEMBUR').trigger('change');
+            $('#select_customer').empty();
+            $('#select_grup_tujuan').empty();
+            $('#customer_div').show();
+            $('#tujuan_div').show();
+
+		});
+        $(document).on('click', '#btn_karantina', function(e) {  
+            $('#item').val('KARANTINA').trigger('change');
+            $('#select_customer').empty();
+            $('#select_grup_tujuan').empty();
+
+            $('#customer_div').hide();
+            $('#tujuan_div').hide();
+
+		});
         $(document).on('change', '#item', function(e) {  
             var item = $('#item').val();
+            $('#item_hidden').val(item);
             var totalElement = document.querySelector('.t_total');
             totalElement.textContent = "Rp. 0"; 
-            if(item != null){
+            // console.log('item', item);
+            var tbody = document.getElementById("hasil");
+
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                let bank = $('#pembayaran').selectpicker('val', 1);
+                // tbody.innerHTML = "Pilih Supir";
+                showTableGabung(item,'ALL','ALL');
+                getCustomer(item);
+            }else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
+                let bank = $('#pembayaran').selectpicker('val', 2);
                 showTable(item);
             }else{
-                var tbody = document.getElementById("hasil");
+                let bank = $('#pembayaran').selectpicker('val', '');
                 tbody.innerHTML = "";
             }
+
+            // if(item != null){
+            //     showTable(item);
+            // }else{
+            //     var tbody = document.getElementById("hasil");
+            //     tbody.innerHTML = "";
+            // }
 		});        
-        // var textDicairkan = $('.dicairkan');
+        showTable('ALAT');
+        var date = new Date();
+        var options = { day: 'numeric', month: 'short', year: 'numeric' };
+        var formattedDate = date.toLocaleDateString('en-US', options);
 
-        // for (let i = 0; i < textDicairkan.length; i++) {
-        //     var dicairkan = textDicairkan.eq(i);
-        //     var row = dicairkan.closest('tr');
-        // }
+        // // console.log(date.getDate());
+        // // console.log(date.getMonth());
+        // console.log(dateMask(date).split('-')[0]-1);
+        // console.log(dateMask(date).split('-')[1]);
+        // console.log(dateMask(date).split('-')[2]);
 
-        // timot nambah ini buat yang bug buruh sama timbang gak ke set
-        $(document).on('keyup', '.dicairkan', function() {  
-            var row = $(this).closest('tr');
-            var item = $('#item').val();
-            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
-                // hidden biaya nominal di cet sama dengan nominal dicairkan
-                row.find('.hiddenNominal').val(row.find('.dicairkan').val())
-            }
-        });
+        //buat yang alat,tally,seal pelayaran,karantina,biaya depo
         function showTable(item){
             if(item == ''){
                 var table = document.getElementById("rowGroup");
@@ -201,125 +411,213 @@
                     </tbody>
                 `;
             }else{
+                var baseUrl = "{{ asset('') }}";
+                var url = baseUrl+`biaya_operasional/load_data/${item}`;
+
                 $.ajax({
                     method: 'GET',
-                    url: `biaya_operasional/load_data/${item}`,
+                    url: url,
                     dataType: 'JSON',
                     contentType: false,
                     cache: false,
                     processData:false,
                     success: function(response) {
                         $("#rowGroup").dataTable().fnDestroy();
-                        $("#loading-spinner").hide();
+                        $("th").remove();
+                        $("#hasil").empty();
                         var item = $('#item').val();
                         var data = response.data;
                         console.log('data', data);
-    
-                        $("th").remove();
-                        $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
-                        if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+
+                        if(item == 'KARANTINA'){
+                            $("thead tr").append(`  <th>Grup</th>
+                                                    <th>Customer</th>
+                                                    <th>No. BL</th>
+                                                    <th>Kapal / Voyage</th>
+                                                    <th>Ditagihkan</th>
+                                                    <th>Dicairkan</th>
+                                                    <th>Catatan</th>    
+                                                `);
+                            $("thead tr").append("<th class='text-center' style='width: 30px;'><input id='check_all' type='checkbox'></th>");
                             
-                        }else{
-                            $("thead tr").append("<th>Total</th>");
-                        }
-                        $("thead tr").append("<th>Dicairkan</th>");
-                        $("thead tr").append("<th>Catatan</th>");
-                        $("thead tr").append("<th class='text-center'><input id='check_all' type='checkbox'></th>");
-                        $("#hasil").html("");
-                        var ord = 7;
-                        var dataCustomer = null;
-                        console.log('data.length', data.length);
-                        if(data.length > 0){
-                            for (var i = 0; i <data.length; i++) {
-                                if(data[i].total_dicairkan == null){
-                                    var start = data[i].deskripsi_so;
-                                    var row = $("<tr class='hoverEffect'></tr>");
-                                    row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input class='check_item check_grup' grup_parent='${data[i].grup_id}' type='checkbox'> </span> </div> </b></td>`);
-                                    row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input class='check_item check_cust' grup_child='${data[i].grup_id}' cust_parent='${data[i].id_customer}' type='checkbox'> </span> </div> </b></td>`);
-                                
-                                    row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' / '+data[i].no_polisi:'' } / ${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier} </td>`);
-                                    row.append(`<td> ${data[i].tipe_kontainer}" <b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
-                                    var nominal = 0;
-                                    if(data[i].jenis_order == 'INBOUND'){
-                                        if(data[i].tipe_kontainer=='20'){
-                                            if(data[i].pick_up == 'DEPO'){
-                                                nominal = 15000;
-                                            }
-                                        }else{
-                                            if(data[i].pick_up == 'DEPO'){
-                                                nominal = 25000;
-                                            }
-                                        }
-                                    }else{
-                                        if(data[i].tipe_kontainer=='20'){
-                                            nominal = 15000;
-                                        }else{
-                                            nominal = 25000;
-                                        }
-                                    }
-                                    if(item == 'TALLY'){
-                                        nominal = data[i].tally;       
-                                    }else if(item == 'SEAL PELAYARAN'){
-                                        nominal = data[i].seal_pelayaran;       
-                                    }
-                                    if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR' || item == 'TAMBAHAN UJ'){
-                                        if(item == 'TAMBAHAN UJ'){
-                                            // nominal = data[i].uj_tujuan - data[i].uj_sewa;
-                                        }
-                                        ord = 6;
-                                    }else{
-                                        row.append(`<td> ${nominal.toLocaleString()} </td>`);
-                                    }
-                                    var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+data[i].nama_panggilan;
-                                    var tambahanUJ = '';
-    
-                                    if(item == 'TAMBAHAN UJ'){
-                                        var inputan = `<input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${moneyMask(data[i].uj_tujuan - data[i].uj_sewa)}' readonly/>`; 
-                                        tambahanUJ =`<input type="hidden" name="data[${data[i].id_sewa}][tambahan_uj]" value="Y" />`;
-                                    }else{
-                                        var inputan = `<input type="text" class="uang numaja dicairkan form-control open_cust_${data[i].id_customer} open_grup_${data[i].grup_id}" id='open_${data[i].id_sewa}' name='data[${data[i].id_sewa}][dicairkan]' sewaOprs='${data[i].id_sewa}' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>`; 
-                                    }
+                            if(data.length > 0){
+                                for (var i = 0; i <data.length; i++) {
+                                    
+                                    var row = $("<tr></tr>");
+                                    row.append(`<td style='background: #efefef'>
+                                                <div class="d-flex justify-content-between" style="margin-right: -13px;">
+                                                    <div>${data[i].get_customer.get_grup.nama_grup}</div>
+                                                    <div style="width: 55px; text-align: center">                                            
+                                                        <input class='grup' id='grup_${data[i].get_customer.get_grup.id}' value="${data[i].get_customer.get_grup.id}" type='checkbox'>
+                                                    </div>
+                                                </div>
+                                                </td>`);
+                                    row.append(`<td style='background: #efefef'>
+                                                <div class="d-flex justify-content-between" style="margin-right: -13px;">
+                                                    <div>► ${data[i].get_customer.nama}</div>
+                                                    <div style="width: 55px; text-align: center">                                            
+                                                        <input class='grup_${data[i].get_customer.get_grup.id} customer' id="customer_${data[i].get_customer.id}" id_grup="${data[i].get_customer.get_grup.id}" value='${data[i].get_customer.id}' type='checkbox'>
+                                                    </div>
+                                                </div>
+                                                </td>`);
+                                    row.append(`<td>${data[i].get_j_o.no_bl}</td>`);
+                                    row.append(`<td>${data[i].get_j_o.kapal} ( ${data[i].get_j_o.voyage} )</td>`);
+                                    row.append(`<td>${moneyMask(data[i].total_operasional)}</td>`);
+                                    row.append(`<td>
+                                                    <input type="text" class="form-control uang numaja dicairkan item_dicairkan grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id} item_${data[i].id}" id="item_${data[i].id}" item="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                    <input type='hidden' id='biaya_${data[i].id}' name='data[${data[i].id}][total_operasional]' value='${data[i].total_operasional}' class='form-control' readonly>
+                                                    <input type='hidden' class='cek_cair cek_cair_grup_${data[i].get_customer.get_grup.id} cek_cair_customer_${data[i].get_customer.id} cek_cair_item_${data[i].id}' name='data[${data[i].id}][cek_cair]' value='N' class='form-control' readonly>
+
+                                                </td>`);
+                                    row.append(`<td class='text-center'> 
+                                                    <input class="form-control item_catatan grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id} item_${data[i].id}" name='data[${data[i].id}][catatan]' type="text" readonly/> 
+                                                </td>`);
                                     row.append(`<td> 
-                                                    ${inputan}
-                                                    ${tambahanUJ}
-                                                    <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
-                                                    <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
-                                                </td>`);
-                                    row.append(`<td class='text-center'> 
-                                                    <input class="form-control open_cust_cttn_${data[i].id_customer} open_grup_cttn_${data[i].grup_id}" id='open_cttn_${data[i].id_sewa}' name='data[${data[i].id_sewa}][catatan]' sewaOprsCttn='${data[i].id_sewa}' type="text" readonly/> 
-                                                </td>`);
-                                    row.append(`<td class='text-center'> 
-                                                    <input class='check_item check_container' id_sewa="${data[i].id_sewa}" grup_child='${data[i].grup_id}' cust_child='${data[i].id_customer}'  name="data[${data[i].id_sewa}][item]" type='checkbox'> 
-                                                    <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? $('#open_' + data[i].id_sewa).val() : nominal}' class='form-control hiddenNominal' readonly>
-                                                    <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
-                                                    <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
-                                                    <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
-                                                    <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
+                                                    <div style="text-align: center">
+                                                        <input class='item grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id}' id_grup="${data[i].get_customer.get_grup.id}" id_customer="${data[i].get_customer.id}" name="data[${data[i].id}][item]" value="${data[i].id}" type='checkbox'>
+                                                    </div>
                                                 </td>`);
                                     $("#hasil").append(row);
                                 }
                             }
-                            
-                            new DataTable('#rowGroup', {
-                                order: [
-                                    [0, 'asc'], // 0 = grup
-                                    [1, 'asc'] // 1 = customer
-                                ],
-                                rowGroup: {
-                                    dataSrc: [0, 1] // di order grup dulu, baru customer
-                                },
-                                columnDefs: [
-                                    {
-                                        targets: [0, 1], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
-                                        visible: false
-                                    },
-                                    {
-                                        targets: [ord, ord-1],
-                                        orderable: false, // matiin sortir kolom centang
-                                    },
-                                ],
-                            });
+                        }else{
+                            $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                            // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                            if(item != 'ALAT' && item != 'BIAYA DEPO'){
+                                $("thead tr").append("<th>Ditagihkan</th>");
+                            }
+                            $("thead tr").append(`<th>Dicairkan</th>
+                                                    <th>Catatan</th>
+                                                    <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+
+                            if(data.length > 0){
+                                for (var i = 0; i < data.length; i++) {
+                                        if(data[i].total_dicairkan == null){
+                                            // console.log('ok');
+                                            var start = data[i].deskripsi_so;
+                                            var total_operasional = 0; // ini itu yang ditagihkan ke sewa (masuk invoice)
+                                            var total_dicairkan = 0;
+
+                                            var row = $("<tr></tr>");
+                                            row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
+                                            row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
+                                            row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
+                                            row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                            if (item == 'ALAT') {
+                                                if(data[i].jenis_order == 'INBOUND'){//ini kalau item == alat
+                                                    if(data[i].tipe_kontainer=='20'){
+                                                        if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                            // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                            total_dicairkan = 15000;
+                                                            total_operasional = 0;
+                                                        }
+                                                    }else{
+                                                        if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                            // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                            total_dicairkan = 25000;
+                                                            total_operasional = 0;
+                                                        }
+                                                    }
+                                                }else{
+                                                    if(data[i].tipe_kontainer=='20'){
+                                                        total_dicairkan = 15000;
+                                                        total_operasional = 0;
+                                                    }else{
+                                                        total_dicairkan = 25000;
+                                                        total_operasional = 0;
+                                                    }
+                                                }
+                                            }
+                                            else if(item == 'TALLY'){
+                                                total_operasional = data[i].tally;
+                                                total_dicairkan = data[i].tally;
+                                            }else if(item == 'SEAL PELAYARAN'){
+                                                total_operasional = data[i].seal_pelayaran;  
+                                                total_dicairkan = data[i].seal_pelayaran;
+                                            }
+                                            else if(item == 'BIAYA DEPO'){
+                                                total_operasional = 20000;  
+                                                total_dicairkan = 20000;
+                                            }
+                                            /*if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'|| item == 'BIAYA DEPO'){
+                                                total_operasional = 200000; // set default value biar kalau angka 0 di hidden
+                                                row.append(`<td> 
+                                                            <input type="text" class="uang numaja ditagihkan form-control item_ditagihkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_ditagihkan${data[i].id_sewa}" id="item_ditagihkan${data[i].id_sewa}" item_ditagihkan="${data[i].id_sewa}" name='data[${data[i].id_sewa}][total_operasional]' value='' readonly/>
+                                                    </td>`);
+                                            }else{
+                                                row.append(`<td> 
+                                                    <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][total_operasional]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? '' : total_operasional}' class='form-control' readonly>
+                                                    ${total_operasional.toLocaleString()} 
+                                                    </td>`);
+                                            }*/
+                                            var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
+                                            var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
+                                            if(item == 'TALLY' || item == 'SEAL PELAYARAN'){
+                                                // row.append(`<td> 
+                                                //             <input type="text" class="uang numaja ditagihkan form-control item_ditagihkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_ditagihkan${data[i].id_sewa}" id="item_ditagihkan${data[i].id_sewa}" item_ditagihkan="${data[i].id_sewa}" name='data[${data[i].id_sewa}][total_operasional]' value='${moneyMask(total_operasional)}' readonly/>
+                                                //     </td>`);
+                                                row.append(`<td> 
+                                                    <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][total_operasional]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? '' : total_operasional}' class='form-control' readonly>
+                                                    ${total_operasional.toLocaleString()} 
+                                                    </td>`);
+                                                row.append(`<td> 
+                                                                <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? moneyMask(total_dicairkan):data[i].total_dicairkan}' readonly/>
+                                                                <input type='hidden' class='cek_cair cek_cair_grup_${data[i].grup_id} cek_cair_customer_${data[i].id_customer} cek_cair_item_${data[i].id_sewa}' name='data[${data[i].id_sewa}][cek_cair]' value='N' class='form-control' readonly>
+                                                                <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
+                                                                <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
+                                                            </td>`);
+                                            }
+                                            else
+                                            {
+                                                row.append(`<td> 
+                                                                <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? moneyMask(total_dicairkan):data[i].total_dicairkan}' readonly/>
+                                                                <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][total_operasional]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? '' : total_operasional}' class='form-control' readonly>
+                                                                <input type='hidden' class='cek_cair cek_cair_grup_${data[i].grup_id} cek_cair_customer_${data[i].id_customer} cek_cair_item_${data[i].id_sewa}' name='data[${data[i].id_sewa}][cek_cair]' value='N' class='form-control' readonly>
+                                                                <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
+                                                                <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
+                                                            </td>`);
+                                            }
+                                            row.append(`<td class='text-center'> 
+                                                            <input class="form-control item_catatan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" name='data[${data[i].id_sewa}][catatan]' type="text" readonly/> 
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class='item grup_${data[i].grup_id} customer_${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" id_grup="${data[i].grup_id}" id_customer="${data[i].id_customer}" type='checkbox' value="${data[i].id_sewa}"> 
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][supplier]' value='${data[i].namaSupplier}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
+                                                        </td>`);
+                                                        
+                                            // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
+                                            // if(total_dicairkan != 0){
+                                                $("#hasil").append(row);
+                                            // }
+                                        }
+                                }
+                            }
                         }
+
+                        new DataTable('#rowGroup', {
+                            responsive: true,
+                            order: [
+                                [0, 'asc'], // 0 = grup
+                                [1, 'asc'], // 1 = customer
+                            ],
+                            rowGroup: {
+                                dataSrc: [0, 1] // di order grup dulu, baru customer
+                            },
+                            columnDefs: [
+                                {
+                                    targets: [0, 1], 
+                                    visible: false
+                                },
+                                {
+                                    targets: [-1],
+                                    orderable: false, // matiin sortir kolom centang
+                                },
+                            ],
+                        });
                         
                     },error: function (xhr, status, error) {
                         $("#loading-spinner").hide();
@@ -335,201 +633,823 @@
                 });
             }
         }
+        //buat yang buruh,timbang,lembur
+        function showTableGabung(item,customer,tujuan){
+            if(item == ''){
+                var table = document.getElementById("rowGroup");
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Biaya Operasional</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hasil">
+                    </tbody>
+                `;
+            }else{
+                var baseUrl = "{{ asset('') }}";
+                var url = baseUrl+`biaya_operasional/load_data_gabung/${item}/${customer}/${tujuan}`;
+
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    dataType: 'JSON',
+                    contentType: false,
+                    cache: false,
+                    processData:false,
+                    success: function(response) {
+                        $("#rowGroup").dataTable().fnDestroy();
+                        $("th").remove();
+                        $("#hasil").empty();
+                        var item = $('#item').val();
+                        var data = response.data;
+                        console.log('data', data);
+                            $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                            // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                                $("thead tr").append("<th>Ditagihkan</th>");
+                            // }
+                            $("thead tr").append(`<th>Dicairkan</th>
+                                                    <th>Catatan</th>
+                                                    <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+
+                            if(data.length > 0){
+                                console.log(data);
+                                for (var i = 0; i < data.length; i++) {
+                                        if(data[i].total_dicairkan == null){
+                                            console.log('ok');
+                                            var start = data[i].deskripsi_so;
+                                            var total_operasional = 0;
+                                            var total_dicairkan = 0;
+                                            var row = $("<tr></tr>");
+                                            row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
+                                            row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
+                                            row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
+                                            row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                                                if(item == 'LEMBUR')
+                                                {
+                                                    total_operasional = 0; // set default value biar kalau angka 0 di hidden
+                                                }
+                                                else
+                                                {
+                                                    total_operasional = 20000; // set default value biar kalau angka 0 di hidden
+                                                }
+                                                total_dicairkan = 20000; // set default value biar kalau angka 0 di hidden
+                                                row.append(`<td> 
+                                                            <input type="text" class="uang numaja ditagihkan form-control item_ditagihkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_ditagihkan${data[i].id_sewa}" id="item_ditagihkan${data[i].id_sewa}" item_ditagihkan="${data[i].id_sewa}" name='data[${data[i].id_sewa}][total_operasional]' value='${moneyMask(total_operasional)}' readonly/>
+                                                    </td>`);
+                                            }
+                                            var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
+                                            var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
+                                            
+                                            row.append(`<td> 
+                                                            <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? moneyMask(total_dicairkan) :data[i].total_dicairkan}' readonly/>
+                                                            <input type='hidden' class='cek_cair cek_cair_grup_${data[i].grup_id} cek_cair_customer_${data[i].id_customer} cek_cair_item_${data[i].id_sewa}' name='data[${data[i].id_sewa}][cek_cair]' value='N' class='form-control' readonly>
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class="form-control item_catatan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" name='data[${data[i].id_sewa}][catatan]' type="text" readonly/> 
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class='item grup_${data[i].grup_id} customer_${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" id_grup="${data[i].grup_id}" id_customer="${data[i].id_customer}" type='checkbox' value="${data[i].id_sewa}"> 
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][supplier]' value='${data[i].namaSupplier}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
+                                                        </td>`);
+                                                        
+                                            // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
+                                            // if(nominal != 0){
+                                                $("#hasil").append(row);
+                                            // }
+                                        }
+                                }
+                            }
+                        new DataTable('#rowGroup', {
+                            order: [
+                                [0, 'asc'], // 0 = grup
+                                [1, 'asc'], // 1 = customer
+                            ],
+                            rowGroup: {
+                                dataSrc: [0, 1] // di order grup dulu, baru customer
+                            },
+                            columnDefs: [
+                                {
+                                    targets: [0, 1], 
+                                    visible: false
+                                },
+                                {
+                                    targets: [-1],
+                                    orderable: false, // matiin sortir kolom centang
+                                },
+                            ],
+                        });
+                        
+                    },error: function (xhr, status, error) {
+                        $("#loading-spinner").hide();
+                        if ( xhr.responseJSON.result == 'error') {
+                            console.log("Error:", xhr.responseJSON.message);
+                            console.log("XHR status:", status);
+                            console.log("Error:", error);
+                            console.log("Response:", xhr.responseJSON);
+                        } else {
+                            toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                        }
+                    }
+                });
+            }
+        }
+        function getCustomer(item)
+        {
+            var baseUrl = "{{ asset('') }}";
+            var select_customer = $('#select_customer');
+            $.ajax({
+                url: `${baseUrl}biaya_operasional/load_customer_sewa/${item}`, 
+                method: 'GET', 
+                success: function(response) {
+                    // console.log(response);
+
+                    // if(response)
+                    // {
+                        select_customer.empty(); 
+                        select_customer.append('<option value="ALL">── PILIH CUSTOMER ──</option>');
+                        response.data.forEach(customer => {
+                            const option = document.createElement('option');
+                            option.value = customer.get_customer.id;
+                            option.textContent = customer.get_customer.nama+ ` [${customer.get_customer.kode} ]`;
+                            select_customer.append(option);
+                        });
+                    // }
+                    // else
+                    // {
+                    //     select_customer.empty(); 
+                    //     select_customer.append('<option value="">Tidak ada data</option>');
+                    // }
+        
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+        function getTujuan(id_customer,item)
+        {
+            var baseUrl = "{{ asset('') }}";
+            var select_grup_tujuan = $('#select_grup_tujuan');
+            $.ajax({
+                url: `${baseUrl}biaya_operasional/load_tujuan_sewa/${id_customer}/${item}`, 
+                method: 'GET', 
+                success: function(response) {
+                        // console.log(response.data);
+
+                    if(response)
+                    {
+                        select_grup_tujuan.empty(); 
+                        select_grup_tujuan.append('<option value="ALL">── PILIH TUJUAN ──</option>');
+                        
+                        console.log(response.data);
+                        if(id_customer!="")
+                        {
+                            // row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
+                            // row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+
+                            response.data.forEach(tujuan => {
+                                const option = document.createElement('option');
+                                option.value = tujuan.id_grup_tujuan;
+                                option.textContent = tujuan.nama_tujuan;
+                                // option.textContent = tujuan.nama_tujuan+` - [${tujuan.tipe_kontainer}ft]`+ ` ( ${tujuan.nama_driver}[${tujuan.no_polisi}])` + ` (${dateMask(tujuan.tanggal_berangkat)})`;
+                                select_grup_tujuan.append(option);
+                            });
+                        }
+                    }
+                    // else
+                    // {
+
+                    // }
+        
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+        $(document).on('change', '#select_customer', function(e) {  
+            var item = $('#item_hidden').val();
+            var id_customer = $(this).val();
+            console.log();
+
+            $('#item_hidden').val(item);
+            var totalElement = document.querySelector('.t_total');
+            totalElement.textContent = "Rp. 0"; 
+            // console.log('item', item);
+            var tbody = document.getElementById("hasil");
+            getTujuan(id_customer,item);
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                let bank = $('#pembayaran').selectpicker('val', 1);
+                if($(this).val())
+                {
+                    showTableGabung(item,id_customer,'ALL');
+                }
+                else
+                {
+                    // $("#rowGroup").dataTable().fnDestroy();
+                    // $("th").remove();
+                    // $("#hasil").empty();
+                    $("#rowGroup").dataTable().fnDestroy();
+                    $("th").remove();
+                    $("#hasil").empty();
+                    var item = $('#item').val();
+                    $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                    // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                        $("thead tr").append("<th>Ditagihkan</th>");
+                    // }
+                    $("thead tr").append(`<th>Dicairkan</th>
+                                            <th>Catatan</th>
+                                            <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+                }
+                
+            }/*else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
+                let bank = $('#pembayaran').selectpicker('val', 2);
+            }*/else{
+                let bank = $('#pembayaran').selectpicker('val', '');
+                tbody.innerHTML = "";
+            }
+
+            // if(item != null){
+            //     showTable(item);
+            // }else{
+            //     var tbody = document.getElementById("hasil");
+            //     tbody.innerHTML = "";
+            // }
+		});   
+
+         $(document).on('change', '#select_grup_tujuan', function(e) {  
+            var item = $('#item_hidden').val();
+            var id_tujuan = $(this).val();
+            var id_customer = $('#select_customer').val();
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                let bank = $('#pembayaran').selectpicker('val', 1);
+                if($(this).val())
+                {
+                    showTableGabung(item,id_customer,id_tujuan);
+                }
+                else
+                {
+                    // $("#rowGroup").dataTable().fnDestroy();
+                    // $("th").remove();
+                    // $("#hasil").empty();
+                    $("#rowGroup").dataTable().fnDestroy();
+                    $("th").remove();
+                    $("#hasil").empty();
+                    var item = $('#item').val();
+                    $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                    // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                        $("thead tr").append("<th>Ditagihkan</th>");
+                    // }
+                    $("thead tr").append(`<th>Dicairkan</th>
+                                            <th>Catatan</th>
+                                            <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+                }
+                
+            }/*else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
+                let bank = $('#pembayaran').selectpicker('val', 2);
+            }*/else{
+                let bank = $('#pembayaran').selectpicker('val', '');
+                tbody.innerHTML = "";
+            }
+
+            // if(item != null){
+            //     showTable(item);
+            // }else{
+            //     var tbody = document.getElementById("hasil");
+            //     tbody.innerHTML = "";
+            // }
+		});   
 
         
-        
         // check all
-            // function toggleReadonlyAll() {
-            //     var isChecked = $('#check_all').prop('checked');
-            //     $('[id^="open_"]').prop('readonly', !isChecked);
-            // }
-            function toggleReadonlyAll(inputId) {
-                var item = $('#item').val();
-                var isChecked = $('#check_all').prop('checked');
-                var readonlyValue = isChecked ? false : true; // Set to true when not checked (isChecked is false)
-                if(readonlyValue == true){
-                    if(item != 'TAMBAHAN UJ'){
-                        $(`[id^="open_"]`).val('');
-                    }else{
-                        $(`[id^="open_cttn_"]`).val('');
-                    }
-                }
-                if(item != 'TAMBAHAN UJ'){
-                    $('[id^="open_"]').prop('readonly', readonlyValue);
-                }else{
-                    $('[id^="open_cttn_"]').prop('readonly', readonlyValue);
-                }
-            }
-            $(document).on('change', '#check_all', function() {  
-                toggleReadonlyAll();
-                $(".check_item").prop('checked', $(this).prop('checked'));
-                hitung();
-            });
-            $(document).on('change', '#check_all_pick_up', function() {  
-                $(".check_item_pick_up").prop('checked', $(this).prop('checked'));
-            });
+        $(document).on('click', '#check_all', function() {  
+            let isChecked = this.checked;
+            $(".grup").prop('checked', isChecked);
+            $(".customer").prop('checked', isChecked);
+            $(".item").prop('checked', isChecked);
+            // $(".cek_cair_grup_"+id_grup).val('Y');
+            // $(".cek_cair_customer_"+customer_id).val('Y');
+            $(".cek_cair").val('Y');
+
+            $(".item_dicairkan").prop('readonly', !isChecked);
+            $(".item_ditagihkan").prop('readonly', !isChecked);
+            $(".item_catatan").prop('readonly', !isChecked);
+            hitung();
+        });
         //
 
         // check per grup
-            function toggleReadonlyGrup(grup_id) {
-                var item = $('#item').val();
-                var checkbox = $(`.check_grup[grup_parent="${grup_id}"]`);
-                var inputElements = $('.open_grup_' + grup_id);
-                var cttnElements = $('.open_grup_cttn_' + grup_id);
-                if (checkbox.prop('checked')) {
-                    if(item != 'TAMBAHAN UJ'){
-                        inputElements.prop('readonly', false);
-                    }
-                    cttnElements.prop('readonly', false);
-                } else {
-                    if(item != 'TAMBAHAN UJ'){
-                        inputElements.val('');
-                    }
-                    cttnElements.val('');
-                    inputElements.prop('readonly', true);
-                    cttnElements.prop('readonly', true);
-                    caps();
-                }
-                hitung();
-            }
-            $(document).on('change', '.check_grup, .check_grup_tps, .check_grup_ttl, .check_grup_depo', function() {
-                var opr = $(this).attr('opr');
-                var grup_id = $(this).attr('grup_parent');
-                var child = $(`input[grup_child="${grup_id}"]`);
-                var child_opr = $(`input[grup_child_${opr}="${grup_id}"]`);
-                child.prop('checked', $(this).prop('checked'));
-                child_opr.prop('checked', $(this).prop('checked'));
-                $("#check_all").prop('checked', false);
+        $(document).on('click', '.grup', function() {
+            let id_grup = this.value;
+            let isChecked = this.checked;
 
-                toggleReadonlyGrup(grup_id);
-            });
+            $(".grup_"+id_grup).prop('checked', isChecked);
+            $(".grup_"+id_grup).prop('readonly', !isChecked);
+            $(".cek_cair_grup_"+id_grup).val('Y');
+            $("#check_all").prop('checked', false);
+            hitung();
+        });
         //
  
         // check per customer
-            function toggleReadonlyCust(cust_id) {
-                var item = $('#item').val();
-                var checkbox = $(`.check_cust[cust_parent="${cust_id}"]`);
-                var inputElements = $('.open_cust_' + cust_id);
-                var cttnElements = $('.open_cust_cttn_' + cust_id);
+        $(document).on('click', '.customer', function() {
+            let customer_id = this.value;
+            let id_grup = this.getAttribute('id_grup');
+            let isChecked = this.checked;
 
-                if (checkbox.prop('checked')) {
-                    if(item != 'TAMBAHAN UJ'){
-                        inputElements.prop('readonly', false);
-                    }
-                    cttnElements.prop('readonly', false);
-                } else {
-                    if(item != 'TAMBAHAN UJ'){
-                        inputElements.val('');
-                    }
-                    cttnElements.val('');
-                    inputElements.prop('readonly', true);
-                    cttnElements.prop('readonly', true);
-                }
-                hitung();
-            }
-            $(document).on('change', '.check_cust, .check_cust_tps, .check_cust_ttl, .check_cust_depo', function() {
-                var opr = $(this).attr('opr');
-                var cust_id = $(this).attr('cust_parent');
-                var child = $(`input[cust_child="${cust_id}"]`);
-                var child_opr = $(`input[cust_child_${opr}="${cust_id}"]`);
-                child.prop('checked', $(this).prop('checked'));
-                child_opr.prop('checked', $(this).prop('checked'));
+            $(".customer_"+customer_id).prop('checked', isChecked);
+            $(".customer_"+customer_id).prop('readonly', !isChecked);
+            $(".cek_cair_customer_"+customer_id).val('Y');
 
-                var grup_id = $(this).attr('grup_child');
-                $("#check_all").prop('checked', false);
-
-                toggleReadonlyCust(cust_id);
-            });
+            $("#check_all").prop('checked', false);
+            $("#grup_"+id_grup).prop('checked', false);
+            hitung();
+        });
         //
 
-        // uncheck all
-            // function toggleReadonly(inputId) {
-            //     var isChecked = $(`input[id_sewa='${inputId}']`).prop('checked');
-            //     $(`#open_${inputId}`).prop('readonly', !isChecked);
-            // }
-            function toggleReadonly(inputId) {
-                var isChecked = $(`input[id_sewa='${inputId}']`).prop('checked');
-                var readonlyValue = isChecked ? false : true; // Set to true when not checked (isChecked is false)
-                var item = $('#item').val();
-                
-                if(readonlyValue == true){
-                    if(item != 'TAMBAHAN UJ'){
-                        $(`#open_${inputId}`).val('');
-                    }
-                    $(`#open_cttn_${inputId}`).val('');
-                }
-      
-                if(item != 'TAMBAHAN UJ'){
-                    $(`#open_${inputId}`).prop('readonly', readonlyValue);
-                }
-                $(`#open_cttn_${inputId}`).prop('readonly', readonlyValue);
-                hitung();
-                caps();
-            }
-            $(document).on('click', '.check_container', function (event) {
-                $("#check_all").prop('checked', false);
-                var cust_id = $(this).attr('cust_child');
-                var grup_id = $(this).attr('grup_child');
-                var cust_x = $(this).attr('cust_child');
-                var id_sewa = $(this).attr('id_sewa');
-                // $(`input[cust_parent="${cust_id}"]`).val();
-                $(`input[cust_parent="${cust_id}"]`).prop('checked', false);
-                $(`input[grup_parent="${grup_id}"]`).prop('checked', false);
+        // per item
+        $(document).on('click', '.item', function (event) {
+            let id = this.value;
+            let id_grup = this.getAttribute('id_grup');
+            let id_customer = this.getAttribute('id_customer');
+            let isChecked = this.checked;
 
-                toggleReadonly(id_sewa);
-            });
+            $(".item_"+id).prop('checked', isChecked);
+            $(".item_"+id).prop('readonly', !isChecked);
+            $(".item_ditagihkan"+id).prop('readonly', !isChecked);
+            $(".cek_cair_item_"+id).val('Y');
+            $("#check_all").prop('checked', false);
+            $("#grup_"+id_grup).prop('checked', false);
+            $("#customer_"+id_customer).prop('checked', false);
+            hitung();
+        });
         //
         
         $(document).on('keyup', '.dicairkan', function(){
-            var idOprs = $(this).attr('sewaOprs');
-            var inputed = parseFloat(this.value.replace(/,/g, ''));
-            var max = $('#biaya_'+idOprs).val();
+            let id = this.getAttribute('item');
+            var inputed = normalize(this.value);
 
-            if (inputed > max && item.value != 'TIMBANG' && item.value != 'BURUH') {
-                $('#open_'+idOprs).val(parseFloat(max).toLocaleString()); // Explicitly specify the locale
+            if(item.value == 'TIMBANG' || item.value == 'BURUH' || item.value == 'LEMBUR'|| item.value == 'ALAT'|| item.value == 'TALLY'|| item.value == 'SEAL PELAYARAN'||item.value == 'BIAYA DEPO'){
+                $('#biaya_'+id).val(inputed);
+            }else{
+                var max = $('#biaya_'+id).val();
+                if(inputed > max){
+                    $('#item_'+id).val(parseFloat(max).toLocaleString()); 
+                }
             }
             hitung();
         });
 
         function hitung(){
-            var item = $('#item').val();
-            console.log('item', item);
             var totalCair = 0;
             var dicairkan = document.querySelectorAll('.dicairkan');
-
-            if(item == 'TAMBAHAN UJ'){
-                // Get all checked checkboxes with the class .check_container
-                var checkedCheckboxes = document.querySelectorAll('.check_container:checked');
-
-                // Loop through each checked checkbox and get the id_sewa attribute
-                checkedCheckboxes.forEach(function(checkbox) {
-                    var idSewa = checkbox.getAttribute('id_sewa');
-                    totalCair += parseFloat(escapeComma($('#open_'+idSewa).val()));
-                });
-
-                var totalElement = document.querySelector('.t_total');
-                $('#t_total').val(totalCair);
-                totalElement.textContent = "Rp. "+(totalCair).toLocaleString();
-            }else{
-                for (var i = 0; i < dicairkan.length; i++) {
+            var cek_cair = document.querySelectorAll('.cek_cair');
+            for (var i = 0; i < dicairkan.length; i++) {
+                if(dicairkan[i].readOnly == false)
+                {
+                    // cek_cair[i].value='N';
                     totalCair += parseFloat(dicairkan[i].value.replace(/,/g, '')) || 0; // Convert to a number or use 0 if NaN
                 }
-
-                var totalElement = document.querySelector('.t_total');
-                $('#t_total').val(totalCair);
-                totalElement.textContent = "Rp. "+(totalCair).toLocaleString();
+                if(dicairkan[i].readOnly == true)
+                {
+                    cek_cair[i].value='N';
+                }
             }
-
-
- 
+            var totalElement = document.querySelector('.t_total');
+            $('#t_total').val(totalCair);
+            totalElement.textContent = "Rp. "+(totalCair).toLocaleString();
         }
 
         function caps(){
-            $('input[type="text"]').on("input", function () {
-                var inputValue = $(this).val();
-                var uppercaseValue = inputValue.toUpperCase();
-                $(this).val(uppercaseValue);
+            $("input").focusout(function () {
+                this.value = this.value.toLocaleUpperCase();
             });
+        }
+        function showTableBackup(item){
+            if(item == ''){
+                var table = document.getElementById("rowGroup");
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Biaya Operasional</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hasil">
+                    </tbody>
+                `;
+            }else{
+                var baseUrl = "{{ asset('') }}";
+                var url = baseUrl+`biaya_operasional/load_data/${item}`;
+
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    dataType: 'JSON',
+                    contentType: false,
+                    cache: false,
+                    processData:false,
+                    success: function(response) {
+                        $("#rowGroup").dataTable().fnDestroy();
+                        $("th").remove();
+                        $("#hasil").empty();
+                        var item = $('#item').val();
+                        var data = response.data;
+                        console.log('data', data);
+
+                        if(item == 'KARANTINA'){
+                            $("thead tr").append(`  <th>Grup</th>
+                                                    <th>Customer</th>
+                                                    <th>No. BL</th>
+                                                    <th>Kapal / Voyage</th>
+                                                    <th>Ditagihkan</th>
+                                                    <th>Dicairkan</th>
+                                                    <th>Catatan</th>    
+                                                `);
+                            $("thead tr").append("<th class='text-center' style='width: 30px;'><input id='check_all' type='checkbox'></th>");
+                            
+                            if(data.length > 0){
+                                for (var i = 0; i <data.length; i++) {
+                                    
+                                    var row = $("<tr></tr>");
+                                    row.append(`<td style='background: #efefef'>
+                                                <div class="d-flex justify-content-between" style="margin-right: -13px;">
+                                                    <div>${data[i].get_customer.get_grup.nama_grup}</div>
+                                                    <div style="width: 55px; text-align: center">                                            
+                                                        <input class='grup' id='grup_${data[i].get_customer.get_grup.id}' value="${data[i].get_customer.get_grup.id}" type='checkbox'>
+                                                    </div>
+                                                </div>
+                                                </td>`);
+                                    row.append(`<td style='background: #efefef'>
+                                                <div class="d-flex justify-content-between" style="margin-right: -13px;">
+                                                    <div>► ${data[i].get_customer.nama}</div>
+                                                    <div style="width: 55px; text-align: center">                                            
+                                                        <input class='grup_${data[i].get_customer.get_grup.id} customer' id="customer_${data[i].get_customer.id}" id_grup="${data[i].get_customer.get_grup.id}" value='${data[i].get_customer.id}' type='checkbox'>
+                                                    </div>
+                                                </div>
+                                                </td>`);
+                                    row.append(`<td>${data[i].get_j_o.no_bl}</td>`);
+                                    row.append(`<td>${data[i].get_j_o.kapal} ( ${data[i].get_j_o.voyage} )</td>`);
+                                    row.append(`<td>${moneyMask(data[i].total_operasional)}</td>`);
+                                    row.append(`<td>
+                                                    <input type="text" class="form-control uang numaja dicairkan item_dicairkan grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id} item_${data[i].id}" id="item_${data[i].id}" item="${data[i].id}" name='data[${data[i].id}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                    <input type='hidden' id='biaya_${data[i].id}' name='data[${data[i].id}][nominal]' value='${data[i].total_operasional}' class='form-control' readonly>
+                                                </td>`);
+                                    row.append(`<td class='text-center'> 
+                                                    <input class="form-control item_catatan grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id} item_${data[i].id}" name='data[${data[i].id}][catatan]' type="text" readonly/> 
+                                                </td>`);
+                                    row.append(`<td> 
+                                                    <div style="text-align: center">
+                                                        <input class='item grup_${data[i].get_customer.get_grup.id} customer_${data[i].get_customer.id}' id_grup="${data[i].get_customer.get_grup.id}" id_customer="${data[i].get_customer.id}" name="data[${data[i].id}][item]" value="${data[i].id}" type='checkbox'>
+                                                    </div>
+                                                </td>`);
+                                    $("#hasil").append(row);
+                                }
+                            }
+                        }else{
+                            $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                            // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                                $("thead tr").append("<th>Ditagihkan</th>");
+                            // }
+                            $("thead tr").append(`<th>Dicairkan</th>
+                                                    <th>Catatan</th>
+                                                    <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+
+                            if(data.length > 0){
+                                for (var i = 0; i < data.length; i++) {
+                                    // console.log(
+                                    //   //misal tgl berangkat = 18 terus tgl hari ini 19 , jadi masik true
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])-1&& // h-1
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    //     ||
+                                    //     //misal tgl berangkat = 18 terus tgl hari ini 18 , jadi masik true
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])&& //hari ini
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    //     ||
+                                    //     //misal tgl berangkat = 18 terus tgl hari ini 18+1 = 19 , jadi masik true
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])+1&& // h+1
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                    //     dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    // );
+                                    
+                                    if(
+                                         //misal tgl berangkat = 18 terus tgl hari ini 19 , jadi masik true
+                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])-1&& // h-1
+                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                        ||
+                                        //misal tgl berangkat = 18 terus tgl hari ini 18 , jadi masik true
+                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])&& //hari ini
+                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                        ||
+                                        //misal tgl berangkat = 18 terus tgl hari ini 18+1 = 19 , jadi masik true
+                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])+1&& // h+1
+                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    )
+                                    {
+                                        if(data[i].total_dicairkan == null){
+                                            console.log('ok');
+                                            var start = data[i].deskripsi_so;
+                                            var total_operasional = 0; // ini itu yang ditagihkan ke sewa (masuk invoice)
+                                            var total_dicairkan = 0;
+
+                                            var row = $("<tr></tr>");
+                                            row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
+                                            row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
+                                            row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
+                                            row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                            if(data[i].jenis_order == 'INBOUND'){//ini kalau item == alat
+                                                if(data[i].tipe_kontainer=='20'){
+                                                    if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                        // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                        total_operasional = 15000;
+                                                    }
+                                                }else{
+                                                    if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                        // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                        total_operasional = 25000;
+                                                    }
+                                                }
+                                            }else{
+                                                if(data[i].tipe_kontainer=='20'){
+                                                    total_operasional = 15000;
+                                                }else{
+                                                    total_operasional = 25000;
+                                                }
+                                            }
+                                            if(item == 'TALLY'){
+                                                total_operasional = data[i].tally;       
+                                            }else if(item == 'SEAL PELAYARAN'){
+                                                total_operasional = data[i].seal_pelayaran;       
+                                            }
+                                            if(/*item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'|| */item == 'BIAYA DEPO'){
+                                                total_operasional = 200000; // set default value biar kalau angka 0 di hidden
+                                                row.append(`<td> 
+                                                            <input type="text" class="uang numaja ditagihkan form-control item_ditagihkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_ditagihkan${data[i].id_sewa}" id="item_ditagihkan${data[i].id_sewa}" item_ditagihkan="${data[i].id_sewa}" name='data[${data[i].id_sewa}][total_operasional]' value='' readonly/>
+                                                    </td>`);
+                                            }else{
+                                                row.append(`<td> 
+                                                    <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][total_operasional]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? '' : total_operasional}' class='form-control' readonly>
+                                                    ${total_operasional.toLocaleString()} 
+                                                    </td>`);
+                                            }
+                                            var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
+                                            var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
+                                            
+                                            row.append(`<td> 
+                                                            <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class="form-control item_catatan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" name='data[${data[i].id_sewa}][catatan]' type="text" readonly/> 
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class='item grup_${data[i].grup_id} customer_${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" id_grup="${data[i].grup_id}" id_customer="${data[i].id_customer}" type='checkbox' value="${data[i].id_sewa}"> 
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][supplier]' value='${data[i].namaSupplier}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
+                                                        </td>`);
+                                                        
+                                            // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
+                                            if(total_operasional != 0){
+                                                $("#hasil").append(row);
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
+                        new DataTable('#rowGroup', {
+                            order: [
+                                [0, 'asc'], // 0 = grup
+                                [1, 'asc'], // 1 = customer
+                            ],
+                            rowGroup: {
+                                dataSrc: [0, 1] // di order grup dulu, baru customer
+                            },
+                            columnDefs: [
+                                {
+                                    targets: [0, 1], 
+                                    visible: false
+                                },
+                                {
+                                    targets: [-1],
+                                    orderable: false, // matiin sortir kolom centang
+                                },
+                            ],
+                        });
+                        
+                    },error: function (xhr, status, error) {
+                        $("#loading-spinner").hide();
+                        if ( xhr.responseJSON.result == 'error') {
+                            console.log("Error:", xhr.responseJSON.message);
+                            console.log("XHR status:", status);
+                            console.log("Error:", error);
+                            console.log("Response:", xhr.responseJSON);
+                        } else {
+                            toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                        }
+                    }
+                });
+            }
+        }
+        function showTableGabungBackup(item,select_customer){
+            if(item == ''){
+                var table = document.getElementById("rowGroup");
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Biaya Operasional</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hasil">
+                    </tbody>
+                `;
+            }else{
+                var baseUrl = "{{ asset('') }}";
+                var url = baseUrl+`biaya_operasional/load_data_gabung/${item}/${select_customer}`;
+
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    dataType: 'JSON',
+                    contentType: false,
+                    cache: false,
+                    processData:false,
+                    success: function(response) {
+                        $("#rowGroup").dataTable().fnDestroy();
+                        $("th").remove();
+                        $("#hasil").empty();
+                        var item = $('#item').val();
+                        var data = response.data;
+                        // console.log('data', data);
+                            $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                            // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                                $("thead tr").append("<th>Ditagihkan</th>");
+                            // }
+                            $("thead tr").append(`<th>Dicairkan</th>
+                                                    <th>Catatan</th>
+                                                    <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+
+                            if(data.length > 0){
+                                for (var i = 0; i < data.length; i++) {
+                                    console.log(
+                                        //misal tgl berangkat = 18 terus tgl hari ini 19 , jadi masik true
+                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])-1&& // h-1
+                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                        ||
+                                        //misal tgl berangkat = 18 terus tgl hari ini 18 , jadi masik true
+                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])&& //hari ini
+                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                        ||
+                                        //misal tgl berangkat = 18 terus tgl hari ini 18+1 = 19 , jadi masik true
+                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])+1&& // h+1
+                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    );
+                                    if(
+                                        //misal tgl berangkat = 18 terus tgl hari ini 19 , jadi masik true
+                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])-1&& // h-1
+                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                        ||
+                                        //misal tgl berangkat = 18 terus tgl hari ini 18 , jadi masik true
+                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])&& //hari ini
+                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                        ||
+                                        //misal tgl berangkat = 18 terus tgl hari ini 18+1 = 19 , jadi masik true
+                                        dateMask(data[i].tanggal_berangkat).split('-')[0] == parseFloat(dateMask(date).split('-')[0])+1&& // h+1
+                                        dateMask(data[i].tanggal_berangkat).split('-')[1] == dateMask(date).split('-')[1]&&
+                                        dateMask(data[i].tanggal_berangkat).split('-')[2] == dateMask(date).split('-')[2]
+                                    )
+                                    {
+                                        if(data[i].total_dicairkan == null){
+                                            console.log('ok');
+                                            var start = data[i].deskripsi_so;
+                                            var nominal = 0;
+                                            var row = $("<tr></tr>");
+                                            row.append(`<td style='background: #efefef'><b> <div> <span> ${data[i].nama_grup}</span> <span class='float-right mr-1'>  <input id="grup_${data[i].grup_id}" class='grup' type='checkbox' value="${data[i].grup_id}"> </span> </div> </b></td>`);
+                                            row.append(`<td style='background: #efefef'><b> <div> <span>► ${data[i].customer}</span> <span class='float-right mr-1'>  <input id="customer_${data[i].id_customer}" id_grup="${data[i].grup_id}" class='grup_${data[i].grup_id} customer' type='checkbox' value="${data[i].id_customer}"> </span> </div> </b></td>`);
+                                            row.append(`<td> ${data[i].nama_tujuan} ${ data[i].no_polisi != null? ' #'+data[i].no_polisi:'' } (${data[i].nama_panggilan?data[i].nama_panggilan:'DRIVER REKANAN '+ data[i].namaSupplier}) (${dateMask(data[i].tanggal_berangkat)}) </td>`);
+                                            row.append(`<td> ${data[i].tipe_kontainer != null? data[i].tipe_kontainer+'"':''}<b> ${data[i].jenis_order} </b> ${ data[i].pick_up == null? '':'('+data[i].pick_up+')'} </td>`);
+                                            if(data[i].jenis_order == 'INBOUND'){
+                                                if(data[i].tipe_kontainer=='20'){
+                                                    if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                        // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                        nominal = 15000;
+                                                    }
+                                                }else{
+                                                    if(data[i].pick_up == 'DEPO' || data[i].pick_up == 'TTL'){
+                                                        // hanya keluar ketika depo atau TTL tapi kalau TL cuma ketika empty (yg tau nanti adminnya, dibuka saja)
+                                                        nominal = 25000;
+                                                    }
+                                                }
+                                            }else{
+                                                if(data[i].tipe_kontainer=='20'){
+                                                    nominal = 15000;
+                                                }else{
+                                                    nominal = 25000;
+                                                }
+                                            }
+                                            if(item == 'TALLY'){
+                                                nominal = data[i].tally;       
+                                            }else if(item == 'SEAL PELAYARAN'){
+                                                nominal = data[i].seal_pelayaran;       
+                                            }
+                                            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'|| item == 'BIAYA DEPO'){
+                                                nominal = 200000; // set default value biar kalau angka 0 di hidden
+                                                row.append(`<td> 
+                                                            <input type="text" class="uang numaja ditagihkan form-control item_ditagihkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_ditagihkan${data[i].id_sewa}" id="item_ditagihkan${data[i].id_sewa}" item_ditagihkan="${data[i].id_sewa}" name='data[${data[i].id_sewa}][nominal]' value='' readonly/>
+                                                    </td>`);
+                                            }else{
+                                                row.append(`<td> 
+                                                    <input type='hidden' id='biaya_${data[i].id_sewa}' name='data[${data[i].id_sewa}][nominal]' value='${(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR') ? '' : nominal}' class='form-control' readonly>
+                                                    ${nominal.toLocaleString()} 
+                                                    </td>`);
+                                            }
+                                            var driver = (data[i].namaSupplier == null)? data[i].nama_panggilan : data[i].namaSupplier;
+                                            var keterangan = data[i].nama_tujuan+'/'+data[i].no_polisi+'/'+driver;
+                                            
+                                            row.append(`<td> 
+                                                            <input type="text" class="uang numaja dicairkan form-control item_dicairkan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" id="item_${data[i].id_sewa}" item="${data[i].id_sewa}" name='data[${data[i].id_sewa}][dicairkan]' value='${data[i].total_dicairkan == null? '':data[i].total_dicairkan}' readonly/>
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][pick_up]" value="${data[i].pick_up}" />
+                                                            <input type="hidden" name="data[${data[i].id_sewa}][keterangan]" value="${keterangan.replace(/"/g, '')}" />
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class="form-control item_catatan grup_${data[i].grup_id} customer_${data[i].id_customer} item_${data[i].id_sewa}" name='data[${data[i].id_sewa}][catatan]' type="text" readonly/> 
+                                                        </td>`);
+                                            row.append(`<td class='text-center'> 
+                                                            <input class='item grup_${data[i].grup_id} customer_${data[i].id_customer}' name="data[${data[i].id_sewa}][item]" id_grup="${data[i].grup_id}" id_customer="${data[i].id_customer}" type='checkbox' value="${data[i].id_sewa}"> 
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][customer]' value='${data[i].customer}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][supplier]' value='${data[i].namaSupplier}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][tujuan]' value='${data[i].nama_tujuan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][driver]' value='${data[i].nama_panggilan}' class='form-control' readonly>
+                                                            <input type='hidden' name='data[${data[i].id_sewa}][nopol]' value='${data[i].no_polisi}' class='form-control' readonly>
+                                                        </td>`);
+                                                        
+                                            // let allowedItems = ['TIMBANG', 'BURUH', 'LEMBUR'];
+                                            if(nominal != 0){
+                                                $("#hasil").append(row);
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+                        
+
+                        new DataTable('#rowGroup', {
+                            order: [
+                                [0, 'asc'], // 0 = grup
+                                [1, 'asc'], // 1 = customer
+                            ],
+                            rowGroup: {
+                                dataSrc: [0, 1] // di order grup dulu, baru customer
+                            },
+                            columnDefs: [
+                                {
+                                    targets: [0, 1], 
+                                    visible: false
+                                },
+                                {
+                                    targets: [-1],
+                                    orderable: false, // matiin sortir kolom centang
+                                },
+                            ],
+                        });
+                        
+                    },error: function (xhr, status, error) {
+                        $("#loading-spinner").hide();
+                        if ( xhr.responseJSON.result == 'error') {
+                            console.log("Error:", xhr.responseJSON.message);
+                            console.log("XHR status:", status);
+                            console.log("Error:", error);
+                            console.log("Response:", xhr.responseJSON);
+                        } else {
+                            toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                        }
+                    }
+                });
+            }
         }
     });
 </script>

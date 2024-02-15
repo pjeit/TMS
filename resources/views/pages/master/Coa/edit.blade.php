@@ -33,7 +33,6 @@
         @endforeach
 
     @endif
-    <div class="row">
         {{-- <div class="col-12 ">
             <div class="card radiusSendiri">
                 <div class="card-header d-flex justify-content-between">
@@ -44,48 +43,60 @@
                 </div>
             </div>
         </div> --}}
-        <div class="col-12">
-            <div class="card radiusSendiri">
-        
-                <form action="{{ route('coa.update',[$coa->id]) }}" method="POST" id="post">
-                    @csrf
-                    @method('PUT')
-                    <div class="card-header">
-                        <a href="{{ route('coa.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
-                        <button type="submit" name="save" id="save" value="save" class="btn ml-2 btn-success radiusSendiri"><strong><i class="fa fa-fw fa-save"></i> Simpan</strong></button>
+    <div class="card radiusSendiri">
+
+        <form action="{{ route('coa.update',[$coa->id]) }}" method="POST" id="post">
+            @csrf
+            @method('PUT')
+            <div class="card-header">
+                <a href="{{ route('coa.index') }}" class="btn btn-secondary radiusSendiri"><strong><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</strong></a>
+                <button type="submit" name="save" id="save" value="save" class="btn ml-2 btn-success radiusSendiri"><strong><i class="fa fa-fw fa-save"></i> Simpan</strong></button>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                        <label for="nama_jenis">Nama Jenis</label>
+                        <input required type="text" maxlength="20" name="nama_jenis" class="form-control" value="{{old('nama_jenis',$coa->nama_jenis)}}" >                         
                     </div>
-                    <div class="card-body">
-                        <div class="row justify-content-center g-2">
-                            <div class="form-group col-md-6">
-                                <label for="nama_jenis">Nama Jenis</label>
-                                <input required type="text" maxlength="20" name="nama_jenis" class="form-control" value="{{old('nama_jenis',$coa->nama_jenis)}}" >                         
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="no_akun">No. akun</label>
-                                <input required type="number" maxlength="10" name="no_akun" class="form-control" value="{{old('no_akun',$coa->no_akun)}}" >                         
-                            </div>  
-                            <div class="form-group col-md-6">
-                                <label for="tipe">Tipe</label>
-                                <br>
-                                <div class="icheck-primary d-inline">
-                                    <input id="setuju" type="radio" name="tipe" value="1" {{'pengeluaran' == old('tipe',$coa->tipe)? 'checked' :'' }}>
-                                    <label class="form-check-label" for="setuju">Pengeluaran</label>
-                                </div>
-                                <div class="icheck-primary d-inline ml-5">
-                                    <input id="tdkSetuju" type="radio" name="tipe" value="2" {{'penerimaan'== old('tipe',$coa->tipe)? 'checked' :'' }}>
-                                    <label class="form-check-label" for="tdkSetuju">Penerimaan</label><br>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="catatan">Catatan</label>
-                                <input type="text" maxlength="100" name="catatan" class="form-control" value="{{old('catatan',$coa->catatan)}}" >                         
-                            </div>  
-                           
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                        <label for="nama_jenis">Alias</label>
+                        <input required type="text" maxlength="20" name="alias" class="form-control" value="{{old('alias',$coa->alias)}}" >                         
+                    </div>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                        <label for="no_akun">No. akun</label>
+                        <input required type="number" maxlength="10" name="no_akun" class="form-control" value="{{old('no_akun',$coa->no_akun)}}" >                         
+                    </div>  
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                        <label for="catatan">Catatan</label>
+                        <input type="text" maxlength="100" name="catatan" class="form-control" value="{{old('catatan',$coa->catatan)}}" >                         
+                    </div> 
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                        <label for="tipe">Tipe</label>
+                        <br>
+                        <div class="icheck-primary d-inline">
+                            <input id="setuju" type="radio" name="tipe" value="1" {{'pengeluaran' == old('tipe',$coa->tipe)? 'checked' :'' }}>
+                            <label class="form-check-label" for="setuju">Pengeluaran</label>
+                        </div>
+                        <div class="icheck-primary d-inline ml-5">
+                            <input id="tdkSetuju" type="radio" name="tipe" value="2" {{'penerimaan'== old('tipe',$coa->tipe)? 'checked' :'' }}>
+                            <label class="form-check-label" for="tdkSetuju">Penerimaan</label><br>
                         </div>
                     </div>
-                </form>
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
+                        <label for="tipe">Masuk dalam transaksi non operasional ?</label>
+                        <br>
+                        <div class="icheck-primary d-inline">
+                            <input id="is_show_Y" type="radio" name="is_show" value="Y" {{$coa->is_show== 'Y'? 'checked' :'' }}>
+                            <label class="form-check-label" for="is_show_Y">Ya</label>
+                        </div>
+                        <div class="icheck-primary d-inline ml-5">
+                            <input id="is_show_N" type="radio" name="is_show" value="N" {{$coa->is_show== 'N'? 'checked' :'' }}>
+                            <label class="form-check-label" for="is_show_N">Tidak</label><br>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 <script>

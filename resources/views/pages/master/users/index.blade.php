@@ -38,9 +38,7 @@
                     <a href="{{route('users.create')}}" class="btn btn-primary btn-responsive float-left radiusSendiri">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
                     </a> 
-
                 </div>
-                <!-- /.card-header -->
                 <div class="card-body">
                     <table id="myTable" class="table table-bordered table-striped" width="100%">
                         <thead>
@@ -56,12 +54,12 @@
                             @foreach($dataUser as $d)
                              <tr>
                                 <td>{{$d->username}}</td>
-                                <td>{{$d->role}}</td>
-                                <td>{{$d->nama_panggilan}}</td>
-                                <td>{{$d->kota}}</td>
+                                <td>{{$d->role->name}}</td>
+                                <td>{{$d->karyawan->nama_panggilan}}</td>
+                                <td>{{$d->karyawan->cabang->nama}}</td>
                                 <td>                                    
                                     <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-list"></i>
                                         </button>
                                         <div class="dropdown-menu">
@@ -82,16 +80,10 @@
                         </tbody>
                        
                     </table>
-{{-- {{ $dataUser->links('pagination::bootstrap-4') }} --}}
-
                 </div>
-                <!-- /.card-body -->
             </div>
-            <!-- /.card -->
         </div>
-        <!-- /.col -->
     </div>
-    <!-- /.row -->
 </div>
 
 <script type="text/javascript">

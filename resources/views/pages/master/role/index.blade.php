@@ -47,11 +47,10 @@
                         <tbody>
                             @foreach($dataRole as $d)
                              <tr>
-                                <td>{{$d->nama}}</td>
-                               
+                                <td>{{$d->name}}</td>
                                 <td>       
                                      <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-list"></i>
                                         </button>
                                         <div class="dropdown-menu">
@@ -65,11 +64,7 @@
                                             
                                         </div>
                                     </div>                             
-                                    
                                 </td>
-                                                   
-                                
-                            
                             </tr>
                             @endforeach
                         </tbody>

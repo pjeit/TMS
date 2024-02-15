@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\ClearCache;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -11,15 +12,19 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:READ_ROLE', ['only' => ['index']]);
+		$this->middleware('permission:CREATE_ROLE', ['only' => ['create','store']]);
+		$this->middleware('permission:EDIT_ROLE', ['only' => ['edit','update']]);
+		$this->middleware('permission:DELETE_ROLE', ['only' => ['destroy']]);  
+    }
+
     public function index()
     {
-        //
-         $dataRole = DB::table('role')
+        ClearCache::Clear();
+
+         $dataRole = DB::table('roles')
             ->select('*')
             ->where('is_aktif', '=', "Y")
             // ->paginate(10);
@@ -73,19 +78,27 @@ class RoleController extends Controller
             ], $pesanKustom);
 
             $data = $request->collect();
-          
-            DB::table('role')
+
+            $dataRolemaxID = DB::table('roles')
+            // ->where('is_aktif', '=', 'Y')
+            ->max('id');
+            // dd($dataRolemaxID+1);
+            DB::table('roles')
                 ->insert(array(
-                    'nama' => strtoupper($data['nama']),
-                    'created_at'=>VariableHelper::TanggalFormat(), 
+                    'id'=>$dataRolemaxID+1,
+                    'name' => strtoupper($data['nama']),
+                    'guard_name' => 'web',
                     'created_by'=> $user,
-                    'updated_at'=> VariableHelper::TanggalFormat(),
+                    'created_at'=>VariableHelper::TanggalFormat(), 
                     'updated_by'=> $user,
+                    'updated_at'=> VariableHelper::TanggalFormat(),
                     'is_aktif' => "Y",
 
                 )
             ); 
-            return redirect()->route('role.index')->with('status','Sukses Menambahkan Role Baru!!');
+            // return redirect()->route('role.index')->with('status','Sukses Menambahkan Role Baru!!');
+            return redirect()->route('role.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambah data role!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -111,7 +124,7 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         //
-          return view('pages.master.role.edit',[
+        return view('pages.master.role.edit',[
             'role'=>$role,
             'judul'=>"Role",
 
@@ -135,9 +148,7 @@ class RoleController extends Controller
         try {
 
             $pesanKustom = [
-             
                 'nama.required' => 'Nama Role Harus diisi!',
-      
             ];
             
             $request->validate([
@@ -145,18 +156,19 @@ class RoleController extends Controller
             ], $pesanKustom);
 
             $data = $request->collect();
-          
-            DB::table('role')
+            DB::table('roles')
             ->where('id', $role['id'])
             ->update(array(
-                    'nama' => strtoupper($data['nama']),
+                    'name' => strtoupper($data['nama']),
                     'updated_at'=> VariableHelper::TanggalFormat(),
                     'updated_by'=> $user,
                     'is_aktif' => "Y",
 
                 )
             ); 
-            return redirect()->route('role.index')->with('status','Sukses Mengubah Data role!!');
+            // return redirect()->route('role.index')->with('status','Sukses Mengubah Data role!!');
+            return redirect()->route('role.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data role!']);
+
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
@@ -175,15 +187,17 @@ class RoleController extends Controller
         $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
 
         try{
-            DB::table('role')
+            DB::table('roles')
             ->where('id', $role['id'])
             ->update(array(
                 'is_aktif' => "N",
                 'updated_at'=> VariableHelper::TanggalFormat(),
                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
-              )
+            )
             );
-             return redirect()->route('role.index')->with('status','Sukses Menghapus Data Role!!');
+            // return redirect()->route('role.index')->with('status','Sukses Menghapus Data Role!!');
+            return redirect()->route('role.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data role!']);
+
 
         }
         catch (ValidationException $e) {

@@ -53,7 +53,7 @@
                                 <input type="text" name="tgl_booking" class="date form-control" id="tgl_booking" autocomplete="off" >
                             </div>
                         </div>
-                           <div class="form-group col-12 col-md-6 col-lg-6">
+                        <div class="form-group col-12 col-md-6 col-lg-6">
                             <label>Customer <span class="text-red">*</span></label>
                             <select class="form-control select2" style="width: 100%;" id='id_customer' name="id_customer" required>
                                 <option value="">Pilih customer</option>
@@ -104,12 +104,12 @@
 <script>
     $(document).ready(function() {
         const id_tujuanSelect = document.getElementById('id_tujuan');
+        var baseUrl = "{{ asset('') }}";
 
         $('#id_customer').on('change', function() {
             var selectedValue = $(this).val();
-      
             $.ajax({
-                url: '/booking/getTujuan/'+selectedValue, 
+                url: `${baseUrl}booking/getTujuan/${selectedValue}`, 
                 method: 'GET', 
                 success: function(response) {
                     console.log(response);
@@ -133,10 +133,12 @@
                     var kode = $('#select2-id_customer-container').text();
                     kode  = kode.substring(0, 3);
                     //trim untuk ngilangin spasi
-                    $('#kode_cust').val(kode).trim();
+                    $('#kode_cust').val(kode.trim());
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
+                    var tujuanSelect = $('#id_tujuan');
+                    tujuanSelect.empty(); 
                 }
             });
         });
