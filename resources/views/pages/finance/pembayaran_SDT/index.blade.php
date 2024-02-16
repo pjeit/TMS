@@ -50,7 +50,7 @@
                                         <label for="">&nbsp;</label>
                                         <div class="d-flex justify-content-start col-12" style="gap: 5px;">
                                             <button type="button" id="btnKu" class=" btn btn-primary radiusSendiri col-6" onclick=""><i class="fas fa-search"></i> <b> Filter</b></button>
-                                            <button type="button" class=" btn btn-success radiusSendiri col-6" onclick=""><i class="fas fa-file-excel"></i> <b> Excel</b></button>
+                                            {{-- <button type="button" class=" btn btn-success radiusSendiri col-6" onclick=""><i class="fas fa-file-excel"></i> <b> Excel</b></button> --}}
                                         </div>
                                     </div>
                                     

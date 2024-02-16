@@ -30,7 +30,7 @@ class StorageDemurageController extends Controller
         $supplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
-            ->where('jenis_supplier_id', 6) // jenis pelayaran
+            ->where('jenis_supplier_id', 7) // jenis pelayaran
             ->orderBy('nama')
             ->get();
         $customer = DB::table('customer')
@@ -271,6 +271,15 @@ class StorageDemurageController extends Controller
                     //         $query->where('k.cabang_id', $cabang); // selain id [1,3] atau role [superadmin, admin nasional] lock per kota
                     //     }
                     // })
+                    ->when($pengirim !="" && $pelayaran !="", function ($query) use($pengirim,$pelayaran){
+                        $query->where('id_customer', $pengirim)->where('id_supplier', $pelayaran);
+                    })
+                    ->when($pengirim !="" , function ($query) use($pengirim,$pelayaran){
+                        $query->where('id_customer', $pengirim);
+                    })
+                    ->when($pelayaran !="", function ($query) use($pengirim,$pelayaran){
+                        $query->where('id_supplier', $pelayaran);
+                    })
                     ->leftJoin('grup_tujuan AS gt', 'jod.id_grup_tujuan', '=', 'gt.id')
                     ->where('jo.is_aktif', '=', 'Y')
                         ->where('jo.status', 'like', "PROSES DOORING")

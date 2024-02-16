@@ -50,8 +50,8 @@
                             <div class="d-flex justify-content-start col-12" style="gap: 5px;">
                                 <button type="button" id="btnKu" class=" btn btn-primary radiusSendiri col-6"
                                     onclick=""><i class="fas fa-search"></i> <b> Filter</b></button>
-                                <button type="button" class=" btn btn-success radiusSendiri col-6" onclick=""><i
-                                        class="fas fa-file-excel"></i> <b> Excel</b></button>
+                                {{-- <button type="button" class=" btn btn-success radiusSendiri col-6" onclick=""><i
+                                        class="fas fa-file-excel"></i> <b> Excel</b></button> --}}
                             </div>
                         </div>
 
@@ -106,7 +106,85 @@
             $("#loading-spinner").show();
             showTable(formData);
 		});
-        
+        function showTable(formData) {
+            var fileName = 'SDT ' +  dateMask(Date.now());
+            if ($.fn.DataTable.isDataTable('#tabel')) {
+                // Destroy the existing DataTable
+                $('#tabel').DataTable().destroy();
+            }
+
+            var table = $('#tabel').DataTable({
+                    order: [
+                        [0, 'asc'],
+                    ],
+                    rowGroup: {
+                        dataSrc: [0] // kalau mau grouping pake ini
+                    },
+                    columnDefs: [
+                        {
+                            targets: [0],
+                            visible: false
+                        },
+                        { orderable: true, targets: 0 }, // Enable ordering for the first column (index 0)
+                        { orderable: false, targets: '_all' } // Disable ordering for all other columns
+                    ],
+                    info: false,
+                    searching: true,
+                    paging: true,
+                    language: {
+                        emptyTable: "Data tidak ditemukan."
+                    }
+                });
+
+            $.ajax({
+                method: 'POST',
+                url: '{{ route('storage_demurage.load_data') }}',
+                data: formData,
+                dataType: 'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (response) {
+                    // Clear existing table data
+                    table.clear().draw();
+
+                    var data = response.data;
+
+                    var nyimpenIdBapakJO = null;
+                    for (var i = 0; i < data.length; i++) {
+                        var row = `<tr>
+                            <td><b>◾ ${data[i].no_bl} - ${data[i].statusJO} </b></td>
+                            <td>${data[i].no_kontainer} - ${data[i].nama_cust}</td>
+                            <td>[${data[i].kode}]</td>
+                            <td>[${data[i].nama_supp}]</td>
+                            <td>${data[i].statusDetail}</td>
+                            <td>
+                                <a class="btn btn-sm btn-primary radiusSendiri" href="{!! url('/storage_demurage/${data[i].id}/edit') !!}">
+                                    <span class="fas fa-edit"></span> <b>Input S/D/T</b>
+                                </a>
+                            </td>
+                        </tr>`;
+
+                        table.row.add($(row));  // Add the new row to DataTable
+                    }
+
+                    table.draw();  // Redraw the DataTable
+                },
+                error: function (xhr, status, error) {
+                    $("#loading-spinner").hide();
+                    if (xhr.responseJSON.result == 'error') {
+                        console.log("Error:", xhr.responseJSON.message);
+                        console.log("XHR status:", status);
+                        console.log("Error:", error);
+                        console.log("Response:", xhr.responseJSON);
+                    } else {
+                        toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                    }
+                }
+            });
+        }
+
+
         // function showTable(formData){
         //     $.ajax({
         //         method: 'POST',
@@ -206,78 +284,7 @@
         //     });
         // }
 
-        function showTable(formData) {
-            var fileName = 'SDT ' +  dateMask(Date.now());
-            var table = $('#tabel').DataTable({
-                    order: [
-                        [0, 'asc'],
-                    ],
-                    rowGroup: {
-                        dataSrc: [0] // kalau mau grouping pake ini
-                    },
-                    columnDefs: [
-                        {
-                            targets: [0],
-                            visible: false
-                        },
-                        { orderable: true, targets: 0 }, // Enable ordering for the first column (index 0)
-                        { orderable: false, targets: '_all' } // Disable ordering for all other columns
-                    ],
-                    info: false,
-                    searching: true,
-                    paging: true,
-                    language: {
-                        emptyTable: "Data tidak ditemukan."
-                    }
-                });
-
-            $.ajax({
-                method: 'POST',
-                url: '{{ route('storage_demurage.load_data') }}',
-                data: formData,
-                dataType: 'JSON',
-                contentType: false,
-                cache: false,
-                processData: false,
-                success: function (response) {
-                    // Clear existing table data
-                    table.clear().draw();
-
-                    var data = response.data;
-
-                    var nyimpenIdBapakJO = null;
-                    for (var i = 0; i < data.length; i++) {
-                        var row = `<tr>
-                            <td><b>◾ ${data[i].no_bl} - ${data[i].statusJO} </b></td>
-                            <td>${data[i].no_kontainer} - ${data[i].nama_cust}</td>
-                            <td>[${data[i].kode}]</td>
-                            <td>[${data[i].nama_supp}]</td>
-                            <td>${data[i].statusDetail}</td>
-                            <td>
-                                <a class="btn btn-sm btn-primary radiusSendiri" href="{!! url('/storage_demurage/${data[i].id}/edit') !!}">
-                                    <span class="fas fa-edit"></span> <b>Input S/D/T</b>
-                                </a>
-                            </td>
-                        </tr>`;
-
-                        table.row.add($(row));  // Add the new row to DataTable
-                    }
-
-                    table.draw();  // Redraw the DataTable
-                },
-                error: function (xhr, status, error) {
-                    $("#loading-spinner").hide();
-                    if (xhr.responseJSON.result == 'error') {
-                        console.log("Error:", xhr.responseJSON.message);
-                        console.log("XHR status:", status);
-                        console.log("Error:", error);
-                        console.log("Response:", xhr.responseJSON);
-                    } else {
-                        toastr.error("Terjadi kesalahan saat menerima data. " + error);
-                    }
-                }
-            });
-        }
+       
 
     });
 
