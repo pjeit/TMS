@@ -20,6 +20,12 @@
   textarea{
     text-transform: uppercase;
   }
+  
+  .dropdown-menu .show{
+      position: relative;
+      z-index: 100000000000; /* or any higher value based on your layout */
+
+  }
   #scrollToTopBtn {
     display: none;
     position: fixed;

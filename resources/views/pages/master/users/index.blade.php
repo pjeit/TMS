@@ -55,8 +55,8 @@
                              <tr>
                                 <td>{{$d->username}}</td>
                                 <td>{{$d->role->name}}</td>
-                                <td>{{$d->karyawan->nama_panggilan}}</td>
-                                <td>{{$d->karyawan->cabang->nama}}</td>
+                                <td>{{$d->karyawan?$d->karyawan->nama_panggilan:''}}</td>
+                                <td>{{$d->karyawan?$d->karyawan->cabang->nama:''}}</td>
                                 <td>                                    
                                     <div class="btn-group dropleft">
                                         <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

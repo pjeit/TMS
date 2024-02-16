@@ -35,7 +35,7 @@ class UsersController extends Controller
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
-
+        // dd($dataUser);
         return view('pages.master.users.index',[
             'judul' => "User",
             'dataUser' => $dataUser,
