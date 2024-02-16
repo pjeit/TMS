@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\PDF; // use PDF;
 use App\Helper\UserHelper;
 use App\Models\Supplier;
-
+use App\Helper\VariableHelper;
 class StorageDemurageController extends Controller
 {
     public function __construct()
@@ -30,7 +30,7 @@ class StorageDemurageController extends Controller
         $supplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
-            ->where('jenis_supplier_id', 7) // jenis pelayaran
+            ->where('jenis_supplier_id',VariableHelper::Jenis_supplier_id('PELAYARAN')) // jenis pelayaran
             ->orderBy('nama')
             ->get();
         $customer = DB::table('customer')

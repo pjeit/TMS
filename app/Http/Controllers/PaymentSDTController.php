@@ -13,6 +13,7 @@ use App\Helper\CoaHelper;
 use App\Models\JobOrderPembayaran;
 use Exception;
 use App\Models\KasBank;
+
 class PaymentSDTController extends Controller
 {
     public function __construct()
@@ -28,7 +29,7 @@ class PaymentSDTController extends Controller
         $supplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
-            ->where('jenis_supplier_id', 7) // jenis pelayaran
+            ->where('jenis_supplier_id',VariableHelper::Jenis_supplier_id('PELAYARAN')) // jenis pelayaran
             ->orderBy('nama')
             ->get();
 

@@ -25,7 +25,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 // use Barryvdh\DomPDF\PDF;
 use App\Models\JobOrderBiaya;
-
+use App\Helper\VariableHelper;
 class JobOrderController extends Controller
 {
     public function __construct()
@@ -82,7 +82,7 @@ class JobOrderController extends Controller
     public function create()
     {
         $dataSupplier = Supplier::where('supplier.is_aktif', '=', "Y")
-                                ->where('jenis_supplier_id', 7) // jenis pelayaran
+                                ->where('jenis_supplier_id',VariableHelper::Jenis_supplier_id('PELAYARAN')) // jenis pelayaran
                                 ->orderBy('nama')
                                 ->get();
         $dataCustomer = Customer::where('customer.is_aktif', "Y")
@@ -788,7 +788,7 @@ class JobOrderController extends Controller
         $supplier = DB::table('supplier')
             ->select('*')
             ->where('supplier.is_aktif', '=', "Y")
-            ->where('jenis_supplier_id', 7) // jenis pelayaran
+            ->where('jenis_supplier_id',VariableHelper::Jenis_supplier_id('PELAYARAN')) // jenis pelayaran
             ->orderBy('nama')
             ->get();
         $customer = DB::table('customer')

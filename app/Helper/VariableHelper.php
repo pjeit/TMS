@@ -2,6 +2,7 @@
 namespace App\Helper;
 use DateTime;
 use App\Models\Role;
+use App\Models\JenisSupplier;
 class VariableHelper
 {
      // Your new helper method
@@ -25,6 +26,19 @@ class VariableHelper
             //code...
             $data_role= Role::where('is_aktif','Y')->where('name','like','%'.$nama_role.'%')->first();
             return ($data_role->id); 
+         
+        } catch (\Throwable $th) {
+            //throw $th;
+            return ('Tidak ada data role error!'); 
+         }
+     }
+     public static function Jenis_supplier_id($jenis)
+     {
+         // some logic to determine if the publisher is main
+         try {
+            //code...
+            $data_jenis= JenisSupplier::where('is_aktif','Y')->where('name','like','%'.$jenis.'%')->first();
+            return ($data_jenis->id); 
          
         } catch (\Throwable $th) {
             //throw $th;
