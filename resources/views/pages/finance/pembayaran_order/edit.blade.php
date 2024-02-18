@@ -102,26 +102,36 @@
                                     <h6 class="my-0">Biaya Jaminan</h6>
                                     {{-- <small class="text-muted">total</small> --}}
                                     </div>
-                                     @if($dataJaminan)
-                                    <span class="">Rp. {{number_format($dataJaminan->nominal)}}</span>
+                                    @if($dataJaminan)
+                                        <input type="hidden" name="total_jaminan" value="{{$dataJaminan->nominal}}">
+                                        <span class="">Rp. {{number_format($dataJaminan->nominal)}}</span>
                                     @else
-                                    <span class="">Rp. {{number_format(0)}}</span>
-                                    
+                                        <input type="hidden" name="total_jaminan" value="0">
+                                        <span class="">Rp. {{number_format(0)}}</span>
                                     @endif
                                 </li>
                                 <li class="border-primary list-group-item d-flex justify-content-between">
                                     <span>Total (IDR)</span>
-                                     <input type="hidden" name="total_sblm_dooring" value="{{$TotalBiayaRev}}">
+                                    <input type="hidden" name="total_sblm_dooring" value="{{$TotalBiayaRev}}">
                                     @if($dataJaminan)
-                                         <strong><b>Rp. {{number_format($TotalBiayaRev+$dataJaminan->nominal)}}</b></strong>
+                                            <strong><b>Rp. {{number_format($TotalBiayaRev+$dataJaminan->nominal)}}</b></strong>
+                                            <input type="hidden" name="total_biaya" value="{{$TotalBiayaRev+$dataJaminan->nominal}}">
                                     @else
-                                         <strong><b>Rp. {{number_format($TotalBiayaRev)}}</b></strong>
+                                            <strong><b>Rp. {{number_format($TotalBiayaRev)}}</b></strong>
+                                            {{-- sumnya ada di controller thc+lolo+apbs+cleaning+docfee+detailbiayasum, kurang jaminan aja --}}
+                                            <input type="hidden" name="total_biaya" value="{{$TotalBiayaRev}}">
                                     @endif
-
-                                   
                                 </li>
                             </ul>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                </div>
+                                <input type="text" name="tgl_bayar" autocomplete="off" class="date form-control" id="tgl_bayar" placeholder="dd-M-yyyy" autocomplete="off" readonly>     
+                            </div>
+                            <br>
                             <div class="input-group">
+                                
                                 <select class="form-control select2"  id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                     <option value="">--PILIH PEMBAYARAN--</option>
                                     @foreach ($dataKas as $data)
@@ -146,37 +156,46 @@
                     <tbody > 
                         <tr>
                             <th><span> <input disabled type="checkbox" name="thc_cekbox" id="thc_cekbox" {{$pembayaran_jo->thc!=0?'checked':''}}></span> THC</th>
-                            <td name="total_thc"><input type="text" id="total_thc" class="form-control" value="Rp. {{number_format($pembayaran_jo->thc)}}" readonly></td>
+                            <td name="total_thc"><input type="text" id="total_thc" name="total_thc" class="form-control" value="{{number_format($pembayaran_jo->thc)}}" readonly></td>
                         </tr>
                         <tr>
                             <th><span> <input disabled type="checkbox" name="lolo_cekbox" id="lolo_cekbox" {{$pembayaran_jo->lolo!=0?'checked':''}}></span> LOLO</th>
-                            <td name="total_lolo"><input type="text" id="total_lolo" class="form-control" value="Rp. {{number_format($pembayaran_jo->lolo)}}" readonly></td>
+                            <td name="total_lolo"><input type="text" id="total_lolo" name="total_lolo" class="form-control" value="{{number_format($pembayaran_jo->lolo)}}" readonly></td>
                         </tr>
                         <tr>
                             <th><span> <input disabled type="checkbox" name="apbs_cekbox" id="apbs_cekbox" {{$pembayaran_jo->apbs!=0?'checked':''}}></span> APBS</th>
-                            <td name="total_apbs"><input type="text" id="total_apbs" class="form-control" value="Rp. {{number_format($pembayaran_jo->apbs)}}" readonly></td>
+                            <td name="total_apbs"><input type="text" id="total_apbs" name="total_apbs" class="form-control" value="{{number_format($pembayaran_jo->apbs)}}" readonly></td>
                         </tr>
                         <tr>
                             <th><span> <input disabled type="checkbox" name="cleaning_cekbox" id="cleaning_cekbox" {{$pembayaran_jo->cleaning!=0?'checked':''}}></span> CLEANING</th>
-                            <td name="total_cleaning"><input type="text" id="total_cleaning" class="form-control" value="Rp. {{number_format($pembayaran_jo->cleaning)}}" readonly></td>
+                            <td name="total_cleaning"><input type="text" id="total_cleaning" name="total_cleaning" class="form-control" value="{{number_format($pembayaran_jo->cleaning)}}" readonly></td>
                         </tr>
                         <tr>
                             <th><span> <input disabled type="checkbox" name="doc_fee_cekbox" id="doc_fee_cekbox" {{$pembayaran_jo->doc_fee!=0?'checked':''}}></span> DOC FEE</th>
-                            <td name="total_doc_fee"><input type="text" id="total_doc_fee" class="form-control" value="Rp. {{number_format($pembayaran_jo->doc_fee)}}" readonly></td>
+                            <td name="total_doc_fee"><input type="text" id="total_doc_fee" name="total_doc_fee" class="form-control" value="{{number_format($pembayaran_jo->doc_fee)}}" readonly></td>
                         </tr>
+                        @php
+                            $total_detail_biaya = 0
+                        @endphp
                         @if (isset($JobOrderBiaya))
                             @foreach ($JobOrderBiaya as $value)
                                 <tr>
                                     <th>{{$value->deskripsi}}</th>
                                     <td >
-                                        <input type="text" class="form-control" value="Rp. {{number_format($value->biaya)}}" readonly>
+                                        <input type="text" class="form-control" value="{{number_format($value->biaya)}}" readonly>
                                     </td>
                                 </tr>
+                                @php
+                                    $total_detail_biaya +=$value->biaya
+                                @endphp
                             @endforeach
                         @endif
                         <tr>
                             <th class="text-blue">SUB TOTAL</th>
-                            <th name="total_sblm_dooring" id="total_sblm_dooring" > <input type="text" class="form-control" readonly value="Rp. {{number_format($TotalBiayaRev)}}"> </th>
+                            <th> 
+                                <input type="hidden" name="total_detail_biaya" value="{{$total_detail_biaya}}">
+                                <input type="text" class="form-control" readonly value="{{number_format($TotalBiayaRev)}}"> 
+                            </th>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -197,7 +216,7 @@
                             </tr>
                             <tr class="tinggi">
                                 <th>Total Jaminan</th>
-                                <th><input type="text" class="form-control" disabled value="Rp. {{number_format($dataJaminan->nominal)}}"></th>
+                                <th><input type="text" class="form-control" readonly value="{{number_format($dataJaminan->nominal)}}"></th>
                             </tr>
                             <tr>
                                 <th>Catatan</th>
@@ -227,6 +246,20 @@
         //         }
 
         // });
+        var today = new Date();
+
+        // Format the date as "dd-M-yyyy"
+        var formattedDate = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+
+        // Set the default date for the date picker
+        $('#tgl_bayar').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language: 'en',
+            orientation: 'bottom auto',
+            endDate: today
+        }).datepicker('setDate', formattedDate);
         $('body').on('click','#bttonBayar', function (event) {
             var pembayaran = $('#pembayaran').val();
             console.log(pembayaran);
