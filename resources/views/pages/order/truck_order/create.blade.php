@@ -338,7 +338,7 @@
             $('#inboundDataKontainer').show();
             $('#garisInbound').show();
 
-            $('#outbondData').hide();
+            // $('#outbondData').hide();
             $('#outbondDataKontainer').hide();
             $('#garisOutbond').hide();
             $('#select_booking').val('').select2();

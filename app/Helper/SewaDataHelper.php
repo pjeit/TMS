@@ -95,7 +95,7 @@ class SewaDataHelper
             ->where('b.is_aktif', "Y")
             ->where('b.is_sewa', "N")
             ->orderBy('tgl_booking')
-            ->whereNull('b.id_jo_detail')
+            // ->whereNull('b.id_jo_detail')
             ->get();
      }
     public static function DataChassis()
