@@ -171,8 +171,8 @@ class SewaController extends Controller
                             'updated_by' => $user,
                     ]);
                 }
-
-                if(isset($data['select_jo']) && isset($data['id_jo_detail']))
+                
+                if(isset($data['id_jo']) && isset($data['id_jo_detail']))
                 {
                     DB::table('job_order_detail')
                     ->where('id', $data['id_jo_detail'])
@@ -263,7 +263,7 @@ class SewaController extends Controller
                 ->where('b.is_aktif', "Y")
                 ->where('b.id', $data_sewa['id_booking'])
                 ->orderBy('tgl_booking')
-                ->whereNull('b.id_jo_detail')
+                // ->whereNull('b.id_jo_detail')
                 ->get();
         $sewa_biaya_TL = DB::table('sewa_biaya as sb')
                                 ->select('sb.*')

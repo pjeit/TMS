@@ -220,6 +220,7 @@ class JobOrderController extends Controller
                                 $booking->id_grup_tujuan = $detail['tujuan'];
                                 $booking->no_kontainer = $detail['no_kontainer'];
                                 $booking->id_customer = $data['customer'];
+                                $booking->id_jo = $JOD->id_jo;
                                 $booking->id_jo_detail = $JOD->id;
                                 // logic nomer booking
                                     //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
@@ -437,10 +438,11 @@ class JobOrderController extends Controller
                                 if($detail['tgl_booking'] != NULL && $detail['tujuan'] != NULL){
                                     $booking = new Booking();
                                     $booking->tgl_booking = date_create_from_format('d-M-Y', $detail['tgl_booking']);
+                                    $booking->id_customer = $data['customer'];
                                     $booking->id_grup_tujuan = $detail['tujuan'];
                                     $booking->id_jo_detail = $JOD->id;
+                                    $booking->id_jo = $JOD->id_jo;
                                     $booking->no_kontainer = $detail['no_kontainer'];
-                                    $booking->id_customer = $data['customer'];
                                     // logic nomer booking
                                         //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0
                                         //bisa juga substr(no_booking, 8,10)
@@ -457,7 +459,6 @@ class JobOrderController extends Controller
                                         }
                                     //
                                     $booking->no_booking = $newBookingNumber;
-                                    $booking->id_customer = $data['customer'];
                                     $booking->created_by = $user;
                                     $booking->created_at = now();
                                     $booking->save();
@@ -515,6 +516,7 @@ class JobOrderController extends Controller
                                         $booking->id_grup_tujuan = $detail['tujuan'];
                                         $booking->no_kontainer = $detail['no_kontainer'];
                                         $booking->id_customer = $data['customer'];
+                                        $booking->id_jo = $JOD->id_jo;
                                         $booking->id_jo_detail = $JOD->id;
                                         // logic nomer booking
                                             //substr itu ambil nilai dr belakang misal 3DW2308001 yang diambil 001, substr mulai dr 1 bukan 0

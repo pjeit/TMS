@@ -93,9 +93,17 @@
                             <tr>
                                 {{-- <td colspan="7">KAS KECIL {{number_format($kas->saldo_sekarang)}} | DEBIT: {{number_format($sumDebit)}} | KREDIT: {{number_format($sumKredit)}} | TOT SKRG: ({{number_format($kas->saldo_sekarang + $sumDebit - $sumKredit)}})</td> --}}
                                 @php
-                                    $saldo_sekarang = $kas->saldo_sekarang + $sumDebit - $sumKredit;
+                                    // $saldo_sekarang = $kas->saldo_sekarang + $sumDebit - $sumKredit;
+                                    $saldo_sekarang = $kas->saldo_sekarang;
+                                    $transaction = $sumDebit - $sumKredit;
                                 @endphp
                                 <td colspan="6">{{$kas->nama}} (Saldo Awal: {{number_format($saldo_sekarang)}})</td>
+                            </tr>
+                            <tr>
+                                <td colspan='3' style='text-align:right'><label>Saldo Awal</label></td>
+                                <td ><label><?= number_format(0);?></label></td>
+                                <td style='text-align:right'><label><?= number_format(abs($transaction));?></label></td> 
+                                <td style='text-align:right'><label><?= number_format($transaction);?></label></td>
                             </tr>
                             @foreach ($data as $key => $item)
                                 @php
@@ -113,8 +121,8 @@
                                 @else
                                     <td>{{$item->keterangan_transaksi}}</td>
                                 @endif
-                                <td>{{number_format($item->debit)}}</td>
-                                <td>{{number_format($item->kredit)}}</td>
+                                <td style='text-align:right'>{{number_format($item->debit)}}</td>
+                                <td style='text-align:right'>{{number_format($item->kredit)}}</td>
                                 {{-- <td>{{number_format($item->total)}}</td> --}}
                                     @php
                                         if($item->kredit != 0){
@@ -123,14 +131,14 @@
                                             $saldo_sekarang += $item->debit;
                                         }
                                     @endphp
-                                <td>{{ number_format($saldo_sekarang) }}</td>
+                                <td style='text-align:right'>{{ number_format($saldo_sekarang) }}</td>
                             </tr>
                             @endforeach
                             <tr>
                                 <td colspan='3' style='text-align:right'><label>Total</label></td>
                                 <td style='text-align:right'><label><?= number_format($total_debit);?></label></td>
-                                <td style='text-align:right'><label><?= number_format($total_kredit);?></label></td>
-                                <td></td>
+                                <td style='text-align:right'><label><?= number_format($transaction);?></label></td>
+                                <td style='text-align:right'><label><?= number_format($transaction);?></label></td>
                             </tr>
                         @endif
                 </tbody>

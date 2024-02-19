@@ -161,7 +161,7 @@
                 
             </div>
         </div> 
-        <div class="card radiusSendiri w-50">
+        <div class="card radiusSendiri w-75">
             <div class="card-header">
             </div>
             <div class="card-body">
@@ -242,18 +242,19 @@
                             <tr>
                                 <th colspan="7">BIAYA OPERASIONAL</th>
                             </tr>
-                        <tr>
-                            <th></th>
-                            <th>Deskripsi</th>
-                            <th>Total Dicairkan</th>
-                            <th>Operasional Kembali</th>
-                        </tr>
+                            <tr>
+                                <th></th>
+                                <th>Deskripsi</th>
+                                <th>Total Dicairkan</th>
+                                <th>Operasional Kembali</th>
+                                <th>Catatan</th>
+                            </tr>
                         </thead>
                         <tbody id="tampunganTabel">
-                        @php
-                            $index=0;
-                        @endphp
-                        @foreach ($dataOperasional as $key => $value)
+                            @php
+                                $index=0;
+                            @endphp
+                            @foreach ($dataOperasional as $key => $value)
                                 <tr id="{{$index}}">
                                     <td id="id_sewa_operasional_tabel_{{$index}}" >
                                             <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->so_id_sewa}}" readonly>
@@ -286,16 +287,21 @@
                                             </div>
                                         @endif
                                     </td>
+                                    <td>
+                                        <div class="form-group">
+                                            {{-- <input type="text" id="catatan" name="data[{{$index}}][catatan]" class="form-control" value="">   --}}
+                                            <textarea name="data[{{$index}}][catatan]" required class="form-control" id="catatan" rows="5" value=""></textarea>
+                                        </div>  
+                                    </td>
                                 </tr>
                                 @php
                                 $index+=1;
                                 @endphp
                             @endforeach
-                    
-                        
-                    </tbody>
-                    <tfoot>
-                    </tfoot>
+                            
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
                 </table>
             </div>
         </div>

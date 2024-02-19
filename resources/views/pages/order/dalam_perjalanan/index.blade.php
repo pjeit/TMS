@@ -99,16 +99,14 @@
                                                         <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa Rekanan
                                                     </a>
                                                 @endcan
-                                                @if ($item->jenis_order == 'OUTBOUND')
-                                                    @can('CANCEL_DALAM_PERJALANAN')
-                                                        <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="nav-icon fas fa-undo mr-3"></span> Batal muat Rekanan
-                                                        </a>
-                                                        <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
-                                                            <span class="nav-icon fas fa-times mr-3"></span> Cancel Rekanan
-                                                        </a>
-                                                    @endcan
-                                                @endif
+                                                @can('CANCEL_DALAM_PERJALANAN')
+                                                    <a href="{{route('dalam_perjalanan.batal_muat',[$item->id_sewa])}}" class="dropdown-item">
+                                                        <span class="nav-icon fas fa-undo mr-3"></span> Batal muat Rekanan
+                                                    </a>
+                                                    <a href="{{route('dalam_perjalanan.cancel',[$item->id_sewa])}}" class="dropdown-item">
+                                                        <span class="nav-icon fas fa-times mr-3"></span> Cancel Rekanan
+                                                    </a>
+                                                @endcan
                                             @else
                                                 @can('EDIT_DALAM_PERJALANAN')
                                                     <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">

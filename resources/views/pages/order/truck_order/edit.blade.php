@@ -107,7 +107,13 @@
                                     <select class="form-control select2" style="width: 100%;" id='select_booking' name="select_booking" disabled>
                                         <option value="">Pilih No Booking</option>
                                         @foreach ($dataBooking as $book)
-                                            <option value="{{$book->idBooking}}-{{$book->id_customer}}-{{$book->id_grup_tujuan}}-{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y')}}" {{$book->idBooking==$data['id_booking']? 'selected':''}} >{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y') }} / {{ $book->nama_tujuan }} / {{ $book->kode }}</option>
+                                            <option value="{{$book->idBooking}}" 
+                                                id_customer="{{$book->id_customer}}"
+                                                id_grup_tujuan="{{$book->id_grup_tujuan}}"
+                                                tgl_booking="{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y')}}"
+                                                id_jo="{{$book->id_jo}}"
+                                                id_jo_detail="{{$book->id_jo_detail}}" {{$book->idBooking==$data['id_booking']? 'selected':''}}
+                                                >{{ \Carbon\Carbon::parse($book->tgl_booking)->format('d-M-Y') }} / {{ $book->nama_tujuan }}  / {{ $book->kode }}</option>
                                         @endforeach
                                     </select>
                                 </div>  
@@ -305,7 +311,7 @@
             $("#inbound").addClass("col-12");
             $('#inboundData').show();
             $('#garisInbound').show();
-            $('#outboundData').hide();
+            // $('#outboundData').hide();
             $('#garisOutbound').hide();
             $('#stack_tl_label').text('Pick Up Full');
 

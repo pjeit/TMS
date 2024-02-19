@@ -1150,6 +1150,7 @@ class DalamPerjalananController extends Controller
                                         $so_refund ->id_pembayaran = $so_pembayaran->id;
                                         $so_refund ->deskripsi_ops = $value['deskripsi_data'];
                                         $so_refund ->total_refund = (float)str_replace(',', '', $value['total_dicairkan']);
+                                        $so_refund->catatan_refund = $value['catatan'];
                                         $so_refund->created_by = $user;
                                         $so_refund->created_at = now();
                                         $so_refund->is_aktif = 'Y';
@@ -1165,7 +1166,7 @@ class DalamPerjalananController extends Controller
                                                         0, //uang keluar (kredit)
                                                         CoaHelper::DataCoa(1100), //kode coa piutang usaha
                                                         'operasional_refund',
-                                                        $value['rincian'], //keterangan_transaksi
+                                                        $value['rincian'].'>>'.$so_refund->catatan_refund, //keterangan_transaksi
                                                         $so_refund->id,//keterangan_kode_transaksi id refundnya
                                                         $user,//created_by
                                                         now(),//created_at
@@ -1200,6 +1201,7 @@ class DalamPerjalananController extends Controller
                                     $so_stok->tanggal_stok = now();
                                     $so_stok->stok_masuk = 1;
                                     $so_stok->stok_keluar = 0;
+                                    $so_stok->catatan_stok = $value['catatan'];
                                     $so_stok->created_by = $user;
                                     $so_stok->created_at = now();
                                     $so_stok->is_aktif = 'Y';
@@ -1310,6 +1312,7 @@ class DalamPerjalananController extends Controller
                                         $so_refund ->id_pembayaran = $so_pembayaran->id;
                                         $so_refund ->deskripsi_ops = $value['deskripsi_data'];
                                         $so_refund ->total_refund = (float)str_replace(',', '', $value['total_dicairkan']);
+                                        $so_refund->catatan_refund = $value['catatan'];
                                         $so_refund->created_by = $user;
                                         $so_refund->created_at = now();
                                         $so_refund->is_aktif = 'Y';
@@ -1325,7 +1328,7 @@ class DalamPerjalananController extends Controller
                                                         0, //uang keluar (kredit)
                                                         CoaHelper::DataCoa(1100), //kode coa piutang usaha
                                                         'operasional_refund',
-                                                        $value['rincian'], //keterangan_transaksi
+                                                        $value['rincian'].'>>'.$so_refund->catatan_refund, //keterangan_transaksi
                                                         $so_refund->id,//keterangan_kode_transaksi id refundnya
                                                         $user,//created_by
                                                         now(),//created_at
@@ -1360,6 +1363,7 @@ class DalamPerjalananController extends Controller
                                     $so_stok->tanggal_stok = now();
                                     $so_stok->stok_masuk = 1;
                                     $so_stok->stok_keluar = 0;
+                                    $so_stok->catatan_stok = $value['catatan'];
                                     $so_stok->created_by = $user;
                                     $so_stok->created_at = now();
                                     $so_stok->is_aktif = 'Y';

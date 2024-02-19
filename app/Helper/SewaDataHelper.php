@@ -89,9 +89,26 @@ class SewaDataHelper
      public static function DataBooking()
      {
         return DB::table('booking as b')
-            ->select('*','b.id as idBooking')
+            ->select(
+                'b.id as idBooking',
+                'b.no_booking as kode_book',
+                'b.id_customer as id_book_customer',
+                'b.id_grup_tujuan as id_book_tujuan',
+                'b.tgl_booking as tgl_booking_book',
+                'b.id_jo as id_jo_book',
+                'b.id_jo_detail as id_jo_detail_book',
+                'gt.nama_tujuan as nama_tujuan_master'
+                )
             ->Join('customer AS c', 'b.id_customer', '=', 'c.id')
             ->Join('grup_tujuan AS gt', 'b.id_grup_tujuan', '=', 'gt.id')
+            ->leftJoin('job_order as jo', function ($join) {
+                $join->on('b.id_jo', '=', 'jo.id')
+                     ->where('jo.status', '=', 'PROSES DOORING');
+            })
+            ->leftJoin('job_order_detail as jod', function ($join) {
+                $join->on( 'b.id_jo_detail', '=', 'jod.id')
+                     ->where('jod.status', '=', 'BELUM DOORING');
+            })
             ->where('b.is_aktif', "Y")
             ->where('b.is_sewa', "N")
             ->orderBy('tgl_booking')

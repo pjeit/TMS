@@ -650,25 +650,126 @@
                     }
                 }
                 // console.log(flagCekKontainer);
-                if (flagCekKontainer) {
-                    event.preventDefault();
+                // if (flagCekKontainer) {
+                //     event.preventDefault();
 
-                    Swal.fire(
-                        'Terjadi kesalahan!',
-                        no_kontainer_salah,
-                        'warning'
-                    )
-                    return;
-                    //     event.preventDefault(); 
-                    //     Toast.fire({
-                    //         icon: 'error',
-                    //         text: deskripsi_text,
-                    //     })
-                    // return;
-                } 
+                //     Swal.fire(
+                //         'Terjadi kesalahan!',
+                //         no_kontainer_salah,
+                //         'warning'
+                //     )
+                //     return;
+                //     //     event.preventDefault(); 
+                //     //     Toast.fire({
+                //     //         icon: 'error',
+                //     //         text: deskripsi_text,
+                //     //     })
+                //     // return;
+                // } 
             // end algoritma cek seal , contoh no kontainer IPXU2145512 (kalo index ke 4 dari string >=4 itu 40 ft, kalo dibawah 4 itu 20ft (digit ke 5) ) 
 
-            // pop up confirmation
+            if (flagCekKontainer) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Ditemukan kontainer dengan tipe yang tidak sesuai',
+                    text: no_kontainer_salah +'. Tekan "Ya" untuk melanjutkan.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonColor: '#d33',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonText: 'Batal',
+                    confirmButtonText: 'Ya',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Apakah Anda yakin data sudah benar?',
+                            text: "Periksa kembali data anda",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            cancelButtonColor: '#d33',
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonText: 'Batal',
+                            confirmButtonText: 'Ya',
+                            reverseButtons: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                var cust = $('#customer').val();
+                                var nobl = $('#no_bl').val();
+                                var plmt = $('#pelabuhan_muat').val();
+                                var plbn = $('#pelabuhan_bongkar').val();
+
+                                if( cust == ''|| nobl == ''|| plmt == ''|| plbn == '' ){
+                                    Swal.fire(
+                                        'Data tidak lengkap!',
+                                        'Cek ulang data anda.',
+                                        'warning'
+                                    )
+                                    event.preventDefault();
+                                    return false;
+                                }else{
+                                    this.submit();
+                                }
+                            }else{
+                                const Toast = Swal.mixin({
+                                    toast: true,
+                                    position: 'top',
+                                    timer: 2500,
+                                    showConfirmButton: false,
+                                    timerProgressBar: true,
+                                    didOpen: (toast) => {
+                                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                    }
+                                })
+
+                                Toast.fire({
+                                    icon: 'warning',
+                                    title: 'Batal Disimpan'
+                                })
+                                event.preventDefault();
+                                // return;
+                            }
+                        })
+
+
+                    }else{
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top',
+                            timer: 2500,
+                            showConfirmButton: false,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        })
+
+                        Toast.fire({
+                            icon: 'warning',
+                            title: 'Batal Disimpan'
+                        })
+                        event.preventDefault();
+                        // return;
+                    }
+                })
+
+                // Swal.fire(
+                //     'Terjadi kesalahan!',
+                //     no_kontainer_salah,
+                //     'warning'
+                // )
+                // return;
+                //     event.preventDefault(); 
+                //     Toast.fire({
+                //         icon: 'error',
+                //         text: deskripsi_text,
+                //     })
+                // return;
+            } 
+            else
+            {
                 Swal.fire({
                     title: 'Apakah Anda yakin data sudah benar?',
                     text: "Periksa kembali data anda",
@@ -685,7 +786,7 @@
                         var nobl = $('#no_bl').val();
                         var plmt = $('#pelabuhan_muat').val();
                         var plbn = $('#pelabuhan_bongkar').val();
-
+    
                         if( cust == ''|| nobl == ''|| plmt == ''|| plbn == '' ){
                             Swal.fire(
                                 'Data tidak lengkap!',
@@ -710,7 +811,7 @@
                                 toast.addEventListener('mouseleave', Swal.resumeTimer)
                             }
                         })
-
+    
                         Toast.fire({
                             icon: 'warning',
                             title: 'Batal Disimpan'
@@ -719,7 +820,8 @@
                         // return;
                     }
                 })
-            // pop up confirmation
+
+            }
         });
 
         

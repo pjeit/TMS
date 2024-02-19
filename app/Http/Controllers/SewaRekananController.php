@@ -148,19 +148,19 @@ class SewaRekananController extends Controller
                         'is_aktif' => "Y",
                         )
                     ); 
-                    $SOP = new SewaOperasional();
-                    $SOP->id_sewa = $sewa->id_sewa; 
-                    $SOP->deskripsi = 'TL';
-                    $SOP->total_operasional = $data['stack_teluk_lamong_hidden'];
-                    $SOP->total_dicairkan = $data['stack_teluk_lamong_hidden'];
-                    $SOP->is_ditagihkan = 'N';
-                    $SOP->is_dipisahkan = 'N';
-                    $SOP->status = "TAGIHKAN DI INVOICE";
-                    $SOP->catatan = "TELUK LAMONG REKANAN [TIDAK ADA PENCAIRAN]";
-                    $SOP->created_by = $user;
-                    $SOP->created_at = now();
-                    $SOP->is_aktif = 'Y';
-                    $SOP->save();
+                    // $SOP = new SewaOperasional();
+                    // $SOP->id_sewa = $sewa->id_sewa; 
+                    // $SOP->deskripsi = 'TL';
+                    // $SOP->total_operasional = $data['stack_teluk_lamong_hidden'];
+                    // $SOP->total_dicairkan = $data['stack_teluk_lamong_hidden'];
+                    // $SOP->is_ditagihkan = 'N';
+                    // $SOP->is_dipisahkan = 'N';
+                    // $SOP->status = "TAGIHKAN DI INVOICE";
+                    // $SOP->catatan = "TELUK LAMONG REKANAN [TIDAK ADA PENCAIRAN]";
+                    // $SOP->created_by = $user;
+                    // $SOP->created_at = now();
+                    // $SOP->is_aktif = 'Y';
+                    // $SOP->save();
                 }
                 $customer = DB::table('customer as c')
                     ->select('c.*')
@@ -194,7 +194,7 @@ class SewaRekananController extends Controller
                     ]);
                 }
     
-                if(isset($data['select_jo']) && isset($data['id_jo_detail']))
+                if(isset($data['id_jo']) && isset($data['id_jo_detail']))
                 {
                     // DB::table('job_order')
                     //     ->where('id', $data['select_jo'])
