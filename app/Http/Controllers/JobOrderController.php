@@ -85,6 +85,7 @@ class JobOrderController extends Controller
                                 ->where('jenis_supplier_id',VariableHelper::Jenis_supplier_id('PELAYARAN')) // jenis pelayaran
                                 ->orderBy('nama')
                                 ->get();
+        // dd(VariableHelper::Jenis_supplier_id('PELAYARAN'));
         $dataCustomer = Customer::where('customer.is_aktif', "Y")
                                 ->orderBy('kode')
                                 ->orderBy('nama')

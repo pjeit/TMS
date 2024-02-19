@@ -216,7 +216,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
+                                        {{-- <tr>
                                             <th>
                                                 <input type="checkbox" class="checkitem" name="checkbox_THC" id="thc_cekbox"> THC
                                             </th>
@@ -233,7 +233,7 @@
                                                 <input type="text" id="lolo_null" class="form-control" value="0" readonly>
                                                 <input type="text" name="total_lolo" id="total_lolo" value="0" class="form-control uang numaja" readonly hidden>
                                             </td>
-                                        </tr>
+                                        </tr> --}}
                                         <tr>
                                             <th>
                                                 <input type="checkbox" class="checkitem" name="checkbox_APBS" id="apbs_cekbox"> APBS
@@ -400,6 +400,57 @@
                 event.preventDefault();
                 return false;
             }
+
+            // algoritma cek seal , contoh no kontainer IPXU2145512 (kalo index ke 4 dari string >=4 itu 40 ft, kalo dibawah 4 itu 20ft (digit ke 5) ) 
+                var flagCekKontainer = false;
+                var no_kontainer_salah = '';
+                var no_kontainer = $('.cek_value_kontainer');
+
+                for (var i = 0; i < no_kontainer.length; i++) {
+                    var kontainer = no_kontainer.eq(i);
+                    var row = kontainer.closest('tr'); // kontainer ini kan didalem tr (td),diambil bapak terdekatnya yaiut tr
+                    var get_index_from_tr = row.attr('id').replace('row', '');
+
+                    var get_index_kontainer_string = kontainer.val().trim().charAt(4);
+                    var get_value_kontainer_string = kontainer.val().trim();
+
+                    var tipe_kontainer=row.find(`#tipe`+get_index_from_tr).val();
+                    console.log("tipe_kontainer:", tipe_kontainer);
+                    console.log("get_index_kontainer_string:", get_index_kontainer_string);
+                    console.log("get_value_kontainer_string:", get_value_kontainer_string);
+
+                    if(tipe_kontainer=="20"&&get_index_kontainer_string>=4)
+                    {
+                        flagCekKontainer = true;
+                        no_kontainer_salah = `Kontainer ${get_value_kontainer_string} seharusnya 40ft`
+                        break; 
+                    }
+                    else if(tipe_kontainer=="40"&&get_index_kontainer_string<4)
+                    {
+                        flagCekKontainer = true;
+                        no_kontainer_salah = `Kontainer ${get_value_kontainer_string} seharusnya 20ft`
+                        break; 
+                    }
+                }
+                // console.log(flagCekKontainer);
+                if (flagCekKontainer) {
+                    event.preventDefault();
+
+                    Swal.fire(
+                        'Terjadi kesalahan!',
+                        no_kontainer_salah,
+                        'warning'
+                    )
+                    return;
+                    //     event.preventDefault(); 
+                    //     Toast.fire({
+                    //         icon: 'error',
+                    //         text: deskripsi_text,
+                    //     })
+                    // return;
+                } 
+            // end algoritma cek seal , contoh no kontainer IPXU2145512 (kalo index ke 4 dari string >=4 itu 40 ft, kalo dibawah 4 itu 20ft (digit ke 5) ) 
+
             // pop up confirmation
                 Swal.fire({
                     title: 'Apakah Anda yakin data sudah benar?',
@@ -589,7 +640,7 @@
                         </tr>`
             $("#indexBiayaLain").val(counter);
             // Append the new row after the specified <tr>
-            $('#tabel_biaya_belum_dooring tbody tr').eq(4).append().after(newRow);
+            $('#tabel_biaya_belum_dooring tbody tr').eq(2).append().after(newRow);
         });
           // Delete button click event
         $(document).on('click', '.deleteRow', function () {
@@ -689,10 +740,10 @@
                     $('#tb').append(
                         `<tr id="row`+i+`">
                             <td>
-                                <input type="text" id="no_kontainer" name="detail[${i}][no_kontainer]"class="form-control no_kontainerx" maxlength="20" value="">
+                                <input type="text" id="no_kontainer" name="detail[${i}][no_kontainer]"class="form-control no_kontainerx cek_value_kontainer" maxlength="20" value="">
                             </td>
                             <td>
-                                <input type="text" id="seal" name="detail[${i}][seal]"class="form-control" maxlength="10" value="">
+                                <input type="text" id="seal${i}" name="detail[${i}][seal]"class="form-control seal" maxlength="10" value="">
                             </td>
                             <td>
                                 <select class="form-control selectpicker tipeKontainer" name="detail[${i}][tipe]" id="tipe${i}" data-live-search="true" data-show-subtext="true" data-placement="bottom" >

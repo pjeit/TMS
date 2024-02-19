@@ -29,7 +29,7 @@ class VariableHelper
          
         } catch (\Throwable $th) {
             //throw $th;
-            return ('Tidak ada data role error!'); 
+            return ('Tidak ada data role error!'.$th->getMessage()); 
          }
      }
      public static function Jenis_supplier_id($jenis)
@@ -37,12 +37,12 @@ class VariableHelper
          // some logic to determine if the publisher is main
          try {
             //code...
-            $data_jenis= JenisSupplier::where('is_aktif','Y')->where('name','like','%'.$jenis.'%')->first();
+            $data_jenis= JenisSupplier::where('is_aktif','Y')->where('nama','like','%'.$jenis.'%')->first();
             return ($data_jenis->id); 
          
         } catch (\Throwable $th) {
             //throw $th;
-            return ('Tidak ada data role error!'); 
+            return ('Tidak ada data supplier error!'.$th->getMessage()); 
          }
      }
     function bulanKeRomawi($bulan) {

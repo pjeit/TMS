@@ -232,16 +232,16 @@
             </thead>
             <tbody > 
                 {{-- @if ($JobOrder->thc) --}}
-                    <tr>
+                    {{-- <tr>
                         <td class="p-10 bold">THC</td>
                         <td class="p-10 align-uang">Rp. {{number_format($JobOrder->thc) }}</td>
-                    </tr>
+                    </tr> --}}
                 {{-- @endif --}}
                 {{-- @if ($JobOrder->lolo) --}}
-                    <tr>
+                    {{-- <tr>
                         <td class="p-10 bold">LOLO</td>
                         <td class="p-10 align-uang">Rp. {{number_format($JobOrder->lolo)}}</td>
-                    </tr>
+                    </tr> --}}
                 {{-- @endif --}}
                 {{-- @if ($JobOrder->apbs) --}}
                     <tr>
