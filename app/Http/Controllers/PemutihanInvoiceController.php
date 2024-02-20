@@ -207,53 +207,34 @@ class PemutihanInvoiceController extends Controller
          DB::beginTransaction(); 
  
          try {
-             $inv_bayar = InvoicePembayaran::where('is_aktif', 'Y')->find($id);
-             $inv_bayar->updated_by = $user;
-             $inv_bayar->updated_at = now();
-             $inv_bayar->is_aktif = 'N';
-             if($inv_bayar->save()){
-                 $invoice = Invoice::where('is_aktif', 'Y')->where('id_pembayaran',$id)->get();
-                 foreach ($invoice as $invoices) {
-                     $invoices->id_pembayaran = null;
-                     $invoices->total_sisa = $invoices->total_tagihan;
-                     $invoices->pph = 0;
-                     $invoices->biaya_admin = 0;
-                     $invoices->total_dibayar = 0;
-                     $invoices->status = 'MENUNGGU PEMBAYARAN INVOICE';
-                     $invoices->updated_by = $user;
-                     $invoices->updated_at = now();
-                     // $detail->save();
-                     if($invoices->save())
-                     {
-                         $invoice_detail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice',$invoice)->get();
-                         foreach ($invoice_detail as  $details) {
-                             $sewa = Sewa::where('is_aktif','Y')->where('id_sewa',$details->id_sewa)->first();
-                             $sewa->status = 'MENUNGGU PEMBAYARAN INVOICE';
-                             $sewa->updated_by = $user;
-                             $sewa->updated_at = now();
-                             $sewa->save();
-                             //buat yang JO ADA DI TRIGGER update_jo_selesai_dooring
-                         }
- 
-                     }
-                 }
-                 $history = KasBankTransaction::where('is_aktif','Y')
-                 ->where('keterangan_kode_transaksi', $id)
-                 ->where('jenis', 'pembayaran_invoice')
-                 ->first();
-                 $history->keterangan_transaksi = 'HAPUS - ' . isset($history->keterangan_transaksi)? $history->keterangan_transaksi:'';
-                 $history->is_aktif = 'N';
-                 $history->updated_by = $user;
-                 $history->updated_at = now();
-                 if($history->save()){
-                     // kembalikan kasbank sekarang
-                     $returnKas = KasBank::where('is_aktif','Y')->find($inv_bayar->id_kas);
-                     $returnKas->saldo_sekarang += floatval(str_replace(',', '', $history['kredit']));
-                     $returnKas->updated_by = $user;
-                     $returnKas->updated_at = now();
-                     $returnKas->save();
-                 }
-             }
+                $pemutihan = PemutihanInvoice::where('is_aktif', 'Y')->findOrFail($invoice->id);
+             
+                $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($invoice->id);
+                $invoice->total_sisa = $pemutihan->nominal_pemutihan;
+                $invoice->total_dibayar -= $pemutihan->nominal_pemutihan;
+                $invoice->status = 'MENUNGGU PEMBAYARAN INVOICE';
+                $invoice->updated_by = $user;
+                $invoice->updated_at = now();
+                // $detail->save();
+                if($invoice->save())
+                {
+                    $invoice_detail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice',$invoice->id)->get();
+                    foreach ($invoice_detail as  $details) {
+                        $sewa = Sewa::where('is_aktif','Y')->where('id_sewa',$details->id_sewa)->first();
+                        $sewa->status = 'MENUNGGU PEMBAYARAN INVOICE';
+                        $sewa->updated_by = $user;
+                        $sewa->updated_at = now();
+                        $sewa->save();
+                        //buat yang JO ADA DI TRIGGER update_jo_selesai_dooring
+                        $cust = Customer::where('is_aktif', 'Y')->findOrFail($sewa->id_customer);
+                        if($cust){
+                            $cust->kredit_sekarang += $sewa->total_tarif;
+                            $cust->updated_by = $user;
+                            $cust->updated_at = now();
+                            $cust->save();
+                        }
+                    }
+                }
              DB::commit();
              return redirect()->route('revisi_invoice_trucking.index')->with(['status' => 'Success', 'msg' => 'Pembayaran Invoice berhasil dihapus!']);
  

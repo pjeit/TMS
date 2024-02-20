@@ -424,7 +424,7 @@ class RevisiInvoiceTruckingController extends Controller
                     // $detail->save();
                     if($invoices->save())
                     {
-                        $invoice_detail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice',$invoice)->get();
+                        $invoice_detail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice',$invoices->id)->get();
                         foreach ($invoice_detail as  $details) {
                             $sewa = Sewa::where('is_aktif','Y')->where('id_sewa',$details->id_sewa)->first();
                             $sewa->status = 'MENUNGGU PEMBAYARAN INVOICE';
