@@ -10,7 +10,7 @@
 @section('pathjudul')
 
 @endsection
-
+@include('sweetalert::alert')
 @section('content')
 <style>
   
@@ -71,60 +71,60 @@
             ]
         });
 
-        $(document).on('click', '.delete', function (event){
-            let id = this.value;
-            var baseUrl = "{{ asset('') }}";
-            var url = baseUrl+`{{ url('revisi_tagihan_pembelian/delete/${id}') }}`;
-            var token = $('#token').val();
+        // $(document).on('click', '.delete', function (event){
+        //     let id = this.value;
+        //     var baseUrl = "{{ asset('') }}";
+        //     var url = baseUrl+`{{ url('revisi_tagihan_pembelian/delete/${id}') }}`;
+        //     var token = $('#token').val();
 
-            Swal.fire({
-                title: 'Apakah Anda yakin menghapus data ini?',
-                text: "Periksa kembali data anda",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonColor: '#d33',
-                confirmButtonColor: '#3085d6',
-                cancelButtonText: 'Batal',
-                confirmButtonText: 'Ya',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        dataType: "JSON",
-                        data: {
-                            "id": id,
-                            "_method": 'GET',
-                            "_token": token,
-                        },
-                        success: function(resp){
-                            if(resp.status == 'success'){
-                                window.location.reload();
-                            }
-                        }
-                    });
-                }else{
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
+        //     Swal.fire({
+        //         title: 'Apakah Anda yakin menghapus data ini?',
+        //         text: "Periksa kembali data anda",
+        //         icon: 'warning',
+        //         showCancelButton: true,
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonText: 'Batal',
+        //         confirmButtonText: 'Ya',
+        //         reverseButtons: true
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             $.ajax({
+        //                 url: url,
+        //                 type: 'GET',
+        //                 dataType: "JSON",
+        //                 data: {
+        //                     "id": id,
+        //                     "_method": 'GET',
+        //                     "_token": token,
+        //                 },
+        //                 success: function(resp){
+        //                     if(resp.status == 'success'){
+        //                         window.location.reload();
+        //                     }
+        //                 }
+        //             });
+        //         }else{
+        //             const Toast = Swal.mixin({
+        //                 toast: true,
+        //                 position: 'top',
+        //                 timer: 2500,
+        //                 showConfirmButton: false,
+        //                 timerProgressBar: true,
+        //                 didOpen: (toast) => {
+        //                     toast.addEventListener('mouseenter', Swal.stopTimer)
+        //                     toast.addEventListener('mouseleave', Swal.resumeTimer)
+        //                 }
+        //             })
 
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Batal Disimpan'
-                    })
-                    event.preventDefault();
-                }
-            })
-        });
+        //             Toast.fire({
+        //                 icon: 'warning',
+        //                 title: 'Batal Disimpan'
+        //             })
+        //             event.preventDefault();
+        //         }
+        //     })
+        // });
     });
 </script>
 @endsection

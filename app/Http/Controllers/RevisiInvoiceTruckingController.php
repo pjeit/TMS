@@ -31,6 +31,11 @@ class RevisiInvoiceTruckingController extends Controller
     // revisi invoice ini ngefeknya kalo udah selesai dibayar soalnya, bukan yg masih belum di bayar
     public function index()
     {
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         $data = InvoicePembayaran::where('is_aktif', 'Y')->get();
 
         return view('pages.revisi.revisi_invoice_trucking.index',[
@@ -426,19 +431,43 @@ class RevisiInvoiceTruckingController extends Controller
                             $sewa->updated_by = $user;
                             $sewa->updated_at = now();
                             $sewa->save();
-                            //buat yang JO ADA DI TRIGGER
+                            //buat yang JO ADA DI TRIGGER update_jo_selesai_dooring
+
+                            $cust = Customer::where('is_aktif', 'Y')->findOrFail($sewa->id_customer);
+                            if($cust){
+                                $cust->kredit_sekarang += $sewa->total_tarif;
+                                $cust->updated_by = $user;
+                                $cust->updated_at = now();
+                                $cust->save();
+                            }
                         }
 
                     }
                 }
+                $history = KasBankTransaction::where('is_aktif','Y')
+                ->where('keterangan_kode_transaksi', $id)
+                ->where('jenis', 'pembayaran_invoice')
+                ->first();
+                $history->keterangan_transaksi = 'HAPUS - ' . isset($history->keterangan_transaksi)? $history->keterangan_transaksi:'';
+                $history->is_aktif = 'N';
+                $history->updated_by = $user;
+                $history->updated_at = now();
+                if($history->save()){
+                    // kembalikan kasbank sekarang
+                    $returnKas = KasBank::where('is_aktif','Y')->find($inv_bayar->id_kas);
+                    $returnKas->saldo_sekarang += floatval(str_replace(',', '', $history['kredit']));
+                    $returnKas->updated_by = $user;
+                    $returnKas->updated_at = now();
+                    $returnKas->save();
+                }
             }
             DB::commit();
-            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'Success', 'msg' => 'Hapus data nota gabungan berhasil!']);
+            return redirect()->route('revisi_invoice_trucking.index')->with(['status' => 'Success', 'msg' => 'Pembayaran Invoice berhasil dihapus!']);
 
         } catch (\Throwable $th) {
             //throw $th;
             db::rollBack();
-            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+            return redirect()->route('revisi_invoice_trucking.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
             
         }
     }
@@ -501,13 +530,16 @@ class RevisiInvoiceTruckingController extends Controller
                     $edit=auth()->user()->can('EDIT_REVISI_INVOICE_TRUCKING')?'<a href="/revisi_invoice_trucking/edit-pembayaran/'.$row->id.'" class="dropdown-item edit">
                                             <span class="fas fa-pencil-alt mr-3"></span> Edit 
                                         </a>':'';
+                    $delete=auth()->user()->can('DELETE_PEMBAYARAN_INVOICE')?'<a href="/revisi_invoice_trucking/'.$row->id.'" class="dropdown-item edit" data-confirm-delete="true">
+                    <span class="fas fa-trash mr-3"></span> Delete
+                    </a>':'';
                     $actionBtn = '
                                 <div class="btn-group dropleft">
                                     <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        '.$edit.'
+                                        '.$edit. $delete.'
                                     </div>
                                 </div>';
                                     // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 

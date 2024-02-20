@@ -12,6 +12,8 @@
 @endsection
 
 @section('content')
+@include('sweetalert::alert')
+
 <style>
   
 </style>

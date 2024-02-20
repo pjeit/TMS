@@ -28,6 +28,11 @@ class RevisiTagihanPembelianController extends Controller
 
     public function index()
     {
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
         $data = TagihanPembelianPembayaran::where('is_aktif', 'Y')->get();
         // dd($data);
         return view('pages.revisi.revisi_tagihan_pembelian.index',[
@@ -219,6 +224,79 @@ class RevisiTagihanPembelianController extends Controller
 
     public function delete($id)
     {
+        // $user = Auth::user()->id;
+        // DB::beginTransaction(); 
+        
+        // try {
+        //     $pembayaran = TagihanPembelianPembayaran::where('is_aktif', 'Y')->find($id);
+        //     if($pembayaran){
+        //         $pembayaran->catatan = 'HAPUS - ' . isset($pembayaran->catatan)? $pembayaran->catatan:'';
+        //         $pembayaran->is_aktif = 'N';
+        //         $pembayaran->updated_by = $user;
+        //         $pembayaran->updated_at = now();
+        //         if($pembayaran->save()){
+        //             // nonaktifin semua data dan relasinya
+        //             $pembelian = TagihanPembelian::where('is_aktif', 'Y')->where('id_pembayaran', $id)->get();
+        //             foreach ($pembelian as $key => $value) {
+        //                 $value->catatan = 'HAPUS - ' . isset($value->catatan)? $value->catatan:'';
+        //                 $value->is_aktif = 'N';
+        //                 $value->updated_by = $user;
+        //                 $value->updated_at = now();
+        //                 if($value->save()){
+        //                     $details = TagihanPembelianDetail::where('is_aktif', 'Y')->where('id_tagihan_pembelian', $value->id)->get();
+        //                     foreach ($details as $key => $detail) {
+        //                         $detail->is_aktif = 'N';
+        //                         $detail->updated_by = $user;
+        //                         $detail->updated_at = now();
+        //                         $detail->save();
+        //                     }
+        //                 }
+        //             }
+        //         }
+    
+        //         $history = KasBankTransaction::where('is_aktif','Y')
+        //                     ->where('keterangan_kode_transaksi', $id)
+        //                     ->where('jenis', 'tagihan_pembelian')
+        //                     ->first();
+        //         $history->keterangan_transaksi = 'HAPUS - ' . isset($history->keterangan_transaksi)? $history->keterangan_transaksi:'';
+        //         $history->is_aktif = 'N';
+        //         $history->updated_by = $user;
+        //         $history->updated_at = now();
+        //         if($history->save()){
+        //             // kembalikan kasbank sekarang
+        //             $returnKas = KasBank::where('is_aktif','Y')->find($history['id_kas_bank']);
+        //             $returnKas->saldo_sekarang += floatval(str_replace(',', '', $history['kredit']));
+        //             $returnKas->updated_by = $user;
+        //             $returnKas->updated_at = now();
+        //             if($returnKas->save()){
+        //                 DB::commit();
+        //                 return response()->json(['status' => 'success']);
+        //             }
+        //         }
+
+        //     }    
+
+        //     db::rollBack();
+        //     return response()->json(['status' => 'error']);
+        // } catch (ValidationException $e) {
+        //     db::rollBack();
+        //     return response()->json(['status' => 'error']);
+        // }
+        // catch (\Throwable $th) {
+        //     db::rollBack();
+        //     return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        // }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
         $user = Auth::user()->id;
         DB::beginTransaction(); 
         
@@ -265,7 +343,8 @@ class RevisiTagihanPembelianController extends Controller
                     $returnKas->updated_at = now();
                     if($returnKas->save()){
                         DB::commit();
-                        return response()->json(['status' => 'success']);
+                        // return response()->json(['status' => 'success']);
+                        return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'Success', 'msg' => 'Pembayaran nota pembelian berhasil dihapus!']);
                     }
                 }
 
@@ -281,17 +360,6 @@ class RevisiTagihanPembelianController extends Controller
             db::rollBack();
             return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 
     public function load_data(Request $request)
@@ -349,9 +417,12 @@ class RevisiTagihanPembelianController extends Controller
                     $edit=auth()->user()->can('EDIT_REVISI_TAGIHAN_PEMBELIAN')?'<a href="/revisi_tagihan_pembelian/'.$row->id.'/edit" class="dropdown-item edit">
                                             <span class="fas fa-pen-alt mr-3"></span> Edit 
                                         </a>':'';
-                    $delete = auth()->user()->can('DELETE_REVISI_TAGIHAN_PEMBELIAN')?'<button type="button" class="dropdown-item delete" value="'.$row->id.'">
-                                            <span class="fas fa-trash mr-3"></span> Delete
-                                        </button>':'';
+                    // $delete = auth()->user()->can('DELETE_REVISI_TAGIHAN_PEMBELIAN')?'<button type="button" class="dropdown-item delete" value="/revisi_tagihan_pembelian/'.$row->id.'" data-confirm-delete="true">
+                    //                         <span class="fas fa-trash mr-3"></span> Delete
+                    //                     </button>':'';
+                    $delete=auth()->user()->can('DELETE_REVISI_TAGIHAN_PEMBELIAN')?'<a href="/revisi_tagihan_pembelian/'.$row->id.'" class="dropdown-item edit" data-confirm-delete="true">
+                    <span class="fas fa-trash mr-3"></span> Delete
+                    </a>':'';
                     $actionBtn = '
                                 <div class="btn-group dropleft">
                                     <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
