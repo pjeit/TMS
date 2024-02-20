@@ -285,6 +285,10 @@ class RevisiTagihanRekananController extends Controller
             db::rollBack();
             return response()->json(['status' => 'error']);
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('revisi_tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     public function load_data(Request $request)

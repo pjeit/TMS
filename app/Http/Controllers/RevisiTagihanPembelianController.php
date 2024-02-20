@@ -211,6 +211,10 @@ class RevisiTagihanPembelianController extends Controller
             db::rollBack();
             return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Revisi gagal!']);
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     public function delete($id)
@@ -272,6 +276,10 @@ class RevisiTagihanPembelianController extends Controller
         } catch (ValidationException $e) {
             db::rollBack();
             return response()->json(['status' => 'error']);
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 

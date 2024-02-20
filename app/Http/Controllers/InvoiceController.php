@@ -250,6 +250,10 @@ class InvoiceController extends Controller
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('belum_invoice.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     /**

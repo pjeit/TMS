@@ -112,7 +112,14 @@ class MarketingController extends Controller
 
                 return redirect()->route('marketing.index')->with(['status' => 'Success', 'msg' => 'Data berhasil dibuat!']);
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            // return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->route('marketing.index')->with(['status' => 'Error', 'msg' => $e->getMessage()]);
+
+        }
+        catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('marketing.index')->with(['status' => 'Error', 'msg' => $th->getMessage()]);
+
         }
     }
 
@@ -193,9 +200,18 @@ class MarketingController extends Controller
             $marketing->is_aktif = 'Y';
             $marketing->save();
 
-            return redirect()->route('marketing.index')->with('status','Success!!');
+            // return redirect()->route('marketing.index')->with('status','Success!!');
+            return redirect()->route('marketing.index')->with(['status' => 'Success', 'msg' =>'Sukses edit data marketing']);
+
         } catch (ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            // return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->route('marketing.index')->with(['status' => 'Error', 'msg' => $e->errors()]);
+
+        }
+        catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('marketing.index')->with(['status' => 'Error', 'msg' => $th->getMessage()]);
+
         }
     }
 
@@ -207,12 +223,22 @@ class MarketingController extends Controller
      */
     public function destroy(Marketing $marketing)
     {
-        $user = Auth::user()->id;
-        $marketing->updated_by = $user;
-        $marketing->updated_at = now();
-        $marketing->is_aktif = "N";
-        $marketing->save();
+        try {
+            //code...
+            $user = Auth::user()->id;
+            $marketing->updated_by = $user;
+            $marketing->updated_at = now();
+            $marketing->is_aktif = "N";
+            $marketing->save();
+            return redirect()->route('marketing.index')->with(['status' => 'Success', 'msg' => 'Berhasil hapus data marketing!']);
 
-        return redirect()->route('marketing.index')->with('status','Success!!');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('marketing.index')->with(['status' => 'Error', 'msg' => $th->getMessage()]);
+
+        }
+       
+
+        // return redirect()->route('marketing.index')->with('status','Success!!');
     }
 }

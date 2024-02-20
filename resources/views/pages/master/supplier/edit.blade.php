@@ -105,7 +105,7 @@
                     <div class="row col-12">
                         <div class="form-group col-4">
                             <label for="">NPWP</label>
-                            <input required type="text" name="npwp" class="form-control" value="{{ $data->npwp }}" >                         
+                            <input  type="text" name="npwp" class="form-control" value="{{ $data->npwp }}" >                         
                         </div>
     
                         <div class="form-group col-4">
@@ -156,24 +156,24 @@
                                         <input type="hidden" id="hiddenVirtual" name="hiddenVirtual" value="{{$data->is_virtual_acc}}"></span>
 
                                     </div>
-                                     <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek',$data->no_rek)}}" > 
+                                     <input  type="text" name="no_rek" class="form-control" value="{{old('no_rek',$data->no_rek)}}" > 
                                 </div>
                         </div>
                  
                         <div class="form-group col-6">
                             <label for="">Atas Nama</label>
-                            <input required type="text" name="rek_nama" class="form-control" value="{{ $data->rek_nama }}" >                         
+                            <input  type="text" name="rek_nama" class="form-control" value="{{ $data->rek_nama }}" >                         
                         </div>
                     </div>
                     <div class="row col-12">
                         <div class="form-group col-6">
                             <label for="">Bank</label>
-                            <input required type="text" name="bank" class="form-control" value="{{ $data->bank }}" >                         
+                            <input  type="text" name="bank" class="form-control" value="{{ $data->bank }}" >                         
                         </div>
                 
                         <div class="form-group col-6">
                             <label for="">Cabang</label>
-                            <input required type="text" name="cabang" class="form-control" value="{{ $data->cabang }}" >                         
+                            <input  type="text" name="cabang" class="form-control" value="{{ $data->cabang }}" >                         
                         </div>
                     </div>
                     

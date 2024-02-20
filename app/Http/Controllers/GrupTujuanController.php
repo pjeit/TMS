@@ -328,7 +328,7 @@ class GrupTujuanController extends Controller
             $grup_tujuan = GrupTujuan::where('is_aktif', 'Y')->find($data['tujuan_id']);
             
             if($grup_tujuan){
-                $grup_tujuan->marketing_id = $data['marketing'][0];
+                $grup_tujuan->marketing_id = isset($data['marketing'][0]) ? $data['marketing'][0] : null;
                 $grup_tujuan->nama_tujuan = $data['nama_tujuan'];
                 $grup_tujuan->pic = $data['pic'];
                 $grup_tujuan->alamat = $data['alamat'];

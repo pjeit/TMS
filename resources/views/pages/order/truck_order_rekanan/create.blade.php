@@ -148,8 +148,8 @@
                                         </select>
     
                                         <input type="hidden" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
-                                        <input type="text" name="id_jo_detail" id="id_jo_detail" value="" placeholder="id_jo_detail">
-                                        <input type="text" name="id_jo" id="id_jo" value="" placeholder="id_jo">
+                                        <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="" placeholder="id_jo_detail">
+                                        <input type="hidden" name="id_jo" id="id_jo" value="" placeholder="id_jo">
                                         <input type="hidden" id="nama_tujuan" name="nama_tujuan" value="">
                                         <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="">
                                         <input type="hidden" id="tarif" name="tarif" value="">

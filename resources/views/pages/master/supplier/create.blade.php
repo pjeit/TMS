@@ -156,19 +156,19 @@
                                         <input type="hidden" id="hiddenVirtual" name="hiddenVirtual" value="N"></span>
 
                                     </div>
-                                     <input required type="text" name="no_rek" class="form-control" value="{{old('no_rek','')}}" > 
+                                     <input  type="text" name="no_rek" class="form-control" value="{{old('no_rek','')}}" > 
                                 </div>
                             </div>
                      
                             <div class="form-group col-6">
                                 <label for="">Atas Nama <span style="color: red">*</span></label>
-                                <input required type="text" name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
+                                <input  type="text" name="rek_nama" class="form-control" value="{{old('rek_nama','')}}" >                         
                             </div>
                         </div>
                         <div class="row col-12">
                             <div class="form-group col-6">
                                 <label for="">Bank <span style="color: red">*</span></label>
-                                <input required type="text" name="bank" class="form-control" value="{{old('bank','')}}" >                         
+                                <input  type="text" name="bank" class="form-control" value="{{old('bank','')}}" >                         
                             </div>
                      
                             <div class="form-group col-6">

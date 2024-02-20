@@ -1084,7 +1084,7 @@ class BelumInvoiceController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        dd($data);
+        // dd($data);
         try {
             foreach ($data['detail'] as $key => $value) {
                 // data addcost lama
@@ -1299,7 +1299,7 @@ class BelumInvoiceController extends Controller
         }
         // dd(substr($data->no_invoice, -2));
         // dd(strlen($data->no_invoice));
-
+        // dd($data);
         $qrcode = QrCode::size(150)
         // ->backgroundColor(255, 0, 0, 25)
         ->generate(

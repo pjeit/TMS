@@ -671,6 +671,10 @@ class DalamPerjalananController extends Controller
             return redirect()->back()->withErrors($e->getMessage())->withInput();
 
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     /**
@@ -864,6 +868,10 @@ class DalamPerjalananController extends Controller
             DB::rollBack();
             return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
             // return redirect()->back()->withErrors($e->getMessage())->withInput();
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
 
     }
@@ -1220,6 +1228,10 @@ class DalamPerjalananController extends Controller
             return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
             // return redirect()->back()->withErrors($e->getMessage())->withInput();
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
 
     }
 
@@ -1571,12 +1583,10 @@ class DalamPerjalananController extends Controller
             return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
             // return redirect()->back()->withErrors($e->getMessage())->withInput();
         }
-        // catch (\Exception $e) {
-        // // do nothing
-        //     DB::rollBack();
-        //     return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
-
-        // }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
 
     }
 
@@ -1722,6 +1732,10 @@ class DalamPerjalananController extends Controller
         } catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => 'Hubungi IT :'.$th->getMessage()]);
         }
 
     }
@@ -2131,6 +2145,11 @@ class DalamPerjalananController extends Controller
         } catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
+
         }
 
     }

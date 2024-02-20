@@ -377,10 +377,14 @@ class RevisiInvoiceTruckingController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('controller.method')->with(['status' => 'Success', 'msg'  => 'Pembayaran berhasil!']);
+            return redirect()->route('revisi_invoice_trucking.index')->with(['status' => 'Success', 'msg'  => 'Pembayaran berhasil!']);
         } catch (ValidationException $e) {
             db::rollBack();
-            return redirect()->route('controller.method')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
+            return redirect()->route('revisi_invoice_trucking.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('revisi_invoice_trucking.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 
@@ -393,6 +397,50 @@ class RevisiInvoiceTruckingController extends Controller
     public function destroy($id)
     {
         //
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+
+        try {
+            $inv_bayar = InvoicePembayaran::where('is_aktif', 'Y')->find($id);
+            $inv_bayar->updated_by = $user;
+            $inv_bayar->updated_at = now();
+            $inv_bayar->is_aktif = 'N';
+            if($inv_bayar->save()){
+                $invoice = Invoice::where('is_aktif', 'Y')->where('id_pembayaran',$id)->get();
+                foreach ($invoice as $invoices) {
+                    $invoices->id_pembayaran = null;
+                    $invoices->total_sisa = $invoices->total_tagihan;
+                    $invoices->pph = 0;
+                    $invoices->biaya_admin = 0;
+                    $invoices->total_dibayar = 0;
+                    $invoices->status = 'MENUNGGU PEMBAYARAN INVOICE';
+                    $invoices->updated_by = $user;
+                    $invoices->updated_at = now();
+                    // $detail->save();
+                    if($invoices->save())
+                    {
+                        $invoice_detail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice',$invoice)->get();
+                        foreach ($invoice_detail as  $details) {
+                            $sewa = Sewa::where('is_aktif','Y')->where('id_sewa',$details->id_sewa)->first();
+                            $sewa->status = 'MENUNGGU PEMBAYARAN INVOICE';
+                            $sewa->updated_by = $user;
+                            $sewa->updated_at = now();
+                            $sewa->save();
+                            //buat yang JO ADA DI TRIGGER
+                        }
+
+                    }
+                }
+            }
+            DB::commit();
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'Success', 'msg' => 'Hapus data nota gabungan berhasil!']);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            db::rollBack();
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+            
+        }
     }
 
     public function load_data(Request $request)

@@ -196,13 +196,16 @@ class PencairanKomisiCustomerController extends Controller
 
             
             DB::commit();
-            return redirect()->route('pencairan_komisi_driver.index')->with(['status' => 'Success', 'msg' => 'Berhasil Mencairkan Komisi Supir']);
+            return redirect()->route('pencairan_komisi_customer.index')->with(['status' => 'Success', 'msg' => 'Berhasil Mencairkan Komisi customer']);
         } 
         catch (\Throwable $th) {
             return redirect()->back()->withErrors($th->getMessage())->withInput();
             DB::rollBack();
-            // return redirect()->route('pencairan_komisi_driver.index')->with(['status' => 'Gagal', 'msg' =>$th->getMessage()],500)->withErrors($th->getMessage())->withInput();
-
+            // return redirect()->route('pencairan_komisi_customer.index')->with(['status' => 'Gagal', 'msg' =>$th->getMessage()],500)->withErrors($th->getMessage())->withInput();
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('pencairan_komisi_customer.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 

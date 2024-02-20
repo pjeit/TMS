@@ -273,6 +273,10 @@ class PembayaranInvoiceController extends Controller
             db::rollBack();
             return redirect()->route('pembayaran_invoice.index')->with(["status" => "error", "msg" => 'Terjadi Kesalahan ketika pembayaran!']);
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     
     }
 
@@ -688,6 +692,10 @@ class PembayaranInvoiceController extends Controller
         } catch (ValidationException $e) {
             db::rollBack();
             return redirect()->route('cetak_invoice.index')->with(['status' => 'error', 'msg' => 'Edit gagal!']);
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('cetak_invoice.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 

@@ -63,6 +63,11 @@
                                                                 <span class="fas fa-pen-alt mr-3"></span> Edit
                                                             </a>
                                                         {{-- @endcan --}}
+                                                        @if ($item->tagihan_dibayarkan==0)
+                                                            <a href="{{ route('tagihan_rekanan.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
+                                                                <span class="fas fa-trash mr-3"></span> Hapus
+                                                            </a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </td>

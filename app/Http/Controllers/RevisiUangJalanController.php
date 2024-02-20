@@ -303,6 +303,10 @@ class RevisiUangJalanController extends Controller
             return redirect()->route('revisi_uang_jalan.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
             // return redirect()->back()->withErrors($e->errors())->withInput();
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('revisi_uang_jalan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     /**

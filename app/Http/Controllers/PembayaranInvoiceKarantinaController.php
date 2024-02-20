@@ -137,6 +137,10 @@ class PembayaranInvoiceKarantinaController extends Controller
             db::rollBack();
             return redirect()->route('pembayaran_invoice_karantina.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('pembayaran_invoice_karantina.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
 
     }
 

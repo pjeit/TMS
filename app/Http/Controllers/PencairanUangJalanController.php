@@ -260,6 +260,10 @@ class PencairanUangJalanController extends Controller
             db::rollBack();
             return redirect()->route('pencairan_uang_jalan.index')->with(['status' => 'error', 'msg' => 'Pembayaran gagal!']);
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('pencairan_uang_jalan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     /**

@@ -16,7 +16,7 @@ use App\Helper\CoaHelper;
 use App\Models\KasBankTransaction;
 use App\Models\LemburMekanikKendaraan;
 use Exception;
-
+use App\Helper\VariableHelper;
 class LemburMekanikController extends Controller
 {
     /**
@@ -35,6 +35,7 @@ class LemburMekanikController extends Controller
         $dataMekanik = Karyawan::where('is_aktif',"Y")
             // ->where('grup_tujuan.is_aktif', '=', "Y")
             // ->orderBy('grup_tujuan.nama_tujuan')
+            ->where('karyawan.role_id', VariableHelper::Role_id('Mekanik'))
             ->get();
         $title = 'Data akan dihapus!';
         $text = "Apakah Anda yakin?";
@@ -222,6 +223,8 @@ class LemburMekanikController extends Controller
         $dataMekanik = Karyawan::where('is_aktif',"Y")
             // ->where('grup_tujuan.is_aktif', '=', "Y")
             // ->orderBy('grup_tujuan.nama_tujuan')
+            ->where('karyawan.role_id', VariableHelper::Role_id('Mekanik'))
+
             ->get();
         $dataMekanik = Karyawan::where('is_aktif',"Y")
             // ->where('grup_tujuan.is_aktif', '=', "Y")
@@ -289,6 +292,16 @@ class LemburMekanikController extends Controller
             $data = $request->all();
             $tanggal_lembur= date_create_from_format('d-M-Y', $data['tanggal_lembur']);
             // dd($data);   
+            // cek apakah ada data atau tidak di db dengan hari yang sama, karena lembur tidak bisa 2x
+            $dataLemburMekanik = LemburMekanik::where('is_aktif',"Y")
+            ->with('karyawan')
+            ->where('id_karyawan',$data['select_mekanik'])
+            ->where('tanggal_lembur',date_format($tanggal_lembur, 'Y-m-d'))
+            ->first();
+            // dd($dataLemburMekanik);
+            if ($dataLemburMekanik) {
+                return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => 'Data lembur '. $dataLemburMekanik->karyawan->nama_panggilan.' sudah ada!']);
+            }
             $lembur_mekanik = LemburMekanik::where('is_aktif', 'Y')->findOrFail($lemburMekanik->id);
             $lembur_mekanik->id_karyawan = $data['select_mekanik'];
             $lembur_mekanik->tanggal_lembur = date_format($tanggal_lembur, 'Y-m-d');

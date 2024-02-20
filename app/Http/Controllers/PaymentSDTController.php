@@ -214,11 +214,9 @@ class PaymentSDTController extends Controller
             return redirect()->route('pembayaran_sdt.index')->with(['status' => 'error', 'msg' => $e->errors()]);
             db::rollBack();
         }
-        catch (Exception $ex) {
-            // cancel input db
-            DB::rollBack();
-            return redirect()->route('pembayaran_sdt.index')->with(['status' => 'error', 'msg' => $ex->getMessage()]);
-            // return response()->json(['errorServer' => $ex->getMessage()],500);
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('pembayaran_sdt.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
     /**

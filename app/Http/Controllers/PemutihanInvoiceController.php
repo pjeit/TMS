@@ -186,6 +186,10 @@ class PemutihanInvoiceController extends Controller
             db::rollBack();
             return redirect()->route('pemutihan_invoice.index')->with(['status' => 'error', 'msg' => 'Pemutihan Invoice gagal!']);
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('pemutihan_invoice.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     /**

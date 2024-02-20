@@ -225,10 +225,9 @@ class TransaksiLainController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
 
         }   
-        catch (Exception $ex) {
-            // cancel input db
-            DB::rollBack();
-            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('transaksi_lain.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 
@@ -405,10 +404,9 @@ class TransaksiLainController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
 
         }   
-        catch (Exception $ex) {
-            // cancel input db
-            DB::rollBack();
-            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('transaksi_lain.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 
@@ -476,10 +474,9 @@ class TransaksiLainController extends Controller
             DB::rollBack();
             return redirect()->back()->withErrors($e->errors());
         }
-        catch (Exception $ex) {
-            // cancel input db
-            DB::rollBack();
-            return redirect()->back()->withErrors($ex->getMessage())->withInput();
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('transaksi_lain.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     
     }

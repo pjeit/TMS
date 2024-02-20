@@ -172,73 +172,85 @@ class TagihanRekananController extends Controller
             $biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
             $i = 0;
 
-            $pembayaran = new TagihanRekananPembayaran();
-            $pembayaran->id_supplier = $data['id_supplier'];
-            $pembayaran->id_kas = $data['id_kas'];
-            $pembayaran->catatan = $data['catatan'];
-            $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
-            $pembayaran->total_bayar = floatval(str_replace(',', '', $data['total_bayar']));
-            $pembayaran->save();
-
-            foreach ($data['data'] as $key => $value) {
-                $tagihan = TagihanRekanan::where('is_aktif', 'Y')->find($key);
-                if($tagihan){
-                    $tagihan->id_pembayaran = $pembayaran->id;
-                    $tagihan->pph = $value['pph'];
-                    $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
-                    if($i == 0){
-                        $tagihan->tagihan_dibayarkan += $value['total_bayar'] - $biaya_admin;
-                        $tagihan->biaya_admin = $biaya_admin;
-                    }else{
-                        $tagihan->tagihan_dibayarkan += $value['total_bayar'];
-                    }
-                    if($tagihan->sisa_tagihan == 0){
-                        $tagihan->status = 'LUNAS';
-                    }
-                    $tagihan->updated_by = $user;
-                    $tagihan->updated_at = now();
-                    $tagihan->save();     
-
-                    $keterangan .= ' #NOTA: '. $value['no_nota'] . ' #TOTAL BAYAR: ' . $tagihan->tagihan_dibayarkan;
-                    if($value['pph'] != 0){
-                        $keterangan .= ' #PPh23: '. $value['pph'];
-                    }
-                    if($i == 0 && $biaya_admin != 0){
-                        $keterangan .= ' #BIAYA ADMIN: '. $biaya_admin;
-                    }
-                    $i++;
-                }                
+            if(floatval(str_replace(',', '', $data['total_bayar']))==0 || !isset($data['total_bayar']))
+            {
+                 return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Total Bayar harus diisi!']);
             }
+            else
+            {
+                $pembayaran = new TagihanRekananPembayaran();
+                $pembayaran->id_supplier = $data['id_supplier'];
+                $pembayaran->id_kas = $data['id_kas'];
+                $pembayaran->catatan = $data['catatan'];
+                $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
+                $pembayaran->total_bayar = floatval(str_replace(',', '', $data['total_bayar']));
+                $pembayaran->save();
+    
+                foreach ($data['data'] as $key => $value) {
+                    $tagihan = TagihanRekanan::where('is_aktif', 'Y')->find($key);
+                    if($tagihan){
+                        $tagihan->id_pembayaran = $pembayaran->id;
+                        $tagihan->pph = $value['pph'];
+                        $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
+                        if($i == 0){
+                            $tagihan->tagihan_dibayarkan += $value['total_bayar'] - $biaya_admin;
+                            $tagihan->biaya_admin = $biaya_admin;
+                        }else{
+                            $tagihan->tagihan_dibayarkan += $value['total_bayar'];
+                        }
+                        if($tagihan->sisa_tagihan == 0){
+                            $tagihan->status = 'LUNAS';
+                        }
+                        $tagihan->updated_by = $user;
+                        $tagihan->updated_at = now();
+                        $tagihan->save();     
+    
+                        $keterangan .= ' #NOTA: '. $value['no_nota'] . ' #TOTAL BAYAR: ' . $tagihan->tagihan_dibayarkan;
+                        if($value['pph'] != 0){
+                            $keterangan .= ' #PPh23: '. $value['pph'];
+                        }
+                        if($i == 0 && $biaya_admin != 0){
+                            $keterangan .= ' #BIAYA ADMIN: '. $biaya_admin;
+                        }
+                        $i++;
+                    }                
+                }
+    
+    
+                $history = new KasBankTransaction();
+                $history->id_kas_bank = $data['id_kas'];
+                $history->tanggal = date_create_from_format('d-M-Y', $data['tgl_bayar']);
+                $history->id_kas_bank = $data['id_kas'];
+                $history->debit = 0;
+                $history->kredit = floatval(str_replace(',', '', $data['total_bayar']));
+                $history->kode_coa = CoaHelper::DataCoa(5005);  // hardcode
+                $history->jenis = 'tagihan_rekanan';
+                $history->keterangan_transaksi = $keterangan;
+                $history->keterangan_kode_transaksi = $pembayaran->id;
+                $history->created_by = $user;
+                $history->created_at = now();
+                if($history->save()){
+                    $kas_bank= KasBank::where('is_aktif', 'Y')
+                                    ->where('id', $data['id_kas'])
+                                    ->first();
+                    $kas_bank->saldo_sekarang -=  floatval(str_replace(',', '',  $data['total_bayar']));
+                    $kas_bank->updated_at = now();
+                    $kas_bank->updated_by = $user;
+                    $kas_bank->save();
+                    DB::commit();
+                }
+    
+                return redirect()->route('tagihan_rekanan.index')->with(['status' => 'Success', 'msg' => 'Tagihan berhasil dibayar']);
 
-
-            $history = new KasBankTransaction();
-            $history->id_kas_bank = $data['id_kas'];
-            $history->tanggal = date_create_from_format('d-M-Y', $data['tgl_bayar']);
-            $history->id_kas_bank = $data['id_kas'];
-            $history->debit = 0;
-            $history->kredit = floatval(str_replace(',', '', $data['total_bayar']));
-            $history->kode_coa = CoaHelper::DataCoa(5005);  // hardcode
-            $history->jenis = 'tagihan_rekanan';
-            $history->keterangan_transaksi = $keterangan;
-            $history->keterangan_kode_transaksi = $pembayaran->id;
-            $history->created_by = $user;
-            $history->created_at = now();
-            if($history->save()){
-                $kas_bank= KasBank::where('is_aktif', 'Y')
-                                ->where('id', $data['id_kas'])
-                                ->first();
-                $kas_bank->saldo_sekarang -=  floatval(str_replace(',', '',  $data['total_bayar']));
-                $kas_bank->updated_at = now();
-                $kas_bank->updated_by = $user;
-                $kas_bank->save();
-                DB::commit();
             }
-
-            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'Success', 'msg' => 'Tagihan berhasil dibayar']);
 
         } catch (ValidationException $e) {
             db::rollBack();
             return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibayar!']);
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 
@@ -372,6 +384,10 @@ class TagihanRekananController extends Controller
             db::rollBack();
             return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Tagihan gagal dibuat!']);
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     /**
@@ -383,6 +399,40 @@ class TagihanRekananController extends Controller
     public function destroy($id)
     {
         //
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+
+        try {
+            $tagihan = TagihanRekanan::where('is_aktif', 'Y')->find($id);
+            $tagihan->updated_by = $user;
+            $tagihan->updated_at = now();
+            $tagihan->is_aktif = 'N';
+            if($tagihan->save()){
+                $details = TagihanRekananDetail::where('is_aktif', 'Y')->where('id_tagihan_rekanan',$id)->get();
+                foreach ($details as $detail) {
+                    $detail->updated_by = $user;
+                    $detail->updated_at = now();
+                    $detail->is_aktif = 'N';
+                    // $detail->save();
+                    if($detail->save())
+                    {
+                        $sewa = Sewa::where('is_aktif','Y')->where('id_sewa',$detail->id_sewa)->first();
+                        $sewa->updated_by = $user;
+                        $sewa->updated_at = now();
+                        $sewa->is_tagihan = 'N';
+                        $sewa->save();
+                    }
+                }
+            }
+            DB::commit();
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'Success', 'msg' => 'Hapus data nota gabungan berhasil!']);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            db::rollBack();
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+            
+        }
     }
 
     public function load_data($id)

@@ -123,6 +123,10 @@ class PembayaranKarantinaController extends Controller
             db::rollBack();
             return redirect()->back()->with(['status' => 'Error', 'msg' => 'Terjadi Kesalahan!']);
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('pembayaran_karantina.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
 
     }
 

@@ -112,6 +112,10 @@ class PengembalianJaminanController extends Controller
             DB::rollBack();
             return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'Error', 'msg' => 'Pengembalian gagal!']);
         }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     public function request(Request $request)
@@ -242,6 +246,10 @@ class PengembalianJaminanController extends Controller
         } catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'Error', 'msg' => 'Pengembalian gagal!']);
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('pengembalian_jaminan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 

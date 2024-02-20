@@ -184,7 +184,7 @@
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-6">
                                 <label for="marketing">Marketing <span style="color:red;">*</span></label>
-                                <select name="marketing[]" class="select2" style="width: 100%" id="marketing" required>
+                                <select name="marketing[]" class="select2" style="width: 100%" id="marketing">
                             
                                 </select>
                             </div>

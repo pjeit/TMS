@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
 use Exception;
-
 class PairKendaraanController extends Controller
 {
     public function __construct()
@@ -198,7 +197,7 @@ class PairKendaraanController extends Controller
                 ->where('pair_kendaraan_chassis.is_aktif', '=','Y') 
                 ->first();
         $dataDriver = DB::table('karyawan')
-                ->where('role_id', '5') // 5=driver 
+                ->where('role_id', VariableHelper::Role_id('Driver')) // 5=driver 
                 ->where('is_aktif', '=','Y') 
                 ->get();
         $dataCabang = DB::table('cabang_pje')

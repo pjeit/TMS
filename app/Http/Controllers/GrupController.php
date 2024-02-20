@@ -242,35 +242,44 @@ class GrupController extends Controller
     {
         // $this->authorize('delete_grup');
 
-        $user = Auth::user()->id; // masih hardcode nanti diganti cookies
-        // var_dump($grup); die;
-        $del_grup = DB::table('grup')
-                    ->where('id', $grup['id'])
-                    ->update(array(
-                        'is_aktif' => "N",
-                        'updated_by'=> $user, 
-                        'updated_at'=> now(),
-                    ));
-        if($del_grup){
+        try {
+            $user = Auth::user()->id; // masih hardcode nanti diganti cookies
+            // var_dump($grup); die;
+            $del_grup = DB::table('grup')
+                        ->where('id', $grup['id'])
+                        ->update(array(
+                            'is_aktif' => "N",
+                            'updated_by'=> $user, 
+                            'updated_at'=> now(),
+                        ));
+            if($del_grup){
 
-            $del_grup_tuj = DB::table('grup_tujuan')->where('grup_id', $grup['id'])
-                            ->update(array(
-                                'is_aktif' => "N",
-                                'updated_by'=> $user, 
-                                'updated_at'=> now(),
-                            ));
+                $del_grup_tuj = DB::table('grup_tujuan')->where('grup_id', $grup['id'])
+                                ->update(array(
+                                    'is_aktif' => "N",
+                                    'updated_by'=> $user, 
+                                    'updated_at'=> now(),
+                                ));
 
-                if($del_grup_tuj){
-                    $del_grup_tuj_biy = DB::table('grup_tujuan_biaya')->where('grup_id', $grup['id'])
-                                        ->update(array(
-                                            'is_aktif' => "N",
-                                            'updated_by'=> $user, 
-                                            'updated_at'=> now(),
-                                        ));
-                }
+                    if($del_grup_tuj){
+                        $del_grup_tuj_biy = DB::table('grup_tujuan_biaya')->where('grup_id', $grup['id'])
+                                            ->update(array(
+                                                'is_aktif' => "N",
+                                                'updated_by'=> $user, 
+                                                'updated_at'=> now(),
+                                            ));
+                    }
+            }
+            return redirect()->route('grup.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data!']);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return redirect()->route('grup.index')->with(['status' => 'Error', 'msg' => $th->getMessage()]);
+
         }
+       
         
-        return redirect()->route('grup.index')->with('status', 'Berhasil menghapus data!');
+
         // return response()->json([
         //     'status' => 'success',
         //     'message' => 'Berhasil menghapus data!'

@@ -129,9 +129,9 @@
                             @endforeach
                             <tr>
                                 <td colspan='3' style='text-align:right'><label>Total</label></td>
-                                <td style='text-align:right'><label><?= number_format($total_debit);?></label></td>
-                                <td style='text-align:right'><label><?= number_format(abs($transaction));?></label></td>
-                                <td style='text-align:right'><label><?= number_format($transaction);?></label></td>
+                                <td style='text-align:right'><label><?= number_format($total_debit);?></label></td>{{--debit--}}
+                                <td style='text-align:right'><label><?= number_format(abs($transaction-$total_debit));?></label></td>{{--kredit--}}
+                                <td style='text-align:right'><label><?= number_format($transaction);?></label></td>{{--debit+kredit--}}
                             </tr>
                         @endif
                 </tbody>

@@ -209,10 +209,8 @@ class PencairanKomisiDriverController extends Controller
             return redirect()->route('pencairan_komisi_driver.index')->with(['status' => 'Success', 'msg' => 'Berhasil Mencairkan Komisi Supir']);
         } 
         catch (\Throwable $th) {
-            return redirect()->back()->withErrors($th->getMessage())->withInput();
-            DB::rollBack();
-            // return redirect()->route('pencairan_komisi_driver.index')->with(['status' => 'Gagal', 'msg' =>$th->getMessage()],500)->withErrors($th->getMessage())->withInput();
-
+            db::rollBack();
+            return redirect()->route('pencairan_komisi_driver.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 

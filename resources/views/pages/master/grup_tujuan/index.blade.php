@@ -48,14 +48,10 @@
                                         <div class="dropdown-menu">
                                         </div>
                                     </div> --}}
-                                    
                                     <a class="btn btn-secondary radiusSendiri" href="{{route('grup_tujuan.edit',[$item->id])}}">
                                         <span class="fas fa-edit "></span> Edit
                                     </a>   
-                                    
                                 </td>
-                                
-                                
                             </tr>
                             @endforeach
                         </tbody>

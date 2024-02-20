@@ -271,6 +271,10 @@ class RevisiBiayaOperasionalController extends Controller
                 db::rollBack();
                 return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Revisi gagal!']);
             }
+            catch (\Throwable $th) {
+                db::rollBack();
+                return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+            }
         }else if($data['type'] == 'delete'){
             try {
                 // dd($data);
@@ -529,7 +533,10 @@ class RevisiBiayaOperasionalController extends Controller
                 db::rollBack();
                 return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Hapus data gagal!']);
             }
-
+            catch (\Throwable $th) {
+                db::rollBack();
+                return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+            }
 
         }
 

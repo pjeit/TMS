@@ -288,9 +288,10 @@ class RevisiTLController extends Controller
             DB::commit();
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambah Biaya TL']);
                     
-        } catch (\Throwable $th) {
-            return redirect()->back()->withErrors($th->getMessage())->withInput();
+        } 
+        catch (\Throwable $th) {
             db::rollBack();
+            return redirect()->route('revisi_tl.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
         
     }
@@ -419,8 +420,8 @@ class RevisiTLController extends Controller
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Mengembalikan Biaya TL']);
 
         } catch (\Throwable $th) {
-            return redirect()->back()->withErrors($th->getMessage())->withInput();
             db::rollBack();
+            return redirect()->route('revisi_tl.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 

@@ -25,4 +25,12 @@ class PembayaranGajiDetail extends Model
         'updated_at',
         'is_aktif',
    ];
+   public function KaryawanDetailGaji()
+   {
+        return $this->hasOne(Karyawan::class,  'id','karyawan_id');
+   }
+   public function KaryawanTotalHutang()
+   {
+        return $this->hasOne(KaryawanHutang::class,  'id_karyawan','karyawan_id');
+   }
 }

@@ -278,57 +278,57 @@
 
 {{-- logic save --}}
 <script type="text/javascript">
-    // $(document).ready(function() {
-    //     $('#save').submit(function(event) {
-    //         // cek total_dibayar
-    //             var total_dibayar = $('#total_dibayar').val();
-    //             console.log('total_dibayar', total_dibayar);
-    //             if(escapeComma(total_dibayar) == 0 || escapeComma(total_dibayar) == ''){
-    //                 Swal.fire(
-    //                     'Data tidak valid',
-    //                     'Total bayar masih 0, harap periksa kembali data anda!',
-    //                     'warning'
-    //                 )
-    //                 return false;
-    //             }
-    //         //
+    $(document).ready(function() {
+        $('#save').submit(function(event) {
+            // cek total_dibayar
+                var total_dibayar = $('#total_bayar').val();
+                console.log('total_dibayar', total_dibayar);
+                if(escapeComma(total_dibayar) == 0 || escapeComma(total_dibayar) == ''){
+                    Swal.fire(
+                        'Data tidak valid',
+                        'Total bayar masih 0, harap periksa kembali data anda!',
+                        'warning'
+                    )
+                    return false;
+                }
+            //
 
-    //         event.preventDefault(); // Prevent form submission
-    //         Swal.fire({
-    //             title: 'Apakah Anda yakin data sudah benar ?',
-    //             text: "Periksa kembali data anda",
-    //             icon: 'warning',
-    //             showCancelButton: true,
-    //             cancelButtonColor: '#d33',
-    //             confirmButtonColor: '#3085d6',
-    //             cancelButtonText: 'Batal',
-    //             confirmButtonText: 'Ya',
-    //             reverseButtons: true
-    //         }).then((result) => {
-    //             if (result.isConfirmed) {
-    //                 this.submit();
-    //             }else{
-    //                 const Toast = Swal.mixin({
-    //                     toast: true,
-    //                     position: 'top',
-    //                     timer: 2500,
-    //                     showConfirmButton: false,
-    //                     timerProgressBar: true,
-    //                     didOpen: (toast) => {
-    //                         toast.addEventListener('mouseenter', Swal.stopTimer)
-    //                         toast.addEventListener('mouseleave', Swal.resumeTimer)
-    //                     }
-    //                 })
+            event.preventDefault(); // Prevent form submission
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar ?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
 
-    //                 Toast.fire({
-    //                     icon: 'warning',
-    //                     title: 'Batal Disimpan'
-    //                 })
-    //                 event.preventDefault();
-    //             }
-    //         })
-    //     });
-    // });
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
+    });
 </script>
 
 <script type="text/javascript">

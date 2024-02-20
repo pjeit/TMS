@@ -97,11 +97,11 @@
                                     $saldo_sekarang = $kas->saldo_sekarang;
                                     $transaction = $sumDebit - $sumKredit;
                                 @endphp
-                                <td colspan="6">{{$kas->nama}} (Saldo Awal: {{number_format($saldo_sekarang)}})</td>
+                                <td colspan="6">{{$kas->nama}} (Saldo sekarang: {{number_format($saldo_sekarang)}})</td>
                             </tr>
                             <tr>
                                 <td colspan='3' style='text-align:right'><label>Saldo Awal</label></td>
-                                <td ><label><?= number_format(0);?></label></td>
+                                <td style='text-align:right'><label><?= number_format(0);?></label></td>
                                 <td style='text-align:right'><label><?= number_format(abs($transaction));?></label></td> 
                                 <td style='text-align:right'><label><?= number_format($transaction);?></label></td>
                             </tr>
@@ -126,9 +126,9 @@
                                 {{-- <td>{{number_format($item->total)}}</td> --}}
                                     @php
                                         if($item->kredit != 0){
-                                            $saldo_sekarang -= $item->kredit;
+                                            $transaction -= $item->kredit;
                                         }elseif($item->debit != 0){
-                                            $saldo_sekarang += $item->debit;
+                                            $transaction += $item->debit;
                                         }
                                     @endphp
                                 <td style='text-align:right'>{{ number_format($saldo_sekarang) }}</td>
@@ -136,9 +136,9 @@
                             @endforeach
                             <tr>
                                 <td colspan='3' style='text-align:right'><label>Total</label></td>
-                                <td style='text-align:right'><label><?= number_format($total_debit);?></label></td>
-                                <td style='text-align:right'><label><?= number_format($total_kredit+ $sumKredit);?></label></td>
-                                <td style='text-align:right'><label><?= number_format($transaction);?></label></td>
+                                <td style='text-align:right'><label><?= number_format($total_debit);?></label></td> {{--debit--}}
+                                <td style='text-align:right'><label><?= number_format(abs($transaction-$total_debit));?></label></td>{{--kredit--}}
+                                <td style='text-align:right'><label><?= number_format($transaction);?></label></td>{{--debit+kredit--}}
                             </tr>
                         @endif
                 </tbody>

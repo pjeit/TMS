@@ -367,8 +367,8 @@ class PaymentJobController extends Controller
             return redirect()->route('pembayaran_jo.index')->with(['status' => 'error', 'msg' => $e->getMessage()]);
         }
         catch (\Throwable $th) {
-            //throw $th;
-            return redirect()->route('pembayaran_jo.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
+            db::rollBack();
+            return redirect()->route('pembayaran_jo.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
 

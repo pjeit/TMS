@@ -29,8 +29,9 @@
         @endforeach
 
     @endif
-    <form action="{{ route('pembayaran_gaji.store') }}" id="post_data" method="POST" >
+    <form action="{{ route('pembayaran_gaji.update',[$pembayaran_gaji->id]) }}" id="post_data" method="POST" >
         @csrf
+        @method('PUT')
         <div class="card radiusSendiri">
             <div class="card-header">
                 <a href="{{ route('pembayaran_gaji.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
@@ -46,18 +47,18 @@
                              <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="select_bulan">Bulan<span style="color:red">*</span></label>
                                 <select class="form-control select2 @error('select_bulan') is-invalid @enderror" style="width: 100%;" id='select_bulan' name="select_bulan">
-                                    <option value="1">Januari</option>
-                                    <option value="2">Februari</option>
-                                    <option value="3">Maret</option>
-                                    <option value="4">April</option>
-                                    <option value="5">Mei</option>
-                                    <option value="6">Juni</option>
-                                    <option value="7">Juli</option>
-                                    <option value="8">Agustus</option>
-                                    <option value="9">September</option>
-                                    <option value="10">Oktober</option>
-                                    <option value="11">November</option>
-                                    <option value="12">Desember</option>
+                                    <option {{$pembayaran_gaji->bulan == 1?'selected':''}} value="1">Januari</option>
+                                    <option {{$pembayaran_gaji->bulan == 2?'selected':''}}  value="2">Februari</option>
+                                    <option {{$pembayaran_gaji->bulan == 3?'selected':''}}  value="3">Maret</option>
+                                    <option {{$pembayaran_gaji->bulan == 4?'selected':''}}  value="4">April</option>
+                                    <option {{$pembayaran_gaji->bulan == 5?'selected':''}}  value="5">Mei</option>
+                                    <option {{$pembayaran_gaji->bulan == 6?'selected':''}}  value="6">Juni</option>
+                                    <option {{$pembayaran_gaji->bulan == 7?'selected':''}}  value="7">Juli</option>
+                                    <option {{$pembayaran_gaji->bulan == 8?'selected':''}}  value="8">Agustus</option>
+                                    <option {{$pembayaran_gaji->bulan == 9?'selected':''}}  value="9">September</option>
+                                    <option {{$pembayaran_gaji->bulan == 10?'selected':''}}  value="10">Oktober</option>
+                                    <option {{$pembayaran_gaji->bulan == 11?'selected':''}}  value="11">November</option>
+                                    <option {{$pembayaran_gaji->bulan == 12?'selected':''}}  value="12">Desember</option>
                                 </select>
                                 @error('select_bulan')
                                     <div class="invalid-feedback">
@@ -67,7 +68,7 @@
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-12">
                                 <label for="tahun_periode">Tahun<span style="color:red">*</span></label>
-                                <input type="text" name="tahun_periode" class="form-control numaja" id="tahun_periode" maxlength="4" minlength="4" value=""> 
+                                <input type="text" name="tahun_periode" class="form-control numaja" id="tahun_periode" maxlength="4" minlength="4" value="{{$pembayaran_gaji->tahun_periode}}"> 
                             </div>
                         </div>
                         <div class="row">
@@ -77,12 +78,12 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                 </div>
-                                <input type="text" name="tanggal" autocomplete="off" class="date form-control" id="tanggal" placeholder="dd-M-yyyy" value="" onchange="">
+                                <input type="text" name="tanggal" autocomplete="off" class="date form-control" id="tanggal" placeholder="dd-M-yyyy" value="{{date('d-M-Y',strtotime($pembayaran_gaji->tanggal) )}}" >
                                 </div>
                             </div>
                              <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="nama_periode">Periode<span style='color:red'>*</span></label>
-                                <input type="text" name="nama_periode" class="form-control" id="nama_periode" placeholder="Periode Gajian" value=""> 
+                                <input type="text" name="nama_periode" class="form-control" id="nama_periode" placeholder="Periode Gajian" value="{{$pembayaran_gaji->nama_periode}}"> 
                             </div>      
                             {{-- <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="tanggal_catat">Tanggal Catat<span style='color:red'>*</span></label>
@@ -96,7 +97,7 @@
                         </div>
                         <div class="form-group">
                             <label for="catatan">Catatan</label>
-                            <input type="text" name="catatan" class="form-control" id="catatan" placeholder="" value=""> 
+                            <input type="text" name="catatan" class="form-control" id="catatan" placeholder="" value="{{$pembayaran_gaji->catatan}}"> 
                         </div>  
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">
@@ -106,7 +107,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Rp</span>
                             </div>
-                            <input type="text" name="total" class="form-control numaja uang" id="total" placeholder="" readonly value="">
+                            <input type="text" name="total" class="form-control numaja uang" id="total" placeholder="" readonly value="{{number_format($pembayaran_gaji->total)}}">
                             </div>
                         </div>
                         <div class="form-group">
@@ -114,7 +115,7 @@
                             <select name="kas" class="select2" style="width: 100%" id="kas" required>
                                 <option value="">── PILIH KAS ──</option>
                                 @foreach ($dataKas as $kas)
-                                    <option value="{{ $kas->id }}" {{ $kas->id == 1? 'selected':''}}>{{ $kas->nama }}</option>
+                                    <option value="{{ $kas->id }}" {{ $kas->id == $pembayaran_gaji->kas_bank_id? 'selected':''}}>{{ $kas->nama }}</option>
                                 @endforeach
                             </select>
                         </div> 
@@ -148,15 +149,15 @@
                                         <tr id="{{$key}}">
                                             <td id="gaji_detail_id_{{$key}}" hidden>{{$item->id}}</td>
                                             <td id="is_aktif_{{$key}}" hidden>{{$item->is_aktif}}</td>
-                                            <td id="karyawan_id_{{$key}}" hidden></td>
-                                            <td id="karyawan_name_{{$key}}"></td>
-                                            <td style="text-align:right;" id="total_gaji_{{$key}}"></td>
-                                            <td style="text-align:right;" id="total_hutang_{{$key}}" hidden></td>
-                                            <td style="text-align:right;" id="potongan_hutang_{{$key}}"></td>
-                                            <td style="text-align:right;" id="pendapatan_lain_{{$key}}"></td>
-                                            <td style="text-align:right;" id="potongan_lain_{{$key}}"></td>
-                                            <td style="text-align:right;" id="total_diterima_{{$key}}"></td>
-                                            <td id="catatan_{{$key}}"></td>
+                                            <td id="karyawan_id_{{$key}}" hidden>{{$item->karyawan_id}}</td>
+                                            <td id="karyawan_name_{{$key}}">{{$item->KaryawanDetailGaji->nama_lengkap}}</td>
+                                            <td style="text-align:right;" id="total_gaji_{{$key}}">{{number_format($item->total_gaji) }}</td>
+                                            <td style="text-align:right;" id="total_hutang_{{$key}}" hidden>{{$item->KaryawanTotalHutang?$item->KaryawanTotalHutang->total_hutang:'0'}}</td>
+                                            <td style="text-align:right;" id="potongan_hutang_{{$key}}">{{$item->potong_hutang}}</td>
+                                            <td style="text-align:right;" id="pendapatan_lain_{{$key}}">{{$item->pendapatan_lain}}</td>
+                                            <td style="text-align:right;" id="potongan_lain_{{$key}}">{{$item->potongan_lain}}</td>
+                                            <td style="text-align:right;" id="total_diterima_{{$key}}">{{number_format($item->total_diterima)}}</td>
+                                            <td id="catatan_{{$key}}">{{number_format($item->catatan)}}</td>
                                             <td>
                                                 <div class="btn-group dropleft">
                                                     <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -168,17 +169,17 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <input type="hidden" name="detail[{{$key}}][gaji_detail_id]" id="input_gaji_detail_id_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][is_aktif]" id="input_is_aktif_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][karyawan_id]" id="input_karyawan_id_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][karyawan_name]" id="input_karyawan_name_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][total_gaji]" id="input_total_gaji_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][total_hutang]" id="input_total_hutang_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][potongan_hutang]" id="input_potongan_hutang_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][pendapatan_lain]" id="input_pendapatan_lain_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][potongan_lain]" id="input_potongan_lain_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][total_diterima]" id="input_total_diterima_{{$key}}" value="">
-                                            <input type="hidden" name="detail[{{$key}}][catatan_detail]" id="input_catatan_{{$key}}" value="">
+                                            <input type="hidden" name="detail[{{$key}}][gaji_detail_id]" id="input_gaji_detail_id_{{$key}}" value="{{$item->id}}">
+                                            <input type="hidden" name="detail[{{$key}}][is_aktif]" id="input_is_aktif_{{$key}}" value="{{$item->is_aktif}}">
+                                            <input type="hidden" name="detail[{{$key}}][karyawan_id]" id="input_karyawan_id_{{$key}}" value="{{$item->karyawan_id}}">
+                                            <input type="hidden" name="detail[{{$key}}][karyawan_name]" id="input_karyawan_name_{{$key}}" value="{{$item->KaryawanDetailGaji->nama_lengkap}}">
+                                            <input type="hidden" name="detail[{{$key}}][total_gaji]" id="input_total_gaji_{{$key}}" value="{{$item->total_gaji}}">
+                                            <input type="hidden" name="detail[{{$key}}][total_hutang]" id="input_total_hutang_{{$key}}" value="{{$item->KaryawanTotalHutang?$item->KaryawanTotalHutang->total_hutang:'0'}}">
+                                            <input type="hidden" name="detail[{{$key}}][potongan_hutang]" id="input_potongan_hutang_{{$key}}" value="{{$item->potong_hutang}}">
+                                            <input type="hidden" name="detail[{{$key}}][pendapatan_lain]" id="input_pendapatan_lain_{{$key}}" value="{{$item->pendapatan_lain}}">
+                                            <input type="hidden" name="detail[{{$key}}][potongan_lain]" id="input_potongan_lain_{{$key}}" value="{{$item->potongan_lain}}">
+                                            <input type="hidden" name="detail[{{$key}}][total_diterima]" id="input_total_diterima_{{$key}}" value="{{$item->total_diterima}}">
+                                            <input type="hidden" name="detail[{{$key}}][catatan_detail]" id="input_catatan_{{$key}}" value="{{$item->catatan}}">
                                         </tr>
                                     @endforeach
                                     
@@ -386,7 +387,7 @@
         return allow_add;
     }
      function delete_detail(id_tombol){
-        if($('#input_gaji_detail_id_'+id_tombol).text()!=''){
+        if($('#input_gaji_detail_id_'+id_tombol).val()!=''){
             $('#'+id_tombol).hide();
             $('#is_aktif_'+id_tombol).text('N');
             $('#input_is_aktif_'+id_tombol).val('N');
