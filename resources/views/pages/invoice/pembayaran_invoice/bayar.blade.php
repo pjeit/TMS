@@ -169,6 +169,7 @@
         </div>
 
         <div style="overflow: auto;">
+            <button type="button" class="btn btn-primary mb-2" id="tambah_detail_invoice"> <i class="fa fa-plus-square"></i> Tambah Detail Invoice</button>
             <table class="table table-hover table-bordered table-striped " width='100%' id="table_invoice">
                 <thead>
                     <tr class="bg-white">
@@ -184,9 +185,10 @@
                 <tbody>
                 @isset($data)   
                     @foreach ($data as $key => $item)
-                        <tr id='{{ $key }}' id_sewa='{{ $item->id }}'>
+                        <tr id='{{ $key }}' id_invoice='{{ $item->id }}'>
                             <td> 
                                 <span id="text_no_invoice">{{ $item->no_invoice }}</span>
+                                <input type="hidden" id="id_invoice_{{ $item->id }}" name="detail[{{ $item->id }}][id_invoice]" value="{{ $item->id }}" class="all_id_invoice">
                                 <input type="hidden" id="no_invoice_{{ $item->id }}" name="detail[{{ $item->id }}][no_invoice]" value="{{ $item->no_invoice }}">
                                 <input type="hidden" id="no_bukti_potong_{{ $item->id }}" name="detail[{{ $item->id }}][no_bukti_potong]" value="{{ $item->no_bukti_potong }}">
                             </td>
@@ -220,9 +222,12 @@
                                         <button type="button" name="detail" id="detail_{{$item->id}}" class="detail dropdown-item"> 
                                             <span class="fas fa-edit mr-3"></span> Edit
                                         </button>
-                                        <a href="{{ route('pembayaran_invoice.destroy', ['pembayaran_invoice' => $item->id]) }}" class="dropdown-item" data-confirm-delete="true">
+                                        <button type="button" name="detail" id="hapus_{{$item->id}}" class="dropdown-item deleteParent"> 
                                             <span class="fas fa-trash mr-3"></span> Delete
-                                        </a>
+                                        </button>
+                                        {{-- <a href="{{ route('pembayaran_invoice.destroy', ['pembayaran_invoice' => $item->id]) }}" class="dropdown-item" data-confirm-delete="true">
+                                            <span class="fas fa-trash mr-3"></span> Delete
+                                        </a> --}}
                                     </div>
                                 </div>
                             </td>
@@ -243,18 +248,22 @@
                 </div>
                 <div class="modal-body">
                     <form id='form_add_detail'>
-                        <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_sewa --}}
+                        <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_invoice --}}
+                        <input type="hidden" name="key" id="no_invoice_hidden"> 
+                        <input type="hidden" name="key" id="no_bukti_potong_hidden"> 
+                        <input type="hidden" id="jenis">
+                        <input type="hidden" class="form-control numaja uang" id="modal_dibayar" placeholder="" readonly>
 
                         <div class='row'>
                             <div class="col-lg-6">
                                 <div class="row">
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                        <label for="sewa">No. Invoice <span style="color:red;">*</span></label>
-                                        <select class="select2" style="width: 100%" id="modal_no_invoice" disabled>
-                                            <option value="">── Pilih Invoice ──</option>
-                                            @foreach ($dataInvoices as $inv)
+                                        <label for="select_modal_no_invoice">No. Invoice <span style="color:red;">*</span></label>
+                                        <select class="form-control select2" style="width: 100%" id="select_modal_no_invoice" >
+                                            {{-- <option value="">── Pilih Invoice ──</option> --}}
+                                            {{-- @foreach ($dataInvoices as $inv)
                                                 <option value="{{ $inv->id }}">{{ $inv->no_invoice }} ({{ date("d-M-Y", strtotime($inv->tgl_invoice)) }}) </option>
-                                            @endforeach
+                                            @endforeach --}}
                                         </select>
                                     </div>   
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -291,7 +300,6 @@
                                                 <span class="input-group-text">Rp</span>
                                             </div>
                                             <input type="text" class="form-control numaja uang" id="modal_pph23" placeholder="" >
-                                            <input type="hidden" class="form-control numaja uang" id="modal_dibayar" placeholder="" readonly>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -310,7 +318,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-danger" style='width:85px' data-dismiss="modal">BATAL</button>
-                    <button type="button" class="btn btn-sm btn-success save_detail" id="" style='width:85px'>OK</button> 
+                    <button type="button" class="btn btn-sm btn-success save_detail" id="save_detail" style='width:85px'>Simpan</button> 
+                    <button type="button" class="btn btn-sm btn-success save_data_baru" id="save_data_baru" style='width:85px'>Tambah</button> 
                 </div>
             </div>
             </div>
@@ -334,7 +343,17 @@
                     return false;
                 }
             //
-
+            let barisTabel = $("#table_invoice > tbody tr");
+                // console.log(barisTabel.length + 'baris tabel');
+                if (barisTabel.length == 0) {
+                    event.preventDefault(); 
+                    Toast.fire({
+                        icon: 'error',
+                        text: `Detail Invoice Tidak boleh Kosong!`,
+                    })
+                    return;
+                    
+                }
             event.preventDefault(); // Prevent form submission
             Swal.fire({
                 title: 'Apakah Anda yakin data sudah benar ?',
@@ -386,17 +405,52 @@
         }).datepicker("setDate", today);
 
         hitungAll();
+        var dataInvoices = <?= isset($dataInvoices)? $dataInvoices:NULL; ?> ;
 
         $(document).on('click', '.detail', function(){ // open detail 
             clearModal(); // execute clear data dulu tiap open modal
-            $('#key').val(''); // key di clear dulu
+            $('#jenis').val('lama'); // key di clear dulu
+
             var button_id = $(this).attr("id"); // get value id
             var key = button_id.replace("detail_", ""); // hapus teks detail_
-            $('#key').val(key); // id key buat nge get data yg di hidden, key = id_sewa
-            
+            $('#key').val(key); // id key buat nge get data yg di hidden, key = id_invoice
+            $("#select_modal_no_invoice").attr('disabled',true);
+            $("#save_detail").show();
+            $("#save_data_baru").hide();
             // set default selected select2
-            var $selectElement = $("#modal_no_invoice");
-            $selectElement.val(key).trigger("change.select2");
+            // var $selectElement = $("#select_modal_no_invoice");
+            // $selectElement.val(key).trigger("change.select2");
+            // $("#select_modal_no_invoice").val(key).trigger("change.select2");
+        
+            var option = $('<option>');
+            option.text('── Pilih Invoice ──');
+            option.val('');
+            option.prop('selected', true);
+            
+            $('#select_modal_no_invoice').append(option);
+
+            let all_id_invoice = [];
+            $('.all_id_invoice').each(function() {
+                all_id_invoice.push($(this).val());
+            });
+
+            dataInvoices.forEach(function(item, index) {
+                var option = $('<option>');
+                option.text(item.no_invoice + '(' + dateMask(item.tgl_invoice) + ')');
+                option.val(item.id);
+                option.attr('index', index); 
+                if ( all_id_invoice.includes( item.id.toString() ) ) {
+                    option.prop('disabled', true);
+                    
+                }
+                if(item.id==key)
+                {
+                    option.prop('selected', true);
+
+                }
+                
+                $('#select_modal_no_invoice').append(option);
+            });
 
             $('#modal_diterima').val( moneyMask($('#total_diterima_'+key).val()) );
             $('#modal_pph23').val( moneyMask($('#total_pph23_'+key).val()) );
@@ -414,9 +468,148 @@
             
             $('#modal_detail').modal('show');
         });
+        $(document).on('click', '#tambah_detail_invoice', function (event) {
+            clearModal(); // execute clear data dulu tiap open modal
+            $('#jenis').val('baru'); // key di clear dulu
+            $("#save_detail").hide();
+            $("#save_data_baru").show();
+          
 
+            var option = $('<option>');
+            option.text('── Pilih Invoice ──');
+            option.val('');
+            option.prop('selected', true);
+            $('#select_modal_no_invoice').append(option);
+
+            let all_id_invoice = [];
+            $('.all_id_invoice').each(function() {
+                all_id_invoice.push($(this).val());
+            });
+
+            dataInvoices.forEach(function(item, index) {
+                var option = $('<option>');
+                option.text(item.no_invoice + '(' + dateMask(item.tgl_invoice) + ')');
+                option.val(item.id);
+                option.attr('index', index); 
+                // option.setAttribute('booking_id', joDetail.booking_id);
+                option.attr('index', index); 
+                option.attr('total_tagihan', item.total_tagihan); 
+                option.attr('total_sisa', item.total_sisa); 
+                option.attr('no_invoice', item.no_invoice); 
+                option.attr('no_bukti_potong', item.no_bukti_potong); 
+
+                if ( all_id_invoice.includes( item.id.toString() ) ) {
+                    option.prop('disabled', true);
+                }
+                
+                $('#select_modal_no_invoice').append(option);
+            });
+            $("#select_modal_no_invoice").attr('disabled',false);
+            $('#select_modal_no_invoice').select2();
+          
+            $('#modal_detail').modal('show');
+        });
+
+        $(document).on('click', '#save_data_baru', function (event) {
+        
+            let lastRow = $("#table_invoice > tbody tr:last");
+            let id = 0;
+            
+            if (lastRow.length >= 0) {
+                id = lastRow.attr("id");
+                if(id == undefined){
+                    id = 0;
+                }else{
+                    id++;
+                }
+            }
+            var id_invoice = $('#key').val();
+            var no_invoice = $('#no_invoice_hidden').val();
+            var no_bukti_potong = $('#no_bukti_potong_hidden').val();
+            var total_tagihan = $('#modal_total_invoice').val();
+            var total_sisa = $('#modal_sisa_invoice').val();
+            var total_pph23 = $('#modal_pph23').val();
+            var catatan = $('#modal_catatan').val();
+            var total_diterima = $('#modal_diterima').val();
+            var total_dibayar = $('#modal_dibayar').val();
+
+            var table = `
+                <tr id='${id}' id_invoice='${id_invoice}'>
+                            <td> 
+                                <span id="text_no_invoice">${no_invoice}</span>
+                                <input type="hidden" id="id_invoice_${id_invoice}" name="detail[${id_invoice}][id_invoice]" value="${id_invoice}" class="all_id_invoice">
+                                <input type="hidden" id="no_invoice_${id_invoice}" name="detail[${id_invoice}][no_invoice]" value="${no_invoice}">
+                                <input type="hidden" id="no_bukti_potong_${id_invoice}" name="detail[${id_invoice}][no_bukti_potong]" value="${no_bukti_potong}">
+                            </td>
+                            <td> 
+                                <span id="text_total_tagihan_${id_invoice}">${total_tagihan}</span>
+                                <input type="hidden" class="total_tagihan" id="total_tagihan_${id_invoice}" name="detail[${id_invoice}][total_tagihan]" value="${escapeComma(total_tagihan)}">
+                            </td>
+                            <td> 
+                                <span id="text_total_sisa_${id_invoice}">${total_sisa}</span>
+                                <input type="hidden" class="total_sisa" id="total_sisa_${id_invoice}" name="detail[${id_invoice}][total_sisa]" value="${escapeComma(total_sisa)}">
+                            </td>
+                            <td>
+                                <span id="text_pph23_${id_invoice}">${total_pph23}</span>
+                                <input type="hidden" class="total_pph23" id="total_pph23_${id_invoice}" name="detail[${id_invoice}][pph23]" value="${escapeComma(total_pph23)}">
+                                <input type="hidden" class="total_dibayar" id="total_dibayar_${id_invoice}" name="detail[${id_invoice}][dibayar]" value="${escapeComma(total_dibayar)}">
+                            </td>
+                            <td>
+                                <span id="text_diterima_${id_invoice}">${total_diterima}</span>
+                                <input type="hidden" class="total_diterima" id="total_diterima_${id_invoice}" name="detail[${id_invoice}][diterima]" value="${escapeComma(total_diterima)}">
+                            </td>
+                            <td>
+                                <span id="text_catatan_${id_invoice}">${catatan}</span>
+                                <input type="hidden" id="catatan_${id_invoice}" name="detail[${id_invoice}][catatan]" value="${catatan}">
+                            </td>
+                            <td>
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button type="button" name="detail" id="detail_${id_invoice}" class="detail dropdown-item"> 
+                                            <span class="fas fa-edit mr-3"></span> Edit
+                                        </button>
+                                        <button type="button" name="hapus" id="hapus_${id_invoice}" class="dropdown-item deleteParent"> 
+                                            <span class="fas fa-trash mr-3"></span> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+            `
+            $('#table_invoice > tbody:last-child').append(table);
+            hitungAll();
+            $('#modal_detail').modal('hide'); // close modal
+        });
+        
+
+        $('body').on('change','#select_modal_no_invoice',function()
+		{
+            var jenis = $("#jenis").val();
+            var id = $(this).val();
+            var selectedOption = $(this).find('option:selected');
+
+            if (jenis == "baru") {
+                 var total_tagihan=selectedOption.attr('total_tagihan');
+                 var total_sisa=selectedOption.attr('total_sisa');
+                 var catatan=selectedOption.attr('catatan');
+                 var no_invoice=selectedOption.attr('no_invoice');
+                 var no_bukti_potong=selectedOption.attr('no_bukti_potong');
+
+                 $('#key').val(id); // key di clear dulu
+                 $('#modal_catatan').val( catatan );
+                 $('#modal_total_invoice').val( moneyMask(total_tagihan) );
+                 $('#modal_sisa_invoice').val( moneyMask(total_sisa) );
+                 $('#no_invoice_hidden').val( no_invoice);
+                 $('#no_bukti_potong_hidden').val( no_bukti_potong );
+            }
+           
+
+		});
         $(document).on('click', '.save_detail', function(){ // save
-            var key = $('#key').val(); // id key buat nge get data yg di hidden, key = id_sewa
+            var key = $('#key').val(); // id key buat nge get data yg di hidden, key = id_invoice
             var firstId = $('#firstId').val();
 
             $('#catatan_'+key).val( escapeComma($('#modal_catatan').val()) );
@@ -440,7 +633,12 @@
             hitungAll();
             $('#modal_detail').modal('hide'); // close modal
         });
+        $(document).on('click', '.deleteParent', function (event) {
 
+                var closestTR = this.closest('tr');
+                closestTR.remove();
+                hitungAll();
+        });
         // cara_pembayaran
             $("#showTransfer, #showCek, #showTunai").hide();
             $("input[name='cara_pembayaran']").change(function() {
@@ -561,12 +759,16 @@
         }
 
         function clearModal(){
+            $('#key').val(''); // key di clear dulu
+            $('#no_invoice_hidden').val(''); 
+            $('#no_bukti_potong_hidden').val(''); 
             $('#modal_catatan').val('');
             $('#modal_total_invoice').val('');
             $('#modal_sisa_invoice').val('');
             $('#modal_pph23').val('');
             $('#modal_diterima').val('');
             $("#hide_bukti_potong").show();
+            $('#select_modal_no_invoice').empty(); 
         }
 
         function clear(){

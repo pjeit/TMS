@@ -73,13 +73,13 @@ class PembayaranInvoiceController extends Controller
         $idGrup         = session()->get('idGrup'); 
         $idCust         = session()->get('idCust'); 
         $data           = Invoice::whereIn('id', $idInvoice)->where('is_aktif', 'Y')->get();
-        $dataInvoices   = Invoice::where('id_grup', $idGrup)->where('is_aktif', 'Y')->get();
+        $dataInvoices   = Invoice::where('billing_to', $idCust)->where('is_aktif', 'Y')->get();
         
         $dataCustomers  = Customer::where('grup_id', $idGrup)
                                 ->where('is_aktif', 'Y')->get();
         
         $dataKas = KasBank::where('is_aktif', 'Y')->orderBy('nama', 'ASC')->get();
-
+        // dd($idCust);
         return view('pages.invoice.pembayaran_invoice.bayar',[
             'judul' => "Bayar INVOICE",
             'data' => $data,
@@ -113,7 +113,7 @@ class PembayaranInvoiceController extends Controller
         DB::beginTransaction(); 
         $isErr = false;
         $Err = '';
-
+        dd($data);
         try {
             if($data['detail'] != null){
                 $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
@@ -144,74 +144,78 @@ class PembayaranInvoiceController extends Controller
                         $id_invoices .= $invoice->id . ','; 
 
                         if($invoice){
-                            $invoice->id_pembayaran = $pembayaran->id;
-                            $invoice->pph = $value['pph23'];
-                            if($i == 0){
-                                // ini dicek index ke berapa?
-                                // misal ini index pertama (index ke 0), terus ada biaya admin, maka biaya admin di inputin
-                                // selain index 0 ga bakal nyimpen data biaya admin
-                                $invoice->total_dibayar += $value['diterima'] - $biaya_admin;
-                                $invoice->biaya_admin = $biaya_admin;
-                            }else{
-                                $invoice->total_dibayar += $value['diterima'];
-                            }
-                            $invoice->total_sisa -= $value['dibayar'];
-                            if($invoice->total_sisa < 0){
-                                $isErr = true;
-                            }
-                            $currentStatus = '';
-                            if($invoice->total_sisa == 0){
-                                $currentStatus = 'SELESAI PEMBAYARAN INVOICE';
-                                $invoice->status = $currentStatus;
-                            }
-                            $invoice->updated_by = $user;
-                            $invoice->updated_at = now();
-                            if($invoice->save()){
-                                if($currentStatus == 'SELESAI PEMBAYARAN INVOICE'){
-                                    $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
-                                    if($invoiceDetail){
-                                        foreach ($invoiceDetail as $i => $item) {
-                                            $check = InvoiceDetail::leftJoin('invoice', 'invoice.id', '=', 'invoice_detail.id_invoice')
-                                                                    ->where('invoice_detail.is_aktif', 'Y')
-                                                                    ->where('invoice.status', 'MENUNGGU PEMBAYARAN INVOICE')
-                                                                    ->where('id_sewa', $item->id_sewa)->get();
-                                            // ini ngecek
-                                            // apakah masih ada invoice yg statusnya masih menunggu pembayaran?
-                                            // kalau tidak ada, berarti invoice sudah dibayar lunas semua
-                                            // kalau dibayar lunas semua, kita lanjut update status sewa sama update kredit customer
-                                            if($check->isEmpty()) {
-                                                $updateSewa = Sewa::where('is_aktif', 'Y')->find($item->id_sewa);
-                                                $updateSewa->status = 'SELESAI PEMBAYARAN';
-                                                $updateSewa->updated_by = $user;
-                                                $updateSewa->updated_at = now();
-                                                $updateSewa->save();
-
-                                                // trigger update status jo detail jika semua sewa sudah selesai 
-                                                // trigger update status jo jika semua jo detail sudah selesai 
-
-                                                // rubah kredit customer
-                                                // cari data kredit customer berdasarkan sewa yg ada, lalu dikurangi biaya tarif sewanya
-                                                // dengan cara ini kredit customer bakal match, nambah berapa dan berkurang berapa
-                                                // ini kredit customer berdasarkan sewa, jadi meski di invoice billing to dirubah2, 
-                                                // tetep sewa itu bakal yg dikurangi, bukan kredit customer yg di billing to
-                                                $cust = Customer::where('is_aktif', 'Y')->findOrFail($updateSewa['id_customer']);
-                                                if($cust){
-                                                    $kredit_sekarang = $cust->kredit_sekarang - $updateSewa->total_tarif;
-                                                    $cust->kredit_sekarang = $kredit_sekarang;
-                                                    $cust->updated_by = $user;
-                                                    $cust->updated_at = now();
-                                                    $cust->save();
+                            if($value['dibayar'])
+                            {
+                                $invoice->id_pembayaran = $pembayaran->id;
+                                $invoice->pph = $value['pph23'];
+                                if($i == 0){
+                                    // ini dicek index ke berapa?
+                                    // misal ini index pertama (index ke 0), terus ada biaya admin, maka biaya admin di inputin
+                                    // selain index 0 ga bakal nyimpen data biaya admin
+                                    $invoice->total_dibayar += $value['diterima'] - $biaya_admin;
+                                    $invoice->biaya_admin = $biaya_admin;
+                                }else{
+                                    $invoice->total_dibayar += $value['diterima'];
+                                }
+                                $invoice->total_sisa -= $value['dibayar'];
+                                if($invoice->total_sisa < 0){
+                                    $isErr = true;
+                                }
+                                $currentStatus = '';
+                                if($invoice->total_sisa == 0){
+                                    $currentStatus = 'SELESAI PEMBAYARAN INVOICE';
+                                    $invoice->status = $currentStatus;
+                                }
+                                $invoice->updated_by = $user;
+                                $invoice->updated_at = now();
+                                if($invoice->save()){
+                                    if($currentStatus == 'SELESAI PEMBAYARAN INVOICE'){
+                                        $invoiceDetail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice', $invoice->id)->get();
+                                        if($invoiceDetail){
+                                            foreach ($invoiceDetail as $i => $item) {
+                                                $check = InvoiceDetail::leftJoin('invoice', 'invoice.id', '=', 'invoice_detail.id_invoice')
+                                                                        ->where('invoice_detail.is_aktif', 'Y')
+                                                                        ->where('invoice.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                                                                        ->where('id_sewa', $item->id_sewa)->get();
+                                                // ini ngecek
+                                                // apakah masih ada invoice yg statusnya masih menunggu pembayaran?
+                                                // kalau tidak ada, berarti invoice sudah dibayar lunas semua
+                                                // kalau dibayar lunas semua, kita lanjut update status sewa sama update kredit customer
+                                                if($check->isEmpty()) {
+                                                    $updateSewa = Sewa::where('is_aktif', 'Y')->find($item->id_sewa);
+                                                    $updateSewa->status = 'SELESAI PEMBAYARAN';
+                                                    $updateSewa->updated_by = $user;
+                                                    $updateSewa->updated_at = now();
+                                                    $updateSewa->save();
+    
+                                                    // trigger update status jo detail jika semua sewa sudah selesai 
+                                                    // trigger update status jo jika semua jo detail sudah selesai 
+    
+                                                    // rubah kredit customer
+                                                    // cari data kredit customer berdasarkan sewa yg ada, lalu dikurangi biaya tarif sewanya
+                                                    // dengan cara ini kredit customer bakal match, nambah berapa dan berkurang berapa
+                                                    // ini kredit customer berdasarkan sewa, jadi meski di invoice billing to dirubah2, 
+                                                    // tetep sewa itu bakal yg dikurangi, bukan kredit customer yg di billing to
+                                                    $cust = Customer::where('is_aktif', 'Y')->findOrFail($updateSewa['id_customer']);
+                                                    if($cust){
+                                                        $kredit_sekarang = $cust->kredit_sekarang - $updateSewa->total_tarif;
+                                                        $cust->kredit_sekarang = $kredit_sekarang;
+                                                        $cust->updated_by = $user;
+                                                        $cust->updated_at = now();
+                                                        $cust->save();
+                                                    }
+    
+                                                    
                                                 }
-
-                                                
                                             }
                                         }
                                     }
+                                }else{
+                                    $isErr = true;
+                                    $Err = 'Gagal menyimpan Invoice';
                                 }
-                            }else{
-                                $isErr = true;
-                                $Err = 'Gagal menyimpan Invoice';
                             }
+                           
                         }
                         $i++;
                     }
