@@ -113,7 +113,7 @@ class PembayaranInvoiceController extends Controller
         DB::beginTransaction(); 
         $isErr = false;
         $Err = '';
-        dd($data);
+        // dd($data);
         try {
             if($data['detail'] != null){
                 $keterangan_transaksi = 'PEMBAYARAN INVOICE | '. $data['cara_pembayaran'] . ' | ' . $data['catatan'] . ' |';
