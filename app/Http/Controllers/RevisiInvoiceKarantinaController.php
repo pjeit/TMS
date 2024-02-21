@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\InvoiceKarantinaPembayaran;
 use Illuminate\Http\Request;
 
-class RevisiPembayaranKarantinaController extends Controller
+class RevisiInvoiceKarantinaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,6 +15,16 @@ class RevisiPembayaranKarantinaController extends Controller
     public function index()
     {
         //
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+        $data = InvoiceKarantinaPembayaran::where('is_aktif', 'Y')->get();
+        return view('pages.revisi.revisi_invoice_karantina.index',[
+            'judul' => "Revisi Invoice Trucking",
+            'data' => $data,
+        ]);
     }
 
     /**

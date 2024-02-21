@@ -316,6 +316,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('revisi_biaya_operasional/load_data/{id}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'load_data'])->name('revisi_biaya_operasional.load_data');
         Route::resource('revisi_biaya_operasional', 'App\Http\Controllers\RevisiBiayaOperasionalController');
 
+        Route::resource('revisi_invoice_karantina', 'App\Http\Controllers\RevisiInvoiceKarantinaController');
+
         // ===================================HRD=========================================================
         Route::resource('pembayaran_gaji', 'App\Http\Controllers\PembayaranGajiController');
         Route::put('karyawan_hutang/update/{id}', [App\Http\Controllers\KaryawanHutangController::class, 'update'])->name('karyawan_hutang.updates');

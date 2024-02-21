@@ -1176,6 +1176,16 @@
                   </a>
                 </li>
                 @endcan
+                <li class="nav-item">
+                  <a href="{{route('revisi_invoice_karantina.index')}}" class="nav-link {{request()->url() === route('revisi_invoice_karantina.index')? ' active' : '' }} "
+                    style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 0.80em;">Rev. Invoice Krantina</span>
+                    </p>
+                  </a>
+                </li>
+                
               </ul>
             </li>
             @endif

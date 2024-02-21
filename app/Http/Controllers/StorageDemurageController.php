@@ -177,7 +177,7 @@ class StorageDemurageController extends Controller
                             $oldBiaya->detention = floatval(str_replace(',', '', $value['detention']));
                             $oldBiaya->repair = floatval(str_replace(',', '', $value['repair']));
                             $oldBiaya->washing = floatval(str_replace(',', '', $value['washing']));
-                            $oldBiaya->id_customer = null;
+                            // $oldBiaya->id_customer = null;
                             if($value['id_pembayaran_customer']=="dibayar_pje")
                             {
                                 $oldBiaya->status_bayar = "MENUNGGU PEMBAYARAN";
@@ -207,7 +207,7 @@ class StorageDemurageController extends Controller
                         $newBiaya->detention = floatval(str_replace(',', '', $value['detention']));
                         $newBiaya->repair = floatval(str_replace(',', '', $value['repair']));
                         $newBiaya->washing = floatval(str_replace(',', '', $value['washing']));
-                        $newBiaya->id_customer = null;
+                        // $newBiaya->id_customer = null;
                         if($value['id_pembayaran_customer']=="dibayar_pje")
                         {
                             $newBiaya->status_bayar = "MENUNGGU PEMBAYARAN";
