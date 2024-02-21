@@ -328,7 +328,7 @@
                                 <div class="row">
                                     <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                         <label for="sewa">Sewa <span style="color:red;">*</span></label>
-                                        <select class="select2" style="width: 100%" id="addcost_sewa">
+                                        <select class="select2" style="width: 100%" id="select_sewa_modal">
                                         </select>
                                         <input type="hidden" id="is_berubah" placeholder="is berubah">
                                     </div>   
@@ -656,7 +656,7 @@
             $('#key').val(key); // id key buat nge get data yg di hidden, key = id_sewa
             $("#save_detail").show();
             $("#save_sewa_baru").hide();
-            $("#addcost_sewa").attr('disabled',true);
+            $("#select_sewa_modal").attr('disabled',true);
 
             
             $('#tanggal_berangkat').val( $('#hidden_tgl_berangkat_'+key).val() );
@@ -689,9 +689,9 @@
                     option.prop('disabled', false);
                 }
                 
-                $('#addcost_sewa').append(option);
+                $('#select_sewa_modal').append(option);
             });
-            // $("#addcost_sewa").prop("disabled", true); // instead of $("select").enable(false);
+            // $("#select_sewa_modal").prop("disabled", true); // instead of $("select").enable(false);
 
             showAddcostDetails(key, 'detail');
             showAddcostDetailsBaru(key);
@@ -699,8 +699,8 @@
             $('#modal_detail').modal('show');
         });
 
-        $(document).on('change', '#addcost_sewa', function(){ 
-            let index = $("#addcost_sewa option:selected").attr('index');
+        $(document).on('change', '#select_sewa_modal', function(){ 
+            let index = $("#select_sewa_modal option:selected").attr('index');
             // console.log(index);
             let selected_sewa = $("#select_modal_sewa").val(); // ini ambil value id sewa dari
             let key = $('#key').val(); // ini index doang
@@ -723,9 +723,9 @@
         $(document).on('click', '.save_detail', function(event){ // save detail
             var key = $('#key').val(); 
             var is_berubah = $('#is_berubah').val(); 
-            var addcost_sewa = $('#addcost_sewa').val();
+            var select_sewa_modal = $('#select_sewa_modal').val();
 
-            if(addcost_sewa != key){
+            if(select_sewa_modal != key){
                 save_sewa('edit', key);
             }
             var selectedOption = $('#billingTo').find('option:selected');
@@ -760,7 +760,7 @@
             option.text('─ Pilih Sewa ─');
             option.val('');
             option.prop('selected', true);
-            $('#addcost_sewa').append(option);
+            $('#select_sewa_modal').append(option);
 
             let all_id_sewa = [];
             $('.all_id_sewa').each(function() {
@@ -776,9 +776,9 @@
                     option.prop('disabled', true);
                 }
                 
-                $('#addcost_sewa').append(option);
+                $('#select_sewa_modal').append(option);
             });
-            $("#addcost_sewa").attr('disabled',false);
+            $("#select_sewa_modal").attr('disabled',false);
 
             hitung();
             $('#modal_detail').modal('show');
@@ -799,7 +799,7 @@
                 addCostPisah(parseFloat(ketentuan_bayar));
             }
 
-            // updateAddCost($('#addcost_sewa').val()); //update data addcost yg berubah
+            // updateAddCost($('#select_sewa_modal').val()); //update data addcost yg berubah
             // calculateGrandTotal(); //pas load awal langsung hitung grand total
             // cekPisahInvoice();
             // hitung();
@@ -1016,7 +1016,7 @@
             }
         }
         function save_sewa(jenis, key){
-            let index = $("#addcost_sewa option:selected").attr('index');
+            let index = $("#select_sewa_modal option:selected").attr('index');
             const data = dataSewa[index];
             let id = 0;
 
@@ -1143,8 +1143,8 @@
             // hitung();
         }
         function updateSewa(key){
-            let selected_sewa = $('#addcost_sewa').val();
-            let selected_index = $("#addcost_sewa option:selected").attr('index');
+            let selected_sewa = $('#select_sewa_modal').val();
+            let selected_index = $("#select_sewa_modal option:selected").attr('index');
             let data = dataSewa[selected_index];
 
             document.getElementById("text_nama_tujuan_"+key).textContent = data.nama_tujuan;
@@ -1374,7 +1374,7 @@
             $('#subtotal').val('');
             $('#diskon').val('');
 
-            $('#addcost_sewa').empty();
+            $('#select_sewa_modal').empty();
             $('#tabel_addcost tbody').empty(); // clear tabel detail addcost di dalam modal
         }
         function cekPisahInvoice(){ //pisah_invoice

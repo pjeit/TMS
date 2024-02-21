@@ -71,11 +71,33 @@ td {
                                                     </button>
                                                     <div class="dropdown-menu" >
                                                         <a target="_blank"  class="dropdown-item" href="{{route('belum_invoice.print',[$item->id])}}"><span class="fas fa-print mr-3" style="width:24px"></span>Cetak</a>
-                                                        @if (!$is_reimburse)
-                                                            @can('EDIT_PEMBAYARAN_INVOICE')
-                                                            <a class="dropdown-item" href="{{route('pembayaran_invoice.edit',[$item->id])}}"><span class="fas fa-pencil-alt mr-3" style="width:24px"></span>Edit</a>
-                                                            @endcan
+                                                      
+                                                        @php
+                                                            $invoice =  \App\Models\Invoice::where('is_aktif', 'Y')->find($item->id);
+                                                            $cek = substr($item->no_invoice, -2);
+                                                            $flag = false;
+                                                            if($cek != '/I'){
+                                                                $reimburse =  \App\Models\Invoice::where('is_aktif', 'Y')->where('no_invoice', $invoice->no_invoice.'/I')->first();
+                                                            }else{
+                                                                $invoice =  \App\Models\Invoice::where('is_aktif', 'Y')->where('no_invoice', substr($invoice->no_invoice, 0, -2))->first();
+                                                                $reimburse =  \App\Models\Invoice::where('is_aktif', 'Y')->where('no_invoice', $invoice->no_invoice.'/I')->first();
+                                                            }
+
+                                                            if ($invoice->total_dibayar > 0 || (isset($reimburse) && $reimburse->total_dibayar > 0)) {
+                                                                $flag = true;
+                                                            }
+                                                        @endphp
+                                                        @if(!$flag)
+                                                            @if (!$is_reimburse)
+                                                                @can('EDIT_PEMBAYARAN_INVOICE')
+                                                                <a class="dropdown-item" href="{{route('pembayaran_invoice.edit',[$item->id])}}"><span class="fas fa-pencil-alt mr-3" style="width:24px"></span>Edit</a>
+                                                                @endcan
+                                                            @endif
+                                                            <a href="{{ route('cetak_invoice.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
+                                                                <span class="fas fa-trash mr-3"></span> Delete
+                                                            </a>
                                                         @endif
+
                                                     </div>
                                             </div>
                                         </td>

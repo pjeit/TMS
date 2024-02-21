@@ -326,6 +326,7 @@ class PembayaranInvoiceController extends Controller
                 $id_invoices[] = $value['id_sewa'];
             }
         }
+        // dd($id_invoices);
         if($reimburse){
             foreach ($reimburse->invoiceDetails as $key => $value) {
                 if (!in_array($value['id_sewa'], $id_invoices)) {
@@ -351,7 +352,7 @@ class PembayaranInvoiceController extends Controller
                     })
                     ->orderBy('id_sewa', 'ASC')
                     ->get();
-
+            // dd($dataSewa);   
             if(count($dataSewa) > 0){
                 if($dataSewa[0]->jenis_tujuan == 'LTL'){
                     $checkLTL = true; 
@@ -699,7 +700,104 @@ class PembayaranInvoiceController extends Controller
         }
     }
 
-    // public function updateBackup(Request $request, $id){
+   
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        // hapus invoice di cetak invoice
+       
+    }
+
+    public function loadData($status) {
+        $data = null;
+        if($status === 'BELUM LUNAS'){
+            $data = DB::table('invoice AS i')
+                ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
+                        ,'g.id as id_grup'/*,'ip.no_bukti_potong'*/, 'i.catatan', 'c.ketentuan_bayar')
+                ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
+                ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
+                // ->leftJoin('invoice_pembayaran AS ip', 'i.id', '=', 'ip.id_invoice')
+                ->where('i.is_aktif', '=', 'Y')
+                ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                ->orderBy('i.id','ASC')
+                ->get();
+        }elseif($status === 'LUNAS'){
+            $data = DB::table('invoice_pembayaran AS ip')
+                ->select('ip.total_diterima','i.no_invoice', 'i.id as id', 'i.total_sisa','i.jatuh_tempo', 'i.tgl_invoice','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
+                        ,'g.id as id_grup','ip.no_bukti_potong', 'ip.catatan', 'ip.id as id_ip')
+                ->leftJoin('invoice AS i', 'i.id', '=', 'ip.id_invoice')
+                ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
+                ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
+                ->where('i.is_aktif', '=', 'Y')
+                ->whereRaw("RIGHT(i.no_invoice, 2) != '/I'") // Add this line to filter based on the last 2 characters
+                ->where('ip.no_bukti_potong', NULL)
+                ->orderBy('i.id','ASC')
+                ->get();
+        }
+        return $data;
+    }
+
+    public function updateBuktiPotong(Request $request, $id)
+    {
+        $data = $request->post();
+        $user = Auth::user()->id; 
+        
+        $invoice = InvoicePembayaran::where('is_aktif', 'Y')->findOrFail($id);
+        if($invoice){
+            $invoice->no_bukti_potong = $data['no_bukti_potong'];
+            $invoice->catatan = $data['catatan'];
+            $invoice->updated_by = $user;
+            $invoice->updated_at = now();
+            if($invoice->save()){
+                return response()->json(['status' => 'success', 'message' => 'Data tersimpan']);
+            }else{
+                return response()->json(['status' => 'error', 'message' => 'Data tersimpan']);
+            }
+        }else{
+            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
+        }
+    }
+
+    public function updateResi(Request $request)
+    {
+        $data = $request->collect();
+        $user = Auth::user()->id; 
+        DB::beginTransaction(); 
+
+        try {
+            $invoice = Invoice::where('is_aktif', 'Y')->find($data['id_invoice']);
+            if($invoice){
+                $invoice->resi = $data['resi'];
+                $invoice->catatan = $data['catatan'];
+                $invoice->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
+                $invoice->updated_by = $user;
+                $invoice->updated_at = now();
+                $invoice->save();
+                DB::commit();
+                return redirect()->route('pembayaran_invoice.index')->with(['status' => 'Success', 'msg' => 'Update Resi berhasil!']);
+            }
+
+        } catch (ValidationException $e) {
+            db::rollBack();
+            return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Update Resi Gagal!']);
+        }
+    }
+     // public function updateBackup(Request $request, $id){
     //     $user = Auth::user()->id;
     //     $data = $request->collect();
     //     DB::beginTransaction(); 
@@ -1193,99 +1291,4 @@ class PembayaranInvoiceController extends Controller
     //         return redirect()->route('cetak_invoice.index')->with(['status' => 'error', 'msg' => 'Edit gagal!']);
     //     }
     // }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    public function loadData($status) {
-        $data = null;
-        if($status === 'BELUM LUNAS'){
-            $data = DB::table('invoice AS i')
-                ->select('i.*', 'c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
-                        ,'g.id as id_grup'/*,'ip.no_bukti_potong'*/, 'i.catatan', 'c.ketentuan_bayar')
-                ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
-                ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
-                // ->leftJoin('invoice_pembayaran AS ip', 'i.id', '=', 'ip.id_invoice')
-                ->where('i.is_aktif', '=', 'Y')
-                ->where('i.status', 'MENUNGGU PEMBAYARAN INVOICE')
-                ->orderBy('i.id','ASC')
-                ->get();
-        }elseif($status === 'LUNAS'){
-            $data = DB::table('invoice_pembayaran AS ip')
-                ->select('ip.total_diterima','i.no_invoice', 'i.id as id', 'i.total_sisa','i.jatuh_tempo', 'i.tgl_invoice','c.id AS id_cust','c.nama AS nama_cust','g.nama_grup'
-                        ,'g.id as id_grup','ip.no_bukti_potong', 'ip.catatan', 'ip.id as id_ip')
-                ->leftJoin('invoice AS i', 'i.id', '=', 'ip.id_invoice')
-                ->leftJoin('customer AS c', 'c.id', '=', 'i.billing_to')
-                ->leftJoin('grup AS g', 'g.id', '=', 'i.id_grup')
-                ->where('i.is_aktif', '=', 'Y')
-                ->whereRaw("RIGHT(i.no_invoice, 2) != '/I'") // Add this line to filter based on the last 2 characters
-                ->where('ip.no_bukti_potong', NULL)
-                ->orderBy('i.id','ASC')
-                ->get();
-        }
-        return $data;
-    }
-
-    public function updateBuktiPotong(Request $request, $id)
-    {
-        $data = $request->post();
-        $user = Auth::user()->id; 
-        
-        $invoice = InvoicePembayaran::where('is_aktif', 'Y')->findOrFail($id);
-        if($invoice){
-            $invoice->no_bukti_potong = $data['no_bukti_potong'];
-            $invoice->catatan = $data['catatan'];
-            $invoice->updated_by = $user;
-            $invoice->updated_at = now();
-            if($invoice->save()){
-                return response()->json(['status' => 'success', 'message' => 'Data tersimpan']);
-            }else{
-                return response()->json(['status' => 'error', 'message' => 'Data tersimpan']);
-            }
-        }else{
-            return response()->json(['status' => 'error', 'message' => 'Data tidak ditemukan'], 404);
-        }
-    }
-
-    public function updateResi(Request $request)
-    {
-        $data = $request->collect();
-        $user = Auth::user()->id; 
-        DB::beginTransaction(); 
-
-        try {
-            $invoice = Invoice::where('is_aktif', 'Y')->find($data['id_invoice']);
-            if($invoice){
-                $invoice->resi = $data['resi'];
-                $invoice->catatan = $data['catatan'];
-                $invoice->jatuh_tempo = date_create_from_format('d-M-Y', $data['jatuh_tempo']);
-                $invoice->updated_by = $user;
-                $invoice->updated_at = now();
-                $invoice->save();
-                DB::commit();
-                return redirect()->route('pembayaran_invoice.index')->with(['status' => 'Success', 'msg' => 'Update Resi berhasil!']);
-            }
-
-        } catch (ValidationException $e) {
-            db::rollBack();
-            return redirect()->route('pembayaran_invoice.index')->with(['status' => 'error', 'msg' => 'Update Resi Gagal!']);
-        }
-    }
 }
