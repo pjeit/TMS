@@ -25,12 +25,7 @@
             <div class="card radiusSendiri">
                 <div class="card-header">
 
-                    <button class="btn btn-primary btn-responsive float-left radiusSendiri bukakModalCreate">
-                        <i class="fa fa-plus-circle"> </i> Tambah Data
-
-                    </button>
-                    {{-- <a href="{{route('karyawan.create')}}" >
-                    </a>  --}}
+                    
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -86,13 +81,13 @@
                                                 <i class="fa fa-list"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a href="{{route('lembur_mekanik.edit',[$item->id])}}" class="dropdown-item ">
+                                                {{-- <a href="{{route('lembur_mekanik.edit',[$item->id])}}" class="dropdown-item ">
                                                     <span class="fas fa-edit mr-3"></span> Edit
                                                 </a>
                                                 <a href="{{route('pencairan_lembur_mekanik.edit',[$item->id])}}" class="dropdown-item ">
                                                     <span class="nav-icon fas fa-dollar-sign mr-3"></span> Pencairan
-                                                </a>
-                                                @if (isset($sadasdasdsa))
+                                                </a> --}}
+                                                {{-- @if (isset($sadasdasdsa)) --}}
                                                     @if ($item->status == 'PENDING')
                                                         <a href="{{route('lembur_mekanik.edit',[$item->id])}}" class="dropdown-item ">
                                                             <span class="fas fa-edit mr-3"></span> Edit
@@ -100,15 +95,15 @@
                                                         <a href="{{ route('lembur_mekanik.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
                                                             <span class="fas fa-trash mr-3"></span> Hapus
                                                         </a>
-                                                        <a href="{{route('pencairan_klaim_supir.edit',[$item->id])}}" class="dropdown-item ">
+                                                        <a href="{{route('pencairan_lembur_mekanik.edit',[$item->id])}}" class="dropdown-item ">
                                                             <span class="nav-icon fas fa-dollar-sign mr-3"></span> Pencairan
                                                         </a>
                                                     @else
-                                                        <a href="{{route('pencairan_klaim_supir.edit',[$item->id])}}" class="dropdown-item ">
+                                                        <a href="{{route('pencairan_lembur_mekanik_revisi.edit',[$item->id])}}" class="dropdown-item ">
                                                             <span class="nav-icon fas fa-dollar-sign mr-3"></span> Edit Pencairan
                                                         </a>
                                                     @endif
-                                                @endif
+                                                {{-- @endif --}}
                                             </div>
                                         </div>
                                     </td>
@@ -126,235 +121,7 @@
     </div>
     <!-- /.row -->
 </div>
-<div class="modal fade" id="modal" >
-        <div class="modal-dialog modal-lg ">
-            <form action="{{ route('lembur_mekanik.store') }}" id="post_data" method="POST" enctype="multipart/form-data">
-            @csrf
-                <div class="modal-content radiusSendiri">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Form Data</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span></button>
-                        </div>
-                    <div class="modal-body">
-                        <ul class="nav nav-tabs mb-3 mt-3 nav-fill" id="justifyTab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-tab active" id="justify-data-tab" data-toggle="tab" href="#justify-data" role="tab" aria-controls="justify-data" aria-selected="true">Data</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link nav-link-tab" id="justify-kendaraan-tab" data-toggle="tab" href="#justify-kendaraan" role="tab" aria-controls="justify-kendaraan" aria-selected="false">Kendaraan</a>
-                            </li>
-                        </ul>
 
-                        <div class="tab-content">
-                            @if ($errors->any())
-                                @foreach ($errors->all() as $error)
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    {{ $error }}
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                @endforeach
-
-                            @endif
-                            {{-- data --}}
-
-                                <div class="tab-pane fade show active" id="justify-data" role="tabpanel" aria-labelledby="justify-data-tab">
-                                        <input type="hidden" name="key" id="key"> {{--* dipakai buat simpen id_sewa --}}
-                                        <div class='row'>
-                                            <div class="col-lg-12">
-                                                <div class="row">
-                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                                        <label for="tanggal_lembur">Tanggal Lembur<span style="color:red">*</span></label>
-                                                        <div class="input-group mb-0">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                            </div>
-                                                            <input type="text" autocomplete="off" name="tanggal_lembur" class="form-control date @error('tanggal_lembur') is-invalid @enderror" id="tanggal_lembur" placeholder="dd-M-yyyy" value="{{old('tanggal_lembur')}}">
-                                                            @error('tanggal_lembur')
-                                                                <div class="invalid-feedback">
-                                                                    {{ $message }}
-                                                                </div>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                                        {{-- <button class="btn btn-primary radiusSendiri mt-2 mb-2" type="button" id="btn_tambah">
-                                                            <i class="fa fa-plus-circle"> </i> Tambah Mekanik
-                                                        </button> --}}
-                                                        <label for="select_mekanik">Mekanik<span style="color:red">*</span></label>
-                                                        <select class="form-control select2  @error('select_mekanik') is-invalid @enderror" style="width: 100%;" id='select_mekanik' name="select_mekanik">
-                                                            <option value="">Pilih Mekanik</option>
-                                                            @foreach ($dataMekanik as $drvr)
-                                                                <option value="{{$drvr->id}}" {{old('select_mekanik')==$drvr->id?'selected':''}} nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('select_mekanik')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror   
-                                                    </div>
-                                                    
-                                                </div>
-                                                <div class="row">
-                                                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
-                                                        <label for="jam_mulai">Jam Mulai<span style="color:red">*</span></label>
-                                                        <input class="form-control" name="jam_mulai" type="time" id="jam_mulai" value="17:00" min="17:00" max="08:15">
-                                                        {{-- <select class="form-control select2" name="jam_mulai" data-live-search="true" data-show-subtext="true">
-                                                            <option value="">--Jam Mulai--</option>
-                                                            <?php for ($i = 1; $i <= 24; $i++) : ?>
-                                                                <option value="{{$i}}">{{str_pad($i, 2, '0', STR_PAD_LEFT)}}:00<nbsp>
-                                                                </option>
-                                                            <?php endfor; ?>
-                                                        </select> --}}
-                                                        @error('jam_mulai')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
-                                                        <label for="jam_selesai">Jam Selesai<span style="color:red">*</span></label>
-                                                        <input class="form-control" name="jam_selesai" type="time" id="jam_selesai" min="17:00" max="08:15">
-                                                        {{-- <select class="form-control select2" name="jam_selesai" data-live-search="true" data-show-subtext="true">
-                                                            <option value="">--Jam Selesai--</option>
-                                                            <?php for ($i = 1; $i <= 24; $i++) : ?>
-                                                                <option value="{{$i}}">{{str_pad($i, 2, '0', STR_PAD_LEFT)}}:00<nbsp>
-                                                                </option>
-                                                            <?php endfor; ?>
-                                                        </select> --}}
-                                                        @error('jam_selesai')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>
-                                                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
-                                                        <label for="total_nominal">Nominal Lembur<span style="color:red">*</span></label>
-                                                        <div class="input-group mb-0">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text">Rp</span>
-                                                            </div>
-                                                            <input type="text" name="total_nominal" class="form-control numaja uang @error('total_nominal') is-invalid @enderror" id="total_nominal" placeholder="" value="{{old('total_nominal')}}" readonly>
-                                                            @error('total_nominal')
-                                                                <div class="invalid-feedback">
-                                                                    {{ $message }}
-                                                                </div>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                {{-- <div class="row">
-                                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                                        <button class="btn btn-primary radiusSendiri mt-2 mb-2" type="button" id="btn_tambah">
-                                                            <i class="fa fa-plus-circle"> </i> Tambah Mekanik
-                                                        </button>
-                                                        <label for="select_mekanik">Mekanik<span style="color:red">*</span></label>
-                                                        <select class="form-control select2  @error('select_mekanik') is-invalid @enderror" style="width: 100%;" id='select_mekanik' name="select_mekanik">
-                                                            <option value="">Pilih Mekanik</option>
-                                                            @foreach ($dataDriver as $drvr)
-                                                                <option value="{{$drvr->id}}" {{old('select_mekanik')==$drvr->id?'selected':''}} nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('select_mekanik')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror   
-                                                    </div>
-                                                </div> --}}
-                                            </div>
-                                        </div>
-                                </div>
-                            {{-- end data --}}
-                            {{-- kendaraan --}}
-                                <div class="tab-pane fade" id="justify-kendaraan" role="tabpanel" aria-labelledby="justify-kendaraan-tab">
-                                    <input type="hidden" id="maxID" value="0">
-                                    <button class="btn btn-primary radiusSendiri mt-2 mb-2" type="button" id="btn_tambah">
-                                        <i class="fa fa-plus-circle"> </i> Tambah Kendaraan
-                                    </button>
-                                    <table class="table table-bordered" id="tabel_kendaraan_parent">
-                                        <thead>
-                                            <tr>
-                                                <th>Kendaraan</th>
-                                                <th>Keterangan</th>
-                                                <th>Foto</th>
-                                                <th>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tabel_kendaraan">
-                                            {{-- <tr>
-                                                <td>
-                                                    <div class="form-group">
-                                                        <select class="form-control select2 @error('select_kendaraan') is-invalid @enderror" style="width: 100%;" id='select_kendaraan' name="kendaraan[][select_kendaraan]">
-                                                            <option value="">Pilih Kendaraan</option>
-                                                            @foreach ($dataKendaraan as $kendaraan)
-                                                                <option value="{{$kendaraan->kendaraanId}}"
-                                                                    idChassis='{{$kendaraan->chassisId}}'
-                                                                    noPol='{{$kendaraan->no_polisi}}'
-                                                                    idDriver='{{$kendaraan->driver_id}}'
-                                                                    kategoriKendaraan='{{$kendaraan->kategoriKendaraan}}'
-                                                                    tipeKontainerKendaraanDariChassis = '{{$kendaraan->tipeKontainerKendaraanDariChassis}}'
-                                                                    >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
-                                                            @endforeach
-                                                        </select>
-                                                        @error('select_kendaraan')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                        <input type="hidden" id="no_polisi" name="no_polisi" value="" placeholder="no_polisi">
-                                                    </div>  
-                                                </td>
-                                                <td>
-                                                    <div class="form-group">
-                                                        <input type="text" class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="kendaraan[][keterangan]" value="{{old('keterangan')}}">
-                                                        @error('keterangan')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>  
-                                                </td>
-                                                <td>
-                                                    <div class=" col-lg-12 col-md-12 col-sm-12">
-                                                        <div class="form-group text-center">
-                                                            <a href="#" class="pop">
-                                                                <img src="{{asset('img/gambar_add.png')}}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_lembur">
-                                                            </a>
-                                                        </div>
-                                                        <div class="custom-file text-center" name="div_foto_lembur" id="div_foto_lembur">
-                                                            <input type="file" class="custom-file-input form-control @error('foto_lembur') is-invalid @enderror" id="foto_lembur" name="kendaraan[][foto_lembur]" accept="image/jpeg" value="" hidden="">
-                                                            <label class="btn btn-outline-primary radiusSendiri" for="foto_lembur" style="text-align: center">Pilih Foto Lembur</label>
-                                                            @error('foto_lembur')
-                                                                <div class="invalid-feedback">
-                                                                    {{ $message }}
-                                                                </div>
-                                                            @enderror   
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr> --}}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            {{-- end kendaraan --}}
-                        </div>
-                        
-                    </div>
-                    <div class="modal-footer">
-                    
-                        <button type="button" class="btn btn-sm btn-danger radiusSendiri p-2" style='width:85px' data-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-sm btn-success radiusSendiri p-2" id="" style='width:85px'><i class="fa fa-fw fa-save"></i> Simpan</button> 
-                    </div>
-                </div>
-            </form> 
-        </div>
-</div>
 
 <script type="text/javascript">
 $(document).ready(function () {

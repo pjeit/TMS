@@ -289,6 +289,10 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/revisi_klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan_save'])->name('pencairan_klaim_supir_revisi.save');
         Route::get('/revisi_klaim_supir/revisi', [App\Http\Controllers\KlaimSupirController::class, 'revisi'])->name('klaim_supir_revisi.index');
 
+        Route::get('/revisi_lembur_mekanik/pencairan/{id}', [App\Http\Controllers\LemburMekanikController::class, 'revisi_pencairan'])->name('pencairan_lembur_mekanik_revisi.edit');
+        Route::post('/revisi_lembur_mekanik/pencairan_save/{id}', [App\Http\Controllers\LemburMekanikController::class, 'revisi_pencairan_save'])->name('pencairan_lembur_mekanik_revisi.save');
+        Route::get('/revisi_lembur_mekanik/revisi', [App\Http\Controllers\LemburMekanikController::class, 'revisi'])->name('lembur_mekanik_revisi.index');
+
         Route::get('/revisi_uang_jalan/cairkan/{id_sewa}', 'App\Http\Controllers\RevisiUangJalanController@cairkan')->name('revisi_uang_jalan.cairkan');
         Route::get('/revisi_uang_jalan/kembalikan/{id_sewa}', 'App\Http\Controllers\RevisiUangJalanController@kembalikan')->name('revisi_uang_jalan.kembalikan');
         Route::get('/revisi_uang_jalan/load_data/{item}', 'App\Http\Controllers\RevisiUangJalanController@load_data')->name('revisi_uang_jalan.load_data');

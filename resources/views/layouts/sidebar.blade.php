@@ -1033,7 +1033,9 @@
                                     request()->is('revisi_tagihan_pembelian*')||
                                     request()->is('revisi_invoice_trucking*')||
                                     request()->is('revisi_biaya_operasional*')||
-                                    request()->is('revisi_klaim_supir*')
+                                    request()->is('revisi_klaim_supir*')||
+                                    request()->is('revisi_lembur_mekanik*')
+
                                     ? 'menu-is-opening menu-open' : '' }} ">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                 <i class="fas nav-icon fa-solid fa fa-undo"></i>
@@ -1090,7 +1092,16 @@
                   </a>
                 </li>
                 @endcan
-
+                <li class="nav-item">
+                  <a href="{{route('lembur_mekanik_revisi.index')}}"
+                    class="nav-link {{request()->url() === route('lembur_mekanik_revisi.index')? ' active' : '' }} "
+                    style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 0.9em;">Rev. Lembur Mekanik</span>
+                    </p>
+                  </a>
+                </li>
                 {{-- ini tak hide dulu, soalnya ini revisi invoice yg sudah dibayar
                 kalau perlu tinggal munculin lagi,
                 edit data yg masih belum invoice udah ke handle di menu belum invoice > edit, gaperlu sampai ke menu revisi ini --}}

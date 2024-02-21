@@ -35,6 +35,34 @@ class LemburMekanikController extends Controller
         $dataMekanik = Karyawan::where('is_aktif',"Y")
             // ->where('grup_tujuan.is_aktif', '=', "Y")
             // ->orderBy('grup_tujuan.nama_tujuan')
+            ->where('role_id', VariableHelper::Role_id('Mekanik'))
+            ->get();
+        // dd(count($dataMekanik));
+        $title = 'Data akan dihapus!';
+        $text = "Apakah Anda yakin?";
+        $confirmButtonText = 'Ya';
+        $cancelButtonText = "Batal";
+        confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
+        return view('pages.finance.lembur_mekanik.index',[
+            'judul'=>"Lembur Mekanik",
+            'dataLemburMekanik' => $dataLemburMekanik,
+            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataDriver' => SewaDataHelper::DataDriver(),
+            'dataMekanik' => $dataMekanik
+        ]);
+    }
+    public function revisi()
+    {
+        //
+        $dataLemburMekanik = LemburMekanik::where('is_aktif',"Y")
+            ->with('karyawan')
+            ->with('lemburRiwayat')
+            // ->where('status','like',"%PENDING%")
+            ->where('status','!=',"PENDING")
+            ->get();
+        $dataMekanik = Karyawan::where('is_aktif',"Y")
+            // ->where('grup_tujuan.is_aktif', '=', "Y")
+            // ->orderBy('grup_tujuan.nama_tujuan')
             ->where('karyawan.role_id', VariableHelper::Role_id('Mekanik'))
             ->get();
         $title = 'Data akan dihapus!';
@@ -42,7 +70,7 @@ class LemburMekanikController extends Controller
         $confirmButtonText = 'Ya';
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
-        return view('pages.finance.lembur_mekanik.index',[
+        return view('pages.revisi.revisi_lembur_mekanik.index',[
             'judul'=>"Lembur Mekanik",
             'dataLemburMekanik' => $dataLemburMekanik,
             'dataKendaraan' => SewaDataHelper::DataKendaraan(),
@@ -636,7 +664,7 @@ class LemburMekanikController extends Controller
                         }
                     }
                     elseif ($data['status']=='REJECTED') {
-                        $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
+                        // $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
                         //kalo ada klaim supir riwayat yang lama
                         if($lembur_mekanik_riwayat)
                         {
@@ -695,7 +723,7 @@ class LemburMekanikController extends Controller
                         {
                             $lembur_mekanik_riwayat_baru = new LemburMekanikRiwayat();
                             $lembur_mekanik_riwayat_baru->id_klaim = $lembur_mekanik->id;
-                            $lembur_mekanik_riwayat_baru->tanggal_pencairan = $tanggal_pencairan;
+                            $lembur_mekanik_riwayat_baru->tanggal_pencairan = null;
                             // $lembur_mekanik_riwayat_baru->tanggal_pencatatan = null;
                             $lembur_mekanik_riwayat_baru->total_klaim = $lembur_mekanik->nominal_lembur;
                             $lembur_mekanik_riwayat_baru->total_pencairan =0;
@@ -888,5 +916,463 @@ class LemburMekanikController extends Controller
     public function destroy(LemburMekanik $lemburMekanik)
     {
         //
+         $user = Auth::user()->id; 
+        // dd($klaimSupir);   
+        $src="/home/pjexpres/tms.pjexpress.co.id";
+        $srcUpdateDelete="/home/pjexpres/tms.pjexpress.co.id";
+
+        try{
+            $lembur_mekanik = LemburMekanik::where('is_aktif', 'Y')
+            ->findOrFail($lemburMekanik->id);
+            $lembur_mekanik->updated_by = $user;
+            $lembur_mekanik->updated_at = now();
+            $lembur_mekanik->is_aktif = 'N';
+            // $lembur_mekanik->save();
+            if($lembur_mekanik->save())
+            {
+                $lembur_mekanik_kendaraan_data = LemburMekanikKendaraan::where('is_aktif', 'Y')->where('id_lembur_mekanik', $lemburMekanik->id) ->get();
+
+                foreach ($lembur_mekanik_kendaraan_data as $value) {
+                    # code...
+                    $lembur_mekanik_kendaraan = LemburMekanikKendaraan::where('is_aktif', 'Y')->findOrFail($value->id);
+                    $lembur_mekanik_kendaraan->updated_by = $user;
+                    $lembur_mekanik_kendaraan->updated_at = now();
+                    $lembur_mekanik_kendaraan->is_aktif ='N';
+                    $lembur_mekanik_kendaraan->save();
+                    if (!empty($lembur_mekanik_kendaraan->foto_lembur)) {
+                        if (file_exists(public_path($lembur_mekanik_kendaraan->foto_lembur))) {
+                            unlink(public_path($lembur_mekanik_kendaraan->foto_lembur));
+                        }
+                        // if (file_exists($srcUpdateDelete.$lembur_mekanik_kendaraan->foto_lembur)) {
+                        //     unlink($srcUpdateDelete.$lembur_mekanik_kendaraan->foto_lembur);
+                        // }
+                    }
+                }
+            }
+            return redirect()->route('lembur_mekanik.index')->with(['status' => 'Success', 'msg' => 'Berhasil Menghapus Data Lembur Mekanik!']);
+        }
+        catch (ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors());
+        }
+    }
+    public function revisi_pencairan($id)
+    {
+        //
+        $data = $this->methodEdit($id);
+        return view('pages.revisi.revisi_lembur_mekanik.pencairan',[
+            'judul'=>"Klaim Supir",
+            'dataLemburMekanik' => $data['dataLemburMekanik'],
+            'dataLemburMekanikRiwayat' => $data['dataLemburMekanikRiwayat'],
+            'dataKendaraan' =>  $data['dataKendaraan'],
+            'dataMekanik' => $data['dataMekanik'],
+            'dataKas' => $data['dataKas'],
+            'dataLemburMekanikKendaraan' => $data['dataLemburMekanikKendaraan']
+        ]);
+    }
+    public function revisi_pencairan_save(Request $request, $id)
+    {
+        //
+        //
+        DB::beginTransaction(); 
+        $user = Auth::user()->id; // masih hardcode nanti diganti cookies atau auth masih gatau
+        try {
+            $data = $request->collect();
+            $dataDumpMekanik = DB::table('lembur_mekanik')
+            ->join('lembur_mekanik_kendaraan', 'lembur_mekanik.id', '=', 'lembur_mekanik_kendaraan.id_lembur_mekanik')
+            ->join('karyawan', 'lembur_mekanik.id_karyawan', '=', 'karyawan.id')
+            ->select(
+                'karyawan.nama_lengkap as nama_mekanik',
+                'lembur_mekanik.jam_mulai_lembur as jam_mulai_lembur',
+                'lembur_mekanik.jam_akhir_lembur as jam_akhir',
+                DB::raw("GROUP_CONCAT(lembur_mekanik_kendaraan.no_pol) as no_pol")
+            )
+            ->where('lembur_mekanik.is_aktif', 'Y')
+            ->where('lembur_mekanik.id', $id)
+            ->groupBy('lembur_mekanik.id')
+            ->first();
+            // dd($data);
+            /* if($data['status']=='PENDING')
+            {
+                $pesanKustom = [
+                    'tanggal_pencairan.required' => 'Tanggal Pencairan harap diisi!',
+                ];
+                
+                $request->validate([
+                    'tanggal_pencairan' => 'required',
+                ],$pesanKustom);
+            }
+            else*/ if($data['status']=='REJECTED')
+            {
+                $pesanKustom = [
+                    // 'tanggal_pencairan.required' => 'Tanggal Pencairan harap diisi!',
+                    'alasan_tolak.required' => 'Alasan tolak harap diisi!',
+                ];
+                
+                $request->validate([
+                    // 'tanggal_pencairan' => 'required',
+                    'alasan_tolak' => 'required',
+                ],$pesanKustom);
+            }
+            else if($data['status']=='ACCEPTED')
+            {
+                $pesanKustom = [
+                    'tanggal_pencairan.required' => 'Tanggal Pencairan harap diisi!',
+                    // 'catatan_pencairan.required' => 'Catatan Pencairan harap diisi!',
+                    // 'tanggal_pencatatan.required' => 'Tanggal pencatatan harap diisi!',
+                    'total_pencairan.required' => 'Total Pencairan harap diisi!',
+                    'kas.required' => 'Kas bank harap diisi!',
+                ];
+                
+                $request->validate([
+                    'tanggal_pencairan' => 'required',
+                    // 'catatan_pencairan' => 'required',
+                    // 'tanggal_pencatatan' => 'required',
+                    'total_pencairan' => 'required',
+                    'kas' => 'required',
+
+                ],$pesanKustom);
+            }
+            $lembur_mekanik = LemburMekanik::where('is_aktif', 'Y')
+            ->findOrFail($id);
+            if($lembur_mekanik->status=="PENDING" &&$data['status']=="PENDING")
+            {
+                return redirect()->back()->withErrors('HARAP UBAH STATUS MENJADI TOLAK/TERIMA!!')->withInput();
+            }
+            $lembur_mekanik->status = $data['status'];
+            $lembur_mekanik->updated_by = $user;
+            $lembur_mekanik->updated_at = now();
+            // $lembur_mekanik->save();
+            if($lembur_mekanik->save())
+            {
+                // dd($lembur_mekanik->status);
+                // else
+                // {
+                    $lembur_mekanik_riwayat = LemburMekanikRiwayat::where('is_aktif', 'Y')
+                                    ->where('id_lembur_mekanik', $id)
+                                        ->first();
+                    // dd( $lembur_mekanik_riwayat);
+                    // dd( $lembur_mekanik_riwayat);
+
+                    // if($lembur_mekanik_riwayat)
+                    // {
+                    //     $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
+                    //                     ->where('keterangan_kode_transaksi', $lembur_mekanik_riwayat->id)
+                    //                     ->where('jenis', 'lembur_mekanik')
+                    //                     ->first();
+
+                    // }
+                        //   dd( $kas_bank_transaksi);
+
+                    if ($data['status']=='PENDING') {
+                        //kalo ada klaim supir riwayat yang lama
+
+                        if($lembur_mekanik_riwayat)
+                        {
+                            $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
+                                        ->where('keterangan_kode_transaksi', $lembur_mekanik_riwayat->id)
+                                        ->where('jenis', 'lembur_mekanik')
+                                        ->first();
+                            //  dd($kas_bank_transaksi);
+
+                            //kalo ada kas bank transaksi (dumpnya itu)
+                            if($kas_bank_transaksi)
+                            {
+                                //  dd($kas_bank_transaksi);
+
+                                //select saldo dulu buat nambah dr datayang lama kan mau di matiin dumpnya,makannya banknya saldonya ditambah
+                                $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
+                                    ->first();
+                                //  dd($saldo);
+                                
+                                $saldo_baru = $saldo->saldo_sekarang + (float)$lembur_mekanik_riwayat->total_pencairan;
+                                //  dd($saldo_baru);
+                                
+                                DB::table('kas_bank')
+                                    ->where('id', $kas_bank_transaksi->id_kas_bank)
+                                    ->update(array(
+                                        'saldo_sekarang' => $saldo_baru,
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                                //setelah saldonya udah ditambah, data dumpnya matiin kan transasksinya batal
+
+                                DB::table('kas_bank_transaction')
+                                    ->where('keterangan_kode_transaksi', $lembur_mekanik_riwayat->id)
+                                    ->where('jenis', 'lembur_mekanik')
+                                    ->where('is_aktif', 'Y')
+                                    ->update(array(
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                        'is_aktif'=> 'N',
+
+                                    )
+                                );
+                                // $kas_bank_transaksi->updated_at = now();
+                                // $kas_bank_transaksi->updated_by = $user;
+                                // $kas_bank_transaksi->is_aktif = 'N';
+                                // $kas_bank_transaksi->save();
+
+                                //  dd($kas_bank_transaksi);
+
+                            }
+                            //terus matiin riwayatnya yang lama
+                            $lembur_mekanik_riwayat->updated_at = now();
+                            $lembur_mekanik_riwayat->updated_by = $user;
+                            $lembur_mekanik_riwayat->is_aktif = 'N';
+                            $lembur_mekanik_riwayat->save();
+                        }
+                    }
+                    elseif ($data['status']=='REJECTED') {
+                        // $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
+                        //kalo ada klaim supir riwayat yang lama
+                        if($lembur_mekanik_riwayat)
+                        {
+                            $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
+                                        ->where('keterangan_kode_transaksi', $lembur_mekanik_riwayat->id)
+                                        ->where('jenis', 'lembur_mekanik')
+                                        ->first();
+                            //kalo ada kas bank transaksi (dumpnya itu)
+                            if($kas_bank_transaksi)
+                            {
+                                //select saldo dulu buat nambah dr datayang lama kan mau di matiin dumpnya,makannya banknya saldonya ditambah
+                                $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
+                                    ->first();
+                                    // dd($saldo->saldo_sekarang + (float)$lembur_mekanik_riwayat->total_pencairan);
+                                $saldo_baru = $saldo->saldo_sekarang + (float)$lembur_mekanik_riwayat->total_pencairan;
+                                DB::table('kas_bank')
+                                    ->where('id', $kas_bank_transaksi->id_kas_bank)
+                                    ->update(array(
+                                        'saldo_sekarang' => $saldo_baru,
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                                //setelah saldonya udah ditambah, data dumpnya matiin kan transasksinya batal
+                                // $kas_bank_transaksi->updated_at = now();
+                                // $kas_bank_transaksi->updated_by = $user;
+                                // $kas_bank_transaksi->is_aktif = 'N';
+                                // $kas_bank_transaksi->save();
+                                DB::table('kas_bank_transaction')
+                                    ->where('keterangan_kode_transaksi', $lembur_mekanik_riwayat->id)
+                                    ->where('jenis', 'lembur_mekanik')
+                                    ->where('is_aktif', 'Y')
+                                    ->update(array(
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                        'is_aktif'=> 'N',
+
+                                    )
+                                );
+                            }
+                            //tanggal pencairan sama pencatatan null soalnya kan kalau tolak ga ada
+                            $lembur_mekanik_riwayat->tanggal_pencairan = null;
+                            // $lembur_mekanik_riwayat->tanggal_pencatatan = null;
+                            $lembur_mekanik_riwayat->total_pencairan =0;
+                            $lembur_mekanik_riwayat->alasan_tolak = $data['alasan_tolak'];
+                            $lembur_mekanik_riwayat->catatan_pencairan =null;
+                            $lembur_mekanik_riwayat->updated_at = now();
+                            $lembur_mekanik_riwayat->updated_by = $user;
+                            $lembur_mekanik_riwayat->save();   
+
+                        }
+                        else
+                        {
+                            $lembur_mekanik_riwayat_baru = new LemburMekanikRiwayat();
+                            $lembur_mekanik_riwayat_baru->id_klaim = $lembur_mekanik->id;
+                            // $lembur_mekanik_riwayat_baru->tanggal_pencairan = $tanggal_pencairan;
+                            $lembur_mekanik_riwayat_baru->tanggal_pencairan = null;
+                            // $lembur_mekanik_riwayat_baru->tanggal_pencatatan = null;
+                            $lembur_mekanik_riwayat_baru->total_klaim = $lembur_mekanik->nominal_lembur;
+                            $lembur_mekanik_riwayat_baru->total_pencairan =0;
+                            $lembur_mekanik_riwayat_baru->alasan_tolak = $data['alasan_tolak'];
+                            $lembur_mekanik_riwayat_baru->created_at = now();
+                            $lembur_mekanik_riwayat_baru->created_by = $user;
+                            $lembur_mekanik_riwayat_baru->is_aktif = 'Y';
+                            //  $lembur_mekanik_riwayat_baru->save();  
+                            
+                        }
+                        
+
+                    }
+                    elseif ($data['status']=='ACCEPTED') {
+                        $tanggal_pencairan= date_create_from_format('d-M-Y', $data['tanggal_pencairan']);
+                        // $tanggal_pencatatan= date_create_from_format('d-M-Y', $data['tanggal_pencatatan']);
+                        //kalo ada klaim supir riwayat yang lama
+                        if($lembur_mekanik_riwayat)
+                        {
+                            $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
+                                        ->where('keterangan_kode_transaksi', $lembur_mekanik_riwayat->id)
+                                        ->where('jenis', 'lembur_mekanik')
+                                        ->first();
+                            //kalo ada kas bank transaksi (dumpnya itu)
+                            if($kas_bank_transaksi)
+                            {
+                                //select saldo dulu buat nambah dr datayang lama kan mau di matiin
+                                $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $kas_bank_transaksi->id_kas_bank)
+                                    ->first();
+                                $saldo_baru = $saldo->saldo_sekarang + (float)$lembur_mekanik_riwayat->total_pencairan;
+                                DB::table('kas_bank')
+                                    ->where('id', $kas_bank_transaksi->id_kas_bank)
+                                    ->update(array(
+                                        'saldo_sekarang' => $saldo_baru,
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                                // dd('masuk sini');
+                                //setelah saldonya udah ditambah, data dumpnya matiin kan transasksinya batal
+                                // $kas_bank_transaksi->updated_at = now();
+                                // $kas_bank_transaksi->updated_by = $user;
+                                // $kas_bank_transaksi->is_aktif = 'N';
+                                // $kas_bank_transaksi->save();
+                                DB::table('kas_bank_transaction')
+                                    ->where('keterangan_kode_transaksi', $lembur_mekanik_riwayat->id)
+                                    ->where('jenis', 'lembur_mekanik')
+                                    ->where('is_aktif', 'Y')
+                                    ->update(array(
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                        'is_aktif'=> 'N',
+
+                                    )
+                                );
+                            }
+                            $lembur_mekanik_riwayat->id_lembur_mekanik = $lembur_mekanik->id;
+                            $lembur_mekanik_riwayat->id_kas_bank = $data['kas'];
+                            $lembur_mekanik_riwayat->tanggal_pencairan = $tanggal_pencairan;
+                            // $lembur_mekanik_riwayat->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
+                            $lembur_mekanik_riwayat->total_lembur = $lembur_mekanik->nominal_lembur;
+                            $lembur_mekanik_riwayat->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
+                            $lembur_mekanik_riwayat->catatan_pencairan =$data['catatan_pencairan'];
+                            $lembur_mekanik_riwayat->alasan_tolak = null;
+
+                            $lembur_mekanik_riwayat->updated_at = now();
+                            $lembur_mekanik_riwayat->updated_by = $user;
+                            $lembur_mekanik_riwayat->save();   
+
+                            //setelah itu update lagi kasbanknya, kan ini keluar uang kalo diterima
+                            $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=',  $data['kas'])
+                                    ->first();
+                                $saldo_baru = $saldo->saldo_sekarang - floatval(str_replace(',', '', $data['total_pencairan']));
+                                DB::table('kas_bank')
+                                    ->where('id',  $data['kas'])
+                                    ->update(array(
+                                        'saldo_sekarang' => $saldo_baru,
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                            //terus masukin dump lagi
+                            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                array(
+                                    $data['kas'],// id kas_bank dr form
+                                    $tanggal_pencairan,//tanggal
+                                    0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                    floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
+                                    CoaHelper::DataCoa(5021), //kode coa gaji (beban gaji pegawai)
+                                    'lembur_mekanik',
+                                    'LEMBUR MEKANIK:'.$dataDumpMekanik->nama_mekanik.' # ('.$dataDumpMekanik->no_pol.')'.'['.$dataDumpMekanik->jam_mulai_lembur .'-'.$dataDumpMekanik->jam_akhir.']', //keterangan_transaksi, //keterangan_transaksi
+                                    $lembur_mekanik_riwayat->id,//keterangan_kode_transaksi
+                                    $user,//created_by
+                                    now(),//created_at
+                                    $user,//updated_by
+                                    now(),//updated_at
+                                    'Y'
+                                ) 
+                            );
+                        }
+                        else
+                        {
+                            //kalo nggak ada riwayatnya buat baru
+                            $lembur_mekanik_riwayat_baru = new LemburMekanikRiwayat();
+                            $lembur_mekanik_riwayat_baru->id_lembur_mekanik = $lembur_mekanik->id;
+                            $lembur_mekanik_riwayat_baru->id_kas_bank = $data['kas'];
+                            $lembur_mekanik_riwayat_baru->tanggal_pencairan = $tanggal_pencairan;
+                            // $lembur_mekanik_riwayat_baru->tanggal_pencatatan = date_format($tanggal_pencatatan, 'Y-m-d');
+                            $lembur_mekanik_riwayat_baru->total_lembur = $lembur_mekanik->nominal_lembur;
+                            $lembur_mekanik_riwayat_baru->total_pencairan =floatval(str_replace(',', '', $data['total_pencairan']));
+                            $lembur_mekanik_riwayat_baru->catatan_pencairan =$data['catatan_pencairan'];
+                            $lembur_mekanik_riwayat_baru->created_at = now();
+                            $lembur_mekanik_riwayat_baru->created_by = $user;
+                            $lembur_mekanik_riwayat_baru->is_aktif = 'Y';
+                            // $lembur_mekanik_riwayat_baru->save(); 
+                            //terus update kasbanknya keluar uang
+                            if($lembur_mekanik_riwayat_baru->save())
+                            {
+                                $saldo = DB::table('kas_bank')
+                                    ->select('*')
+                                    ->where('is_aktif', '=', "Y")
+                                    ->where('kas_bank.id', '=', $lembur_mekanik_riwayat_baru->id_kas_bank )
+                                    ->first();
+                                    //kurangin saldo, ini kan keluar uang
+                                $saldo_baru = $saldo->saldo_sekarang - (float)$lembur_mekanik_riwayat_baru->total_pencairan;
+                                DB::table('kas_bank')
+                                    ->where('id', $lembur_mekanik_riwayat_baru->id_kas_bank)
+                                    ->update(array(
+                                        'saldo_sekarang' => $saldo_baru,
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                    )
+                                );
+                                
+                                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                    array(
+                                        $data['kas'],// id kas_bank dr form
+                                        $tanggal_pencairan,//tanggal
+                                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                        floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
+                                        CoaHelper::DataCoa(5021), //kode coa gaji (beban gaji pegawai)
+                                        'lembur_mekanik',
+                                        'LEMBUR MEKANIK:'.$dataDumpMekanik->nama_mekanik.' # ('.$dataDumpMekanik->no_pol.')'.'['.$dataDumpMekanik->jam_mulai_lembur .'-'.$dataDumpMekanik->jam_akhir.']', //keterangan_transaksi, //keterangan_transaksi
+                                        $lembur_mekanik_riwayat_baru->id,//keterangan_kode_transaksi
+                                        $user,//created_by
+                                        now(),//created_at
+                                        $user,//updated_by
+                                        now(),//updated_at
+                                        'Y'
+                                    ) 
+                                );
+                            }
+                            
+                        }
+                    }
+                // }
+            }
+
+            DB::commit();
+            return redirect()->route('lembur_mekanik_revisi.index')->with(['status' => 'Success', 'msg' => 'Berhasil Revisi Lembur Mekanik!']);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            // return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => $e->errors()]);
+            // return redirect()->back()->withErrors($e->getMessages())->withInput();
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } 
+        catch (\Throwable $th) {
+            //throw $th;
+            DB::rollBack();
+            return redirect()->route('lembur_mekanik_revisi.index')->with(['status' => 'error', 'msg' => 'Gagal revisi hubungi IT!'.$th->getMessage()]);
+        }
+
+        // catch (\Throwable $th) {
+        //     //throw $th;
+        //     DB::rollBack();
+        //     // return redirect()->route('lembur_mekanik.index')->with(['status' => 'error', 'msg' => $th->getMessage()]);
+        //     return redirect()->back()->withErrors($th->getMessage())->withInput();
+
+        // }
     }
 }
