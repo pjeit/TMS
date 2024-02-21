@@ -512,6 +512,7 @@
 
         $(document).on('click', '#save_data_baru', function (event) {
         
+
             let lastRow = $("#table_invoice > tbody tr:last");
             let id = 0;
             
@@ -533,6 +534,16 @@
             var total_diterima = $('#modal_diterima').val();
             var total_dibayar = $('#modal_dibayar').val();
 
+            var total_dibayar = $('#total_dibayar').val();
+            console.log('total_dibayar', total_dibayar);
+            if(id_invoice == ''){
+                Swal.fire(
+                    'Error',
+                    'Data invoice masih kosong!',
+                    'error'
+                )
+                return false;
+            }
             var table = `
                 <tr id='${id}' id_invoice='${id_invoice}'>
                             <td> 
