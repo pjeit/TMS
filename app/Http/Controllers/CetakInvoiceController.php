@@ -207,7 +207,7 @@ class CetakInvoiceController extends Controller
                 }
             }
             DB::commit();
-            return redirect()->route('cetak_invoice.index')->with(['status' => 'Succsess', 'msg' => 'Berhasil menghapus data invoice!']);
+            return redirect()->route('cetak_invoice.index')->with(['status' => 'Success', 'msg' => 'Berhasil menghapus data invoice!']);
 
         } catch (\Throwable $th) {
             //throw $th;
