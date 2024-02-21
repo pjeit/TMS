@@ -61,6 +61,8 @@
                     {{-- </form> --}}      
             </div><!-- /.card-header -->
             <div class="card-body" style="overflow: auto;">
+                <div id="loading-spinner" ><i class="fas fa-spinner fa-spin"></i> Harap tunggu data sedang di proses...</div>
+               
                 <table id="tabel_batal" class="table table-bordered " style="border: 2px solid #bbbbbb;">
                     <thead>
                         <tr>
@@ -72,11 +74,11 @@
                             <th>Uang Jalan</th>
                             <th>Komisi Customer</th>
                             <th>Reimburse</th>
+                            <th>Lain-lain</th>
                             <th>Profit</th>
                         </tr>
                     </thead>
                     <tbody >
-                            
                     </tbody>
                 </table>
             </div>
@@ -85,7 +87,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        
+        $('#loading-spinner').hide();
         $('#tanggal_awal').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
@@ -142,6 +144,15 @@
                     tanggal_akhir: tanggal_akhir,
                     tipe_group: tipe_group,
                 },
+                beforeSend: function () {
+                    // Show loading spinner before the request is sent
+                    $('#loading-spinner').show();
+                },
+                complete: function () {
+                    // Hide loading spinner when the request is complete
+                    $('#loading-spinner').hide();
+                },
+              
                 success: function(response) {
                     console.log(response.data);
                     $('#tabel_batal').DataTable().destroy();
@@ -158,6 +169,7 @@
                             <th>Uang Jalan</th>
                             <th>Komisi Customer</th>
                             <th>Reimburse</th>
+                            <th>Lain-lain</th>
                             <th>Profit</th>
                         </tr>`
                     var kendaraan_th = `
@@ -170,6 +182,7 @@
                             <th>Uang Jalan</th>
                             <th>Komisi Customer</th>
                             <th>Reimburse</th>
+                            <th>Lain-lain</th>
                             <th>Profit</th>
                         </tr> `
                     var driver_th = `
@@ -182,6 +195,7 @@
                             <th>Uang Jalan</th>
                             <th>Komisi Customer</th>
                             <th>Reimburse</th>
+                            <th>Lain-lain</th>
                             <th>Profit</th>
                         </tr>`
                     if(tipe_group=='customer')
@@ -257,7 +271,7 @@
                             row.append(`<td>Rp. ${data[i].total_komisi?moneyMask(data[i].total_komisi):0}</td>`);//customer komisi
                             // row.append(`<td>Rp. ${data[i].total_komisi_driver?moneyMask(data[i].total_komisi_driver):0}</td>`);//driver komisi
                             row.append(`<td>Rp. ${data[i].reimburse?moneyMask(data[i].reimburse):0}</td>`);//Reimburse
-                            // row.append(`<td>${data[i].nama}</td>`);//Lain-Lain
+                            row.append(`<td>${data[i].tambahan_invoice?moneyMask(data[i].tambahan_invoice):0}</td>`);//Lain-Lain
                             row.append(`<td>Rp. ${moneyMask(data[i].total_profit-data[i].reimburse)}</td>`);//Profit
                             $("#tabel_batal").append(row);
                         }
@@ -307,7 +321,7 @@
                                         let totalUangJalan = 0;
                                         let totalKomisiCustomer = 0;
                                         let totalReimburse = 0;
-                                        // let totalLainLain = 0;
+                                        let totalLainLain = 0;
                                         let totalProfit = 0;
                                         console.log(rows.data());
                                         for (let i = 0; i < rows.data().length ; i++) {
@@ -315,14 +329,14 @@
                                             let jumlahUangJalan = rows.data().pluck(5)[i];
                                             let jumlahKomisiCustomer = rows.data().pluck(6)[i];
                                             let jumlahReimburse = rows.data().pluck(7)[i];
-                                            // let jumlahLainLain = rows.data().pluck(8)[i];
-                                            let jumlahProfit = rows.data().pluck(8)[i];
+                                            let jumlahLainLain = rows.data().pluck(8)[i];
+                                            let jumlahProfit = rows.data().pluck(9)[i];
 
                                             totalTarif += parseFloat(jumlahTarif.replace(/,/g, '').replace('Rp. ', ''));
                                             totalUangJalan += parseFloat(jumlahUangJalan.replace(/,/g, '').replace('Rp. ', ''));
                                             totalKomisiCustomer += parseFloat(jumlahKomisiCustomer.replace(/,/g, '').replace('Rp. ', ''));
                                             totalReimburse += parseFloat(jumlahReimburse.replace(/,/g, '').replace('Rp. ', ''));
-                                            // totalLainLain += parseFloat(jumlahLainLain.replace(/,/g, '').replace('Rp. ', ''));
+                                            totalLainLain += parseFloat(jumlahLainLain.replace(/,/g, '').replace('Rp. ', ''));
                                             totalProfit += parseFloat(jumlahProfit.replace(/,/g, '').replace('Rp. ', ''));
 
                                         }
@@ -332,6 +346,7 @@
                                         .append('<td> Rp.' + moneyMask(totalUangJalan) + '</td>')
                                         .append('<td> Rp.' + moneyMask(totalKomisiCustomer) + '</td>')
                                         .append('<td> Rp.' + moneyMask(totalReimburse) + '</td>')
+                                        .append('<td> Rp.' + moneyMask(totalLainLain) + '</td>')
                                         .append('<td> Rp.' + moneyMask(totalProfit) + '</td>')
                                         ;
                                     }, 

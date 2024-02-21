@@ -67,9 +67,10 @@ class LaporanSalesController extends Controller
                         DB::raw("SUM(sop.total_operasional) as reimburse"),
                         // 's.total_reimburse_aktual',
                         // DB::raw("ifnull(id.tambahan,0) - ifnull(id.diskon,0) as tambahan_invoice"),
-                        // DB::raw("ifnull(id.tambahan,0) - ifnull(id.diskon,0) as tambahan_invoice"),
-                        // DB::raw("s.total_tarif - ifnull(trd.subtotal, ifnull(s.total_uang_jalan,0)) - ifnull(s.total_komisi,0) - ifnull(s.total_reimburse_aktual,0) + ifnull(id.tambahan,0) - ifnull(id.diskon,0) as total_profit"),
-                        DB::raw("s.total_tarif - (ifnull(trd.total_tagihan, ifnull(s.total_uang_jalan,0)) - ifnull(s.total_komisi,0) - ifnull(s.total_komisi_driver,0))  as total_profit"),
+                        // DB::raw(" ifnull(id.diskon,0) as tambahan_invoice"),
+                        DB::raw("ifnull(id.tambahan,0) - ifnull(id.diskon,0) as tambahan_invoice"),
+                        DB::raw("s.total_tarif - ifnull(trd.subtotal, ifnull(s.total_uang_jalan,0)) - ifnull(s.total_komisi,0) - ifnull(s.total_reimburse_aktual,0) + ifnull(id.tambahan,0) - ifnull(id.diskon,0) as total_profit"),
+                        // DB::raw("s.total_tarif - (ifnull(trd.total_tagihan, ifnull(s.total_uang_jalan,0)) - ifnull(s.total_komisi,0) - ifnull(s.total_komisi_driver,0)) - ifnull(id.diskon,0)  as total_profit"),
                         'kw.nama_lengkap as nama_driver',
                         'kw.nama_panggilan as panggilan_driver')
                     ->leftJoin('kendaraan as k', 's.id_kendaraan', '=', 'k.id')
@@ -104,30 +105,30 @@ class LaporanSalesController extends Controller
                         $join->on('id.id_invoice', '=', 'i.id')
                             ->where('i.is_aktif', '=', 'Y');
                     })
-                    ->where(function ($query) {
-                        $query->where(function ($subquery) {
-                            $subquery->where('s.status',  'MENUNGGU UANG JALAN')
-                                ->where('s.total_uang_jalan', '=', 0);
-                        })->orWhere(function ($subquery) {
-                            $subquery->where('s.status', 'PROSES DOORING')
-                                ->where('s.total_uang_jalan', '>', 0);
-                        })
-                        ->orWhere('s.status', 'MENUNGGU INVOICE')
-                        ->orWhere('s.status', 'MENUNGGU PEMBAYARAN INVOICE')
-                        ->orWhere('s.status', 'BATAL MUAT')
-                        ->orWhere('s.status', 'CANCEL')
-                        ->orWhere('s.status', 'SELESAI PEMBAYARAN');
-                    })
+                    // ->where(function ($query) {
+                    //     $query->where(function ($subquery) {
+                    //         $subquery->where('s.status',  'MENUNGGU UANG JALAN')
+                    //             ->where('s.total_uang_jalan', '=', 0);
+                    //     })->orWhere(function ($subquery) {
+                    //         $subquery->where('s.status', 'PROSES DOORING')
+                    //             ->where('s.total_uang_jalan', '>', 0);
+                    //     })
+                    //     ->orWhere('s.status', 'MENUNGGU INVOICE')
+                    //     ->orWhere('s.status', 'MENUNGGU PEMBAYARAN INVOICE')
+                    //     ->orWhere('s.status', 'BATAL MUAT')
+                    //     ->orWhere('s.status', 'CANCEL')
+                    //     ->orWhere('s.status', 'SELESAI PEMBAYARAN');
+                    // })
                     ->where('s.is_aktif', '=', 'Y')
                     ->whereBetween(DB::raw('cast(s.tanggal_berangkat as date)'), [date_format($tanggal_awal_convert, 'Y-m-d'), date_format($tanggal_akhir_convert, 'Y-m-d')])
                     ->orderByRaw($order_by)
-                    ->groupBy(//'s.id_sewa',
+                    ->groupBy('s.id_sewa',
                         // 's.id_supplier',
                         // 's.id_karyawan',
                         // 's.no_polisi',
                         // 's.id_customer',
                         // 's.id_chassis',
-                        's.no_sewa',
+                        // 's.no_sewa',
                         // 's.nama_tujuan',
                         // 's.alamat_tujuan',
                         // 's.total_tarif',
