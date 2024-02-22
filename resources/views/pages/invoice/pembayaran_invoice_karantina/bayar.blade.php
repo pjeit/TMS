@@ -410,6 +410,16 @@
             $('#catatan_'+key).val( escapeComma($('#modal_catatan').val()) );
             document.getElementById("text_catatan_"+key).textContent = $('#modal_catatan').val();
 
+            var modal_diterima = $('#modal_diterima').val();
+            var modal_total_invoice = $('#modal_total_invoice').val();
+            if(escapeComma(modal_diterima) != escapeComma(modal_total_invoice) ){
+                Swal.fire(
+                    'Data tidak valid',
+                    'Total diterima kurang dari tagihan!',
+                    'warning'
+                )
+                return false;
+            }
             hitungAll();
             $('#modal_detail').modal('hide'); // close modal
         });

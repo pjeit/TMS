@@ -50,13 +50,32 @@ class PembayaranInvoiceKarantinaController extends Controller
                                 ->where('is_aktif', 'Y')->get();
         
         $dataKas = KasBank::where('is_aktif', 'Y')->orderBy('nama', 'ASC')->get();
+        // dd($data[0]->id_customer);
+        $flag_beda_customer = false;
+        $simpen_id_customer = $data[0]->id_customer;
 
-        return view('pages.invoice.pembayaran_invoice_karantina.bayar',[
-            'judul' => "Bayar Invoice Karantina",
-            'data' => $data,
-            'dataCustomers' => $dataCustomers,
-            'dataKas' => $dataKas,
-        ]);
+        foreach ($data as  $value) {
+            # code...
+            if($simpen_id_customer!=$value->id_customer)
+            {
+                $flag_beda_customer = true;
+                break;
+            }
+        }
+        if($flag_beda_customer)
+        {
+            return redirect()->route('pembayaran_invoice_karantina.index')->with(['status' => 'error', 'msg' => 'Customer harus sama dalam pembayaran!']);
+        }
+        else
+        {
+            return view('pages.invoice.pembayaran_invoice_karantina.bayar',[
+                'judul' => "Bayar Invoice Karantina",
+                'data' => $data,
+                'dataCustomers' => $dataCustomers,
+                'dataKas' => $dataKas,
+            ]);
+
+        }
     }
 
     /**
@@ -109,23 +128,23 @@ class PembayaranInvoiceKarantinaController extends Controller
     
                 }
                 
-                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                        array(
-                            $data['kas'], // id kas_bank dr form
-                            $tanggal_pembayaran,//tanggal
-                            floatval(str_replace(',', '', $data['total_diterima'])), //uang masuk (debit)
-                            0,// kredit 0 soalnya kan ini uang masuk
-                             CoaHelper::DataCoa(1100), //kode coa invoice
-                            'pembayaran_invoice_karantina',
-                            'Pembayaran invoice karantina '. $no_invoices, //keterangan_transaksi
-                            $pembayaran->id, // keterangan_kode_transaksi // id invoices
-                            $user,//created_by
-                            now(),//created_at
-                            $user,//updated_by
-                            now(),//updated_at
-                            'Y'
-                        ) 
-                    );
+                    DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                            array(
+                                $data['kas'], // id kas_bank dr form
+                                $tanggal_pembayaran,//tanggal
+                                floatval(str_replace(',', '', $data['total_diterima'])), //uang masuk (debit)
+                                0,// kredit 0 soalnya kan ini uang masuk
+                                CoaHelper::DataCoa(1100), //kode coa invoice
+                                'pembayaran_invoice_karantina',
+                                'Pembayaran invoice karantina '. $no_invoices, //keterangan_transaksi
+                                $pembayaran->id, // keterangan_kode_transaksi // id invoices
+                                $user,//created_by
+                                now(),//created_at
+                                $user,//updated_by
+                                now(),//updated_at
+                                'Y'
+                            ) 
+                        );
                 $kas_bank = KasBank::where('is_aktif','Y')->find($data['kas']);
                 $kas_bank->saldo_sekarang += floatval(str_replace(',', '', $data['total_diterima']));
                 $kas_bank->updated_by = $user;

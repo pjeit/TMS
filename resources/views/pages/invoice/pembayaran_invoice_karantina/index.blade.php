@@ -47,7 +47,9 @@
                                             <div class="d-flex justify-content-between" style="margin-right: -13px;">
                                                 <div>{{ $item->getCustomer->nama }}</div>
                                                 <div style="width: 55px; text-align: center">                                            
-                                                    <input type="checkbox" name="idCustomer[]" class="sewa_centang">
+                                                    <input type="checkbox" name="idCustomer[]" class="sewa_centang" >
+                                                    {{-- <input type="checkbox" style="margin-right: 0.9rem;" class="customer_centang"
+                                                    id_customer="{{ $item->billing_to }}" id_customer_grup="{{ $item->getCustomer->nama }}"> --}}
                                                 </div>
                                             </div>
                                         </td>
