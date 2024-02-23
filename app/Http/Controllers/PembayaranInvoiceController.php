@@ -43,7 +43,9 @@ class PembayaranInvoiceController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
 
-        $data = Invoice::where('is_aktif', 'Y')->get();
+        $data = Invoice::where('is_aktif', 'Y')
+        ->whereNull('id_pembayaran')
+        ->get();
     
         return view('pages.invoice.pembayaran_invoice.index',[
             'judul' => "PEMBAYARAN INVOICE",
@@ -72,8 +74,12 @@ class PembayaranInvoiceController extends Controller
         $idInvoice      = session()->get('idInvoice'); 
         $idGrup         = session()->get('idGrup'); 
         $idCust         = session()->get('idCust'); 
-        $data           = Invoice::whereIn('id', $idInvoice)->where('is_aktif', 'Y')->get();
-        $dataInvoices   = Invoice::where('billing_to', $idCust)->where('is_aktif', 'Y')->get();
+        $data           = Invoice::whereIn('id', $idInvoice)
+        ->whereNull('id_pembayaran')
+        ->where('is_aktif', 'Y')->get();
+        $dataInvoices   = Invoice::where('billing_to', $idCust)
+        ->whereNull('id_pembayaran')
+        ->where('is_aktif', 'Y')->get();
         
         $dataCustomers  = Customer::where('grup_id', $idGrup)
                                 ->where('is_aktif', 'Y')->get();

@@ -29,7 +29,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="datatable" class="table table-bordered table-striped responsive" >
+                    <table id="tabel_tf" class="table table-bordered table-striped" >
                         <thead>
                             <tr>
                                 <th>Tgl. Transfer</th>
@@ -84,12 +84,8 @@
                                 </tr>
                                 @endforeach
                             @endif
-                           
                         </tbody>
-                        
                     </table>
-                  
-
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -214,25 +210,25 @@ $(document).ready(function () {
             $("#modal_tambah").modal("show");
         
     }
-    // new DataTable('#TabelKlaim', {
-    //     order: [
-    //         [0, 'asc'],
-    //     ],
-    //     rowGroup: {
-    //         dataSrc: [0]
-    //     },
-    //     columnDefs: [
-    //         {
-    //             targets: [0],
-    //             visible: false
-    //         },
-    //         {
-    //             "orderable": false,
-    //             "targets": [0,1,2,3,4,5,6]
-    //         }
+    new DataTable('#tabel_tf', {
+        order: [
+            [0, 'asc'],
+        ],
+        // rowGroup: {
+        //     dataSrc: [0]
+        // },
+        columnDefs: [
+            {
+                targets: [0],
+                visible: false
+            },
+            {
+                "orderable": false,
+                // "targets": [0,1,2,3,4,5,6]
+            }
     
-    //     ],
-    // }); 
+        ],
+    }); 
     $('#post_data').submit(function(event) {
 
          const Toast = Swal.mixin({
@@ -352,9 +348,9 @@ $(document).ready(function () {
                     title: 'Data Disimpan'
                 })
 
-                // setTimeout(() => {
-                //     this.submit();
-                // }, 200); // 2000 milliseconds = 2 seconds
+                setTimeout(() => {
+                    this.submit();
+                }, 200); // 2000 milliseconds = 2 seconds
             }else{
                 const Toast = Swal.mixin({
                     toast: true,

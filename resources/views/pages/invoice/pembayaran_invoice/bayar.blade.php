@@ -460,10 +460,10 @@
             $('#modal_total_invoice').val( moneyMask($('#total_tagihan_'+key).val()) );
             $('#modal_sisa_invoice').val( moneyMask($('#total_sisa_'+key).val()) );
 
-            var checkReimburse = $('#no_invoice_'+key).val().substr(-2);
-            if(checkReimburse == '/I'){
+            // var checkReimburse = $('#no_invoice_'+key).val().substr(-2);
+            // if(checkReimburse == '/I'){
                 $("#hide_bukti_potong").hide();
-            }
+            // }
 
             
             $('#modal_detail').modal('show');
@@ -506,6 +506,7 @@
             });
             $("#select_modal_no_invoice").attr('disabled',false);
             $('#select_modal_no_invoice').select2();
+            $("#hide_bukti_potong").hide();
           
             $('#modal_detail').modal('show');
         });
@@ -534,7 +535,7 @@
             var total_diterima = $('#modal_diterima').val();
             var total_dibayar = $('#modal_dibayar').val();
 
-            var total_dibayar = $('#total_dibayar').val();
+            // var total_dibayar = $('#total_dibayar').val();
             console.log('total_dibayar', total_dibayar);
             if(id_invoice == ''){
                 Swal.fire(

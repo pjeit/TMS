@@ -20,5 +20,9 @@ class InvoicePembayaran extends Model
     {
          return $this->hasMany(Invoice::class, 'id_pembayaran', 'id');
     }
+    public function getInvoices_revisi()
+    {
+         return $this->hasMany(Invoice::class, 'id_pembayaran', 'id')->orderBy('biaya_admin','DESC');
+    }
 
 }

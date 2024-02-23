@@ -66,7 +66,7 @@ class TransferDanaController extends Controller
         //
         $user = Auth::user()->id;
         DB::beginTransaction(); 
-
+    
         try {
         // dd(/*date_format(*/$data['tanggal_transaksi']/*,'Y-m-d')*/);
             $pesanKustom = [
@@ -84,6 +84,7 @@ class TransferDanaController extends Controller
                 // 'catatan' => 'required',
             ], $pesanKustom);
             $data= $request->collect();
+            // dd($data);
             if($data['select_bank_dari']==$data['select_bank_ke'])
             {
                 return redirect()->back()->withErrors('Kas/bank dari tidak boleh sama dengan tujuan!')->withInput();
