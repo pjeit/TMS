@@ -397,7 +397,7 @@ class PembayaranInvoiceController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        // dd($data);
+        dd($data);
 
         try {
             $invoice = Invoice::where('is_aktif', 'Y')->find($id);

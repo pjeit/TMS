@@ -884,9 +884,20 @@
 
             var closestTR = this.closest('tr');
             closestTR.remove();
+            var id = this.value;
 
-            deletedValues.push(this.value);
-            $('#deleted').val(deletedValues);
+            let deleted = $('#deleted').val();
+            if (deleted !== '') {
+                var split_deleted = deleted.split(',');
+                if (!split_deleted.includes(id)) {
+                    split_deleted.push(id);
+                    $('#deleted').val(split_deleted.join(','));
+                }
+            } else {
+                $('#deleted').val(id);
+            }
+            // deletedValues.push(this.value);
+            // $('#deleted').val(deletedValues);
             console.log();
             // $('#deleted').val(deletedValues.join(','));
             cekPisahInvoice();
