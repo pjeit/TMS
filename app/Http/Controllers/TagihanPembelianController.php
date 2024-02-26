@@ -128,16 +128,24 @@ class TagihanPembelianController extends Controller
 
 
         $data_tagihan = TagihanPembelian::with('getDetails')->where('is_aktif', 'Y')->whereIn('id', $data['idTagihan'])->get();
+        $data_tagihan_from_supplier = TagihanPembelian::with('getDetails')
+        ->where('is_aktif', 'Y')
+        ->whereNull('id_pembayaran')
+        ->where('id_supplier', $data_tagihan[0]->id_supplier)->get();
+        // dd($data_tagihan_from_supplier);
+
 
         if($data_tagihan){
             return view('pages.finance.tagihan_pembelian.bayar',[
-                'judul' => "Tagihan Rekanan",
+                'judul' => "Tagihan Nota Pembelian",
                 'dataKas' => $dataKas,
                 'supplier' => $supplier,
                 'data_tagihan' => $data_tagihan,
+                'data_tagihan_from_supplier' => $data_tagihan_from_supplier,
+
             ]);
         }else{
-            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap ulangi lagi!']);
+            return redirect()->route('tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, tidak ada tagihan yang terpilih!']);
         }
     }
 
@@ -148,7 +156,7 @@ class TagihanPembelianController extends Controller
         // dd($data);
     
         try {
-            $keterangan = 'TAGIHAN PEMBELIAN: '. $data['nama_supplier'] . ' - ';
+            $keterangan = 'Pembayaran Nota Ke: '. $data['nama_supplier'] . ' - ';
             $biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
             $i = 0;
 

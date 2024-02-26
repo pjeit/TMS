@@ -17,7 +17,7 @@ class TagihanPembelianPembayaran extends Model
     
     public function getPembelian()
     {
-     return $this->hasMany(TagihanPembelian::class, 'id_pembayaran', 'id')->where('is_aktif', 'Y');
+     return $this->hasMany(TagihanPembelian::class, 'id_pembayaran', 'id')->where('is_aktif', 'Y')->orderBy('biaya_admin','DESC');
     }
 
     public function getPembelianDetail()

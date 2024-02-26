@@ -90,12 +90,18 @@ class RevisiTagihanPembelianController extends Controller
 
         $data = TagihanPembelianPembayaran::where('is_aktif', 'Y')->find($id);
         // dd($data->getPembelian);
-
+        $data_tagihan_from_supplier = TagihanPembelian::with('getDetails')
+        ->where('is_aktif', 'Y')
+        ->whereNull('id_pembayaran')
+        ->where('id_supplier', $data->getPembelian[0]->id_supplier)->get();
+        // dd($data_tagihan_from_supplier);
         return view('pages.revisi.revisi_tagihan_pembelian.edit',[
             'judul' => "Revisi Tagihan Pembelian",
             'dataKas' => $dataKas,
             'supplier' => $supplier,
             'data' => $data,
+            'data_tagihan_from_supplier' => $data_tagihan_from_supplier,
+
         ]);
     }
 
@@ -111,26 +117,19 @@ class RevisiTagihanPembelianController extends Controller
         $user = Auth::user()->id;
         $data = $request->collect();
         DB::beginTransaction(); 
-        $keterangan = 'TAGIHAN PEMBELIAN: '. $data['nama_supplier'] . ' -';
+        $keterangan = 'Pembayaran Nota Ke: '. $data['nama_supplier'] . ' -';
         $i = 0;
         // dd($data);
 
         try {
             // history kas bank di nonaktifkan
-            $history = KasBankTransaction::where('is_aktif','Y')
-                    ->where('keterangan_kode_transaksi', $id)
-                    ->where('jenis', 'TAGIHAN_PEMBELIAN')
-                    ->first();
-            if($history){
-                $history->keterangan_transaksi = 'REVISI OFF - CATATAN: '. $data['catatan'] . ' || ' .$history->keterangan_transaksi;
-                $history->is_aktif = 'N';
-                $history->updated_by = $user;
-                $history->updated_at = now();
-                $history->save();
-    
+            $pembayaran_lama = TagihanPembelianPembayaran::where('is_aktif', 'Y')->find($id);
+            $biaya_admin = floatval(str_replace(',', '', $data['biaya_admin']));
+            if($pembayaran_lama){
+              
                 // dana dikembalikan
-                $returnKas = KasBank::where('is_aktif','Y')->find($history->id_kas_bank);
-                $returnKas->saldo_sekarang += $history->kredit;
+                $returnKas = KasBank::where('is_aktif','Y')->find($pembayaran_lama->id_kas);
+                $returnKas->saldo_sekarang += $pembayaran_lama->total_bayar;
                 $returnKas->updated_by = $user;
                 $returnKas->updated_at = now();
                 $returnKas->save();
@@ -138,12 +137,27 @@ class RevisiTagihanPembelianController extends Controller
                 if(isset($data['data'])){
                     foreach ($data['data'] as $key => $value) {
                         $tagihan = TagihanPembelian::where('is_aktif', 'Y')->find($key);
-                        $tagihan->no_nota = $value['no_nota'];
+                        // $tagihan->no_nota = $value['no_nota'];
                         $tagihan->pph = $value['pph'];
                         $tagihan->bukti_potong = $value['bukti_potong'];
-                        $tagihan->biaya_admin = $value['biaya_admin'];
-                        $tagihan->total_tagihan = $value['total_tagihan'];
-                        $tagihan->tagihan_dibayarkan = $value['tagihan_dibayarkan'];
+                        $tagihan->sisa_tagihan =  $tagihan->total_tagihan;
+                        // $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
+                        if($i == 0){
+                            $tagihan->sisa_tagihan -= ($value['tagihan_dibayarkan'] + $value['pph']+$biaya_admin);
+                            $tagihan->tagihan_dibayarkan = $value['tagihan_dibayarkan'] - $biaya_admin;
+                            $tagihan->biaya_admin = $biaya_admin;
+                        }else{
+                            $tagihan->sisa_tagihan -= ($value['tagihan_dibayarkan'] + $value['pph']);
+                            $tagihan->tagihan_dibayarkan = $value['tagihan_dibayarkan'];
+                        }
+                        if($tagihan->sisa_tagihan == 0){
+                            $tagihan->status = 'LUNAS';
+                        }
+                        // $tagihan->biaya_admin = $value['biaya_admin'];
+                        // $tagihan->total_tagihan = $value['total_tagihan'];
+                        // $tagihan->tagihan_dibayarkan = $value['tagihan_dibayarkan'];
+
+
                         $tagihan->updated_by = $user;
                         $tagihan->updated_at = now();
                         $tagihan->save();
@@ -164,53 +178,58 @@ class RevisiTagihanPembelianController extends Controller
                     $array = explode(",", $data['data_deleted']);
                     foreach ($array as $key => $value) {
                         $del_pembelian = TagihanPembelian::where('is_aktif', 'Y')->find($value);
+                        $del_pembelian->id_pembayaran = null;
+                        $del_pembelian->sisa_tagihan =  $del_pembelian->total_tagihan;
+                        $del_pembelian->status = 'MENUNGGU PEMBAYARAN';
+                        $del_pembelian->tagihan_dibayarkan = 0;
+                        $del_pembelian->biaya_admin = 0;
+                        $del_pembelian->pph = 0;
                         $del_pembelian->updated_by = $user;
                         $del_pembelian->updated_at = now();
-                        $del_pembelian->is_aktif = 'N';
-                        if($del_pembelian->save()){
-                            $del_details = TagihanPembelianDetail::where('is_aktif', 'Y')->where('id_TAGIHAN_PEMBELIAN', $value)->get();
-                            foreach ($del_details as $key => $item) {
-                                $item->updated_by = $user;
-                                $item->updated_at = now();
-                                $item->is_aktif = 'N';
-                                $item->save();
-                            }
-                        }
+                        $del_pembelian->save();
+                        // if($del_pembelian->save()){
+                        //     $del_details = TagihanPembelianDetail::where('is_aktif', 'Y')->where('id_tagihan_pembelian', $value)->get();
+                        //     foreach ($del_details as $key => $item) {
+                        //         $item->updated_by = $user;
+                        //         $item->updated_at = now();
+                        //         $item->is_aktif = 'N';
+                        //         $item->save();
+                        //     }
+                        // }
                     }
                 }
     
                 $pembayaran = TagihanPembelianPembayaran::where('is_aktif', 'Y')->find($id);
-                $pembayaran->catatan = 'REVISI - CATATAN: ' . $data['catatan'] . ' || ' . $pembayaran->catatan;
+                $pembayaran->catatan = 'REVISI - CATATAN: ' . $data['catatan'];
                 $pembayaran->total_bayar = floatval(str_replace(',', '', $data['total_bayar']));
                 $pembayaran->updated_by = $user;
                 $pembayaran->updated_at = now();
                 $pembayaran->save();
-    
-                // insert history transaksi baru 
-                $new_history = new KasBankTransaction();
-                $new_history->tanggal = $history->tanggal;
-                $new_history->id_kas_bank = $data['id_kas'];
-                $new_history->debit = 0;
-                $new_history->kredit = floatval(str_replace(',', '', $data['total_bayar']));
-                $new_history->kode_coa = CoaHelper::DataCoa(2010); //  coa tagihan pembelian
-                $new_history->jenis = 'tagihan_pembelian';
-                $new_history->keterangan_transaksi = $keterangan . '(REVISI) - ' . $data['catatan'];
-                $new_history->keterangan_kode_transaksi = $pembayaran->id;
-                $new_history->created_by = $user;
-                $new_history->created_at = now();
-                if($new_history->save()){
-                    // kurangi kasbank sekarang
-                    $kurangiKas = KasBank::where('is_aktif','Y')->find($data['id_kas']);
-                    $kurangiKas->saldo_sekarang -= floatval(str_replace(',', '', $data['total_bayar']));
-                    $kurangiKas->updated_by = $user;
-                    $kurangiKas->updated_at = now();
-                    if($kurangiKas->save()){
-                        DB::commit();
+                if($pembayaran->save())
+                {
+                    $history = KasBankTransaction::where('is_aktif','Y')
+                    ->where('keterangan_kode_transaksi', $id)
+                    ->where('jenis', 'tagihan_pembelian')
+                    ->first();
+                    $history->keterangan_transaksi = 'REVISI:'. $keterangan ;
+                    $history->kredit = floatval(str_replace(',', '', $data['total_bayar'])) ;
+                    // $history->is_aktif = 'N';
+                    $history->updated_by = $user;
+                    $history->updated_at = now();
+                    // $history->save();
+                    if( $history->save())
+                    {
+                        // kurangi kasbank sekarang
+                        $kurangiKas = KasBank::where('is_aktif','Y')->find($data['id_kas']);
+                        $kurangiKas->saldo_sekarang -= floatval(str_replace(',', '', $data['total_bayar']));
+                        $kurangiKas->updated_by = $user;
+                        $kurangiKas->updated_at = now();
+                        if($kurangiKas->save()){
+                            DB::commit();
+                        }
                     }
-    
                 }
             }
-
             return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'Success', 'msg'  => 'Revisi berhasil!']);
         } catch (ValidationException $e) {
             db::rollBack();
@@ -221,73 +240,6 @@ class RevisiTagihanPembelianController extends Controller
             return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
-
-    public function delete($id)
-    {
-        // $user = Auth::user()->id;
-        // DB::beginTransaction(); 
-        
-        // try {
-        //     $pembayaran = TagihanPembelianPembayaran::where('is_aktif', 'Y')->find($id);
-        //     if($pembayaran){
-        //         $pembayaran->catatan = 'HAPUS - ' . isset($pembayaran->catatan)? $pembayaran->catatan:'';
-        //         $pembayaran->is_aktif = 'N';
-        //         $pembayaran->updated_by = $user;
-        //         $pembayaran->updated_at = now();
-        //         if($pembayaran->save()){
-        //             // nonaktifin semua data dan relasinya
-        //             $pembelian = TagihanPembelian::where('is_aktif', 'Y')->where('id_pembayaran', $id)->get();
-        //             foreach ($pembelian as $key => $value) {
-        //                 $value->catatan = 'HAPUS - ' . isset($value->catatan)? $value->catatan:'';
-        //                 $value->is_aktif = 'N';
-        //                 $value->updated_by = $user;
-        //                 $value->updated_at = now();
-        //                 if($value->save()){
-        //                     $details = TagihanPembelianDetail::where('is_aktif', 'Y')->where('id_tagihan_pembelian', $value->id)->get();
-        //                     foreach ($details as $key => $detail) {
-        //                         $detail->is_aktif = 'N';
-        //                         $detail->updated_by = $user;
-        //                         $detail->updated_at = now();
-        //                         $detail->save();
-        //                     }
-        //                 }
-        //             }
-        //         }
-    
-        //         $history = KasBankTransaction::where('is_aktif','Y')
-        //                     ->where('keterangan_kode_transaksi', $id)
-        //                     ->where('jenis', 'tagihan_pembelian')
-        //                     ->first();
-        //         $history->keterangan_transaksi = 'HAPUS - ' . isset($history->keterangan_transaksi)? $history->keterangan_transaksi:'';
-        //         $history->is_aktif = 'N';
-        //         $history->updated_by = $user;
-        //         $history->updated_at = now();
-        //         if($history->save()){
-        //             // kembalikan kasbank sekarang
-        //             $returnKas = KasBank::where('is_aktif','Y')->find($history['id_kas_bank']);
-        //             $returnKas->saldo_sekarang += floatval(str_replace(',', '', $history['kredit']));
-        //             $returnKas->updated_by = $user;
-        //             $returnKas->updated_at = now();
-        //             if($returnKas->save()){
-        //                 DB::commit();
-        //                 return response()->json(['status' => 'success']);
-        //             }
-        //         }
-
-        //     }    
-
-        //     db::rollBack();
-        //     return response()->json(['status' => 'error']);
-        // } catch (ValidationException $e) {
-        //     db::rollBack();
-        //     return response()->json(['status' => 'error']);
-        // }
-        // catch (\Throwable $th) {
-        //     db::rollBack();
-        //     return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
-        // }
-    }
-
     /**
      * Remove the specified resource from storage.
      *
@@ -311,19 +263,26 @@ class RevisiTagihanPembelianController extends Controller
                     // nonaktifin semua data dan relasinya
                     $pembelian = TagihanPembelian::where('is_aktif', 'Y')->where('id_pembayaran', $id)->get();
                     foreach ($pembelian as $key => $value) {
-                        $value->catatan = 'HAPUS - ' . isset($value->catatan)? $value->catatan:'';
-                        $value->is_aktif = 'N';
+                        // $value->catatan = 'HAPUS - ' . isset($value->catatan)? $value->catatan:'';
+                        // $value->is_aktif = 'N';
+                        $value->id_pembayaran = null;
+                        $value->sisa_tagihan =  $value->total_tagihan;
+                        $value->tagihan_dibayarkan = 0;
+                        $value->biaya_admin = 0;
+                        $value->pph = 0;
+                        $value->status = 'MENUNGGU PEMBAYARAN';
                         $value->updated_by = $user;
                         $value->updated_at = now();
-                        if($value->save()){
-                            $details = TagihanPembelianDetail::where('is_aktif', 'Y')->where('id_tagihan_pembelian', $value->id)->get();
-                            foreach ($details as $key => $detail) {
-                                $detail->is_aktif = 'N';
-                                $detail->updated_by = $user;
-                                $detail->updated_at = now();
-                                $detail->save();
-                            }
-                        }
+                        $value->save();
+                        // if($value->save()){
+                        //     $details = TagihanPembelianDetail::where('is_aktif', 'Y')->where('id_tagihan_pembelian', $value->id)->get();
+                        //     foreach ($details as $key => $detail) {
+                        //         $detail->is_aktif = 'N';
+                        //         $detail->updated_by = $user;
+                        //         $detail->updated_at = now();
+                        //         $detail->save();
+                        //     }
+                        // }
                     }
                 }
     
@@ -361,7 +320,6 @@ class RevisiTagihanPembelianController extends Controller
             return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
-
     public function load_data(Request $request)
     {
         if ($request->ajax()) {
@@ -439,5 +397,70 @@ class RevisiTagihanPembelianController extends Controller
                 ->rawColumns(['action', 'no_nota', 'tgl_nota', 'jatuh_tempo']) // ini buat render raw html, kalo ga pake nanti jadi text biasa
                 ->make(true);
         }
+    }
+    public function delete($id)
+    {
+        // $user = Auth::user()->id;
+        // DB::beginTransaction(); 
+        
+        // try {
+        //     $pembayaran = TagihanPembelianPembayaran::where('is_aktif', 'Y')->find($id);
+        //     if($pembayaran){
+        //         $pembayaran->catatan = 'HAPUS - ' . isset($pembayaran->catatan)? $pembayaran->catatan:'';
+        //         $pembayaran->is_aktif = 'N';
+        //         $pembayaran->updated_by = $user;
+        //         $pembayaran->updated_at = now();
+        //         if($pembayaran->save()){
+        //             // nonaktifin semua data dan relasinya
+        //             $pembelian = TagihanPembelian::where('is_aktif', 'Y')->where('id_pembayaran', $id)->get();
+        //             foreach ($pembelian as $key => $value) {
+        //                 $value->catatan = 'HAPUS - ' . isset($value->catatan)? $value->catatan:'';
+        //                 $value->is_aktif = 'N';
+        //                 $value->updated_by = $user;
+        //                 $value->updated_at = now();
+        //                 if($value->save()){
+        //                     $details = TagihanPembelianDetail::where('is_aktif', 'Y')->where('id_tagihan_pembelian', $value->id)->get();
+        //                     foreach ($details as $key => $detail) {
+        //                         $detail->is_aktif = 'N';
+        //                         $detail->updated_by = $user;
+        //                         $detail->updated_at = now();
+        //                         $detail->save();
+        //                     }
+        //                 }
+        //             }
+        //         }
+    
+        //         $history = KasBankTransaction::where('is_aktif','Y')
+        //                     ->where('keterangan_kode_transaksi', $id)
+        //                     ->where('jenis', 'tagihan_pembelian')
+        //                     ->first();
+        //         $history->keterangan_transaksi = 'HAPUS - ' . isset($history->keterangan_transaksi)? $history->keterangan_transaksi:'';
+        //         $history->is_aktif = 'N';
+        //         $history->updated_by = $user;
+        //         $history->updated_at = now();
+        //         if($history->save()){
+        //             // kembalikan kasbank sekarang
+        //             $returnKas = KasBank::where('is_aktif','Y')->find($history['id_kas_bank']);
+        //             $returnKas->saldo_sekarang += floatval(str_replace(',', '', $history['kredit']));
+        //             $returnKas->updated_by = $user;
+        //             $returnKas->updated_at = now();
+        //             if($returnKas->save()){
+        //                 DB::commit();
+        //                 return response()->json(['status' => 'success']);
+        //             }
+        //         }
+
+        //     }    
+
+        //     db::rollBack();
+        //     return response()->json(['status' => 'error']);
+        // } catch (ValidationException $e) {
+        //     db::rollBack();
+        //     return response()->json(['status' => 'error']);
+        // }
+        // catch (\Throwable $th) {
+        //     db::rollBack();
+        //     return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        // }
     }
 }

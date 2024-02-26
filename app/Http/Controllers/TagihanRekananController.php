@@ -60,7 +60,10 @@ class TagihanRekananController extends Controller
         $supplier = Sewa::from('sewa as s')
                     ->with('getCustomer')
                     ->leftJoin('grup_tujuan as gt', 'gt.id', 's.id_grup_tujuan')
-                    ->where(['is_tagihan' => 'N', 's.is_aktif' => 'Y'])
+                    ->where(
+                        ['is_tagihan' => 'N',
+                         's.is_aktif' => 'Y',
+                        ])
                     ->groupBy('s.id_supplier')
                     ->get();
 
@@ -281,10 +284,11 @@ class TagihanRekananController extends Controller
         $supplier = Sewa::from('sewa as s')
                     ->leftJoin('supplier as sup', 'sup.id', '=', 's.id_supplier')
                     ->where('s.is_aktif', 'Y')
+                    ->where('s.id_supplier',231)
                     ->whereNotNull('s.id_supplier')
                     ->groupBy('s.id_supplier')
                     ->get();
-
+        // dd($supplier);
         $tagihan = TagihanRekanan::where('is_aktif', 'Y')->find($id);
 
         return view('pages.finance.tagihan_rekanan.edit',[
@@ -466,7 +470,7 @@ class TagihanRekananController extends Controller
                             LEFT JOIN tagihan_rekanan_detail as trd on trd.id_sewa = s.id_sewa and trd.is_aktif is null
                             LEFT JOIN customer as c on c.id = s.id_customer
                             LEFT JOIN grup_tujuan as gt on gt.id = s.id_grup_tujuan
-                            WHERE s.id_supplier = $id_supplier AND s.is_tagihan <> 'Y' 
+                            WHERE s.id_supplier = $id_supplier AND s.is_tagihan <> 'Y' and s.is_aktif = 'Y' 
                             -- AND s.jenis_tujuan = 'LTL' 
                             ");
 

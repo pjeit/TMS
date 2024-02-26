@@ -26,8 +26,8 @@ class CetakUangJalanController extends Controller
             ->leftJoin('grup_tujuan AS gt', 's.id_grup_tujuan', '=', 'gt.id')
             ->leftJoin('karyawan AS k', 's.id_karyawan', '=', 'k.id')
             ->where('uj.is_aktif', '=', "Y")
-            // ->whereNull('s.id_supplier')
-
+            ->whereNull('s.id_supplier')
+            ->where('s.status','PROSES DOORING')
             ->get();
         // dd($data_uang_jalan);
         $title = 'Data akan dihapus!';
