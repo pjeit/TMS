@@ -99,6 +99,7 @@ class KaryawanHutangController extends Controller
                 // dd($data);
                 $tanggal=date_create_from_format('d-M-Y', $data['tanggal']);
                 $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['karyawan_id'])->first();
+                $karyawan = Karyawan::where('is_aktif', 'Y')->where('id', $data['karyawan_id'])->first();
 
                 if ($data['jenis']=='BAYAR') {
                     if((float)str_replace(',', '', $data['nominal'])>(float)str_replace(',', '', $data['total_hutang']))
@@ -145,7 +146,7 @@ class KaryawanHutangController extends Controller
                                         0, //kredit
                                         CoaHelper::DataCoa(1151), //kode coa piutang karyawan
                                         'hutang_karyawan',
-                                        $data['catatan'], //keterangan_transaksi
+                                        'Pembayaran Hutang Karyawan:'.'['.$karyawan->nama_panggilan.'] - '.$data['catatan'], //keterangan_transaksi
                                         $kht_b->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at
@@ -209,7 +210,7 @@ class KaryawanHutangController extends Controller
                                         $data['jenis']=='HUTANG'?(float)str_replace(',', '', $data['nominal']):0, //kredit
                                         CoaHelper::DataCoa(1151), //kode coa piutang karyawan
                                         'hutang_karyawan',
-                                        $data['catatan'], //keterangan_transaksi
+                                        'Kasbon Karyawan :'.'['.$karyawan->nama_panggilan.'] - '.$data['catatan'], //keterangan_transaksi
                                         $kht->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at
@@ -370,6 +371,7 @@ class KaryawanHutangController extends Controller
                 // dd($data);
                 $tanggal=date_create_from_format('d-M-Y', $data['tanggal_edit']);
                 $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['karyawan_id_edit'])->first();
+                $karyawan = Karyawan::where('is_aktif', 'Y')->where('id', $data['karyawan_id_edit'])->first();
 
                     $kht_b = KaryawanHutangTransaction::where('is_aktif', 'Y')
                     ->where('id', $data['key'])
@@ -461,7 +463,7 @@ class KaryawanHutangController extends Controller
                                         'debit'=>($data['jenis_edit']=='BAYAR') ? (float)str_replace(',', '', $data['nominal_edit']) : 0,
                                         'kredit'=>($data['jenis_edit']=='HUTANG') ? (float)str_replace(',', '', $data['nominal_edit']) : 0,
                                         'kode_coa' => ($data['jenis_edit'] == 'BAYAR') ? 1121 : (($data['jenis_edit'] == 'HUTANG') ? 1122 : 1132), // masih hardcode
-                                        'keterangan_transaksi'=> ($data['jenis_edit'] == 'BAYAR') ? 'BAYAR HUTANG'."-".$data['catatan_edit'] : (($data['jenis_edit'] == 'HUTANG') ? 'TAMBAH HUTANG'."-".$data['catatan_edit']  : $data['catatan_edit']), // masih hardcode
+                                        'keterangan_transaksi'=> ($data['jenis_edit'] == 'BAYAR') ? 'Pembayaran Hutang Karyawan:'.'['.$karyawan->nama_panggilan.'] - '.$data['catatan_edit'] : (($data['jenis_edit'] == 'HUTANG') ?'Kasbon Karyawan:'.'['.$karyawan->nama_panggilan.'] - '.$data['catatan_edit']  : $data['catatan_edit']), // masih hardcode
                                         'updated_at'=> now(),
                                         'updated_by'=> $user,
                                     )
