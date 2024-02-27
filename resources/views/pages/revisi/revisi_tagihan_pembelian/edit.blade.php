@@ -172,7 +172,7 @@
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <button class="btn dropdown-item openDetail" value="{{ $key }}">
+                                        <button class="btn dropdown-item openDetail" value="{{ $key }}" id_nota_add="{{ $pembelian->id }}">
                                             <span class="fas fa-sticky-note mr-3"></span> Edit
                                         </button>
                                         @if ($key>0)
@@ -220,7 +220,7 @@
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="">No. Nota</label>
                                 {{-- <input type="text" id="modal_no_nota" class="form-control" readonly> --}}
-                                <select name="supplier" class="select2" style="width: 100%" id="modal_select_no_nota">
+                                <select name="select_modal" class="select2" style="width: 100%" id="modal_select_no_nota">
                                 </select>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
@@ -339,6 +339,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var data_tagihan_all = <?=json_encode($data_tagihan_from_supplier)?>;
+        var data_tagihan_udah_bayar = <?=json_encode($data_tagihan_udah_bayar)?>;
+
         // toogle check biaya admin
         $("#BiayaAdminCheck").change(function() {
             if(this.checked) {
@@ -494,10 +496,9 @@
                             <input type="hidden" id="id_nota_${id}" value="${id_nota}" name="data[${id_nota}][id_nota]" class="all_id_nota">
                             <input type="hidden" id="no_nota_${id}" value="${no_nota}" name="data[${id_nota}][no_nota]">
                             <input type="hidden" id="bukti_potong_${id}" name="data[${id_nota}][bukti_potong]" value=${no_bukti_potong}>
-                            <input type="hidden" id="total_tagihan_${id}" value="${normalize(total_tagihan)}" name="data[${id_nota}][total_tagihan]">
+                            <input type="hidden" class="total_tagihan" id="total_tagihan_${id}" value="${normalize(total_tagihan)}" name="data[${id_nota}][total_tagihan]">
                             <input type="hidden" class="pph23" id="pph23_${id}" name="data[${id_nota}][pph]" value="${normalize(total_pph23)}">
                             <input type="hidden" class="biaya_admin" id="biaya_admin_${id}}" value="" name="data[${id_nota}][biaya_admin]">
-
                             <input type="hidden" class="tagihan_dibayarkan" id="tagihan_dibayarkan_${id}" name="data[${id_nota}][tagihan_dibayarkan]" value="${normalize(total_dibayar)}">
 
                             <td colspan="2">${no_nota}</td>
@@ -512,7 +513,7 @@
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <button class="btn dropdown-item openDetail" value="${id}">
+                                        <button class="btn dropdown-item openDetail" value="${id}"  id_nota_add="${id_nota}">
                                             <span class="fas fa-sticky-note mr-3"></span> Edit
                                         </button>
                                         <button type="button" class="btn dropdown-item delete" id="hapus_${id}" value="${id_nota}">
@@ -545,6 +546,7 @@
             $("#save_detail").show();
             $("#save_data_baru").hide();
             var id = this.value;
+            let idNota = $(this).attr('id_nota_add');
             var biaya_admin = !isNaN(parseFloat($('#biaya_admin_'+id).val()))? parseFloat($('#biaya_admin_'+id).val()):0;
 
             var option = $('<option>');
@@ -558,7 +560,7 @@
                 all_id_nota.push($(this).val());
             });
 
-            data_tagihan_all.forEach(function(item, index) {
+            data_tagihan_udah_bayar.forEach(function(item, index) {
                 var option = $('<option>');
                 option.text(item.no_nota + '(' + dateMask(item.tgl_nota) + ')');
                 option.val(item.id);
@@ -568,12 +570,12 @@
                 option.attr('no_nota', item.no_nota); 
                 option.attr('bukti_potong', item.bukti_potong); 
                 option.attr('detail_nota', JSON.stringify(item.get_details)); 
-
-
-                if ( all_id_nota.includes( item.id.toString() ) ) {
-                    option.prop('disabled', true);
-                }
-                if(item.id==id)
+                // if ( all_id_nota.includes( item.id.toString() ) ) {
+                //     option.prop('disabled', true);
+                // }
+                 console.log("item_id : "+item.id);
+                console.log("id nota : "+idNota);
+                if(item.id==idNota)
                 {
                     option.prop('selected', true);
                 }

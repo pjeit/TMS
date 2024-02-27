@@ -167,13 +167,15 @@ class RevisiInvoiceTruckingController extends Controller
         $dataInvoices   = Invoice::where('billing_to', $invoice->billing_to)
         ->whereNull('id_pembayaran')
         ->where('is_aktif', 'Y')->get();
-        
+        $dataInvoicesAll   = Invoice::where('billing_to', $invoice->billing_to)
+        ->where('is_aktif', 'Y')->get();
         return view('pages.revisi.revisi_invoice_trucking.edit_pembayaran',[
             'judul' => "Revisi Pembayaran Invoice Trucking",
             'data' => $invoice,
             'customers' => $customers,
             'kasbank' => $kasbank,
             'dataInvoices' => $dataInvoices,
+            'dataInvoicesAll' => $dataInvoicesAll,
         ]);
     }
 

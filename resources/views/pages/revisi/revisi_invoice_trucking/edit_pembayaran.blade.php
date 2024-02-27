@@ -409,6 +409,8 @@
             // startDate: today,
         }).datepicker("setDate", today);
         var dataInvoices = <?= isset($dataInvoices)? $dataInvoices:NULL; ?> ;
+        var dataInvoicesAll = <?= isset($dataInvoicesAll)? $dataInvoicesAll:NULL; ?> ;
+
         hitungAll();
         // function start(){
         //     var total_dibayar = biaya_admin = total_pph = 0;
@@ -465,7 +467,7 @@
                 all_id_invoice.push($(this).val());
             });
 
-            dataInvoices.forEach(function(item, index) {
+            dataInvoicesAll.forEach(function(item, index) {
                 var option = $('<option>');
                 option.text(item.no_invoice + '(' + dateMask(item.tgl_invoice) + ')');
                 option.val(item.id);

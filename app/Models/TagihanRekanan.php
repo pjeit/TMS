@@ -17,6 +17,8 @@ class TagihanRekanan extends Model
 
     public function getDetails()
     {
-         return $this->hasMany(TagihanRekananDetail::class, 'id_tagihan_rekanan', 'id')->where('is_aktif', 'Y');
+         return $this->hasMany(TagihanRekananDetail::class, 'id_tagihan_rekanan', 'id')
+         ->with('getSewa')
+         ->where('is_aktif', 'Y');
     }
 }

@@ -94,6 +94,9 @@ class RevisiTagihanPembelianController extends Controller
         ->where('is_aktif', 'Y')
         ->whereNull('id_pembayaran')
         ->where('id_supplier', $data->getPembelian[0]->id_supplier)->get();
+        $data_tagihan_udah_bayar = TagihanPembelian::with('getDetails')
+        ->where('is_aktif', 'Y')
+        ->where('id_supplier', $data->getPembelian[0]->id_supplier)->get();
         // dd($data_tagihan_from_supplier);
         return view('pages.revisi.revisi_tagihan_pembelian.edit',[
             'judul' => "Revisi Tagihan Pembelian",
@@ -101,7 +104,7 @@ class RevisiTagihanPembelianController extends Controller
             'supplier' => $supplier,
             'data' => $data,
             'data_tagihan_from_supplier' => $data_tagihan_from_supplier,
-
+            'data_tagihan_udah_bayar' => $data_tagihan_udah_bayar,
         ]);
     }
 
@@ -138,17 +141,19 @@ class RevisiTagihanPembelianController extends Controller
                     foreach ($data['data'] as $key => $value) {
                         $tagihan = TagihanPembelian::where('is_aktif', 'Y')->find($key);
                         // $tagihan->no_nota = $value['no_nota'];
+                        $tagihan->id_pembayaran = $id;
                         $tagihan->pph = $value['pph'];
                         $tagihan->bukti_potong = $value['bukti_potong'];
                         $tagihan->sisa_tagihan =  $tagihan->total_tagihan;
                         // $tagihan->sisa_tagihan -= ($value['total_bayar'] + $value['pph']);
+                        $tagihan->tagihan_dibayarkan = $value['tagihan_dibayarkan'];
                         if($i == 0){
                             $tagihan->sisa_tagihan -= ($value['tagihan_dibayarkan'] + $value['pph']+$biaya_admin);
-                            $tagihan->tagihan_dibayarkan = $value['tagihan_dibayarkan'] - $biaya_admin;
+                            // $tagihan->tagihan_dibayarkan = $value['tagihan_dibayarkan'] - $biaya_admin;
                             $tagihan->biaya_admin = $biaya_admin;
                         }else{
                             $tagihan->sisa_tagihan -= ($value['tagihan_dibayarkan'] + $value['pph']);
-                            $tagihan->tagihan_dibayarkan = $value['tagihan_dibayarkan'];
+                            // $tagihan->tagihan_dibayarkan = $value['tagihan_dibayarkan'];
                         }
                         if($tagihan->sisa_tagihan == 0){
                             $tagihan->status = 'LUNAS';

@@ -103,25 +103,32 @@
                                             @if (!empty($data['tujuan']))
                                                 @foreach ($data['tujuan'] as $key => $item)
                                                     <tr id="row{{$key}}">
-                                                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="margin: auto; display: block;" type="text" name="data[tujuan][{{$key}}][nama_tujuan]" id="nama_tujuan_{{$key}}" value="{{$item->nama_tujuan}}" maxlength="20" class="form-control" readonly>
+                                                        {{-- <td style="padding: 5px; text-align: center; vertical-align: middle;"> --}}
+                                                        <td style="padding: 15px;">
+                                                            {{$item->nama_tujuan}}
+                                                            <input style="margin: auto; display: block;" type="hidden" name="data[tujuan][{{$key}}][nama_tujuan]" id="nama_tujuan_{{$key}}" value="{{$item->nama_tujuan}}" maxlength="20" class="form-control" readonly>
                                                         </td>
-                                                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="margin: auto; display: block;" type="text" name="data[tujuan][{{$key}}][jenis_tujuan]" id="jenis_tujuan_{{$key}}" value="{{$item->jenis_tujuan}}" class="form-control" readonly>
+                                                        <td style="padding: 15px;">
+                                                            {{$item->jenis_tujuan}}
+                                                            <input style="margin: auto; display: block;" type="hidden" name="data[tujuan][{{$key}}][jenis_tujuan]" id="jenis_tujuan_{{$key}}" value="{{$item->jenis_tujuan}}" class="form-control" readonly>
                                                         </td>
-                                                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input type="text" name="data[tujuan][{{$key}}][tarif]" id="tarif_{{$key}}" value="{{ number_format($item->tarif) }}" class="form-control numaja uang tarif" readonly/>
+                                                        <td style="padding: 15px;">
+                                                            {{ number_format($item->tarif) }}
+                                                            <input type="hidden" name="data[tujuan][{{$key}}][tarif]" id="tarif_{{$key}}" value="{{ number_format($item->tarif) }}" class="form-control numaja uang tarif" readonly/>
                                                         </td>
-                                                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="" type="text" name="data[tujuan][{{$key}}][uang_jalan]" id="uang_jalan_{{$key}}" value="{{ number_format($item->uang_jalan) }}" class="form-control numaja uang uangJalan" readonly/>
+                                                        <td style="padding: 15px;">
+                                                            {{ number_format($item->uang_jalan) }}
+                                                            <input style="" type="hidden" name="data[tujuan][{{$key}}][uang_jalan]" id="uang_jalan_{{$key}}" value="{{ number_format($item->uang_jalan) }}" class="form-control numaja uang uangJalan" readonly/>
                                                         </td>
-                                                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="" type="text" name="data[tujuan][{{$key}}][komisi]" id="komisi_{{$key}}" value="{{ number_format($item->komisi) }}" class="form-control numaja uang" readonly/>
+                                                        <td style="padding: 15px;">
+                                                            {{ number_format($item->komisi) }}
+                                                            <input style="" type="hidden" name="data[tujuan][{{$key}}][komisi]" id="komisi_{{$key}}" value="{{ number_format($item->komisi) }}" class="form-control numaja uang" readonly/>
                                                         </td>
-                                                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
-                                                            <input style="" type="text" name="data[tujuan][{{$key}}][catatan]" id="catatan_{{$key}}" value="{{$item->catatan}}" class="form-control" readonly/>
+                                                        <td style="padding: 15px;">
+                                                            {{$item->catatan}}
+                                                            <input style="" type="hidden" name="data[tujuan][{{$key}}][catatan]" id="catatan_{{$key}}" value="{{$item->catatan}}" class="form-control" readonly/>
                                                         </td>
-                                                        <td style="padding: 5px; text-align: center; vertical-align: middle;">
+                                                        <td >
                                                             <button type="button" name="detail" id="detail_{{$key}}" class="btn btn-info detail"><i class="fa fa-list-ul"></i></button>
                                                         </td>  
                                                         <input type="hidden" id="tujuan_id_{{$key}}" value="{{$item->id}}" >

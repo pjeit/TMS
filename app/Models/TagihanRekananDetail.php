@@ -13,7 +13,7 @@ class TagihanRekananDetail extends Model
 
     public function getSewa()
     {
-         return $this->hasOne(Sewa::class, 'id_sewa', 'id_sewa');
+         return $this->hasOne(Sewa::class, 'id_sewa', 'id_sewa')->with('getCustomer');
     }
 
 

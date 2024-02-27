@@ -93,14 +93,20 @@ class TagihanRekananController extends Controller
             return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Harap pilih data dahulu!']);
         }
         $data_tagihan = TagihanRekanan::with('getDetails')->where('is_aktif', 'Y')->whereIn('id', $data['idTagihan'])->get();
+        $data_tagihan_from_supplier = TagihanRekanan::with('getDetails')
+        ->where('is_aktif', 'Y')
+        ->whereNull('id_pembayaran')
+        ->where('id_supplier', $data_tagihan[0]->id_supplier)->get();
         // dd($data_tagihan);
         
         if($data_tagihan){
             return view('pages.finance.tagihan_rekanan.bayar',[
-                'judul' => "Tagihan Rekanan",
+                'judul' => "Tagihan Gabungan",
                 'dataKas' => $dataKas,
                 'supplier' => $supplier,
                 'data_tagihan' => $data_tagihan,
+                'data_tagihan_from_supplier' => $data_tagihan_from_supplier,
+
             ]);
         }else{
             return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap ulangi lagi!']);
