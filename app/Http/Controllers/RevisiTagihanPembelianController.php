@@ -235,7 +235,7 @@ class RevisiTagihanPembelianController extends Controller
                     }
                 }
             }
-            return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'Success', 'msg'  => 'Revisi berhasil!']);
+            return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'Success', 'msg'  => 'Berhasil revisi nota pembelian!']);
         } catch (ValidationException $e) {
             db::rollBack();
             return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Revisi gagal!']);

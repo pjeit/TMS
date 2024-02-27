@@ -252,7 +252,7 @@ class RevisiTagihanRekananController extends Controller
                 return redirect()->route('revisi_tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT : Data pembayaran tidak ditemukan']);
             }
 
-            return redirect()->route('revisi_tagihan_rekanan.index')->with(['status' => 'Success', 'msg'  => 'Revisi berhasil!']);
+            return redirect()->route('revisi_tagihan_rekanan.index')->with(['status' => 'Success', 'msg'  => 'Berhasil revisi nota gabungan!']);
         } catch (ValidationException $e) {
             DB::rollBack();
             return redirect()->route('revisi_tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Revisi gagal!']);
