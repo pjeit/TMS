@@ -168,8 +168,8 @@ class KlaimSupirController extends Controller
                     //                     </a>
                     //                 </div>
                     //             </div>';
-                    //                 // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
-                    //                 // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+                    //                 // <a href=">> " class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+                    //                 // <a href=">> " class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
                     // return $actionBtn;
                     $edit=auth()->user()->can('EDIT_REVISI_KLAIM_SUPIR')?'<a href="/revisi_klaim_supir/pencairan/'.$row->id.'" class="dropdown-item edit">
                                             <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
@@ -183,8 +183,8 @@ class KlaimSupirController extends Controller
                                         '.$edit.'
                                     </div>
                                 </div>';
-                                    // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
-                                    // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+                                    // <a href=">> " class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+                                    // <a href=">> " class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
                     return $actionBtn;
                 })
                 ->rawColumns(['action', 
@@ -956,7 +956,7 @@ class KlaimSupirController extends Controller
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5004), //kode coa
                                     'klaim_supir',
-                                    'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
+                                    'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
                                     $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
                                     now(),//created_at
@@ -1007,7 +1007,7 @@ class KlaimSupirController extends Controller
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                         'klaim_supir',
-                                        'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
+                                        'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at
@@ -1250,7 +1250,7 @@ class KlaimSupirController extends Controller
                                         0, //uang keluar (kredit)
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                         'klaim_supir',
-                                        'Uang kembali tolak Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'].'# Alasan revisi tolak: '.$data['alasan_tolak'], //keterangan_transaksi, //keterangan_transaksi
+                                        'Uang kembali tolak Klaim Supir '.$klaim_supir_riwayat->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'].'>>  Alasan revisi tolak: '.$data['alasan_tolak'], //keterangan_transaksi, //keterangan_transaksi
                                         $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at
@@ -1368,7 +1368,7 @@ class KlaimSupirController extends Controller
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                     'klaim_supir',
-                                    'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
+                                    'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
                                     $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
                                     now(),//created_at
@@ -1419,7 +1419,7 @@ class KlaimSupirController extends Controller
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                         'klaim_supir',
-                                        'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' #'.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
+                                        'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at

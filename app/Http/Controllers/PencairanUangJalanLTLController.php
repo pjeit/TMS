@@ -150,7 +150,7 @@ class PencairanUangJalanLTLController extends Controller
                                     $diterima, //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5002), //kode coa uang jalan
                                     'uang_jalan',
-                                    'UJ LTL: #'.$sewa->no_polisi. ' #'.$sewa->nama_driver . ' ' . $data['tujuan'], //keterangan_transaksi
+                                    'UJ LTL: >> '.$sewa->no_polisi. ' >> '.$sewa->nama_driver . ' ' . $data['tujuan'], //keterangan_transaksi
                                     $ujr->id, //keterangan_kode_transaksi
                                     $user, //created_by
                                     now(), //created_at

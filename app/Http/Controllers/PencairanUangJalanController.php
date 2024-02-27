@@ -118,12 +118,12 @@ class PencairanUangJalanController extends Controller
             $ujr->is_aktif = 'Y';
             if($ujr->save())
             {
-                $tl = isset($data['teluk_lamong'])? ($data['teluk_lamong'] != 0? ' #TELUK LAMONG:'.(isset($data['teluk_lamong'])? (float)str_replace(',', '', $data['teluk_lamong']):0):''):""; 
-                $pothut = isset($data['potong_hutang'])? ' #POTONG HUTANG: '.(float)str_replace(',', '', $data['potong_hutang']) : ''; 
+                $tl = isset($data['teluk_lamong'])? ($data['teluk_lamong'] != 0? ' >> TELUK LAMONG:'.(isset($data['teluk_lamong'])? (float)str_replace(',', '', $data['teluk_lamong']):0):''):""; 
+                $pothut = isset($data['potong_hutang'])? ' >> POTONG HUTANG: '.(float)str_replace(',', '', $data['potong_hutang']) : ''; 
                 $refrensi_keterangan_string = 
-                    ' #UANG JALAN: ' . (float)str_replace(',', '', $data['uang_jalan']) . 
+                    ' >> UANG JALAN: ' . (float)str_replace(',', '', $data['uang_jalan']) . 
                     $tl. $pothut.  
-                    ' #TOTAL DITERIMA: ' .(float)str_replace(',', '', $data['total_diterima']);
+                    ' >> TOTAL DITERIMA: ' .(float)str_replace(',', '', $data['total_diterima']);
 
                 $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
                 if(isset($kh)&&isset($data['potong_hutang'])){
@@ -142,7 +142,7 @@ class PencairanUangJalanController extends Controller
                     $kht->debit = 0;
                     $kht->kredit = ($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0;
                     $kht->kas_bank_id = $data['pembayaran'];
-                    $kht->catatan = $data['catatan'] . ' '. $refrensi_keterangan_string;
+                    $kht->catatan = 'Pencairan Uang jalan Potong hutang : '.$data['no_sewa'].' >> '.$data['kendaraan'].'('.$data['driver'].')'.' >> '.$data['customer'].' >> '.$data['tujuan'].' >> '.$data['catatan'] . ' '. $refrensi_keterangan_string;
                     $kht->created_by = $user;
                     $kht->created_at = now();
                     $kht->is_aktif = 'Y';
@@ -153,7 +153,7 @@ class PencairanUangJalanController extends Controller
                         
                         if (isset($data['teluk_lamong'])&&(float)str_replace(',', '', $data['teluk_lamong'])>0) {
 
-                            $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
+                            $keterangan_string = 'UANG KELUAR >> PEMBAYARAN UANG JALAN + TELUK LAMONG';
                             // $SOP = new SewaOperasional();
                             // $SOP->id_sewa = $data['id_sewa_defaulth']; 
                             // $SOP->deskripsi = 'TL';
@@ -171,9 +171,9 @@ class PencairanUangJalanController extends Controller
                             // $SOP->save();
                             
                         } else {
-                            $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN';
+                            $keterangan_string = 'UANG KELUAR >> PEMBAYARAN UANG JALAN';
                         }
-                        $catatan = isset($data['catatan'])? ' #'.$data['catatan']:' ';
+                        $catatan = isset($data['catatan'])? ' >> '.$data['catatan']:' ';
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                             array(
                                 $data['pembayaran'],// id kas_bank dr form
@@ -182,7 +182,7 @@ class PencairanUangJalanController extends Controller
                                 (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                 CoaHelper::DataCoa(5002), //kode coa uang jalan
                                 'uang_jalan',
-                                $keterangan_string.' #'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan']. $catatan .$refrensi_keterangan_string, //keterangan_transaksi
+                                $keterangan_string.' >> '.$data['no_sewa'].' >> '.$data['kendaraan'].'('.$data['driver'].')'.' >> '.$data['customer'].' >> '.$data['tujuan']. $catatan .$refrensi_keterangan_string, //keterangan_transaksi
                                 $ujr->id,//keterangan_kode_transaksi
                                 $user,//created_by
                                 now(),//created_at
@@ -197,7 +197,7 @@ class PencairanUangJalanController extends Controller
                 {
                     if (isset($data['teluk_lamong'])&&(float)str_replace(',', '', $data['teluk_lamong'])>0) {
                         // $nominal =(float)str_replace(',', '', $data['total_diterima'])+(float)str_replace(',', '', $data['teluk_lamong']);
-                        $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN + TELUK LAMONG';
+                        $keterangan_string = 'UANG KELUAR >> PEMBAYARAN UANG JALAN + TELUK LAMONG';
                         // $SOP = new SewaOperasional();
                         // $SOP->id_sewa = $data['id_sewa_defaulth']; 
                         // $SOP->deskripsi = 'TL';
@@ -216,7 +216,7 @@ class PencairanUangJalanController extends Controller
                         
                     } else {
                         // $nominal =(float)str_replace(',', '', $data['total_diterima']);
-                        $keterangan_string = 'UANG KELUAR #PEMBAYARAN UANG JALAN';
+                        $keterangan_string = 'UANG KELUAR >> PEMBAYARAN UANG JALAN';
                     }
 
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -227,7 +227,7 @@ class PencairanUangJalanController extends Controller
                                 (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                 CoaHelper::DataCoa(5002), //kode coa uang jalan
                                 'uang_jalan',
-                                $keterangan_string.' #'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan'].' #'.$data['catatan'].$refrensi_keterangan_string, //keterangan_transaksi
+                                $keterangan_string.' >> '.$data['no_sewa'].' >> '.$data['kendaraan'].'('.$data['driver'].')'.' >> '.$data['customer'].' >> '.$data['tujuan'].' >> '.$data['catatan'].$refrensi_keterangan_string, //keterangan_transaksi
                                 $ujr->id,//keterangan_kode_transaksi
                                 $user,//created_by
                                 now(),//created_at

@@ -177,8 +177,8 @@ class PencairanKomisiCustomerController extends Controller
                         CoaHelper::DataCoaBank($data['pembayaran']), //kode coa dari bank mana (parameter id bank)
                         'komisi_customer',
                         'KOMISI CUSTOMER '.$data['valueCustomer'].
-                        '# RINCIAN :'.$hasil_tampungan_string.
-                        '# TOTAL KOMISI :Rp. '.$data['total_komisi_customer'],
+                        '>>  RINCIAN :'.$hasil_tampungan_string.
+                        '>>  TOTAL KOMISI :Rp. '.$data['total_komisi_customer'],
                         $data['customer'],// nyimpen id customer buat di sewa kalo butuh di konekin ke dump
                         $user,//created_by
                         now(),//created_at

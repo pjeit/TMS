@@ -283,7 +283,7 @@ class DalamPerjalananController extends Controller
             foreach($dataOpreasionalJO as $opersional)
             {
                 foreach ($array_inbound_parent as $key=> $dataInbound) {
-                    # code...
+                    
                     if($opersional->deskripsi == $dataInbound['deskripsi'] && 
                     $opersional->total_dicairkan == $dataInbound['biaya'] &&
                     $opersional->id_jo ==  $dataInbound['id_jo']
@@ -416,7 +416,7 @@ class DalamPerjalananController extends Controller
         foreach($dataOpreasional as $opersional)
         {
             foreach ($array_outbond as $key=> $dataOutbond) {
-                # code...
+                
                 if($opersional->deskripsi == $dataOutbond['deskripsi'] && $opersional->total_operasional == $dataOutbond['biaya'] )
                 {
                     //hapus array kalau datanya sama 
@@ -428,7 +428,7 @@ class DalamPerjalananController extends Controller
         foreach($dataOpreasional as $opersional)
         {
             foreach ($array_inbound as $key=> $dataInbound) {
-                # code...
+               
                 if($opersional->deskripsi == $dataInbound['deskripsi'] && $opersional->total_operasional == $dataInbound['biaya'] )
                 {
                     //hapus array kalau datanya sama 
@@ -530,7 +530,7 @@ class DalamPerjalananController extends Controller
                         $SOP->is_aktif = 'Y';
                         $SOP->save();
                     }
-                    # code...
+                    
                 }
             }
             //ini kalo ada data di db
@@ -596,7 +596,7 @@ class DalamPerjalananController extends Controller
                                 'updated_by' => $user,
                             ]); 
                     }
-                    # code...
+                 
                 }
             }
             //ini kalo dicentang data yang ambil dari db tujuan biaya/ jodetail biaya yang S/D/T
@@ -624,7 +624,7 @@ class DalamPerjalananController extends Controller
                         $SOP->is_aktif = 'Y';
                         $SOP->save();
                     }
-                    # code...
+                  
                 }
             }
             //ini kalo dicentang dan nambah data baru yang user ngetik sendiri
@@ -651,7 +651,7 @@ class DalamPerjalananController extends Controller
                         $SOP->is_aktif = 'Y';
                         $SOP->save();
                     }
-                    # code...
+                   
                 }
             }
 
@@ -788,7 +788,7 @@ class DalamPerjalananController extends Controller
                                 $kasBankTransaction->debit = $uj_kembali; // debit uang masuk
                                 $kasBankTransaction->kredit = 0;
                                 $kasBankTransaction->jenis = 'uang_jalan';
-                                $kasBankTransaction->keterangan_transaksi = '(BATAL MUAT) UANG JALAN KEMBALI - '. '['.$data['no_sewa'] .']' . $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver']. $data['customer'].' #' . '('.$data['tujuan'].')' ;
+                                $kasBankTransaction->keterangan_transaksi = '(BATAL MUAT) UANG JALAN KEMBALI - '. '['.$data['no_sewa'] .']' . $data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver']. $data['customer'].' >> ' . '('.$data['tujuan'].')' ;
                                 $kasBankTransaction->kode_coa =  CoaHelper::DataCoa(5002); // kode coa uang jalan
                                 $kasBankTransaction->keterangan_kode_transaksi = $riwayat_uang_jalan->id;
                                 $kasBankTransaction->created_by = $user;
@@ -832,7 +832,7 @@ class DalamPerjalananController extends Controller
                                 $kht->debit = $uj_kembali;
                                 $kht->kredit = 0;
                                 $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
-                                $kht->catatan = 'PENGEMBALIAN UANG JALAN SBG HUTANG - '. '['.$data['no_sewa'] .']'. $data['alasan_cancel'];
+                                $kht->catatan = 'PENGEMBALIAN UANG JALAN SBG HUTANG - '. '['.$data['no_sewa'] .']' . $data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver']. $data['customer'].' >> ' . '('.$data['tujuan'].')';
                                 $kht->created_by = $user;
                                 $kht->created_at = now();
                                 $kht->is_aktif = 'Y';
@@ -1430,7 +1430,7 @@ class DalamPerjalananController extends Controller
                                     $kasBankTransaction->debit = $uj_kembali; // debit uang masuk
                                     $kasBankTransaction->kredit = 0;
                                     $kasBankTransaction->jenis = 'uang_jalan';
-                                    $kasBankTransaction->keterangan_transaksi = '(CANCEL) UANG JALAN KEMBALI - '. '['.$data['no_sewa'] .']'.'-'.$data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver'].' #' . $data['customer'].' #' . '('.$data['tujuan'].')' ;
+                                    $kasBankTransaction->keterangan_transaksi = '(CANCEL) UANG JALAN KEMBALI - '. '['.$data['no_sewa'] .']'.'-'.$data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver'].' >> ' . $data['customer'].' >> ' . '('.$data['tujuan'].')' ;
                                     $kasBankTransaction->kode_coa =  CoaHelper::DataCoa(5002); // masih hardcode
                                     $kasBankTransaction->keterangan_kode_transaksi = $riwayat_uang_jalan->id;
                                     $kasBankTransaction->created_by = $user;
@@ -1477,7 +1477,7 @@ class DalamPerjalananController extends Controller
                                             // $kht->debit = $riwayat_uang_jalan->potong_hutang; // ga jadi potong hutang dr uj riwayat
                                             // $kht->kredit = 0;
                                             // $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
-                                            // $kht->catatan = 'CANCEL PERJALANAN - Batal pemotongan hutang uang jalan - ' . $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver'].' #' . $data['customer'].' #' . '('.$data['tujuan'].')';
+                                            // $kht->catatan = 'CANCEL PERJALANAN - Batal pemotongan hutang uang jalan - ' . $data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver'].' >> ' . $data['customer'].' >> ' . '('.$data['tujuan'].')';
                                             // $kht->created_by = $user;
                                             // $kht->created_at = now();
                                             // $kht->is_aktif = 'Y';
@@ -1535,7 +1535,7 @@ class DalamPerjalananController extends Controller
                                     $kht->debit = $uj_kembali; // HUTANG BARU nah ini 450k nya jadi hutang baru 50k nya gajadi,nanti kalau mau cairin lagi ya 500k potong
                                     $kht->kredit = 0;
                                     $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
-                                    $kht->catatan = 'PENGEMBALIAN UANG JALAN SBG HUTANG - ' .'['.$data['no_sewa'] .']'.'-'. $data['alasan_cancel'] . ' #' . $data['kendaraan'] . ' #' . $data['driver'].' #' . $data['customer'].' #' . '('.$data['tujuan'].')';
+                                    $kht->catatan = 'PENGEMBALIAN UANG JALAN SBG HUTANG - ' .'['.$data['no_sewa'] .']'.'-'. $data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver'].' >> ' . $data['customer'].' >> ' . '('.$data['tujuan'].')';
                                     $kht->created_by = $user;
                                     $kht->created_at = now();
                                     $kht->is_aktif = 'Y';
@@ -1662,7 +1662,7 @@ class DalamPerjalananController extends Controller
             //     $kht->debit = $ujr->potong_hutang; // ga jadi potong hutang dr uj riwayat
             //     $kht->kredit = 0;
             //     $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
-            //     $kht->catatan = 'CANCEL UANG JALAN - Kembalikan status Uang Jalan - ' . ' #' . $data['kendaraan'] . ' #' . $data['driver'].' #' . $data['customer'].' #' . '('.$data['tujuan'].')';
+            //     $kht->catatan = 'CANCEL UANG JALAN - Kembalikan status Uang Jalan - ' . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver'].' >> ' . $data['customer'].' >> ' . '('.$data['tujuan'].')';
             //     $kht->created_by = $user;
             //     $kht->created_at = now();
             //     $kht->is_aktif = 'Y';
@@ -1888,7 +1888,7 @@ class DalamPerjalananController extends Controller
                                 0, //uang keluar (kredit)
                                 CoaHelper::DataCoa(5002), //kode coa
                                 'uang_jalan',
-                                'Pengembalian uang jalan ubah supir '.'['.$sewa->no_sewa.']'.' #'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
+                                'Pengembalian uang jalan ubah supir '.'['.$sewa->no_sewa.']'.' >> '.$sewa->no_polisi.'('.$sewa->nama_driver.')'.' >> '.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
                                 $ujr->id,//keterangan_kode_transaksi
                                 $user,//created_by
                                 now(),//created_at
@@ -1998,8 +1998,8 @@ class DalamPerjalananController extends Controller
                             floatval(str_replace(',', '', $data['total_diterima'])), //uang keluar (kredit)
                             CoaHelper::DataCoa(5002), //kode coa
                             'uang_jalan',
-                            'Pencairan Uang jalan'.' #'.'['.$sewa->no_sewa.']'.$sewa->no_polisi.' supir -> '.' #'.$data['no_polisi'].'('.$data['driver_nama'].')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
-                            // 'Pencairan Uang jalan dari supir'.' #'.'['.$sewa->no_sewa.']'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.'ke supir -> '.' #'.$data['no_polisi'].'('.$data['driver_nama'].')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
+                            'Pencairan Uang jalan'.' >> '.'['.$sewa->no_sewa.']'.$sewa->no_polisi.' supir -> '.' >> '.$data['no_polisi'].'('.$data['driver_nama'].')'.' >> '.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
+                            // 'Pencairan Uang jalan dari supir'.' >> '.'['.$sewa->no_sewa.']'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.'ke supir -> '.' >> '.$data['no_polisi'].'('.$data['driver_nama'].')'.' >> '.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
                             $ujr->id,//keterangan_kode_transaksi
                             $user,//created_by
                             now(),//created_at
@@ -2027,7 +2027,7 @@ class DalamPerjalananController extends Controller
                                 0, //uang keluar (kredit)
                                 CoaHelper::DataCoa(5002), //kode coa
                                 'uang_jalan',
-                                'Pengembalian uang jalan ubah supir '.'['.$sewa->no_sewa.']'.' #'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
+                                'Pengembalian uang jalan ubah supir '.'['.$sewa->no_sewa.']'.' >> '.$sewa->no_polisi.'('.$sewa->nama_driver.')'.' >> '.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
                                 $ujr->id,//keterangan_kode_transaksi
                                 $user,//created_by
                                 now(),//created_at
@@ -2110,7 +2110,7 @@ class DalamPerjalananController extends Controller
                                     floatval(str_replace(',', '', $data['total_diterima'])), //uang keluar (kredit)
                                     CoaHelper::DataCoa(5002), //kode coa
                                     'uang_jalan',
-                                    'Pencairan Uang jalan dari supir'.' #'.'['.$sewa->no_sewa.']'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.'ke supir -> '.' #'.$data['no_polisi'].'('.$data['driver_nama'].')'.' #'.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
+                                    'Pencairan Uang jalan dari supir'.' >> '.'['.$sewa->no_sewa.']'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.'ke supir -> '.' >> '.$data['no_polisi'].'('.$data['driver_nama'].')'.' >> '.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'], //keterangan_transaksi
                                     $ujr->id,//keterangan_kode_transaksi
                                     $user,//created_by
                                     date('Y-m-d H:i:s', $new_time),//created_at

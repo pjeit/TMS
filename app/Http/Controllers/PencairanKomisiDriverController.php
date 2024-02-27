@@ -187,9 +187,9 @@ class PencairanKomisiDriverController extends Controller
                         CoaHelper::DataCoaBank($data['pembayaran']), //kode coa dari bank mana (parameter id bank)
                         'komisi_driver',
                         'KOMISI DRIVER '.$data['valueDriver'].
-                        '# RINCIAN :'.$hasil_tampungan_string.
-                        '# TOTAL KOMISI :Rp. '.$data['total_komisi_driver'].
-                        '# TOTAL PENCAIRAN KOMISI :Rp. '.$data['total_pencairan']
+                        '>>  RINCIAN :'.$hasil_tampungan_string.
+                        '>>  TOTAL KOMISI :Rp. '.$data['total_komisi_driver'].
+                        '>>  TOTAL PENCAIRAN KOMISI :Rp. '.$data['total_pencairan']
                         ,
                         $data['karyawan'],// nyimpen id karyawan buat di sewa
                         $user,//created_by

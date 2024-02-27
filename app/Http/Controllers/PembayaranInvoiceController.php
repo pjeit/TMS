@@ -146,7 +146,7 @@ class PembayaranInvoiceController extends Controller
                     foreach ($data['detail'] as $key => $value) {
                         $invoice = Invoice::where('is_aktif', 'Y')->findOrFail($key);
 
-                        $keterangan_transaksi .= ' #'.$invoice->no_invoice;
+                        $keterangan_transaksi .= ' >> '.$invoice->no_invoice;
                         $id_invoices .= $invoice->id . ','; 
 
                         if($invoice){
@@ -1056,7 +1056,7 @@ class PembayaranInvoiceController extends Controller
     //                                 $sewa_oprs->created_at = now();
     //                                 $sewa_oprs->save();
                                     
-    //                                 // $keterangan = $addcost->deskripsi . ' : ' . $value['nama_tujuan'] . ' #' . $value['driver'];
+    //                                 // $keterangan = $addcost->deskripsi . ' : ' . $value['nama_tujuan'] . ' >> ' . $value['driver'];
     //                                 // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
     //                                 //     array(
     //                                 //         $data['bank'], // id kas_bank dr form
@@ -1251,7 +1251,7 @@ class PembayaranInvoiceController extends Controller
     //                                         $sewa_oprs->created_at = now();
     //                                         $sewa_oprs->save();
                                             
-    //                                         // $keterangan = $addcost->deskripsi . ' : ' . $value['nama_tujuan'] . ' #' . $value['driver'];
+    //                                         // $keterangan = $addcost->deskripsi . ' : ' . $value['nama_tujuan'] . ' >> ' . $value['driver'];
     //                                         // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
     //                                         //     array(
     //                                         //         $data['bank'], // id kas_bank dr form

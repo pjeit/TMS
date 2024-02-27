@@ -264,7 +264,7 @@ class RevisiInvoiceTruckingController extends Controller
                                 }
                                 else
                                 {
-                                    $keterangan_transaksi .= ' #'.$invoice->no_invoice;
+                                    $keterangan_transaksi .= ' >> '.$invoice->no_invoice;
                                     $id_invoices .= $invoice->id . ','; 
                                     $invoice->id_pembayaran = $pembayaran->id;
                                     $invoice->pph = $value['pph23'];

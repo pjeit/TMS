@@ -79,7 +79,7 @@ class PembayaranKarantinaController extends Controller
                         $no_kontainer = ' - No. Kontainer:';
                         $detail = KarantinaDetail::where('is_aktif', 'Y')->where('id_karantina', $key)->get();
                         foreach ($detail as $key => $item) {
-                            $no_kontainer .= ' #'.$item->getJOD->no_kontainer;
+                            $no_kontainer .= ' >> '.$item->getJOD->no_kontainer;
                         }
 
                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -90,7 +90,7 @@ class PembayaranKarantinaController extends Controller
                                 floatval(str_replace(',', '', $value['dicairkan'])), //uang keluar (kredit)
                                 CoaHelper::DataCoa(5003), //kode coa karantina
                                 'karantina',
-                                'No. BL: '.$karantina->getJO->no_bl . ' #Kapal: '.$karantina->getJO->kapal .' #Voyage: '. $karantina->getJO->voyage . $no_kontainer, //keterangan_transaksi
+                                'No. BL: '.$karantina->getJO->no_bl . ' >> Kapal: '.$karantina->getJO->kapal .' >> Voyage: '. $karantina->getJO->voyage . $no_kontainer, //keterangan_transaksi
                                 $karantina->id, //keterangan_kode_transaksi
                                 $user, //created_by
                                 now(), //created_at

@@ -55,7 +55,7 @@ class PembayaranInvoiceKarantinaController extends Controller
         $simpen_id_customer = $data[0]->id_customer;
 
         foreach ($data as  $value) {
-            # code...
+          
             if($simpen_id_customer!=$value->id_customer)
             {
                 $flag_beda_customer = true;
@@ -121,7 +121,7 @@ class PembayaranInvoiceKarantinaController extends Controller
                         $invoice->updated_by = $user;
                         $invoice->updated_at = now();
                         if($invoice->save()){
-                            $no_invoices .= '#'. $value['no_invoice'] .' ';
+                            $no_invoices .= '>> '. $value['no_invoice'] .' ';
                             $id_invoices .= $key.', ';
                         }
                     }
@@ -231,7 +231,7 @@ class PembayaranInvoiceKarantinaController extends Controller
     //                 $invoice->updated_by = $user;
     //                 $invoice->updated_at = now();
     //                 if($invoice->save()){
-    //                     $no_invoices .= '#'. $value['no_invoice'] .' ';
+    //                     $no_invoices .= '>> '. $value['no_invoice'] .' ';
     //                     $id_invoices .= $key.', ';
 
     //                     $pembayaran = new InvoiceKarantinaPembayaran();

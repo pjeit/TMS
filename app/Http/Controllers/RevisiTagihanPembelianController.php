@@ -167,12 +167,12 @@ class RevisiTagihanPembelianController extends Controller
                         $tagihan->updated_at = now();
                         $tagihan->save();
     
-                        $keterangan .= ' #NOTA: '. $value['no_nota'] . ' #TOTAL BAYAR: ' . $tagihan->tagihan_dibayarkan;
+                        $keterangan .= ' >> NOTA: '. $value['no_nota'] . ' >> TOTAL BAYAR: ' . $tagihan->tagihan_dibayarkan;
                         if($value['pph'] != 0){
-                            $keterangan .= ' #PPh23: '. $value['pph'];
+                            $keterangan .= ' >> PPh23: '. $value['pph'];
                         }
                         if($i == 0 && $value['biaya_admin'] != 0){
-                            $keterangan .= ' #BIAYA ADMIN: '. $value['biaya_admin'];
+                            $keterangan .= ' >> BIAYA ADMIN: '. $value['biaya_admin'];
                         }
                         $i++;
                     }

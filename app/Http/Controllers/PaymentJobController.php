@@ -236,12 +236,12 @@ class PaymentJobController extends Controller
                             $data['total_sblm_dooring']+$dataJaminan->nominal, //uang keluar (kredit)
                             CoaHelper::DataCoa(5003), //kode coa pelayaran
                             'biaya_pelayaran',
-                            'UANG KELUAR # BIAYA PELAYARAN + UANG JAMINAN # '.$pembayaran_jo->no_jo.
-                            '# PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.
-                            '# PELABUHAN BONGKAR : '.$pembayaran_jo->pelabuhan_bongkar.
-                            '# BIAYA SEBELUM DOORING : '.number_format( $data['total_sblm_dooring']).
-                            '# BIAYA JAMINAN : '.number_format( $dataJaminan->nominal).
-                            '# TOTAL BIAYA : '.number_format( $data['total_biaya']), //keterangan_transaksi
+                            'UANG KELUAR >>  BIAYA PELAYARAN + UANG JAMINAN >>  '.$pembayaran_jo->no_jo.
+                            '>>  PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.
+                            '>>  PELABUHAN BONGKAR : '.$pembayaran_jo->pelabuhan_bongkar.
+                            '>>  BIAYA SEBELUM DOORING : '.number_format( $data['total_sblm_dooring']).
+                            '>>  BIAYA JAMINAN : '.number_format( $dataJaminan->nominal).
+                            '>>  TOTAL BIAYA : '.number_format( $data['total_biaya']), //keterangan_transaksi
                             $jo_riwayat_bayar->id,//keterangan_kode_transaksi
                             $user,//created_by
                             now(),//created_at
@@ -270,12 +270,12 @@ class PaymentJobController extends Controller
                         $data['total_sblm_dooring'], //uang keluar (kredit)
                         CoaHelper::DataCoa(5003), //kode coa pelayaran
                         'biaya_pelayaran',
-                        'UANG KELUAR # BIAYA PELAYARAN # '.$pembayaran_jo->no_jo.
-                        '# PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.
-                        '# PELABUHAN BONGKAR : '.$pembayaran_jo->pelabuhan_bongkar.
-                        '# BIAYA SEBELUM DOORING : '.number_format( $data['total_sblm_dooring']).
-                        // '# BIAYA JAMINAN : 0'.
-                        '# TOTAL BIAYA : '.number_format( $data['total_biaya']), //keterangan_transaksi
+                        'UANG KELUAR >>  BIAYA PELAYARAN >>  '.$pembayaran_jo->no_jo.
+                        '>>  PELABUHAN MUAT : '.$pembayaran_jo->pelabuhan_muat.
+                        '>>  PELABUHAN BONGKAR : '.$pembayaran_jo->pelabuhan_bongkar.
+                        '>>  BIAYA SEBELUM DOORING : '.number_format( $data['total_sblm_dooring']).
+                        // '>>  BIAYA JAMINAN : 0'.
+                        '>>  TOTAL BIAYA : '.number_format( $data['total_biaya']), //keterangan_transaksi
                         $jo_riwayat_bayar->id,//keterangan_kode_transaksi
                         $user,//created_by
                         now(),//created_at

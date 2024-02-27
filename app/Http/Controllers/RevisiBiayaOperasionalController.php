@@ -164,13 +164,13 @@ class RevisiBiayaOperasionalController extends Controller
                                     $oprs->updated_at = now(); 
                                     $oprs->save();
                                     if (array_key_exists($value['tujuan'], $storeData)) {
-                                        $storeData[$value['tujuan']]['driver'] .= ' #'. $value['driver_nopol'];
+                                        $storeData[$value['tujuan']]['driver'] .= ' >> '. $value['driver_nopol'];
                                         // $storeData[$value['tujuan']]['id_opr'][] = $keyOprs;
                                         $storeData[$value['tujuan']]['index'] += 1;
                                         // CONTOHNYA:
                                         // array:1 [▼
                                         // "**PT. Cargil Indonesia - PIER  20 (Perak)" => array:5 [▼
-                                        //         "driver" => "#L 8902 UUC (BASMAN) #L 9813 UC (HASAN) #L 8901 UUC (TAROM)"
+                                        //         "driver" => ">> L 8902 UUC (BASMAN) >> L 9813 UC (HASAN) >> L 8901 UUC (TAROM)"
                                         //         "id_opr" => array:3 [▼
                                         //         0 => 9567
                                         //         1 => 9568
@@ -182,7 +182,7 @@ class RevisiBiayaOperasionalController extends Controller
                                     } else {
                                         // buat insialiasi awal misal tujuan 1 driver 1
                                         $storeData[$value['tujuan']] = [
-                                            'driver' => '#'. $value['driver_nopol'],
+                                            'driver' => '>> '. $value['driver_nopol'],
                                             // 'id_opr' => [$keyOprs],
                                             'index' => $i,
                                         ];
@@ -354,13 +354,13 @@ class RevisiBiayaOperasionalController extends Controller
                                     $total_dicairkan += $oprs->total_dicairkan;
                                     $total_operasional += $oprs->total_operasional;
                                     if (array_key_exists($value['tujuan'], $storeData)) {
-                                        $storeData[$value['tujuan']]['driver'] .= ' #'. $value['driver_nopol'];
+                                        $storeData[$value['tujuan']]['driver'] .= ' >> '. $value['driver_nopol'];
                                         // $storeData[$value['tujuan']]['id_opr'][] = $keyOprs;
                                         $storeData[$value['tujuan']]['index'] += 1;
                                         // CONTOHNYA:
                                         // array:1 [▼
                                         // "**PT. Cargil Indonesia - PIER  20 (Perak)" => array:5 [▼
-                                        //         "driver" => "#L 8902 UUC (BASMAN) #L 9813 UC (HASAN) #L 8901 UUC (TAROM)"
+                                        //         "driver" => ">> L 8902 UUC (BASMAN) >> L 9813 UC (HASAN) >> L 8901 UUC (TAROM)"
                                         //         "id_opr" => array:3 [▼
                                         //         0 => 9567
                                         //         1 => 9568
@@ -372,7 +372,7 @@ class RevisiBiayaOperasionalController extends Controller
                                     } else {
                                         // buat insialiasi awal misal tujuan 1 driver 1
                                         $storeData[$value['tujuan']] = [
-                                            'driver' => '#'. $value['driver_nopol'],
+                                            'driver' => '>> '. $value['driver_nopol'],
                                             // 'id_opr' => [$keyOprs],
                                             'index' => $i,
                                         ];

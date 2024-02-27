@@ -234,9 +234,9 @@ class RevisiTLController extends Controller
                 $kht->refrensi_id = $uang_jalan_riwayat->id;
                 $kht->refrensi_keterangan = "UANG JALAN RIWAYAT";
                 $kht->catatan = 
-                $data['catatan'] . ' #totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
-                ' #potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
-                ' #totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);
+                $data['catatan'] . ' >> totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
+                ' >> potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
+                ' >> totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);
                 $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                 $kht->tanggal = now();
                 $kht->debit = 0;
@@ -275,7 +275,7 @@ class RevisiTLController extends Controller
                         (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
                         CoaHelper::DataCoa(5002), //kode coa
                         'teluk_lamong',
-                        'PENAMBAHAN TELUK LAMONG:'.$catatan.' #'.$data['no_sewa'].' #'.$data['kendaraan'].' #'.$data['driver'].' #'.$data['customer'].' #'.$data['tujuan'], //keterangan_transaksi
+                        'PENAMBAHAN TELUK LAMONG:'.$catatan.' >> '.$data['no_sewa'].' >> '.$data['kendaraan'].' >> '.$data['driver'].' >> '.$data['customer'].' >> '.$data['tujuan'], //keterangan_transaksi
                         $uang_jalan_riwayat->id,//keterangan_kode_transaksi
                         $user,//created_by
                         now(),//created_at
@@ -351,9 +351,9 @@ class RevisiTLController extends Controller
                 $kht->id_karyawan = $data['id_karyawan'];
                 $kht->refrensi_id = $datauang_jalan_riwayat->id;
                 $kht->refrensi_keterangan = 
-                '#totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
-                ' #potongHutang:0' . 
-                ' #totalTLMasukHutang:'. (($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0);
+                '>> totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
+                ' >> potongHutang:0' . 
+                ' >> totalTLMasukHutang:'. (($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0);
                 $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                 $kht->tanggal = now();
                 $kht->debit = ($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0;
@@ -390,7 +390,7 @@ class RevisiTLController extends Controller
                     0, //uang keluar (kredit) 0 soalnya kan ini uang MASUK, ga ada uang KELUAR
                     CoaHelper::DataCoa(5002), //kode coa
                     'teluk_lamong',
-                    'PENGEMBALIAN TELUK LAMONG'.'#'.$data['no_sewa'].'#'.$data['kendaraan'].'('.$data['driver'].')'.'#'.$data['customer'].'#'.$data['tujuan'].'#'.$data['catatan'], //keterangan_transaksi
+                    'PENGEMBALIAN TELUK LAMONG'.'>> '.$data['no_sewa'].'>> '.$data['kendaraan'].'('.$data['driver'].')'.'>> '.$data['customer'].'>> '.$data['tujuan'].'>> '.$data['catatan'], //keterangan_transaksi
                     $datauang_jalan_riwayat->id,//keterangan_kode_transaksi
                     $user,//created_by
                     now(),//created_at

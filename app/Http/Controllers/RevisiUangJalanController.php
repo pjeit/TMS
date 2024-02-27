@@ -154,9 +154,9 @@ class RevisiUangJalanController extends Controller
                         $kht->id_karyawan = $data['id_karyawan'];
                         $kht->refrensi_id = $old_uang_jalan_riwayat->id;
                         $kht->refrensi_keterangan = 
-                        '#totalUangJalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
-                        ' #potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
-                        ' #totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);
+                        '>> totalUangJalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
+                        ' >> potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
+                        ' >> totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);
                         $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                         $kht->tanggal = $tgl_pencairan;
                         $kht->debit = 0;
@@ -177,7 +177,7 @@ class RevisiUangJalanController extends Controller
                         (float)str_replace(',', '', $data['total_diterima']), //uang keluar (kredit)
                         CoaHelper::DataCoa(5002), //kode coa uang jalan
                         'rev_tambahan_uang_jalan',
-                        'REVISI TAMBAHAN UANG JALAN'.' - '.$data['catatan'].' #'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan'], //keterangan_transaksi
+                        'REVISI TAMBAHAN UANG JALAN'.' - '.$data['catatan'].' >> '.$data['no_sewa'].' >> '.$data['kendaraan'].'('.$data['driver'].')'.' >> '.$data['customer'].' >> '.$data['tujuan'], //keterangan_transaksi
                         $old_uang_jalan_riwayat->id,//keterangan_kode_transaksi
                         $user, //created_by
                         now(), //created_at
@@ -246,7 +246,7 @@ class RevisiUangJalanController extends Controller
                                     0,// kredit 0 soalnya kan ini uang masuk
                                     CoaHelper::DataCoa(5002), //kode coa uang jalan
                                     'uang_jalan',
-                                    'UANG MASUK #PENGEMBALIAN UANG JALAN '.'#'.$data['no_sewa'].' #'.$data['kendaraan'].'('.$data['driver'].')'.' #'.$data['customer'].' #'.$data['tujuan'].' #'.$data['catatan'], //keterangan_transaksi
+                                    'UANG MASUK >> PENGEMBALIAN UANG JALAN '.'>> '.$data['no_sewa'].' >> '.$data['kendaraan'].'('.$data['driver'].')'.' >> '.$data['customer'].' >> '.$data['tujuan'].' >> '.$data['catatan'], //keterangan_transaksi
                                     $old_uang_jalan_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
                                     now(),//created_at

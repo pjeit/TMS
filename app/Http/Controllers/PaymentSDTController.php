@@ -186,7 +186,7 @@ class PaymentSDTController extends Controller
                             $data['total'], // uang keluar (kredit)
                             CoaHelper::DataCoa(5003), //kode coa pelayaran
                             'biaya_sdt',
-                            'Pembayaran S/D/T'.' # BL:'.$data['no_bl'].' # Pengirim:'.$data['pengiriman'].' # Pelayaran:'.$data['pelayaran'].' # No Kontainer:'.'('.implode('-', $data['no_kontainer']).')'.' # Catatan :'.$data['catatan'], // keterangan_transaksi
+                            'Pembayaran S/D/T'.' >>  BL:'.$data['no_bl'].' >>  Pengirim:'.$data['pengiriman'].' >>  Pelayaran:'.$data['pelayaran'].' >>  No Kontainer:'.'('.implode('-', $data['no_kontainer']).')'.' >>  Catatan :'.$data['catatan'], // keterangan_transaksi
                             $jobOrderPembayaranSdt->id,//keterangan_kode_transaksi
                             $user, // created_by
                             now(), // created_at
