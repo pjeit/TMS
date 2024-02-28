@@ -116,7 +116,7 @@ class KaryawanHutangController extends Controller
                     $kht_b = new KaryawanHutangTransaction();
                     $kht_b->id_karyawan = $data['karyawan_id'];
                     $kht_b->refrensi_id = null; // id ga ada soalnya kan bukan dr uj/sewa
-                    $kht_b->refrensi_keterangan = 'BAYAR HUTANG KARYAWAN';
+                    $kht_b->refrensi_keterangan = 'bayar_hutang_karyawan';
                     $kht_b->jenis = 'BAYAR'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                     $kht_b->tanggal =  $tanggal;
                     $kht_b->debit = 0;
@@ -180,7 +180,7 @@ class KaryawanHutangController extends Controller
                     $kht = new KaryawanHutangTransaction();
                     $kht->id_karyawan = $data['karyawan_id'];
                     $kht->refrensi_id = null; // id ga ada soalnya kan bukan dr uj/sewa
-                    $kht->refrensi_keterangan = 'TAMBAH HUTANG KARYAWAN';
+                    $kht->refrensi_keterangan = 'tambah_hutang_karyawan';
                     $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                     $kht->tanggal =  $tanggal;
                     $kht->debit = ($data['nominal']) ? (float)str_replace(',', '', $data['nominal']) : 0; // ARTINYA KAN UANG MASUK KE HUTANG (NAMBAH HUTANG KARYAWAN)

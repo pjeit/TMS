@@ -826,13 +826,14 @@ class DalamPerjalananController extends Controller
                                 $kht = new KaryawanHutangTransaction();
                                 $kht->id_karyawan = $data['id_karyawan'];
                                 $kht->refrensi_id = $sewa->id_sewa;
-                                $kht->refrensi_keterangan = 'BATAL MUAT';
+                                // $kht->refrensi_keterangan = '[BATAL MUAT]-refrensi_nya_id_sewa = '. $sewa->id_sewa;
+                                $kht->refrensi_keterangan = 'batal_muat';
                                 $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                                 $kht->tanggal = date_format($tgl_batal_muat_cancel, 'Y-m-d H:i:s');
                                 $kht->debit = $uj_kembali;
                                 $kht->kredit = 0;
                                 $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
-                                $kht->catatan = 'PENGEMBALIAN UANG JALAN SBG HUTANG - '. '['.$data['no_sewa'] .']' . $data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver']. $data['customer'].' >> ' . '('.$data['tujuan'].')';
+                                $kht->catatan = 'BATAL MUAT >> - '. '['.$data['no_sewa'] .']' . $data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver']. $data['customer'].' >> ' . '('.$data['tujuan'].')';
                                 $kht->created_by = $user;
                                 $kht->created_at = now();
                                 $kht->is_aktif = 'Y';
@@ -876,167 +877,6 @@ class DalamPerjalananController extends Controller
 
     }
 
-    public function cancel($id)
-    {
-        $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
-
-        $dataKas = DB::table('kas_bank')
-                    ->select('*')
-                    ->where('is_aktif', '=', "Y")
-                    ->get();
-        $supplier = DB::table('supplier as s')
-            ->select('s.*')
-            ->where('s.is_aktif', '=', "Y")
-            ->where('s.id', '=', $sewa->id_supplier)
-            ->first();
-        // $dataOperasional = DB::table('sewa_operasional AS so')
-        //                 ->select('so.*')
-        //                 ->where('so.is_aktif', '=', 'Y')
-        //                 ->where(function ($query) use ($sewa) {
-        //                     $query->where('so.id_sewa', '=', $sewa->id_sewa)
-        //                         ->orWhereIn('so.id_pembayaran', function ($subquery) use ($sewa) {
-        //                             $subquery->select('id_pembayaran')
-        //                                 ->from('sewa_operasional')
-        //                                 ->where('id_sewa', '=', $sewa->id_sewa);
-        //                         });
-        //                 })
-        //                 ->where(function ($query) {
-        //                     $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
-        //                         ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
-        //                 })
-        //                 ->get();
-        // $dataOperasional = DB::table('sewa_operasional AS so')
-        //     ->selectRaw('id_sewa, id_pembayaran, id, SUM(total_dicairkan) as total_dicairkan')
-        //     ->where('so.is_aktif', '=', 'Y')
-        //     ->where(function ($query) use ($sewa) {
-        //         $query->where('so.id_sewa', '=', $sewa->id_sewa)
-        //             ->orWhereIn('so.id_pembayaran', function ($subquery) use ($sewa) {
-        //                 $subquery->select('id_pembayaran')
-        //                     ->from('sewa_operasional')
-        //                     ->where('id_sewa', '=', $sewa->id_sewa);
-        //             });
-        //     })
-        //     ->where(function ($query) {
-        //         $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
-        //             ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
-        //     })
-        //     ->groupBy( 'id_pembayaran')
-        //     ->get();
-        // $dataOperasional = SewaOperasional::selectRaw('
-        // GROUP_CONCAT( sewa_operasional.id_sewa) as so_id_sewa, 
-        // COUNT( sewa_operasional.id_sewa) as counter_data, 
-        // GROUP_CONCAT( sewa_operasional.id) as so_id, 
-        // GROUP_CONCAT( s.no_polisi) as sewa_kendaraan, 
-        // GROUP_CONCAT(COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama))) as sewa_driver, 
-        // GROUP_CONCAT( s.no_sewa) as no_sewa, 
-        // GROUP_CONCAT( sewa_operasional.catatan) as so_catatan,
-        // sewa_operasional.id_pembayaran as so_id_pembayaran, 
-        // SUM(sewa_operasional.total_dicairkan) as so_total_dicairkan, 
-        // GROUP_CONCAT(sewa_operasional.total_dicairkan) as so_dicairkan, 
-        // sewa_operasional.deskripsi as so_deskripsi')
-        // ->where('sewa_operasional.is_aktif', '=', 'Y')
-        // ->where(function ($query) use ($sewa) {
-        //     //seelect id sewa di ops yang sama dengan id sewanya
-        //     $query->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
-        //         //atau select sewa yang id pembayarannya sama (karena ini mbatalin pembayaran)
-        //         ->orWhereIn('sewa_operasional.id_pembayaran', function ($subquery) use ($sewa) {
-        //             $subquery->select('id_pembayaran')
-        //                 ->from('sewa_operasional')
-        //                 ->where('id_sewa', '=', $sewa->id_sewa);
-        //         });
-        // })
-        // ->leftJoin('sewa AS s', function($join) {
-        //             $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
-        //             ->where('s.is_aktif', 'Y')
-        //             ->where('s.status', 'PROSES DOORING')
-        //             ;
-        //         })
-        // ->leftJoin('supplier AS sp', function($join) {
-        //             $join->on('s.id_supplier', '=', 'sp.id')
-        //             ->where('sp.is_aktif', '=', 'Y');
-        //         })
-        // ->where(function ($query) {
-        //     $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
-        //         ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
-        // })
-        // ->groupBy('id_pembayaran','sewa_operasional.deskripsi')
-        // // ->with('getSewas')
-        // ->get();
-
-        // // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 );
-        // // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 ); // berarti ada data
-        // // dd(explode(',',$dataOperasional[1]->so_id_sewa));
-        // $data_rincian = [];
-
-        // foreach ($dataOperasional as $value) {
-        //     $kendaraan = explode(',', $value->sewa_kendaraan);
-        //     $driver = explode(',', $value->sewa_driver);
-        //     $rincian_cair = explode(',', $value->so_dicairkan);
-
-        //     foreach ($kendaraan as $key => $kendaraanValue) {
-        //         $data_rincian[] = [
-        //             'id_bayar'=>$value->so_id_pembayaran,
-        //             'deskripsi'=>$value->so_deskripsi,
-        //             'kendaraan' => $kendaraanValue,
-        //             'driver' => $driver[$key],
-        //             'rincian' => $rincian_cair[$key],
-        //         ];
-        //     }
-        // }
-
-        // dd($data_rincian);
-        // dd($dataOperasional);
-
-        $dataOperasional = SewaOperasional::selectRaw('
-        sewa_operasional.id_sewa as so_id_sewa, 
-        sewa_operasional.id as so_id, 
-        s.no_polisi as sewa_kendaraan, 
-        s.nama_tujuan as sewa_tujuan, 
-        COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama)) as sewa_driver, 
-        s.no_sewa as no_sewa, 
-        sewa_operasional.catatan as so_catatan,
-        sewa_operasional.id_pembayaran as so_id_pembayaran, 
-        sewa_operasional.total_dicairkan as so_total_dicairkan, 
-        sop.id_kas_bank as id_kas_bank, 
-        sewa_operasional.deskripsi as so_deskripsi')
-        ->where('sewa_operasional.is_aktif', '=', 'Y')
-        ->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
-        ->leftJoin('sewa AS s', function($join) {
-                    $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
-                    ->where('s.is_aktif', 'Y')
-                    ->where('s.status', 'PROSES DOORING')
-                    ;
-                })
-        ->leftJoin('sewa_operasional_pembayaran AS sop', function($join) {
-                    $join->on('sop.id', '=', 'sewa_operasional.id_pembayaran')
-                    ->where('sop.is_aktif', 'Y')
-                    ;
-                })
-        ->leftJoin('supplier AS sp', function($join) {
-                    $join->on('s.id_supplier', '=', 'sp.id')
-                    ->where('sp.is_aktif', '=', 'Y');
-                })
-        ->where(function ($query) {
-            $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
-                ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
-        })
-        ->get();
-
-
-        $ujr = UangJalanRiwayat::where([
-                                        'is_aktif' => 'Y',
-                                        'sewa_id' => $id
-                                    ])->first();
-        return view('pages.order.dalam_perjalanan.cancel',[
-            'judul' => "cancel",
-            'data' => $sewa,
-            'id_sewa' => $id,
-            'dataKas' => $dataKas,
-            'supplier' => $supplier,
-            'ujr' => $ujr,
-            'dataOperasional' => $dataOperasional,
-        ]);
-    }
     public function refund_operasional($id)
     {
         $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
@@ -1234,7 +1074,167 @@ class DalamPerjalananController extends Controller
         }
 
     }
+    public function cancel($id)
+    {
+        $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
 
+        $dataKas = DB::table('kas_bank')
+                    ->select('*')
+                    ->where('is_aktif', '=', "Y")
+                    ->get();
+        $supplier = DB::table('supplier as s')
+            ->select('s.*')
+            ->where('s.is_aktif', '=', "Y")
+            ->where('s.id', '=', $sewa->id_supplier)
+            ->first();
+        // $dataOperasional = DB::table('sewa_operasional AS so')
+        //                 ->select('so.*')
+        //                 ->where('so.is_aktif', '=', 'Y')
+        //                 ->where(function ($query) use ($sewa) {
+        //                     $query->where('so.id_sewa', '=', $sewa->id_sewa)
+        //                         ->orWhereIn('so.id_pembayaran', function ($subquery) use ($sewa) {
+        //                             $subquery->select('id_pembayaran')
+        //                                 ->from('sewa_operasional')
+        //                                 ->where('id_sewa', '=', $sewa->id_sewa);
+        //                         });
+        //                 })
+        //                 ->where(function ($query) {
+        //                     $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
+        //                         ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
+        //                 })
+        //                 ->get();
+        // $dataOperasional = DB::table('sewa_operasional AS so')
+        //     ->selectRaw('id_sewa, id_pembayaran, id, SUM(total_dicairkan) as total_dicairkan')
+        //     ->where('so.is_aktif', '=', 'Y')
+        //     ->where(function ($query) use ($sewa) {
+        //         $query->where('so.id_sewa', '=', $sewa->id_sewa)
+        //             ->orWhereIn('so.id_pembayaran', function ($subquery) use ($sewa) {
+        //                 $subquery->select('id_pembayaran')
+        //                     ->from('sewa_operasional')
+        //                     ->where('id_sewa', '=', $sewa->id_sewa);
+        //             });
+        //     })
+        //     ->where(function ($query) {
+        //         $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
+        //             ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
+        //     })
+        //     ->groupBy( 'id_pembayaran')
+        //     ->get();
+        // $dataOperasional = SewaOperasional::selectRaw('
+        // GROUP_CONCAT( sewa_operasional.id_sewa) as so_id_sewa, 
+        // COUNT( sewa_operasional.id_sewa) as counter_data, 
+        // GROUP_CONCAT( sewa_operasional.id) as so_id, 
+        // GROUP_CONCAT( s.no_polisi) as sewa_kendaraan, 
+        // GROUP_CONCAT(COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama))) as sewa_driver, 
+        // GROUP_CONCAT( s.no_sewa) as no_sewa, 
+        // GROUP_CONCAT( sewa_operasional.catatan) as so_catatan,
+        // sewa_operasional.id_pembayaran as so_id_pembayaran, 
+        // SUM(sewa_operasional.total_dicairkan) as so_total_dicairkan, 
+        // GROUP_CONCAT(sewa_operasional.total_dicairkan) as so_dicairkan, 
+        // sewa_operasional.deskripsi as so_deskripsi')
+        // ->where('sewa_operasional.is_aktif', '=', 'Y')
+        // ->where(function ($query) use ($sewa) {
+        //     //seelect id sewa di ops yang sama dengan id sewanya
+        //     $query->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
+        //         //atau select sewa yang id pembayarannya sama (karena ini mbatalin pembayaran)
+        //         ->orWhereIn('sewa_operasional.id_pembayaran', function ($subquery) use ($sewa) {
+        //             $subquery->select('id_pembayaran')
+        //                 ->from('sewa_operasional')
+        //                 ->where('id_sewa', '=', $sewa->id_sewa);
+        //         });
+        // })
+        // ->leftJoin('sewa AS s', function($join) {
+        //             $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
+        //             ->where('s.is_aktif', 'Y')
+        //             ->where('s.status', 'PROSES DOORING')
+        //             ;
+        //         })
+        // ->leftJoin('supplier AS sp', function($join) {
+        //             $join->on('s.id_supplier', '=', 'sp.id')
+        //             ->where('sp.is_aktif', '=', 'Y');
+        //         })
+        // ->where(function ($query) {
+        //     $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
+        //         ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
+        // })
+        // ->groupBy('id_pembayaran','sewa_operasional.deskripsi')
+        // // ->with('getSewas')
+        // ->get();
+
+        // // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 );
+        // // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 ); // berarti ada data
+        // // dd(explode(',',$dataOperasional[1]->so_id_sewa));
+        // $data_rincian = [];
+
+        // foreach ($dataOperasional as $value) {
+        //     $kendaraan = explode(',', $value->sewa_kendaraan);
+        //     $driver = explode(',', $value->sewa_driver);
+        //     $rincian_cair = explode(',', $value->so_dicairkan);
+
+        //     foreach ($kendaraan as $key => $kendaraanValue) {
+        //         $data_rincian[] = [
+        //             'id_bayar'=>$value->so_id_pembayaran,
+        //             'deskripsi'=>$value->so_deskripsi,
+        //             'kendaraan' => $kendaraanValue,
+        //             'driver' => $driver[$key],
+        //             'rincian' => $rincian_cair[$key],
+        //         ];
+        //     }
+        // }
+
+        // dd($data_rincian);
+        // dd($dataOperasional);
+
+        $dataOperasional = SewaOperasional::selectRaw('
+        sewa_operasional.id_sewa as so_id_sewa, 
+        sewa_operasional.id as so_id, 
+        s.no_polisi as sewa_kendaraan, 
+        s.nama_tujuan as sewa_tujuan, 
+        COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama)) as sewa_driver, 
+        s.no_sewa as no_sewa, 
+        sewa_operasional.catatan as so_catatan,
+        sewa_operasional.id_pembayaran as so_id_pembayaran, 
+        sewa_operasional.total_dicairkan as so_total_dicairkan, 
+        sop.id_kas_bank as id_kas_bank, 
+        sewa_operasional.deskripsi as so_deskripsi')
+        ->where('sewa_operasional.is_aktif', '=', 'Y')
+        ->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
+        ->leftJoin('sewa AS s', function($join) {
+                    $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
+                    ->where('s.is_aktif', 'Y')
+                    ->where('s.status', 'PROSES DOORING')
+                    ;
+                })
+        ->leftJoin('sewa_operasional_pembayaran AS sop', function($join) {
+                    $join->on('sop.id', '=', 'sewa_operasional.id_pembayaran')
+                    ->where('sop.is_aktif', 'Y')
+                    ;
+                })
+        ->leftJoin('supplier AS sp', function($join) {
+                    $join->on('s.id_supplier', '=', 'sp.id')
+                    ->where('sp.is_aktif', '=', 'Y');
+                })
+        ->where(function ($query) {
+            $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
+                ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
+        })
+        ->get();
+
+
+        $ujr = UangJalanRiwayat::where([
+                                        'is_aktif' => 'Y',
+                                        'sewa_id' => $id
+                                    ])->first();
+        return view('pages.order.dalam_perjalanan.cancel',[
+            'judul' => "cancel",
+            'data' => $sewa,
+            'id_sewa' => $id,
+            'dataKas' => $dataKas,
+            'supplier' => $supplier,
+            'ujr' => $ujr,
+            'dataOperasional' => $dataOperasional,
+        ]);
+    }
     public function save_cancel(Request $request, Sewa $sewa)
     {
         $data = $request->post();
@@ -1421,7 +1421,8 @@ class DalamPerjalananController extends Controller
                             if($riwayat_uang_jalan){
                                 $kht = KaryawanHutangTransaction::where(['is_aktif' => 'Y', 
                                                     'id_karyawan' => $data['id_karyawan'],
-                                                    'refrensi_id' => $riwayat_uang_jalan->id 
+                                                    'refrensi_id' => $riwayat_uang_jalan->id,
+                                                    'refrensi_keterangan' => 'uang_jalan'
                                                     ])->first();
                                 if($data['pembayaran'] != 'HUTANG KARYAWAN'){
                                     $kasBankTransaction = new KasBankTransaction ();
@@ -1529,13 +1530,14 @@ class DalamPerjalananController extends Controller
                                     $kht = new KaryawanHutangTransaction();
                                     $kht->id_karyawan = $data['id_karyawan'];
                                     $kht->refrensi_id = $sewa->id_sewa;
-                                    $kht->refrensi_keterangan = '[CANCEL]-refrensi_nya_id_sewa = '. $sewa->id_sewa;
+                                    // $kht->refrensi_keterangan = '[CANCEL]-refrensi_nya_id_sewa = '. $sewa->id_sewa;
+                                    $kht->refrensi_keterangan = 'cancel';
                                     $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                                     $kht->tanggal = date_format($tgl_cancel, 'Y-m-d H:i:s');
                                     $kht->debit = $uj_kembali; // HUTANG BARU nah ini 450k nya jadi hutang baru 50k nya gajadi,nanti kalau mau cairin lagi ya 500k potong
                                     $kht->kredit = 0;
                                     $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
-                                    $kht->catatan = 'PENGEMBALIAN UANG JALAN SBG HUTANG - ' .'['.$data['no_sewa'] .']'.'-'. $data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver'].' >> ' . $data['customer'].' >> ' . '('.$data['tujuan'].')';
+                                    $kht->catatan = 'CANCEL PERJALANAN - ' .'['.$data['no_sewa'] .']'.'-'. $data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver'].' >> ' . $data['customer'].' >> ' . '('.$data['tujuan'].')';
                                     $kht->created_by = $user;
                                     $kht->created_at = now();
                                     $kht->is_aktif = 'Y';
@@ -1925,54 +1927,56 @@ class DalamPerjalananController extends Controller
                             
                         
                     }
-                    $kh_baru = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['select_driver'])->first();
-                    if(isset($kh_baru)&&isset($data['potong_hutang'])){
-                        $kh_baru->total_hutang -= (float)str_replace(',', '', $data['potong_hutang']); 
-                        $kh_baru->updated_by = $user;
-                        $kh_baru->updated_at = now();
-                        $kh_baru->save();
+                    $kh_exist = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['select_driver'])->first();
+                    if(isset($kh_exist)&&isset($data['potong_hutang'])){
+                        $kh_exist->total_hutang -= (float)str_replace(',', '', $data['potong_hutang']); 
+                        $kh_exist->updated_by = $user;
+                        $kh_exist->updated_at = now();
+                        $kh_exist->save();
 
                         $kht_baru = new KaryawanHutangTransaction();
                         $kht_baru->id_karyawan = $data['select_driver'];
                         $kht_baru->refrensi_id = $ujr->id; // id uang jalan
-                        $kht_baru->refrensi_keterangan = 'UANG JALAN';
+                        $kht_baru->refrensi_keterangan = 'uang_jalan';
                         $kht_baru->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                         $kht_baru->tanggal = now();
                         $kht_baru->debit = 0;
                         $kht_baru->kredit =(float)str_replace(',', '', $data['potong_hutang']);
                         $kht_baru->kas_bank_id = $ujr->kas_bank_id;
-                        $kht_baru->catatan = $data['catatan'] ;
+                        $kht_baru->catatan = 'Potong hutang Uang jalan dari supir'.'['.$sewa->no_sewa.']'.' >> '.$sewa->no_polisi.'('.$sewa->nama_driver.')'.' >> '.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'] ;
                         $kht_baru->created_by = $user;
                         $kht_baru->created_at = now();
                         $kht_baru->is_aktif = 'Y';
                         $kht_baru->save();
                     }
-                    else if(isset($data['potong_hutang']))
-                    {
-                        $kh_baru = new KaryawanHutang();
-                        $kh_baru->id_karyawan = $data['select_driver'];
-                        $kh_baru->total_hutang = (float)str_replace(',', '', $data['potong_hutang']);
-                        $kh_baru->created_by = $user;
-                        $kh_baru->created_at = now();
-                        $kh_baru->is_aktif = 'Y';
-                        if($kh_baru->save())
-                        {
-                            $kht_baru = new KaryawanHutangTransaction();
-                            $kht_baru->id_karyawan = $data['select_driver'];
-                            $kht_baru->refrensi_id = $ujr->id; // id uang jalan
-                            $kht_baru->refrensi_keterangan = 'UANG JALAN';
-                            $kht_baru->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                            $kht_baru->tanggal = now();
-                            $kht_baru->debit = 0;
-                            $kht_baru->kredit =(float)str_replace(',', '', $data['potong_hutang']);
-                            $kht_baru->kas_bank_id =$ujr->kas_bank_id;
-                            $kht_baru->catatan = $data['catatan'] ;
-                            $kht_baru->created_by = $user;
-                            $kht_baru->created_at = now();
-                            $kht_baru->is_aktif = 'Y';
-                            $kht_baru->save();
-                        }
-                    }
+                    // gamungkin ga ada data
+                    // else if(isset($data['potong_hutang'])&&!isset($kh_exist))
+                    // {
+                    //     $kh_baru = new KaryawanHutang();
+                    //     $kh_baru->id_karyawan = $data['select_driver'];
+                    //     $kh_baru->total_hutang = (float)str_replace(',', '', $data['potong_hutang']);
+                    //     $kh_baru->created_by = $user;
+                    //     $kh_baru->created_at = now();
+                    //     $kh_baru->is_aktif = 'Y';
+                    //     if($kh_baru->save())
+                    //     {
+                    //         $kht_baru = new KaryawanHutangTransaction();
+                    //         $kht_baru->id_karyawan = $data['select_driver'];
+                    //         $kht_baru->refrensi_id = $ujr->id; // id uang jalan
+                    //         // $kht_baru->refrensi_keterangan = 'UANG JALAN';
+                    //         $kht_baru->refrensi_keterangan = 'uang_jalan';
+                    //         $kht_baru->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
+                    //         $kht_baru->tanggal = now();
+                    //         $kht_baru->debit = 0;
+                    //         $kht_baru->kredit =(float)str_replace(',', '', $data['potong_hutang']);
+                    //         $kht_baru->kas_bank_id =$ujr->kas_bank_id;
+                    //         $kht_baru->catatan = 'Potong hutang Uang jalan dari supir'.' >> '.'['.$sewa->no_sewa.']'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.'ke supir -> '.' >> '.$data['no_polisi'].'('.$data['driver_nama'].')'.' >> '.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'];
+                    //         $kht_baru->created_by = $user;
+                    //         $kht_baru->created_at = now();
+                    //         $kht_baru->is_aktif = 'Y';
+                    //         $kht_baru->save();
+                    //     }
+                    // }
                     $sewa->id_kendaraan = $data['kendaraan_id'];
                     $sewa->no_polisi = $data['no_polisi'];
                     $sewa->id_chassis = $data['select_chassis'];
@@ -2072,11 +2076,11 @@ class DalamPerjalananController extends Controller
 
                         if($data['potong_hutang'] != 0){
                             $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['select_driver'])->first();
-                            if(!$kh){
-                                $kh = new KaryawanHutang(); // buat baru
-                            }
+                            // if(!$kh){
+                            //     $kh = new KaryawanHutang(); // buat baru
+                            // }
                             $kh->id_karyawan = $data['select_driver'];
-                            $kh->total_hutang = (float)str_replace(',', '', $data['potong_hutang']);
+                            $kh->total_hutang -= (float)str_replace(',', '', $data['potong_hutang']);
                             $kh->created_by = $user;
                             $kh->created_at = now();
                             $kh->is_aktif = 'Y';
@@ -2084,13 +2088,13 @@ class DalamPerjalananController extends Controller
                                 $kht_baru = new KaryawanHutangTransaction();
                                 $kht_baru->id_karyawan = $data['select_driver'];
                                 $kht_baru->refrensi_id = $ujr->id; // id uang jalan
-                                $kht_baru->refrensi_keterangan = 'UANG JALAN';
+                                $kht_baru->refrensi_keterangan = 'uang_jalan';
                                 $kht_baru->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                                 $kht_baru->tanggal = now();
                                 $kht_baru->debit = 0;
                                 $kht_baru->kredit =(float)str_replace(',', '', $data['potong_hutang']);
                                 $kht_baru->kas_bank_id =$ujr->kas_bank_id;
-                                $kht_baru->catatan = $data['catatan'] ;
+                                $kht_baru->catatan = 'Potong hutang Uang jalan dari supir'.' >> '.'['.$sewa->no_sewa.']'.$sewa->no_polisi.'('.$sewa->nama_driver.')'.'ke supir -> '.' >> '.$data['no_polisi'].'('.$data['driver_nama'].')'.' >> '.$data['customer'].'('.$sewa->nama_tujuan.') - '.$data['catatan'];
                                 $kht_baru->created_by = $user;
                                 $kht_baru->created_at = now();
                                 $kht_baru->is_aktif = 'Y';

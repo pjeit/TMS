@@ -153,16 +153,16 @@ class RevisiUangJalanController extends Controller
                         $kht = new KaryawanHutangTransaction();
                         $kht->id_karyawan = $data['id_karyawan'];
                         $kht->refrensi_id = $old_uang_jalan_riwayat->id;
-                        $kht->refrensi_keterangan = 
-                        '>> totalUangJalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
-                        ' >> potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
-                        ' >> totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);
+                        $kht->refrensi_keterangan = 'uang_jalan';
                         $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                         $kht->tanggal = $tgl_pencairan;
                         $kht->debit = 0;
                         $kht->kredit = $potong_hutang;
                         $kht->kas_bank_id = $data['pembayaran'];
-                        $kht->catatan = $data['catatan'];
+                        $kht->catatan ='Revisi Tambahan uang jalan'.' - '.$data['catatan'].' >> '.$data['no_sewa'].' >> '.$data['kendaraan'].'('.$data['driver'].')'.' >> '.$data['customer'].' >> '.$data['tujuan'].
+                        '>> totalUangJalan:' . (float)str_replace(',', '', $data['uang_jalan']) . 
+                        ' >> potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
+                        ' >> totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);;
                         $kht->created_by = $user;
                         $kht->created_at = now();
                         $kht->is_aktif = 'Y';
@@ -281,13 +281,13 @@ class RevisiUangJalanController extends Controller
                     $kht = new KaryawanHutangTransaction();
                     $kht->id_karyawan = $data['id_karyawan'];
                     $kht->refrensi_id = $old_uang_jalan_riwayat->id;
-                    $kht->refrensi_keterangan = 'PENGEMBALIAN UANG JALAN : '.(float)str_replace(',', '', $data['uang_jalan']);
+                    $kht->refrensi_keterangan = 'uang_jalan';
                     $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                     $kht->tanggal = now();
                     $kht->debit = ($data['uang_jalan']) ? (float)str_replace(',', '', $data['uang_jalan']) : 0;
                     $kht->kredit = 0;
                     $kht->kas_bank_id = $data['pembayaran'];
-                    $kht->catatan = $data['catatan'];
+                    $kht->catatan = ' Revisi engembalian Uang jalan sebagai hutang '.'>> '.$data['no_sewa'].' >> '.$data['kendaraan'].'('.$data['driver'].')'.' >> '.$data['customer'].' >> '.$data['tujuan'].' >> '.$data['catatan']; //keterangan_transaksi
                     $kht->created_by = $user;
                     $kht->created_at = now();
                     $kht->is_aktif = 'Y';

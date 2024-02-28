@@ -117,13 +117,13 @@ class PencairanUangJalanLTLController extends Controller
                                     $kht = new KaryawanHutangTransaction();
                                     $kht->id_karyawan = $sewa->id_karyawan;
                                     $kht->refrensi_id = $ujr->id; // id uang jalan
-                                    $kht->refrensi_keterangan = 'UANG JALAN LTL';
+                                    $kht->refrensi_keterangan = 'uang_jalan';
                                     $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
                                     $kht->tanggal = now();
                                     $kht->debit = 0;
                                     $kht->kredit = $pot_hut;
                                     $kht->kas_bank_id = $data['id_kas'];
-                                    $kht->catatan = $data['catatan'];
+                                    $kht->catatan = 'Pencairan Uang jalan LTL Potong hutang : '.$sewa->no_sewa.' >> '.$data['catatan'];
                                     $kht->created_by = $user;
                                     $kht->created_at = now();
                                     $kht->is_aktif = 'Y';
