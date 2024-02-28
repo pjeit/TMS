@@ -222,30 +222,30 @@ class RevisiTLController extends Controller
             $uang_jalan_riwayat->updated_by = $user;
             $uang_jalan_riwayat->save();
 
-            $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
-            if(isset($kh) && isset($data['potong_hutang'])){
-                $kh->total_hutang -=(float)str_replace(',', '', $data['potong_hutang']); 
-                $kh->updated_by = $user;
-                $kh->updated_at = now();
-                $kh->save();
+            // $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+            // if(isset($kh) && isset($data['potong_hutang'])){
+            //     $kh->total_hutang -=(float)str_replace(',', '', $data['potong_hutang']); 
+            //     $kh->updated_by = $user;
+            //     $kh->updated_at = now();
+            //     $kh->save();
 
-                $kht = new KaryawanHutangTransaction();
-                $kht->id_karyawan = $data['id_karyawan'];
-                $kht->refrensi_id = $uang_jalan_riwayat->id;
-                $kht->refrensi_keterangan = "teluk_lamong";
-                $kht->catatan = 'Potong Hutang Teluk lamong :'.$data['catatan'] . ' >> '.$data['no_sewa'].' >> '.$data['kendaraan'].' >> '.$data['driver'].' >> '.$data['customer'].' >> '.$data['tujuan'].' >> totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
-                ' >> potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
-                ' >> totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);
-                $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
-                $kht->tanggal = now();
-                $kht->debit = 0;
-                $kht->kredit = ($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0;
-                $kht->kas_bank_id = NULL;
-                $kht->created_by = $user;
-                $kht->created_at = now();
-                $kht->is_aktif = 'Y';
-                $kht->save();
-            }
+            //     $kht = new KaryawanHutangTransaction();
+            //     $kht->id_karyawan = $data['id_karyawan'];
+            //     $kht->refrensi_id = $uang_jalan_riwayat->id;
+            //     $kht->refrensi_keterangan = "teluk_lamong";
+            //     $kht->catatan = 'Potong Hutang Teluk lamong :'.$data['catatan'] . ' >> '.$data['no_sewa'].' >> '.$data['kendaraan'].' >> '.$data['driver'].' >> '.$data['customer'].' >> '.$data['tujuan'].' >> totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
+            //     ' >> potongHutang:' . (($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0) . 
+            //     ' >> totalDiterima:' . (float)str_replace(',', '', $data['total_diterima']);
+            //     $kht->jenis = 'POTONG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
+            //     $kht->tanggal = now();
+            //     $kht->debit = 0;
+            //     $kht->kredit = ($data['potong_hutang']) ? (float)str_replace(',', '', $data['potong_hutang']) : 0;
+            //     $kht->kas_bank_id = NULL;
+            //     $kht->created_by = $user;
+            //     $kht->created_at = now();
+            //     $kht->is_aktif = 'Y';
+            //     $kht->save();
+            // }
                 $catatan = isset($data['catatan'])? ' '.$data['catatan']:'';
                 
                 $saldo = DB::table('kas_bank')
@@ -356,9 +356,8 @@ class RevisiTLController extends Controller
                 $kht->kredit = 0;
                 $kht->kas_bank_id = NULL;
                 $kht->catatan = 'Kembali Hutang Teluk lamong :'.$data['catatan'] . ' >> '.$data['no_sewa'].' >> '.$data['kendaraan'].' >> '.$data['driver'].' >> '.$data['customer'].' >> '.$data['tujuan'].' >> totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
-                $data['catatan'] . '>> totalTL:' . (float)str_replace(',', '', $data['jumlah']) . 
-                ' >> potongHutang:0' . 
-                ' >> totalTLMasukHutang:'. (($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0);
+                $data['catatan'] . '>> Nominal TL:' . (float)str_replace(',', '', $data['jumlah']) . 
+                ' >> Nominal masuk hutang:'. (($data['jumlah']) ? (float)str_replace(',', '', $data['jumlah']) : 0);
                 $kht->created_by = $user;
                 $kht->created_at = now();
                 $kht->is_aktif = 'Y';

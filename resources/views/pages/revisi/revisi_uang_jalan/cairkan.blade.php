@@ -78,25 +78,28 @@
                                 <input type="hidden" name="id_karyawan" id="id_karyawan" value="{{ $sewa->id_karyawan }}">                    
                             </div> 
 
-                            <div class="form-group col-6">
-                                <label for="total_hutang">Total Hutang</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
+                            {{-- sementara hide, soon dipakai --}}
+                                <div class="form-group col-6" style="display: none;">
+                                    <label for="total_hutang">Total Hutang</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang " value="{{ number_format($sewa->total_hutang) }}" readonly>                         
                                     </div>
-                                    <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang " value="{{ number_format($sewa->total_hutang) }}" readonly>                         
                                 </div>
-                            </div>
 
-                            <div class="form-group col-6">
-                                <label for="potong_hutang">Potong Hutang Karyawan</label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
+                                <div class="form-group col-6" style="display: none;">
+                                    <label for="potong_hutang">Potong Hutang Karyawan</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" id="potong_hutang" name="potong_hutang" class="form-control uang " value="" >                         
                                     </div>
-                                    <input type="text" id="potong_hutang" name="potong_hutang" class="form-control uang " value="" >                         
                                 </div>
-                            </div>
+                            {{-- sementara hide, soon dipakai --}}
+
 
                             <div class="form-group col-6">
                                 <label for="uang_jalan">Tambahan Uang Jalan</label>
@@ -149,7 +152,46 @@
         </div>
     </div>
 </form>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#post_data').submit(function(event) {
+            event.preventDefault(); // Prevent form submission
+            Swal.fire({
+                title: 'Apakah Anda yakin data sudah benar ?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.submit();
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
 
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                }
+            })
+        });
+    });
+</script>
 <script type="text/javascript">
     $(document).ready(function() {
         var today = new Date();
