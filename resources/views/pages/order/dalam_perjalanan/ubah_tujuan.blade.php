@@ -503,7 +503,7 @@ $(document).ready(function() {
                     if(id_customer!="")
                     {
                         response.dataTujuan.forEach(tujuan => {
-                            const option = document.createElement('option');
+                            var option = document.createElement('option');
                             option.value = tujuan.id;
                             option.textContent = tujuan.nama_tujuan+ ` ( ${tujuan.jenis_tujuan} )` +  ` [${tujuan.getMarketing?tujuan.getMarketing.nama:'-'} ]`;
                             // if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
@@ -513,6 +513,10 @@ $(document).ready(function() {
                             //     }
 
                             // }
+                            if (tujuan.jenis_tujuan == "LTL"||tujuan.jenis_tujuan=='') {
+                                // option.dis('disabled', true);
+                                option.disabled = true;
+                            }
                             select_grup_tujuan.append(option);
                         });
                     }
