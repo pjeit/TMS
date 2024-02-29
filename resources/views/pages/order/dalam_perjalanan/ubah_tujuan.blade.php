@@ -134,22 +134,22 @@
                                             <option value="{{$data['id_grup_tujuan']}}">{{$data->getTujuan->nama_tujuan}}</option>
                                         @endisset --}}
                                     </select>
-                                    <input type="hidden" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
-                                    <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="{{!empty($data['id_jo_detail'])? $data['id_jo_detail']:''}}" placeholder="id_jo_detail">
-                                    <input type="hidden" name="id_jo" id="id_jo" value="{{!empty($data['id_jo'])?$data['id_jo']:''}}" placeholder="id_jo">
-                                    <input type="hidden" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
-                                    <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
-                                    <input type="hidden" id="tarif" name="tarif" value=""placeholder="tarif">
-                                    <input type="hidden" id="uang_jalan" name="uang_jalan" value=""placeholder="uang_jalan">
-                                    <input type="hidden" id="komisi" name="komisi" value=""placeholder="komisi">
-                                    <input type="hidden" id="komisi_driver" name="komisi_driver" value=""placeholder="komisi_driver">
-                                    <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value=""placeholder="jenis_tujuan">
-                                    <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0"placeholder="harga_per_kg">
-                                    <input type="hidden" id="min_muatan" name="min_muatan" value="0"placeholder="min_muatan">
-                                    <input type="hidden" id="plastik" name="plastik" value=""placeholder="plastik">
-                                    <input type="hidden" id="tally" name="tally" value=""placeholder="tally">
-                                    <input type="hidden" id="kargo" name="kargo" value=""placeholder="kargo">
-                                    <input type="hidden" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
+                                    <input type="text" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
+                                    <input type="text" name="id_jo_detail" id="id_jo_detail" value="{{!empty($data['id_jo_detail'])? $data['id_jo_detail']:''}}" placeholder="id_jo_detail">
+                                    <input type="text" name="id_jo" id="id_jo" value="{{!empty($data['id_jo'])?$data['id_jo']:''}}" placeholder="id_jo">
+                                    <input type="text" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
+                                    <input type="text" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
+                                    <input type="text" id="tarif" name="tarif" value=""placeholder="tarif">
+                                    <input type="text" id="uang_jalan" name="uang_jalan" value=""placeholder="uang_jalan">
+                                    <input type="text" id="komisi" name="komisi" value=""placeholder="komisi">
+                                    <input type="text" id="komisi_driver" name="komisi_driver" value=""placeholder="komisi_driver">
+                                    <input type="text" id="jenis_tujuan" name="jenis_tujuan" value=""placeholder="jenis_tujuan">
+                                    <input type="text" id="harga_per_kg" name="harga_per_kg" value="0"placeholder="harga_per_kg">
+                                    <input type="text" id="min_muatan" name="min_muatan" value="0"placeholder="min_muatan">
+                                    <input type="text" id="plastik" name="plastik" value=""placeholder="plastik">
+                                    <input type="text" id="tally" name="tally" value=""placeholder="tally">
+                                    <input type="text" id="kargo" name="kargo" value=""placeholder="kargo">
+                                    <input type="text" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
                                 </div>
                                 <div class="form-group col-6">
                                     <label for="">Tarif Baru<span class="text-red">*</span></label>
@@ -395,6 +395,10 @@ $(document).ready(function() {
         $('#customer_id').val(selectedValue);
         get_tujuan(selectedValue);
         check();
+        // $('#uang_jalan_baru').val('')
+        // $('#selisih_uang_jalan').val('');
+        // $('#total_akhir').val('');
+        // $('#tarif_baru').val('');
     });
     $('body').on('change','#select_grup_tujuan',function(){
         var selectedValue = $(this).val();
@@ -482,6 +486,10 @@ $(document).ready(function() {
         $('#tally').val('');
         $('#kargo').val('');
         $('#biayaDetail').val('');
+        $('#uang_jalan_baru').val('')
+        $('#selisih_uang_jalan').val('');
+        $('#total_akhir').val('');
+        $('#tarif_baru').val('');
         var select_grup_tujuan = $('#select_grup_tujuan');
         // hitungTarif();
         $.ajax({
@@ -497,7 +505,7 @@ $(document).ready(function() {
                         response.dataTujuan.forEach(tujuan => {
                             const option = document.createElement('option');
                             option.value = tujuan.id;
-                            option.textContent = tujuan.nama_tujuan;
+                            option.textContent = tujuan.nama_tujuan+ ` ( ${tujuan.jenis_tujuan} )` +  ` [${tujuan.getMarketing?tujuan.getMarketing.nama:'-'} ]`;
                             // if(idTujuan!=''|| idTujuan!='[]'|| idTujuan!=null)
                             // {
                             //     if (idTujuan == tujuan.id) {
@@ -546,7 +554,6 @@ $(document).ready(function() {
                     $('#uang_jalan').val('');
                     $('#uang_jalan_baru').val('');
                     $('#tarif_baru').val('');
-
                     $('#komisi').val('');
                     $('#komisi_driver').val('');
                     $('#jenis_tujuan').val('');
@@ -619,9 +626,10 @@ $(document).ready(function() {
 
         var uang_jalan_baru = parseFloat(escapeComma($('#uang_jalan_baru').val()));
         var cekNan_uj_baru= !isNaN(uang_jalan_baru)?uang_jalan_baru:0
-
+        console.log(cekNan_uj_baru);
         if(cekNan_uj_baru != 0 )
         {
+            console.log('masuk sini');
             const selisih_akhir = total_uang_jalan-cekNan_uj_baru;
             $('#selisih_uang_jalan').val(moneyMask(selisih_akhir));
             if(selisih_akhir<0)
@@ -649,6 +657,15 @@ $(document).ready(function() {
                 $('#pembayaran').val('TIDAK_ADA_TRANSAKSI').trigger('change');
 
             }
+        }
+        else
+        {
+            $('#uang_jalan_baru').val('')
+            $('#selisih_uang_jalan').val('');
+            $('#total_akhir').val('');
+            $('#total_akhir_label').text('Total Diberikan');
+            $('#jenis_masuk').val('pencairan');
+            $('#pembayaran').val('1').trigger('change');
         }
         // if(selisih_uang_jalan > total_uang_jalan){
         //     $('#selisih_uang_jalan').val(moneyMask(total_uang_jalan));
