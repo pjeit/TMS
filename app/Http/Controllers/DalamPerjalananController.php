@@ -25,7 +25,7 @@ use App\Models\SewaOperasionalRefund;
 use App\Models\SewaOperasionalKembaliStok;
 use Exception;
 use App\Helper\VariableHelper;
-
+use App\Models\Supplier;
 
 class DalamPerjalananController extends Controller
 {
@@ -2156,6 +2156,237 @@ class DalamPerjalananController extends Controller
 
         }
 
+    }
+
+    public function ubah_tujuan($id)
+    {
+        $sewa = Sewa::with('customer')->where('is_aktif', 'Y')->find($id);
+
+        $dataKas = KasBank::where('is_aktif', '=', "Y")
+                    ->select('*')
+                    ->get();
+        $dataOperasional = SewaOperasional::selectRaw('
+        sewa_operasional.id_sewa as so_id_sewa, 
+        sewa_operasional.id as so_id, 
+        s.no_polisi as sewa_kendaraan, 
+        s.nama_tujuan as sewa_tujuan, 
+        COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama)) as sewa_driver, 
+        s.no_sewa as no_sewa, 
+        sewa_operasional.catatan as so_catatan,
+        sewa_operasional.id_pembayaran as so_id_pembayaran, 
+        sewa_operasional.total_dicairkan as so_total_dicairkan, 
+        sop.id_kas_bank as id_kas_bank, 
+        sewa_operasional.deskripsi as so_deskripsi')
+        ->where('sewa_operasional.is_aktif', '=', 'Y')
+        ->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
+        ->leftJoin('sewa AS s', function($join) {
+                    $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
+                    ->where('s.is_aktif', 'Y')
+                    ->where('s.status', 'PROSES DOORING')
+                    ;
+                })
+        ->leftJoin('sewa_operasional_pembayaran AS sop', function($join) {
+                    $join->on('sop.id', '=', 'sewa_operasional.id_pembayaran')
+                    ->where('sop.is_aktif', 'Y')
+                    ;
+                })
+        ->leftJoin('supplier AS sp', function($join) {
+                    $join->on('s.id_supplier', '=', 'sp.id')
+                    ->where('sp.is_aktif', '=', 'Y');
+                })
+        ->where(function ($query) {
+            $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
+                ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
+        })
+        ->get();
+
+        
+
+        $ujr = UangJalanRiwayat::where([
+                                        'is_aktif' => 'Y',
+                                        'sewa_id' => $id
+                                    ])->first();
+        $total_uang_jalan_diterima = ($ujr->total_uang_jalan + $ujr->total_tl)-$ujr->potong_hutang;
+        $total_uang_jalan = ($ujr->total_uang_jalan + $ujr->total_tl);
+        return view('pages.order.dalam_perjalanan.ubah_tujuan',[
+            'judul' => "cancel",
+            'data' => $sewa,
+            'id_sewa' => $id,
+            'dataKas' => $dataKas,
+            'ujr' => $ujr,
+            'dataOperasional' => $dataOperasional,
+            'total_uang_jalan' => $total_uang_jalan,
+            'total_uang_jalan_diterima' => $total_uang_jalan_diterima,
+            'dataCustomer' => SewaDataHelper::DataCustomer(),
+            'dataPengaturanKeuangan'=>SewaDataHelper::DataPengaturanBiaya()
+        ]);
+    }
+    public function save_ubah_tujuan(Request $request, Sewa $sewa)
+    {
+        $data = $request->post();
+        // $tgl_cancel = date_create_from_format('d-M-Y', $data['tanggal_cancel']);
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        $customer = Customer::where('is_aktif', '=', "Y")->select(array('kode','nama'));
+        /**
+         * get the binding parameters
+         **/ 
+        $bindings = $customer->getBindings();
+        dd($bindings);
+        /**
+         * now go down to the "Network Layer"
+         * and do a hard coded select
+         */
+        $insertQuery = 'INSERT into user_debt_collection (email,dinero) '
+                        . $bindings->toSql();
+
+        try {
+           
+            $customer = Customer::where('is_aktif', '=', "Y")->find($sewa->id_customer);
+            
+            if($customer){
+                $customer->kredit_sekarang -= $sewa->total_tarif;
+                $customer->updated_by = $user;
+                $customer->updated_at = now();
+                $customer->save();
+            }
+            $sewa->alasan_ubah_tujuan = $data['alasan_cancel'].'[cancel]';
+            $sewa->updated_at = now();
+            $sewa->updated_by = $user;
+            if($sewa->save()){
+                SewaBiaya::where('is_aktif', '=', 'Y')
+                ->where('id_sewa', $sewa->id_sewa)
+                ->update(['is_aktif' => 'N']);
+                $uj_kembali = isset($data['uang_jalan_kembali'])? floatval(str_replace(',', '', $data['uang_jalan_kembali'])):0;
+            
+                
+            
+                    
+                // \DB::insert($insertQuery, $bindings);
+                if(isset($data['pembayaran'])){
+                    $riwayat_uang_jalan = UangJalanRiwayat::where('is_aktif', 'Y')->where('sewa_id', $sewa->id_sewa)->first();
+                    if($riwayat_uang_jalan){
+                        $kht = KaryawanHutangTransaction::where(['is_aktif' => 'Y', 
+                                            'id_karyawan' => $data['id_karyawan'],
+                                            'refrensi_id' => $riwayat_uang_jalan->id,
+                                            'refrensi_keterangan' => 'uang_jalan'
+                                            ])->first();
+                        if($data['pembayaran'] != 'HUTANG'||$data['pembayaran'] != 'TIDAK_ADA_TRANSAKSI'){
+                            $kasBankTransaction = new KasBankTransaction ();
+                            $kasBankTransaction->id_kas_bank = $data['pembayaran'];
+                            // $kasBankTransaction->tanggal =date_format($tgl_cancel, 'Y-m-d H:i:s');
+                            $kasBankTransaction->debit = $uj_kembali; // debit uang masuk
+                            $kasBankTransaction->kredit = 0;
+                            $kasBankTransaction->jenis = 'uang_jalan';
+                            $kasBankTransaction->keterangan_transaksi = '(CANCEL) UANG JALAN KEMBALI - '. '['.$data['no_sewa'] .']'.'-'.$data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver'].' >> ' . $data['customer'].' >> ' . '('.$data['tujuan'].')' ;
+                            $kasBankTransaction->kode_coa =  CoaHelper::DataCoa(5002); // masih hardcode
+                            $kasBankTransaction->keterangan_kode_transaksi = $riwayat_uang_jalan->id;
+                            $kasBankTransaction->created_by = $user;
+                            $kasBankTransaction->created_at = now();
+                            $kasBankTransaction->is_aktif = 'Y';
+                            if($kasBankTransaction->save()){
+                                $kasbank = KasBank::where('is_aktif', 'Y')->find($data['pembayaran']);
+                                $kasbank->saldo_sekarang += $uj_kembali;
+                                $kasbank->updated_by = $user;
+                                $kasbank->updated_at = now();
+                                $kasbank->save();
+                                if($riwayat_uang_jalan->potong_hutang>0)
+                                {
+                                    // misal cair 500k potong 30k, trs balik 500k, 30k hutangnya ga jadi
+                                    if($kht){
+                                        $kht->updated_by = $user;
+                                        $kht->updated_at = now();
+                                        $kht->is_aktif = 'N';
+                                        $kht->save();
+                                    }
+                                    $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+                                    if(isset($kh)){
+                                        // kalau ada data, hutang ditambah
+                                        $kh->total_hutang += $riwayat_uang_jalan->potong_hutang; 
+                                        $kh->updated_by = $user;
+                                        $kh->updated_at = now();
+                                        $kh->save();
+                                    }else{
+                                        // kalau tidak ada data, buat data hutang baru
+                                        $kh = new KaryawanHutang();
+                                        $kh->id_karyawan = $data['id_karyawan'];
+                                        $kh->total_hutang += $riwayat_uang_jalan->potong_hutang;
+                                        $kh->created_by = $user;
+                                        $kh->created_at = now();
+                                        $kh->is_aktif = 'Y';
+                                        $kh->save();
+                                    }
+                                    
+                                }
+                                
+                                DB::commit();
+                            }
+                        }else{
+                            if($kht){
+                                $kht->updated_by = $user;
+                                $kht->updated_at = now();
+                                $kht->is_aktif = 'N';
+                                $kht->save();
+                            }
+                            $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['id_karyawan'])->first();
+                            //misal uj 500k potong 50k, jadi 450k, terus kembali sbg hutang 450k, kan ada nyantol 50k
+                            //nah 450k itu ditambah sama uj yang nyantol 50k jadi 500k
+                            $total_uj_kembali_dan_hutang_nyantol = $uj_kembali+$riwayat_uang_jalan->potong_hutang;
+                            
+                            if(isset($kh)){
+                                // kalau ada data, hutang ditambah
+                                $kh->total_hutang += $total_uj_kembali_dan_hutang_nyantol; 
+                                $kh->updated_by = $user;
+                                $kh->updated_at = now();
+                                $kh->save();
+                            }else{
+                                // kalau tidak ada data, buat data hutang baru
+                                $kh = new KaryawanHutang();
+                                $kh->id_karyawan = $data['id_karyawan'];
+                                $kh->total_hutang += $total_uj_kembali_dan_hutang_nyantol;
+                                $kh->created_by = $user;
+                                $kh->created_at = now();
+                                $kh->is_aktif = 'Y';
+                                $kh->save();
+                            }
+                            $kht = new KaryawanHutangTransaction();
+                            $kht->id_karyawan = $data['id_karyawan'];
+                            $kht->refrensi_id = $sewa->id_sewa;
+                            // $kht->refrensi_keterangan = '[CANCEL]-refrensi_nya_id_sewa = '. $sewa->id_sewa;
+                            $kht->refrensi_keterangan = 'cancel';
+                            $kht->jenis = 'HUTANG'; // ada POTONG(KALAO PENCAIRAN UJ), BAYAR(KALO SUPIR BAYAR), HUTANG(KALAU CANCEL SEWA)
+                            // $kht->tanggal = date_format($tgl_cancel, 'Y-m-d H:i:s');
+                            $kht->debit = $uj_kembali; // HUTANG BARU nah ini 450k nya jadi hutang baru 50k nya gajadi,nanti kalau mau cairin lagi ya 500k potong
+                            $kht->kredit = 0;
+                            $kht->kas_bank_id = NULL; // kalau hutang, kasbank null
+                            $kht->catatan = 'CANCEL PERJALANAN - ' .'['.$data['no_sewa'] .']'.'-'. $data['alasan_cancel'] . ' >> ' . $data['kendaraan'] . ' >> ' . $data['driver'].' >> ' . $data['customer'].' >> ' . '('.$data['tujuan'].')';
+                            $kht->created_by = $user;
+                            $kht->created_at = now();
+                            $kht->is_aktif = 'Y';
+                            $kht->save();
+                            
+                            DB::commit();
+                        }
+                        $riwayat_uang_jalan->is_aktif = 'N'; 
+                        $riwayat_uang_jalan->updated_by = $user;
+                        $riwayat_uang_jalan->updated_at = now();
+                        $riwayat_uang_jalan->save();
+                        
+                    }
+                }
+               
+            }
+            DB::commit();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'Success', 'msg' => "Berhasil Ubah tujuan perjalanan!"]);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => "Terjadi kesalahan! <br>" . $e->getMessage()]);
+            // return redirect()->back()->withErrors($e->getMessage())->withInput();
+        }
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('dalam_perjalanan.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
 }

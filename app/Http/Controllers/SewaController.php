@@ -101,9 +101,12 @@ class SewaController extends Controller
             $sewa->id_customer = $data['customer_id'];
             $sewa->id_grup_tujuan = $data['tujuan_id'];
             $sewa->jenis_tujuan = $data['jenis_tujuan'];
-            $status = 'MENUNGGU UANG JALAN';
-            if($data['jenis_tujuan'] == 'LTL'){
+            if($data['jenis_tujuan'] == 'LTL'||$data['uang_jalan']==0){
                 $status = 'PROSES DOORING';
+            }
+            else
+            {
+                $status = 'MENUNGGU UANG JALAN';
             }
             $sewa->status = $status;
             $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');

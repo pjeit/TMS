@@ -76,7 +76,13 @@
                                 @if (isset($sewa->getKaryawan->getHutang) && $sewa->getKaryawan->getHutang->total_hutang > 0)
                                     style="background: hsl(0, 100%, 93%); border: 1px red solid;"
                                 @endif>
-                                <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
+                                <label for="potong_hutang">
+                                    @if (isset($data->getKaryawan->getHutang) && $data->getKaryawan->getHutang->total_hutang > 0  )
+                                        <span class="text-red">Potong Hutang</span>
+                                    @else
+                                        <span>Potong Hutang</span>
+                                    @endif
+                                </label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>

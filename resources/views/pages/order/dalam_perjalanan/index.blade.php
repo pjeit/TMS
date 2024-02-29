@@ -112,6 +112,9 @@
                                                     <a href="{{route('truck_order.edit',[$item->id_sewa])}}" class="dropdown-item">
                                                         <span class="nav-icon fas fa-edit mr-3"></span> Edit Sewa PJE
                                                     </a>
+                                                    <a href="{{route('dalam_perjalanan.ubah_tujuan',[$item->id_sewa])}}" class="dropdown-item">
+                                                        <span class="nav-icon fas fa-edit mr-3"></span> Ubah Tujuan Order
+                                                    </a>
                                                 @endcan
                                                 {{-- @if ($item->jenis_order == 'OUTBOUND') --}}
                                                     @can('CANCEL_DALAM_PERJALANAN')

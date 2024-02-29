@@ -147,7 +147,7 @@
                                
                                 <div class="form-group">
                                     <label for="select_customer">Customer<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" {{$data['status']== 'PROSES DOORING'||$data['id_booking']!=null ||$data['jenis_order']=="INBOUND"?'disabled':''}}>
+                                    <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" {{$data['id_booking']!=null ||$data['jenis_order']=="INBOUND"?'disabled':''}}>
                                         <option value="">Pilih Customer</option>
                                         @foreach ($dataCustomer as $cust)                                        
                                             <option value="{{$cust->idCustomer}}" <?= $cust->idCustomer==$data['id_customer']? 'selected':''  ?> > {{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>

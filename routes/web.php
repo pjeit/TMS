@@ -156,12 +156,14 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('truck_order', 'App\Http\Controllers\SewaController');
         Route::resource('truck_order_rekanan', 'App\Http\Controllers\SewaRekananController');
 
+        Route::post('/dalam_perjalanan/save_ubah_tujuan/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_ubah_tujuan'])->name('dalam_perjalanan.save_ubah_tujuan');
         Route::post('/dalam_perjalanan/save_ubah_supir/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'save_ubah_supir'])->name('dalam_perjalanan.save_ubah_supir');
         Route::post('/dalam_perjalanan/save_batal_muat/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_batal_muat'])->name('dalam_perjalanan.save_batal_muat');
         Route::post('/dalam_perjalanan/save_cancel/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_cancel'])->name('dalam_perjalanan.save_cancel');
         Route::post('/dalam_perjalanan/save_cancel_uang_jalan/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_cancel_uang_jalan'])->name('dalam_perjalanan.save_cancel_uang_jalan');
         Route::post('/dalam_perjalanan/save_refund_operasional/{sewa}', [App\Http\Controllers\DalamPerjalananController::class, 'save_refund_operasional'])->name('dalam_perjalanan.save_refund_operasional');
         
+        Route::get('/dalam_perjalanan/ubah_tujuan/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'ubah_tujuan'])->name('dalam_perjalanan.ubah_tujuan');
         Route::get('/dalam_perjalanan/ubah_supir/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'ubah_supir'])->name('dalam_perjalanan.ubah_supir');
         Route::get('/dalam_perjalanan/batal_muat/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'batal_muat'])->name('dalam_perjalanan.batal_muat');
         Route::get('/dalam_perjalanan/refund_operasional/{id}', [App\Http\Controllers\DalamPerjalananController::class, 'refund_operasional'])->name('dalam_perjalanan.refund_operasional');
