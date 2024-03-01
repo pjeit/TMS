@@ -40,7 +40,13 @@
 
                     @foreach($data as $item)
                     <tr>
-                        <td>{{ $item->no_booking }}</td>
+                        <td>{{ $item->no_booking }} <br>
+                            @if ($item->id_jo_detail)
+                                <span class="badge badge-danger ">INBOUND ORDER</span>
+                            @else
+                                <span class="badge badge-dark ">OUTBOUND ORDER</span>
+                            @endif
+                        </td>
                         <td>{{ $item->namaCustomer }}</td>  
                         <td>{{  $item->namaTujuan}}</td>  
                         <td>    
@@ -51,9 +57,12 @@
                                 </button>
                                 <div class="dropdown-menu">
                                     @can('EDIT_BOOKING')
+                                    @if ($item->id_jo_detail==null)
                                         <a href="{{route('booking.edit',[$item->id])}}" class="dropdown-item">
                                             <span class="fas fa-edit mr-3"></span> Edit
                                         </a>
+                                    @endif
+                                       
                                     @endcan
                                     @can('DELETE_BOOKING')
                                         <a href="{{ route('booking.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">

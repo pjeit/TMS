@@ -239,7 +239,10 @@ class PencairanUangJalanController extends Controller
                 }   
             }
             
+            $teluk_lamong = isset($data['teluk_lamong'])?floatval(str_replace(',', '', $data['teluk_lamong'])):0;
+
             $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa_defaulth']);
+            $sewa->total_uang_jalan +=  $teluk_lamong;
             $sewa->status = 'PROSES DOORING';
             $sewa->updated_by = $user;
             $sewa->updated_at = now();

@@ -60,11 +60,11 @@
                         <div class="row">
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="no_akun">Customer Awal</label>
-                                <input type="text" id="customer" name="customer" class="form-control" value="[{{$data->getCustomer->kode}}] {{$data->getCustomer->nama}}" readonly>                         
+                                <input type="text" id="customer_awal" name="customer_awal" class="form-control" value="[{{$data->getCustomer->kode}}] {{$data->getCustomer->nama}}" readonly>                         
                             </div>  
                             <div class="form-group col-lg-6 col-md-12 col-sm-12">
                                 <label for="no_akun">Tujuan Awal</label>
-                                <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$data->nama_tujuan}}" readonly>                         
+                                <input type="text" id="tujuan_awal" name="tujuan_awal" class="form-control" value="{{$data->nama_tujuan}}" readonly>                         
                             </div>  
                             <div class="form-group col-lg-6 col-md-12 col-sm-12">
                                 <label for="no_akun">Tarif Awal</label>
@@ -76,7 +76,7 @@
                                 </div>
                             </div>  
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="total_uang_jalan">
+                                <label for="total_uang_jalan_lama">
                                     Total Uang Jalan actual
                                     (<span class="badge badge-primary">UJ : {{number_format($ujr->total_uang_jalan) }} </span> +
                                     <span class="badge badge-success">TL : {{ number_format($ujr->total_tl)}} </span>) =
@@ -86,11 +86,11 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input readonly="" value="{{ number_format($total_uang_jalan ) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                    <input readonly="" value="{{ number_format($total_uang_jalan ) }}" type="text" name="total_uang_jalan_lama" class="form-control numaja uang" id="total_uang_jalan_lama" placeholder="">
                                 </div>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="total_uang_jalan">
+                                <label for="total_uang_jalan_diterima">
                                     Total Uang Jalan Yang diterima supir
                                     (<span class="badge badge-primary">UJ : {{number_format($ujr->total_uang_jalan) }} </span> +
                                     <span class="badge badge-success">TL : {{ number_format($ujr->total_tl)}} </span>) -
@@ -119,10 +119,14 @@
                                     <select class="form-control select2" style="width: 100%;" id='select_customer' name="select_customer" {{$data->jenis_order=="INBOUND"?'disabled':''}} >
                                         <option value="">Pilih Customer</option>
                                         @foreach ($dataCustomer as $cust)                                        
-                                            <option value="{{$cust->idCustomer}}" {{/*$data->jenis_order=="INBOUND" &&*/ $data->id_customer==$cust->idCustomer ?'selected':''}}> {{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
+                                            <option value="{{$cust->idCustomer}}" nama_cust="{{$cust->namaCustomer}}" kode_cust="{{$cust->kodeCustomer}}"{{/*$data->jenis_order=="INBOUND" &&*/ $data->id_customer==$cust->idCustomer ?'selected':''}}> {{ $cust->kodeCustomer }} - {{ $cust->namaCustomer }} / {{ $cust->namaGrup }}</option>
                                         @endforeach
                                     </select>
                                     <input type="hidden" id="customer_id" name="customer_id" value="{{$data['id_customer']}}" placeholder="customer_id">
+                                    <input type="hidden" id="customer_nama_baru" name="customer_nama_baru" value="{{$data->getCustomer->nama}}" placeholder="customer_nama_baru">
+                                    <input type="hidden" id="customer_kode_baru" name="customer_kode_baru" value="{{$data->getCustomer->kode}}" placeholder="customer_nama_baru">
+
+
                                     <input type="hidden" id="booking_id" name="booking_id" value="" placeholder="booking_id">
                                     <input type="hidden" id="jenis_order" name="jenis_order" value="{{$data['jenis_order']}}" placeholder="jenis_order">
                                 </div>
@@ -134,22 +138,22 @@
                                             <option value="{{$data['id_grup_tujuan']}}">{{$data->getTujuan->nama_tujuan}}</option>
                                         @endisset --}}
                                     </select>
-                                    <input type="text" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
-                                    <input type="text" name="id_jo_detail" id="id_jo_detail" value="{{!empty($data['id_jo_detail'])? $data['id_jo_detail']:''}}" placeholder="id_jo_detail">
-                                    <input type="text" name="id_jo" id="id_jo" value="{{!empty($data['id_jo'])?$data['id_jo']:''}}" placeholder="id_jo">
-                                    <input type="text" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
-                                    <input type="text" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
-                                    <input type="text" id="tarif" name="tarif" value=""placeholder="tarif">
-                                    <input type="text" id="uang_jalan" name="uang_jalan" value=""placeholder="uang_jalan">
-                                    <input type="text" id="komisi" name="komisi" value=""placeholder="komisi">
-                                    <input type="text" id="komisi_driver" name="komisi_driver" value=""placeholder="komisi_driver">
-                                    <input type="text" id="jenis_tujuan" name="jenis_tujuan" value=""placeholder="jenis_tujuan">
-                                    <input type="text" id="harga_per_kg" name="harga_per_kg" value="0"placeholder="harga_per_kg">
-                                    <input type="text" id="min_muatan" name="min_muatan" value="0"placeholder="min_muatan">
-                                    <input type="text" id="plastik" name="plastik" value=""placeholder="plastik">
-                                    <input type="text" id="tally" name="tally" value=""placeholder="tally">
-                                    <input type="text" id="kargo" name="kargo" value=""placeholder="kargo">
-                                    <input type="text" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
+                                    <input type="hidden" id="tujuan_id" name="tujuan_id" value="" placeholder="tujuan_id">
+                                    <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="{{!empty($data['id_jo_detail'])? $data['id_jo_detail']:''}}" placeholder="id_jo_detail">
+                                    <input type="hidden" name="id_jo" id="id_jo" value="{{!empty($data['id_jo'])?$data['id_jo']:''}}" placeholder="id_jo">
+                                    <input type="hidden" id="nama_tujuan" name="nama_tujuan" value=""placeholder="nama_tujuan">
+                                    <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value=""placeholder="alamat_tujuan">
+                                    <input type="hidden" id="tarif" name="tarif" value=""placeholder="tarif">
+                                    <input type="hidden" id="uang_jalan" name="uang_jalan" value=""placeholder="uang_jalan">
+                                    <input type="hidden" id="komisi" name="komisi" value=""placeholder="komisi">
+                                    <input type="hidden" id="komisi_driver" name="komisi_driver" value=""placeholder="komisi_driver">
+                                    <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value=""placeholder="jenis_tujuan">
+                                    <input type="hidden" id="harga_per_kg" name="harga_per_kg" value="0"placeholder="harga_per_kg">
+                                    <input type="hidden" id="min_muatan" name="min_muatan" value="0"placeholder="min_muatan">
+                                    <input type="hidden" id="plastik" name="plastik" value=""placeholder="plastik">
+                                    <input type="hidden" id="tally" name="tally" value=""placeholder="tally">
+                                    <input type="hidden" id="kargo" name="kargo" value=""placeholder="kargo">
+                                    <input type="hidden" id="biayaDetail" name="biayaDetail"placeholder="biayaDetail">
                                 </div>
                                 <div class="form-group col-6">
                                     <label for="">Tarif Baru<span class="text-red">*</span></label>
@@ -160,7 +164,7 @@
                                         <input type="text" name="tarif_baru" id="tarif_baru" class="form-control numaja uang" value="" readonly>
                                     </div>
                                 </div>
-                                <div class="form-group col-lg-4 col-md-12 col-sm-12">
+                                <div class="form-group col-lg-3 col-md-12 col-sm-12">
                                     <label for="">Uang Jalan Baru<span class="text-red">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -169,7 +173,18 @@
                                         <input type="text" name="uang_jalan_baru" id="uang_jalan_baru" class="form-control numaja uang" value="" readonly>
                                     </div>
                                 </div>
-                                <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                
+                                <div class="form-group col-lg-3 col-md-12 col-sm-12" id="stack_tl_form">
+                                    <label for="select_driver" id="stack_tl_label">Stack Full</label>
+                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
+                                        <option value="">── Pilih Stack ──</option>
+                                            <option value="tl_perak" {{ $data->stack_tl == 'tl_perak'? 'selected':'' }}>Perak</option>
+                                        <option value="tl_priuk" {{ $data->stack_tl == 'tl_priuk'? 'selected':'' }}>Priuk</option>
+                                        <option value="tl_teluk_lamong" {{ $data->stack_tl == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
+                                    </select>
+                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="{{$ujr->total_tl}}" placeholder="stack_teluk_lamong_hidden">
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Selisih Uang Jalan<span class="text-red">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -178,17 +193,6 @@
                                         <input type="text" name="selisih_uang_jalan" id="selisih_uang_jalan" class="form-control numaja uang" value="" readonly>
                                     </div>
                                 </div>
-                                <div class="form-group col-lg-4 col-md-12 col-sm-12" id="stack_tl_form">
-                                    <label for="select_driver" id="stack_tl_label">Stack Full</label>
-                                        <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
-                                        <option value="">── Pilih Stack ──</option>
-                                            <option value="tl_perak" {{ $data->stack_tl == 'tl_perak'? 'selected':'' }}>Perak</option>
-                                        <option value="tl_priuk" {{ $data->stack_tl == 'tl_priuk'? 'selected':'' }}>Priuk</option>
-                                        <option value="tl_teluk_lamong" {{ $data->stack_tl == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
-                                    </select>
-                                    <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="" placeholder="stack_teluk_lamong_hidden">
-                                </div>
-                               
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="total_hutang">Total Hutang</label>
                                     <div class="input-group mb-0">
@@ -391,8 +395,15 @@ $(document).ready(function() {
     // });
     $('body').on('change','#select_customer',function()
     {
+        var selected_cust = $(this).find('option:selected');
+        var nama_cust=selected_cust.attr('nama_cust');
+        var kode_cust=selected_cust.attr('kode_cust');
+
         var selectedValue = $(this).val();
         $('#customer_id').val(selectedValue);
+        $('#customer_nama_baru').val(`[${kode_cust}] ${nama_cust}`);
+        $('#customer_kode_baru').val(kode_cust);
+        
         get_tujuan(selectedValue);
         check();
         // $('#uang_jalan_baru').val('')
@@ -409,7 +420,7 @@ $(document).ready(function() {
     $('body').on('change','#stack_tl',function()
     {
         var selectedOption = $(this).val();
-        var uang_jalan_actual = parseFloat(escapeComma($('#total_uang_jalan').val()));
+        var uang_jalan_actual = parseFloat(escapeComma($('#total_uang_jalan_lama').val()));
         var uang_jalan_hidden = parseFloat(escapeComma($('#uang_jalan').val()));
         var cekNan_uj= !isNaN(uang_jalan_hidden)?uang_jalan_hidden:0;
         var uang_jalan_sum_tl=0;
@@ -625,7 +636,7 @@ $(document).ready(function() {
         });
     }
     function check(){
-        var total_uang_jalan = parseFloat(escapeComma($('#total_uang_jalan').val()));
+        var total_uang_jalan = parseFloat(escapeComma($('#total_uang_jalan_lama').val()));
         var selisih_uang_jalan = parseFloat(escapeComma($('#selisih_uang_jalan').val()));
 
         var uang_jalan_baru = parseFloat(escapeComma($('#uang_jalan_baru').val()));

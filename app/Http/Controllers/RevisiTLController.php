@@ -197,21 +197,7 @@ class RevisiTLController extends Controller
                         'is_aktif' => "Y",
                     )
                 ); 
-            // $SOP = new SewaOperasional();
-            // $SOP->id_sewa = $data['id_sewa']; 
-            // $SOP->deskripsi = 'TL';
-            // $SOP->total_operasional = (float)str_replace(',', '', $data['jumlah']);
-            // // $SOP->total_dicairkan = (float)str_replace(',', '', $data['total_diterima']);
-            // $SOP->total_dicairkan = 0;
-            // $SOP->tgl_dicairkan = now();
-            // $SOP->is_ditagihkan = 'N';
-            // $SOP->is_dipisahkan = 'N';
-            // $SOP->status = "TAGIHKAN DI INVOICE";
-            // $SOP->catatan = "[TIDAK-ADA-PENCAIRAN] PENCAIRAN DI REVISI TL";
-            // $SOP->created_by = $user;
-            // $SOP->created_at = now();
-            // $SOP->is_aktif = 'Y';
-            // $SOP->save();
+           
 
             $uang_jalan_riwayat = UangJalanRiwayat::where('is_aktif', 'Y')
                                     ->where('sewa_id', $data['id_sewa'])
@@ -283,6 +269,12 @@ class RevisiTLController extends Controller
                         'Y'
                     ));
                 }
+                $teluk_lamong = isset($data['total_diterima'])?floatval(str_replace(',', '', $data['total_diterima'])):0;
+                $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa']);
+                $sewa->total_uang_jalan +=  $teluk_lamong;
+                $sewa->updated_by = $user;
+                $sewa->updated_at = now();
+                $sewa->save();
     
             DB::commit();
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Menambah Biaya TL']);
@@ -414,6 +406,12 @@ class RevisiTLController extends Controller
                 );
 
             }
+            $teluk_lamong = isset($data['jumlah'])?floatval(str_replace(',', '', $data['jumlah'])):0;
+            $sewa = Sewa::where('is_aktif', 'Y')->findOrFail($data['id_sewa']);
+            $sewa->total_uang_jalan -=  $teluk_lamong;
+            $sewa->updated_by = $user;
+            $sewa->updated_at = now();
+            $sewa->save();
             DB::commit();
             return redirect()->route('revisi_tl.index')->with(['status' => 'Success', 'msg' => 'Sukses Mengembalikan Biaya TL']);
 

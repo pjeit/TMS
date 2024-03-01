@@ -35,14 +35,14 @@
                                 <select class="form-control selectpicker" required name="item" id="item"
                                     data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                     <option value="">­­— PILIH DATA —</option>
+                                    <option value="ALAT">ALAT</option>
                                     <option value="TALLY">TALLY</option>
                                     <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                    <option value="ALAT">ALAT</option>
-                                    <option value="TIMBANG">TIMBANG</option>
+                                    <option value="BIAYA DEPO">BIAYA DEPO</option>
                                     <option value="BURUH">BURUH</option>
+                                    <option value="TIMBANG">TIMBANG</option>
                                     <option value="LEMBUR">LEMBUR</option>
                                     <option value="KARANTINA">KARANTINA</option>
-                                    <option value="BIAYA DEPO">BIAYA DEPO</option>
                                     <option value="LAIN-LAIN">LAIN-LAIN</option>
                                 </select>
                                 <input type="hidden" id="alasan" name="alasan" value="">

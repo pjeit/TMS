@@ -30,7 +30,7 @@ class BookingController extends Controller
         $cancelButtonText = "Batal";
         confirmDelete($title, $text, $confirmButtonText, $cancelButtonText);
          $data =  DB::table('booking as b')
-            ->select('b.*','c.nama as namaCustomer','g.nama_tujuan as namaTujuan')
+            ->select('b.*','c.nama as namaCustomer','g.nama_tujuan as namaTujuan','b.id_jo_detail')
             ->join('customer as c', 'c.id', '=', 'b.id_customer')
             ->join('grup_tujuan as g', 'g.id', '=', 'b.id_grup_tujuan')
             ->where('b.is_aktif', 'Y')
