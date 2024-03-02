@@ -1033,7 +1033,7 @@ class BelumInvoiceController extends Controller
                 ->where('sewa.is_aktif', '=', 'Y')
                 ->select('sewa.*','sp.nama as namaSupplier')
                 ->first();
-
+            // DD($DATA);
             $checkLTL = false;
             
             if ($data->jenis_tujuan == 'LTL') {

@@ -16,6 +16,7 @@ use App\Models\KasBank;
 use App\Models\SewaOperasionalPembayaran;
 use Exception;
 use App\Helper\VariableHelper;
+use App\Models\SewaOperasionalPembayaranDetail;
 
 class BiayaOperasionalController extends Controller
 {
@@ -266,7 +267,7 @@ class BiayaOperasionalController extends Controller
                         //     $sewa->save();
                         // }
                         
-                        $sewa_o = new SewaOperasional();
+                        $sewa_o = new SewaOperasionalPembayaranDetail();
                         $sewa_o->id_sewa = $key;
                         $sewa_o->deskripsi = $item == 'ALAT'? 'ALAT' . ($value['pick_up'] != 'null'? ' '. $value['pick_up']:'') : $item;
                         // $sewa_o->catatan = $value['catatan'];
@@ -274,7 +275,6 @@ class BiayaOperasionalController extends Controller
                             $sewa_o->total_operasional = $total_operasional;
                         // }
                         $sewa_o->total_dicairkan = $dicairkan;
-                        $sewa_o->created_by = $user;
                         if ($value['dicairkan'] == 0) {
                             $sewa_o->status = 'TAGIHKAN DI INVOICE';
                             $sewa_o->catatan = $value['catatan'];
@@ -289,7 +289,6 @@ class BiayaOperasionalController extends Controller
                         }
                         
                         $sewa_o->created_at = now();
-                        // $sewa_o->tgl_dicairkan = now();
                         $sewa_o->created_by = $user;
                         $sewa_o->is_aktif = 'Y';
                         $sewa_o->save();
@@ -404,7 +403,7 @@ class BiayaOperasionalController extends Controller
                                 if($pembayaran->save()){
                                     // ini ngedit sewa operasional, ditempelin id pembayaran
                                     // logic mirip invoice pembayaran
-                                    SewaOperasional::whereIn('id', $dump['id_opr'])
+                                    SewaOperasionalPembayaranDetail::whereIn('id', $dump['id_opr'])
                                                     ->where('is_aktif', 'Y')
                                                     ->update(['id_pembayaran' => $pembayaran->id]);
                                     
@@ -519,7 +518,7 @@ class BiayaOperasionalController extends Controller
                             'g.nama_grup as nama_grup',
                             'sp.nama as namaSupplier','s.tanggal_berangkat'
                         )
-                        ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
+                        ->leftJoin('sewa_operasional_pembayaran_detail AS so', function ($join) use($item) {
                             if($item == 'ALAT'){
                                 $join->on('s.id_sewa', '=', 'so.id_sewa')
                                     ->where('so.is_aktif', 'Y')
@@ -622,7 +621,7 @@ class BiayaOperasionalController extends Controller
                             'sp.nama as namaSupplier','s.tanggal_berangkat',
                             's.buruh_pje'
                         )
-                        ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
+                        ->leftJoin('sewa_operasional_pembayaran_detail AS so', function ($join) use($item) {
                             $join->on('s.id_sewa', '=', 'so.id_sewa')
                                 ->where('so.is_aktif', 'Y')
                                 ->where('so.deskripsi', '=', $item);
@@ -680,7 +679,7 @@ class BiayaOperasionalController extends Controller
         try {
             $currentDate = Carbon::now();
             $dataCustomerSewa = Sewa::with('getCustomer')
-            ->leftJoin('sewa_operasional AS so', function ($join) use($item) {
+            ->leftJoin('sewa_operasional_pembayaran_detail AS so', function ($join) use($item) {
                     $join->on('sewa.id_sewa', '=', 'so.id_sewa')
                         ->where('so.is_aktif', 'Y')
                         ->where('so.deskripsi', '=', $item);

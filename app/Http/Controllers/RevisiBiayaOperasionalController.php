@@ -7,6 +7,7 @@ use App\Models\KasBank;
 use App\Models\KasBankTransaction;
 use App\Models\SewaOperasional;
 use App\Models\SewaOperasionalPembayaran;
+use App\Models\SewaOperasionalPembayaranDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -154,7 +155,7 @@ class RevisiBiayaOperasionalController extends Controller
                             if(isset($value['check'])){
                                 $i=1;
 
-                                $oprs = SewaOperasional::where('is_aktif', 'Y')->find($keyOprs);
+                                $oprs = SewaOperasionalPembayaranDetail::where('is_aktif', 'Y')->find($keyOprs);
                                 // dd($keyOprs);
                                 if($oprs){
                                     $oprs->total_operasional = floatval(str_replace(',', '', $value['total_operasional']));
@@ -332,7 +333,7 @@ class RevisiBiayaOperasionalController extends Controller
                             $coa = CoaHelper::DataCoa(5009);
         
                             if(isset($value['check'])){ // ini data yg dihapus
-                                $oprs = SewaOperasional::where('is_aktif', 'Y')->find($keyOprs);
+                                $oprs = SewaOperasionalPembayaranDetail::where('is_aktif', 'Y')->find($keyOprs);
         
                                 if($oprs){
                                     $oprs->catatan = $value['catatan'];
@@ -344,7 +345,7 @@ class RevisiBiayaOperasionalController extends Controller
                                 $is_delete = true; //benar ada perubahan
                                 
                             }else{
-                                $oprs = SewaOperasional::where('is_aktif', 'Y')->find($keyOprs);
+                                $oprs = SewaOperasionalPembayaranDetail::where('is_aktif', 'Y')->find($keyOprs);
                                 $i=1;
                                 if($oprs){
                                     $oprs->catatan = $value['catatan'];
@@ -916,7 +917,7 @@ class RevisiBiayaOperasionalController extends Controller
                 $jenis = 'karantina';
                 $coa = CoaHelper::DataCoa(5003);
             }else{
-                $oprs = SewaOperasional::where('is_aktif', 'Y')->find($data['key']);
+                $oprs = SewaOperasionalPembayaranDetail::where('is_aktif', 'Y')->find($data['key']);
                 $jenis = 'pencairan_operasional';
                 $coa =CoaHelper::DataCoa(5009);
             }
@@ -974,18 +975,17 @@ class RevisiBiayaOperasionalController extends Controller
                                                 $where->where('deskripsi', $item);
                                             }
                                         })
-                                        ->whereHas('getOperasional', function ($query){
+                                        ->whereHas('getOperasionalDetail', function ($query){
                                             $query->where('is_aktif', 'Y');
                                         })
                                         ->where('total_refund',0)
                                         ->whereNull('total_kembali_stok')
-                                        ->with('getOperasional')
-                                        ->with('getOperasional.getSewa.getCustomer.getGrup')
-                                        ->with('getOperasional.getSewa.getKaryawan')
-                                        ->with('getOperasional.getSewa.getSupplier')
+                                        ->with('getOperasionalDetail')
+                                        ->with('getOperasionalDetail.getSewaDetail.getCustomer.getGrup')
+                                        ->with('getOperasionalDetail.getSewaDetail.getKaryawan')
+                                        ->with('getOperasionalDetail.getSewaDetail.getSupplier')
                                         ->get();
             }
-             
             return response()->json(["result" => "success",'data' => $data], 200);
         } catch (\Throwable $th) {
             return response()->json(["result" => "error", 'message' => $th->getMessage()], 500);

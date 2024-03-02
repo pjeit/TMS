@@ -26,6 +26,7 @@ use App\Models\SewaOperasionalKembaliStok;
 use Exception;
 use App\Helper\VariableHelper;
 use App\Models\Booking;
+use App\Models\SewaOperasionalPembayaranDetail;
 use App\Models\Supplier;
 use Carbon\Carbon;
 
@@ -63,7 +64,7 @@ class DalamPerjalananController extends Controller
                 ->orderBy('c.id','ASC')
                 ->orderBy('s.tanggal_berangkat','DESC')
                 ->get();
-    $sewa_operasional = SewaOperasional::where('is_aktif','Y')->get();
+    $sewa_operasional = SewaOperasionalPembayaranDetail::where('is_aktif','Y')->get();
         // dd($dataSewa);
     
         return view('pages.order.dalam_perjalanan.index',[
@@ -151,13 +152,7 @@ class DalamPerjalananController extends Controller
             ->whereIn('status_bayar', ['DIBAYAR PENERIMA', 'DIBAYAR CUSTOMER'])
             ->where('jodb.is_aktif', '=', "Y")
             ->get();
-        // $dataOpreasional = DB::table('sewa_operasional AS so')
-        //             ->select('so.*')
-        //             ->where('so.is_aktif', '=', 'Y')
-        //             ->where('so.status', 'like', '%SUDAH DICAIRKAN%')
-        //             ->orWhere('so.status' ,'like','%TAGIHKAN DI INVOICE%')
-        //             ->where('so.id_sewa', '=', $dalam_perjalanan->id_sewa)
-        //             ->get();
+      
         $dataOpreasional = DB::table('sewa_operasional AS so')
                     ->select('so.*')
                     ->where('so.is_aktif', '=', 'Y')
@@ -168,6 +163,18 @@ class DalamPerjalananController extends Controller
                             ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
                     })
                     ->get();
+        $data_operasional_pembayaran_detail = SewaOperasionalPembayaranDetail::where(
+            [
+                'is_aktif'=>'Y',
+                'id_sewa'=>$dalam_perjalanan->id_sewa,
+            ]
+        )
+        ->where(function ($query) {
+            $query->where('status', 'like', '%SUDAH DICAIRKAN%')
+                ->orWhere('status', 'like', '%TAGIHKAN DI INVOICE%');
+        })
+        ->where('total_operasional', '>', 0)
+        ->get();
         $dataOpreasionalJO = DB::table('sewa_operasional AS so')
                     ->select('so.*','s.id_sewa','jo.id as id_jo')
                     ->leftJoin('sewa AS s', 'so.id_sewa', '=', 's.id_sewa')
@@ -193,43 +200,7 @@ class DalamPerjalananController extends Controller
                             ->orWhere('sb.deskripsi',);
                     })
                     ->get();
-                // dd($dataOpreasionalJO);
-        // $cek_trigger = JobOrder::select('job_order.*')
-        //         ->leftJoin('job_order_detail as jod', 'job_order.id', '=', 'jod.id_jo')
-        //         ->where('jod.status', 'PROSES DOORING')
-        //         ->where('job_order.status', 'PROSES DOORING')
-        //         ->where('job_order.id', $dalam_perjalanan->id_jo)
-        //         // ->where('jod.id', $dalam_perjalanan->id_jo_detail)
-        //         ->where('job_order.is_aktif', '=', "Y")
-        //         ->with('getCustomer')
-        //         ->with('getSupplier')
-        //         // ->groupBy('job_order.id')
-        //         ->get();
-        // $cek_trigger = DB::table('job_order_detail as jod')
-        //                 ->leftJoin('job_order', 'job_order.id', '=', 'jod.id_jo')
-        //                 ->where('jod.status', 'PROSES DOORING')
-        //                 ->where('jod.is_aktif', 'Y')
-        //                 ->where('job_order.status', 'PROSES DOORING')
-        //                 ->where('job_order.id', $dalam_perjalanan->id_jo)
-        //                 // ->where('jod.id', $dalam_perjalanan->id_jo_detail)
-        //                 ->where('job_order.is_aktif', '=', "Y")
-        //                 ->get();
-        //         dd( $cek_trigger );
-        // dd($dataOpreasional);
-        // dd(strpos($dataOpreasional, 'CLEANING/REPAIR'));
-
-        // $flagCleaning=false;
-        // foreach($dataOpreasional as $opersional)
-        // {
-            
-        //     if( $opersional->deskripsi== 'CLEANING/REPAIR' )
-        //     {
-        //         //hapus array kalau datanya sama 
-        //         $flagCleaning = true;
-        //         break;
-        //     }
-        // }
-        // dd($flagCleaning);
+           
         $array_inbound_parent = [];
         if($dalam_perjalanan->jenis_order=="INBOUND")
         {
@@ -339,7 +310,21 @@ class DalamPerjalananController extends Controller
                     array_push($array_outbond, $objek);
             }
         }
-            
+        if(isset($data_operasional_pembayaran_detail))
+        {
+            foreach ($data_operasional_pembayaran_detail as $item) {
+                    
+                        $objek = [
+                            'id_pembayaran_detail' => $item->id,
+                            'deskripsi' => $item->deskripsi,
+                            'dicairkan' => $item->total_dicairkan,
+                            'biaya' => $item->total_operasional,
+                        ];
+                    array_push($array_inbound, $objek);
+                    array_push($array_outbond, $objek);
+            }
+        }
+            // dd($array_outbond);
         foreach ($datajODetailBiaya as $item) {
             
             if ($item->storage || $item->storage != 0) {
@@ -379,16 +364,6 @@ class DalamPerjalananController extends Controller
             }
         }
         foreach ($Tujuan as $item) {
-            // if ($item->seal_pelayaran) {
-            //     $objSeal = [
-            //         'deskripsi' => 'SEAL PELAYARAN',
-            //         'biaya' => $item->seal_pelayaran,
-            //     ];
-            //     array_push($array_outbond, $objSeal);
-            //     // array_push($array_inbound, $objSeal); // soalnya di inbound ada biaya seal pelayaran, makanya dimasukin
-
-            // }
-    
             if ($item->seal_pje) {
                 $objSealPje = [
                     'deskripsi' => 'SEAL PJE',
@@ -404,14 +379,6 @@ class DalamPerjalananController extends Controller
                 ];
                 array_push($array_outbond, $objPlastik);
             }
-    
-            // if ($item->tally) {
-            //     $objTally = [
-            //         'deskripsi' => 'TALLY',
-            //         'biaya' => $item->tally,
-            //     ];
-            //     array_push($array_outbond, $objTally);
-            // }
             
         }
         //yang seal pje sama plastik dari grup tujuan
@@ -438,6 +405,7 @@ class DalamPerjalananController extends Controller
                 }
             }
         }
+        // dd(isset($array_outbond[0]['id_pembayaran_detail']));
         //sorting array berdasarkan deskripsi
         usort($array_outbond, function ($a, $b) {
             return strcmp($b['deskripsi'],$a['deskripsi']);
@@ -485,8 +453,8 @@ class DalamPerjalananController extends Controller
                 $tgl_kembali = isset($data['tanggal_kembali'])?date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
 
                 $dalam_perjalanan->tanggal_kembali = isset($tgl_kembali)? date_format($tgl_kembali, 'Y-m-d H:i:s'):null;
-                $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
-                $dalam_perjalanan->is_kembali = $data['is_kembali'];
+                // $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
+                // $dalam_perjalanan->is_kembali = $data['is_kembali'];
                 if ($data['jenis_tujuan']=='LTL') {
                     $dalam_perjalanan->jumlah_muatan = $data['muatan_ltl'];
                     $dalam_perjalanan->total_tarif = floatval(str_replace(',', '', $data['total_harga_ltl']));
@@ -607,19 +575,34 @@ class DalamPerjalananController extends Controller
                 
                 foreach ($data['dataMaster'] as $key => $value) {
                     // dd(isset($value['masuk_db'][1]));
+                    $id_pembayaran_detail= isset($value['id_pembayaran_detail'])?$value['id_pembayaran_detail']:null;
+                    $id_klaim_detail= isset($value['id_klaim_detail'])?$value['id_klaim_detail']:null;
 
                     if(isset($value['masuk_db']))
                     {
                     
                         $SOP = new SewaOperasional();
                         $SOP->id_sewa = $dalam_perjalanan->id_sewa; 
+                        $SOP->id_pembayaran_detail = $id_pembayaran_detail;
+                        $SOP->id_klaim_detail = $id_klaim_detail;
                         $SOP->deskripsi = $value['deskripsi_data'];
                         $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_ditagihkan']);
                         $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
                         $SOP->catatan = $value['catatan_data'];
-                        $SOP->keterangan_internal = "[DATA-MASTER-DALAM-PERJALANAN]";
+                        if ($id_pembayaran_detail) {
+                            # code...
+                            $SOP->keterangan_internal = "[DATA-OPERASIONAL]";
+                        }
+                        else if($id_klaim_detail)
+                        {
+                            $SOP->keterangan_internal = "[DATA-KLAIM-OPERASIONAL]";
+                        }
+                        else
+                        {
+                            $SOP->keterangan_internal = "[DATA-MASTER-DALAM-PERJALANAN]";
+                        }
                         $SOP->status = "TAGIHKAN DI INVOICE";
                         $SOP->created_by = $user;
                         $SOP->created_at = now();
@@ -892,28 +875,28 @@ class DalamPerjalananController extends Controller
             ->where('s.is_aktif', '=', "Y")
             ->where('s.id', '=', $sewa->id_supplier)
             ->first();
-        $dataOperasional = SewaOperasional::selectRaw('
-        sewa_operasional.id_sewa as so_id_sewa, 
-        sewa_operasional.id as so_id, 
+        $dataOperasional = SewaOperasionalPembayaranDetail::selectRaw('
+        sewa_operasional_pembayaran_detail.id_sewa as so_id_sewa, 
+        sewa_operasional_pembayaran_detail.id as so_id, 
         s.no_polisi as sewa_kendaraan, 
         s.nama_tujuan as sewa_tujuan, 
         COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama)) as sewa_driver, 
         s.no_sewa as no_sewa, 
-        sewa_operasional.catatan as so_catatan,
-        sewa_operasional.id_pembayaran as so_id_pembayaran, 
-        sewa_operasional.total_dicairkan as so_total_dicairkan, 
+        sewa_operasional_pembayaran_detail.catatan as so_catatan,
+        sewa_operasional_pembayaran_detail.id_pembayaran as so_id_pembayaran, 
+        sewa_operasional_pembayaran_detail.total_dicairkan as so_total_dicairkan, 
         sop.id_kas_bank as id_kas_bank, 
-        sewa_operasional.deskripsi as so_deskripsi')
-        ->where('sewa_operasional.is_aktif', '=', 'Y')
-        ->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
+        sewa_operasional_pembayaran_detail.deskripsi as so_deskripsi')
+        ->where('sewa_operasional_pembayaran_detail.is_aktif', '=', 'Y')
+        ->where('sewa_operasional_pembayaran_detail.id_sewa', '=', $sewa->id_sewa)
         ->leftJoin('sewa AS s', function($join) {
-                    $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
+                    $join->on('sewa_operasional_pembayaran_detail.id_sewa', '=', 's.id_sewa')
                     ->where('s.is_aktif', 'Y')
                     ->where('s.status', 'PROSES DOORING')
                     ;
                 })
         ->leftJoin('sewa_operasional_pembayaran AS sop', function($join) {
-                    $join->on('sop.id', '=', 'sewa_operasional.id_pembayaran')
+                    $join->on('sop.id', '=', 'sewa_operasional_pembayaran_detail.id_pembayaran')
                     ->where('sop.is_aktif', 'Y')
                     ;
                 })
@@ -922,8 +905,8 @@ class DalamPerjalananController extends Controller
                     ->where('sp.is_aktif', '=', 'Y');
                 })
         ->where(function ($query) {
-            $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
-                ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
+            $query->where('sewa_operasional_pembayaran_detail.status', 'like', '%SUDAH DICAIRKAN%')
+                ->orWhere('sewa_operasional_pembayaran_detail.status', 'like', '%TAGIHKAN DI INVOICE%');
         })
         ->get();
 
@@ -949,9 +932,7 @@ class DalamPerjalananController extends Controller
         //                 ->get();
         // dd(isset($data['data'][0]['id_pembayaran_operasional']));
         // dd($data);
-
         try {
-            
                 if(isset($data['data']))
                 {
                     foreach ($data['data'] as $value) {
@@ -970,7 +951,7 @@ class DalamPerjalananController extends Controller
                             $status = 'HAPUS';
                             $keterangan_internal = '[REFUND-UANG-KEMBALI]';
                         }
-                        SewaOperasional::where('is_aktif', '=', 'Y')
+                        SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
                         // ->whereIn('id',  explode(',' ,$value['id_operasional_data']))
                         ->where('id', $value['id_operasional_data'])
                         ->update([
@@ -1090,126 +1071,29 @@ class DalamPerjalananController extends Controller
             ->where('s.is_aktif', '=', "Y")
             ->where('s.id', '=', $sewa->id_supplier)
             ->first();
-        // $dataOperasional = DB::table('sewa_operasional AS so')
-        //                 ->select('so.*')
-        //                 ->where('so.is_aktif', '=', 'Y')
-        //                 ->where(function ($query) use ($sewa) {
-        //                     $query->where('so.id_sewa', '=', $sewa->id_sewa)
-        //                         ->orWhereIn('so.id_pembayaran', function ($subquery) use ($sewa) {
-        //                             $subquery->select('id_pembayaran')
-        //                                 ->from('sewa_operasional')
-        //                                 ->where('id_sewa', '=', $sewa->id_sewa);
-        //                         });
-        //                 })
-        //                 ->where(function ($query) {
-        //                     $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
-        //                         ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
-        //                 })
-        //                 ->get();
-        // $dataOperasional = DB::table('sewa_operasional AS so')
-        //     ->selectRaw('id_sewa, id_pembayaran, id, SUM(total_dicairkan) as total_dicairkan')
-        //     ->where('so.is_aktif', '=', 'Y')
-        //     ->where(function ($query) use ($sewa) {
-        //         $query->where('so.id_sewa', '=', $sewa->id_sewa)
-        //             ->orWhereIn('so.id_pembayaran', function ($subquery) use ($sewa) {
-        //                 $subquery->select('id_pembayaran')
-        //                     ->from('sewa_operasional')
-        //                     ->where('id_sewa', '=', $sewa->id_sewa);
-        //             });
-        //     })
-        //     ->where(function ($query) {
-        //         $query->where('so.status', 'like', '%SUDAH DICAIRKAN%')
-        //             ->orWhere('so.status', 'like', '%TAGIHKAN DI INVOICE%');
-        //     })
-        //     ->groupBy( 'id_pembayaran')
-        //     ->get();
-        // $dataOperasional = SewaOperasional::selectRaw('
-        // GROUP_CONCAT( sewa_operasional.id_sewa) as so_id_sewa, 
-        // COUNT( sewa_operasional.id_sewa) as counter_data, 
-        // GROUP_CONCAT( sewa_operasional.id) as so_id, 
-        // GROUP_CONCAT( s.no_polisi) as sewa_kendaraan, 
-        // GROUP_CONCAT(COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama))) as sewa_driver, 
-        // GROUP_CONCAT( s.no_sewa) as no_sewa, 
-        // GROUP_CONCAT( sewa_operasional.catatan) as so_catatan,
-        // sewa_operasional.id_pembayaran as so_id_pembayaran, 
-        // SUM(sewa_operasional.total_dicairkan) as so_total_dicairkan, 
-        // GROUP_CONCAT(sewa_operasional.total_dicairkan) as so_dicairkan, 
-        // sewa_operasional.deskripsi as so_deskripsi')
-        // ->where('sewa_operasional.is_aktif', '=', 'Y')
-        // ->where(function ($query) use ($sewa) {
-        //     //seelect id sewa di ops yang sama dengan id sewanya
-        //     $query->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
-        //         //atau select sewa yang id pembayarannya sama (karena ini mbatalin pembayaran)
-        //         ->orWhereIn('sewa_operasional.id_pembayaran', function ($subquery) use ($sewa) {
-        //             $subquery->select('id_pembayaran')
-        //                 ->from('sewa_operasional')
-        //                 ->where('id_sewa', '=', $sewa->id_sewa);
-        //         });
-        // })
-        // ->leftJoin('sewa AS s', function($join) {
-        //             $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
-        //             ->where('s.is_aktif', 'Y')
-        //             ->where('s.status', 'PROSES DOORING')
-        //             ;
-        //         })
-        // ->leftJoin('supplier AS sp', function($join) {
-        //             $join->on('s.id_supplier', '=', 'sp.id')
-        //             ->where('sp.is_aktif', '=', 'Y');
-        //         })
-        // ->where(function ($query) {
-        //     $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
-        //         ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
-        // })
-        // ->groupBy('id_pembayaran','sewa_operasional.deskripsi')
-        // // ->with('getSewas')
-        // ->get();
 
-        // // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 );
-        // // dd(count(explode(',',$dataOperasional[0]->id_sewa))>1 ); // berarti ada data
-        // // dd(explode(',',$dataOperasional[1]->so_id_sewa));
-        // $data_rincian = [];
-
-        // foreach ($dataOperasional as $value) {
-        //     $kendaraan = explode(',', $value->sewa_kendaraan);
-        //     $driver = explode(',', $value->sewa_driver);
-        //     $rincian_cair = explode(',', $value->so_dicairkan);
-
-        //     foreach ($kendaraan as $key => $kendaraanValue) {
-        //         $data_rincian[] = [
-        //             'id_bayar'=>$value->so_id_pembayaran,
-        //             'deskripsi'=>$value->so_deskripsi,
-        //             'kendaraan' => $kendaraanValue,
-        //             'driver' => $driver[$key],
-        //             'rincian' => $rincian_cair[$key],
-        //         ];
-        //     }
-        // }
-
-        // dd($data_rincian);
-        // dd($dataOperasional);
-
-        $dataOperasional = SewaOperasional::selectRaw('
-        sewa_operasional.id_sewa as so_id_sewa, 
-        sewa_operasional.id as so_id, 
+        $dataOperasional = SewaOperasionalPembayaranDetail::selectRaw('
+        sewa_operasional_pembayaran_detail.id_sewa as so_id_sewa, 
+        sewa_operasional_pembayaran_detail.id as so_id, 
         s.no_polisi as sewa_kendaraan, 
         s.nama_tujuan as sewa_tujuan, 
         COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama)) as sewa_driver, 
         s.no_sewa as no_sewa, 
-        sewa_operasional.catatan as so_catatan,
-        sewa_operasional.id_pembayaran as so_id_pembayaran, 
-        sewa_operasional.total_dicairkan as so_total_dicairkan, 
+        sewa_operasional_pembayaran_detail.catatan as so_catatan,
+        sewa_operasional_pembayaran_detail.id_pembayaran as so_id_pembayaran, 
+        sewa_operasional_pembayaran_detail.total_dicairkan as so_total_dicairkan, 
         sop.id_kas_bank as id_kas_bank, 
-        sewa_operasional.deskripsi as so_deskripsi')
-        ->where('sewa_operasional.is_aktif', '=', 'Y')
-        ->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
+        sewa_operasional_pembayaran_detail.deskripsi as so_deskripsi')
+        ->where('sewa_operasional_pembayaran_detail.is_aktif', '=', 'Y')
+        ->where('sewa_operasional_pembayaran_detail.id_sewa', '=', $sewa->id_sewa)
         ->leftJoin('sewa AS s', function($join) {
-                    $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
+                    $join->on('sewa_operasional_pembayaran_detail.id_sewa', '=', 's.id_sewa')
                     ->where('s.is_aktif', 'Y')
                     ->where('s.status', 'PROSES DOORING')
                     ;
                 })
         ->leftJoin('sewa_operasional_pembayaran AS sop', function($join) {
-                    $join->on('sop.id', '=', 'sewa_operasional.id_pembayaran')
+                    $join->on('sop.id', '=', 'sewa_operasional_pembayaran_detail.id_pembayaran')
                     ->where('sop.is_aktif', 'Y')
                     ;
                 })
@@ -1218,8 +1102,8 @@ class DalamPerjalananController extends Controller
                     ->where('sp.is_aktif', '=', 'Y');
                 })
         ->where(function ($query) {
-            $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
-                ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
+            $query->where('sewa_operasional_pembayaran_detail.status', 'like', '%SUDAH DICAIRKAN%')
+                ->orWhere('sewa_operasional_pembayaran_detail.status', 'like', '%TAGIHKAN DI INVOICE%');
         })
         ->get();
 
@@ -1293,7 +1177,7 @@ class DalamPerjalananController extends Controller
                             $status = 'HAPUS';
                             $keterangan_internal = '[CANCEL-UANG-KEMBALI]';
                         }
-                        SewaOperasional::where('is_aktif', '=', 'Y')
+                        SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
                         // ->whereIn('id',  explode(',' ,$value['id_operasional_data']))
                         ->where('id', $value['id_operasional_data'])
                         ->update([
@@ -1713,7 +1597,7 @@ class DalamPerjalananController extends Controller
                     $riwayat->save();
                 }
             }
-            $cek_sewa_operasional_TL = DB::table('sewa_operasional as so')
+            $cek_sewa_operasional_TL = DB::table('sewa_operasional_pembayaran_detail as so')
                                     ->select('so.*')
                                     ->where('so.id_sewa',  $id)
                                     ->where('so.is_aktif', 'Y')
@@ -1723,7 +1607,7 @@ class DalamPerjalananController extends Controller
             //kalau ada tl nyantol di ubah jadi N
             if($cek_sewa_operasional_TL )
             {
-                DB::table('sewa_operasional')
+                DB::table('sewa_operasional_pembayaran_detail')
                     ->where('id_sewa',  $id)
                     ->where('deskripsi', 'TL')
                     ->update(array(
@@ -2174,28 +2058,28 @@ class DalamPerjalananController extends Controller
         $dataKas = KasBank::where('is_aktif', '=', "Y")
                     ->select('*')
                     ->get();
-        $dataOperasional = SewaOperasional::selectRaw('
-        sewa_operasional.id_sewa as so_id_sewa, 
-        sewa_operasional.id as so_id, 
+        $dataOperasional = SewaOperasionalPembayaranDetail::selectRaw('
+        sewa_operasional_pembayaran_detail.id_sewa as so_id_sewa, 
+        sewa_operasional_pembayaran_detail.id as so_id, 
         s.no_polisi as sewa_kendaraan, 
         s.nama_tujuan as sewa_tujuan, 
         COALESCE(s.nama_driver, CONCAT("DRIVER REKANAN ", sp.nama)) as sewa_driver, 
         s.no_sewa as no_sewa, 
-        sewa_operasional.catatan as so_catatan,
-        sewa_operasional.id_pembayaran as so_id_pembayaran, 
-        sewa_operasional.total_dicairkan as so_total_dicairkan, 
+        sewa_operasional_pembayaran_detail.catatan as so_catatan,
+        sewa_operasional_pembayaran_detail.id_pembayaran as so_id_pembayaran, 
+        sewa_operasional_pembayaran_detail.total_dicairkan as so_total_dicairkan, 
         sop.id_kas_bank as id_kas_bank, 
-        sewa_operasional.deskripsi as so_deskripsi')
-        ->where('sewa_operasional.is_aktif', '=', 'Y')
-        ->where('sewa_operasional.id_sewa', '=', $sewa->id_sewa)
+        sewa_operasional_pembayaran_detail.deskripsi as so_deskripsi')
+        ->where('sewa_operasional_pembayaran_detail.is_aktif', '=', 'Y')
+        ->where('sewa_operasional_pembayaran_detail.id_sewa', '=', $sewa->id_sewa)
         ->leftJoin('sewa AS s', function($join) {
-                    $join->on('sewa_operasional.id_sewa', '=', 's.id_sewa')
+                    $join->on('sewa_operasional_pembayaran_detail.id_sewa', '=', 's.id_sewa')
                     ->where('s.is_aktif', 'Y')
                     ->where('s.status', 'PROSES DOORING')
                     ;
                 })
         ->leftJoin('sewa_operasional_pembayaran AS sop', function($join) {
-                    $join->on('sop.id', '=', 'sewa_operasional.id_pembayaran')
+                    $join->on('sop.id', '=', 'sewa_operasional_pembayaran_detail.id_pembayaran')
                     ->where('sop.is_aktif', 'Y')
                     ;
                 })
@@ -2204,8 +2088,8 @@ class DalamPerjalananController extends Controller
                     ->where('sp.is_aktif', '=', 'Y');
                 })
         ->where(function ($query) {
-            $query->where('sewa_operasional.status', 'like', '%SUDAH DICAIRKAN%')
-                ->orWhere('sewa_operasional.status', 'like', '%TAGIHKAN DI INVOICE%');
+            $query->where('sewa_operasional_pembayaran_detail.status', 'like', '%SUDAH DICAIRKAN%')
+                ->orWhere('sewa_operasional_pembayaran_detail.status', 'like', '%TAGIHKAN DI INVOICE%');
         })
         ->get();
 

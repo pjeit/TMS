@@ -127,8 +127,8 @@ class Sewa extends Model
      {
           return $this->hasMany(SewaOperasional::class, 'id_sewa', 'id_sewa')
           ->where('is_aktif', 'Y')
-          ->where('deskripsi', 'not like', '%ALAT%')
-          ->where('deskripsi', '!=','LEMBUR');
+          /*->where('deskripsi', 'not like', '%ALAT%')
+          ->where('deskripsi', '!=','LEMBUR')*/;
      //    ->where('is_dipisahkan', 'N');
      }   
 

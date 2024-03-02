@@ -470,6 +470,7 @@ height: 20px;
                                             <tr id="{{$index}}">
                                                 <td >
                                                     <div class="icheck-info d-inline">
+                                                       
                                                         <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N" name="dataMaster[{{$index}}][masuk_db]">
                                                         <label for="checkboxPrimary_{{$index}}"></label>
                                                     </div>
@@ -477,6 +478,8 @@ height: 20px;
                                                 </td>
                                                 <td id="id_sewa_operasional_tabel_{{$index}}" hidden="">
                                                     <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="dataMaster[{{$index}}][id_sewa_operasional_data]" value="">
+                                                    <input type="hidden" value="{{isset($value['id_pembayaran_detail'])?$value['id_pembayaran_detail']:null}}" name="dataMaster[{{$index}}][id_pembayaran_detail]">
+                                                    <input type="hidden" value="{{isset($value['id_klaim_detail'])?$value['id_klaim_detail']:null}}" name="dataMaster[{{$index}}][id_klaim_detail]">
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                     <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
@@ -484,7 +487,7 @@ height: 20px;
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format(0) }}" class="form-control uang numaja" readonly>
+                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{isset($value['dicairkan'])?number_format($value['dicairkan']):0 }}" class="form-control uang numaja" readonly>
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
                                                         <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
@@ -578,6 +581,7 @@ height: 20px;
                                             <tr id="{{$index}}">
                                                 <td>
                                                     <div class="icheck-warning d-inline">
+                                                        
                                                         <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N" name="dataMaster[{{$index}}][masuk_db]">
                                                         <label for="checkboxPrimary_{{$index}}"></label>
                                                     </div>
@@ -585,6 +589,9 @@ height: 20px;
                                                 </td>
                                                 <td id="id_sewa_operasional_tabel_{{$index}}" hidden="">
                                                     <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="dataMaster[{{$index}}][id_sewa_operasional_data]" value="">
+                                                    <input type="hidden" value="{{isset($value['id_pembayaran_detail'])?$value['id_pembayaran_detail']:null}}" name="dataMaster[{{$index}}][id_pembayaran_detail]">
+                                                    <input type="hidden" value="{{isset($value['id_klaim_detail'])?$value['id_klaim_detail']:null}}" name="dataMaster[{{$index}}][id_klaim_detail]">
+
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                         <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
@@ -592,7 +599,7 @@ height: 20px;
                                                 
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
-                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format(0) }}" class="form-control uang numaja" readonly>
+                                                        <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{isset($value['dicairkan'])?number_format($value['dicairkan']):0 }}" class="form-control uang numaja" readonly>
                                                 </td>
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
                                                         <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>

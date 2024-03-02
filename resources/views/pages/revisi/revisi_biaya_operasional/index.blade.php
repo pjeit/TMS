@@ -247,41 +247,41 @@
                                                 `);  // <th class='text-center' style='width: 30px;'></th> // <input id='check_all' type='checkbox'>
                             // if(item == 'OPERASIONAL' || item == 'TALLY' || item == 'SEAL PELAYARAN'){
                                 for (var i = 0; i <data.length; i++) {
-                                    let cek_status = data[i].get_operasional;
+                                    let cek_status = data[i].get_operasional_detail;
                                     if(cek_status != 'SELESAI' || cek_status != 'MENUNGGU PEMBAYARAN INVOICE'){
-                                        console.log('cek_status', data[i].get_operasional);
+                                        console.log('cek_status', data[i].get_operasional_detail);
                                         var row = $("<tr></tr>");
                                         row.append(`<td style='background: #efefef'>
                                                             <b> 
-                                                                <span> ${data[i].get_operasional[0].get_sewa.get_customer.get_grup.nama_grup}</span> 
+                                                                <span> ${data[i].get_operasional_detail[0].get_sewa_detail.get_customer.get_grup.nama_grup}</span> 
                                                             </b>
                                                     </td>`);
                                         row.append(`<td style='background: #efefef'>
                                                             <b> 
-                                                                <span>► ${data[i].get_operasional[0].get_sewa.get_customer.nama}</span> 
+                                                                <span>► ${data[i].get_operasional_detail[0].get_sewa_detail.get_customer.nama}</span> 
                                                             </b>
                                                     </td>`);
                                         row.append(`<td> 
-                                            ${data[i].get_operasional[0].get_sewa.nama_tujuan} 
+                                            ${data[i].get_operasional_detail[0].get_sewa_detail.nama_tujuan} 
                                             </td>`);
                                         if(item == 'LAIN-LAIN'){
                                             row.append(`<td>
-                                                            <span>${data[i].get_operasional[0].deskripsi}</span> 
+                                                            <span>${data[i].get_operasional_detail[0].deskripsi}</span> 
                                                         </td>`);
                                         }
-                                        // row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan?item.get_sewa.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" class="form-control" title="${item.get_sewa.no_polisi + ' (' + item.get_sewa.get_karyawan?item.get_sewa.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" readonly />`).join('<br>')}</td>`);
-                                        row.append(`<td>${data[i].get_operasional.map(item => 
+                                        // row.append(`<td> ${data[i].get_operasional_detail.map(item => `<input type="text" value="${item.get_sewa_detail.no_polisi + ' (' + item.get_sewa_detail.get_karyawan?item.get_sewa_detail.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" class="form-control" title="${item.get_sewa_detail.no_polisi + ' (' + item.get_sewa_detail.get_karyawan?item.get_sewa_detail.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" readonly />`).join('<br>')}</td>`);
+                                        row.append(`<td>${data[i].get_operasional_detail.map(item => 
                                         `
-                                        <input type="hidden" name='data[${item.id_pembayaran}][${item.id}][tujuan]' value="${data[i].get_operasional[0].get_sewa.nama_tujuan}" 
+                                        <input type="hidden" name='data[${item.id_pembayaran}][${item.id}][tujuan]' value="${data[i].get_operasional_detail[0].get_sewa_detail.nama_tujuan}" 
                                                 class="form-control"  readonly />
-                                        <input type="text" name='data[${item.id_pembayaran}][${item.id}][driver_nopol]' value="${item.get_sewa.no_polisi} (${item.get_sewa.get_karyawan ? item.get_sewa.get_karyawan.nama_panggilan : 'REKANAN'})" 
-                                        class="form-control" title="${item.get_sewa.no_polisi} (${item.get_sewa.get_karyawan ? item.get_sewa.get_karyawan.nama_panggilan : 'REKANAN'})" readonly/>`
+                                        <input type="text" name='data[${item.id_pembayaran}][${item.id}][driver_nopol]' value="${item.get_sewa_detail.no_polisi} (${item.get_sewa_detail.get_karyawan ? item.get_sewa_detail.get_karyawan.nama_panggilan : 'REKANAN'})" 
+                                        class="form-control" title="${item.get_sewa_detail.no_polisi} (${item.get_sewa_detail.get_karyawan ? item.get_sewa_detail.get_karyawan.nama_panggilan : 'REKANAN'})" readonly/>`
                                         ).join('<br>')}</td>`);
-                                        row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
-                                        row.append(`<td> ${data[i].get_operasional.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
+                                        row.append(`<td> ${data[i].get_operasional_detail.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
+                                        row.append(`<td> ${data[i].get_operasional_detail.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
                                                                                                 <input type="hidden" value="${item.total_dicairkan}" id="hidden_dicairkan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />
                                                                                                 `).join('<br>')}</td>`);
-                                        row.append(`<td> ${data[i].get_operasional.map(item => `<div class='d-flex'>
+                                        row.append(`<td> ${data[i].get_operasional_detail.map(item => `<div class='d-flex'>
                                                                                                     <input type="text" value="${item.catatan != null? item.catatan:''}" id="catatan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][catatan]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
                                                                                                     <input type="hidden" value="${item.catatan != null? item.catatan:''}" id="hidden_catatan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
                                                                                                     <input type="checkbox" value="${item.id}" name="data[${item.id_pembayaran}][${item.id}][check]" class="ml-3 mt-2 centang" /> 
