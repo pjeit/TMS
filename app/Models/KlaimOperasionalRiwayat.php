@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class KlaimSupirRiawayat extends Model
+class KlaimOperasionalRiwayat extends Model
 {
     use HasFactory;
-     protected $table = 'klaim_supir_riwayat';
+    protected $table = 'klaim_supir_riwayat';
     protected $primaryKey='id';
     protected $fillable=[
-        'id_klaim',
-        'kas_bank_id',
+        'id_klaim_operasional',
+        'id_kas_bank',
         'tanggal_pencairan',
-        'tanggal_pencatatan',
         'total_klaim',
         'total_pencairan',
         'catatan_pencairan',

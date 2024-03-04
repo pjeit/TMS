@@ -68,6 +68,12 @@ Route::middleware(['auth'])->group(function () {
         return redirect("dashboard");
 
     });
+    //==========================================================  API ==========================================================
+        Route::get('/sewa_by_supir/{id}/{type}/{jenis_klaim}', [App\Helper\SewaDataHelper::class, 'get_sewa_by_supir'])->name('sewa_by_supir.get');
+        Route::get('/supir_klaim_ops/{type}/{jenis_klaim}', [App\Helper\SewaDataHelper::class, 'get_supir_by_klaim_ops'])->name('get_supir_by_klaim_ops.get');
+
+    //==========================================================  API ==========================================================
+
 
     // Route::middleware(['is_','is_superadminadmin'])->group(function () {
         // ===================================MASTER=========================================================
@@ -202,6 +208,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan'])->name('pencairan_klaim_supir.edit');
         Route::post('/klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
         Route::resource('klaim_supir', 'App\Http\Controllers\KlaimSupirController');
+
+        // Route::get('/klaim_operasional/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan'])->name('pencairan_klaim_supir.edit');
+        // Route::post('/klaim_operasional/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
+        Route::resource('klaim_operasional', 'App\Http\Controllers\KlaimOperasionalController');
 
         Route::get('/lembur_mekanik/pencairan/{id}', [App\Http\Controllers\LemburMekanikController::class, 'pencairan'])->name('pencairan_lembur_mekanik.edit');
         Route::post('/lembur_mekanik/pencairan_save/{id}', [App\Http\Controllers\LemburMekanikController::class, 'pencairan_save'])->name('pencairan_lembur_mekanik.save');

@@ -812,6 +812,17 @@
               @endcan
               <ul class="nav nav-treeview">
                 <li class="nav-item">
+                  <a href="{{route('klaim_operasional.index')}}"
+                    class="nav-link {{request()->is('klaim_supir*')? ' active' : '' }} " style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      Klaim Operasional
+                    </p>
+                  </a>
+                </li>
+              </ul>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
                   <a href="{{route('lembur_mekanik.index')}}"
                     class="nav-link {{request()->is('lembur_mekanik*')? ' active' : '' }} " style="font-weight: 500;">
                     <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>

@@ -5,6 +5,8 @@ use App\Models\Customer;
 use App\Models\JobOrder;
 use App\Models\GrupTujuan;
 use App\Helper\VariableHelper;
+use App\Models\KlaimOperasional;
+
 class SewaDataHelper
 {
     //=================================index================================
@@ -37,6 +39,119 @@ class SewaDataHelper
             ->where('s.status', $status)
             ->orderBy('created_at', 'DESC')
             ->get();
+     }
+     public static function get_sewa_by_supir($id,$type,$jenis_klaim)
+     {
+        try {
+            // $data_klaim_ops = KlaimOperasional::where('is_aktif','Y')->get();
+            $data_sewa= DB::table('sewa as s')
+            ->select(
+            's.id_sewa as id_sewa', 
+            'gt.nama_tujuan as nama_tujuan', 
+            'k.nama_lengkap as nama_lengkap', 
+            's.id_karyawan as id_supir_kueri', 
+            'c.nama as nama_customer',
+            'ko.jenis_klaim',
+            'ko.id_sewa as id_sewa_klaim'/*, DB::raw("$jenis_klaim AS jenis_klaim_ops")*/)
+            ->leftJoin('grup_tujuan as gt', 'gt.id', '=', 's.id_grup_tujuan')
+            ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+            ->leftJoin('customer as c', 'c.id', '=', 's.id_customer')
+            ->where('s.is_aktif', '=', "Y")
+            ->where('s.id_karyawan', $id)
+            ->where('s.status', 'PROSES DOORING')
+            ->leftJoin('klaim_operasional AS ko', function ($join) use($type,$jenis_klaim) {
+                    $join->on('ko.id_sewa', '=', 's.id_sewa')
+                        ->where('ko.is_aktif', 'Y')
+                        // ->where(function ($query) use ($type) {
+                        //     if ($type == 'edit') {
+                        //         $query->where('ko.id_sewa', '=', 's.id_sewa');
+                        //     }
+                        // })
+                        ->where('ko.jenis_klaim', '=', $jenis_klaim);
+            })
+            ->where(function ($query) use ($type,$jenis_klaim) {
+                if ($type == 'insert') {
+                    $query->whereNull('ko.id_sewa');
+                    
+                }
+                // else if ($type == 'edit') {
+                //     $query->where('ko.id_sewa', '=', 's.id_sewa');
+                // }
+            })
+            ->get();
+            return response()->json(['data_sewa' =>$data_sewa,'status' => 'success']);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['data_sewa' =>'Error','status' => 'error','error' => $th->getMessage()]);
+        }
+     }
+     public static function get_supir_by_klaim_ops($jenis_klaim,$type)
+     {
+
+        try {
+            //code...
+            // $data_supir= DB::table('sewa as s')
+            // ->select('k.*','ko.id_sewa as id_sewa_klaim')
+            // ->where('s.is_aktif', '=', "Y")
+            // ->where('s.status', 'PROSES DOORING')
+            // ->leftJoin('klaim_operasional AS ko', function ($join) use($type,$jenis_klaim) {
+            //         $join->on('ko.id_sewa', '=', 's.id_sewa')
+            //             ->where('ko.is_aktif', 'Y')
+            //             // ->where(function ($query) use ($type) {
+            //             //     if ($type == 'edit') {
+            //             //         $query->where('ko.id_sewa', '=', 's.id_sewa');
+            //             //     }
+            //             // })
+            //             ->where('ko.jenis_klaim', '=', $jenis_klaim);
+            // })
+            // ->leftJoin('karyawan as k', 'k.id', '=', 's.id_karyawan')
+            // ->where(function ($query) use ($type,$jenis_klaim) {
+            //     if ($type == 'insert') {
+            //         $query->whereNull('ko.id_sewa');
+                    
+            //     }
+            //     // else if ($type == 'edit') {
+            //     //     $query->where('ko.id_sewa', '=', 's.id_sewa');
+            //     // }
+            // })
+            // // ->groupBy('k.id')
+
+            // ->get();
+
+
+            $data_supir = DB::table('karyawan')
+            ->select('karyawan.*'/*,'ko.id_sewa as id_sewa_klaim','ko.jenis_klaim','s.id_sewa as id_sewa'*/)
+            ->where('karyawan.is_aktif', "Y")
+            // ->leftJoin('sewa AS s', function ($join){
+            //         $join->on('karyawan.id', '=', 's.id_karyawan')
+            //             ->where('s.status', 'PROSES DOORING')
+            //             ->where('s.is_aktif', 'Y');
+            // })
+            // ->leftJoin('klaim_operasional AS ko', function ($join) use ($jenis_klaim, $type) {
+            //     $join->on('ko.id_karyawan', '=', 'karyawan.id')
+            //         ->where('ko.is_aktif', 'Y')
+            //         ->where('ko.id_sewa', '!=','s.id_sewa')
+            //         ->where('ko.jenis_klaim', '=', $jenis_klaim);
+            // })
+            ->where('karyawan.role_id', VariableHelper::Role_id('Driver'))
+            // ->wherenotnull('s.id_sewa')  
+            // ->where(function ($query) use ($type,$jenis_klaim) {
+            //     if ($type == 'insert') {
+            //         $query->whereNull('ko.id_sewa');
+                    
+            //     }
+            // })
+            ->orderBy('karyawan.nama_lengkap')
+            // ->groupBy('s.id_karyawan')
+            ->get();
+            return response()->json(['data_supir' =>$data_supir,'status' => 'success']);
+
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['data_supir' =>'Error','status' => 'error','error' => $th->getMessage()]);
+
+        }
+         
      }
     //=================================create,edit??================================
     
