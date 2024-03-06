@@ -191,6 +191,9 @@ height: 20px;
                                 <span class="badge badge-primary">Data Lain-lain</span>
                                 <span class="badge badge-info">Data Inbound</span>
                                 <span class="badge badge-warning">Data Outbound</span>
+                                <span class="badge badge-secondary">Data Operasional</span>
+                                <span class="badge badge-dark">Data Klaim operasional</span>
+
                         <button type="button" id="btnTmbh" class="btn btn-primary radiusSendiri float-right">Tambah Biaya <i class="fa fa-fw fa-plus"></i> </button></br>
                     </div>
                     <div class="card-body">
@@ -207,7 +210,7 @@ height: 20px;
                                         </div> --}}
                                     </th>
                                     <th>Deskripsi</th>
-                                    <th>Jumlah Dicairkan</th>
+                                    {{-- <th>Jumlah Dicairkan</th> --}}
                                     <th>Jumlah Ditagihkan</th>
                                     <th>Ditagihkan</th>
                                     <th>Dipisahkan</th>
@@ -256,9 +259,9 @@ height: 20px;
                                                     <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_hardcode ambil_text_deskripsi" readonly>
                                                     <span class="badge badge-success">Data Yang Tersimpan</span>
                                                 </td>
-                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                {{-- <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                     <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_operasional) }}" class="form-control uang numaja nominal_hardcode" readonly>
-                                                </td>
+                                                </td> --}}
                                             @endif
                                             @php
                                             //kalo deskripsi nya ada di dalam ini deskripnsinya gaboleh diedit sama dicairkannya
@@ -294,9 +297,9 @@ height: 20px;
                                                     <span class="badge badge-success">Data Yang Tersimpan</span>
                                                 
                                                 </td>
-                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                {{-- <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                     <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_dicairkan) }}" class="form-control uang numaja" readonly>
-                                                </td>
+                                                </td> --}}
                                             @endif
                                             @if(!in_array($value->deskripsi, $deskripsi2))
                                                 <td id="deskripsi_tabel_{{$index}}" >
@@ -304,9 +307,9 @@ height: 20px;
                                                     <span class="badge badge-success">Data Yang Tersimpan</span>
                                                 
                                                 </td>
-                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                {{-- <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                     <input type="text" name="data[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format($value->total_dicairkan) }}" class="form-control uang numaja nominal_lain" readonly>
-                                                </td>
+                                                </td> --}}
 
                                             @endif
                                             <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{$index}}">
@@ -384,9 +387,9 @@ height: 20px;
                                             <span class="badge badge-danger">Data Template</span>
                                         
                                         </td>
-                                        <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{ $index}}">
+                                        {{-- <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{ $index}}">
                                                 <input type="text" name="data_hardcode[{{ $index}}][nominal_data]" id="nominal_data_{{ $index}}" value="0" class="form-control uang numaja nominal_hardcode" readonly>
-                                        </td>
+                                        </td> --}}
                                         <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{$index}}">
                                             <input type="text" name="data_hardcode[{{$index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="" class="form-control uang numaja nominal_ditagihkan" readonly>
                                         </td>
@@ -431,9 +434,9 @@ height: 20px;
                                                 <input type="text" name="data_hardcode[{{ $index}}][deskripsi_data]" id="deskripsi_data_{{ $index}}" value="INAP" class="form-control ambil_text_deskripsi" readonly>
                                                 <span class="badge badge-danger">Data Template</span>
                                         </td>
-                                        <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{ $index}}">
+                                        {{-- <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{ $index}}">
                                                 <input type="text" name="data_hardcode[{{ $index}}][nominal_data]" id="nominal_data_{{ $index}}" value="0" class="form-control uang numaja nominal_hardcode" readonly>
-                                        </td>
+                                        </td> --}}
                                         <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
                                                 <input type="text" name="data_hardcode[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="" class="form-control uang numaja nominal_ditagihkan"readonly>
                                         </td>
@@ -469,8 +472,13 @@ height: 20px;
                                         @foreach ($array_inbound as $key => $value)
                                             <tr id="{{$index}}">
                                                 <td >
-                                                    <div class="icheck-info d-inline">
-                                                       
+                                                    @if (isset($value['id_pembayaran_detail']))
+                                                        <div class="icheck-secondary d-inline">
+                                                    @elseif(isset($value['id_klaim_detail']))
+                                                        <div class="icheck-dark d-inline">
+                                                    @else
+                                                        <div class="icheck-warning d-inline">
+                                                    @endif
                                                         <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N" name="dataMaster[{{$index}}][masuk_db]">
                                                         <label for="checkboxPrimary_{{$index}}"></label>
                                                     </div>
@@ -483,17 +491,28 @@ height: 20px;
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                     <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
-                                                    <span class="badge badge-info">Data Inbound</span>
-                                                
+                                                    @if (isset($value['id_pembayaran_detail']))
+                                                            <span class="badge badge-secondary">Data Operasional</span>
+                                                        @elseif(isset($value['id_klaim_detail']))
+                                                            <span class="badge badge-dark">Data Klaim operasional</span>
+                                                        @else
+                                                            <span class="badge badge-info">Data Inbound</span>
+                                                        @endif
                                                 </td>
-                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                {{-- <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                         <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{isset($value['dicairkan'])?number_format($value['dicairkan']):0 }}" class="form-control uang numaja" readonly>
-                                                </td>
+                                                </td> --}}
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
                                                         <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
-                                                    <div class="icheck-info d-inline">
+                                                    @if (isset($value['id_pembayaran_detail']))
+                                                        <div class="icheck-secondary d-inline">
+                                                    @elseif(isset($value['id_klaim_detail']))
+                                                        <div class="icheck-dark d-inline">
+                                                    @else
+                                                        <div class="icheck-warning d-inline">
+                                                    @endif
                                                         <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data]"  >
                                                         <label for="checkTagih_data_{{$index}}"></label>
                                                         <input type="hidden" class="value_cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data_value]"  value="N">
@@ -501,7 +520,13 @@ height: 20px;
                                                     </div>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}" >
-                                                    <div class="icheck-info d-inline">
+                                                    @if (isset($value['id_pembayaran_detail']))
+                                                        <div class="icheck-secondary d-inline">
+                                                    @elseif(isset($value['id_klaim_detail']))
+                                                        <div class="icheck-dark d-inline">
+                                                    @else
+                                                        <div class="icheck-warning d-inline">
+                                                    @endif
                                                         <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="dataMaster[{{$index}}][dipisahkan_data]"   >
                                                         <label for="checkPisah_data_{{$index}}"></label>
                                                         <input type="hidden" class="value_cek_dipisahkan_data" name="dataMaster[{{$index}}][dipisahkan_data_value]"  value="N">
@@ -540,9 +565,9 @@ height: 20px;
                                                     <span class="badge badge-info">Data Inbound</span>
                                                 
                                                 </td>
-                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                {{-- <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                         <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{number_format(0) }}" class="form-control uang numaja" readonly>
-                                                </td>
+                                                </td> --}}
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
                                                         <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
                                                 </td>
@@ -580,8 +605,13 @@ height: 20px;
                                         @foreach ($array_outbond as $key => $value)
                                             <tr id="{{$index}}">
                                                 <td>
-                                                    <div class="icheck-warning d-inline">
-                                                        
+                                                    @if (isset($value['id_pembayaran_detail']))
+                                                        <div class="icheck-secondary d-inline">
+                                                    @elseif(isset($value['id_klaim_detail']))
+                                                        <div class="icheck-dark d-inline">
+                                                    @else
+                                                        <div class="icheck-warning d-inline">
+                                                    @endif
                                                         <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N" name="dataMaster[{{$index}}][masuk_db]">
                                                         <label for="checkboxPrimary_{{$index}}"></label>
                                                     </div>
@@ -595,17 +625,30 @@ height: 20px;
                                                 </td>
                                                 <td id="deskripsi_tabel_{{$index}}" >
                                                         <input type="text" name="dataMaster[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value['deskripsi']}}" class="form-control ambil_text_deskripsi" readonly>
-                                                    <span class="badge badge-warning">Data Outbound</span>
+                                                        @if (isset($value['id_pembayaran_detail']))
+                                                            <span class="badge badge-secondary">Data Operasional</span>
+                                                        @elseif(isset($value['id_klaim_detail']))
+                                                            <span class="badge badge-dark">Data Klaim operasional</span>
+                                                        @else
+                                                            <span class="badge badge-warning">Data Outbound</span>
+                                                        @endif
                                                 
                                                 </td>
-                                                <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
+                                                {{-- <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                                         <input type="text" name="dataMaster[{{$index}}][nominal_data]" id="nominal_data_{{$index}}" value="{{isset($value['dicairkan'])?number_format($value['dicairkan']):0 }}" class="form-control uang numaja" readonly>
-                                                </td>
+                                                </td> --}}
                                                 <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_{{ $index}}">
                                                         <input type="text" name="dataMaster[{{ $index}}][nominal_ditagihkan]" id="nominal_ditagihkan_{{$index}}" value="{{number_format($value['biaya']) }}" class="form-control uang numaja nominal_ditagihkan"readonly>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="ditagihkan_tabel_{{$index}}" >
-                                                    <div class="icheck-warning d-inline">
+                                                    @if (isset($value['id_pembayaran_detail']))
+                                                        <div class="icheck-secondary d-inline">
+                                                    @elseif(isset($value['id_klaim_detail']))
+                                                        <div class="icheck-dark d-inline">
+                                                    @else
+                                                        <div class="icheck-warning d-inline">
+                                                    @endif
+                                                    
                                                         <input type="checkbox" id="checkTagih_data_{{$index}}" class="cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data]"  >
                                                         <label for="checkTagih_data_{{$index}}"></label>
                                                         <input type="hidden" class="value_cek_tagih" name="dataMaster[{{$index}}][ditagihkan_data_value]"  value="N">
@@ -613,7 +656,13 @@ height: 20px;
                                                     </div>
                                                 </td>
                                                 <td style="width:1px; white-space: nowrap; text-align:center;" id="dipisahkan_tabel_{{$index}}" >
-                                                    <div class="icheck-warning d-inline">
+                                                    @if (isset($value['id_pembayaran_detail']))
+                                                        <div class="icheck-secondary d-inline">
+                                                    @elseif(isset($value['id_klaim_detail']))
+                                                        <div class="icheck-dark d-inline">
+                                                    @else
+                                                        <div class="icheck-warning d-inline">
+                                                    @endif
                                                         <input type="checkbox" id="checkPisah_data_{{$index}}" class="cek_pisah" name="dataMaster[{{$index}}][dipisahkan_data]"   >
                                                         <label for="checkPisah_data_{{$index}}"></label>
                                                         <input type="hidden" class="value_cek_dipisahkan_data" name="dataMaster[{{$index}}][dipisahkan_data_value]"  value="N">
@@ -942,6 +991,9 @@ height: 20px;
         $('body').on('click','#btnTmbh',function()
 		{
             var maxID = $('#maxIndex').val();
+            // <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_${maxID}">
+            //                     <input type="text" readonly name="dataLain[${maxID}][nominal_data]" id="nominal_data_${maxID}" value="0" class="form-control uang numaja nominal_lain">
+            //             </td>
             $('#tampunganTabel').append(
                 `
                     <tr id="${maxID}">
@@ -959,9 +1011,7 @@ height: 20px;
                             <input type="text" readonly name="dataLain[${maxID}][deskripsi_data]" id="deskripsi_data_${maxID}" value="" class="form-control deskripsi_lain ambil_text_deskripsi">
                             <span class="badge badge-primary">Data Lain-lain</span>
                         </td>
-                        <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_${maxID}">
-                                <input type="text" readonly name="dataLain[${maxID}][nominal_data]" id="nominal_data_${maxID}" value="0" class="form-control uang numaja nominal_lain">
-                        </td>
+                     
                         <td style=" white-space: nowrap; text-align:right;" id="nominal_ditagihkan_tabel_${maxID}">
                                 <input type="text" readonly name="dataLain[${maxID}][nominal_ditagihkan]" id="nominal_ditagihkan_${maxID}" value="" class="form-control uang numaja nominal_ditagihkan">
                         </td>
@@ -1225,49 +1275,49 @@ height: 20px;
 
             var tanggalBerangkat = new Date(tanggalBerangkatStr);
             var tanggalKembali = new Date(tanggalKembaliStr);
-            if ($("#is_kembali").val()=='N') {
-                    event.preventDefault(); 
-                    Toast.fire({
-                        icon: 'error',
-                        text: `TANGGAL KEMBALI BELUM DIISI!`,
-                    })
-                return;
-            } 
-            if ($("#is_kembali").val()=='Y' && tanggalKembali<tanggalBerangkat) {
-                    event.preventDefault(); 
-                    Toast.fire({
-                        icon: 'error',
-                        text: `TANGGAL KEMBALI LEBIH KECIL DARI TANGGAL BERANGKAT!`,
-                    })
-                return;
-            } 
+            // if ($("#is_kembali").val()=='N') {
+            //         event.preventDefault(); 
+            //         Toast.fire({
+            //             icon: 'error',
+            //             text: `TANGGAL KEMBALI BELUM DIISI!`,
+            //         })
+            //     return;
+            // } 
+            // if ($("#is_kembali").val()=='Y' && tanggalKembali<tanggalBerangkat) {
+            //         event.preventDefault(); 
+            //         Toast.fire({
+            //             icon: 'error',
+            //             text: `TANGGAL KEMBALI LEBIH KECIL DARI TANGGAL BERANGKAT!`,
+            //         })
+            //     return;
+            // } 
             
-            if ($("#is_kembali").val()=='Y' && $('#seal').val().trim()=='' && $('#jenis_tujuan').val()=='FTL') {
-                    event.preventDefault(); 
-                    Toast.fire({
-                        icon: 'error',
-                        text: `SEAL PELAYARAN WAJIB DI ISI!`,
-                    })
-                return;
-            } 
-            if($("#is_kembali").val()=='Y' && $('#surat_jalan').val().trim()==''&&$('#jenis_tujuan').val()=='FTL')
-            {
-                event.preventDefault(); 
-                Toast.fire({
-                    icon: 'error',
-                    text: `SURAT JALAN WAJIB DI ISI!`,
-                })
-                return;
-            }
-            if($("#is_kembali").val()=='Y' && $('#no_kontainer').val().trim()==''&&$('#jenis_tujuan').val()=='FTL')
-            {
-                event.preventDefault(); 
-                Toast.fire({
-                    icon: 'error',
-                    text: `NO KONTAINER WAJIB DI ISI!`,
-                })
-                return;
-            }
+            // if ($("#is_kembali").val()=='Y' && $('#seal').val().trim()=='' && $('#jenis_tujuan').val()=='FTL') {
+            //         event.preventDefault(); 
+            //         Toast.fire({
+            //             icon: 'error',
+            //             text: `SEAL PELAYARAN WAJIB DI ISI!`,
+            //         })
+            //     return;
+            // } 
+            // if($("#is_kembali").val()=='Y' && $('#surat_jalan').val().trim()==''&&$('#jenis_tujuan').val()=='FTL')
+            // {
+            //     event.preventDefault(); 
+            //     Toast.fire({
+            //         icon: 'error',
+            //         text: `SURAT JALAN WAJIB DI ISI!`,
+            //     })
+            //     return;
+            // }
+            // if($("#is_kembali").val()=='Y' && $('#no_kontainer').val().trim()==''&&$('#jenis_tujuan').val()=='FTL')
+            // {
+            //     event.preventDefault(); 
+            //     Toast.fire({
+            //         icon: 'error',
+            //         text: `NO KONTAINER WAJIB DI ISI!`,
+            //     })
+            //     return;
+            // }
             if (flagDeskripsi) {
                 event.preventDefault(); 
                 Swal.fire({

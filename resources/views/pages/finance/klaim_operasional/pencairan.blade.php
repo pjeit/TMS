@@ -17,11 +17,6 @@
   transition: transform 0.8s ease; /* Add a transition to the 'transform' property */
   border-radius: 5px;
 }
-
-#preview_foto_barang {
-  transition: transform 0.8s ease; /* Add a transition to the 'transform' property */
-  border-radius: 5px;
-}
 </style>
 <div class="container-fluid">
     @if ($errors->any())
@@ -35,12 +30,12 @@
         @endforeach
 
     @endif
-    <form action="{{ route('pencairan_klaim_supir.save',[$klaimSupir->id]) }}" method="POST" id="post" >
+    <form action="{{ route('pencairan_klaim_operasional.save',[$klaim_ops->id]) }}" method="POST" id="post" >
         @csrf
         @method('post')
         <div class="card radiusSendiri">
             <div class="card-header">
-                <a href="{{ route('klaim_supir.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
+                <a href="{{ route('klaim_operasional.index') }}"class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Kembali</a>
                 <button type="submit" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
             <div class="card-body" >
@@ -70,7 +65,7 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                         </div>
-                                                        <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date @error('tanggal_pencairan') is-invalid @enderror" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencairan',!empty($klaim_supir_riwayat->tanggal_pencairan)?\Carbon\Carbon::parse($klaim_supir_riwayat->tanggal_pencairan)->format('d-M-Y'):'')}}">
+                                                        <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date @error('tanggal_pencairan') is-invalid @enderror" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencairan',!empty($klaim_ops_riwayat->tanggal_pencairan)?\Carbon\Carbon::parse($klaim_ops_riwayat->tanggal_pencairan)->format('d-M-Y'):'')}}">
                                                         {{-- <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date @error('tanggal_pencairan') is-invalid @enderror" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencairan')}}"> --}}
                                                         @error('tanggal_pencairan')
                                                             <div class="invalid-feedback">
@@ -79,29 +74,12 @@
                                                         @enderror
                                                     </div>
                                                 </div>
-                                                {{-- <div class="form-group col-lg-6 col-md-12 col-sm-12">
-                                                    <label for="tanggal_pencatatan">Tanggal Pencatatan<span style="color:red">*</span></label>
-                                                    <div class="input-group mb-0">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                                        </div>
-                                                        <input type="text" autocomplete="off" name="tanggal_pencatatan" class="form-control date @error('tanggal_pencatatan') is-invalid @enderror" id="tanggal_pencatatan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencatatan',!empty($klaim_supir_riwayat->tanggal_pencatatan)?\Carbon\Carbon::parse($klaim_supir_riwayat->tanggal_pencatatan)->format('d-M-Y'):'')}}">
-                                                        
-                                                        @error('tanggal_pencatatan')
-                                                            <div class="invalid-feedback">
-                                                                {{ $message }}
-                                                            </div>
-                                                        @enderror
-                                                    </div>
-                                                </div> --}}
                                             </div>
                                             
                                             <div class="form-group" id="div_catatan_pencairan">
                                                 <label for="total_reimburse">Catatan Pencairan</label>
                                                 <div class="form-group">
-                                                    <input type="text" name="catatan_pencairan" class="form-control @error('catatan_pencairan') is-invalid @enderror" id="catatan_pencairan" placeholder="" value="{{old('catatan_pencairan',!empty($klaim_supir_riwayat->catatan_pencairan)? $klaim_supir_riwayat->catatan_pencairan:'')}}">
-                                                    {{-- <input type="text" name="catatan_pencairan" class="form-control @error('catatan_pencairan') is-invalid @enderror" id="catatan_pencairan" placeholder="" value="{{old('catatan_pencairan')}}"> --}}
-                                                    
+                                                    <input type="text" name="catatan_pencairan" class="form-control @error('catatan_pencairan') is-invalid @enderror" id="catatan_pencairan" placeholder="" value="{{old('catatan_pencairan',!empty($klaim_ops_riwayat->catatan_pencairan)? $klaim_ops_riwayat->catatan_pencairan:'')}}">
                                                     @error('catatan_pencairan')
                                                         <div class="invalid-feedback">
                                                             {{ $message }}
@@ -112,7 +90,7 @@
                                             <div class="form-group" id="div_alasan_tolak">
                                                 <label for="total_reimburse">Alasan Tolak</label>
                                                 <div class="form-group">
-                                                    <input type="text" name="alasan_tolak" class="form-control @error('alasan_tolak') is-invalid @enderror" id="alasan_tolak" placeholder="" value="{{old('alasan_tolak',!empty($klaim_supir_riwayat->alasan_tolak)? $klaim_supir_riwayat->alasan_tolak:'')}}">
+                                                    <input type="text" name="alasan_tolak" class="form-control @error('alasan_tolak') is-invalid @enderror" id="alasan_tolak" placeholder="" value="{{old('alasan_tolak',!empty($klaim_ops_riwayat->alasan_tolak)? $klaim_ops_riwayat->alasan_tolak:'')}}">
                                                     {{-- <input type="text" name="alasan_tolak" class="form-control @error('alasan_tolak') is-invalid @enderror" id="alasan_tolak" placeholder="" value="{{old('alasan_tolak')}}"> --}}
 
                                                     @error('alasan_tolak')
@@ -126,15 +104,15 @@
                                                 <label for="tipe">Status Klaim :</label>
                                                 {{-- <br> --}}
                                                 {{-- <div class="icheck-primary d-inline">
-                                                    <input id="PENDING" type="radio" name="status_klaim" value="PENDING" {{'PENDING'== $klaimSupir->status_klaim? 'checked' :'' }}>
+                                                    <input id="PENDING" type="radio" name="status_klaim" value="PENDING" {{'PENDING'== $klaim_ops->status_klaim? 'checked' :'' }}>
                                                     <label class="form-check-label" for="PENDING">Pending</label>
                                                 </div> --}}
                                                 <div class="icheck-primary d-inline ml-3">
-                                                    <input id="ACCEPTED" type="radio" name="status_klaim" value="ACCEPTED" checked {{--{{'ACCEPTED' == $klaimSupir->status_klaim? 'checked' :'' }}--}}>
+                                                    <input id="ACCEPTED" type="radio" name="status_klaim" value="ACCEPTED" checked {{--{{'ACCEPTED' == $klaim_ops->status_klaim? 'checked' :'' }}--}}>
                                                     <label class="form-check-label" for="ACCEPTED">Terima</label>
                                                 </div>
                                                 <div class="icheck-danger d-inline ml-3">
-                                                    <input id="REJECTED" type="radio" name="status_klaim" value="REJECTED" {{'REJECTED'== $klaimSupir->status_klaim? 'checked' :'' }}>
+                                                    <input id="REJECTED" type="radio" name="status_klaim" value="REJECTED" {{'REJECTED'== $klaim_ops->status_klaim? 'checked' :'' }}>
                                                     <label class="form-check-label" for="REJECTED">Tolak</label>
                                                 </div>
                                             </div>
@@ -147,7 +125,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input disabled type="text" name="total_klaim" class="form-control numaja uang @error('total_klaim') is-invalid @enderror" id="total_klaim" placeholder="" value="{{old('total_klaim',number_format($klaimSupir->total_klaim))}}">
+                                                    <input disabled type="text" name="total_klaim" class="form-control numaja uang @error('total_klaim') is-invalid @enderror" id="total_klaim" placeholder="" value="{{old('total_klaim',number_format($klaim_ops->total_klaim))}}">
                                                     @error('total_klaim')
                                                         <div class="invalid-feedback">
                                                             {{ $message }}
@@ -161,9 +139,7 @@
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text">Rp</span>
                                                     </div>
-                                                    <input type="text" name="total_pencairan" onkeyup="cek_max_pencairan();" class="form-control numaja uang @error('total_pencairan') is-invalid @enderror" id="total_pencairan" placeholder="" value="{{old('total_pencairan',!empty($klaim_supir_riwayat->total_pencairan)? number_format($klaim_supir_riwayat->total_pencairan):'')}}">
-                                                    {{-- <input type="text" name="total_pencairan" onkeyup="cek_max_pencairan();" class="form-control numaja uang @error('total_pencairan') is-invalid @enderror" id="total_pencairan" placeholder="" value="{{old('total_pencairan')}}"> --}}
-
+                                                    <input type="text" name="total_pencairan" onkeyup="cek_max_pencairan();" class="form-control numaja uang @error('total_pencairan') is-invalid @enderror" id="total_pencairan" placeholder="" value="{{old('total_pencairan',!empty($klaim_ops_riwayat->total_pencairan)? number_format($klaim_ops_riwayat->total_pencairan):'')}}">
                                                     @error('total_pencairan')
                                                         <div class="invalid-feedback">
                                                             {{ $message }}
@@ -195,7 +171,7 @@
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                 </div>
-                                                <input disabled type="text" autocomplete="off" name="tanggal_klaim" class="form-control date @error('tanggal_klaim') is-invalid @enderror" id="tanggal_klaim" placeholder="dd-M-yyyy" value="{{old('tanggal_klaim',\Carbon\Carbon::parse($klaimSupir->tanggal_klaim)->format('d-M-Y'))}}">
+                                                <input disabled type="text" autocomplete="off" name="tanggal_klaim" class="form-control date @error('tanggal_klaim') is-invalid @enderror" id="tanggal_klaim" placeholder="dd-M-yyyy" value="{{old('tanggal_klaim',\Carbon\Carbon::parse($klaim_ops->tanggal_klaim)->format('d-M-Y'))}}">
                                                 @error('tanggal_klaim')
                                                     <div class="invalid-feedback">
                                                         {{ $message }}
@@ -215,7 +191,7 @@
                                                         noPol='{{$kendaraan->no_polisi}}'
                                                         idDriver='{{$kendaraan->driver_id}}'
                                                         kategoriKendaraan='{{$kendaraan->kategoriKendaraan}}'
-                                                        {{$klaimSupir->kendaraan_id==$kendaraan->kendaraanId?'selected':''}}
+                                                        {{$klaim_ops->id_kendaraan==$kendaraan->kendaraanId?'selected':''}}
                                                         >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
                                                 @endforeach
                                             </select>
@@ -232,7 +208,7 @@
                                                 <select disabled class="form-control select2  @error('select_driver') is-invalid @enderror" style="width: 100%;" id='select_driver' name="select_driver">
                                                 <option value="">Pilih Driver</option>
                                                 @foreach ($dataDriver as $drvr)
-                                                    <option value="{{$drvr->id}}" {{$klaimSupir->karyawan_id==$drvr->id?'selected':''}} nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
+                                                    <option value="{{$drvr->id}}" {{$klaim_ops->id_karyawan==$drvr->id?'selected':''}} nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})">{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                                 @endforeach
                                             </select>
                                             @error('select_driver')
@@ -246,18 +222,7 @@
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                                 <label for="">Jenis Klaim<span class="text-red">*</span></label>
-                                                <select disabled class="form-control select2  @error('select_klaim') is-invalid @enderror" style="width: 100%;" id='select_klaim' name="select_klaim">
-                                                    <option value="" >Pilih Jenis Klaim</option>
-                                                    <option value="BAN" {{$klaimSupir->jenis_klaim=='BAN'?'selected':''}}>Ban</option>
-                                                    <option value="CUCI MOBIL" {{$klaimSupir->jenis_klaim=='CUCI MOBIL'?'selected':''}}>Cuci Mobil</option>
-                                                    <option value="SPARE PART" {{$klaimSupir->jenis_klaim=='SPARE PART'?'selected':''}}>Spare Part</option>
-                                                    <option value="TOL" {{$klaimSupir->jenis_klaim=='TOL'?'selected':''}}>Tol</option>
-                                                    <option value="LAIN LAIN" {{$klaimSupir->jenis_klaim=='LAIN LAIN'?'selected':''}}>Lain-lain</option>
-
-                                                    {{-- @foreach ($datajO as $jo)
-                                                        <option value="{{$jo->id}}-{{$jo->id_customer}}">{{ $jo->no_bl }} / {{ $jo->getCustomer->kode }} / {{ $jo->getSupplier->nama }}</option>
-                                                    @endforeach --}}
-                                                </select>
+                                                <input type="text" class="form-control" id="jenis_klaim" name="jenis_klaim" value="{{$klaim_ops->jenis_klaim}}" placeholder="jenis_klaim" readonly>
                                                 @error('select_klaim')
                                                     <div class="invalid-feedback">
                                                         {{ $message }}
@@ -267,7 +232,7 @@
                                         
                                         <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                             <label for="keterangan_klaim">Keterangan Klaim</label>
-                                            <input disabled type="text" class="form-control @error('keterangan_klaim') is-invalid @enderror" id="keterangan_klaim" name="keterangan_klaim" value="{{old('keterangan_klaim',$klaimSupir->keterangan_klaim)}}">
+                                            <input disabled type="text" class="form-control @error('keterangan_klaim') is-invalid @enderror" id="keterangan_klaim" name="keterangan_klaim" value="{{old('keterangan_klaim',$klaim_ops->keterangan_klaim)}}">
                                             @error('keterangan_klaim')
                                                 <div class="invalid-feedback">
                                                     {{ $message }}
@@ -276,49 +241,19 @@
                                         </div>  
                                     </div>
                                       <div class="row">
-                                        <div class=" col-lg-6 col-md-6 col-sm-12">
+                                        <div class=" col-lg-12 col-md-12 col-sm-12">
                                             <div class="form-group text-center">
                                                 <a href="#" class="pop">
-                                                    <img src="{{ $klaimSupir->foto_nota ? asset($klaimSupir->foto_nota) : asset('img/gambar_add.png') }}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_nota">
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class=" col-lg-6 col-md-6 col-sm-12">
-                                            <div class="form-group text-center">
-                                                <a href="#" class="pop">
-                                                    <img src="{{ $klaimSupir->foto_barang ? asset($klaimSupir->foto_barang) : asset('img/gambar_add.png') }}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_barang">
+                                                    <img src="{{ $klaim_ops->foto_klaim? asset($klaim_ops->foto_klaim) : asset('img/gambar_add.png') }}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_nota">
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                </div>
                             {{-- end data --}}
 
-                            {{-- foto --}}
-                                {{-- <div class="tab-pane fade" id="justify-foto" role="tabpanel" aria-labelledby="justify-foto-tab">
-                                    <div class="row">
-                                        <div class=" col-lg-6 col-md-6 col-sm-12">
-                                            <div class="form-group text-center">
-                                                <a href="#" class="pop">
-                                                    <img src="{{ $klaimSupir->foto_nota ? asset($klaimSupir->foto_nota) : asset('img/gambar_add.png') }}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_nota">
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class=" col-lg-6 col-md-6 col-sm-12">
-                                            <div class="form-group text-center">
-                                                <a href="#" class="pop">
-                                                    <img src="{{ $klaimSupir->foto_barang ? asset($klaimSupir->foto_barang) : asset('img/gambar_add.png') }}" class="img-fluid" style="width:150px;height:150px; object-fit: cover;" id="preview_foto_barang">
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> --}}
-                            {{-- end foto --}}
-                            
-                          
-
                         </div>
-            
             </div>
         </div>
     </form>
@@ -427,20 +362,7 @@
         reader.readAsDataURL(input.files[0]); // convert to base64 string
         }
     }
-    function readURLBarang(input) {
-        if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        
-        reader.onload = function(e) {
-            $('#preview_foto_barang').attr('src', e.target.result);
-        }
-        
-        reader.readAsDataURL(input.files[0]); // convert to base64 string
-        }
-    }
-    $("#foto_barang").change(function() {
-        readURLBarang(this);
-    });
+
     $("#foto_nota").change(function() {
         readURLNota(this);
     });
@@ -458,20 +380,6 @@
         });
     let isScaled1 = false; 
     let isScaled2 = false;
-    $('body').on('click','#preview_foto_barang',function()
-    {
-        if (isScaled1)
-        {
-            $(this).css('transform', 'scale(1)');
-            $('#div_foto_barang').show();
-        } 
-        else 
-        {
-            $(this).css('transform', 'scale(3.5)');
-            $('#div_foto_barang').hide();
-        }
-        isScaled1 = !isScaled1;
-    });
     $('body').on('click','#preview_foto_nota',function()
     {
         if (isScaled2)
@@ -513,7 +421,6 @@
     function loadData(){
          var idKendaraan = $('#select_kendaraan').val();
         var selectedOption = $('#select_kendaraan').find('option:selected');
-        var idChassis = selectedOption.attr('idChassis');
         var nopol = selectedOption.attr('noPol');
         var supir = selectedOption.attr('idDriver');
         

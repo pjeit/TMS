@@ -78,30 +78,39 @@ class KaryawanHutangController extends Controller
 
         try {
         // dd(/*date_format(*/$data['tanggal_transaksi']/*,'Y-m-d')*/);
+            $data= $request->collect();
             $pesanKustom = [
                 'jenis.required' => 'Jenis transaksi wajib diisi!',
                 'tanggal.required' => 'Tanggal Transaksi wajib dipilih!',
                 'karyawan_id.required' => 'Karyawan wajib dipilih!',
                 'nominal.required' => 'Total Nominal wajib diisi!',
                 // 'catatan.required' => 'Total Nominal wajib diisi!',
-                'select_kas_bank.required' => 'Kas Bank wajib diisi!',
+                // 'select_kas_bank.required' => 'Kas Bank wajib diisi!',
             ];
-            $request->validate([
+            
+            $rules = [
                 'jenis' => 'required',
                 'tanggal' => 'required',
                 'karyawan_id' => 'required',
                 'nominal' => 'required',
                 // 'catatan' => 'required',
-                'select_kas_bank' => 'required',
-
-            ], $pesanKustom);
-                $data= $request->collect();
-                // dd($data);
+                // 'select_kas_bank' => 'required',
+            ];
+            
+            if ($data['jenis'] == 'BAYAR') {
+                // Add additional rules for 'BAYAR' if needed
+                $rules['select_kas_bank'] = 'required';
+                $pesanKustom['select_kas_bank.required'] = 'Kas Bank wajib diisi!';
+            }
+            
+            $request->validate($rules, $pesanKustom);
+                
                 $tanggal=date_create_from_format('d-M-Y', $data['tanggal']);
                 $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['karyawan_id'])->first();
                 $karyawan = Karyawan::where('is_aktif', 'Y')->where('id', $data['karyawan_id'])->first();
+                // dd($data);
 
-                if ($data['jenis']=='BAYAR') {
+                if ($data['jenis']=='BAYAR'&&isset($data['select_kas_bank'])) {
                     if((float)str_replace(',', '', $data['nominal'])>(float)str_replace(',', '', $data['total_hutang']))
                     {
                         if($data['dariIndex']=='Y')
@@ -185,7 +194,7 @@ class KaryawanHutangController extends Controller
                     $kht->tanggal =  $tanggal;
                     $kht->debit = ($data['nominal']) ? (float)str_replace(',', '', $data['nominal']) : 0; // ARTINYA KAN UANG MASUK KE HUTANG (NAMBAH HUTANG KARYAWAN)
                     $kht->kredit = 0;
-                    $kht->kas_bank_id = $data['select_kas_bank'];
+                    $kht->kas_bank_id = isset($data['select_kas_bank'])?$data['select_kas_bank']:null;
                     $kht->catatan = $data['catatan'];
                     $kht->created_by = $user;
                     $kht->created_at = now();
@@ -195,30 +204,33 @@ class KaryawanHutangController extends Controller
                     {
                         if((float)str_replace(',', '', $data['nominal'])>0)
                         {
-                            $kas_bank = KasBank::where('is_aktif', 'Y')
-                                    ->where('id', $data['select_kas_bank'])
-                                    ->first();
-                            $kas_bank->saldo_sekarang -=  floatval(str_replace(',', '', $data['nominal']));
-                            $kas_bank->updated_at = now();
-                            $kas_bank->updated_by = $user;
-                            $kas_bank->save();
-                            DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                    array(
-                                        $data['select_kas_bank'],// id kas_bank dr form
-                                        $tanggal,//tanggal
-                                        0,// debit 
-                                        $data['jenis']=='HUTANG'?(float)str_replace(',', '', $data['nominal']):0, //kredit
-                                        CoaHelper::DataCoa(1151), //kode coa piutang karyawan
-                                        'hutang_karyawan',
-                                        'Kasbon Karyawan :'.'['.$karyawan->nama_panggilan.'] - '.$data['catatan'], //keterangan_transaksi
-                                        $kht->id,//keterangan_kode_transaksi
-                                        $user,//created_by
-                                        now(),//created_at
-                                        $user,//updated_by
-                                        now(),//updated_at
-                                        'Y'
-                                    ) 
-                                );
+                            if(isset($data['select_kas_bank']))
+                            {
+                                $kas_bank = KasBank::where('is_aktif', 'Y')
+                                        ->where('id', $data['select_kas_bank'])
+                                        ->first();
+                                $kas_bank->saldo_sekarang -=  floatval(str_replace(',', '', $data['nominal']));
+                                $kas_bank->updated_at = now();
+                                $kas_bank->updated_by = $user;
+                                $kas_bank->save();
+                                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                        array(
+                                            $data['select_kas_bank'],// id kas_bank dr form
+                                            $tanggal,//tanggal
+                                            0,// debit 
+                                            $data['jenis']=='HUTANG'?(float)str_replace(',', '', $data['nominal']):0, //kredit
+                                            CoaHelper::DataCoa(1151), //kode coa piutang karyawan
+                                            'hutang_karyawan',
+                                            'Kasbon Karyawan :'.'['.$karyawan->nama_panggilan.'] - '.$data['catatan'], //keterangan_transaksi
+                                            $kht->id,//keterangan_kode_transaksi
+                                            $user,//created_by
+                                            now(),//created_at
+                                            $user,//updated_by
+                                            now(),//updated_at
+                                            'Y'
+                                        ) 
+                                    );
+                            }
                             if(isset($kh)){ // KALO KASBON KAN BERARTI PJE NGASIK UANG KE KARYAWAN BUAT DI PINJEM ATAU BUAT APA MUNGKIN,MAKAE NAMBAH HUTANGE
                                 $kh->total_hutang += (float)str_replace(',', '', $data['nominal']); 
                                 $kh->updated_by = $user;
@@ -349,25 +361,33 @@ class KaryawanHutangController extends Controller
         $user = Auth::user()->id;
         DB::beginTransaction(); 
         try {
-        // dd(/*date_format(*/$data['tanggal_transaksi']/*,'Y-m-d')*/);
+            $data= $request->collect();
             $pesanKustom = [
                 'jenis_edit.required' => 'Jenis transaksi wajib diisi!',
                 'tanggal_edit.required' => 'Tanggal Transaksi wajib dipilih!',
                 'karyawan_id_edit.required' => 'Karyawan wajib dipilih!',
                 'nominal_edit.required' => 'Total Nominal wajib diisi!',
-                // 'catatan_edit.required' => 'Total Nominal wajib diisi!',
-                'select_kas_bank_edit.required' => 'Kas Bank wajib diisi!',
+                // 'catatan.required' => 'Total Nominal wajib diisi!',
+                // 'select_kas_bank.required' => 'Kas Bank wajib diisi!',
             ];
-            $request->validate([
+            
+            $rules = [
                 'jenis_edit' => 'required',
                 'tanggal_edit' => 'required',
                 'karyawan_id_edit' => 'required',
                 'nominal_edit' => 'required',
-                // 'catatan_edit' => 'required',
-                'select_kas_bank_edit' => 'required',
+                // 'catatan' => 'required',
+                // 'select_kas_bank' => 'required',
+            ];
+            
+            if ($data['jenis_edit'] == 'BAYAR') {
+                // Add additional rules for 'BAYAR' if needed
+                $rules['select_kas_bank_edit'] = 'required';
+                $pesanKustom['select_kas_bank_edit.required'] = 'Kas Bank wajib diisi!';
+            }
+            
+            $request->validate($rules, $pesanKustom);
 
-            ], $pesanKustom);
-                $data= $request->collect();
                 // dd($data);
                 $tanggal=date_create_from_format('d-M-Y', $data['tanggal_edit']);
                 $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['karyawan_id_edit'])->first();
@@ -431,14 +451,14 @@ class KaryawanHutangController extends Controller
                     $kht_b->tanggal =$tanggal;
                     $kht_b->debit = ($data['jenis_edit']=='HUTANG') ? (float)str_replace(',', '', $data['nominal_edit']) : 0;
                     $kht_b->kredit = ($data['jenis_edit']=='BAYAR') ? (float)str_replace(',', '', $data['nominal_edit']) : 0;
-                    $kht_b->kas_bank_id = $data['select_kas_bank_edit'];
+                    $kht_b->kas_bank_id = isset($data['select_kas_bank_edit'])?$data['select_kas_bank_edit']:null;
                     $kht_b->catatan = $data['catatan_edit'];
                     $kht_b->updated_by = $user;
                     $kht_b->updated_at = now();
                     // $kht_b->save();
                     if($kht_b->save())
                     {
-                        if((float)str_replace(',', '', $data['nominal_edit'])>0)
+                        if((float)str_replace(',', '', $data['nominal_edit'])>0 && isset($data['select_kas_bank_edit']))
                         {
                             $kas_bank = KasBank::where('is_aktif', 'Y')
                                         ->where('id', $data['select_kas_bank_edit'])
@@ -468,19 +488,20 @@ class KaryawanHutangController extends Controller
                                         'updated_by'=> $user,
                                     )
                                 );
-                            if(isset($kh)){
-                                if($data['jenis_edit']=='HUTANG')
-                                {
-                                    $kh->total_hutang += (float)str_replace(',', '', $data['nominal_edit']); 
-                                }
-                                else if($data['jenis_edit']=='BAYAR')
-                                {
-                                    $kh->total_hutang -= (float)str_replace(',', '', $data['nominal_edit']); 
-                                }
-                                $kh->updated_by = $user;
-                                $kh->updated_at = now();
-                                $kh->save();
+                            
+                        }
+                        if(isset($kh)){
+                            if($data['jenis_edit']=='HUTANG')
+                            {
+                                $kh->total_hutang += (float)str_replace(',', '', $data['nominal_edit']); 
                             }
+                            else if($data['jenis_edit']=='BAYAR')
+                            {
+                                $kh->total_hutang -= (float)str_replace(',', '', $data['nominal_edit']); 
+                            }
+                            $kh->updated_by = $user;
+                            $kh->updated_at = now();
+                            $kh->save();
                         }
                     }
                 DB::commit();

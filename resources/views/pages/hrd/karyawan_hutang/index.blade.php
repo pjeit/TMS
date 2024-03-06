@@ -214,7 +214,7 @@
                                         @foreach ($dataKas as $data)
                                             <option 
                                             value="{{$data->id}}" 
-                                            {{1==$data->id?'selected':''}} 
+                                            {{-- {{1==$data->id?'selected':''}}  --}}
                                             >{{ $data->nama }} </option>
                                         @endforeach
                                     </select>
@@ -395,16 +395,16 @@ $(document).ready(function () {
             
             return;
         }
-         if($("#select_kas_bank").val()=='')
-        {
-            event.preventDefault(); 
-            Toast.fire({
-                icon: 'error',
-                text: `KAS BANK BELUM DIPILIH`,
-            })
+        //  if($("#select_kas_bank").val()=='')
+        // {
+        //     event.preventDefault(); 
+        //     Toast.fire({
+        //         icon: 'error',
+        //         text: `KAS BANK BELUM DIPILIH`,
+        //     })
             
-            return;
-        }
+        //     return;
+        // }
         
         event.preventDefault();
         Swal.fire({

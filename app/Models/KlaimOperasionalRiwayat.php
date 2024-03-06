@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class KlaimOperasionalRiwayat extends Model
 {
     use HasFactory;
-    protected $table = 'klaim_supir_riwayat';
+    protected $table = 'klaim_operasional_riwayat';
     protected $primaryKey='id';
     protected $fillable=[
         'id_klaim_operasional',

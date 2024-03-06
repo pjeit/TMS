@@ -209,8 +209,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
         Route::resource('klaim_supir', 'App\Http\Controllers\KlaimSupirController');
 
-        // Route::get('/klaim_operasional/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan'])->name('pencairan_klaim_supir.edit');
-        // Route::post('/klaim_operasional/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan_save'])->name('pencairan_klaim_supir.save');
+        Route::get('/klaim_operasional/pencairan/{id}', [App\Http\Controllers\KlaimOperasionalController::class, 'pencairan'])->name('pencairan_klaim_operasional.edit');
+        Route::post('/klaim_operasional/pencairan_save/{id}', [App\Http\Controllers\KlaimOperasionalController::class, 'pencairan_save'])->name('pencairan_klaim_operasional.save');
         Route::resource('klaim_operasional', 'App\Http\Controllers\KlaimOperasionalController');
 
         Route::get('/lembur_mekanik/pencairan/{id}', [App\Http\Controllers\LemburMekanikController::class, 'pencairan'])->name('pencairan_lembur_mekanik.edit');

@@ -246,23 +246,7 @@
                                     <div class="row">
                                         <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                                 <label for="">Jenis Klaim<span class="text-red">*</span></label>
-                                                <select disabled class="form-control select2  @error('select_klaim') is-invalid @enderror" style="width: 100%;" id='select_klaim' name="select_klaim">
-                                                    <option value="" >Pilih Jenis Klaim</option>
-                                                    <option value="BAN" {{$klaimSupir->jenis_klaim=='BAN'?'selected':''}}>Ban</option>
-                                                    <option value="CUCI MOBIL" {{$klaimSupir->jenis_klaim=='CUCI MOBIL'?'selected':''}}>Cuci Mobil</option>
-                                                    <option value="SPARE PART" {{$klaimSupir->jenis_klaim=='SPARE PART'?'selected':''}}>Spare Part</option>
-                                                    <option value="TOL" {{$klaimSupir->jenis_klaim=='TOL'?'selected':''}}>Tol</option>
-                                                    <option value="LAIN LAIN" {{$klaimSupir->jenis_klaim=='LAIN LAIN'?'selected':''}}>Lain-lain</option>
-
-                                                    {{-- @foreach ($datajO as $jo)
-                                                        <option value="{{$jo->id}}-{{$jo->id_customer}}">{{ $jo->no_bl }} / {{ $jo->getCustomer->kode }} / {{ $jo->getSupplier->nama }}</option>
-                                                    @endforeach --}}
-                                                </select>
-                                                @error('select_klaim')
-                                                    <div class="invalid-feedback">
-                                                        {{ $message }}
-                                                    </div>
-                                                @enderror  
+                                                <input type="text" class="form-control" id="jenis_klaim" name="jenis_klaim" value="{{$klaimSupir->jenis_klaim}}" placeholder="jenis_klaim" readonly>
                                         </div> 
                                         
                                         <div class="form-group col-lg-6 col-md-6 col-sm-12">

@@ -731,7 +731,7 @@ class LemburMekanikController extends Controller
                             $lembur_mekanik_riwayat_baru->created_at = now();
                             $lembur_mekanik_riwayat_baru->created_by = $user;
                             $lembur_mekanik_riwayat_baru->is_aktif = 'Y';
-                            //  $lembur_mekanik_riwayat_baru->save();  
+                             $lembur_mekanik_riwayat_baru->save();  
                             
                         }
                         
@@ -1195,7 +1195,7 @@ class LemburMekanikController extends Controller
                             $lembur_mekanik_riwayat_baru->created_at = now();
                             $lembur_mekanik_riwayat_baru->created_by = $user;
                             $lembur_mekanik_riwayat_baru->is_aktif = 'Y';
-                            //  $lembur_mekanik_riwayat_baru->save();  
+                             $lembur_mekanik_riwayat_baru->save();  
                             
                         }
                         

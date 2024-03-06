@@ -86,7 +86,7 @@
                                     <td>{{$item->nama_bank}}</td>
                                     <td>{{$item->catatan}}</td>
                                     <td>
-                                        {{-- @if ($item->jenis!='POTONG') --}}
+                                        @if ($item->jenis!='POTONG')
                                             <div class="btn-group dropleft">
                                                 <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                     <i class="fa fa-list"></i>
@@ -105,9 +105,9 @@
                                                     
                                                 </div>
                                             </div>
-                                        {{-- @else
+                                        @else
                                             -
-                                        @endif --}}
+                                        @endif
                                         <input type="hidden" id="hidden_jenis_transaksi_{{$item->id_kht}}" value="{{$item->jenis}}">
                                         <input type="hidden" id="hidden_tanggal_transaksi_{{$item->id_kht}}" value="{{ \Carbon\Carbon::parse($item->tanggal)->format('d-M-Y')}}">
                                         <input type="hidden" id="hidden_total_hutang_{{$item->id_kht}}" value="{{$item->total_hutang}}">
@@ -676,16 +676,16 @@ $(document).ready(function () {
             
             return;
         }
-         if($("#select_kas_bank").val()=='')
-        {
-            event.preventDefault(); 
-            Toast.fire({
-                icon: 'error',
-                text: `KAS BANK BELUM DIPILIH`,
-            })
+        //  if($("#select_kas_bank").val()=='')
+        // {
+        //     event.preventDefault(); 
+        //     Toast.fire({
+        //         icon: 'error',
+        //         text: `KAS BANK BELUM DIPILIH`,
+        //     })
             
-            return;
-        }
+        //     return;
+        // }
         event.preventDefault();
         Swal.fire({
             title: 'Apakah Anda yakin data sudah benar?',
@@ -807,16 +807,16 @@ $(document).ready(function () {
             
             return;
         }
-         if($("#select_kas_bank_edit").val()=='')
-        {
-            event.preventDefault(); 
-            Toast.fire({
-                icon: 'error',
-                text: `KAS BANK BELUM DIPILIH`,
-            })
+        //  if($("#select_kas_bank_edit").val()=='')
+        // {
+        //     event.preventDefault(); 
+        //     Toast.fire({
+        //         icon: 'error',
+        //         text: `KAS BANK BELUM DIPILIH`,
+        //     })
             
-            return;
-        }
+        //     return;
+        // }
         
         event.preventDefault();
         Swal.fire({

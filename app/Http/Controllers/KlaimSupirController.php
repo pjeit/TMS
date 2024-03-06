@@ -867,7 +867,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat_baru->created_at = now();
                             $klaim_supir_riwayat_baru->created_by = $user;
                             $klaim_supir_riwayat_baru->is_aktif = 'Y';
-                            //  $klaim_supir_riwayat_baru->save();  
+                             $klaim_supir_riwayat_baru->save();  
                             
                         }
                         
@@ -956,7 +956,7 @@ class KlaimSupirController extends Controller
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5004), //kode coa
                                     'klaim_supir',
-                                    'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
+                                    'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' >> '.$data['jenis_klaim'].' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
                                     $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
                                     now(),//created_at
@@ -1007,7 +1007,7 @@ class KlaimSupirController extends Controller
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                         'klaim_supir',
-                                        'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
+                                        'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' >> '.$data['jenis_klaim'].' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at
@@ -1232,33 +1232,33 @@ class KlaimSupirController extends Controller
                                 // $kas_bank_transaksi->updated_by = $user;
                                 // $kas_bank_transaksi->is_aktif = 'N';
                                 // $kas_bank_transaksi->save();
-                                //  DB::table('kas_bank_transaction')
-                                //     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                //     ->where('jenis', 'klaim_supir')
-                                //     ->where('is_aktif', 'Y')
-                                //     ->update(array(
-                                //         'updated_at'=> now(),
-                                //         'updated_by'=> $user,
-                                //         'is_aktif'=> 'N',
-                                //     )
-                                // );
-                                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                    array(
-                                        $kas_bank_transaksi->id_kas_bank,// id kas_bank dr form
-                                        $tanggal_pencairan,//tanggal
-                                        $klaim_supir_riwayat->total_pencairan,// debit 
-                                        0, //uang keluar (kredit)
-                                        CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
-                                        'klaim_supir',
-                                        'Uang kembali tolak Klaim Supir '.$klaim_supir_riwayat->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'].'>>  Alasan revisi tolak: '.$data['alasan_tolak'], //keterangan_transaksi, //keterangan_transaksi
-                                        $klaim_supir_riwayat->id,//keterangan_kode_transaksi
-                                        $user,//created_by
-                                        now(),//created_at
-                                        $user,//updated_by
-                                        now(),//updated_at
-                                        'Y'
-                                    ) 
+                                 DB::table('kas_bank_transaction')
+                                    ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
+                                    ->where('jenis', 'klaim_supir')
+                                    ->where('is_aktif', 'Y')
+                                    ->update(array(
+                                        'updated_at'=> now(),
+                                        'updated_by'=> $user,
+                                        'is_aktif'=> 'N',
+                                    )
                                 );
+                                // DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                //     array(
+                                //         $kas_bank_transaksi->id_kas_bank,// id kas_bank dr form
+                                //         $tanggal_pencairan,//tanggal
+                                //         $klaim_supir_riwayat->total_pencairan,// debit 
+                                //         0, //uang keluar (kredit)
+                                //         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
+                                //         'klaim_supir',
+                                //         'Uang kembali tolak Klaim Supir '.$klaim_supir_riwayat->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'].'>>  Alasan revisi tolak: '.$data['alasan_tolak'], //keterangan_transaksi, //keterangan_transaksi
+                                //         $klaim_supir_riwayat->id,//keterangan_kode_transaksi
+                                //         $user,//created_by
+                                //         now(),//created_at
+                                //         $user,//updated_by
+                                //         now(),//updated_at
+                                //         'Y'
+                                //     ) 
+                                // );
                             }
                             //tanggal pencairan sama pencatatan null soalnya kan kalau tolak ga ada
                             $klaim_supir_riwayat->tanggal_pencairan = null;
@@ -1282,7 +1282,7 @@ class KlaimSupirController extends Controller
                             $klaim_supir_riwayat_baru->created_at = now();
                             $klaim_supir_riwayat_baru->created_by = $user;
                             $klaim_supir_riwayat_baru->is_aktif = 'Y';
-                            //  $klaim_supir_riwayat_baru->save();  
+                             $klaim_supir_riwayat_baru->save();  
                         }
                     }
                     elseif ($data['status_klaim']=='ACCEPTED') {
@@ -1368,7 +1368,7 @@ class KlaimSupirController extends Controller
                                     floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                     CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                     'klaim_supir',
-                                    'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
+                                    'Pencairan Klaim Supir '.$klaim_supir_riwayat->id.' >> '.$data['jenis_klaim'].' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi, //keterangan_transaksi
                                     $klaim_supir_riwayat->id,//keterangan_kode_transaksi
                                     $user,//created_by
                                     now(),//created_at
@@ -1419,7 +1419,7 @@ class KlaimSupirController extends Controller
                                         floatval(str_replace(',', '', $data['total_pencairan'])), //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
                                         CoaHelper::DataCoa(5004), //kode coa klaim supir (biaya servis)
                                         'klaim_supir',
-                                        'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
+                                        'Pencairan Klaim Supir '.$klaim_supir_riwayat_baru->id.' >> '.$data['jenis_klaim'].' >> '.$data['no_polisi'].'-'.$data['driver_nama'], //keterangan_transaksi
                                         $klaim_supir_riwayat_baru->id,//keterangan_kode_transaksi
                                         $user,//created_by
                                         now(),//created_at

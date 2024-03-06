@@ -26,6 +26,7 @@ use App\Models\SewaOperasionalKembaliStok;
 use Exception;
 use App\Helper\VariableHelper;
 use App\Models\Booking;
+use App\Models\KlaimOperasional;
 use App\Models\SewaOperasionalPembayaranDetail;
 use App\Models\Supplier;
 use Carbon\Carbon;
@@ -174,6 +175,14 @@ class DalamPerjalananController extends Controller
                 ->orWhere('status', 'like', '%TAGIHKAN DI INVOICE%');
         })
         ->where('total_operasional', '>', 0)
+        ->get();
+        $data_klaim_operasional = KlaimOperasional::where(
+            [
+                'is_aktif'=>'Y',
+                'id_sewa'=>$dalam_perjalanan->id_sewa,
+            ]
+        )
+        ->where('status_klaim', '<>', 'PENDING')
         ->get();
         $dataOpreasionalJO = DB::table('sewa_operasional AS so')
                     ->select('so.*','s.id_sewa','jo.id as id_jo')
@@ -324,6 +333,21 @@ class DalamPerjalananController extends Controller
                     array_push($array_outbond, $objek);
             }
         }
+        if(isset($data_klaim_operasional))
+        {
+            foreach ($data_klaim_operasional as $item) {
+                    
+                        $objek = [
+                            'id_klaim_detail' => $item->id,
+                            'deskripsi' => $item->jenis_klaim,
+                            'dicairkan' => 0,
+                            'biaya' => $item->total_klaim,
+                        ];
+                    array_push($array_inbound, $objek);
+                    array_push($array_outbond, $objek);
+            }
+        }
+        
             // dd($array_outbond);
         foreach ($datajODetailBiaya as $item) {
             
@@ -364,6 +388,22 @@ class DalamPerjalananController extends Controller
             }
         }
         foreach ($Tujuan as $item) {
+            if ($item->plastik) {
+                $objPlastik = [
+                    'deskripsi' => 'SEAL PELAYARAN',
+                    'biaya' => $item->seal_pelayaran,
+                ];
+                array_push($array_outbond, $objPlastik);
+            }
+            if ($item->plastik) {
+                $objPlastik = [
+                    'deskripsi' => 'TALLY',
+                    'biaya' => $item->tally,
+                ];
+                array_push($array_outbond, $objPlastik);
+                array_push($array_inbound, $objPlastik);
+
+            }
             if ($item->seal_pje) {
                 $objSealPje = [
                     'deskripsi' => 'SEAL PJE',
@@ -489,7 +529,8 @@ class DalamPerjalananController extends Controller
                         $SOP->id_sewa = $dalam_perjalanan->id_sewa; 
                         $SOP->deskripsi = $value['deskripsi_data'];
                         $SOP->total_operasional = (float)str_replace(',', '', $value['nominal_ditagihkan']);
-                        $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
+                        // $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
+                        $SOP->total_dicairkan = 0;
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
                         $SOP->catatan = $value['catatan_data'];
@@ -561,6 +602,7 @@ class DalamPerjalananController extends Controller
                                 // 'total_operasional' => (float)str_replace(',', '', $value['nominal_data']),
                                 'is_ditagihkan' => $value['ditagihkan_data_value'],
                                 'is_dipisahkan' => $value['dipisahkan_data_value'],
+                                'is_aktif' => 'N',
                                 'catatan' => $value['catatan_data'],
                                 'updated_at' => now(),
                                 'updated_by' => $user,
@@ -587,7 +629,8 @@ class DalamPerjalananController extends Controller
                         $SOP->id_klaim_detail = $id_klaim_detail;
                         $SOP->deskripsi = $value['deskripsi_data'];
                         $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_ditagihkan']);
-                        $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
+                        // $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
+                        $SOP->total_dicairkan = 0;
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
                         $SOP->catatan = $value['catatan_data'];
@@ -625,7 +668,8 @@ class DalamPerjalananController extends Controller
                         $SOP->id_sewa = $dalam_perjalanan->id_sewa; 
                         $SOP->deskripsi = $value['deskripsi_data'];
                         $SOP->total_operasional =  (float)str_replace(',', '', $value['nominal_ditagihkan']);
-                        $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
+                        // $SOP->total_dicairkan = (float)str_replace(',', '', $value['nominal_data']);
+                        $SOP->total_dicairkan = 0;
                         $SOP->is_ditagihkan = $value['ditagihkan_data_value'];
                         $SOP->is_dipisahkan = $value['dipisahkan_data_value'];
                         $SOP->catatan = $value['catatan_data'];
@@ -976,7 +1020,7 @@ class DalamPerjalananController extends Controller
                                         $so_refund = new SewaOperasionalRefund();
                                         $so_refund ->id_kas_bank = $value['kembali'];
                                         $so_refund ->tanggal_refund = now();
-                                        $so_refund ->id_sewa_ops = $value['id_operasional_data'];
+                                        $so_refund ->id_pembayaran_detail = $value['id_operasional_data'];
                                         $so_refund ->id_sewa =  $sewa->id_sewa;
                                         $so_refund ->no_sewa =  $sewa->no_sewa;
                                         $so_refund ->id_pembayaran = $so_pembayaran->id;
@@ -1025,7 +1069,7 @@ class DalamPerjalananController extends Controller
                                 if($so_pembayaran->save())
                                 {
                                     $so_stok = new SewaOperasionalKembaliStok();
-                                    $so_stok ->id_sewa_ops = $value['id_operasional_data'];
+                                    $so_stok ->id_pembayaran_detail = $value['id_operasional_data'];
                                     $so_stok ->id_sewa =  $sewa->id_sewa;
                                     $so_stok ->no_sewa =  $sewa->no_sewa;
                                     $so_stok ->id_pembayaran = $so_pembayaran->id;
@@ -1192,7 +1236,7 @@ class DalamPerjalananController extends Controller
                             $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
                             if($value['kembali']!='KEMBALI_STOK'&&$value['kembali']!='DATA_DI_HAPUS')
                             {
-                                $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
+                                // $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
                                 if($so_pembayaran){
                                     $so_pembayaran->total_refund += (float)str_replace(',', '', $value['total_dicairkan']);
                                     $so_pembayaran->updated_by = $user;
@@ -1204,7 +1248,7 @@ class DalamPerjalananController extends Controller
                                         $so_refund = new SewaOperasionalRefund();
                                         $so_refund ->id_kas_bank = $value['kembali'];
                                         $so_refund ->tanggal_refund = now();
-                                        $so_refund ->id_sewa_ops = $value['id_operasional_data'];
+                                        $so_refund ->id_pembayaran_detail = $value['id_operasional_data'];
                                         $so_refund ->id_sewa =  $sewa->id_sewa;
                                         $so_refund ->no_sewa =  $sewa->no_sewa;
                                         $so_refund ->id_pembayaran = $so_pembayaran->id;
@@ -1253,7 +1297,7 @@ class DalamPerjalananController extends Controller
                                 if($so_pembayaran->save())
                                 {
                                     $so_stok = new SewaOperasionalKembaliStok();
-                                    $so_stok ->id_sewa_ops = $value['id_operasional_data'];
+                                    $so_stok ->id_pembayaran_detail = $value['id_operasional_data'];
                                     $so_stok ->id_sewa =  $sewa->id_sewa;
                                     $so_stok ->no_sewa =  $sewa->no_sewa;
                                     $so_stok ->id_pembayaran = $so_pembayaran->id;

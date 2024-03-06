@@ -97,9 +97,9 @@
                                                     <a href="{{ route('klaim_operasional.destroy', [$item->id_klaim]) }}" class="dropdown-item" data-confirm-delete="true">
                                                         <span class="fas fa-trash mr-3"></span> Hapus
                                                     </a>
-                                                    {{-- <a href="{{route('pencairan_klaim_operasional.edit',[$item->id_klaim])}}" class="dropdown-item ">
+                                                    <a href="{{route('pencairan_klaim_operasional.edit',[$item->id_klaim])}}" class="dropdown-item ">
                                                         <span class="nav-icon fas fa-dollar-sign mr-3"></span> Pencairan
-                                                    </a> --}}
+                                                    </a>
                                                 @else
                                                     {{-- <a href="{{route('pencairan_klaim_operasional.edit',[$item->id_klaim])}}" class="dropdown-item ">
                                                         <span class="nav-icon fas fa-dollar-sign mr-3"></span> Edit Pencairan
