@@ -964,8 +964,13 @@ class RevisiBiayaOperasionalController extends Controller
         }
     }
 
-    public function load_data($item){
+    public function load_data($item,$tanggal_mulai,$tanggal_akhir){
         $currentDate = Carbon::now();
+        $tanggal_mulai_convert = date_create_from_format('d-M-Y', $tanggal_mulai);
+        $tanggal_akhir_convert = date_create_from_format('d-M-Y', $tanggal_akhir);
+
+        
+        
         try {
             if($item == 'KARANTINA'){
                 $data = Karantina::where('is_aktif', 'Y')->where('total_dicairkan', '<>' ,NULL)
@@ -989,11 +994,14 @@ class RevisiBiayaOperasionalController extends Controller
                                         //         $currentDate->copy()->addDay()->endOfDay()
                                         //     ]);
                                         // })
-                                        ->where('tgl_dicairkan',$currentDate)
+                                        // ->where('tgl_dicairkan', date("Y-m-d 00:00:00",  $currentDate->toDateString().' 00:00:00'))
+                                        ->whereBetween( DB::raw('cast(tgl_dicairkan as date)'), [date_format($tanggal_mulai_convert, 'Y-m-d'), date_format($tanggal_akhir_convert, 'Y-m-d')])
+                                        // ->whereDate('tgl_dicairkan', $tanggal_akhir_convert)
                                         ->where('total_refund',0)
                                         ->where('total_kasbon',0)
                                         ->whereNull('total_kembali_stok')
                                         ->with('getOperasionalDetail')
+                                        ->with('getKas')
                                         ->with('getOperasionalDetail.getSewaDetail.getCustomer.getGrup')
                                         ->with('getOperasionalDetail.getSewaDetail.getKaryawan')
                                         ->with('getOperasionalDetail.getSewaDetail.getSupplier')

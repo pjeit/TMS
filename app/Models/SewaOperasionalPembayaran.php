@@ -19,4 +19,8 @@ class SewaOperasionalPembayaran extends Model
     {
         return $this->hasMany(SewaOperasionalPembayaranDetail::class, 'id_pembayaran', 'id')->where('is_aktif', 'Y');
     }
+    public function getKas()
+    {
+        return $this->hasOne(KasBank::class, 'id', 'id_kas_bank')->where('is_aktif', 'Y');
+    }
 }

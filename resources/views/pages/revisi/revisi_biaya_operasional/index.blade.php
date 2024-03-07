@@ -29,9 +29,9 @@
             <div class="card-header ">
                 <div class="card-header" style="border: 2px solid #bbbbbb;">
                     <div class="row">
-                        <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
+                        <div class="col-lg-4 col-md-4 col-sm-12 bg-white pb-3">
                             <label for="">&nbsp;</label>
-                            <div class="form-group" style="width: 400px;">
+                            <div class="form-group" >
                                 <select class="form-control selectpicker" required name="item" id="item"
                                     data-live-search="true" data-show-subtext="true" data-placement="bottom">
                                     <option value="">­­— PILIH DATA —</option>
@@ -49,17 +49,50 @@
                                 <input type="hidden" id="type" name="type" value="">
                             </div>
                         </div>
-                        <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
+                         <div class="col-lg-2 col-md-2 col-sm-12 bg-white pb-3">
+                            <div class="form-group">
+                                <label for="">Tanggal Mulai<span style="color:red">*</span></label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                    <input type="text" autocomplete="off" name="tanggal_mulai" class="form-control date" id="tanggal_mulai" value="{{date("d-M-Y")}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12 bg-white pb-3">
+                            <div class="form-group">
+                                <label for="">Tanggal Akhir<span style="color:red">*</span></label>
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                    </div>
+                                    <input type="text" autocomplete="off" name="tanggal_akhir" class="form-control date" id="tanggal_akhir" value="{{date("d-M-Y")}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 bg-white pb-3">
                             <label for="">&nbsp;</label>
                             <div class="d-flex">
+                                
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-success ml-3 popUp" id="btnSave"
-                                        value="save"><i class="fa fa-save" aria-hidden="true"></i> Simpan</button>
+                                    <button type="button" class="btn btn-primary radiusSendiri "   id="btnFilter">
+                                        <i class="fas fa-search"></i> 
+                                        <b> Tampilkan Data</b>
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success ml-3 popUp radiusSendiri" id="btnSave"
+                                        value="save"><i class="fa fa-save" aria-hidden="true"></i> Revisi</button>
                                 </div>
                                 {{-- @can('DELETE_REVISI_BIAYA_OPERASIONAL') --}}
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-danger ml-3 popUp" id="btnDelete"
+                                    <button type="button" class="btn btn-danger ml-3 popUp radiusSendiri" id="btnDelete"
                                         value="delete"><i class="fa fa-trash-alt" aria-hidden="true"></i> Hapus</button>
+                                </div>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-warning ml-3 popUp radiusSendiri" id="btnRefund"
+                                        value="refund"><i class="fa fa-sync-alt" aria-hidden="true"></i> Refund</button>
                                 </div>
                                 {{-- @endcan --}}
 
@@ -141,19 +174,56 @@
         //     // this.submit();
         // });
 
+        // $(document).on('change', '#item', function(e) {  
+        //     var item = $('#item').val();
+        //     if(item != ''){
+        //         showTable(item);
+        //     }else{
+        //         var table = $('#rowGroup').DataTable();
+        //         table.clear().draw();
+        //     }
+		// });        
+        $('#tanggal_mulai').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            startDate: "-1d",
+            language:'en',
+        });
+        $('#tanggal_akhir').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            startDate: "0d",
+            language:'en',
+        });
         $(document).on('change', '#item', function(e) {  
-            var item = $('#item').val();
-            if(item != ''){
-                showTable(item);
+            var item = $(this).val();
+            var tanggal_mulai = $('#tanggal_mulai').val();
+            var tanggal_akhir = $('#tanggal_akhir').val();
+            if(item != '' &&tanggal_mulai!=''&&tanggal_akhir!=''){
+                showTable(item,tanggal_mulai,tanggal_akhir);
             }else{
                 var table = $('#rowGroup').DataTable();
                 table.clear().draw();
             }
-		});        
-        
-        function showTable(item){
+		});    
+        $(document).on('click', '#btnFilter', function(e) {  
+            var item = $('#item').val();
+            var tanggal_mulai = $('#tanggal_mulai').val();
+            var tanggal_akhir = $('#tanggal_akhir').val();
+
+
+            if(item != '' &&tanggal_mulai!=''&&tanggal_akhir!=''){
+                showTable(item,tanggal_mulai,tanggal_akhir);
+            }else{
+                var table = $('#rowGroup').DataTable();
+                table.clear().draw();
+            }
+		});  
+        function showTable(item,tanggal_mulai,tanggal_akhir){
             var baseUrl = "{{ asset('') }}";
-            var url = baseUrl+`revisi_biaya_operasional/load_data/${item}`;
+            var url = baseUrl+`revisi_biaya_operasional/load_data/${item}/${tanggal_mulai}/${tanggal_akhir}`;
 
             $.ajax({
                 method: 'GET',
@@ -262,7 +332,9 @@
                                                             </b>
                                                     </td>`);
                                         row.append(`<td> 
-                                            ${data[i].get_operasional_detail[0].get_sewa_detail.nama_tujuan} 
+                                            ${data[i].get_operasional_detail[0].get_sewa_detail.nama_tujuan} </br>
+                                            Tanggal Dicairkan : ${dateMask(data[i].tgl_dicairkan)} </br>
+                                            Kas Bank : ${data[i].get_kas.nama} 
                                             </td>`);
                                         if(item == 'LAIN-LAIN'){
                                             row.append(`<td>
@@ -277,8 +349,12 @@
                                         <input type="hidden" name='data[${item.id_pembayaran}][${item.id}][tujuan]' value="${data[i].get_operasional_detail[0].get_sewa_detail.nama_tujuan}" 
                                                 class="form-control"  readonly />
                                         <input type="text" name='data[${item.id_pembayaran}][${item.id}][driver_nopol]' value="${item.get_sewa_detail.no_polisi} (${item.get_sewa_detail.get_karyawan ? item.get_sewa_detail.get_karyawan.nama_panggilan : 'REKANAN'})" 
-                                        class="form-control" title="${item.get_sewa_detail.no_polisi} (${item.get_sewa_detail.get_karyawan ? item.get_sewa_detail.get_karyawan.nama_panggilan : 'REKANAN'})" readonly/>`
-                                        ).join('<br>')}</td>`);
+                                        class="form-control" title="${item.get_sewa_detail.no_polisi} (${item.get_sewa_detail.get_karyawan ? item.get_sewa_detail.get_karyawan.nama_panggilan : 'REKANAN'})" readonly/>
+                                        <br>
+                                        tanggal berangkat : ${dateMask(item.get_sewa_detail.tanggal_berangkat)} 
+                                        
+                                        `
+                                        ).join('<br> <br>')}</td>`);
                                         row.append(`<td> ${data[i].get_operasional_detail.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
                                         row.append(`<td> ${data[i].get_operasional_detail.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
                                                                                                 <input type="hidden" value="${item.total_dicairkan}" id="hidden_dicairkan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />
@@ -372,6 +448,7 @@
                 text: "Periksa kembali data anda",
                 icon: 'warning',
                 input: "textarea",
+                
                 inputLabel: "Berikan alasan hapus",
                 inputPlaceholder: "...",
                 inputAttributes: {
@@ -413,6 +490,80 @@
                 }
             })
         });
+
+        $(document).on('click', '#btnRefund', function(e){
+            var isOk = 0;
+            var checkboxes = document.querySelectorAll('.centang');
+                checkboxes.forEach(function(checkbox) {
+                    if (checkbox.checked) {
+                        isOk = 1;
+                    }
+                });
+            if (isOk == 0) {
+                    event.preventDefault(); // Prevent form submission
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Harap pilih item dahulu!',
+                    })
+                    return;
+                }
+            Swal.fire({
+                title: 'Apakah data sudah benar?',
+                text: "Periksa kembali data anda",
+                icon: 'warning',
+                input: "textarea",
+                
+                inputLabel: "Berikan alasan refund",
+                html: `
+                    <select class="form-control select2 " data-live-search="true" data-show-subtext="true" data-placement="bottom" width="80" >
+                            <option value="">── PILIH PEMBAYARAN ──</option>
+                            @foreach ($dataKas as $kas)
+                            <option value="{{$kas->id}}">{{ $kas->nama }}</option>
+                            @endforeach
+                            <option value="kasbon">kembali sebagai kasbon</option>
+                        </select>
+                `,
+                inputPlaceholder: "...",
+                inputAttributes: {
+                    "aria-label": "Type your message here"
+                },
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const revisionReason = result.value;
+                    document.getElementById('alasan').value = revisionReason;
+                    document.getElementById('type').value = this.value;
+
+                    // this.submit();
+                    $('#save').submit();
+                }else{
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top',
+                        timer: 2500,
+                        showConfirmButton: false,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    })
+
+                    Toast.fire({
+                        icon: 'warning',
+                        title: 'Batal Disimpan'
+                    })
+                    event.preventDefault();
+                    // return;
+                }
+            })
+        });
+
 
         $(document).on('click', '#btnSave', function(e){
             var isOk = 0;
