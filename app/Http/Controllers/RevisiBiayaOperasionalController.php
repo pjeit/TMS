@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use App\Helper\CoaHelper;
 use Exception;
+use Carbon\Carbon;
 
 class RevisiBiayaOperasionalController extends Controller
 {
@@ -165,6 +166,7 @@ class RevisiBiayaOperasionalController extends Controller
                                     $oprs->updated_at = now(); 
                                     $oprs->save();
                                     if (array_key_exists($value['tujuan'], $storeData)) {
+                                        $storeData[$value['tujuan']]['customer'] = $value['customer'];
                                         $storeData[$value['tujuan']]['driver'] .= ' >> '. $value['driver_nopol'];
                                         // $storeData[$value['tujuan']]['id_opr'][] = $keyOprs;
                                         $storeData[$value['tujuan']]['index'] += 1;
@@ -183,7 +185,10 @@ class RevisiBiayaOperasionalController extends Controller
                                     } else {
                                         // buat insialiasi awal misal tujuan 1 driver 1
                                         $storeData[$value['tujuan']] = [
+                                            
                                             'driver' => '>> '. $value['driver_nopol'],
+                                            'customer' => '>> '. $value['customer'],
+
                                             // 'id_opr' => [$keyOprs],
                                             'index' => $i,
                                         ];
@@ -232,23 +237,23 @@ class RevisiBiayaOperasionalController extends Controller
                                 $pembayaran->updated_at = now();
                                 // $pembayaran->save();
                                 if($pembayaran->save()){
-                                    $history_baru = KasBankTransaction::where('is_aktif', 'Y')
-                                            ->where('jenis', $jenis)
-                                            ->where('keterangan_kode_transaksi', $pembayaran->id)
-                                            ->first();
+                                    // $history_baru = KasBankTransaction::where('is_aktif', 'Y')
+                                    //         ->where('jenis', $jenis)
+                                    //         ->where('keterangan_kode_transaksi', $pembayaran->id)
+                                    //         ->first();
         
-                                    if($history_baru){
+                                    if($history_lama){
 
-                                        $keterangan_transaksi = $history_baru->keterangan_transaksi;
+                                        // $keterangan_transaksi = $history_lama->keterangan_transaksi;
                                         foreach ($storeData as $keyNamaTujuan => $dump) {
-                                            $history_baru->keterangan_transaksi = 'REVISI - ' .$data['item'].": ".$dump['index'].'X ' .$keyNamaTujuan." ".$dump['driver'];
+                                            $history_lama->keterangan_transaksi = 'REVISI - ' .$data['item'].": ".$dump['index'].'X >>'."(".$dump['customer'].")".'>>' .$keyNamaTujuan." ".$dump['driver'];
                                         }
-                                        $history_baru->kredit = $total_dicairkan;
-                                        $history_baru->updated_by = $user;
-                                        $history_baru->updated_at = now();
-                                        // $history_baru->is_aktif = 'N';
-                                        if($history_baru->save()){
-                                            $kasbank_update_saldo = KasBank::where('is_aktif', 'Y')->find($history_baru->id_kas_bank);
+                                        $history_lama->kredit = $total_dicairkan;
+                                        $history_lama->updated_by = $user;
+                                        $history_lama->updated_at = now();
+                                        // $history_lama->is_aktif = 'N';
+                                        if($history_lama->save()){
+                                            $kasbank_update_saldo = KasBank::where('is_aktif', 'Y')->find($history_lama->id_kas_bank);
                                             if($kasbank_update_saldo){
                                                 $kasbank_update_saldo->saldo_sekarang -= $total_dicairkan;
                                                 $kasbank_update_saldo->updated_by = $user;
@@ -355,6 +360,8 @@ class RevisiBiayaOperasionalController extends Controller
                                     $total_dicairkan += $oprs->total_dicairkan;
                                     $total_operasional += $oprs->total_operasional;
                                     if (array_key_exists($value['tujuan'], $storeData)) {
+
+                                        $storeData[$value['tujuan']]['customer'] = $value['customer'];
                                         $storeData[$value['tujuan']]['driver'] .= ' >> '. $value['driver_nopol'];
                                         // $storeData[$value['tujuan']]['id_opr'][] = $keyOprs;
                                         $storeData[$value['tujuan']]['index'] += 1;
@@ -374,6 +381,7 @@ class RevisiBiayaOperasionalController extends Controller
                                         // buat insialiasi awal misal tujuan 1 driver 1
                                         $storeData[$value['tujuan']] = [
                                             'driver' => '>> '. $value['driver_nopol'],
+                                            'customer' => '>> '. $value['customer'],
                                             // 'id_opr' => [$keyOprs],
                                             'index' => $i,
                                         ];
@@ -383,7 +391,7 @@ class RevisiBiayaOperasionalController extends Controller
                         }
                         // dd($storeData);
                         if($is_delete == true){
-                            // dd($total_dicairkan);
+                            // dd($data);
                             //key itu id sewa operasional pembayaran
                             $pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($key);
                             $jenis = 'pencairan_operasional';
@@ -414,32 +422,28 @@ class RevisiBiayaOperasionalController extends Controller
                                             $pembayaran->updated_at = now();
                                             // $pembayaran->save();
                                             if($pembayaran->save()){
-                                                $history_baru = KasBankTransaction::where('is_aktif', 'Y')
-                                                        ->where('jenis', $jenis)
-                                                        ->where('keterangan_kode_transaksi', $pembayaran->id)
-                                                        ->first();
-                                                if($history_baru){
-                                                    $keterangan_transaksi = $history_baru->keterangan_transaksi;
-                                                    $history_baru->kredit = $total_dicairkan;
-                                                    // $history_baru->keterangan_transaksi = 'REVISI - ' .$keterangan_transaksi;
-                                                    foreach ($storeData as $keyNamaTujuan => $dump) {
-                                                        $history_baru->keterangan_transaksi = 'REVISI - ' .$data['item'].": ".$dump['index'].'X ' .$keyNamaTujuan." ".$dump['driver'];
-                                                    }
-                                                    $history_baru->updated_by = $user;
-                                                    $history_baru->updated_at = now();
-                                                    if ($total_dicairkan == 0) {
-                                                        $history_baru->is_aktif = 'N';
-                                                    }
-                                                    if($history_baru->save()){
-                                                        $kasbank_update_saldo = KasBank::where('is_aktif', 'Y')->find($history_baru->id_kas_bank);
-                                                        if($kasbank_update_saldo){
-                                                            $kasbank_update_saldo->saldo_sekarang -= $total_dicairkan;
-                                                            $kasbank_update_saldo->updated_by = $user;
-                                                            $kasbank_update_saldo->updated_at = now();
-                                                            $kasbank_update_saldo->save();
-                                                        }
+                                              
+                                                // $keterangan_transaksi = $history_lama->keterangan_transaksi;
+                                                $history_lama->kredit = $total_dicairkan;
+                                                // $history_lama->keterangan_transaksi = 'REVISI - ' .$keterangan_transaksi;
+                                                foreach ($storeData as $keyNamaTujuan => $dump) {
+                                                    $history_lama->keterangan_transaksi = 'REVISI - ' .$data['item'].": ".$dump['index'].'X >>'."(".$dump['customer'].")".'>>' .$keyNamaTujuan." ".$dump['driver'];
+                                                }
+                                                $history_lama->updated_by = $user;
+                                                $history_lama->updated_at = now();
+                                                if ($total_dicairkan == 0) {
+                                                    $history_lama->is_aktif = 'N';
+                                                }
+                                                if($history_lama->save()){
+                                                    $kasbank_update_saldo = KasBank::where('is_aktif', 'Y')->find($history_lama->id_kas_bank);
+                                                    if($kasbank_update_saldo){
+                                                        $kasbank_update_saldo->saldo_sekarang -= $total_dicairkan;
+                                                        $kasbank_update_saldo->updated_by = $user;
+                                                        $kasbank_update_saldo->updated_at = now();
+                                                        $kasbank_update_saldo->save();
                                                     }
                                                 }
+                                                
                                             }
                                         }
                                     }
@@ -961,6 +965,7 @@ class RevisiBiayaOperasionalController extends Controller
     }
 
     public function load_data($item){
+        $currentDate = Carbon::now();
         try {
             if($item == 'KARANTINA'){
                 $data = Karantina::where('is_aktif', 'Y')->where('total_dicairkan', '<>' ,NULL)
@@ -978,7 +983,15 @@ class RevisiBiayaOperasionalController extends Controller
                                         ->whereHas('getOperasionalDetail', function ($query){
                                             $query->where('is_aktif', 'Y');
                                         })
+                                        // ->where(function ($query) use ($currentDate) {
+                                        //     $query->whereBetween('tanggal_berangkat', [
+                                        //         $currentDate->copy()->subDay()->startOfDay(),
+                                        //         $currentDate->copy()->addDay()->endOfDay()
+                                        //     ]);
+                                        // })
+                                        ->where('tgl_dicairkan',$currentDate)
                                         ->where('total_refund',0)
+                                        ->where('total_kasbon',0)
                                         ->whereNull('total_kembali_stok')
                                         ->with('getOperasionalDetail')
                                         ->with('getOperasionalDetail.getSewaDetail.getCustomer.getGrup')

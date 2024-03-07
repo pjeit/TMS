@@ -186,6 +186,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/biaya_operasional/load_tujuan_sewa/{customer}/{item}', 'App\Http\Controllers\BiayaOperasionalController@load_tujuan_sewa')->name('biaya_operasional.load_tujuan_sewa');
         Route::get('/biaya_operasional/load_data_gabung/{item}/{customer}/{tujuan}', 'App\Http\Controllers\BiayaOperasionalController@load_data_gabung')->name('biaya_operasional.load_data_gabung');
         Route::get('/biaya_operasional/load_data/{item}', 'App\Http\Controllers\BiayaOperasionalController@load_data')->name('biaya_operasional.load_data');
+        Route::get('/biaya_operasional/get_value_kasbon/{item}', 'App\Http\Controllers\BiayaOperasionalController@get_value_kasbon')->name('biaya_operasional.get_value_kasbon');
         Route::resource('biaya_operasional', 'App\Http\Controllers\BiayaOperasionalController');
 
         Route::get('pencairan_operasional/pencairan/{id}', 'App\Http\Controllers\PencairanOperasionalController@pencairan')->name('pencairan_operasional.pencairan');

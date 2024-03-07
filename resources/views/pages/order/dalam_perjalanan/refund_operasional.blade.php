@@ -87,7 +87,13 @@
                         @endphp
                         @foreach ($dataOperasional as $key => $value)
                             <tr id="{{$index}}">
+                                
+
                                 <td id="id_sewa_operasional_tabel_{{$index}}" >
+                                    <div class="icheck-danger d-inline">
+                                        <input type="checkbox" id="checkboxDanger_{{$index}}" class="centang_cekbox" value="N" name="data[{{$index}}][is_kembali]">
+                                        <label for="checkboxDanger_{{$index}}"></label>
+                                    </div>
                                         <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->so_id_sewa}}" readonly>
                                         <input type="hidden" id="id_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_operasional_data]" value="{{$value->so_id}}" readonly>
                                     <input type="hidden" id="id_pembayaran_operasional_{{$index}}"  class="id_pembayaran_operasional" name="data[{{$index}}][id_pembayaran_operasional]" value="{{$value->so_id_pembayaran}}" readonly>
@@ -100,19 +106,25 @@
                                     <input type="hidden" name="data[{{$index}}][rincian]" value="UANG KEMBALI (1X: {{$value->so_deskripsi}})->KENDARAAN : [{{$value->sewa_kendaraan}}] - DRIVER:({{$value->sewa_driver}}) - TUJUAN :({{$value->sewa_tujuan}}) - SEWA :({{$value->no_sewa}})">
                                 </td>
                                 <td>
-                                    @if ($value->so_id_pembayaran == null)
+                                    @if ($value->so_id_pembayaran == null && $value->so_id_kasbon)
+                                            <div class="form-group col-12">
+                                                <input type="hidden" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" value="kasbon" class="form-control" readonly>
+                                                <span class="badge badge-warning">Data kembali sebagai kasbon operasional</span><br>
+                                            </div>
+                                    @elseif($value->so_id_pembayaran == null && $value->so_id_stok)
                                         <div class="form-group col-12">
-                                            <input type="hidden" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" value="DATA_DI_HAPUS" class="form-control" readonly>
-                                            <span class="badge badge-warning">Data Dihapus</span><br>
+                                            <input type="hidden" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" value="KEMBALI_STOK" class="form-control" readonly>
+                                            <span class="badge badge-warning">Data kembali sebagai stok operasional</span><br>
                                         </div>
                                     @else
                                         <div class="form-group col-12">
                                             <select class="form-control select2" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" width="100">
-                                                @if ($value->so_deskripsi=="SEAL PELAYARAN"||$value->so_deskripsi=="PLASTIK")
+                                                {{-- @if ($value->so_deskripsi=="SEAL PELAYARAN"||$value->so_deskripsi=="PLASTIK")
                                                     <option value="KEMBALI_STOK" >KEMBALI SEBAGAI STOK</option>
-                                                @endif
+                                                @endif --}}
+                                                <option value="kasbon" {{ $value->id_kas_bank == null? 'selected':''; }}>KEMBALI SEBAGAI KASBON</option>
                                                 @foreach ($dataKas as $kb)
-                                                    <option value="{{$kb->id}}" {{ $kb->id == $value->id_kas_bank? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                                    <option value="{{$kb->id}}" {{--{{ $kb->id == $value->id_kas_bank? 'selected':''; }} --}}>{{ $kb->nama }} - {{$kb->tipe}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -121,7 +133,7 @@
                                 <td>
                                     <div class="form-group">
                                         {{-- <input type="text" id="catatan" name="data[{{$index}}][catatan]" class="form-control" value="">   --}}
-                                        <textarea name="data[{{$index}}][catatan]" required class="form-control" id="catatan" rows="5" value=""></textarea>
+                                        <textarea name="data[{{$index}}][catatan]"  class="form-control" id="catatan" rows="5" value=""></textarea>
                                     </div>  
                                 </td>
                             </tr>
@@ -142,6 +154,15 @@
 <script type="text/javascript">
 $(document).ready(function() {
 
+    $(document).on('click', '.centang_cekbox', function () {
+        if ($(this).is(":checked")) {
+            $(this).val('Y');
+        
+        } else if ($(this).is(":not(:checked)")) {  
+            $(this).val('N')
+        }
+            
+    });
     $(document).on('keyup', '#uang_jalan_kembali', function(){ 
         var total_uang_jalan = $('#total_uang_jalan').val();
         if(parseFloat(escapeComma(this.value)) > parseFloat(escapeComma(total_uang_jalan))){

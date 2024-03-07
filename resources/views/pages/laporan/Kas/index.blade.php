@@ -131,7 +131,7 @@
                                             $transaction += $item->debit;
                                         }
                                     @endphp
-                                <td style='text-align:right'>{{ number_format($saldo_sekarang) }}</td>
+                                <td style='text-align:right'>{{ number_format($transaction) }}</td>
                             </tr>
                             @endforeach
                             <tr>

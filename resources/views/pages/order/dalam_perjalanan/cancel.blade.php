@@ -269,17 +269,23 @@
                                         <input type="hidden" name="data[{{$index}}][rincian]" value="UANG KEMBALI (1X: {{$value->so_deskripsi}})->KENDARAAN : [{{$value->sewa_kendaraan}}] - DRIVER:({{$value->sewa_driver}}) - TUJUAN :({{$value->sewa_tujuan}}) - SEWA :({{$value->no_sewa}})">
                                     </td>
                                     <td>
-                                        @if ($value->so_id_pembayaran == null)
+                                        @if ($value->so_id_pembayaran == null && $value->so_id_kasbon)
                                             <div class="form-group col-12">
-                                                <input type="hidden" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" value="DATA_DI_HAPUS" class="form-control" readonly>
-                                                <span class="badge badge-warning">Data Dihapus</span><br>
+                                                <input type="hidden" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" value="kasbon" class="form-control" readonly>
+                                                <span class="badge badge-warning">Data kembali sebagai kasbon operasional</span><br>
+                                            </div>
+                                        @elseif($value->so_id_pembayaran == null && $value->so_id_stok)
+                                            <div class="form-group col-12">
+                                                <input type="hidden" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" value="KEMBALI_STOK" class="form-control" readonly>
+                                                <span class="badge badge-warning">Data kembali sebagai stok operasional</span><br>
                                             </div>
                                         @else
                                             <div class="form-group col-12">
                                                 <select class="form-control select2" name="data[{{$index}}][kembali]" id="kembali_{{$index}}" data-live-search="true" data-show-subtext="true" data-placement="bottom" width="100">
-                                                    @if ($value->so_deskripsi=="SEAL PELAYARAN"||$value->so_deskripsi=="PLASTIK")
+                                                    {{-- @if ($value->so_deskripsi=="SEAL PELAYARAN"||$value->so_deskripsi=="PLASTIK")
                                                         <option value="KEMBALI_STOK" >KEMBALI SEBAGAI STOK</option>
-                                                    @endif
+                                                    @endif --}}
+                                                    <option value="kasbon" {{ $value->id_kas_bank == null? 'selected':''; }}>KEMBALI SEBAGAI KASBON</option>
                                                     @foreach ($dataKas as $kb)
                                                         <option value="{{$kb->id}}" {{ $kb->id == $value->id_kas_bank? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                                     @endforeach

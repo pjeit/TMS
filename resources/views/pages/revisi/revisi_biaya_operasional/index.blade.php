@@ -272,6 +272,8 @@
                                         // row.append(`<td> ${data[i].get_operasional_detail.map(item => `<input type="text" value="${item.get_sewa_detail.no_polisi + ' (' + item.get_sewa_detail.get_karyawan?item.get_sewa_detail.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" class="form-control" title="${item.get_sewa_detail.no_polisi + ' (' + item.get_sewa_detail.get_karyawan?item.get_sewa_detail.get_karyawan.nama_panggilan:'REKANAN'+ ')'}" readonly />`).join('<br>')}</td>`);
                                         row.append(`<td>${data[i].get_operasional_detail.map(item => 
                                         `
+                                        <input type="hidden" name='data[${item.id_pembayaran}][${item.id}][customer]' value="${data[i].get_operasional_detail[0].get_sewa_detail.get_customer.nama}" 
+                                                class="form-control"  readonly />
                                         <input type="hidden" name='data[${item.id_pembayaran}][${item.id}][tujuan]' value="${data[i].get_operasional_detail[0].get_sewa_detail.nama_tujuan}" 
                                                 class="form-control"  readonly />
                                         <input type="text" name='data[${item.id_pembayaran}][${item.id}][driver_nopol]' value="${item.get_sewa_detail.no_polisi} (${item.get_sewa_detail.get_karyawan ? item.get_sewa_detail.get_karyawan.nama_panggilan : 'REKANAN'})" 
@@ -292,6 +294,8 @@
                             // }
                                 
                             new DataTable('#rowGroup', {
+                                responsive: true,
+                                paging: false,
                                 order: [
                                     [0, 'asc'], // 0 = grup
                                     [1, 'asc'] // 1 = customer

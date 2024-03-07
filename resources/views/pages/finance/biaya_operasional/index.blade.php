@@ -102,7 +102,18 @@ a {
                     </ul>
                     <ul class="list-inline">
                         <div class="row">
-                            <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
+                            {{-- <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
+                                <ul class="list-group mt-4">
+                                    <li class="list-group-item d-flex justify-content-between lh-sm card-outline card-secondary">
+                                        <div>
+                                            <span class="text-secondary kasbon_ops_text" id="kasbon_ops_text">Saldo Kasbon</span>
+                                        </div>
+                                        <span class="text-bold kasbon_ops" id="kasbon_ops_saldo">Rp. 0</span>
+                                        <input type="hidden" id='kasbon_ops_hidden' name='kasbon_ops'>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-6 col-md-6 col-lg-6 bg-white pb-3">
                                 <ul class="list-group mt-4">
                                     <li
                                         class="list-group-item d-flex justify-content-between lh-sm card-outline card-primary">
@@ -114,6 +125,42 @@ a {
                                     </li>
                                 </ul>
                             </div>
+                            <div class="col-sm-6 col-md-6 col-lg-6 bg-white pb-3">
+                                <ul class="list-group mt-4">
+                                    <li
+                                        class="list-group-item d-flex justify-content-between lh-sm card-outline card-primary">
+                                        <div>
+                                            <span class="text-primary"><b>Catatan Kasbon</b></span>
+                                        </div>
+                                        <input type="text" name="catatan_kasbon" class="form-control " id="catatan_kasbon" placeholder="" value="">
+                                    </li>
+                                </ul>
+                            </div> --}}
+
+                            <div class="col-sm-6 col-md-12 col-lg-12 bg-white pb-3">
+                                <ul class="list-group mt-4">
+                                    <li
+                                        class="list-group-item d-flex justify-content-between lh-sm card-outline card-primary">
+                                        <div>
+                                            <span class="text-primary"><b>Grand Total</b></span>
+                                        </div>
+                                        <span class="text-bold t_total">Rp. 0</span>
+                                        <input type="hidden" id='t_total' name='t_total'>
+                                    </li>
+                                </ul>
+                            </div>
+                          
+                            <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
+                                <ul class="list-group mt-4">
+                                    <li class="list-group-item d-flex justify-content-between lh-sm card-outline card-secondary">
+                                        <div>
+                                            <span class="text-secondary kasbon_ops_text" id="kasbon_ops_text">Saldo Kasbon</span>
+                                        </div>
+                                        <span class="text-bold kasbon_ops" id="kasbon_ops_saldo">Rp. 0</span>
+                                        <input type="hidden" id='kasbon_ops_hidden' name='kasbon_ops'>
+                                    </li>
+                                </ul>
+                            </div>
                             <div class="col-sm-12 col-md-6 col-lg-6 bg-white pb-3">
                                 <div class="input-group mt-4">
                                     <select class="form-control selectpicker" required id='pembayaran' name="pembayaran"
@@ -122,6 +169,8 @@ a {
                                         @foreach ($dataKas as $kas)
                                         <option value="{{$kas->id}}">{{ $kas->nama }}</option>
                                         @endforeach
+                                        <option value="kasbon">POTONG KASBON</option>
+
                                     </select>
                                     <button type="submit" class="btn btn-success ml-4" id="bttonBayar"><i class="fa fa-credit-card" aria-hidden="true"></i> Bayar</button>
                                 </div>
@@ -192,7 +241,12 @@ a {
             var isOk = 0;
             var dicairkan_nol = false;
             var dicairkan_null = false;
+            var t_total = $('#t_total').val();
+            var kasbon_ops_hidden = $('#kasbon_ops_hidden').val();
+            var pembayaran = $('#pembayaran').val();
 
+
+            
             // check apakah sudah ada yg dicentang?
                 var checkboxes = document.querySelectorAll('.item');
                 checkboxes.forEach(function(checkbox) {
@@ -248,6 +302,16 @@ a {
                     return;
                 }
             //
+            if(parseFloat(kasbon_ops_hidden)<parseFloat(t_total)&&pembayaran=='kasbon')
+            {
+                event.preventDefault(); // Prevent form submission
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Saldo kasbon tidak mencukupi',
+                    })
+                    return;
+            }
+
             event.preventDefault(); // Prevent form submission
 
             Swal.fire({
@@ -371,9 +435,12 @@ a {
                 // tbody.innerHTML = "Pilih Supir";
                 showTableGabung(item,'ALL','ALL');
                 getCustomer(item);
+                get_kasbon(item);
             }else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
                 let bank = $('#pembayaran').selectpicker('val', 2);
                 showTable(item);
+                get_kasbon(item);
+
             }else{
                 let bank = $('#pembayaran').selectpicker('val', '');
                 tbody.innerHTML = "";
@@ -387,6 +454,7 @@ a {
             // }
 		});        
         showTable('ALAT');
+        get_kasbon('ALAT');
         var date = new Date();
         var options = { day: 'numeric', month: 'short', year: 'numeric' };
         var formattedDate = date.toLocaleDateString('en-US', options);
@@ -397,6 +465,212 @@ a {
         // console.log(dateMask(date).split('-')[1]);
         // console.log(dateMask(date).split('-')[2]);
 
+        
+        $(document).on('change', '#select_customer', function(e) {  
+            var item = $('#item_hidden').val();
+            var id_customer = $(this).val();
+            console.log();
+
+            $('#item_hidden').val(item);
+            var totalElement = document.querySelector('.t_total');
+            totalElement.textContent = "Rp. 0"; 
+            // console.log('item', item);
+            var tbody = document.getElementById("hasil");
+            getTujuan(id_customer,item);
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                let bank = $('#pembayaran').selectpicker('val', 1);
+                if($(this).val())
+                {
+                    showTableGabung(item,id_customer,'ALL');
+                }
+                else
+                {
+                    // $("#rowGroup").dataTable().fnDestroy();
+                    // $("th").remove();
+                    // $("#hasil").empty();
+                    $("#rowGroup").dataTable().fnDestroy();
+                    $("th").remove();
+                    $("#hasil").empty();
+                    var item = $('#item').val();
+                    $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                    // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                        $("thead tr").append("<th>Ditagihkan</th>");
+                    // }
+                    $("thead tr").append(`<th>Dicairkan</th>
+                                            <th>Catatan</th>
+                                            <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+                }
+                
+            }/*else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
+                let bank = $('#pembayaran').selectpicker('val', 2);
+            }*/else{
+                let bank = $('#pembayaran').selectpicker('val', '');
+                tbody.innerHTML = "";
+            }
+
+            // if(item != null){
+            //     showTable(item);
+            // }else{
+            //     var tbody = document.getElementById("hasil");
+            //     tbody.innerHTML = "";
+            // }
+		});   
+
+         $(document).on('change', '#select_grup_tujuan', function(e) {  
+            var item = $('#item_hidden').val();
+            var id_tujuan = $(this).val();
+            var id_customer = $('#select_customer').val();
+            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
+                let bank = $('#pembayaran').selectpicker('val', 1);
+                if($(this).val())
+                {
+                    showTableGabung(item,id_customer,id_tujuan);
+                }
+                else
+                {
+                    // $("#rowGroup").dataTable().fnDestroy();
+                    // $("th").remove();
+                    // $("#hasil").empty();
+                    $("#rowGroup").dataTable().fnDestroy();
+                    $("th").remove();
+                    $("#hasil").empty();
+                    var item = $('#item').val();
+                    $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
+                    // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
+                        $("thead tr").append("<th>Ditagihkan</th>");
+                    // }
+                    $("thead tr").append(`<th>Dicairkan</th>
+                                            <th>Catatan</th>
+                                            <th class='text-center'><input id='check_all' type='checkbox'></th>`);
+                }
+                
+            }/*else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
+                let bank = $('#pembayaran').selectpicker('val', 2);
+            }*/else{
+                let bank = $('#pembayaran').selectpicker('val', '');
+                tbody.innerHTML = "";
+            }
+
+            // if(item != null){
+            //     showTable(item);
+            // }else{
+            //     var tbody = document.getElementById("hasil");
+            //     tbody.innerHTML = "";
+            // }
+		});   
+
+        // check all
+        $(document).on('click', '#check_all', function() {  
+            let isChecked = this.checked;
+            $(".grup").prop('checked', isChecked);
+            $(".customer").prop('checked', isChecked);
+            $(".item").prop('checked', isChecked);
+            // $(".cek_cair_grup_"+id_grup).val('Y');
+            // $(".cek_cair_customer_"+customer_id).val('Y');
+            $(".cek_cair").val('Y');
+
+            $(".item_dicairkan").prop('readonly', !isChecked);
+            $(".item_ditagihkan").prop('readonly', !isChecked);
+            $(".item_catatan").prop('readonly', !isChecked);
+            hitung();
+        });
+        //
+
+        // check per grup
+        $(document).on('click', '.grup', function() {
+            let id_grup = this.value;
+            let isChecked = this.checked;
+
+            $(".grup_"+id_grup).prop('checked', isChecked);
+            $(".grup_"+id_grup).prop('readonly', !isChecked);
+            $(".cek_cair_grup_"+id_grup).val('Y');
+            $("#check_all").prop('checked', false);
+            hitung();
+        });
+        //
+ 
+        // check per customer
+        $(document).on('click', '.customer', function() {
+            let customer_id = this.value;
+            let id_grup = this.getAttribute('id_grup');
+            let isChecked = this.checked;
+
+            $(".customer_"+customer_id).prop('checked', isChecked);
+            $(".customer_"+customer_id).prop('readonly', !isChecked);
+            $(".cek_cair_customer_"+customer_id).val('Y');
+
+            $("#check_all").prop('checked', false);
+            $("#grup_"+id_grup).prop('checked', false);
+            hitung();
+        });
+        //
+
+        // per item
+        $(document).on('click', '.item', function (event) {
+            let id = this.value;
+            let id_grup = this.getAttribute('id_grup');
+            let id_customer = this.getAttribute('id_customer');
+            let isChecked = this.checked;
+
+            $(".item_"+id).prop('checked', isChecked);
+            $(".item_"+id).prop('readonly', !isChecked);
+            $(".item_ditagihkan"+id).prop('readonly', !isChecked);
+            $(".cek_cair_item_"+id).val('Y');
+            $("#check_all").prop('checked', false);
+            $("#grup_"+id_grup).prop('checked', false);
+            $("#customer_"+id_customer).prop('checked', false);
+            hitung();
+        });
+        //
+        
+        $(document).on('keyup', '.dicairkan', function(){
+            let id = this.getAttribute('item');
+            var inputed = normalize(this.value);
+
+            if(item.value == 'TIMBANG' || item.value == 'BURUH' || item.value == 'LEMBUR'|| item.value == 'ALAT'|| item.value == 'TALLY'|| item.value == 'SEAL PELAYARAN'||item.value == 'BIAYA DEPO'){
+                $('#biaya_'+id).val(inputed);
+            }else{
+                var max = $('#biaya_'+id).val();
+                if(inputed > max){
+                    $('#item_'+id).val(parseFloat(max).toLocaleString()); 
+                }
+            }
+            hitung();
+        });
+        function get_kasbon(item){
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`biaya_operasional/get_value_kasbon/${item}`;
+
+            $.ajax({
+                method: 'GET',
+                url: url,
+                dataType: 'JSON',
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(response) {
+                    var kasbon_ops_text = $('#kasbon_ops_text');
+                    var kasbon_ops_saldo = $('#kasbon_ops_saldo');
+                    var kasbon_ops_hidden = $('#kasbon_ops_hidden');
+                    kasbon_ops_text.text(`Saldo Kasbon ${item}`);
+                    kasbon_ops_saldo.text(`Rp . ${response.data.total_riwayat?moneyMask(response.data.total_riwayat):0}`)
+                    kasbon_ops_hidden.val(response.data.total_riwayat?parseFloat(response.data.total_riwayat):0)
+                    var data = response.data;
+                    console.log(data.total_riwayat);
+                    
+                },error: function (xhr, status, error) {
+                    $("#loading-spinner").hide();
+                    if ( xhr.responseJSON.result == 'error') {
+                        console.log("Error:", xhr.responseJSON.message);
+                        console.log("XHR status:", status);
+                        console.log("Error:", error);
+                        console.log("Response:", xhr.responseJSON);
+                    } else {
+                        toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                    }
+                }
+            });
+        }
         //buat yang alat,tally,seal pelayaran,karantina,biaya depo
         function showTable(item){
             if(item == ''){
@@ -600,6 +874,8 @@ a {
 
                         new DataTable('#rowGroup', {
                             responsive: true,
+                            paging: false,
+
                             order: [
                                 [0, 'asc'], // 0 = grup
                                 [1, 'asc'], // 1 = customer
@@ -728,6 +1004,8 @@ a {
                                 }
                             }
                         new DataTable('#rowGroup', {
+                            responsive: true,
+                            paging: false,
                             order: [
                                 [0, 'asc'], // 0 = grup
                                 [1, 'asc'], // 1 = customer
@@ -835,179 +1113,6 @@ a {
                 }
             });
         }
-        $(document).on('change', '#select_customer', function(e) {  
-            var item = $('#item_hidden').val();
-            var id_customer = $(this).val();
-            console.log();
-
-            $('#item_hidden').val(item);
-            var totalElement = document.querySelector('.t_total');
-            totalElement.textContent = "Rp. 0"; 
-            // console.log('item', item);
-            var tbody = document.getElementById("hasil");
-            getTujuan(id_customer,item);
-            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
-                let bank = $('#pembayaran').selectpicker('val', 1);
-                if($(this).val())
-                {
-                    showTableGabung(item,id_customer,'ALL');
-                }
-                else
-                {
-                    // $("#rowGroup").dataTable().fnDestroy();
-                    // $("th").remove();
-                    // $("#hasil").empty();
-                    $("#rowGroup").dataTable().fnDestroy();
-                    $("th").remove();
-                    $("#hasil").empty();
-                    var item = $('#item').val();
-                    $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
-                    // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
-                        $("thead tr").append("<th>Ditagihkan</th>");
-                    // }
-                    $("thead tr").append(`<th>Dicairkan</th>
-                                            <th>Catatan</th>
-                                            <th class='text-center'><input id='check_all' type='checkbox'></th>`);
-                }
-                
-            }/*else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
-                let bank = $('#pembayaran').selectpicker('val', 2);
-            }*/else{
-                let bank = $('#pembayaran').selectpicker('val', '');
-                tbody.innerHTML = "";
-            }
-
-            // if(item != null){
-            //     showTable(item);
-            // }else{
-            //     var tbody = document.getElementById("hasil");
-            //     tbody.innerHTML = "";
-            // }
-		});   
-
-         $(document).on('change', '#select_grup_tujuan', function(e) {  
-            var item = $('#item_hidden').val();
-            var id_tujuan = $(this).val();
-            var id_customer = $('#select_customer').val();
-            if(item == 'TIMBANG' || item == 'BURUH' || item == 'LEMBUR'){
-                let bank = $('#pembayaran').selectpicker('val', 1);
-                if($(this).val())
-                {
-                    showTableGabung(item,id_customer,id_tujuan);
-                }
-                else
-                {
-                    // $("#rowGroup").dataTable().fnDestroy();
-                    // $("th").remove();
-                    // $("#hasil").empty();
-                    $("#rowGroup").dataTable().fnDestroy();
-                    $("th").remove();
-                    $("#hasil").empty();
-                    var item = $('#item').val();
-                    $("thead tr").append(`<th>Grup<th> <th>Tujuan</th><th>Keterangan</th>`);
-                    // if(item != 'TIMBANG' && item != 'BURUH' && item != 'LEMBUR'){
-                        $("thead tr").append("<th>Ditagihkan</th>");
-                    // }
-                    $("thead tr").append(`<th>Dicairkan</th>
-                                            <th>Catatan</th>
-                                            <th class='text-center'><input id='check_all' type='checkbox'></th>`);
-                }
-                
-            }/*else if(item == 'ALAT' || item == 'TALLY' || item == 'SEAL PELAYARAN' || item == 'KARANTINA'|| item == 'BIAYA DEPO'){
-                let bank = $('#pembayaran').selectpicker('val', 2);
-            }*/else{
-                let bank = $('#pembayaran').selectpicker('val', '');
-                tbody.innerHTML = "";
-            }
-
-            // if(item != null){
-            //     showTable(item);
-            // }else{
-            //     var tbody = document.getElementById("hasil");
-            //     tbody.innerHTML = "";
-            // }
-		});   
-
-        
-        // check all
-        $(document).on('click', '#check_all', function() {  
-            let isChecked = this.checked;
-            $(".grup").prop('checked', isChecked);
-            $(".customer").prop('checked', isChecked);
-            $(".item").prop('checked', isChecked);
-            // $(".cek_cair_grup_"+id_grup).val('Y');
-            // $(".cek_cair_customer_"+customer_id).val('Y');
-            $(".cek_cair").val('Y');
-
-            $(".item_dicairkan").prop('readonly', !isChecked);
-            $(".item_ditagihkan").prop('readonly', !isChecked);
-            $(".item_catatan").prop('readonly', !isChecked);
-            hitung();
-        });
-        //
-
-        // check per grup
-        $(document).on('click', '.grup', function() {
-            let id_grup = this.value;
-            let isChecked = this.checked;
-
-            $(".grup_"+id_grup).prop('checked', isChecked);
-            $(".grup_"+id_grup).prop('readonly', !isChecked);
-            $(".cek_cair_grup_"+id_grup).val('Y');
-            $("#check_all").prop('checked', false);
-            hitung();
-        });
-        //
- 
-        // check per customer
-        $(document).on('click', '.customer', function() {
-            let customer_id = this.value;
-            let id_grup = this.getAttribute('id_grup');
-            let isChecked = this.checked;
-
-            $(".customer_"+customer_id).prop('checked', isChecked);
-            $(".customer_"+customer_id).prop('readonly', !isChecked);
-            $(".cek_cair_customer_"+customer_id).val('Y');
-
-            $("#check_all").prop('checked', false);
-            $("#grup_"+id_grup).prop('checked', false);
-            hitung();
-        });
-        //
-
-        // per item
-        $(document).on('click', '.item', function (event) {
-            let id = this.value;
-            let id_grup = this.getAttribute('id_grup');
-            let id_customer = this.getAttribute('id_customer');
-            let isChecked = this.checked;
-
-            $(".item_"+id).prop('checked', isChecked);
-            $(".item_"+id).prop('readonly', !isChecked);
-            $(".item_ditagihkan"+id).prop('readonly', !isChecked);
-            $(".cek_cair_item_"+id).val('Y');
-            $("#check_all").prop('checked', false);
-            $("#grup_"+id_grup).prop('checked', false);
-            $("#customer_"+id_customer).prop('checked', false);
-            hitung();
-        });
-        //
-        
-        $(document).on('keyup', '.dicairkan', function(){
-            let id = this.getAttribute('item');
-            var inputed = normalize(this.value);
-
-            if(item.value == 'TIMBANG' || item.value == 'BURUH' || item.value == 'LEMBUR'|| item.value == 'ALAT'|| item.value == 'TALLY'|| item.value == 'SEAL PELAYARAN'||item.value == 'BIAYA DEPO'){
-                $('#biaya_'+id).val(inputed);
-            }else{
-                var max = $('#biaya_'+id).val();
-                if(inputed > max){
-                    $('#item_'+id).val(parseFloat(max).toLocaleString()); 
-                }
-            }
-            hitung();
-        });
-
         function hitung(){
             var totalCair = 0;
             var dicairkan = document.querySelectorAll('.dicairkan');
