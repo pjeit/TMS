@@ -25,8 +25,7 @@
                 <a href="{{ route('refund_biaya_operasional.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
                 <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
-            <div class="card-body">
-                
+            <div class="card-body w-50" >
                 <div class="row">
                         {{-- <div class="form-group col-lg-4 col-md-4 col-sm-12">
                             <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
@@ -61,7 +60,7 @@
                             <label for="no_akun">Tujuan</label>
                             <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$data->nama_tujuan}}" readonly>                         
                         </div>   --}}
-                        <div class="col-6">
+                        {{-- <div class="col-6"> --}}
                             <div class="form-group ">
                                 <label for="refund">Kembali sebagai</label>
                                 <select class="form-control select2" name="kembali" data-live-search="true" data-show-subtext="true" data-placement="bottom" width="100">
@@ -77,8 +76,8 @@
                                 <textarea name="catatan"  class="form-control" id="catatan" rows="8" value=""></textarea>
                             </div>  
                             
-                        </div>
-                        <div class="col-6">
+                        {{-- </div> --}}
+                        {{-- <div class="col-6"> --}}
                             <table class="table table-bordered card-outline card-primary table-hover" id="sortable" >
                                 <thead>
                                     <tr>
@@ -134,7 +133,7 @@
                                 <tfoot>
                                 </tfoot>
                             </table>
-                        </div>
+                        {{-- </div> --}}
                 </div>
              
             </div>
