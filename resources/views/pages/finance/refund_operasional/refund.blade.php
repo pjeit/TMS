@@ -26,7 +26,6 @@
                 <button type="submit" id="submitButton" class="btn btn-success radiusSendiri ml-2"><i class="fa fa-fw fa-save"></i> Simpan</button>
             </div>
             <div class="card-body">
-                
                 <div class="row">
                         {{-- <div class="form-group col-lg-4 col-md-4 col-sm-12">
                             <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
