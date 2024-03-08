@@ -26,77 +26,76 @@
     <div class="card radiusSendiri">
         <form id="save" action="{{ route('revisi_biaya_operasional.store') }}" method="POST">
             @csrf
-            <div class="card-header ">
-                <div class="card-header" style="border: 2px solid #bbbbbb;">
-                    <div class="row">
-                        <div class="col-lg-4 col-md-4 col-sm-12 bg-white pb-3">
-                            <label for="">&nbsp;</label>
-                            <div class="form-group" >
-                                <select class="form-control selectpicker" required name="item" id="item"
-                                    data-live-search="true" data-show-subtext="true" data-placement="bottom">
-                                    <option value="">­­— PILIH DATA —</option>
-                                    <option value="ALAT">ALAT</option>
-                                    <option value="TALLY">TALLY</option>
-                                    <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
-                                    <option value="BIAYA DEPO">BIAYA DEPO</option>
-                                    <option value="BURUH">BURUH</option>
-                                    <option value="TIMBANG">TIMBANG</option>
-                                    <option value="LEMBUR">LEMBUR</option>
-                                    <option value="KARANTINA">KARANTINA</option>
-                                    <option value="LAIN-LAIN">LAIN-LAIN</option>
-                                </select>
-                                <input type="hidden" id="alasan" name="alasan" value="">
-                                <input type="hidden" id="type" name="type" value="">
-                            </div>
+            <div class="card-header sticky-top" >
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-12 bg-white pb-3">
+                        <label for="">&nbsp;</label>
+                        <div class="form-group" >
+                            <select class="form-control selectpicker" required name="item" id="item"
+                                data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                <option value="">­­— PILIH DATA —</option>
+                                <option value="ALAT">ALAT</option>
+                                <option value="TALLY">TALLY</option>
+                                <option value="SEAL PELAYARAN">SEAL PELAYARAN</option>
+                                <option value="BIAYA DEPO">BIAYA DEPO</option>
+                                <option value="BURUH">BURUH</option>
+                                <option value="TIMBANG">TIMBANG</option>
+                                <option value="LEMBUR">LEMBUR</option>
+                                <option value="KARANTINA">KARANTINA</option>
+                                <option value="LAIN-LAIN">LAIN-LAIN</option>
+                            </select>
+                            <input type="hidden" id="alasan" name="alasan" value="">
+                            <input type="hidden" id="kembali" name="alasan" value="">
+                            <input type="hidden" id="type" name="type" value="">
                         </div>
-                         <div class="col-lg-2 col-md-2 col-sm-12 bg-white pb-3">
-                            <div class="form-group">
-                                <label for="">Tanggal Mulai<span style="color:red">*</span></label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                    </div>
-                                    <input type="text" autocomplete="off" name="tanggal_mulai" class="form-control date" id="tanggal_mulai" value="{{date("d-M-Y")}}">
-                                </div>
-                            </div>
-                        </div>
+                    </div>
                         <div class="col-lg-2 col-md-2 col-sm-12 bg-white pb-3">
-                            <div class="form-group">
-                                <label for="">Tanggal Akhir<span style="color:red">*</span></label>
-                                <div class="input-group mb-0">
-                                    <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                    </div>
-                                    <input type="text" autocomplete="off" name="tanggal_akhir" class="form-control date" id="tanggal_akhir" value="{{date("d-M-Y")}}">
+                        <div class="form-group">
+                            <label for="">Tanggal Mulai<span style="color:red">*</span></label>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                 </div>
+                                <input type="text" autocomplete="off" name="tanggal_mulai" class="form-control date" id="tanggal_mulai" value="{{date("d-M-Y")}}">
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-12 bg-white pb-3">
-                            <label for="">&nbsp;</label>
-                            <div class="d-flex">
-                                
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-primary radiusSendiri "   id="btnFilter">
-                                        <i class="fas fa-search"></i> 
-                                        <b> Tampilkan Data</b>
-                                    </button>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-12 bg-white pb-3">
+                        <div class="form-group">
+                            <label for="">Tanggal Akhir<span style="color:red">*</span></label>
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                 </div>
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-success ml-3 popUp radiusSendiri" id="btnSave"
-                                        value="save"><i class="fa fa-save" aria-hidden="true"></i> Revisi</button>
-                                </div>
-                                {{-- @can('DELETE_REVISI_BIAYA_OPERASIONAL') --}}
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-danger ml-3 popUp radiusSendiri" id="btnDelete"
-                                        value="delete"><i class="fa fa-trash-alt" aria-hidden="true"></i> Hapus</button>
-                                </div>
-                                <div class="form-group">
-                                    <button type="button" class="btn btn-warning ml-3 popUp radiusSendiri" id="btnRefund"
-                                        value="refund"><i class="fa fa-sync-alt" aria-hidden="true"></i> Refund</button>
-                                </div>
-                                {{-- @endcan --}}
-
+                                <input type="text" autocomplete="off" name="tanggal_akhir" class="form-control date" id="tanggal_akhir" value="{{date("d-M-Y")}}">
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12 bg-white pb-3">
+                        <label for="">&nbsp;</label>
+                        <div class="d-flex">
+                            
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary radiusSendiri "   id="btnFilter">
+                                    <i class="fas fa-search"></i> 
+                                    <b> Tampilkan Data</b>
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-success ml-3 popUp radiusSendiri" id="btnSave"
+                                    value="save"><i class="fa fa-save" aria-hidden="true"></i> Revisi</button>
+                            </div>
+                            {{-- @can('DELETE_REVISI_BIAYA_OPERASIONAL') --}}
+                            <div class="form-group">
+                                <button type="button" class="btn btn-danger ml-3 popUp radiusSendiri" id="btnDelete"
+                                    value="delete"><i class="fa fa-trash-alt" aria-hidden="true"></i> Hapus</button>
+                            </div>
+                            {{-- <div class="form-group">
+                                <button type="button" class="btn btn-warning ml-3 popUp radiusSendiri" id="btnRefund"
+                                    value="refund"><i class="fa fa-sync-alt" aria-hidden="true"></i> Refund</button>
+                            </div> --}}
+                            {{-- @endcan --}}
+
                         </div>
                     </div>
                 </div>
@@ -358,7 +357,11 @@
                                         row.append(`<td> ${data[i].get_operasional_detail.map(item => `<input type="text" value="${item.total_operasional.toLocaleString()}" id="operasional_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_operasional]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />`).join('<br>')}</td>`);
                                         row.append(`<td> ${data[i].get_operasional_detail.map(item => `<input type="text" value="${item.total_dicairkan.toLocaleString()}" id="dicairkan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][total_dicairkan]' idOprs="${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} dicairkan form-control numaja uang" readonly />
                                                                                                 <input type="hidden" value="${item.total_dicairkan}" id="hidden_dicairkan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control numaja uang" readonly />
-                                                                                                `).join('<br>')}</td>`);
+                                                                                                
+
+                                                                                                `).join('<br>')}
+                                                                                                <span class="badge badge-warning">Total dicairkan: ${moneyMask(data[i].total_dicairkan) }</span>
+                                                                                                </td>`);
                                         row.append(`<td> ${data[i].get_operasional_detail.map(item => `<div class='d-flex'>
                                                                                                     <input type="text" value="${item.catatan != null? item.catatan:''}" id="catatan_${item.id}" name='data[${item.id_pembayaran}][${item.id}][catatan]' class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
                                                                                                     <input type="hidden" value="${item.catatan != null? item.catatan:''}" id="hidden_catatan_${item.id}" class="operasional_${item.id} id_pembayaran_${item.id_pembayaran} form-control" readonly />
@@ -491,78 +494,80 @@
             })
         });
 
-        $(document).on('click', '#btnRefund', function(e){
-            var isOk = 0;
-            var checkboxes = document.querySelectorAll('.centang');
-                checkboxes.forEach(function(checkbox) {
-                    if (checkbox.checked) {
-                        isOk = 1;
-                    }
-                });
-            if (isOk == 0) {
-                    event.preventDefault(); // Prevent form submission
-                    Swal.fire({
-                        icon: 'error',
-                        text: 'Harap pilih item dahulu!',
-                    })
-                    return;
-                }
-            Swal.fire({
-                title: 'Apakah data sudah benar?',
-                text: "Periksa kembali data anda",
-                icon: 'warning',
-                input: "textarea",
+        // $(document).on('click', '#btnRefund', function(e){
+        //     var isOk = 0;
+        //     var checkboxes = document.querySelectorAll('.centang');
+        //         checkboxes.forEach(function(checkbox) {
+        //             if (checkbox.checked) {
+        //                 isOk = 1;
+        //             }
+        //         });
+        //     if (isOk == 0) {
+        //             event.preventDefault(); // Prevent form submission
+        //             Swal.fire({
+        //                 icon: 'error',
+        //                 text: 'Harap pilih item dahulu!',
+        //             })
+        //             return;
+        //         }
+        //     Swal.fire({
+        //         title: 'Apakah data sudah benar?',
+        //         text: "Periksa kembali data anda",
+        //         icon: 'warning',
+        //         input: "textarea",
                 
-                inputLabel: "Berikan alasan refund",
-                html: `
-                    <select class="form-control select2 " data-live-search="true" data-show-subtext="true" data-placement="bottom" width="80" >
-                            <option value="">── PILIH PEMBAYARAN ──</option>
-                            @foreach ($dataKas as $kas)
-                            <option value="{{$kas->id}}">{{ $kas->nama }}</option>
-                            @endforeach
-                            <option value="kasbon">kembali sebagai kasbon</option>
-                        </select>
-                `,
-                inputPlaceholder: "...",
-                inputAttributes: {
-                    "aria-label": "Type your message here"
-                },
-                showCancelButton: true,
-                cancelButtonColor: '#d33',
-                confirmButtonColor: '#3085d6',
-                cancelButtonText: 'Batal',
-                confirmButtonText: 'Ya',
-                reverseButtons: true
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const revisionReason = result.value;
-                    document.getElementById('alasan').value = revisionReason;
-                    document.getElementById('type').value = this.value;
+        //         inputLabel: "Berikan alasan refund",
+        //         html: `
+        //             <select class="form-control select2 " data-live-search="true" data-show-subtext="true" data-placement="bottom" width="80" >
+        //                     <option value="">── PILIH PEMBAYARAN ──</option>
+        //                     @foreach ($dataKas as $kas)
+        //                     <option value="{{$kas->id}}">{{ $kas->nama }}</option>
+        //                     @endforeach
+        //                     <option value="kasbon">kembali sebagai kasbon</option>
+        //                 </select>
+        //         `,
+        //         inputPlaceholder: "...",
+        //         inputAttributes: {
+        //             "aria-label": "Type your message here"
+        //         },
+        //         showCancelButton: true,
+        //         cancelButtonColor: '#d33',
+        //         confirmButtonColor: '#3085d6',
+        //         cancelButtonText: 'Batal',
+        //         confirmButtonText: 'Ya',
+        //         reverseButtons: true
+        //     }).then((result) => {
+        //         if (result.isConfirmed) {
+        //             const revisionReason = result.value;
+        //             document.getElementById('alasan').value = revisionReason;
+        //             document.getElementById('type').value = this.value;
+        //             alert(result.value);
+        //             console.log(result);
 
-                    // this.submit();
-                    $('#save').submit();
-                }else{
-                    const Toast = Swal.mixin({
-                        toast: true,
-                        position: 'top',
-                        timer: 2500,
-                        showConfirmButton: false,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    })
+        //             // this.submit();
+        //             // $('#save').submit();
+        //         }else{
+        //             const Toast = Swal.mixin({
+        //                 toast: true,
+        //                 position: 'top',
+        //                 timer: 2500,
+        //                 showConfirmButton: false,
+        //                 timerProgressBar: true,
+        //                 didOpen: (toast) => {
+        //                     toast.addEventListener('mouseenter', Swal.stopTimer)
+        //                     toast.addEventListener('mouseleave', Swal.resumeTimer)
+        //                 }
+        //             })
 
-                    Toast.fire({
-                        icon: 'warning',
-                        title: 'Batal Disimpan'
-                    })
-                    event.preventDefault();
-                    // return;
-                }
-            })
-        });
+        //             Toast.fire({
+        //                 icon: 'warning',
+        //                 title: 'Batal Disimpan'
+        //             })
+        //             event.preventDefault();
+        //             // return;
+        //         }
+        //     })
+        // });
 
 
         $(document).on('click', '#btnSave', function(e){

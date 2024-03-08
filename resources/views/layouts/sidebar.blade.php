@@ -473,7 +473,8 @@
                       request()->is('tagihan_pembelian*')||
                       request()->is('cetak_uang_jalan*')||
                       request()->is('transfer_dana*')||
-                      request()->is('pembayaran_karantina*')
+                      request()->is('pembayaran_karantina*')||
+                      request()->is('refund_biaya_operasional*')
                       ? 'menu-is-opening menu-open' : '' }}">
                 <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
                   <i class="nav-icon fas fa-dollar-sign"></i>
@@ -495,7 +496,17 @@
                   </li>
                 </ul>
                 @endcan
-                
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{route('refund_biaya_operasional.index')}}"
+                      class="nav-link {{request()->url() === route('refund_biaya_operasional.index')? ' active' : '' }} "
+                      style="font-weight: 500;">
+                      <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                      <span style="font-size: 0.78em;">Refund Biaya Operasional</span>
+                     
+                    </a>
+                  </li>
+                </ul>
                 
                 <ul class="nav nav-treeview">
                   <li class="nav-item   {{ 

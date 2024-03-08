@@ -189,6 +189,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/biaya_operasional/get_value_kasbon/{item}', 'App\Http\Controllers\BiayaOperasionalController@get_value_kasbon')->name('biaya_operasional.get_value_kasbon');
         Route::resource('biaya_operasional', 'App\Http\Controllers\BiayaOperasionalController');
 
+
+        Route::resource('refund_biaya_operasional', 'App\Http\Controllers\RefundOperasionalController');
         Route::get('pencairan_operasional/pencairan/{id}', 'App\Http\Controllers\PencairanOperasionalController@pencairan')->name('pencairan_operasional.pencairan');
         Route::resource('pencairan_operasional', 'App\Http\Controllers\PencairanOperasionalController');
 
