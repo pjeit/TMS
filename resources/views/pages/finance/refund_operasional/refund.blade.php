@@ -20,6 +20,7 @@
 <div class="container-fluid">
     <form action="{{ route('refund_biaya_operasional.update', [ $data->id ]) }}" method="POST" id="post_data">
         @csrf 
+        @method('PUT')
         <div class="card radiusSendiri">
             <div class="card-header">
                 <a href="{{ route('refund_biaya_operasional.index') }}" class="btn btn-secondary radiusSendiri"><i class="fa fa-arrow-circle-left"></i> Kembali</a>
@@ -61,15 +62,29 @@
                             <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$data->nama_tujuan}}" readonly>                         
                         </div>   --}}
                         <div class="col-6">
-                            <div class="form-group ">
-                                <label for="refund">Kembali sebagai</label>
-                                <select class="form-control select2" name="kembali" data-live-search="true" data-show-subtext="true" data-placement="bottom" width="100">
-                                    <option value="kasbon" {{ $data->id_kas_bank == null? 'selected':''; }}>KEMBALI SEBAGAI KASBON</option>
-                                    @foreach ($dataKas as $kb)
-                                        <option value="{{$kb->id}}" {{ $kb->id == $data->id_kas_bank? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
-                                    @endforeach
-                                </select>
+                            <div class="row">
+                                
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="">Tanggal Refund<span style="color:red">*</span></label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        </div>
+                                        <input type="text" autocomplete="off" name="tanggal_refund" class="form-control date" id="tanggal_refund" value="{{date('d-M-Y')}}">
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                    <label for="refund">Kembali sebagai</label>
+                                    <select class="form-control select2" name="kembali" data-live-search="true" data-show-subtext="true" data-placement="bottom" width="100">
+                                        <option value="kasbon" {{ $data->id_kas_bank == null? 'selected':''; }}>KEMBALI SEBAGAI KASBON OPERASIONAL</option>
+                                        @foreach ($dataKas as $kb)
+                                            <option value="{{$kb->id}}" {{ $kb->id == $data->id_kas_bank? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
                             </div>
+                           
                             <div class="form-group">
                                 {{-- <input type="text" id="catatan" name="data[{{$index}}][catatan]" class="form-control" value="">   --}}
                                 <label for="catatan">Catatan Refund</label>
@@ -84,7 +99,12 @@
                                         <th colspan="4">Rincian Pembayaran</th>
                                     </tr>
                                     <tr>
-                                        <th></th>
+                                        <th>
+                                            <div class="icheck-primary d-inline">
+                                                <input type="checkbox" id="cekbox_semua" class="cekbox_semua" value="N" name="cekbox_semua">
+                                                <label for="cekbox_semua"></label>
+                                            </div>
+                                        </th>
                                         <th>Deskripsi</th>
                                         <th>Total Dicairkan</th>
                                         <th>Orderan</th>
@@ -101,9 +121,9 @@
                                                     <input type="checkbox" id="checkboxPrimary_{{$index}}" class="centang_cekbox" value="N" name="data[{{$index}}][is_kembali]">
                                                     <label for="checkboxPrimary_{{$index}}"></label>
                                                 </div>
-                                                    <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->id_sewa}}" readonly>
-                                                    <input type="hidden" id="id_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_operasional_data]" value="{{$value->id}}" readonly>
-                                                    <input type="hidden" id="id_pembayaran_operasional_{{$index}}"  class="id_pembayaran_operasional" name="data[{{$index}}][id_pembayaran_operasional]" value="{{$value->id_pembayaran}}" readonly>
+                                                    <input type="hidden" class="id_sewa" name="data[{{$index}}][id_sewa]" value="{{$value->id_sewa}}" readonly>
+                                                    <input type="hidden" class="id_operasional" name="data[{{$index}}][id_pembayaran_detail]" value="{{$value->id}}" readonly>
+                                                    <input type="hidden" class="id_pembayaran_operasional" name="data[{{$index}}][id_pembayaran_operasional]" value="{{$value->id_pembayaran}}" readonly>
                                             </td>
                                             <td id="deskripsi_tabel_{{$index}}" >
                                                 <input type="text" name="data[{{$index}}][deskripsi_data]" id="deskripsi_data_{{$index}}" value="{{$value->deskripsi}}" class="form-control deskripsi_hardcode ambil_text_deskripsi" readonly>
@@ -112,6 +132,11 @@
                                                 <input type="text" name="data[{{$index}}][total_dicairkan]" id="total_dicairkan_{{$index}}" value="{{number_format($value->total_dicairkan) }}" class="form-control uang numaja nominal_hardcode"readonly>
                                             </td>
                                             <td>
+                                                <input type="hidden" class="no_pol_driver" name="data[{{$index}}][no_pol]" value="{{$value->getSewaDetail->no_polisi}} ({{$value->getSewaDetail->getKaryawan ? $value->getSewaDetail->getKaryawan->nama_panggilan : 'REKANAN'}})" readonly>
+                                                <input type="hidden" class="no_sewa" name="data[{{$index}}][no_sewa]" value="{{$value->getSewaDetail->no_sewa}}" readonly>
+                                                <input type="hidden" class="customer" name="data[{{$index}}][customer]" value="{{$value->getSewaDetail->getCustomer->nama}}" readonly>
+                                                <input type="hidden" class="tujuan" name="data[{{$index}}][tujuan]" value="{{$value->getSewaDetail->nama_tujuan}}" readonly>
+
                                                 <span class="badge badge-primary"> {{$value->getSewaDetail->no_polisi}} ({{$value->getSewaDetail->getKaryawan ? $value->getSewaDetail->getKaryawan->nama_panggilan : 'REKANAN'}})  </span><br>
                                                 <span class="badge badge-secondary"> {{$value->getSewaDetail->tanggal_berangkat}} </span>
                                                 <span class="badge badge-success"> {{$value->getSewaDetail->no_sewa}} </span>
@@ -125,7 +150,7 @@
                                     <tr>
                                         <td colspan="2">Total Pencairan</td>
                                         <td>
-                                            <input type="text" name="total_dicairkan"value="{{number_format($data->total_dicairkan) }}" class="form-control uang numaja nominal_hardcode"readonly>
+                                            <input type="text" name="total_dicairkan"value="{{number_format($data->total_dicairkan-$data->total_refund-$data->total_kasbon) }}" class="form-control uang numaja nominal_hardcode"readonly>
                                         </td>
                                     </tr>
                                     
@@ -144,8 +169,30 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+    $('#tanggal_refund').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            startDate: "0d",
+            language:'en',
+        });
+    $(document).on('click', '.cekbox_semua', function () {
+        var isChecked = $(this).prop("checked");
+        $('.centang_cekbox').prop("checked", isChecked).val(isChecked ? 'Y' : 'N');
+        $('.centang_cekbox').prop("disabled", isChecked);
 
+        console.log(isChecked);
+        if ($(this).is(":checked")) {
+            $(this).val('Y');
+        
+        } else if ($(this).is(":not(:checked)")) {  
+            $(this).val('N')
+        }
+            
+    });
     $(document).on('click', '.centang_cekbox', function () {
+        var isChecked = $(this).prop("checked");
+        $('.cekbox_semua').prop("checked", false).val('N');
         if ($(this).is(":checked")) {
             $(this).val('Y');
         

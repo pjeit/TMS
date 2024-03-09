@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class SewaOperasionalRefundDetail extends Model
 {
     use HasFactory;
+    protected $table = 'sewa_operasional_refund_detail';
+    protected $primaryKey='id';
 }

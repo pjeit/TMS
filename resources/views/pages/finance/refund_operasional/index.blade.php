@@ -47,7 +47,7 @@
                         <input type="hidden" id="type" name="type" value="">
                     </div>
                 </div>
-                    <div class="col-lg-2 col-md-2 col-sm-12 bg-white pb-3">
+                <div class="col-lg-2 col-md-2 col-sm-12 bg-white pb-3">
                     <div class="form-group">
                         <label for="">Tanggal Mulai<span style="color:red">*</span></label>
                         <div class="input-group mb-0">
@@ -108,7 +108,7 @@
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
-            startDate: "-1d",
+            startDate: "-2d",
             language:'en',
         });
         $('#tanggal_akhir').datepicker({
@@ -223,21 +223,23 @@
                                                     <i class="fa fa-list"></i>
                                                 </button>
                                             <div class="dropdown-menu" >
-                                                <a href="" class="dropdown-item">
-                                                        <span class="nav-icon fas fa-edit mr-3"></span> Edit
-                                                    </a>
+                                             
                                                 <a href="${baseUrl}refund_biaya_operasional/${data[i].id}/edit" class="dropdown-item btn-danger">
                                                     <span class="nav-icon fas fa-undo mr-3"></span> Refund
                                                 </a>
-                                                <a href="" class="dropdown-item">
-                                                    <span class="nav-icon fas fa-times mr-3"></span> Hapus
-                                                </a>
+                                              
                                             </div>
                                     </div>
                                                
                                             </td>`);
                                         $("#tbodyId").append(row);
                                     }
+                                    // <a href="" class="dropdown-item">
+                                    //                     <span class="nav-icon fas fa-edit mr-3"></span> Edit
+                                    //                 </a>
+                                    // <a href="" class="dropdown-item">
+                                    //                 <span class="nav-icon fas fa-times mr-3"></span> Hapus
+                                    //             </a>
                                 }
                             // }
                                 
