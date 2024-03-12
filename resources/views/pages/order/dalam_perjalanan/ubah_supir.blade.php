@@ -550,7 +550,7 @@ $(document).ready(function() {
     }
    
     $('body').on('change','#select_driver',selectDriver);
-    $('body').on('change','#select_kendaraan',selectKendaraan);
+    // $('body').on('change','#select_kendaraan',selectKendaraan);
     $('body').on('change','#select_chassis',selectChasis);
     if($('#jenis_tujuan').val()=="FTL")
     {

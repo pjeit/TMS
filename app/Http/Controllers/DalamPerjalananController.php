@@ -1008,14 +1008,7 @@ class DalamPerjalananController extends Controller
                                     $status = 'HAPUS';
                                     $keterangan_internal = '[REFUND-UANG-KEMBALI]';
                                 }
-                                SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
-                                // ->whereIn('id',  explode(',' ,$value['id_operasional_data']))
-                                ->where('id', $value['id_operasional_data'])
-                                ->update([
-                                        'is_aktif' => 'N',
-                                        'status' => $status,
-                                        'keterangan_internal'=>$keterangan_internal
-                                    ]);
+                               
                                 if(isset($value['id_pembayaran_operasional']))
                                 {
                                     $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
@@ -1033,10 +1026,6 @@ class DalamPerjalananController extends Controller
                                                 $so_refund = new SewaOperasionalRefund();
                                                 $so_refund ->id_kas_bank = $value['kembali'];
                                                 $so_refund ->tanggal_refund = now();
-                                                $so_refund ->id_pembayaran_detail = $value['id_operasional_data'];
-                                                $so_refund ->id_sewa =  $sewa->id_sewa;
-                                                $so_refund ->no_sewa =  $sewa->no_sewa;
-                                                $so_refund ->id_pembayaran = $so_pembayaran->id;
                                                 $so_refund ->deskripsi_ops = $value['deskripsi_data'];
                                                 $so_refund ->total_refund = (float)str_replace(',', '', $value['total_dicairkan']);
                                                 $so_refund->catatan_refund = $value['catatan'];
@@ -1046,6 +1035,15 @@ class DalamPerjalananController extends Controller
                                                 // $so_refund->save();
                                                 if($so_refund->save())
                                                 {
+                                                    SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                                    ->where('id', $value['id_pembayaran_detail'])
+                                                    ->update([
+                                                            'is_aktif' => 'N',
+                                                            'status' => $status,
+                                                            'keterangan_internal'=>$keterangan_internal,
+                                                            'id_refund'=>$so_refund->id,
+                                                            'total_refund'=>(float)str_replace(',', '', $value['total_dicairkan'])
+                                                        ]);
                                                     
                                                         DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                                             array(
@@ -1082,10 +1080,6 @@ class DalamPerjalananController extends Controller
                                         if($so_pembayaran->save())
                                         {
                                             $so_stok = new SewaOperasionalKembaliStok();
-                                            $so_stok ->id_pembayaran_detail = $value['id_operasional_data'];
-                                            $so_stok ->id_sewa =  $sewa->id_sewa;
-                                            $so_stok ->no_sewa =  $sewa->no_sewa;
-                                            $so_stok ->id_pembayaran = $so_pembayaran->id;
                                             $so_stok ->deskripsi_ops = $value['deskripsi_data'];
                                             $so_stok->tanggal_stok = now();
                                             $so_stok->stok_masuk = 1;
@@ -1095,6 +1089,14 @@ class DalamPerjalananController extends Controller
                                             $so_stok->created_at = now();
                                             $so_stok->is_aktif = 'Y';
                                             $so_stok->save();
+                                            SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                            ->where('id', $value['id_pembayaran_detail'])
+                                            ->update([
+                                                    'is_aktif' => 'N',
+                                                    'status' => $status,
+                                                    'keterangan_internal'=>$keterangan_internal,
+                                                    'id_stok_kembali'=>$so_stok->id
+                                                ]);
                                         }
                                     }
                                     else if($value['kembali']=='kasbon')
@@ -1106,9 +1108,6 @@ class DalamPerjalananController extends Controller
                                         if($so_pembayaran->save())
                                         {
                                             $kasbon_operasional = new SewaOperasionalKasBon();
-                                            $kasbon_operasional ->id_pembayaran = $so_pembayaran->id;
-                                            $kasbon_operasional ->id_pembayaran_detail = $value['id_operasional_data'];
-                                            $kasbon_operasional->id_sewa =  $sewa->id_sewa;
                                             $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
                                             $kasbon_operasional->tanggal_transaksi = now();
                                             $kasbon_operasional->kasbon_masuk = $total_dicairkan;
@@ -1118,6 +1117,14 @@ class DalamPerjalananController extends Controller
                                             $kasbon_operasional->created_at = now();
                                             $kasbon_operasional->is_aktif = 'Y';
                                             $kasbon_operasional->save();
+                                            SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                            ->where('id', $value['id_pembayaran_detail'])
+                                            ->update([
+                                                    'is_aktif' => 'N',
+                                                    'status' => $status,
+                                                    'keterangan_internal'=>$keterangan_internal,
+                                                    'id_kasbon_kembali'=>$kasbon_operasional->id
+                                                ]);
                                         }
                                     }
                                 }
@@ -1126,9 +1133,6 @@ class DalamPerjalananController extends Controller
                                     if($value['kembali']=='KEMBALI_STOK')
                                     {
                                         $so_stok = new SewaOperasionalKembaliStok();
-                                        $so_stok ->id_pembayaran_detail = $value['id_operasional_data'];
-                                        $so_stok ->id_sewa =  $sewa->id_sewa;
-                                        $so_stok ->no_sewa =  $sewa->no_sewa;
                                         $so_stok ->deskripsi_ops = $value['deskripsi_data'];
                                         $so_stok->tanggal_stok = now();
                                         $so_stok->stok_masuk = 1;
@@ -1138,13 +1142,20 @@ class DalamPerjalananController extends Controller
                                         $so_stok->created_at = now();
                                         $so_stok->is_aktif = 'Y';
                                         $so_stok->save();
+                                        SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                            // ->whereIn('id',  explode(',' ,$value['id_pembayaran_detail']))
+                                            ->where('id', $value['id_pembayaran_detail'])
+                                            ->update([
+                                                    'is_aktif' => 'N',
+                                                    'status' => $status,
+                                                    'keterangan_internal'=>$keterangan_internal,
+                                                    'id_stok_kembali'=>$so_stok->id
+                                                ]);
                                     }
                                     else if($value['kembali']=='kasbon')
                                     {
                                         $total_dicairkan = (float)str_replace(',', '', $value['total_dicairkan']);
                                         $kasbon_operasional = new SewaOperasionalKasBon();
-                                        $kasbon_operasional->id_sewa = $sewa->id_sewa;
-                                        $kasbon_operasional->id_pembayaran_detail = $value['id_operasional_data'];
                                         $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
                                         $kasbon_operasional->tanggal_transaksi = now();
                                         $kasbon_operasional->kasbon_masuk = $total_dicairkan;
@@ -1154,6 +1165,16 @@ class DalamPerjalananController extends Controller
                                         $kasbon_operasional->created_at = now();
                                         $kasbon_operasional->is_aktif = 'Y';
                                         $kasbon_operasional->save();
+                                        SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                        // ->whereIn('id',  explode(',' ,$value['id_pembayaran_detail']))
+                                        ->where('id', $value['id_pembayaran_detail'])
+                                        ->update([
+                                                'is_aktif' => 'N',
+                                                'status' => $status,
+                                                'keterangan_internal'=>$keterangan_internal,
+                                                'id_kasbon_kembali'=>$kasbon_operasional->id,
+                                                'total_kasbon_kembali'=>$total_dicairkan
+                                            ]);
                                     }
                                 }
                             }
@@ -1277,183 +1298,374 @@ class DalamPerjalananController extends Controller
                 SewaBiaya::where('is_aktif', '=', 'Y')
                 ->where('id_sewa', $sewa->id_sewa)
                 ->update(['is_aktif' => 'N']);
+                // if(isset($data['data']))
+                // {
+                //     foreach ($data['data'] as $value) {
+                //         // dd($value['kembali']);
+                //         if ($value['kembali']=='KEMBALI_STOK') {
+                //             $status = 'STOK';
+                //             $keterangan_internal = '[REFUND-MASUK-STOK]';
+                //         }
+                //         if ($value['kembali']=='kasbon') {
+                //             $status = 'KASBON';
+                //             $keterangan_internal = '[REFUND-MASUK-KASBON]';
+                //         }
+                //         else if($value['kembali']=='DATA_DI_HAPUS')
+                //         {
+                //             $status = 'HAPUS';
+                //             $keterangan_internal = '[REFUND-TIDAK-ADA-PENCAIRAN]';
+                //         }
+                //         else
+                //         {
+                //             $status = 'HAPUS';
+                //             $keterangan_internal = '[REFUND-UANG-KEMBALI]';
+                //         }
+                //         SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                //         // ->whereIn('id',  explode(',' ,$value['id_operasional_data']))
+                //         ->where('id', $value['id_operasional_data'])
+                //         ->update([
+                //                 'is_aktif' => 'N',
+                //                 'status' => $status,
+                //                 'keterangan_internal'=>$keterangan_internal
+
+                //             ]);
+
+                //         if(isset($value['id_pembayaran_operasional']))
+                //         {
+                //             $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
+                //             if($value['kembali']!='KEMBALI_STOK'&&$value['kembali']!='DATA_DI_HAPUS')
+                //             {
+                //                 // $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
+                //                 if($so_pembayaran){
+                //                     $so_pembayaran->total_refund += (float)str_replace(',', '', $value['total_dicairkan']);
+                //                     $so_pembayaran->updated_by = $user;
+                //                     $so_pembayaran->updated_at = now();
+                //                     // $so_pembayaran->is_aktif = 'N';
+                //                     // $so_pembayaran->save();
+                //                     if ($so_pembayaran->save()) {
+    
+                //                         $so_refund = new SewaOperasionalRefund();
+                //                         $so_refund ->id_kas_bank = $value['kembali'];
+                //                         $so_refund ->tanggal_refund = now();
+                //                         $so_refund ->id_pembayaran_detail = $value['id_operasional_data'];
+                //                         $so_refund ->id_sewa =  $sewa->id_sewa;
+                //                         $so_refund ->no_sewa =  $sewa->no_sewa;
+                //                         $so_refund ->id_pembayaran = $so_pembayaran->id;
+                //                         $so_refund ->deskripsi_ops = $value['deskripsi_data'];
+                //                         $so_refund ->total_refund = (float)str_replace(',', '', $value['total_dicairkan']);
+                //                         $so_refund->catatan_refund = $value['catatan'];
+                //                         $so_refund->created_by = $user;
+                //                         $so_refund->created_at = now();
+                //                         $so_refund->is_aktif = 'Y';
+                //                         // $so_refund->save();
+                //                         if($so_refund->save())
+                //                         {
+                                            
+                //                                 DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                //                                     array(
+                //                                         $value['kembali'],// id kas_bank dr form
+                //                                         $tgl_cancel,//tanggal
+                //                                         (float)str_replace(',', '', $value['total_dicairkan']),// debit 
+                //                                         0, //uang keluar (kredit)
+                //                                         CoaHelper::DataCoa(1100), //kode coa piutang usaha
+                //                                         'operasional_refund',
+                //                                         $value['rincian'].'>>'.$so_refund->catatan_refund, //keterangan_transaksi
+                //                                         $so_refund->id,//keterangan_kode_transaksi id refundnya
+                //                                         $user,//created_by
+                //                                         now(),//created_at
+                //                                         $user,//updated_by
+                //                                         now(),//updated_at
+                //                                         'Y'
+                //                                     ) 
+                //                                 );
+                //                                 $kas_bank = KasBank::where('is_aktif', 'Y')->find($value['kembali']);
+                //                                 $kas_bank->saldo_sekarang += (float)str_replace(',', '', $value['total_dicairkan']);
+                //                                 $kas_bank->updated_by = $user;
+                //                                 $kas_bank->updated_at = now();
+                //                                 $kas_bank->save();
+                //                         }
+                //                     }
+                //                 }
+                //             }
+                //             else if($value['kembali']=='KEMBALI_STOK')
+                //             {
+                //                 $so_pembayaran->total_kembali_stok += 1; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
+                //                 $so_pembayaran->updated_by = $user;
+                //                 $so_pembayaran->updated_at = now();
+                //                 // $so_pembayaran->save();
+                //                 if($so_pembayaran->save())
+                //                 {
+                //                     $so_stok = new SewaOperasionalKembaliStok();
+                //                     $so_stok ->id_pembayaran_detail = $value['id_operasional_data'];
+                //                     $so_stok ->id_sewa =  $sewa->id_sewa;
+                //                     $so_stok ->no_sewa =  $sewa->no_sewa;
+                //                     $so_stok ->id_pembayaran = $so_pembayaran->id;
+                //                     $so_stok ->deskripsi_ops = $value['deskripsi_data'];
+                //                     $so_stok->tanggal_stok = now();
+                //                     $so_stok->stok_masuk = 1;
+                //                     $so_stok->stok_keluar = 0;
+                //                     $so_stok->catatan_stok = $value['catatan'];
+                //                     $so_stok->created_by = $user;
+                //                     $so_stok->created_at = now();
+                //                     $so_stok->is_aktif = 'Y';
+                //                     $so_stok->save();
+                //                 }
+                //             }
+                //             else if($value['kembali']=='kasbon')
+                //             {
+                //                 $total_dicairkan = (float)str_replace(',', '', $value['total_dicairkan']);
+                //                 $so_pembayaran->total_kasbon += $total_dicairkan; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
+                //                 $so_pembayaran->updated_by = $user;
+                //                 $so_pembayaran->updated_at = now();
+                //                 if($so_pembayaran->save())
+                //                 {
+                //                     $kasbon_operasional = new SewaOperasionalKasBon();
+                //                     $kasbon_operasional ->id_pembayaran = $so_pembayaran->id;
+                //                     $kasbon_operasional ->id_pembayaran_detail = $value['id_operasional_data'];
+                //                     $kasbon_operasional->id_sewa =  $sewa->id_sewa;
+                //                     $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
+                //                     $kasbon_operasional->tanggal_transaksi = now();
+                //                     $kasbon_operasional->kasbon_masuk = $total_dicairkan;
+                //                     $kasbon_operasional->kasbon_keluar =0;
+                //                     $kasbon_operasional->catatan_kasbon = $value['catatan'];
+                //                     $kasbon_operasional->created_by = $user;
+                //                     $kasbon_operasional->created_at = now();
+                //                     $kasbon_operasional->is_aktif = 'Y';
+                //                     $kasbon_operasional->save();
+                //                 }
+                //             }
+                //         }
+                //         else
+                //         {
+                //             if($value['kembali']=='KEMBALI_STOK')
+                //             {
+                //                 $so_stok = new SewaOperasionalKembaliStok();
+                //                 $so_stok ->id_pembayaran_detail = $value['id_operasional_data'];
+                //                 $so_stok ->id_sewa =  $sewa->id_sewa;
+                //                 $so_stok ->no_sewa =  $sewa->no_sewa;
+                //                 $so_stok ->deskripsi_ops = $value['deskripsi_data'];
+                //                 $so_stok->tanggal_stok = now();
+                //                 $so_stok->stok_masuk = 1;
+                //                 $so_stok->stok_keluar = 0;
+                //                 $so_stok->catatan_stok = $value['catatan'];
+                //                 $so_stok->created_by = $user;
+                //                 $so_stok->created_at = now();
+                //                 $so_stok->is_aktif = 'Y';
+                //                 $so_stok->save();
+                //             }
+                //             else if($value['kembali']=='kasbon')
+                //             {
+                //                 $total_dicairkan = (float)str_replace(',', '', $value['total_dicairkan']);
+                //                 $kasbon_operasional = new SewaOperasionalKasBon();
+                //                 $kasbon_operasional->id_sewa = $sewa->id_sewa;
+                //                 $kasbon_operasional->id_pembayaran_detail = $value['id_operasional_data'];
+                //                 $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
+                //                 $kasbon_operasional->tanggal_transaksi = now();
+                //                 $kasbon_operasional->kasbon_masuk = $total_dicairkan;
+                //                 $kasbon_operasional->kasbon_keluar =0;
+                //                 $kasbon_operasional->catatan_kasbon = $value['catatan'];
+                //                 $kasbon_operasional->created_by = $user;
+                //                 $kasbon_operasional->created_at = now();
+                //                 $kasbon_operasional->is_aktif = 'Y';
+                //                 $kasbon_operasional->save();
+                //             }
+                //         }
+
+
+                //     }
+                // }
                 if(isset($data['data']))
                 {
                     foreach ($data['data'] as $value) {
                         // dd($value['kembali']);
-                        if ($value['kembali']=='KEMBALI_STOK') {
-                            $status = 'STOK';
-                            $keterangan_internal = '[REFUND-MASUK-STOK]';
-                        }
-                        if ($value['kembali']=='kasbon') {
-                            $status = 'KASBON';
-                            $keterangan_internal = '[REFUND-MASUK-KASBON]';
-                        }
-                        else if($value['kembali']=='DATA_DI_HAPUS')
-                        {
-                            $status = 'HAPUS';
-                            $keterangan_internal = '[REFUND-TIDAK-ADA-PENCAIRAN]';
-                        }
-                        else
-                        {
-                            $status = 'HAPUS';
-                            $keterangan_internal = '[REFUND-UANG-KEMBALI]';
-                        }
-                        SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
-                        // ->whereIn('id',  explode(',' ,$value['id_operasional_data']))
-                        ->where('id', $value['id_operasional_data'])
-                        ->update([
-                                'is_aktif' => 'N',
-                                'status' => $status,
-                                'keterangan_internal'=>$keterangan_internal
-
-                            ]);
-
-                        if(isset($value['id_pembayaran_operasional']))
-                        {
-                            $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
-                            if($value['kembali']!='KEMBALI_STOK'&&$value['kembali']!='DATA_DI_HAPUS')
-                            {
-                                // $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
-                                if($so_pembayaran){
-                                    $so_pembayaran->total_refund += (float)str_replace(',', '', $value['total_dicairkan']);
-                                    $so_pembayaran->updated_by = $user;
-                                    $so_pembayaran->updated_at = now();
-                                    // $so_pembayaran->is_aktif = 'N';
-                                    // $so_pembayaran->save();
-                                    if ($so_pembayaran->save()) {
-    
-                                        $so_refund = new SewaOperasionalRefund();
-                                        $so_refund ->id_kas_bank = $value['kembali'];
-                                        $so_refund ->tanggal_refund = now();
-                                        $so_refund ->id_pembayaran_detail = $value['id_operasional_data'];
-                                        $so_refund ->id_sewa =  $sewa->id_sewa;
-                                        $so_refund ->no_sewa =  $sewa->no_sewa;
-                                        $so_refund ->id_pembayaran = $so_pembayaran->id;
-                                        $so_refund ->deskripsi_ops = $value['deskripsi_data'];
-                                        $so_refund ->total_refund = (float)str_replace(',', '', $value['total_dicairkan']);
-                                        $so_refund->catatan_refund = $value['catatan'];
-                                        $so_refund->created_by = $user;
-                                        $so_refund->created_at = now();
-                                        $so_refund->is_aktif = 'Y';
-                                        // $so_refund->save();
-                                        if($so_refund->save())
+                                if ($value['kembali']=='KEMBALI_STOK') {
+                                    $status = 'STOK';
+                                    $keterangan_internal = '[REFUND-MASUK-STOK]';
+                                }
+                                if ($value['kembali']=='kasbon') {
+                                    $status = 'KASBON';
+                                    $keterangan_internal = '[REFUND-MASUK-KASBON]';
+                                }
+                                else if($value['kembali']=='DATA_DI_HAPUS')
+                                {
+                                    $status = 'HAPUS';
+                                    $keterangan_internal = '[REFUND-TIDAK-ADA-PENCAIRAN]';
+                                }
+                                else
+                                {
+                                    $status = 'HAPUS';
+                                    $keterangan_internal = '[REFUND-UANG-KEMBALI]';
+                                }
+                                if(isset($value['id_pembayaran_operasional']))
+                                {
+                                    $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
+                                    if($value['kembali']!='KEMBALI_STOK'&&$value['kembali']!='DATA_DI_HAPUS'&&$value['kembali']!='kasbon')
+                                    {
+                                        $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($value['id_pembayaran_operasional']);
+                                        if($so_pembayaran){
+                                            $so_pembayaran->total_refund += (float)str_replace(',', '', $value['total_dicairkan']);
+                                            $so_pembayaran->updated_by = $user;
+                                            $so_pembayaran->updated_at = now();
+                                            // $so_pembayaran->is_aktif = 'N';
+                                            // $so_pembayaran->save();
+                                            if ($so_pembayaran->save()) {
+            
+                                                $so_refund = new SewaOperasionalRefund();
+                                                $so_refund ->id_kas_bank = $value['kembali'];
+                                                $so_refund ->tanggal_refund = now();
+                                                $so_refund ->deskripsi_ops = $value['deskripsi_data'];
+                                                $so_refund ->total_refund = (float)str_replace(',', '', $value['total_dicairkan']);
+                                                $so_refund->catatan_refund = $value['catatan'];
+                                                $so_refund->created_by = $user;
+                                                $so_refund->created_at = now();
+                                                $so_refund->is_aktif = 'Y';
+                                                // $so_refund->save();
+                                                if($so_refund->save())
+                                                {
+                                                    SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                                    ->where('id', $value['id_pembayaran_detail'])
+                                                    ->update([
+                                                            'is_aktif' => 'N',
+                                                            'status' => $status,
+                                                            'keterangan_internal'=>$keterangan_internal,
+                                                            'id_refund'=>$so_refund->id,
+                                                            'total_refund'=>(float)str_replace(',', '', $value['total_dicairkan'])
+                                                        ]);
+                                                    
+                                                        DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                                            array(
+                                                                $value['kembali'],// id kas_bank dr form
+                                                                now(),//tanggal
+                                                                (float)str_replace(',', '', $value['total_dicairkan']),// debit 
+                                                                0, //uang keluar (kredit)
+                                                                CoaHelper::DataCoa(1100), //kode coa piutang usaha
+                                                                'operasional_refund',
+                                                                $value['rincian'].'>>'.$so_refund->catatan_refund, //keterangan_transaksi
+                                                                $so_refund->id,//keterangan_kode_transaksi id refundnya
+                                                                $user,//created_by
+                                                                now(),//created_at
+                                                                $user,//updated_by
+                                                                now(),//updated_at
+                                                                'Y'
+                                                            ) 
+                                                        );
+                                                        $kas_bank = KasBank::where('is_aktif', 'Y')->find($value['kembali']);
+                                                        $kas_bank->saldo_sekarang += (float)str_replace(',', '', $value['total_dicairkan']);
+                                                        $kas_bank->updated_by = $user;
+                                                        $kas_bank->updated_at = now();
+                                                        $kas_bank->save();
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if($value['kembali']=='KEMBALI_STOK')
+                                    {
+                                        $so_pembayaran->total_kembali_stok += 1; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
+                                        $so_pembayaran->updated_by = $user;
+                                        $so_pembayaran->updated_at = now();
+                                        // $so_pembayaran->save();
+                                        if($so_pembayaran->save())
                                         {
-                                            
-                                                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                                                    array(
-                                                        $value['kembali'],// id kas_bank dr form
-                                                        $tgl_cancel,//tanggal
-                                                        (float)str_replace(',', '', $value['total_dicairkan']),// debit 
-                                                        0, //uang keluar (kredit)
-                                                        CoaHelper::DataCoa(1100), //kode coa piutang usaha
-                                                        'operasional_refund',
-                                                        $value['rincian'].'>>'.$so_refund->catatan_refund, //keterangan_transaksi
-                                                        $so_refund->id,//keterangan_kode_transaksi id refundnya
-                                                        $user,//created_by
-                                                        now(),//created_at
-                                                        $user,//updated_by
-                                                        now(),//updated_at
-                                                        'Y'
-                                                    ) 
-                                                );
-                                                $kas_bank = KasBank::where('is_aktif', 'Y')->find($value['kembali']);
-                                                $kas_bank->saldo_sekarang += (float)str_replace(',', '', $value['total_dicairkan']);
-                                                $kas_bank->updated_by = $user;
-                                                $kas_bank->updated_at = now();
-                                                $kas_bank->save();
+                                            $so_stok = new SewaOperasionalKembaliStok();
+                                            $so_stok ->deskripsi_ops = $value['deskripsi_data'];
+                                            $so_stok->tanggal_stok = now();
+                                            $so_stok->stok_masuk = 1;
+                                            $so_stok->stok_keluar = 0;
+                                            $so_stok->catatan_stok = $value['catatan'];
+                                            $so_stok->created_by = $user;
+                                            $so_stok->created_at = now();
+                                            $so_stok->is_aktif = 'Y';
+                                            $so_stok->save();
+                                            SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                            ->where('id', $value['id_pembayaran_detail'])
+                                            ->update([
+                                                    'is_aktif' => 'N',
+                                                    'status' => $status,
+                                                    'keterangan_internal'=>$keterangan_internal,
+                                                    'id_stok_kembali'=>$so_stok->id
+                                                ]);
+                                        }
+                                    }
+                                    else if($value['kembali']=='kasbon')
+                                    {
+                                        $total_dicairkan = (float)str_replace(',', '', $value['total_dicairkan']);
+                                        $so_pembayaran->total_kasbon += $total_dicairkan; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
+                                        $so_pembayaran->updated_by = $user;
+                                        $so_pembayaran->updated_at = now();
+                                        if($so_pembayaran->save())
+                                        {
+                                            $kasbon_operasional = new SewaOperasionalKasBon();
+                                            $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
+                                            $kasbon_operasional->tanggal_transaksi = now();
+                                            $kasbon_operasional->kasbon_masuk = $total_dicairkan;
+                                            $kasbon_operasional->kasbon_keluar =0;
+                                            $kasbon_operasional->catatan_kasbon = $value['catatan'];
+                                            $kasbon_operasional->created_by = $user;
+                                            $kasbon_operasional->created_at = now();
+                                            $kasbon_operasional->is_aktif = 'Y';
+                                            $kasbon_operasional->save();
+                                            SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                            ->where('id', $value['id_pembayaran_detail'])
+                                            ->update([
+                                                    'is_aktif' => 'N',
+                                                    'status' => $status,
+                                                    'keterangan_internal'=>$keterangan_internal,
+                                                    'id_kasbon_kembali'=>$kasbon_operasional->id
+                                                ]);
                                         }
                                     }
                                 }
-                            }
-                            else if($value['kembali']=='KEMBALI_STOK')
-                            {
-                                $so_pembayaran->total_kembali_stok += 1; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
-                                $so_pembayaran->updated_by = $user;
-                                $so_pembayaran->updated_at = now();
-                                // $so_pembayaran->save();
-                                if($so_pembayaran->save())
+                                else
                                 {
-                                    $so_stok = new SewaOperasionalKembaliStok();
-                                    $so_stok ->id_pembayaran_detail = $value['id_operasional_data'];
-                                    $so_stok ->id_sewa =  $sewa->id_sewa;
-                                    $so_stok ->no_sewa =  $sewa->no_sewa;
-                                    $so_stok ->id_pembayaran = $so_pembayaran->id;
-                                    $so_stok ->deskripsi_ops = $value['deskripsi_data'];
-                                    $so_stok->tanggal_stok = now();
-                                    $so_stok->stok_masuk = 1;
-                                    $so_stok->stok_keluar = 0;
-                                    $so_stok->catatan_stok = $value['catatan'];
-                                    $so_stok->created_by = $user;
-                                    $so_stok->created_at = now();
-                                    $so_stok->is_aktif = 'Y';
-                                    $so_stok->save();
+                                    if($value['kembali']=='KEMBALI_STOK')
+                                    {
+                                        $so_stok = new SewaOperasionalKembaliStok();
+                                        $so_stok ->deskripsi_ops = $value['deskripsi_data'];
+                                        $so_stok->tanggal_stok = now();
+                                        $so_stok->stok_masuk = 1;
+                                        $so_stok->stok_keluar = 0;
+                                        $so_stok->catatan_stok = $value['catatan'];
+                                        $so_stok->created_by = $user;
+                                        $so_stok->created_at = now();
+                                        $so_stok->is_aktif = 'Y';
+                                        $so_stok->save();
+                                        SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                            // ->whereIn('id',  explode(',' ,$value['id_pembayaran_detail']))
+                                            ->where('id', $value['id_pembayaran_detail'])
+                                            ->update([
+                                                    'is_aktif' => 'N',
+                                                    'status' => $status,
+                                                    'keterangan_internal'=>$keterangan_internal,
+                                                    'id_stok_kembali'=>$so_stok->id
+                                                ]);
+                                    }
+                                    else if($value['kembali']=='kasbon')
+                                    {
+                                        $total_dicairkan = (float)str_replace(',', '', $value['total_dicairkan']);
+                                        $kasbon_operasional = new SewaOperasionalKasBon();
+                                        $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
+                                        $kasbon_operasional->tanggal_transaksi = now();
+                                        $kasbon_operasional->kasbon_masuk = $total_dicairkan;
+                                        $kasbon_operasional->kasbon_keluar =0;
+                                        $kasbon_operasional->catatan_kasbon = $value['catatan'];
+                                        $kasbon_operasional->created_by = $user;
+                                        $kasbon_operasional->created_at = now();
+                                        $kasbon_operasional->is_aktif = 'Y';
+                                        $kasbon_operasional->save();
+                                        SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
+                                        // ->whereIn('id',  explode(',' ,$value['id_pembayaran_detail']))
+                                        ->where('id', $value['id_pembayaran_detail'])
+                                        ->update([
+                                                'is_aktif' => 'N',
+                                                'status' => $status,
+                                                'keterangan_internal'=>$keterangan_internal,
+                                                'id_kasbon_kembali'=>$kasbon_operasional->id,
+                                                'total_kasbon_kembali'=>$total_dicairkan
+                                            ]);
+                                    }
                                 }
-                            }
-                            else if($value['kembali']=='kasbon')
-                            {
-                                $total_dicairkan = (float)str_replace(',', '', $value['total_dicairkan']);
-                                $so_pembayaran->total_kasbon += $total_dicairkan; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
-                                $so_pembayaran->updated_by = $user;
-                                $so_pembayaran->updated_at = now();
-                                if($so_pembayaran->save())
-                                {
-                                    $kasbon_operasional = new SewaOperasionalKasBon();
-                                    $kasbon_operasional ->id_pembayaran = $so_pembayaran->id;
-                                    $kasbon_operasional ->id_pembayaran_detail = $value['id_operasional_data'];
-                                    $kasbon_operasional->id_sewa =  $sewa->id_sewa;
-                                    $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
-                                    $kasbon_operasional->tanggal_transaksi = now();
-                                    $kasbon_operasional->kasbon_masuk = $total_dicairkan;
-                                    $kasbon_operasional->kasbon_keluar =0;
-                                    $kasbon_operasional->catatan_kasbon = $value['catatan'];
-                                    $kasbon_operasional->created_by = $user;
-                                    $kasbon_operasional->created_at = now();
-                                    $kasbon_operasional->is_aktif = 'Y';
-                                    $kasbon_operasional->save();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if($value['kembali']=='KEMBALI_STOK')
-                            {
-                                $so_stok = new SewaOperasionalKembaliStok();
-                                $so_stok ->id_pembayaran_detail = $value['id_operasional_data'];
-                                $so_stok ->id_sewa =  $sewa->id_sewa;
-                                $so_stok ->no_sewa =  $sewa->no_sewa;
-                                $so_stok ->deskripsi_ops = $value['deskripsi_data'];
-                                $so_stok->tanggal_stok = now();
-                                $so_stok->stok_masuk = 1;
-                                $so_stok->stok_keluar = 0;
-                                $so_stok->catatan_stok = $value['catatan'];
-                                $so_stok->created_by = $user;
-                                $so_stok->created_at = now();
-                                $so_stok->is_aktif = 'Y';
-                                $so_stok->save();
-                            }
-                            else if($value['kembali']=='kasbon')
-                            {
-                                $total_dicairkan = (float)str_replace(',', '', $value['total_dicairkan']);
-                                $kasbon_operasional = new SewaOperasionalKasBon();
-                                $kasbon_operasional->id_sewa = $sewa->id_sewa;
-                                $kasbon_operasional->id_pembayaran_detail = $value['id_operasional_data'];
-                                $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
-                                $kasbon_operasional->tanggal_transaksi = now();
-                                $kasbon_operasional->kasbon_masuk = $total_dicairkan;
-                                $kasbon_operasional->kasbon_keluar =0;
-                                $kasbon_operasional->catatan_kasbon = $value['catatan'];
-                                $kasbon_operasional->created_by = $user;
-                                $kasbon_operasional->created_at = now();
-                                $kasbon_operasional->is_aktif = 'Y';
-                                $kasbon_operasional->save();
-                            }
-                        }
-
-
                     }
                 }
-                
                 if($sewa->id_supplier==null)
                 {
                     $uj_kembali = isset($data['uang_jalan_kembali'])? floatval(str_replace(',', '', $data['uang_jalan_kembali'])):0;
@@ -1995,8 +2207,6 @@ class DalamPerjalananController extends Controller
                                     $kh_lama->save();
                                 }
                             }
-                            
-                        
                     }
                     $kh_exist = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $data['select_driver'])->first();
                     if(isset($kh_exist)&&isset($data['potong_hutang'])){

@@ -90,13 +90,21 @@ class RefundOperasionalController extends Controller
         // ->where('total_refund',0)
         // ->where('total_kasbon',0)
         ->where('id',$refund_biaya_operasional->id)
-        ->whereNull('total_kembali_stok')
+        // ->whereNull('total_kembali_stok')
         ->with('getOperasionalDetail')
         ->with('getKas')
         ->with('getOperasionalDetail.getSewaDetail.getCustomer.getGrup')
         ->with('getOperasionalDetail.getSewaDetail.getKaryawan')
         ->with('getOperasionalDetail.getSewaDetail.getSupplier')
         ->first();
+        $kembaliCek = false;
+        // dd($data);
+        foreach ($data->getOperasionalDetail as $value) {
+            if($value->id_kasbon||$value->id_stok||$value->id_refund)
+            {
+                $kembaliCek = true;
+            }
+        }
         $dataKas = DB::table('kas_bank')
         ->select('*')
         ->where('is_aktif', '=', "Y")
@@ -106,6 +114,7 @@ class RefundOperasionalController extends Controller
             'judul' => 'Refund Operasional',
             'data' => $data,
             'dataKas' => $dataKas,
+            'kembaliCek' => $kembaliCek,
         ]);
     }
 
@@ -257,7 +266,7 @@ class RefundOperasionalController extends Controller
                                     $so_stok->tanggal_stok = now();
                                     $so_stok->stok_masuk = 1;
                                     $so_stok->stok_keluar = 0;
-                                    $so_stok->catatan_stok = $value['catatan'];
+                                    $so_stok->catatan_stok = $data['catatan'];
                                     $so_stok->created_by = $user;
                                     $so_stok->created_at = now();
                                     $so_stok->is_aktif = 'Y';
@@ -282,14 +291,11 @@ class RefundOperasionalController extends Controller
                                 if($so_pembayaran->save())
                                 {
                                     $kasbon_operasional = new SewaOperasionalKasBon();
-                                    $kasbon_operasional ->id_pembayaran = $so_pembayaran->id;
-                                    $kasbon_operasional ->id_pembayaran_detail = $value['id_pembayaran_detail'];
-                                    $kasbon_operasional->id_sewa =  $value['id_sewa'];
                                     $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
                                     $kasbon_operasional->tanggal_transaksi = now();
                                     $kasbon_operasional->kasbon_masuk = $total_dicairkan;
                                     $kasbon_operasional->kasbon_keluar =0;
-                                    $kasbon_operasional->catatan_kasbon = $value['catatan'];
+                                    $kasbon_operasional->catatan_kasbon = $data['catatan'];
                                     $kasbon_operasional->created_by = $user;
                                     $kasbon_operasional->created_at = now();
                                     $kasbon_operasional->is_aktif = 'Y';
@@ -301,7 +307,9 @@ class RefundOperasionalController extends Controller
                                             'is_aktif' => 'N',
                                             'status' => $status,
                                             'keterangan_internal'=>$keterangan_internal,
-                                            'id_kasbon_kembali'=>$kasbon_operasional->id
+                                            'id_kasbon_kembali'=>$kasbon_operasional->id,
+                                            'total_kasbon_kembali'=>$total_dicairkan
+
                                         ]);
                                 }
                             }
@@ -320,23 +328,21 @@ class RefundOperasionalController extends Controller
                             $customer = $value['customer'];
                             $tujuan = $value['tujuan'];
                             $no_pol_driver = '# '.$value['no_pol'];
-                            $total_kembali = (float)str_replace(',', '', $value['total_dicairkan']);
+                            $total_kembali = (float)str_replace(',', '', $value['total_dicairkan']); // ini buat yang
 
                             if ($data['kembali']=='KEMBALI_STOK') {
                                 $status = 'STOK';
-                                $total_stok+=1;
-                                
                                 $keterangan_internal = '[REFUND-MASUK-STOK]';
                             }
                             else if ($data['kembali']=='kasbon') {
                                 $status = 'KASBON';
-                                $total_kasbon+=$total_kembali;
+                                $total_kasbon=$total_kembali;
                                 $keterangan_internal = '[REFUND-MASUK-KASBON]';
                             }
                             else
                             {
                                 $status = 'HAPUS';
-                                $total_refund+=$total_kembali;
+                                $total_refund=$total_kembali;
                                 $keterangan_internal = '[REFUND-UANG-KEMBALI]';
                             }
                            
@@ -344,7 +350,7 @@ class RefundOperasionalController extends Controller
                             if($data['kembali']!='KEMBALI_STOK'&&$data['kembali']!='DATA_DI_HAPUS'&&$data['kembali']!='kasbon')
                             {
                                 if($so_pembayaran){
-                                    $so_pembayaran->total_refund = $total_refund;
+                                    $so_pembayaran->total_refund += $total_refund;
                                     $so_pembayaran->updated_by = $user;
                                     $so_pembayaran->updated_at = now();
                                     // $so_pembayaran->is_aktif = 'N';
@@ -355,7 +361,7 @@ class RefundOperasionalController extends Controller
                                         $so_refund ->tanggal_refund = now();
                                         $so_refund ->id_pembayaran = $refund_biaya_operasional->id;
                                         $so_refund ->deskripsi_ops =$refund_biaya_operasional->deskripsi;
-                                        $so_refund ->total_refund = (float)str_replace(',', '', $value['total_dicairkan']);
+                                        $so_refund ->total_refund = $total_kembali;
                                         $so_refund->catatan_refund = $data['catatan'];
                                         $so_refund->created_by = $user;
                                         $so_refund->created_at = now();
@@ -370,7 +376,7 @@ class RefundOperasionalController extends Controller
                                                     'status' => $status,
                                                     'keterangan_internal'=>$keterangan_internal,
                                                     'id_refund'=>$so_refund->id,
-                                                    'total_refund'=>(float)str_replace(',', '', $value['total_dicairkan'])
+                                                    'total_refund'=>$total_kembali
                                                 ]);
                                             // $so_refund_detail = new SewaOperasionalRefundDetail();
                                             // $so_refund_detail ->id_refund = $so_refund->id;
@@ -379,7 +385,7 @@ class RefundOperasionalController extends Controller
                                             // $so_refund_detail ->id_sewa = $value['id_sewa'];
                                             // $so_refund_detail ->no_sewa = $value['no_sewa'];
                                             // $so_refund_detail ->deskripsi_ops =$refund_biaya_operasional->deskripsi;
-                                            // $so_refund_detail ->total_refund = (float)str_replace(',', '', $value['total_dicairkan']);
+                                            // $so_refund_detail ->total_refund = $total_kembali;
                                             // $so_refund_detail->created_by = $user;
                                             // $so_refund_detail->created_at = now();
                                             // $so_refund_detail->is_aktif = 'Y';
@@ -390,7 +396,7 @@ class RefundOperasionalController extends Controller
                                                     array(
                                                         $data['kembali'],// id kas_bank dr form
                                                         now(),//tanggal
-                                                        (float)str_replace(',', '', $value['total_dicairkan']),// debit 
+                                                        $total_kembali,// debit 
                                                         0, //uang keluar (kredit)
                                                         CoaHelper::DataCoa(1100), //kode coa piutang usaha
                                                         'operasional_refund',
@@ -404,7 +410,7 @@ class RefundOperasionalController extends Controller
                                                     ) 
                                                 );
                                                 $kas_bank = KasBank::where('is_aktif', 'Y')->find($data['kembali']);
-                                                $kas_bank->saldo_sekarang += (float)str_replace(',', '', $value['total_dicairkan']);
+                                                $kas_bank->saldo_sekarang += $total_kembali;
                                                 $kas_bank->updated_by = $user;
                                                 $kas_bank->updated_at = now();
                                                 $kas_bank->save();
@@ -417,7 +423,7 @@ class RefundOperasionalController extends Controller
                             {
                                 
 
-                                $so_pembayaran->total_kembali_stok = $total_stok; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
+                                $so_pembayaran->total_kembali_stok += 1; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
                                 $so_pembayaran->updated_by = $user;
                                 $so_pembayaran->updated_at = now();
                                 // $so_pembayaran->save();
@@ -432,7 +438,7 @@ class RefundOperasionalController extends Controller
                                     $so_stok->tanggal_stok = now();
                                     $so_stok->stok_masuk = 1;
                                     $so_stok->stok_keluar = 0;
-                                    $so_stok->catatan_stok = $value['catatan'];
+                                    $so_stok->catatan_stok = $data['catatan'];
                                     $so_stok->created_by = $user;
                                     $so_stok->created_at = now();
                                     $so_stok->is_aktif = 'Y';
@@ -450,21 +456,17 @@ class RefundOperasionalController extends Controller
                             }
                             else if($data['kembali']=='kasbon')
                             {
-                                $total_dicairkan = (float)str_replace(',', '', $value['total_dicairkan']);
-                                $so_pembayaran->total_kasbon = $total_kembali; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
+                                $so_pembayaran->total_kasbon = 1; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
                                 $so_pembayaran->updated_by = $user;
                                 $so_pembayaran->updated_at = now();
                                 if($so_pembayaran->save())
                                 {
                                     $kasbon_operasional = new SewaOperasionalKasBon();
-                                    $kasbon_operasional ->id_pembayaran = $so_pembayaran->id;
-                                    $kasbon_operasional ->id_pembayaran_detail = $value['id_pembayaran_detail'];
-                                    $kasbon_operasional->id_sewa =  $value['id_sewa'];
-                                    $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
                                     $kasbon_operasional->tanggal_transaksi = now();
-                                    $kasbon_operasional->kasbon_masuk = $total_dicairkan;
+                                    $kasbon_operasional->deskripsi_ops = $value['deskripsi_data'];
+                                    $kasbon_operasional->kasbon_masuk = $total_kembali;
                                     $kasbon_operasional->kasbon_keluar =0;
-                                    $kasbon_operasional->catatan_kasbon = $value['catatan'];
+                                    $kasbon_operasional->catatan_kasbon = $data['catatan'];
                                     $kasbon_operasional->created_by = $user;
                                     $kasbon_operasional->created_at = now();
                                     $kasbon_operasional->is_aktif = 'Y';

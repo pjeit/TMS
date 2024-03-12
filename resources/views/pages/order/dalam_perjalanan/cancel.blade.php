@@ -257,8 +257,8 @@
                             @foreach ($dataOperasional as $key => $value)
                                 <tr id="{{$index}}">
                                     <td id="id_sewa_operasional_tabel_{{$index}}" >
-                                            <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->so_id_sewa}}" readonly>
-                                            <input type="hidden" id="id_operasional_data_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_operasional_data]" value="{{$value->so_id}}" readonly>
+                                            <input type="hidden" id="id_sewa_operasional_data_{{$index}}"  class="id_sewa_operasional_data" name="data[{{$index}}][id_sewa_operasional_data]" value="{{$value->so_id_sewa}}" readonly>
+                                            <input type="hidden" id="id_pembayaran_detail_{{$index}}"  class="id_operasional" name="data[{{$index}}][id_pembayaran_detail]" value="{{$value->so_id}}" readonly>
                                         <input type="hidden" id="id_pembayaran_operasional_{{$index}}"  class="id_pembayaran_operasional" name="data[{{$index}}][id_pembayaran_operasional]" value="{{$value->so_id_pembayaran}}" readonly>
                                     </td>
                                     <td id="deskripsi_tabel_{{$index}}" >
@@ -266,7 +266,8 @@
                                     </td>
                                     <td style=" white-space: nowrap; text-align:right;" id="nominal_tabel_{{$index}}">
                                         <input type="text" name="data[{{$index}}][total_dicairkan]" id="total_dicairkan_{{$index}}" value="{{number_format($value->so_total_dicairkan) }}" class="form-control uang numaja nominal_hardcode"readonly>
-                                        <input type="hidden" name="data[{{$index}}][rincian]" value="UANG KEMBALI (1X: {{$value->so_deskripsi}})->KENDARAAN : [{{$value->sewa_kendaraan}}] - DRIVER:({{$value->sewa_driver}}) - TUJUAN :({{$value->sewa_tujuan}}) - SEWA :({{$value->no_sewa}})">
+                                        {{-- <input type="hidden" name="data[{{$index}}][rincian]" value="UANG KEMBALI (1X: {{$value->so_deskripsi}})->KENDARAAN : [{{$value->sewa_kendaraan}}] - DRIVER:({{$value->sewa_driver}}) - TUJUAN :({{$value->sewa_tujuan}}) - SEWA :({{$value->no_sewa}})"> --}}
+                                        <input type="hidden" name="data[{{$index}}][rincian]" value="Pengembalian Operasional : {{$value->so_deskripsi}} 1 X >>[{{$data->getCustomer->kode}}] {{$data->getCustomer->nama}} - > {{$value->sewa_tujuan}} # {{$value->sewa_kendaraan}} ({{$value->sewa_driver}})">
                                     </td>
                                     <td>
                                         @if ($value->so_id_pembayaran == null && $value->so_id_kasbon)

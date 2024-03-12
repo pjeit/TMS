@@ -89,7 +89,7 @@
                 <table id="rowGroup" class="table table-bordered table-hover" width="100%">
                     <thead id="theadId">
                         <tr>
-                            <th>Revisi Biaya Operasional</th>
+                            <th>Refund Biaya Operasional</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyId">
