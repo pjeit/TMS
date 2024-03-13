@@ -303,7 +303,7 @@ class RevisiInvoiceTruckingController extends Controller
                     }else{
                         $oldTransaction = KasBankTransaction::where([
                             'is_aktif' => 'Y',
-                                'jenis' => 'pembayaran_invoice',
+                                'jenis' => 'invoice_customer',
                                 'keterangan_kode_transaksi' => $id
                                 ])->first();
                         $oldTransaction->keterangan_transaksi = 'REVISI - '. $keterangan_transaksi;
@@ -388,7 +388,7 @@ class RevisiInvoiceTruckingController extends Controller
                 }
                 $history = KasBankTransaction::where('is_aktif','Y')
                 ->where('keterangan_kode_transaksi', $id)
-                ->where('jenis', 'pembayaran_invoice')
+                ->where('jenis', 'invoice_customer')
                 ->first();
                 $history->keterangan_transaksi = 'HAPUS - ' . isset($history->keterangan_transaksi)? $history->keterangan_transaksi:'';
                 $history->is_aktif = 'N';
@@ -518,7 +518,7 @@ class RevisiInvoiceTruckingController extends Controller
     //         // nonaktifkan kas bank transaction
     //         $oldTransaction = KasBankTransaction::where([
     //                                                     'is_aktif' => 'Y',
-    //                                                     'jenis' => 'pembayaran_invoice',
+    //                                                     'jenis' => 'invoice_customer',
     //                                                     'keterangan_kode_transaksi' => $id
     //                                                     ])->first();
     //         $oldTransaction->keterangan_transaksi = 'REVISI - '. $oldTransaction->keterangan_transaksi;

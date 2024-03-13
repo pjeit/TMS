@@ -857,6 +857,7 @@
         function setKendaraan(tipeKontainer)
         {
             var kontainerSemua =  <?php echo json_encode($dataKendaraan); ?>;
+            console.log(kontainerSemua);
             var select_kendaraan = $('#select_kendaraan');
             if(tipeKontainer==''|| tipeKontainer== undefined)
             {

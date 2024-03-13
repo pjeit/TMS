@@ -328,7 +328,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('revisi_biaya_operasional/delete', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'delete'])->name('revisi_biaya_operasional.delete');
         Route::get('revisi_biaya_operasional/edit-pembayaran/{id}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'editPembayaran'])->name('revisi_biaya_operasional.editPembayaran');
-        Route::get('revisi_biaya_operasional/load_data/{id}/{tanggal_mulai}/{tanggal_akhir}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'load_data'])->name('revisi_biaya_operasional.load_data');
+        Route::get('revisi_biaya_operasional/load_data/{id}/{tanggal_mulai}/{tanggal_akhir}/{jenis}', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'load_data'])->name('revisi_biaya_operasional.load_data');
         Route::resource('revisi_biaya_operasional', 'App\Http\Controllers\RevisiBiayaOperasionalController');
 
         Route::resource('revisi_invoice_karantina', 'App\Http\Controllers\RevisiInvoiceKarantinaController');

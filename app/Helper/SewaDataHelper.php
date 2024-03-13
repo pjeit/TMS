@@ -277,7 +277,7 @@ class SewaDataHelper
                 })
                 ->whereNull('sk.id')
                 ->where('k.is_aktif', '=', 'Y')
-                ->whereNotNull('k.driver_id')
+                // ->whereNotNull('k.driver_id')
                 ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                 ->get(); 
      }

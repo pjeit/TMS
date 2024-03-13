@@ -224,7 +224,7 @@
 		});  
         function showTable(item,tanggal_mulai,tanggal_akhir){
             var baseUrl = "{{ asset('') }}";
-            var url = baseUrl+`revisi_biaya_operasional/load_data/${item}/${tanggal_mulai}/${tanggal_akhir}`;
+            var url = baseUrl+`revisi_biaya_operasional/load_data/${item}/${tanggal_mulai}/${tanggal_akhir}/revisi`;
             // `${baseUrl}refund_biaya_operasional//edit`
             $.ajax({
                 method: 'GET',

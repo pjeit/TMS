@@ -743,7 +743,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'klaim_supir')
+                                        ->where('jenis', 'uang_klaim_supir')
                                         ->first();
                             //  dd($kas_bank_transaksi);
 
@@ -806,7 +806,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'klaim_supir')
+                                        ->where('jenis', 'uang_klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -881,7 +881,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'klaim_supir')
+                                        ->where('jenis', 'uang_klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -1130,7 +1130,7 @@ class KlaimSupirController extends Controller
                     // {
                     //     $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                     //                     ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                    //                     ->where('jenis', 'klaim_supir')
+                    //                     ->where('jenis', 'uang_klaim_supir')
                     //                     ->first();
 
                     // }
@@ -1143,7 +1143,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'klaim_supir')
+                                        ->where('jenis', 'uang_klaim_supir')
                                         ->first();
                             //  dd($kas_bank_transaksi);
 
@@ -1206,7 +1206,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'klaim_supir')
+                                        ->where('jenis', 'uang_klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)
@@ -1293,7 +1293,7 @@ class KlaimSupirController extends Controller
                         {
                             $kas_bank_transaksi = KasBankTransaction::where('is_aktif', 'Y')
                                         ->where('keterangan_kode_transaksi', $klaim_supir_riwayat->id)
-                                        ->where('jenis', 'klaim_supir')
+                                        ->where('jenis', 'uang_klaim_supir')
                                         ->first();
                             //kalo ada kas bank transaksi (dumpnya itu)
                             if($kas_bank_transaksi)

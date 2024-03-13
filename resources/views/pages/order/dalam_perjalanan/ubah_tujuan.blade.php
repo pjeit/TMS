@@ -105,10 +105,10 @@
                                 </div>
                             </div>
                            
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                            {{-- <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="alasan_ubah_tujuan">Alasan Ubah Tujuan<span style="color: red;">*</span></label>
                                 <textarea name="alasan_ubah_tujuan" required class="form-control" id="alasan_ubah_tujuan" rows="5" value=""></textarea>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                     <div class="col-lg-6 col-md-6 col-sm-12">

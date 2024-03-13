@@ -550,23 +550,29 @@ class RevisiBiayaOperasionalController extends Controller
     {
         //
         $data = SewaOperasionalPembayaran::where('is_aktif', 'Y')
-        ->whereHas('getOperasionalDetail', function ($query){
-            $query->where('is_aktif', 'Y');
-        })
         ->where('total_refund',0)
+        // ->whereHas('getOperasionalDetail', function ($query){
+        //     $query->where('is_aktif', 'Y');
+        // })
         ->where('total_kasbon',0)
         ->where('id',$revisi_biaya_operasional->id)
         ->whereNull('total_kembali_stok')
-        ->with('getOperasionalDetail')
         ->with('getKas')
-        ->with('getOperasionalDetail.getSewaDetail.getCustomer.getGrup')
-        ->with('getOperasionalDetail.getSewaDetail.getKaryawan')
-        ->with('getOperasionalDetail.getSewaDetail.getSupplier')
+        ->with([
+            'getOperasionalDetail' => function ($query) {
+                $query->where('is_aktif', 'Y')
+                      ->with([
+                          'getSewaDetail.getCustomer.getGrup',
+                          'getSewaDetail.getKaryawan',
+                          'getSewaDetail.getSupplier'
+                      ]);
+            }
+        ])
         ->first();
         $kembaliCek = false;
         // dd($data);
         foreach ($data->getOperasionalDetail as $value) {
-            if($value->id_kasbon||$value->id_stok||$value->id_refund)
+            if($value->id_kasbon_kembali||$value->id_stok||$value->id_refund)
             {
                 $kembaliCek = true;
             }
@@ -590,106 +596,130 @@ class RevisiBiayaOperasionalController extends Controller
         $data = $request->collect();
         DB::beginTransaction(); 
         // dd($data);
-        // try {
-            $count = 0;
-            $total_stok = 0;
-            $total_kasbon = 0;
-            $total_refund = 0;
-            $customer ='';
-            $tujuan='';
-            $no_pol_driver='';
-            
-            // dd('masuk');
-            $so_pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($revisi_biaya_operasional->id);
-            if($data['kembali']!='KEMBALI_STOK'&&$data['kembali']!='DATA_DI_HAPUS'&&$data['kembali']!='kasbon')
-            {
+        $tgl_dicairkan = isset($data['tgl_dicairkan'])?date_create_from_format('d-M-Y', $data['tgl_dicairkan']):$revisi_biaya_operasional->tgl_dicairkan;
 
-                $so_refund = new SewaOperasionalRefund();
-                $so_refund ->id_kas_bank = $data['kembali'];
-                $so_refund ->tanggal_refund = now();
-                $so_refund ->id_pembayaran = $refund_biaya_operasional->id;
-                $so_refund ->deskripsi_ops =$refund_biaya_operasional->deskripsi;
-                $so_refund ->total_refund = (float)str_replace(',', '', $data['total_dicairkan']);
-                $so_refund->catatan_refund = $data['catatan'];
-                $so_refund->created_by = $user;
-                $so_refund->created_at = now();
-                $so_refund->is_aktif = 'Y';
-                if($so_refund->save())
-                {
-                //  dd($data);
-                    // dd($so_pembayaran);
-                    if($so_pembayaran){
-                        $so_pembayaran->total_refund += (float)str_replace(',', '', $data['total_dicairkan']);
-                        $so_pembayaran->updated_by = $user;
-                        $so_pembayaran->updated_at = now();
-                        $so_pembayaran->is_aktif = 'N';
-                        $so_pembayaran->save();
-                        if( $so_pembayaran->save());
+        try {
+      
+            $storeData = [];
+            foreach ($data['data'] as $value) {
+                $i=1;
+                $oprs = SewaOperasionalPembayaranDetail::where('is_aktif', 'Y')->find($value['id_pembayaran_detail']);
+                // dd($keyOprs);
+                if($oprs){
+                    $oprs->catatan = $value['catatan'];
+                    $oprs->updated_by = $user;
+                    $oprs->updated_at = now(); 
+                    $oprs->is_aktif = $value['is_aktif'];
+                    if($value['is_aktif']=="Y")
+                    {
+                        $oprs->total_dicairkan = floatval(str_replace(',', '', $value['total_dicairkan']));
+                    }
+                    else
+                    {
+                        $oprs->status = 'HAPUS';
+                        $oprs->keterangan_internal = '[REVISI-HAPUS]';
+                    }
+                    // $oprs->save();
+                    if( $oprs->save()&&$value['is_aktif']=="Y")
+                    {
+                        if (array_key_exists($value['tujuan'], $storeData)) {
+                            $storeData[$value['tujuan']]['customer'] = $value['customer'];
+                            $storeData[$value['tujuan']]['driver'] .= ' >> '. $value['no_pol'];
+                            // $storeData[$value['tujuan']]['id_opr'][] = $keyOprs;
+                            $storeData[$value['tujuan']]['index'] += 1;
+                            // CONTOHNYA:
+                            // array:1 [▼
+                            // "**PT. Cargil Indonesia - PIER  20 (Perak)" => array:5 [▼
+                            //         "driver" => ">> L 8902 UUC (BASMAN) >> L 9813 UC (HASAN) >> L 8901 UUC (TAROM)"
+                            //         "id_opr" => array:3 [▼
+                            //         0 => 9567
+                            //         1 => 9568
+                            //         2 => 9569
+                            //         ]
+                            //         "index" => 3
+                            //     ]
+                            // ]
+                        } else {
+                            // buat insialiasi awal misal tujuan 1 driver 1
+                            $storeData[$value['tujuan']] = [
+                                'driver' => '>> '. $value['no_pol'],
+                                'customer' => '>> '. $value['customer'],
+                                'index' => $i,
+                            ];
+                        }
+
+                    }
+                }
+            }
+            // dd($data);
+            //key itu id sewa operasional pembayaran
+            $pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($revisi_biaya_operasional->id);
+            $jenis = 'pencairan_operasional';
+            $coa =  CoaHelper::DataCoa(5009);
+            $total_dicairkan = floatval(str_replace(',', '', $data['total_pembayaran']));
+            if($pembayaran){ 
+                // carik dulu transaksinya di dump
+                $history_lama = KasBankTransaction::where('is_aktif', 'Y')
+                            ->where('jenis', $jenis)
+                            ->where('keterangan_kode_transaksi', $pembayaran->id)
+                            ->first();
+                if($history_lama){
+                    // uang kasbank dikembalikan
+                    $kasbank = KasBank::where('is_aktif', 'Y')->find($pembayaran->id_kas_bank);
+                    if($kasbank){
+                        $kasbank->saldo_sekarang += $pembayaran->total_dicairkan;
+                        $kasbank->updated_by = $user;
+                        $kasbank->updated_at = now();
+                        // $kasbank->save();
+                        if($kasbank->save())
                         {
-                            foreach ($data['data'] as $value) {
-                                $status = 'HAPUS';
-                                $keterangan_internal = '[REFUND-UANG-KEMBALI]';
-                                $customer = $value['customer'];
-                                $tujuan = $value['tujuan'];
-                                $no_pol_driver .= '# '.$value['no_pol'];
-                                $total_refund+=(float)str_replace(',', '', $value['total_dicairkan']);
-                                SewaOperasionalPembayaranDetail::where('is_aktif', '=', 'Y')
-                                // ->whereIn('id',  explode(',' ,$value['id_pembayaran_detail']))
-                                ->where('id', $value['id_pembayaran_detail'])
-                                ->update([
-                                        'is_aktif' => 'N',
-                                        'status' => $status,
-                                        'keterangan_internal'=>$keterangan_internal,
-                                        'id_refund'=>$so_refund->id,
-                                        'total_refund'=>(float)str_replace(',', '', $value['total_dicairkan'])
-                                    ]);
-                                $count++;
+                            $pembayaran->tgl_dicairkan = $tgl_dicairkan;
+                            $pembayaran->total_dicairkan = $total_dicairkan;
+                            $pembayaran->id_kas_bank = $data['pembayaran'];
+                            $pembayaran->catatan = 'REVISI - '. $data['alasan'];
+                            $pembayaran->updated_by = $user;
+                            $pembayaran->updated_at = now();
+                            // $pembayaran->save();
+                            if($pembayaran->save()){
+                                $history_lama->tanggal = $tgl_dicairkan;
+                                $history_lama->id_kas_bank =  $data['pembayaran'];
+                                $history_lama->kredit =  $total_dicairkan;
+                                foreach ($storeData as $keyNamaTujuan => $dump) {
+                                    $history_lama->keterangan_transaksi = 'REVISI - ' .$pembayaran->deskripsi.": ".$dump['index'].'X >>'."(".$dump['customer'].")".'>>' .$keyNamaTujuan." ".$dump['driver'].'>> alasan:'.$data['alasan'];
+                                }
+                                $history_lama->updated_by = $user;
+                                $history_lama->updated_at = now();
+                                if($history_lama->save()){
+                                    $kasbank_update_saldo = KasBank::where('is_aktif', 'Y')->find( $data['pembayaran']);
+                                    if($kasbank_update_saldo){
+                                        $kasbank_update_saldo->saldo_sekarang -= $total_dicairkan;
+                                        $kasbank_update_saldo->updated_by = $user;
+                                        $kasbank_update_saldo->updated_at = now();
+                                        $kasbank_update_saldo->save();
+                                    }
+                                }
                             }
                         }
                     }
-
-                    
                 }
-                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                        array(
-                            $data['kembali'],// id kas_bank dr form
-                            now(),//tanggal
-                            (float)str_replace(',', '', $data['total_dicairkan']),// debit 
-                            0, //uang keluar (kredit)
-                            CoaHelper::DataCoa(1100), //kode coa piutang usaha
-                            'operasional_refund',
-                            'Pengembalian Operasional : '.$refund_biaya_operasional->deskripsi.' '.$count.' X >>'.'('.$customer.') - >'.$tujuan. $no_pol_driver.'Catatan :'.$so_refund->catatan_refund, //keterangan_transaksi
-                            $so_refund->id,//keterangan_kode_transaksi id refundnya
-                            $user,//created_by
-                            now(),//created_at
-                            $user,//updated_by
-                            now(),//updated_at
-                            'Y'
-                        ) 
-                    );
-                    $kas_bank = KasBank::where('is_aktif', 'Y')->find($data['kembali']);
-                    $kas_bank->saldo_sekarang += (float)str_replace(',', '', $data['total_dicairkan']);
-                    $kas_bank->updated_by = $user;
-                    $kas_bank->updated_at = now();
-                    $kas_bank->save();
-                    DB::commit();
-
+                
             }
+
                    
          
             DB::commit();
             return redirect()->route('refund_biaya_operasional.index')->with(['status' => 'Success', 'msg'  => 'Refund Operasional berhasil!']);
 
-        // } catch (\Throwable $th) {
-        //     //throw $th;
-        //     db::rollBack();
-        // return redirect()->route('refund_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            db::rollBack();
+        return redirect()->route('refund_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
 
-        // }
+        }
     }
    
 
-    public function load_data($item,$tanggal_mulai,$tanggal_akhir){
+    public function load_data($item,$tanggal_mulai,$tanggal_akhir,$jenis){
         $currentDate = Carbon::now();
         $tanggal_mulai_convert = date_create_from_format('d-M-Y', $tanggal_mulai);
         $tanggal_akhir_convert = date_create_from_format('d-M-Y', $tanggal_akhir);
@@ -702,35 +732,57 @@ class RevisiBiayaOperasionalController extends Controller
                                     ->with('details', 'getJO', 'getCustomer.getGrup')
                                     ->get();
             }else{
-                $data = SewaOperasionalPembayaran::where('is_aktif', 'Y')
-                                        ->where(function($where) use($item){
-                                            if($item == 'LAIN-LAIN'){
-                                                $where->whereNotIn('deskripsi', ['ALAT','TALLY','SEAL PELAYARAN','BIAYA DEPO','KARANTINA','BURUH','TIMBANG','LEMBUR']);
-                                            }else{
-                                                $where->where('deskripsi', $item);
-                                            }
-                                        })
-                                        ->whereHas('getOperasionalDetail', function ($query){
-                                            $query->where('is_aktif', 'Y');
-                                        })
-                                        // ->where(function ($query) use ($currentDate) {
-                                        //     $query->whereBetween('tanggal_berangkat', [
-                                        //         $currentDate->copy()->subDay()->startOfDay(),
-                                        //         $currentDate->copy()->addDay()->endOfDay()
-                                        //     ]);
-                                        // })
-                                        // ->where('tgl_dicairkan', date("Y-m-d 00:00:00",  $currentDate->toDateString().' 00:00:00'))
-                                        ->whereBetween( DB::raw('cast(tgl_dicairkan as date)'), [date_format($tanggal_mulai_convert, 'Y-m-d'), date_format($tanggal_akhir_convert, 'Y-m-d')])
-                                        // ->whereDate('tgl_dicairkan', $tanggal_akhir_convert)
-                                        ->where('total_refund',0)
-                                        ->where('total_kasbon',0)
-                                        ->whereNull('total_kembali_stok')
-                                        ->with('getOperasionalDetail')
-                                        ->with('getKas')
-                                        ->with('getOperasionalDetail.getSewaDetail.getCustomer.getGrup')
-                                        ->with('getOperasionalDetail.getSewaDetail.getKaryawan')
-                                        ->with('getOperasionalDetail.getSewaDetail.getSupplier')
-                                        ->get();
+                $query = SewaOperasionalPembayaran::where('is_aktif', 'Y')
+                    ->where(function($where) use($item){
+                        if($item == 'LAIN-LAIN'){
+                            $where->whereNotIn('deskripsi', ['ALAT','TALLY','SEAL PELAYARAN','BIAYA DEPO','KARANTINA','BURUH','TIMBANG','LEMBUR']);
+                        } else {
+                            $where->where('deskripsi', $item);
+                        }
+                    })
+                    ->whereHas('getOperasionalDetail', function ($query){
+                        $query->where('is_aktif', 'Y');
+                    })
+                    ->whereBetween(DB::raw('cast(tgl_dicairkan as date)'), [
+                        date_format($tanggal_mulai_convert, 'Y-m-d'),
+                        date_format($tanggal_akhir_convert, 'Y-m-d')
+                    ])
+                    ->where(function($where) use($jenis){
+                        if($jenis == 'revisi'){
+                            $where->where('total_refund', 0)
+                                ->where('total_kasbon', 0)
+                                ->whereNull('total_kembali_stok');
+                        }
+                    })
+                    ->with('getKas');
+
+                if ($jenis == 'revisi') {
+                    $query->with([
+                        'getOperasionalDetail' => function ($query) {
+                            $query->where('is_aktif', 'Y')
+                                ->with([
+                                    'getSewaDetail.getCustomer.getGrup',
+                                    'getSewaDetail.getKaryawan',
+                                    'getSewaDetail.getSupplier'
+                                ]);
+                        }
+                    ]);
+                }
+                else
+                {
+                    $query->with([
+                        'getOperasionalDetail' => function ($query) {
+                            $query
+                                ->with([
+                                    'getSewaDetail.getCustomer.getGrup',
+                                    'getSewaDetail.getKaryawan',
+                                    'getSewaDetail.getSupplier'
+                                ]);
+                        }
+                    ]);
+                }
+
+                $data = $query->get();
             }
             return response()->json(["result" => "success",'data' => $data], 200);
         } catch (\Throwable $th) {
@@ -739,53 +791,59 @@ class RevisiBiayaOperasionalController extends Controller
     }
 
     //ga dipake
-    public function delete(Request $request)
+    public function destroy(SewaOperasionalPembayaran $revisi_biaya_operasional)
     {
         $user = Auth::user()->id;
-        $data = $request->collect();
         DB::beginTransaction(); 
 
         try {
-            if($data['modal_item'] == 'KARANTINA'){
-                $oprs = Karantina::where('is_aktif', 'Y')->find($data['key']);
-                $jenis = 'karantina';
-                $coa = CoaHelper::DataCoa(5003);
-            }else{
-                $oprs = SewaOperasionalPembayaranDetail::where('is_aktif', 'Y')->find($data['key']);
-                $jenis = 'pencairan_operasional';
-                $coa =CoaHelper::DataCoa(5009);
-            }
-            $oprs->catatan =  'REVISI OFF - '. $data['alasan'] . ' | ' .$oprs->catatan;
-            $oprs->updated_by = $user;
-            $oprs->updated_at = now(); 
-            $oprs->is_aktif = 'N';
-            if($oprs->save()){
-                $history = KasBankTransaction::where('is_aktif', 'Y')
+           
+            $jenis = 'pencairan_operasional';
+            $pembayaran = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($revisi_biaya_operasional->id);
+            
+            if($pembayaran)
+            {
+                $pembayaran->catatan = 'HAPUS TRANSAKSI';
+                $pembayaran->updated_by = $user;
+                $pembayaran->updated_at = now(); 
+                $pembayaran->is_aktif = 'N';
+                if($pembayaran->save())
+                {
+                    $oprs = SewaOperasionalPembayaranDetail::where('is_aktif', 'Y')->where('id_pembayaran',$pembayaran->id)->get();
+                    if($oprs)
+                    {
+                        foreach ($oprs as $value) {
+                            $value->status = 'HAPUS';
+                            $value->keterangan_internal = '[REVISI-HAPUS-SEMUA]';
+                            $value->updated_by = $user;
+                            $value->updated_at = now(); 
+                            $value->is_aktif = 'N';
+                            $value->save();
+                        }
+                    }
+                    $history = KasBankTransaction::where('is_aktif', 'Y')
                                                 ->where('jenis', $jenis)
-                                                ->where('keterangan_kode_transaksi', $oprs->id)
+                                                ->where('keterangan_kode_transaksi', $pembayaran->id)
                                                 ->first();
-    
-                if($history){
-                    // history dump dinon-aktifkan
-                    $keterangan_transaksi = $history->keterangan_transaksi;
-                    $history->keterangan_transaksi = 'REVISI OFF - '. $data['alasan'] . ' | ' .$keterangan_transaksi;
-                    $history->updated_by = $user;
-                    $history->updated_at = now();
-                    $history->is_aktif = 'N';
-                    if($history->save()){
-                        // uang kasbank dikembalikan
-                        $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
-                        if($kasbank){
-                            $kasbank->saldo_sekarang += $history->kredit;
-                            $kasbank->updated_by = $user;
-                            $kasbank->updated_at = now();
-                            $kasbank->save();
+                    if($history){
+                        // history dump dinon-aktifkan
+                        $history->updated_by = $user;
+                        $history->updated_at = now();
+                        $history->is_aktif = 'N';
+                        if($history->save()){
+                            // uang kasbank dikembalikan
+                            $kasbank = KasBank::where('is_aktif', 'Y')->find($history->id_kas_bank);
+                            if($kasbank){
+                                $kasbank->saldo_sekarang += $history->kredit;
+                                $kasbank->updated_by = $user;
+                                $kasbank->updated_at = now();
+                                $kasbank->save();
+                            }
                         }
                     }
                 }
-
             }
-
+           
             DB::commit();
             return redirect()->route('revisi_biaya_operasional.index')->with(['status' => 'Success', 'msg'  => 'Hapus data berhasil!']);
         } catch (ValidationException $e) {

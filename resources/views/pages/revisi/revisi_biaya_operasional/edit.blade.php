@@ -65,23 +65,28 @@
                             <div class="row">
                                 
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="">Tanggal Transaksi<span style="color:red">*</span></label>
+                                    <label for="">Tanggal Transaksi <span style="opacity: 40%">(Tidak bisa diubah)</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" autocomplete="off" name="tanggal_refund" class="form-control date" id="tanggal_refund" value="{{date('d-M-Y',strtotime($data->tgl_dicairkan))}}">
+                                        <input type="text" autocomplete="off" name="tgl_dicairkan" class="form-control date" id="tgl_dicairkan" value="{{date('d-M-Y',strtotime($data->tgl_dicairkan))}}" disabled>
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="refund">Kas Bank</label>
-                                    <select class="form-control select2" name="kembali" data-live-search="true" data-show-subtext="true" data-placement="bottom" width="100">
+                                    <label for="refund">Kas Bank<span style="color:red">*</span></label>
+                                    <select class="form-control select2" name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom" width="100">
                                         {{-- <option value="kasbon" {{ $data->id_kas_bank == null? 'selected':''; }}>KEMBALI SEBAGAI KASBON OPERASIONAL</option> --}}
                                         @foreach ($dataKas as $kb)
                                             <option value="{{$kb->id}}" {{ $kb->id == $data->id_kas_bank? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                         @endforeach
                                     </select>
                                 </div>
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                    <label for="refund">Alasan Revisi<span style="color:red">*</span></label>
+                                    <textarea name="alasan"  class="form-control" id="alasan" rows="8" value="" required></textarea>
+                                </div>
+
                             </div>
                         </div>
                         <div class="col-12">
@@ -285,7 +290,7 @@ $(document).ready(function() {
             event.preventDefault();
 
             Swal.fire({
-                title: 'Apakah Anda yakin bahwa ada pengembalian uang dari data yang tersedia?',
+                title: 'Apakah Anda yakin dengan revisi ini?',
                 text: "Periksa kembali data anda",
                 icon: 'warning',
                 showCancelButton: true,

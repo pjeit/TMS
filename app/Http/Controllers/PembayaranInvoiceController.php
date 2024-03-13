@@ -236,7 +236,7 @@ class PembayaranInvoiceController extends Controller
                         $total_bayar, //uang masuk (debit)
                         0,// kredit 0 soalnya kan ini uang masuk
                         CoaHelper::DataCoa(1100), //kode coa invoice
-                        'pembayaran_invoice',
+                        'invoice_customer',
                         $keterangan_transaksi, //keterangan_transaksi
                         $pembayaran->id, // keterangan_kode_transaksi - id pembayaran
                         $user,//created_by

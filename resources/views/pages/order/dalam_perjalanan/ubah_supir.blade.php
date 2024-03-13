@@ -27,40 +27,41 @@
             </div>
             <div class="card-body">
                 <div class="row">
+                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                        <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
+                        <div class="input-group mb-0">
+                            <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                            </div>
+                            <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse($data->tanggal_berangkat)->format('d-M-Y')}}">
+                        </div>
+                        <input type="hidden" name="id_sewa_hidden" value="{{$id_sewa}}">
+                        <input type="hidden" name="no_sewa" value="{{$data->no_sewa}}">
+                    </div> 
+                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                        <label for="no_akun">Customer</label>
+                        <input type="text" id="customer" name="customer" class="form-control" value="[{{$data->getCustomer->kode}}] {{$data->getCustomer->nama}}" readonly>                         
+                        <input type="hidden" id="jenis_order" name="jenis_order" value="{{$data->jenis_order}}" placeholder="jenis_order">
+                    
+                    </div>  
+                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                        <label for="no_akun">Tujuan</label>
+                        <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$data->nama_tujuan}}" readonly>                         
+                        <input type="hidden" id="tujuan_id" name="tujuan_id" value="{{$data->id_grup_tujuan}}" placeholder="tujuan_id">
+                        <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="{{$data->id_jo_detail}}" placeholder="id_jo_detail">
+                        <input type="hidden" name="id_jo" id="id_jo" value="{{$data->id_jo}}" placeholder="id_jo">
+                        <input type="hidden" id="nama_tujuan" name="nama_tujuan" value="{{$data->nama_tujuan}}"placeholder="nama_tujuan">
+                        <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="{{$data->alamat_tujuan}}"placeholder="alamat_tujuan">
+                        <input type="hidden" id="tarif" name="tarif" value="{{$data->total_tarif}}"placeholder="tarif">
+                        <input type="hidden" id="uang_jalan" name="uang_jalan" value="{{$data->total_uang_jalan}}"placeholder="uang_jalan">
+                        <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value="{{$data->jenis_tujuan}}"placeholder="jenis_tujuan">
+                    </div>  
+                </div>
+                <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12" style=" border-right: 1px solid rgb(172, 172, 172);">
-                                <div class="form-group ">
-                                    <label for="tanggal_berangkat">Tanggal Berangkat<span style="color:red">*</span></label>
-                                    <div class="input-group mb-0">
-                                        <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                                        </div>
-                                        <input disabled type="text" autocomplete="off" name="tanggal_berangkat" class="form-control date" id="tanggal_berangkat" placeholder="dd-M-yyyy" value="{{ \Carbon\Carbon::parse($data->tanggal_berangkat)->format('d-M-Y')}}">
-                                    </div>
-                                    <input type="hidden" name="id_sewa_hidden" value="{{$id_sewa}}">
-                                    <input type="hidden" name="no_sewa" value="{{$data->no_sewa}}">
-                                </div> 
-                        <div class="form-group ">
-                            <label for="no_akun">Customer</label>
-                            <input type="text" id="customer" name="customer" class="form-control" value="[{{$data->getCustomer->kode}}] {{$data->getCustomer->nama}}" readonly>                         
-                            <input type="hidden" id="jenis_order" name="jenis_order" value="{{$data->jenis_order}}" placeholder="jenis_order">
-                        
-                        </div>  
-                        <div class="form-group ">
-                            <label for="no_akun">Tujuan</label>
-                            <input type="text" id="tujuan" name="tujuan" class="form-control" value="{{$data->nama_tujuan}}" readonly>                         
-                            <input type="hidden" id="tujuan_id" name="tujuan_id" value="{{$data->id_grup_tujuan}}" placeholder="tujuan_id">
-                            <input type="hidden" name="id_jo_detail" id="id_jo_detail" value="{{$data->id_jo_detail}}" placeholder="id_jo_detail">
-                            <input type="hidden" name="id_jo" id="id_jo" value="{{$data->id_jo}}" placeholder="id_jo">
-                            <input type="hidden" id="nama_tujuan" name="nama_tujuan" value="{{$data->nama_tujuan}}"placeholder="nama_tujuan">
-                            <input type="hidden" id="alamat_tujuan" name="alamat_tujuan" value="{{$data->alamat_tujuan}}"placeholder="alamat_tujuan">
-                            <input type="hidden" id="tarif" name="tarif" value="{{$data->total_tarif}}"placeholder="tarif">
-                            <input type="hidden" id="uang_jalan" name="uang_jalan" value="{{$data->total_uang_jalan}}"placeholder="uang_jalan">
-                            <input type="hidden" id="jenis_tujuan" name="jenis_tujuan" value="{{$data->jenis_tujuan}}"placeholder="jenis_tujuan">
-                        </div>  
-                        
-                        <div class="form-group " id="driver_div">
-                            <label for="select_driver">Driver<span style="color:red">*</span></label>
-                                <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
+                        <div class="form-group " id="driver_div_lama">
+                            <label for="select_driver">Driver Lama</label>
+                                <select class="form-control select2" style="width: 100%;" id='select_driver_lama' name="select_driver_lama" required {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}} disabled>
                                 <option value="">Pilih Driver</option>
                                 @foreach ($dataDriver as $drvr)
                                     <option value="{{$drvr->id}}" 
@@ -70,21 +71,22 @@
                                         {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
                                 @endforeach 
                             </select>
-                            
-                            <input type="hidden" id="driver_nama" name="driver_nama" value="{{$data->nama_driver}}" placeholder="driver_nama">
+                            <input type="hidden" id="driver_nama_lama" name="driver_nama_lama" value="{{$data->nama_driver}}" placeholder="driver_nama_lama">
+                            <input type="hidden" id="id_driver_lama" name="id_driver_lama" value="{{$data['id_karyawan']}}" placeholder="id_driver_lama">
+
                         </div>
                         <div class="row">
                             <div class="form-group col-lg-3 col-md-6 col-sm-12" id="kontainer_div">
                                 <div class="form-group" id="inboundDataKontainer">
-                                    <label for="">Tipe Kontainer<span class="text-red">*</span></label>
+                                    <label for="">Tipe Kontainer</label>
                                     <input type="text" class="form-control" id="tipe_kontainer_in" placeholder="" readonly="" value="{{$data['tipe_kontainer']}}">    
                                     {{-- <input type="hidden" id="status" value=""> --}}
                                 </div>
                                 <input type="hidden" name="tipe_kontainer" id="tipe_kontainer" value="{{$data['tipe_kontainer']}}">
                             </div> 
-                            <div class="form-group col-lg-4 col-md-6 col-sm-12" id="kendaraan_div">
-                                <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
-                                <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }}>
+                            <div class="form-group col-lg-4 col-md-6 col-sm-12" id="kendaraan_div_lama">
+                                <label for="select_kendaraan">Kendaraan Lama</label>
+                                <select class="form-control select2" style="width: 100%;" id='select_kendaraan_lama' name="select_kendaraan_lama" disabled>
                                     <option value="">Pilih Kendaraan</option>
 
                                     @foreach ($dataKendaraan as $kendaraan)
@@ -99,86 +101,171 @@
                                             >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="{{$data->id_kendaraan}}" placeholder="kendaraan_id">
-                                <input type="hidden" id="no_polisi" name="no_polisi" value="{{$data->no_polisi}}" placeholder="no_polisi">
-                                <input type="hidden" id="tipeKontainerKendaraanDariChassis" name="tipeKontainerKendaraanDariChassis" value="" placeholder="tipeKontainerKendaraanDariChassis">
+                                <input type="hidden" id="kendaraan_id_lama" name="kendaraan_id_lama" value="{{$data->id_kendaraan}}" placeholder="kendaraan_id">
+                                <input type="hidden" id="no_polisi_lama" name="no_polisi_lama" value="{{$data->no_polisi}}" placeholder="no_polisi">
+                                <input type="hidden" id="tipeKontainerKendaraanDariChassis_lama" name="tipeKontainerKendaraanDariChassis_lama" value="" placeholder="tipeKontainerKendaraanDariChassis">
                             </div>   
-                            <div class="form-group col-lg-5 col-md-6 col-sm-12" id="chassis_div">
-                                <label for="select_ekor">Chassis<span style="color:red">*</span></label>
-                                    <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
+                            <div class="form-group col-lg-5 col-md-6 col-sm-12" id="chassis_div_lama">
+                                <label for="select_ekor">Chassis Lama</label>
+                                    <select class="form-control select2" style="width: 100%;" id='select_chassis_lama' name="select_chassis_lama"disabled>
                                     <option value="">Pilih Chassis</option>
                                     @foreach ($dataChassis as $cha)
                                         <option value="{{$cha->idChassis}}" modelChassis="{{ $cha->modelChassis }}" karoseris="{{ $cha->karoseri }}" {{$cha->idChassis==$data['id_chassis']? 'selected':''}}>{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}})</option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" id="karoseri" name="karoseri" value="{{$data->karoseri}}" placeholder="karoseri">
                             </div>
-                        </div>
-                    </div>
-                    @if ($data['jenis_tujuan'] == 'FTL' )
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div class="row">
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                    <label for="total_hutang" >Total Hutang</label>
-                                    <div class="input-group mb-0">
+                            @if (isset($dataUangJalanRiwayat))
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                    <label for="total_uang_jalan">Total Uang Jalan actual</label>
+                                    <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numaja" value="" readonly>                         
+                                        <input readonly="" value="{{ number_format($dataUangJalanRiwayat->total_uang_jalan+$dataUangJalanRiwayat->total_tl ) }}" type="text" name="total_uang_jalan_lama" class="form-control numaja uang" id="total_uang_jalan_lama" placeholder="">
                                     </div>
                                 </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12 mb-0" 
-                                    @if (isset($data->getKaryawan->getHutang) && $data->getKaryawan->getHutang->total_hutang > 0)
-                                        style="background: hsl(0, 100%, 93%); border: 1px red solid;"
-                                    @endif>
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12 mb-0" >
                                     <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
                                     <div class="input-group mb-0">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" value="" >                         
+                                        <input type="text"  maxlength="100" id="potong_hutang_lama" name="potong_hutang_lama" class="form-control uang numaja" value="{{ number_format($dataUangJalanRiwayat->potong_hutang ) }}" readonly>                         
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                {{-- @if ($data->jenis_tujuan =='FTL') --}}
-                                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        <label for="total_uang_jalan">Total Uang Jalan</label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Rp</span>
-                                            </div>
-                                            <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $dataUangJalanRiwayat->total_tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                <div class="form-group col-lg-4 col-md-6 col-sm-12">
+                                    <label for="total_diterima">Total Diberikan</label>
+                                    <div class="input-group mb-0">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
                                         </div>
+                                        <input type="text" maxlength="100" id="total_diterima_lama" name="total_diterima_lama" class="form-control uang " value="{{number_format($dataUjDiterima)}}" readonly>                         
                                     </div>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label for="">Uang Jalan Lama Kembali ke<span class="text-red">*</span></label>
+                                    <select class="form-control select2" name="kembali" id="kembali">
+                                        <option value="hutang">HUTANG KARYAWAN</option>
+                                        @foreach ($dataKas as $kb)
+                                            <option value="{{$kb->id}}">{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" name="kembali_defaulth" value="{{$dataUangJalanRiwayat->kas_bank_id}}">
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    {{-- @if ($data['jenis_tujuan'] == 'FTL' ) --}}
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="row">
+                                <div class="form-group col-lg-12 col-md-12 col-sm-12" id="driver_div">
+                                    <label for="select_driver">Driver Baru<span style="color:red">*</span></label>
+                                        <select class="form-control select2" style="width: 100%;" id='select_driver' name="select_driver" required {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
+                                        <option value="">Pilih Driver</option>
+                                        @foreach ($dataDriver as $drvr)
+                                            <option value="{{$drvr->id}}" 
+                                                nama_driver="{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})"
+                                                karyawan_hutang = "{{$drvr->total_hutang}}"
+                                                potong_hutang = "{{$drvr->potong_hutang}}"
+                                                {{$drvr->id==$data['id_karyawan']? 'selected':''}}>{{ $drvr->nama_panggilan }} - ({{ $drvr->telp1 }})</option>
+                                        @endforeach 
+                                    </select>
+                                    
+                                    <input type="hidden" id="driver_nama" name="driver_nama" value="{{$data->nama_driver}}" placeholder="driver_nama">
+                                </div>
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12" id="kendaraan_div">
+                                    <label for="select_kendaraan">Kendaraan Baru<span style="color:red">*</span></label>
+                                    <select class="form-control select2" style="width: 100%;" id='select_kendaraan' name="select_kendaraan" {{ $data['status']== 'PROSES DOORING'? 'readonly':'' }}>
+                                        <option value="">Pilih Kendaraan</option>
+    
+                                        @foreach ($dataKendaraan as $kendaraan)
+                                        
+                                            <option value="{{$kendaraan->kendaraanId}}"
+                                                idChassis='{{$kendaraan->chassisId}}'
+                                                noPol='{{$kendaraan->no_polisi}}'
+                                                idDriver='{{$kendaraan->driver_id}}'
+                                                kategoriKendaraan='{{$kendaraan->kategoriKendaraan}}'
+                                                tipeKontainerKendaraanDariChassis = '{{$kendaraan->tipeKontainerKendaraanDariChassis}}'
+                                                {{$kendaraan->kendaraanId == $data['id_kendaraan']? 'selected':''}}
+                                                >{{ $kendaraan->no_polisi }} ({{$kendaraan->kategoriKendaraan}})</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" id="kendaraan_id" name="kendaraan_id" value="{{$data->id_kendaraan}}" placeholder="kendaraan_id">
+                                    <input type="hidden" id="no_polisi" name="no_polisi" value="{{$data->no_polisi}}" placeholder="no_polisi">
+                                    <input type="hidden" id="tipeKontainerKendaraanDariChassis" name="tipeKontainerKendaraanDariChassis" value="" placeholder="tipeKontainerKendaraanDariChassis">
+                                </div>   
+                                <div class="form-group col-lg-6 col-md-6 col-sm-12" id="chassis_div">
+                                    <label for="select_ekor">Chassis Baru<span style="color:red">*</span></label>
+                                        <select class="form-control select2" style="width: 100%;" id='select_chassis' name="select_chassis" {{ $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="INBOUND" || $data['status']== 'PROSES DOORING'&&$data['jenis_order']=="OUTBOUND"?'readonly':''}}>
+                                        <option value="">Pilih Chassis</option>
+                                        @foreach ($dataChassis as $cha)
+                                            <option value="{{$cha->idChassis}}" modelChassis="{{ $cha->modelChassis }}" karoseris="{{ $cha->karoseri }}" {{$cha->idChassis==$data['id_chassis']? 'selected':''}}>{{ $cha->kode }} - {{ $cha->karoseri }} ({{$cha->modelChassis}})</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" id="karoseri" name="karoseri" value="{{$data->karoseri}}" placeholder="karoseri">
+                                </div>
+                                @if($dataUangJalanRiwayat)
                                     <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                                        <label for="total_diterima">Total Diberikan</label>
+                                        <label for="total_hutang" >Total Hutang</label>
                                         <div class="input-group mb-0">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang " value="" readonly>                         
+                                            <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numaja" value="" readonly>                         
                                         </div>
                                     </div>
-                                    <div class="form-group col-12">
-                                        <label for="">Kas / Bank<span class="text-red">*</span></label>
-                                        <select class="form-control select2" name="pembayaran" id="pembayaran" {{$dataUangJalanRiwayat->kas_bank_id? 'disabled':''}} >
-                                            @foreach ($dataKas as $kb)
-                                                <option value="{{$kb->id}}" {{ $dataUangJalanRiwayat->kas_bank_id==$kb->id ? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
-                                            @endforeach
-                                                {{-- <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option> --}}
-                                        </select>
-                                        <input type="hidden" name="pembayaran_defaulth" value="{{$dataUangJalanRiwayat->kas_bank_id}}">
+                                    <div class="form-group col-lg-6 col-md-6 col-sm-12" 
+                                        @if (isset($data->getKaryawan->getHutang) && $data->getKaryawan->getHutang->total_hutang > 0)
+                                            style="background: hsl(0, 100%, 93%); border: 1px red solid;"
+                                        @endif>
+                                        <label for="potong_hutang"><span class="text-red">Potong Hutang</span></label>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">Rp</span>
+                                            </div>
+                                            <input type="text" onkeyup="cek_potongan_hutang();hitung_total();" maxlength="100" id="potong_hutang" name="potong_hutang" class="form-control uang numaja" value="" >                         
+                                        </div>
                                     </div>
-                                    <div class="form-group col-12">
-                                        <label for="catatan">Catatan</label>
-                                        <input type="text" name="catatan" class="form-control" id="catatan" placeholder="" value="">
-                                        <input type="hidden" name="catatan_awal" id="catatan_awal" value=""> 
-                                    </div>
-                                {{-- @endif --}}
+                                @endif
                             </div>
+                            @if($dataUangJalanRiwayat)
+                                <div class="row">
+                                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                            <label for="total_uang_jalan">Total Uang Jalan</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp</span>
+                                                </div>
+                                                <input readonly="" value="{{ number_format($data['total_uang_jalan']) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                            <label for="total_diterima">Total Diberikan</label>
+                                            <div class="input-group mb-0">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text">Rp</span>
+                                                </div>
+                                                <input type="text" maxlength="100" id="total_diterima" name="total_diterima" class="form-control uang " value="" readonly>                         
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-12">
+                                            <label for="">Kas / Bank<span class="text-red">*</span></label>
+                                            <select class="form-control select2" name="pembayaran" id="pembayaran" >
+                                                @foreach ($dataKas as $kb)
+                                                    <option value="{{$kb->id}}" {{ $dataUangJalanRiwayat->kas_bank_id==$kb->id ? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
+                                                @endforeach
+                                            </select>
+                                            <input type="hidden" name="pembayaran_defaulth" value="{{$dataUangJalanRiwayat->kas_bank_id}}">
+                                        </div>
+                                        <div class="form-group col-12">
+                                            <label for="catatan">Catatan</label>
+                                            <input type="text" name="catatan" class="form-control" id="catatan" placeholder="" value="">
+                                            <input type="hidden" name="catatan_awal" id="catatan_awal" value=""> 
+                                        </div>
+                                </div>
+                            @endif
                         </div>
-                    @else
+                    {{-- @else
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div class="row">
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -210,10 +297,8 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
-                                        @php
-                                            $tl = isset($dataUangJalanRiwayat)? $dataUangJalanRiwayat->total_tl:0;
-                                        @endphp
-                                        <input readonly="" value="{{ number_format($data['total_uang_jalan'] + $tl) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                     
+                                        <input readonly="" value="{{ number_format($data['total_uang_jalan']) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -228,11 +313,10 @@
                                 @isset($dataUangJalanRiwayat)
                                     <div class="form-group col-12">
                                         <label for="">Kas / Bank<span class="text-red">*</span></label>
-                                        <select class="form-control select2" name="pembayaran" id="pembayaran" {{$dataUangJalanRiwayat->kas_bank_id? 'disabled':''}} >
+                                        <select class="form-control select2" name="pembayaran" id="pembayaran"  >
                                             @foreach ($dataKas as $kb)
                                                 <option value="{{$kb->id}}" {{ $dataUangJalanRiwayat->kas_bank_id==$kb->id ? 'selected':''; }} >{{ $kb->nama }} - {{$kb->tipe}}</option>
                                             @endforeach
-                                                {{-- <option value="HUTANG KARYAWAN">HUTANG KARYAWAN</option> --}}
                                         </select>
                                         <input type="hidden" name="pembayaran_defaulth" value="{{$dataUangJalanRiwayat->kas_bank_id}}">
                                     </div>
@@ -243,8 +327,8 @@
                                     <input type="hidden" name="catatan_awal" id="catatan_awal" value=""> 
                                 </div>
                             </div>
-                        </div>
-                    @endif
+                        </div> --}}
+                    {{-- @endif --}}
                 </div>
             </div>
         </div> 
@@ -349,27 +433,35 @@ $(document).ready(function() {
         var potong_hutang = selectedOption.attr('potong_hutang');
         var nama_driver = selectedOption.attr('nama_driver');
 
+        var ujr =  <?php echo json_encode($dataUangJalanRiwayat); ?>;
         
-        $('#total_hutang').val(karyawan_hutang?addPeriod(karyawan_hutang,','):0);
-        $('#potong_hutang').val(potong_hutang?addPeriod(potong_hutang,','):0);
-        $('#driver_nama').val(nama_driver);
-        if(potong_hutang>0)
+        if(ujr)
         {
-            $('#potong_hutang').prop('disabled',true);
+            $('#total_hutang').val(karyawan_hutang?addPeriod(karyawan_hutang,','):0);
+            $('#potong_hutang').val(potong_hutang?addPeriod(potong_hutang,','):0);
+            $('#driver_nama').val(nama_driver);
+            if(potong_hutang>0)
+            {
+                $('#potong_hutang').prop('disabled',true);
+            }
+            else
+            {
+                $('#potong_hutang').prop('disabled',false);
+            }
+                 hitung_total();
+            cek_potongan_hutang();
         }
-        else
-        {
-            $('#potong_hutang').prop('disabled',false);
-        }
-             hitung_total();
-        cek_potongan_hutang();
     }
     function hideMenuTujuan(){
         var jenisTujuan=$('#jenis_tujuan').val();
         var jenisOrder =$('#jenis_order').val();
         var kendaraan_div =$('#kendaraan_div');
+
+        var kendaraan_div_lama =$('#kendaraan_div_lama');
+        var chassis_div_lama =$('#chassis_div_lama');
         console.log(jenisTujuan);
         // console.log(kendaraan_div);
+        
 
         // if(jenisOrder=='OUTBOUND')
         // {
@@ -378,6 +470,7 @@ $(document).ready(function() {
                 $('#kontainer_div').show();
                 $('#chassis_div').show();
                 $('#stack_tl_form').show();
+                chassis_div_lama.show();
                 // kendaraan_div.removeClass('col-lg-12 col-md-12 col-sm-12');
                 // kendaraan_div.addClass('col-lg-4 col-md-6 col-sm-12');
             }
@@ -387,8 +480,12 @@ $(document).ready(function() {
                 $('#kontainer_div').hide();
                 $('#chassis_div').hide();
                 $('#stack_tl_form').hide();
+                chassis_div_lama.hide();
                 kendaraan_div.removeClass('col-lg-4 col-md-6 col-sm-12');
                 kendaraan_div.addClass('col-lg-12 col-md-12 col-sm-12');
+
+                kendaraan_div_lama.removeClass('col-lg-4 col-md-6 col-sm-12');
+                kendaraan_div_lama.addClass('col-lg-12 col-md-12 col-sm-12');
             }
         // }
         // else

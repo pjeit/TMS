@@ -84,27 +84,37 @@ class RefundOperasionalController extends Controller
     {
         //
         $data = SewaOperasionalPembayaran::where('is_aktif', 'Y')
-        ->whereHas('getOperasionalDetail'/*, function ($query){
+        ->whereHas('getOperasionalDetail', function ($query){
             $query->where('is_aktif', 'Y');
-        }*/)
-        // ->where('total_refund',0)
-        // ->where('total_kasbon',0)
+        })
         ->where('id',$refund_biaya_operasional->id)
-        // ->whereNull('total_kembali_stok')
-        ->with('getOperasionalDetail')
         ->with('getKas')
-        ->with('getOperasionalDetail.getSewaDetail.getCustomer.getGrup')
-        ->with('getOperasionalDetail.getSewaDetail.getKaryawan')
-        ->with('getOperasionalDetail.getSewaDetail.getSupplier')
+        ->with([
+            'getOperasionalDetail' => function ($query) {
+                $query->where('status','<>', 'HAPUS')
+                      ->where('keterangan_internal','<>', '[REVISI-HAPUS]')
+                    //   ->where('is_aktif', 'Y')
+                      ->with([
+                          'getSewaDetail.getCustomer.getGrup',
+                          'getSewaDetail.getKaryawan',
+                          'getSewaDetail.getSupplier'
+                      ]);
+            }
+        ])
+        // ->with('getOperasionalDetail')
+        // ->with('getOperasionalDetail.getSewaDetail.getCustomer.getGrup')
+        // ->with('getOperasionalDetail.getSewaDetail.getKaryawan')
+        // ->with('getOperasionalDetail.getSewaDetail.getSupplier')
         ->first();
         $kembaliCek = false;
-        // dd($data);
         foreach ($data->getOperasionalDetail as $value) {
-            if($value->id_kasbon||$value->id_stok||$value->id_refund)
+            if($value->id_kasbon_kembali||$value->id_stok||$value->id_refund)
             {
                 $kembaliCek = true;
             }
         }
+        // dd($kembaliCek);
+
         $dataKas = DB::table('kas_bank')
         ->select('*')
         ->where('is_aktif', '=', "Y")
@@ -164,6 +174,7 @@ class RefundOperasionalController extends Controller
                         //  dd($data);
                             // dd($so_pembayaran);
                             if($so_pembayaran){
+                                $so_pembayaran->catatan = 'REFUND ALL PEMBAYARAN';
                                 $so_pembayaran->total_refund += (float)str_replace(',', '', $data['total_dicairkan']);
                                 $so_pembayaran->updated_by = $user;
                                 $so_pembayaran->updated_at = now();
@@ -456,7 +467,7 @@ class RefundOperasionalController extends Controller
                             }
                             else if($data['kembali']=='kasbon')
                             {
-                                $so_pembayaran->total_kasbon = 1; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
+                                $so_pembayaran->total_kasbon = $total_kembali; // kenapa 1? karena 1 trailer kan 1 seal doang, gamungkin 2
                                 $so_pembayaran->updated_by = $user;
                                 $so_pembayaran->updated_at = now();
                                 if($so_pembayaran->save())
@@ -487,13 +498,29 @@ class RefundOperasionalController extends Controller
                     }
                 }
             }
+            // $so_pembayaran_cek = SewaOperasionalPembayaran::where('is_aktif', 'Y')
+            // ->whereHas('getOperasionalDetail', function ($query){
+            //     $query->where('is_aktif', 'Y');
+            // })
+            // ->where('id',$refund_biaya_operasional->id)
+            // ->first();
+            // // dd($so_pembayaran_cek);
+            // if(!$so_pembayaran_cek)
+            // {
+            //     $so_pembayaran_matiin = SewaOperasionalPembayaran::where('is_aktif', 'Y')->find($refund_biaya_operasional->id);
+            //     $so_pembayaran_matiin->catatan = 'REFUND ALL PEMBAYARAN';
+            //     $so_pembayaran_matiin->updated_by = $user;
+            //     $so_pembayaran_matiin->updated_at = now();
+            //     $so_pembayaran_matiin->is_aktif = 'N';
+            //     $so_pembayaran_matiin->save();
+            // }
             DB::commit();
             return redirect()->route('refund_biaya_operasional.index')->with(['status' => 'Success', 'msg'  => 'Refund Operasional berhasil!']);
 
         // } catch (\Throwable $th) {
         //     //throw $th;
         //     db::rollBack();
-        // return redirect()->route('refund_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        //     return redirect()->route('refund_biaya_operasional.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
 
         // }
     }
