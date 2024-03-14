@@ -221,32 +221,80 @@ class PembayaranDokumenKendaraanController extends Controller
                 'total_nominal' => 'required',
                 'select_dokumen' => 'required',
             ], $pesanKustom);
+
             $data= $request->collect();
-            $kas_bank_lama = KasBank::where('is_aktif', 'Y')
+            $kas_bank = KasBank::where('is_aktif', 'Y')
              ->where('id', $pembayaran_dokumen_kendaraan->id_kas_bank)
                         ->first();
-            $kas_bank_lama->saldo_sekarang +=  floatval(str_replace(',', '', $pembayaran_dokumen_kendaraan->nominal_bayar));
-            $kas_bank_lama->updated_at = now();
-            $kas_bank_lama->updated_by = $user;
-            if($kas_bank_lama->save())
+            $kas_bank->saldo_sekarang +=  floatval(str_replace(',', '', $pembayaran_dokumen_kendaraan->nominal_bayar));
+            $kas_bank->updated_at = now();
+            $kas_bank->updated_by = $user;
+            if($kas_bank->save())
             {
+                $kendaraan_tampung = '';
+                $tanggal=date_create_from_format('d-M-Y', $data['tanggal_pembayaran']);
+                $total_nominal = floatval(str_replace(',', '', $data['total_nominal']));
+    
                 $bayar_dokumen = PembayaranDokumenKendaraan::where('is_aktif','Y')->where('id',$pembayaran_dokumen_kendaraan->id)->first();
+                $bayar_dokumen->id_kas_bank = $data['pembayaran'];
+                $bayar_dokumen->tanggal_bayar = $tanggal;
+                $bayar_dokumen->jenis_dokumen = $data['select_dokumen'];
+                $bayar_dokumen->nominal_bayar = $total_nominal;
+                $bayar_dokumen->catatan = $data['catatan_pembayaran'];
                 $bayar_dokumen->updated_by = $user;
                 $bayar_dokumen->updated_at = now();
-                $bayar_dokumen->is_aktif = 'N';
                 if ($bayar_dokumen->save()) {
-                    $bayar_dokumen_detail=  PembayaranDokumenKendaraanDetail::where('is_aktif','Y')->where('id_pembayaran_kendaraan',$pembayaran_dokumen_kendaraan->id)->get();
-                    foreach ($bayar_dokumen_detail as $value) {
-                        $value->updated_by = $user;
-                        $value->updated_at = now();
-                        $value->is_aktif ='N';
-                        $value->save();
+                    foreach ($data['kendaraan'] as $value) {
+                        if($value['is_aktif']=='Y')
+                        {
+                            $kendaraan_tampung.=' # '.$value['no_polisi'];
+                        }
+                        if($value['id_detail']=='baru')
+                        {
+                            $pembayaran_dokumen_detail_baru= new PembayaranDokumenKendaraanDetail();
+                            $pembayaran_dokumen_detail_baru->id_pembayaran_kendaraan = $bayar_dokumen->id;
+                            $pembayaran_dokumen_detail_baru->id_kendaraan = $value['select_kendaraan'];
+                            $pembayaran_dokumen_detail_baru->no_pol = $value['no_polisi'];
+                            $pembayaran_dokumen_detail_baru->nominal = floatval(str_replace(',', '', $value['nominal']));
+                            $pembayaran_dokumen_detail_baru->created_by = $user;
+                            $pembayaran_dokumen_detail_baru->created_at = now();
+                            $pembayaran_dokumen_detail_baru->is_aktif =$value['is_aktif'];
+                            $pembayaran_dokumen_detail_baru->save();
+
+                        }
+                        else
+                        {
+                            $bayar_dokumen_detail_lama=  PembayaranDokumenKendaraanDetail::where('is_aktif','Y')->where('id',$value['id_detail'])->first();
+                            $bayar_dokumen_detail_lama->id_pembayaran_kendaraan = $bayar_dokumen->id;
+                            $bayar_dokumen_detail_lama->id_kendaraan = $value['select_kendaraan'];
+                            $bayar_dokumen_detail_lama->no_pol = $value['no_polisi'];
+                            if($value['is_aktif']=='Y')
+                            {
+                                $bayar_dokumen_detail_lama->nominal = floatval(str_replace(',', '', $value['nominal']));
+                            }
+                            $bayar_dokumen_detail_lama->created_by = $user;
+                            $bayar_dokumen_detail_lama->created_at = now();
+                            $bayar_dokumen_detail_lama->is_aktif = $value['is_aktif'];
+                            $bayar_dokumen_detail_lama->save();
+                        }
                     }
                     $kas_bank_transaksi =  KasBankTransaction::where('is_aktif','Y')->where('jenis','dokumen_kendaraan')->where('keterangan_kode_transaksi',$pembayaran_dokumen_kendaraan->id)->first();
+                    $kas_bank_transaksi->id_kas_bank = $data['pembayaran'];
+                    $kas_bank_transaksi->keterangan_transaksi ='Pembayaran Dokumen Kendaraan'.' - ['.$data['select_dokumen'].'] - '. $kendaraan_tampung.' - '.$data['catatan_pembayaran']; //keterangan_transaksi
+                    $kas_bank_transaksi->kredit = $total_nominal;
                     $kas_bank_transaksi->updated_at = now();
                     $kas_bank_transaksi->updated_by = $user;
-                    $kas_bank_transaksi->is_aktif = 'N';
-                    $kas_bank_transaksi->save();
+                    // $kas_bank_transaksi->save();
+                    if($kas_bank_transaksi->save())
+                    {
+                        $kas_bank_baru = KasBank::where('is_aktif', 'Y')
+                        ->where('id', $data['pembayaran'])
+                                   ->first();
+                        $kas_bank_baru->saldo_sekarang -=  $total_nominal;
+                        $kas_bank_baru->updated_at = now();
+                        $kas_bank_baru->updated_by = $user;
+                        $kas_bank_baru->save();
+                    }
                 }
             }
             DB::commit();
