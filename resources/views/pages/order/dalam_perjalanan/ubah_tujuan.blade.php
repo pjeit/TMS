@@ -232,8 +232,6 @@
                                         <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date" id="tanggal_pencairan" value="">
                                     </div>
                                 </div>  
-                            
-                                   
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12 ">
                                     <label for="total_akhir" id="total_akhir_label">Total Diberikan</label>
                                     <div class="input-group mb-0">

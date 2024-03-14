@@ -222,7 +222,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('bonus_supir', 'App\Http\Controllers\BonusSupirController');
 
-
+        Route::resource('pembayaran_dokumen_kendaraan', 'App\Http\Controllers\PembayaranDokumenKendaraanController');
         Route::resource('pembayaran_karantina', 'App\Http\Controllers\PembayaranKarantinaController');
 
         Route::post('tagihan_rekanan/bayar_save', [App\Http\Controllers\TagihanRekananController::class, 'bayar_save'])->name('tagihan_rekanan.bayar_save');
@@ -242,6 +242,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('tagihan_pembelian/loadData/{id}', [App\Http\Controllers\TagihanPembelianController::class, 'load_data'])->name('tagihan_pembelian.load_data');
         Route::get('tagihan_pembelian/filteredData/{id_tagihan},{id_supplier}', [App\Http\Controllers\TagihanPembelianController::class, 'filtered_data'])->name('tagihan_pembelian.filtered_data');
         Route::resource('tagihan_pembelian', 'App\Http\Controllers\TagihanPembelianController');
+
+
+
         // ===================================FINANCE=========================================================
 
         
