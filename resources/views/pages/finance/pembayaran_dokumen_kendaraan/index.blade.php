@@ -32,7 +32,7 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="TabelLembur" class="table table-bordered table-striped" width="100%">
+                    <table id="tabel_dokumen" class="table table-bordered table-striped" width="100%">
                         <thead>
                             <tr>
                                 <th>Tanggal Pembayaran</th>
@@ -202,7 +202,28 @@
 
 <script type="text/javascript">
 $(document).ready(function () {
-
+    $('#tabel_dokumen').DataTable({
+                    // order: [
+                    //     [0, 'asc'],
+                    // ],
+                    // rowGroup: {
+                    //     dataSrc: [0] // kalau mau grouping pake ini
+                    // },
+                    columnDefs: [
+                        // {
+                        //     targets: [0],
+                        //     visible: false
+                        // },
+                        // { orderable: true, targets: 0 }, // Enable ordering for the first column (index 0)
+                        { orderable: false, targets: '_all' } // Disable ordering for all other columns
+                    ],
+                    info: false,
+                    searching: true,
+                    paging: true,
+                    language: {
+                        emptyTable: "Data tidak ditemukan."
+                    }
+        });
     $('#tanggal_pembayaran').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",

@@ -77,6 +77,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Route::middleware(['is_','is_superadminadmin'])->group(function () {
         // ===================================MASTER=========================================================
+        Route::get('/dashboard/data/{tgl_minggu_awal}/{tgl_minggu_akhir}/{tgl_minggu_awal_convert}/{tgl_minggu_akhir_convert}', [App\Http\Controllers\DashboardController::class, 'get_dasboard_data'])->name('dashboard.get_dasboard_data');
         Route::get('/dashboard/reset', [App\Http\Controllers\DashboardController::class, 'reset'])->name('dashboard.reset');
         Route::resource('dashboard', App\Http\Controllers\DashboardController::class);
 

@@ -234,7 +234,10 @@
                                         </a>
                                     </td>`);//sewa
                                 row.append(`<td>${data[i].no_invoice?data[i].no_invoice:'Belum Invoice'}</td>`);//invoice
-                                row.append(`<td>${data[i].nama_tujuan} - [${data[i].no_polisi} (${data[i].nama_ekor?data[i].nama_ekor:'-'})]</td>`);//tujuan dan kendaraan
+                                row.append(`<td>${data[i].nama_tujuan} - [${data[i].no_polisi} (${data[i].nama_ekor?data[i].nama_ekor:'-'})]
+                                        <br><span class="badge badge-${data[i].jenis_tujuan=="FTL"?"primary":"warning"}"> ${data[i].jenis_tujuan}</span>
+                                    
+                                    </td>`);//tujuan dan kendaraan
                             }   
                             else if(tipe_group=='kendaraan')
                             {
@@ -245,7 +248,10 @@
                                         </a>
                                     </td>`);//sewa
                                 row.append(`<td>${data[i].no_invoice?data[i].no_invoice:'Belum Invoice'}</td>`);//invoice
-                                row.append(`<td>${data[i].nama_customer} - [${data[i].nama_driver?data[i].nama_driver:'DRIVER REKANAN : '+data[i].nama_supplier}]</td>`);//customer dan driver
+                                row.append(`<td>${data[i].nama_customer} - [${data[i].nama_driver?data[i].nama_driver:'DRIVER REKANAN : '+data[i].nama_supplier}]
+                                    <br><span class="badge badge-${data[i].jenis_tujuan=="FTL"?"primary":"warning"}"> ${data[i].jenis_tujuan}</span>
+                                    
+                                    </td>`);//customer dan driver
                             }
                             else if(tipe_group=='driver')
                             {
@@ -256,7 +262,11 @@
                                         </a>
                                     </td>`);//sewa
                                 row.append(`<td>${data[i].no_invoice?data[i].no_invoice:'Belum Invoice'}</td>`);//invoice
-                                row.append(`<td>${data[i].nama_customer} - [${data[i].no_polisi} (${data[i].nama_ekor?data[i].nama_ekor:'-'})]</td>`);//customer dan tujuan
+                                row.append(`<td>
+                                ${data[i].nama_customer} - [${data[i].no_polisi} (${data[i].nama_ekor?data[i].nama_ekor:'-'})]
+                               
+                                <br><span class="badge badge-${data[i].jenis_tujuan=="FTL"?"primary":"warning"}"> ${data[i].jenis_tujuan}</span>
+                                </td>`);//customer dan tujuan
                             }
 
                             //  <th>Tarif</th>

@@ -122,20 +122,20 @@
         <!-- Custom tabs (Charts with tabs)-->
         <div class="card radiusSendiri" style="position: relative; left: 0px; top: 0px;" id='table_jadwal'>
             <div class="card-header">
-                <h3 class="card-title" style='font-size:12pt;'>
-                <i class="fas fa-calendar mr-1"></i>Periode: {{$week_start}} s/d {{$week_end}}
+                <h3 class="card-title" style='font-size:12pt;' id="tanggal_periode">
+                    <i class="fas fa-calendar mr-1"></i>Periode: {{$week_start_tampil}} s/d {{$week_end_tampil}}
                 </h3>
                 <div class=sr-only>
-                    <input type='hidden' id="prev_week" value="{{ $weeknumber-1}}">
-                    <input type='hidden' id="next_week" value="{{ $weeknumber+1}}">
+                    <input type='hidden' id="prev_week" value="{{ $week_start}}">
+                    <input type='hidden' id="next_week" value="{{ $week_end}}">
                 </div>
                 <div class="card-tools">
                 <ul class="nav nav-pills ml-auto">
                     <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0)" onclick="get_jadwal('prev')" style='border:1px'><i class="fas fa-caret-left"></i></a>
+                        <a class="nav-link" href="javascript:void(0)"  style='border:1px' id="prev"><i class="fas fa-caret-left"></i></a>
                     </li>
                     <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0)" onclick="get_jadwal('next')" style='border:1px'><i class="fas fa-caret-right"></i></a>
+                        <a class="nav-link" href="javascript:void(0)" style='border:1px'  id="next"><i class="fas fa-caret-right"></i></a>
                     </li>
                 </ul>
                 </div>
@@ -143,44 +143,22 @@
             <div class="card-body">
                 <span style='font-size:11pt;' class="badge bg-primary">Menunggu Persetujuan</span> <span style='font-size:11pt;' class="badge bg-warning">Menunggu Uang Jalan</span>  <span style='font-size:11pt;' class="badge bg-success">Dalam Perjalanan</span>  <span style='font-size:11pt;' class="badge bg-info">Selesai</span>  <span style='font-size:11pt;' class="badge bg-danger">Maintenance</span> <span style='font-size:11pt;' class="badge bg-dark">Batal Muat</span>    
                 <table class="default_table table table-bordered table-striped">
-                    <thead>
-                    <tr>
-                    <th style="width:12%">Nopol</th>
-                    <th style="width:11%">Driver</th>
-                    <th style="width:11%">Senin</th>
-                    <th style="width:11%">Selasa</th>
-                    <th style="width:11%">Rabu</th>
-                    <th style="width:11%">Kamis</th>
-                    <th style="width:11%">Jumat</th>
-                    <th style="width:11%">Sabtu</th>
-                    <th style="width:11%">Minggu</th>
-                    </tr>
+                    <thead id="thead_tabel">
+                        <tr>
+                            <th style="width:12%">Nopol</th>
+                            <th style="width:11%">Driver</th>
+                            <th style="width:11%">Senin</th>
+                            <th style="width:11%">Selasa</th>
+                            <th style="width:11%">Rabu</th>
+                            <th style="width:11%">Kamis</th>
+                            <th style="width:11%">Jumat</th>
+                            <th style="width:11%">Sabtu</th>
+                            <th style="width:11%">Minggu</th>
+                        </tr>
                     </thead>
-                    <!--<tbody>
-                        <?php if(!empty($data)){
-                        foreach($data as $kendaraan=>$jadwal){$info=explode('_',$kendaraan);?>
-                            <tr>
-                                <td><?= $info[0];?></td>
-                                <td><?= $info[1];?></td>
-                                <?php foreach($jadwal as $hari=>$value){ ?>
-                                <td>
-                                <?php foreach($value as $objek){
-                                    $color='';
-                                    if(strtolower($objek->status)=='open'){$color='bg-info';}
-                            elseif(strtolower($objek->status)=='approved' && $objek->total_uang_jalan > 0){$color='bg-warning';}
-                            elseif(strtolower($objek->status)=='released' || (strtolower($objek->status)=='approved' && $objek->total_uang_jalan == 0)){$color='bg-success';}
-                                    elseif(strtolower($objek->status)=='finished'){$color='bg-info';}
-                                    elseif(strtolower($objek->status)=='maintenance'){$color='bg-danger';}
-                                                                elseif(strtolower($objek->status)=='canceled'){$color='bg-dark';}
-                                ?>
-                                    <span class="badge <?= $color; ?>">
-                                        <?php if($objek->nama_tujuan!='' && !empty($objek->nama_tujuan)){echo $objek->nama_tujuan;}?></span>
-                                <?php }?>
-                                </td>
-                                <?php }?>
-                            </tr>
-                        <?php }}?>
-                    </tbody>-->
+                    <tbody id="tbody_tabel">
+                     
+                    </tbody>
                 </table>
             </div><!-- /.card-body -->
         </div>
@@ -191,26 +169,150 @@
 
 <script>
 $(document).ready(function () {
-    new DataTable('#tabelSewa', {
-        // "ordering": true,
-        responsive: true,
-        order: [
-            [0, 'asc'],
-        ],
-        rowGroup: {
-            dataSrc: [0]
-        },
-        columnDefs: [
-            {
-                targets: [0],
-                visible: false
-            },
-            // {
-            //     "orderable": false,
-            //     "targets": [0,1,2,3,4,5,6]
-            // }
-        ],
-    }); 
+    var tanggal_mulai = $('#prev_week').val();
+    var tanggal_akhir = $('#next_week').val();
+
+    var counterTambah=0;
+    var counterKurang=0;
+
+    $(document).on('click', '#next', function(e){
+        counterTambah++;
+        counterKurang = 0;
+        showTable(tanggal_mulai,tanggal_akhir,counterTambah,counterKurang);
+      
+        // console.log("tambah : "+counterTambah);
+        // console.log("kurang : "+counterKurang);
+
+    });
+    $(document).on('click', '#prev', function(e){
+        counterKurang++;
+        counterTambah = 0;
+        showTable(tanggal_mulai,tanggal_akhir,counterTambah,counterKurang);
+        
+        console.log("tambah : "+counterTambah);
+        console.log("kurang : "+counterKurang);
+    });
+    showTable(tanggal_mulai,tanggal_akhir,0,0);
+    function showTable(tanggal_mulai,tanggal_akhir,tambah,kurang){
+            var baseUrl = "{{ asset('') }}";
+            var url = baseUrl+`dashboard/data/${tanggal_mulai}/${tanggal_akhir}/${tambah}/${kurang}`;
+            $.ajax({
+                method: 'GET',
+                url: url,
+                dataType: 'JSON',
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(response) {
+                    $("#thead_tabel").empty();
+                    $("#tbody_tabel").empty();
+                    
+
+                    // var item = $('#item').val();
+                    var data = response.data;
+
+                    console.log( response);
+                    $("#tanggal_periode").html(`<i class="fas fa-calendar mr-1"></i> Periode: ${response.tgl_minggu_awal_convert} s/d ${response.tgl_minggu_akhir_convert} `);
+                    if(data != ''){
+                        $("#thead_tabel").append(`
+                            <tr>
+                                <th style="width:12%">
+                                    Nopol
+                                </th>
+                                <th style="width:11%">
+                                    Driver
+                                </th>
+                             
+
+                                ${response.semua_tanggal.map((day, index) => `
+                                    <th style="width:11%">
+                                        ${index === 0 ? 'Senin' : ''}
+                                        ${index === 1 ? 'Selasa' : ''}
+                                        ${index === 2 ? 'Rabu' : ''}
+                                        ${index === 3 ? 'Kamis' : ''}
+                                        ${index === 4 ? 'Jumat' : ''}
+                                        ${index === 5 ? 'Sabtu' : ''}
+                                        ${index === 6 ? 'Minggu' : ''}
+                                        <input type="hidden" id="tanggal_hari_${index}" value="${day}">
+                                    </th>
+                                `).join('')}
+                            </tr>
+                        `);
+                        for (var i = 0; i <data.length; i++) {
+                            let cek_status = data[i].get_operasional_detail;
+                            if(cek_status != 'SELESAI' || cek_status != 'MENUNGGU PEMBAYARAN INVOICE'){
+                                console.log('cek_status', data[i].get_operasional_detail);
+                                var row = $("<tr></tr>");
+                                
+                                row.append(`<td>${data[i].get_operasional_detail.map(item => 
+                                `
+                                <span class="badge badge-primary"> ${item.get_sewa_detail.no_polisi} (${item.get_sewa_detail.get_karyawan ? item.get_sewa_detail.get_karyawan.nama_panggilan : 'REKANAN'} </span><br>
+                                <span class="badge badge-secondary"> ${dateMask(item.get_sewa_detail.tanggal_berangkat)} </span>
+                                <span class="badge badge-success"> ${item.get_sewa_detail.no_sewa} </span>
+
+                                `
+                                ).join('<br> <br>')}</td>`);
+                                row.append(`<td> <span class="badge badge-warning">Total dicairkan: ${moneyMask(data[i].total_dicairkan) }</span>
+                                                                                        </td>`);
+                                row.append(`<td> 
+
+                                    <div class="btn-group dropleft">
+                                        <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-list"></i>
+                                        </button>
+                                    <div class="dropdown-menu" >
+                                        
+                                        <a href="${baseUrl}refund_biaya_operasional/${data[i].id}/edit" class="dropdown-item btn-danger">
+                                            <span class="nav-icon fas fa-undo mr-3"></span> Refund
+                                        </a>
+                                        
+                                    </div>
+                            </div>
+                                    </td>`);
+                                $("#tbodyId").append(row);
+                            }
+                        }
+                    }
+                    else{
+                        console.log('else');
+                        $("thead tr").append(`<th>Revisi Biaya Operasional</th>`);
+                        // $("#rowGroup").dataTable();
+                        $('#rowGroup').DataTable().draw();
+
+                        // $('#rowGroup').DataTable().clear().draw();
+                    }
+                },error: function (xhr, status, error) {
+                    if ( xhr.responseJSON.result == 'error') {
+                        console.log("Error:", xhr.responseJSON.message);
+                        console.log("XHR status:", status);
+                        console.log("Error:", error);
+                        console.log("Response:", xhr.responseJSON);
+                    } else {
+                        toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                    }
+                }
+            });
+        }
+    // new DataTable('#tabelSewa', {
+    //     // "ordering": true,
+    //     responsive: true,
+    //     order: [
+    //         [0, 'asc'],
+    //     ],
+    //     rowGroup: {
+    //         dataSrc: [0]
+    //     },
+    //     columnDefs: [
+    //         {
+    //             targets: [0],
+    //             visible: false
+    //         },
+    //         // {
+    //         //     "orderable": false,
+    //         //     "targets": [0,1,2,3,4,5,6]
+    //         // }
+    //     ],
+    // }); 
 });
 
 </script>

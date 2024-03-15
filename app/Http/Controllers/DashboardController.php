@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Head;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class DashboardController extends Controller
 {
@@ -272,12 +274,80 @@ class DashboardController extends Controller
             );
     }
     
+    function get_dasboard_data($tgl_minggu_awal,$tgl_minggu_akhir,$tambah_minggu=0,$kurang_minggu=0){
+        try {
+            if($tambah_minggu>0)
+            {
+                $tgl_minggu_awal_convert = Carbon::parse($tgl_minggu_awal)->addWeeks($tambah_minggu);
+                $tgl_minggu_akhir_convert = Carbon::parse($tgl_minggu_akhir)->addWeeks($tambah_minggu);
+            }
+            else if($kurang_minggu>0)
+            {
+                $tgl_minggu_awal_convert = Carbon::parse($tgl_minggu_awal)->subWeeks($kurang_minggu);
+                $tgl_minggu_akhir_convert = Carbon::parse($tgl_minggu_akhir)->subWeeks($kurang_minggu);
+            }
+            else
+            {
+                $tgl_minggu_awal_convert = $tgl_minggu_awal;
+                $tgl_minggu_akhir_convert = $tgl_minggu_akhir;
+            }
 
+            $period = CarbonPeriod::create($tgl_minggu_awal_convert, $tgl_minggu_akhir_convert);
+            $tanggal_semua = [];
+            foreach ($period as $date) {
+                // $tanggal_semua[] = $date->format('d-M-y');
+                $tanggal_semua[] = $date->format('Y-m-d');
+            }
+
+            $data = Head::where('is_aktif','Y')
+            // ->whereHas('get_sewa_dashboard', function ($query){
+            //     $query->where('is_aktif', 'Y');
+            // })
+            ->with([
+                'get_sewa_dashboard' => function ($query) use($tgl_minggu_awal_convert,$tgl_minggu_akhir_convert){
+                    $query ->whereBetween('tanggal_berangkat', [
+                                date('Y-m-d', strtotime($tgl_minggu_awal_convert)),
+                                date('Y-m-d', strtotime($tgl_minggu_akhir_convert))
+                            ])
+                          ->where('is_aktif', 'Y')
+                          ->with([
+                              'getCustomer',
+                              'getTujuan',
+                          ]);
+                }
+            ])
+            ->with([
+                'get_maintenance_dashboard' => function ($query) use($tgl_minggu_awal,$tgl_minggu_akhir){
+                    $query ->where('is_aktif', 'Y')
+                          ->where('is_selesai', 'N');
+                }
+            ])
+            ->with('get_driver_dashboard')
+            ->with('get_driver_dashboard')
+            ->get();
+            return response()->json(['data' =>$data,
+                                           'status' => 'success',
+                                           'error' => null,
+                                           'tgl_minggu_awal_convert' =>date('d-M-y', strtotime($tgl_minggu_awal_convert)),
+                                           'tgl_minggu_akhir_convert' =>date('d-M-y', strtotime($tgl_minggu_akhir_convert)),
+                                            'semua_tanggal'=>$tanggal_semua
+                                        ]);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json(['data' =>null,'status' => 'error','error' => $th->getMessage()]);
+        }
+   
+    }
     public function index()
     {
         // dd($this->get_count('kembali')['data']->info);
         // dd($this->get_count('dokumen'));
         $currentDate = Carbon::now();
+        // Mendapatkan hari ini
+        $currentDate->translatedFormat('l');
+        // dd(Carbon::now()->translatedFormat('l'));
+        $tanggal_senin_ini = Carbon::now()->startOfWeek();
+        $tanggal_minggu_ini = Carbon::now()->endOfWeek();
         // $currentDate->subDay()->day;
         return view('pages.dashboard.index',[
             'judul'=>"DASHBOARD",
@@ -289,10 +359,15 @@ class DashboardController extends Controller
             'pembayaran_invoice_jatuh_tempo'=>$this->get_count('pembayaran_invoice_jatuh_tempo'),
             'tagihan_pembelian'=>$this->get_count('tagihan_pembelian'),
             'menunggu_uang_jalan'=>$this->get_count('menunggu_uang_jalan'),
-            'week_start'=> date("d-M-y", strtotime($currentDate)),
-            'week_end'=>date("d-M-y", strtotime($currentDate->addDay(6))),
+            // 'week_start'=> date("d-M-y", strtotime($tanggal_senin_ini->subDay(7))),
+            // 'week_end'=>date("d-M-y", strtotime($tanggal_minggu_ini->subDay(7))),
+            'week_start'=> date("Y-m-d", strtotime($tanggal_senin_ini)),
+            'week_end'=>date("Y-m-d", strtotime($tanggal_minggu_ini)),
+            'week_start_tampil'=> date("d-M-y", strtotime($tanggal_senin_ini)),
+            'week_end_tampil'=>date("d-M-y", strtotime($tanggal_minggu_ini)),
+            // 'week_start'=> $tanggal_senin_ini,
+            // 'week_end'=>$tanggal_minggu_ini,
             'weeknumber'=>6,
-
         ]);
     }
 

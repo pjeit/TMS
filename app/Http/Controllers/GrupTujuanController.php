@@ -102,7 +102,7 @@ class GrupTujuanController extends Controller
         $data['grup'] = Grup::where('is_aktif', 'Y')
         ->with('customers')
         ->findOrFail($id);
-
+        $data['grup_all'] = Grup::where('is_aktif', 'Y')->get();
         $tujuan = GrupTujuan::where('grup_id', $id)->where('is_aktif', 'Y')->get();
         foreach ($tujuan as $key => $value) {
             $biaya = GrupTujuanBiaya::/*where('grup_id', $id)
@@ -324,11 +324,11 @@ class GrupTujuanController extends Controller
                         'is_aktif' => 'N',
                     ]);
             }
-
             $grup_tujuan = GrupTujuan::where('is_aktif', 'Y')->find($data['tujuan_id']);
             
             if($grup_tujuan){
-                $grup_tujuan->marketing_id = isset($data['marketing'][0]) ? $data['marketing'][0] : null;
+                $grup_tujuan->grup_id = $data['grup'];
+                $grup_tujuan->marketing_id = isset($data['marketing']) ? $data['marketing'] : null;
                 $grup_tujuan->nama_tujuan = $data['nama_tujuan'];
                 $grup_tujuan->pic = $data['pic'];
                 $grup_tujuan->alamat = $data['alamat'];

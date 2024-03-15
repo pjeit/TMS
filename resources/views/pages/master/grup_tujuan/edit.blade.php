@@ -185,9 +185,14 @@
                         <input type="hidden" name="grup_id" id="grup_id" value="{{ $id }}">
                         <div class='row'>
                             <div class="form-group col-lg-6 col-md-6 col-6">
-                                <label for="grup">Grup <span style="color:red;">*</span></label>
-                                <input type="text" class="form-control" name="nama_grup" id="nama_grup" value="{{ $data['grup']['nama_grup'] }}" readonly>
-                                <input type="hidden" name="grup" id="grup" value="{{ $data['grup']['id'] }}">
+                                <label for="">Grup <span style='color:red'>*</span></label>
+                                <select class="form-control select2" required style="width: 100%;" id='grup' name="grup">
+                                    @foreach ($data['grup_all'] as $grup)
+                                        <option value="{{$grup['id']}}" <?= ($grup['id']==$id)? 'selected':''; ?> >{{ $grup['nama_grup'] }} </option>
+                                    @endforeach
+                                </select>
+                                {{-- <input type="text" class="form-control" name="nama_grup" id="nama_grup" value="{{ $data['grup']['nama_grup'] }}" readonly> --}}
+                                {{-- <input type="hidden" name="grup" id="grup" value="{{ $data['grup']['id'] }}"> --}}
                             </div>
                             <div class="form-group col-lg-6 col-md-6 col-6">
                                 <label for="marketing">Marketing <span style="color:red;">*</span></label>
