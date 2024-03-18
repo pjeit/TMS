@@ -53,7 +53,7 @@
                             <input type="text" autocomplete="off" name="tanggal_selesai" class="form-control" id="tanggal_selesai" placeholder="dd-M-yyyy" {{$dataStatusKendaraan->is_selesai == 'N'?'readonly':''}} value="{{old('tanggal_selesai',\Carbon\Carbon::parse($dataStatusKendaraan->tanggal_selesai)->format('d-M-Y'))}}">
                             </div>
                         </div>
-                        <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                        <div class="form-group col-lg-6 col-md-6 col-sm-12">
                             <label for="select_kendaraan">Kendaraan<span style="color:red">*</span></label>
                                 <select class="form-control select2  @error('select_kendaraan') is-invalid @enderror" style="width: 100%;" id='select_kendaraan' name="select_kendaraan">
                                 <option value="">Pilih Jenis Kendaraan</option>
@@ -66,6 +66,18 @@
                                     {{ $message }}
                                 </div>
                             @enderror   
+                        </div>
+                        <div class="form-group col-lg-6 col-md-6 col-sm-12" id="kir_form">
+                            <label for="select_driver">Kir ?</label>
+                            <br>
+                            <div class="icheck-primary d-inline">
+                                <input id="kir_Y" type="radio" name="kir" value="Y" {{$dataStatusKendaraan->is_kir=='Y'?'checked':''}}>
+                                <label class="form-check-label" for="kir_Y">Ya</label>
+                            </div>
+                            <div class="icheck-primary d-inline ml-5">
+                                <input id="kir_N" type="radio" name="kir" value="N" {{$dataStatusKendaraan->is_kir=='N'?'checked':''}}>
+                                <label class="form-check-label" for="kir_N">Tidak</label><br>
+                            </div>
                         </div>
                         <div class="form-group col-lg-12 col-md-12 col-sm-12">
                             <label for="detail_perawatan">Detail Perawatan<span style='color:red'>*</span></label>

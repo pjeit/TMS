@@ -10,7 +10,9 @@
 @include('sweetalert::alert')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <style>
- 
+    .dropdown-menu {
+        z-index: 1000; /* Adjust the z-index value as needed */
+    }
 </style>
 <div class="container-fluid">
     <div class="card radiusSendiri">
@@ -52,7 +54,7 @@
                                 <td>{{ $item->no_sewa }}</td>
                                 <td>{{ $item->status }}</td>
                                 <td>                                    
-                                    <div class="btn-group dropleft">
+                                    <div class="btn-group dropleft" style="z-index: 100;">
                                         <button type="button" class="btn btn-rounded btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fa fa-list"></i>
                                         </button>

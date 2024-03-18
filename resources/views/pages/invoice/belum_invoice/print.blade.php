@@ -69,7 +69,7 @@
     </style>
 </head>
 <body>
-    <hr style=" border: 10px solid rgb(54, 78, 163);margin-top: -55px;">
+    {{-- <hr style=" border: 20px solid rgb(54, 78, 163);margin-top: -55px;margin-bottom:100px;"> --}}
     @if ($data)
         <table  autosize='1' style="width:100%; " >
             <thead >
@@ -122,18 +122,18 @@
                 </tr>
             </thead>
         </table>
-        <hr style=" border: 1px solid rgb(76, 76, 76);margin-top: 30px;">
+        <hr style=" border: 5px solid rgb(54, 78, 163);margin-top: 30px;">
         <table class="border-table">
             <thead class="border-table">
-                <tr style="">
-                    <td style="padding-left: 10px; "><b>Kepada Yth :</b> </td>
+                <tr  >
+                    <td style="padding-left: 20px; padding-top:20px;"><b>Kepada Yth :</b> </td>
                     <td></td>
                     <td width='30%'>&nbsp;</td>
                     <td style=""><b>No Invoice</b></td>
                     <td style=""><b>:</b> {{ $data['no_invoice'] }}</td>
                 </tr>
                 <tr>
-                    <td width='30%' style=" padding-left: 10px; text-align:left;vertical-align:top;" rowspan="4">{{ ($data->getBillingTo->nama) }} <br>{{ ($data->getBillingTo->alamat) }}</td>
+                    <td width='30%' style=" padding-left: 20px; text-align:left;vertical-align:top;" rowspan="4">{{ ($data->getBillingTo->nama) }} <br>{{ ($data->getBillingTo->alamat) }}</td>
                     <td></td>
                     <td width='30%'>&nbsp;</td>
                     <td style=""><b>Tanggal</b> </td>

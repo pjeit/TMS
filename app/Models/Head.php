@@ -12,7 +12,6 @@ class Head extends Model
     protected $table = 'kendaraan';
     protected $primaryKey='id';
     protected $fillable=[
-        'id',
         'id_kategori',
         'no_polisi',
         'no_mesin',

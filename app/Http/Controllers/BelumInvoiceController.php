@@ -139,7 +139,7 @@ class BelumInvoiceController extends Controller
         try {
             $data = Sewa::whereIn('sewa.id_sewa', $sewa)
                     ->leftJoin('supplier AS sp', 'sewa.id_supplier', '=', 'sp.id')
-                    ->whereIn('sewa.status', ['BATAL MUAT', 'MENUNGGU INVOICE'])
+                    ->whereIn('sewa.status', [/*'BATAL MUAT', */'MENUNGGU INVOICE'])
                     ->where('sewa.total_tarif', '>', 0)  
                     ->where('sewa.is_aktif', '=', 'Y')
                     ->select('sewa.*', 'sp.nama as namaSupplier')
@@ -171,7 +171,7 @@ class BelumInvoiceController extends Controller
                         ->leftJoin('customer as c', 'c.id', 'id_customer')
                         ->where('c.grup_id', $grup[0])
                         ->where('sewa.is_aktif', '=', 'Y')
-                        ->whereIn('sewa.status', ['BATAL MUAT','MENUNGGU INVOICE'])
+                        ->whereIn('sewa.status', [/*'BATAL MUAT',*/'MENUNGGU INVOICE'])
                         ->where('sewa.total_tarif', '>', 0)
                         // ->where(function ($query) {
                         //     $query->where('sewa.status', 'MENUNGGU INVOICE')  // Exclude the condition if status is not 'BATAL MUAT'
@@ -1029,7 +1029,7 @@ class BelumInvoiceController extends Controller
             $data = Sewa::where('sewa.id_sewa', $id)
                 ->leftJoin('supplier AS sp', 'sewa.id_supplier', '=', 'sp.id')
                 // ->where('sewa.status', 'MENUNGGU INVOICE')
-                ->whereIn('sewa.status', ['MENUNGGU INVOICE','BATAL MUAT'])
+                ->whereIn('sewa.status', ['MENUNGGU INVOICE'/*,'BATAL MUAT'*/])
                 ->where('sewa.is_aktif', '=', 'Y')
                 ->select('sewa.*','sp.nama as namaSupplier')
                 ->first();
@@ -1047,7 +1047,7 @@ class BelumInvoiceController extends Controller
                     ->leftJoin('customer as c', 'c.id', 'id_customer')
                     ->where('c.grup_id', $data->getTujuan->grup_id)
                     ->where('sewa.is_aktif', '=', 'Y')
-                    ->whereIn('sewa.status', ['MENUNGGU INVOICE','BATAL MUAT'])
+                    ->whereIn('sewa.status', ['MENUNGGU INVOICE'/*,'BATAL MUAT'*/])
                     ->select('sewa.*')
                     ->get();
 

@@ -647,7 +647,7 @@
                 $('#jatuh_tempo_pisah_kontainer').show();
             }
         }
-
+        // save_detail
         function calculateGrandTotal(){ // hitung grand total buat ditagihkan 
             var grandTotal = 0; 
             var grandTotalMuatan = 0; 
@@ -745,6 +745,7 @@
             cekPisahInvoice();
             clearData();
             $('#modal_detail').modal('hide'); // close modal
+           
         });
         
         function updateAddCost(key){
@@ -1054,6 +1055,14 @@
                     });
                 }
             })
+            if($("#total_pisah").val()==0)
+            {
+                $('#jatuh_tempo_pisah_kontainer').hide();
+            }
+            else
+            {
+                $('#jatuh_tempo_pisah_kontainer').show();
+            }
         }
     });
 </script>

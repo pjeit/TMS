@@ -278,21 +278,21 @@ class DashboardController extends Controller
         try {
             if($tambah_minggu>0)
             {
-                $tgl_minggu_awal_convert = Carbon::parse($tgl_minggu_awal)->addWeeks($tambah_minggu);
-                $tgl_minggu_akhir_convert = Carbon::parse($tgl_minggu_akhir)->addWeeks($tambah_minggu);
+                $tgl_minggu_awal = Carbon::parse($tgl_minggu_awal)->addWeeks($tambah_minggu);
+                $tgl_minggu_akhir = Carbon::parse($tgl_minggu_akhir)->addWeeks($tambah_minggu);
             }
             else if($kurang_minggu>0)
             {
-                $tgl_minggu_awal_convert = Carbon::parse($tgl_minggu_awal)->subWeeks($kurang_minggu);
-                $tgl_minggu_akhir_convert = Carbon::parse($tgl_minggu_akhir)->subWeeks($kurang_minggu);
+                $tgl_minggu_awal = Carbon::parse($tgl_minggu_awal)->subWeeks($kurang_minggu);
+                $tgl_minggu_akhir = Carbon::parse($tgl_minggu_akhir)->subWeeks($kurang_minggu);
             }
             else
             {
-                $tgl_minggu_awal_convert = $tgl_minggu_awal;
-                $tgl_minggu_akhir_convert = $tgl_minggu_akhir;
+                $tgl_minggu_awal = $tgl_minggu_awal;
+                $tgl_minggu_akhir = $tgl_minggu_akhir;
             }
 
-            $period = CarbonPeriod::create($tgl_minggu_awal_convert, $tgl_minggu_akhir_convert);
+            $period = CarbonPeriod::create($tgl_minggu_awal, $tgl_minggu_akhir);
             $tanggal_semua = [];
             foreach ($period as $date) {
                 // $tanggal_semua[] = $date->format('d-M-y');
@@ -304,12 +304,13 @@ class DashboardController extends Controller
             //     $query->where('is_aktif', 'Y');
             // })
             ->with([
-                'get_sewa_dashboard' => function ($query) use($tgl_minggu_awal_convert,$tgl_minggu_akhir_convert){
+                'get_sewa_dashboard' => function ($query) use($tgl_minggu_awal,$tgl_minggu_akhir){
                     $query ->whereBetween('tanggal_berangkat', [
-                                date('Y-m-d', strtotime($tgl_minggu_awal_convert)),
-                                date('Y-m-d', strtotime($tgl_minggu_akhir_convert))
+                                date('Y-m-d', strtotime($tgl_minggu_awal)),
+                                date('Y-m-d', strtotime($tgl_minggu_akhir))
                             ])
                           ->where('is_aktif', 'Y')
+                          ->whereNull('id_supplier')
                           ->with([
                               'getCustomer',
                               'getTujuan',
@@ -328,8 +329,8 @@ class DashboardController extends Controller
             return response()->json(['data' =>$data,
                                            'status' => 'success',
                                            'error' => null,
-                                           'tgl_minggu_awal_convert' =>date('d-M-y', strtotime($tgl_minggu_awal_convert)),
-                                           'tgl_minggu_akhir_convert' =>date('d-M-y', strtotime($tgl_minggu_akhir_convert)),
+                                           'tgl_minggu_awal_convert' =>date('d-M-y', strtotime($tgl_minggu_awal)),
+                                           'tgl_minggu_akhir_convert' =>date('d-M-y', strtotime($tgl_minggu_akhir)),
                                             'semua_tanggal'=>$tanggal_semua
                                         ]);
         } catch (\Throwable $th) {

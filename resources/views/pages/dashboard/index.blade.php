@@ -141,10 +141,16 @@
                 </div>
             </div><!-- /.card-header -->
             <div class="card-body">
-                <span style='font-size:11pt;' class="badge bg-primary">Menunggu Persetujuan</span> <span style='font-size:11pt;' class="badge bg-warning">Menunggu Uang Jalan</span>  <span style='font-size:11pt;' class="badge bg-success">Dalam Perjalanan</span>  <span style='font-size:11pt;' class="badge bg-info">Selesai</span>  <span style='font-size:11pt;' class="badge bg-danger">Maintenance</span> <span style='font-size:11pt;' class="badge bg-dark">Batal Muat</span>    
-                <table class="default_table table table-bordered table-striped">
+                {{-- <span style='font-size:11pt;' class="badge bg-primary">Menunggu Persetujuan</span>  --}}
+                <span style='font-size:11pt;' class="badge bg-warning">Menunggu Uang Jalan</span> 
+                 <span style='font-size:11pt;' class="badge bg-success">Dalam Perjalanan</span>  
+                 <span style='font-size:11pt;' class="badge bg-info">Selesai</span>  
+                 <span style='font-size:11pt;' class="badge bg-danger">Maintenance / Kir</span> 
+                 <span style='font-size:11pt;' class="badge bg-dark">Batal Muat</span>    
+                 <br>
+                <table class="default_table table table-bordered table-striped" id="tabel_dashboard"> 
                     <thead id="thead_tabel">
-                        <tr>
+                        {{-- <tr>
                             <th style="width:12%">Nopol</th>
                             <th style="width:11%">Driver</th>
                             <th style="width:11%">Senin</th>
@@ -154,7 +160,7 @@
                             <th style="width:11%">Jumat</th>
                             <th style="width:11%">Sabtu</th>
                             <th style="width:11%">Minggu</th>
-                        </tr>
+                        </tr> --}}
                     </thead>
                     <tbody id="tbody_tabel">
                      
@@ -177,16 +183,30 @@ $(document).ready(function () {
 
     $(document).on('click', '#next', function(e){
         counterTambah++;
-        counterKurang = 0;
+        // if(counterKurang>0)
+        // {
+        //     counterKurang-- ;
+        // }
+        // else
+        // {
+            counterKurang=0 ;
+        // }
         showTable(tanggal_mulai,tanggal_akhir,counterTambah,counterKurang);
       
-        // console.log("tambah : "+counterTambah);
-        // console.log("kurang : "+counterKurang);
+        console.log("tambah : "+counterTambah);
+        console.log("kurang : "+counterKurang);
 
     });
     $(document).on('click', '#prev', function(e){
         counterKurang++;
-        counterTambah = 0;
+        // if(counterTambah>0)
+        // {
+        //     counterTambah-- ;
+        // }
+        // else
+        // {
+            counterTambah=0 ;
+        // }
         showTable(tanggal_mulai,tanggal_akhir,counterTambah,counterKurang);
         
         console.log("tambah : "+counterTambah);
@@ -194,105 +214,186 @@ $(document).ready(function () {
     });
     showTable(tanggal_mulai,tanggal_akhir,0,0);
     function showTable(tanggal_mulai,tanggal_akhir,tambah,kurang){
-            var baseUrl = "{{ asset('') }}";
-            var url = baseUrl+`dashboard/data/${tanggal_mulai}/${tanggal_akhir}/${tambah}/${kurang}`;
-            $.ajax({
-                method: 'GET',
-                url: url,
-                dataType: 'JSON',
-                contentType: false,
-                cache: false,
-                processData:false,
-                success: function(response) {
-                    $("#thead_tabel").empty();
-                    $("#tbody_tabel").empty();
-                    
+        var baseUrl = "{{ asset('') }}";
+        var url = baseUrl+`dashboard/data/${tanggal_mulai}/${tanggal_akhir}/${tambah}/${kurang}`;
+        $.ajax({
+            method: 'GET',
+            url: url,
+            dataType: 'JSON',
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response) {
+                // $("#thead_tabel").empty();
+                $("th").remove();
+                $("#tbody_tabel").empty();
+                // $("#tabel_dashboard").dataTable().fnDestroy();
+                // if ($.fn.DataTable.isDataTable('#tabel_dashboard')) {
+                //     $('#tabel_dashboard').DataTable().destroy();
+                // }
 
-                    // var item = $('#item').val();
-                    var data = response.data;
+                
 
-                    console.log( response);
-                    $("#tanggal_periode").html(`<i class="fas fa-calendar mr-1"></i> Periode: ${response.tgl_minggu_awal_convert} s/d ${response.tgl_minggu_akhir_convert} `);
-                    if(data != ''){
-                        $("#thead_tabel").append(`
-                            <tr>
-                                <th style="width:12%">
-                                    Nopol
-                                </th>
+                // var item = $('#item').val();
+                var data = response.data;
+
+                console.log( "mulai" + response.tgl_minggu_awal_convert);
+                console.log(  "akhir" + response.tgl_minggu_akhir_convert);
+
+                $('#prev_week').val(response.tgl_minggu_awal_convert);
+                $('#next_week').val(response.tgl_minggu_akhir_convert);
+                $("#tanggal_periode").html(`<i class="fas fa-calendar mr-1"></i> Periode: ${response.tgl_minggu_awal_convert} s/d ${response.tgl_minggu_akhir_convert} `);
+                if(data != ''){
+                    $("#thead_tabel").append(`
+                        <tr>
+                            <th style="width:12%">
+                                Nopol
+                            </th>
+                            <th style="width:11%">
+                                Driver
+                            </th>
+                            ${response.semua_tanggal.map((day, index) => `
                                 <th style="width:11%">
-                                    Driver
+                                    ${index === 0 ? 'Senin' : ''}
+                                    ${index === 1 ? 'Selasa' : ''}
+                                    ${index === 2 ? 'Rabu' : ''}
+                                    ${index === 3 ? 'Kamis' : ''}
+                                    ${index === 4 ? 'Jumat' : ''}
+                                    ${index === 5 ? 'Sabtu' : ''}
+                                    ${index === 6 ? 'Minggu' : ''}
                                 </th>
-                             
-
-                                ${response.semua_tanggal.map((day, index) => `
-                                    <th style="width:11%">
-                                        ${index === 0 ? 'Senin' : ''}
-                                        ${index === 1 ? 'Selasa' : ''}
-                                        ${index === 2 ? 'Rabu' : ''}
-                                        ${index === 3 ? 'Kamis' : ''}
-                                        ${index === 4 ? 'Jumat' : ''}
-                                        ${index === 5 ? 'Sabtu' : ''}
-                                        ${index === 6 ? 'Minggu' : ''}
-                                        <input type="hidden" id="tanggal_hari_${index}" value="${day}">
-                                    </th>
-                                `).join('')}
-                            </tr>
-                        `);
-                        for (var i = 0; i <data.length; i++) {
-                            let cek_status = data[i].get_operasional_detail;
-                            if(cek_status != 'SELESAI' || cek_status != 'MENUNGGU PEMBAYARAN INVOICE'){
-                                console.log('cek_status', data[i].get_operasional_detail);
-                                var row = $("<tr></tr>");
-                                
-                                row.append(`<td>${data[i].get_operasional_detail.map(item => 
-                                `
-                                <span class="badge badge-primary"> ${item.get_sewa_detail.no_polisi} (${item.get_sewa_detail.get_karyawan ? item.get_sewa_detail.get_karyawan.nama_panggilan : 'REKANAN'} </span><br>
-                                <span class="badge badge-secondary"> ${dateMask(item.get_sewa_detail.tanggal_berangkat)} </span>
-                                <span class="badge badge-success"> ${item.get_sewa_detail.no_sewa} </span>
-
-                                `
-                                ).join('<br> <br>')}</td>`);
-                                row.append(`<td> <span class="badge badge-warning">Total dicairkan: ${moneyMask(data[i].total_dicairkan) }</span>
-                                                                                        </td>`);
-                                row.append(`<td> 
-
-                                    <div class="btn-group dropleft">
-                                        <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-list"></i>
-                                        </button>
-                                    <div class="dropdown-menu" >
-                                        
-                                        <a href="${baseUrl}refund_biaya_operasional/${data[i].id}/edit" class="dropdown-item btn-danger">
-                                            <span class="nav-icon fas fa-undo mr-3"></span> Refund
-                                        </a>
-                                        
-                                    </div>
-                            </div>
-                                    </td>`);
-                                $("#tbodyId").append(row);
+                            `).join('')}
+                        </tr>
+                    `);
+                    for (var i = 0; i <data.length; i++) {
+                            var row = $("<tr></tr>");
+                            row.append(`<td> ${data[i].no_polisi}</td>`);
+                            row.append(`<td> ${data[i].get_driver_dashboard?data[i].get_driver_dashboard.nama_panggilan:''}</td>`);
+                            for (var j = 0; j < response.semua_tanggal.length; j++) {
+                                row.append(`<td>
+                                    ${data[i].get_maintenance_dashboard ? 
+                                        (
+                                            
+                                            // kalau tanggal maintenance >= tanggal periode sekarang, muncul
+                                            // (data[i].get_maintenance_dashboard.tanggal_selesai === null && data[i].get_maintenance_dashboard.tanggal_mulai >= response.semua_tanggal[j]) ? 
+                                            //     `<span class="badge badge-danger">maintenance</span>` :
+                                            (data[i].get_maintenance_dashboard.tanggal_mulai >= response.semua_tanggal[j]/* && data[i].get_maintenance_dashboard.tanggal_selesai <= response.semua_tanggal[j]*/) ?
+                                                `<span class="badge badge-danger">${data[i].get_maintenance_dashboard.is_kir=='Y'?'Kir':"maintenance"}</span>` : 
+                                            ''
+                                        ) : ''
+                                    }
+                                    ${data[i].get_sewa_dashboard ? 
+                                        // <span style='font-size:11pt;' class="badge bg-primary">Menunggu Persetujuan</span> 
+                                        // <span style='font-size:11pt;' class="badge bg-warning">Menunggu Uang Jalan</span> 
+                                        // <span style='font-size:11pt;' class="badge bg-success">Dalam Perjalanan</span>  
+                                        // <span style='font-size:11pt;' class="badge bg-info">Selesai</span>  
+                                        // <span style='font-size:11pt;' class="badge bg-danger">Maintenance / Kir</span> 
+                                        // <span style='font-size:11pt;' class="badge bg-dark">Batal Muat</span>    
+                                        data[i].get_sewa_dashboard.map(item => {
+                                            if (item.tanggal_berangkat === response.semua_tanggal[j]) {
+                                                if(item.status == 'MENUNGGU UANG JALAN')
+                                                {
+                                                    return `<span class="badge badge-warning">(${item.get_customer.kode}) - ${item.nama_tujuan}</span>`;
+                                                }
+                                                else if(item.status == 'PROSES DOORING')
+                                                {
+                                                    return `<span class="badge badge-success">(${item.get_customer.kode}) - ${item.nama_tujuan}</span>`;
+                                                }
+                                                else if(item.status == 'MENUNGGU INVOICE' ||item.status == 'MENUNGGU PEMBAYARAN INVOICE' || item.status == 'SELESAI PEMBAYARAN')
+                                                {
+                                                    if (item.is_batal_muat=="Y") {
+                                                            return `<span class="badge badge-dark">(${item.get_customer.kode}) - ${item.nama_tujuan}</span>`;
+                                                    }
+                                                    else
+                                                    {
+                                                        return `<span class="badge badge-info">(${item.get_customer.kode}) - ${item.nama_tujuan}</span>`;
+                                                    }
+                                                }
+                                            } else {
+                                                return ''; // Return an empty string if no match found
+                                            }
+                                        }).join('<br>') 
+                                        : ''
+                                    }
+                                </td>`);
                             }
-                        }
+                            
+                            $("#tbody_tabel").append(row);
                     }
-                    else{
-                        console.log('else');
-                        $("thead tr").append(`<th>Revisi Biaya Operasional</th>`);
-                        // $("#rowGroup").dataTable();
-                        $('#rowGroup').DataTable().draw();
-
-                        // $('#rowGroup').DataTable().clear().draw();
-                    }
-                },error: function (xhr, status, error) {
-                    if ( xhr.responseJSON.result == 'error') {
-                        console.log("Error:", xhr.responseJSON.message);
-                        console.log("XHR status:", status);
-                        console.log("Error:", error);
-                        console.log("Response:", xhr.responseJSON);
-                    } else {
-                        toastr.error("Terjadi kesalahan saat menerima data. " + error);
-                    }
+                    
                 }
-            });
-        }
+                else{
+                    console.log('else');
+                    $("#thead_tabel").append(`
+                        <tr>
+                            <th style="width:12%">
+                                Nopol
+                            </th>
+                            <th style="width:11%">
+                                Driver
+                            </th>
+                            ${response.semua_tanggal.map((day, index) => `
+                                <th style="width:11%">
+                                    ${index === 0 ? 'Senin' : ''}
+                                    ${index === 1 ? 'Selasa' : ''}
+                                    ${index === 2 ? 'Rabu' : ''}
+                                    ${index === 3 ? 'Kamis' : ''}
+                                    ${index === 4 ? 'Jumat' : ''}
+                                    ${index === 5 ? 'Sabtu' : ''}
+                                    ${index === 6 ? 'Minggu' : ''}
+                                </th>
+                            `).join('')}
+                        </tr>
+                    `);
+                    // $("#tabel_dashboard").dataTable();
+                    $('#tabel_dashboard').DataTable().draw();
+
+                    // $('#tabel_dashboard').DataTable().clear().draw();
+                }
+                // new DataTable('#tabel_dashboard', {
+                //     responsive: true,
+                //     paging: false,
+                //     search: false,
+
+                //     // order: [
+                //     //     [0, 'asc'], // 0 = grup
+                //     //     [1, 'asc'] // 1 = customer
+                //     // ],
+                //     // rowGroup: {
+                //     //     dataSrc: [0, 1] // di order grup dulu, baru customer
+                //     // },
+                //     // columnDefs: [
+                //     //     {
+                //     //         targets: [0, 1], // ini nge hide kolom grup, harusnya sama customer, tp somehow customer tetep muncul
+                //     //         visible: false
+                //     //     },
+                //     //     {
+                //     //         targets: [-1, -2],
+                //     //         orderable: false, // matiin sortir kolom centang
+                //     //     },
+                //     // ],
+                // });
+                $('#tabel_dashboard').DataTable({
+                    info: false,
+                    searching: false,
+                    paging: false,
+                    responsive: true,
+                    language: {
+                        emptyTable: "Data tidak ditemukan."
+                    }
+        });
+            },error: function (xhr, status, error) {
+                if ( xhr.responseJSON.result == 'error') {
+                    console.log("Error:", xhr.responseJSON.message);
+                    console.log("XHR status:", status);
+                    console.log("Error:", error);
+                    console.log("Response:", xhr.responseJSON);
+                } else {
+                    toastr.error("Terjadi kesalahan saat menerima data. " + error);
+                }
+            }
+        });
+    }
     // new DataTable('#tabelSewa', {
     //     // "ordering": true,
     //     responsive: true,

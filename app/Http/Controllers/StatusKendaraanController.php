@@ -88,6 +88,7 @@ class StatusKendaraanController extends Controller
             $status_kendaraan->kendaraan_id = $data['select_kendaraan'];
             $status_kendaraan->tanggal_mulai = isset( $data['tanggal_mulai'])? date_format($tanggal_mulai, 'Y-m-d h:i:s'):null;
             $status_kendaraan->is_selesai = $data['is_selesai'];
+            $status_kendaraan->is_kir = $data['kir'];
             $status_kendaraan->tanggal_selesai = isset( $data['tanggal_selesai'])? date_format($tanggal_selesai, 'Y-m-d h:i:s'):null;
             $status_kendaraan->detail_perawatan = $data['detail_perawatan'];
             $status_kendaraan->created_by = $user;
@@ -192,6 +193,7 @@ class StatusKendaraanController extends Controller
             $status_kendaraan->kendaraan_id = $data['select_kendaraan'];
             $status_kendaraan->tanggal_mulai = isset( $data['tanggal_mulai'])? date_format($tanggal_mulai, 'Y-m-d h:i:s'):null;
             $status_kendaraan->is_selesai = $data['is_selesai'];
+            $status_kendaraan->is_kir = $data['kir'];
             $status_kendaraan->tanggal_selesai = isset( $data['tanggal_selesai'])? date_format($tanggal_selesai, 'Y-m-d h:i:s'):null;
             $status_kendaraan->detail_perawatan = $data['detail_perawatan'];
             $status_kendaraan->updated_by = $user;

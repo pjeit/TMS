@@ -22,6 +22,7 @@ class Sewa extends Model
           'id_grup_tujuan',
           'jenis_tujuan',
           'status',
+          'is_batal_muat',
           'tanggal_berangkat',
           'nama_tujuan',
           'alamat_tujuan',

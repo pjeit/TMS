@@ -494,8 +494,8 @@ class DalamPerjalananController extends Controller
                 $tgl_kembali = isset($data['tanggal_kembali'])?date_create_from_format('d-M-Y', $data['tanggal_kembali']):null;
 
                 $dalam_perjalanan->tanggal_kembali = isset($tgl_kembali)? date_format($tgl_kembali, 'Y-m-d H:i:s'):null;
-                // $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
-                // $dalam_perjalanan->is_kembali = $data['is_kembali'];
+                $dalam_perjalanan->status = $data['is_kembali']=='Y'? 'MENUNGGU INVOICE':'PROSES DOORING';
+                $dalam_perjalanan->is_kembali = $data['is_kembali'];
                 if ($data['jenis_tujuan']=='LTL') {
                     $dalam_perjalanan->jumlah_muatan = $data['muatan_ltl'];
                     $dalam_perjalanan->total_tarif = floatval(str_replace(',', '', $data['total_harga_ltl']));
@@ -753,7 +753,9 @@ class DalamPerjalananController extends Controller
         // dd($tgl_kembali);
         
         try {
-            $sewa->status = 'BATAL MUAT';
+            // $sewa->status = 'BATAL MUAT';
+            $sewa->status = 'MENUNGGU INVOICE';
+            $sewa->	is_batal_muat = 'Y';
             $customer = Customer::where('is_aktif', '=', "Y")->find($sewa->id_customer);
             if($customer){
                 $customer->kredit_sekarang -= $sewa->total_tarif - floatval(str_replace(',', '', $data['total_tarif_tagih']));

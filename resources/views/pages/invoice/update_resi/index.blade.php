@@ -15,7 +15,7 @@
 <div class="container-fluid">
 
     {{-- sticky header --}}
-    <div class="sticky-top radiusSendiri" style="margin-bottom: -15px;">
+    {{-- <div class="sticky-top radiusSendiri" style="margin-bottom: -15px;">
         <div class="card radiusSendiri radiusSendiri" style="">
             <div class="card-header " style="border-bottom: none;">
                 <button type="submit" class="btn btn-primary btn-responsive radiusSendiri" id="bayarInvoice">
@@ -23,7 +23,7 @@
                 </button>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="card radiusSendiri">
         <div class="card-body">
 
@@ -133,7 +133,7 @@
             var tambah_waktu = $('#ketentuan_bayar_'+idInvoice).val() != 'null'? parseFloat($('#ketentuan_bayar_'+idInvoice).val()):0;
             var no_invoice = $('#no_invoice_'+idInvoice).val() != 'null'? $('#no_invoice_'+idInvoice).val():'';
             var resi = $('#resi_'+idInvoice).val() != 'null'? $('#resi_'+idInvoice).val():'';
-            var jatuh_tempo = $('#jatuh_tempo_'+idInvoice).val() != 'null'? $('#jatuh_tempo_'+idInvoice).val():'';
+            // var jatuh_tempo = $('#jatuh_tempo_'+idInvoice).val() != 'null'? $('#jatuh_tempo_'+idInvoice).val():'';
             var catatan = $('#catatan_'+idInvoice).val() != 'null'? $('#catatan_'+idInvoice).val():'';
             $('#modal_no_invoice').val( no_invoice );
             $('#modal_resi').val( resi );

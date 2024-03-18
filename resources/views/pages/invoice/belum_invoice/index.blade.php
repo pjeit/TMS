@@ -121,7 +121,7 @@
 
                                     </td>
                                     <td>
-                                        <span style="font-size:11pt;" class="badge {{$item->status=='BATAL MUAT'?'bg-dark':'bg-danger'}}">{{$item->status}}</span>
+                                        <span style="font-size:11pt;" class="badge {{$item->is_batal_muat=='Y'?'bg-dark':'bg-danger'}}">{{$item->is_batal_muat=='Y'?'BATAL MUAT':$item->status}}</span>
                                     </td>
                                     <td>
                                         {{ $item->no_sewa }}

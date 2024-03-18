@@ -551,7 +551,7 @@ class SewaController extends Controller
                 }
             }
 
-            if(in_array($sewa->status, ["CANCEL", "BATAL MUAT"])){
+            if(in_array($sewa->status, ["CANCEL"/*, "BATAL MUAT"*/])){
                 $sewa->status = 'MENUNGGU UANG JALAN';
                 $sewa->updated_by = $user;
                 $sewa->updated_at = now();

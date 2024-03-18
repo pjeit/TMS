@@ -342,12 +342,12 @@
 <script>
   $(document).ready(function() {
       $('#datatable').dataTable({
-          scrollX: true,
+          // scrollX: true,
           responsive: true,
-          "aaSorting": [],
-          columnDefs: [
-            { orderable: false, targets: -1 }
-          ]
+          // "aaSorting": [],
+          // columnDefs: [
+          //   { orderable: false, targets: -1 }
+          // ]
       });
 
       $('#datatablex').dataTable({
