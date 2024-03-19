@@ -15,7 +15,10 @@ class Invoice extends Model
     {
         return $this->hasOne(Customer::class, 'id', 'billing_to');
     }
-
+    public function get_invoice_resi()
+    {
+        return $this->hasOne(InvoiceResiDetail::class, 'id_invoice', 'id')->where('is_aktif', 'Y');
+    }
     // eloquent relation
     public function invoiceDetails()
     {

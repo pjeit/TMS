@@ -33,7 +33,6 @@ class UpdateResiController extends Controller
         $data = $request->collect();
         $user = Auth::user()->id; 
         DB::beginTransaction(); 
-
         try {
             $invoice = Invoice::where('is_aktif', 'Y')->find($data['id_invoice']);
             if($invoice){

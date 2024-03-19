@@ -887,7 +887,8 @@
                       request()->is('invoice_karantina*') ||
                       request()->is('bukti_potong*') ||
                       request()->is('cetak_invoice*') ||
-                      request()->is('update_resi*') ||
+                      // request()->is('update_resi*') ||
+                      request()->is('invoice_resi*') ||
                       request()->is('pemutihan_invoice*') 
                       ? 'menu-is-opening menu-open' : '' }}">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -910,7 +911,8 @@
                           request()->is('pembayaran_invoice') ||
                           request()->is('belum_invoice*') ||
                           request()->is('bukti_potong*') ||
-                          request()->is('update_resi*') ||
+                          // request()->is('update_resi*') ||
+                          request()->is('invoice_resi*') ||
                           request()->is('cetak_invoice*') ||
                           request()->is('pemutihan_invoice*') 
                           ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
@@ -973,7 +975,7 @@
                     </li>
                     @endcan
 
-                    @can('READ_UPDATE_RESI')
+                    {{-- @can('READ_UPDATE_RESI')
                     <li class="nav-item">
                       <a href="{{route('update_resi.index')}}"
                         class="nav-link {{ request()->is('update_resi*')? ' active' : '' }} " style="font-weight: 500;">
@@ -983,7 +985,17 @@
                         </p>
                       </a>
                     </li>
-                    @endcan
+                    @endcan --}}
+                    <li class="nav-item">
+                      <a href="{{route('invoice_resi.index')}}"
+                        class="nav-link {{ request()->is('invoice_resi*')? ' active' : '' }} " style="font-weight: 500;">
+                        <i class="nav-icon fas fa-file" style="font-size: 15px;"></i>
+                        <p>
+                          Input Resi
+                        </p>
+                      </a>
+                    </li>
+                    
 
                     @can('READ_PEMUTIHAN_INVOICE')
                     <li class="nav-item">

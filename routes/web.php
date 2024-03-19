@@ -254,6 +254,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/invoice/print/{id}', [App\Http\Controllers\InvoiceController::class, 'print'])->name('invoice.print');
         Route::post('/invoice/invoiceKembali', [App\Http\Controllers\InvoiceController::class, 'invoiceKembali'])->name('invoiceKembali.set');
         Route::resource('invoice', 'App\Http\Controllers\InvoiceController');
+        Route::resource('invoice_resi', 'App\Http\Controllers\InvoiceResiController');
+        Route::post('/invoice_resi/update_resi/{id}', [App\Http\Controllers\InvoiceResiController::class, 'update_resi'])->name('invoice_resi.update_resi');
+
 
         Route::post('/belum_invoice/set_sewa_id', [App\Http\Controllers\BelumInvoiceController::class, 'setSewaID'])->name('setSewaIDs.set');
         Route::get('/belum_invoice/print/{id}', [App\Http\Controllers\BelumInvoiceController::class, 'print'])->name('belum_invoice.print');
