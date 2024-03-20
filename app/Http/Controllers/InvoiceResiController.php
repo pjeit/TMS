@@ -125,9 +125,41 @@ class InvoiceResiController extends Controller
             'resi' => $resi,
         ]);
     }
-    public function update_resi(Request $request, InvoiceResi $invoiceResi)
+    public function update_resi(Request $request,$id)
     {
         //
+        $data = $request->collect();
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        // dd($data);
+        try {
+            $resi = InvoiceResi::where('is_aktif','Y')->find($id);
+            $resi->status_resi = $data['status'];
+            $resi->updated_by = $user;
+            $resi->updated_at = now();
+            if($resi->save()){
+                foreach ($data['detail'] as $key => $value) {
+                    $detail = InvoiceResiDetail::where('is_aktif','Y')->find($value['id_resi_detail']);
+                    $detail->jatuh_tempo_baru = date_create_from_format('d-M-Y', $value['jatuh_tempo_baru']);
+                    $detail->updated_by = $user;
+                    $detail->updated_at = now();
+                    // $detail->save();
+                    if($detail->save())
+                    {
+                        $detail = Invoice::where('is_aktif','Y')->find($value['id_invoice']);
+                        $detail->jatuh_tempo = date_create_from_format('d-M-Y', $value['jatuh_tempo_baru']);
+                        $detail->updated_by = $user;
+                        $detail->updated_at = now();
+                        $detail->save();
+                    }
+                }
+            }
+            DB::commit();
+            return redirect()->route('invoice_resi.index')->with(['status' => 'Success', 'msg' => 'Resi Invoice berhasil diupdate']);
+        } catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('invoice_resi.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
     /**
      * Show the form for editing the specified resource.
@@ -138,13 +170,33 @@ class InvoiceResiController extends Controller
     public function edit(InvoiceResi $invoice_resi)
     {
         //
-        $resi = InvoiceResi::where('is_aktif','Y')
+        $data_resi = InvoiceResi::where('is_aktif','Y')
         ->where('id',$invoice_resi->id)
         ->with('get_invoice_resi_detail')
+        ->with('get_invoice_resi_detail.get_invoice')
+        ->with('get_invoice_resi_detail.get_invoice.getBillingTo')
         ->first();
+  
+        $data_gabung = DB::select("
+                SELECT 'data_resi' as 'data', i_r.id as 'id_detail', i.tgl_invoice as 'tgl_invoice',i.id as 'id_invoice',i.no_invoice AS 'no_invoice',i.total_tagihan AS 'total_tagihan',i.jatuh_tempo as 'jatuh_tempo', c.nama as 'nama_customer' FROM invoice_resi_detail i_r
+                LEFT join invoice i on i_r.id_invoice = i.id
+                LEFT join customer c on i.billing_to = c.id
+                WHERE i_r.is_aktif = 'Y' and i_r.id_resi = $invoice_resi->id
+                UNION ALL
+                SELECT 'data_invoice' as 'data', i_r.id as 'id_detail', i.tgl_invoice as 'tgl_invoice', i.id as 'id_invoice',i.no_invoice AS 'no_invoice',i.total_tagihan AS 'total_tagihan',i.jatuh_tempo as 'jatuh_tempo', c.nama as 'nama_customer' FROM invoice i
+                LEFT join customer c on i.billing_to = c.id
+                LEFT join invoice_resi_detail i_r on  i.id = i_r.id_invoice AND i_r.is_aktif = 'Y'
+                WHERE i.is_aktif = 'Y'  AND i_r.id is null
+          
+                ");
+       
+        // dd($data_gabung);
+        // $data_combined = $data_resi->merge($data_invoice);
+        // dd( $data_combined);
         return view('pages.invoice.invoice_resi.edit',[
-            'judul' => "Buat Resi Invoice",
-            'resi' => $resi,
+            'judul' => "Edit Cek Resi Invoice",
+            'resi' => $data_resi,
+            'data_gabung' => $data_gabung,
         ]);
     }
 
@@ -155,9 +207,60 @@ class InvoiceResiController extends Controller
      * @param  \App\Models\InvoiceResi  $invoiceResi
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, InvoiceResi $invoiceResi)
+    public function update(Request $request, InvoiceResi $invoice_resi)
     {
         //
+        $data = $request->collect();
+        $user = Auth::user()->id;
+        DB::beginTransaction(); 
+        // dd($data);
+        try {
+            $resi = InvoiceResi::where('is_aktif','Y')->find($invoice_resi->id);
+            $resi->jenis_pengiriman = $data['jenis_pengiriman'];
+            $resi->no_resi = $data['no_resi'];
+            $resi->tanggal_resi = date_create_from_format('d-M-Y', $data['tgl_resi']);
+            $resi->updated_by = $user;
+            $resi->updated_at = now();
+            if($resi->save()){
+                foreach ($data['detail'] as $key => $value) {
+                    if(isset($value['is_resi']))
+                    {
+                        if(isset($value['id_resi_detail']))
+                        {
+                            $detail = InvoiceResiDetail::where('is_aktif','Y')->find($value['id_resi_detail']);
+                            $detail->updated_by = $user;
+                            $detail->updated_at = now();
+                            $detail->save();
+                        }
+                        else
+                        {
+                            $detail = new InvoiceResiDetail();
+                            $detail->id_resi = $resi->id;
+                            $detail->id_invoice = $value['id_invoice'];
+                            $detail->no_invoice = $value['no_invoice'];
+                            $detail->jatuh_tempo_lama = $value['jatuh_tempo_lama'];
+                            $detail->created_by = $user;
+                            $detail->created_at = now();
+                            $detail->is_aktif = 'Y';
+                            $detail->save();
+                        }
+                    }
+                    else
+                    {
+                        $detail = InvoiceResiDetail::where('is_aktif','Y')->find($value['id_resi_detail']);
+                        $detail->is_aktif = 'N';
+                        $detail->updated_by = $user;
+                        $detail->updated_at = now();
+                        $detail->save();
+                    }
+                }
+            }
+            DB::commit();
+            return redirect()->route('invoice_resi.index')->with(['status' => 'Success', 'msg' => 'Resi Invoice berhasil diupdate']);
+        } catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('invoice_resi.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     /**

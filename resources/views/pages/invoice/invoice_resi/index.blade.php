@@ -36,9 +36,9 @@
                     <table id="tabel_resi" class="table table-bordered table-striped" width="100%">
                         <thead>
                             <tr>
+                                <th>Status</th>
                                 <th>Jenis Pengiriman</th>
                                 <th>Nomor Resi</th>
-                                <th>Status Resi</th>
                                 <th>Tanggal Resi</th>
                                 <th></th>
                             </tr>
@@ -47,9 +47,9 @@
                             @if (isset($data))
                                 @foreach ($data as $item)
                                 <tr>
+                                    <td>{{ $item->status_resi }}</td>
                                     <td>{{ $item->jenis_pengiriman }}</td>
                                     <td>{{ $item->no_resi }}</td>
-                                    <td>{{ $item->status_resi }}</td>
                                     <td>{{ date("d-M-Y", strtotime($item->tanggal_resi))}}</td>
                                     <td>
                                         <div class="btn-group dropleft">
@@ -57,12 +57,25 @@
                                                 <i class="fa fa-list"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a href="{{route('invoice_resi.show',[$item->id])}}" class="dropdown-item ">
-                                                    <span class="fas fa-edit mr-3"></span> Update Resi
-                                                </a>
-                                                <a href="{{ route('invoice_resi.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
-                                                    <span class="fas fa-trash mr-3"></span> Hapus
-                                                </a>
+                                                @if ($item->status_resi=="DALAM PROSES")
+                                                    <a href="{{route('invoice_resi.show',[$item->id])}}" class="dropdown-item ">
+                                                        <span class="fas fa-info mr-3"></span> 
+                                                        Update Resi
+                                                    </a>
+                                                    <a href="{{route('invoice_resi.edit',[$item->id])}}" class="dropdown-item ">
+                                                        <span class="fas fa-edit mr-3"></span> 
+                                                        Edit
+                                                    </a>
+                                                    <a href="{{ route('invoice_resi.destroy', [$item->id]) }}" class="dropdown-item" data-confirm-delete="true">
+                                                        <span class="fas fa-trash mr-3"></span> Hapus
+                                                    </a>
+                                                @else
+                                                    <a href="{{route('invoice_resi.show',[$item->id])}}" class="dropdown-item ">
+                                                        <span class="fas fa-info mr-3"></span> 
+                                                        Detail
+                                                    </a>
+                                                @endif
+                                                
                                             </div>
                                         </div>
                                     </td>
@@ -88,14 +101,14 @@ $(document).ready(function () {
                     // order: [
                     //     [0, 'asc'],
                     // ],
-                    // rowGroup: {
-                    //     dataSrc: [0] // kalau mau grouping pake ini
-                    // },
+                    rowGroup: {
+                        dataSrc: [0] // kalau mau grouping pake ini
+                    },
                     columnDefs: [
-                        // {
-                        //     targets: [0],
-                        //     visible: false
-                        // },
+                        {
+                            targets: [0],
+                            visible: false
+                        },
                         // { orderable: true, targets: 0 }, // Enable ordering for the first column (index 0)
                         { orderable: false, targets: '_all' } // Disable ordering for all other columns
                     ],
