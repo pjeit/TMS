@@ -24,4 +24,10 @@ class TagihanPembelian extends Model
      {
           return $this->hasMany(TagihanPembelianDetail::class, 'id_tagihan_pembelian', 'id')->where('is_aktif', 'Y');
      }
+     public function getDetailsGabungan()
+    {
+         return $this->hasMany(TagihanPembelianDetail::class, 'id_tagihan_pembelian', 'id')
+         ->with('getSewa')
+         ->where('is_aktif', 'Y');
+    }
 }

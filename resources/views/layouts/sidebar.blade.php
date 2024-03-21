@@ -466,7 +466,7 @@
                       request()->is('biaya_operasional*') ||
                       request()->is('pembayaran_sdt*') ||
                       request()->is('pencairan_komisi_driver*')||
-                      request()->is('tagihan_rekanan*')||
+                      request()->is('tagihan_gabungan*')||
                       request()->is('tagihan_pembayaran*')||
                       request()->is('pencairan_komisi_customer*')||
                       request()->is('transaksi_lain*')||
@@ -706,7 +706,9 @@
                 <ul class="nav nav-treeview">
                   <li class="nav-item   {{ 
                         request()->is('tagihan_pembelian*')||
-                        request()->is('tagihan_rekanan*')
+                        // request()->is('tagihan_rekanan*')
+                        request()->is('tagihan_gabungan*')
+
                         ? 'menu-is-opening menu-open' : '' }}" style="font-size: 15px;">
                     <a href="#" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
@@ -717,13 +719,23 @@
                     </a>
                     <ul class="nav nav-treeview">
                       @can('READ_TAGIHAN_REKANAN')
-                      <li class="nav-item">
+                      {{-- <li class="nav-item">
                         <a href="{{route('tagihan_rekanan.index')}}"
                           class="nav-link {{ request()->is('tagihan_rekanan*')? ' active' : '' }} "
                           style="font-weight: 500;">
                           <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                           <p>
-                            <span>Tagihan Rekanan</span> {{-- style="font-size: 13.9px" --}}
+                            <span>Tagihan Rekanan</span> 
+                          </p>
+                        </a>
+                      </li> --}}
+                      <li class="nav-item">
+                        <a href="{{route('tagihan_gabungan.index')}}"
+                          class="nav-link {{ request()->is('tagihan_gabungan*')? ' active' : '' }} "
+                          style="font-weight: 500;">
+                          <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                          <p>
+                            <span>Tagihan Gabungan</span> 
                           </p>
                         </a>
                       </li>

@@ -98,7 +98,19 @@ class TagihanRekananController extends Controller
         ->whereNull('id_pembayaran')
         ->where('id_supplier', $data_tagihan[0]->id_supplier)->get();
         // dd($data_tagihan);
-        
+        $cek_supplier = $data_tagihan[0]->id_supplier;
+        $flag_salah = false;
+        foreach ($data_tagihan as $value) {
+            if($value->id_supplier!=$cek_supplier)
+            {
+                $flag_salah = true;
+                break;
+            }
+        }
+        if( $flag_salah)
+        {
+            return redirect()->route('tagihan_rekanan.index')->with(['status' => 'error', 'msg' => 'Supplier harus berbeda dalam pembayaran nota']);
+        }
         if($data_tagihan){
             return view('pages.finance.tagihan_rekanan.bayar',[
                 'judul' => "Tagihan Gabungan",
@@ -193,6 +205,8 @@ class TagihanRekananController extends Controller
                 $pembayaran->catatan = $data['catatan'];
                 $pembayaran->tgl_bayar = date_create_from_format('d-M-Y', $data['tgl_bayar']);
                 $pembayaran->total_bayar = floatval(str_replace(',', '', $data['total_bayar']));
+                  $pembayaran->created_by = $user;
+                $pembayaran->created_at = now();
                 $pembayaran->save();
     
                 foreach ($data['data'] as $key => $value) {
@@ -295,7 +309,7 @@ class TagihanRekananController extends Controller
                     ->groupBy('s.id_supplier')
                     ->get();
         // dd($supplier);
-        $tagihan = TagihanRekanan::where('is_aktif', 'Y')->find($id);
+        $tagihan = TagihanRekanan::where('is_aktif', 'Y')->with('getDetails')->with('getSupplier')->find($id);
 
         return view('pages.finance.tagihan_rekanan.edit',[
             'judul' => "Tagihan Rekanan",
@@ -473,7 +487,7 @@ class TagihanRekananController extends Controller
                                 trd.catatan as catatan, s.id_sewa, trd.id_tagihan_rekanan, s.id_supplier, trd.is_aktif AS trd_is_aktif, 
                                 s.is_tagihan, gt.nama_tujuan as nama_tujuan, c.kode
                             FROM sewa as s
-                            LEFT JOIN tagihan_rekanan_detail as trd on trd.id_sewa = s.id_sewa and trd.is_aktif is null
+                            LEFT JOIN tagihan_rekanan_detail as trd on trd.id_sewa = s.id_sewa and trd.is_aktif = 'Y'
                             LEFT JOIN customer as c on c.id = s.id_customer
                             LEFT JOIN grup_tujuan as gt on gt.id = s.id_grup_tujuan
                             WHERE s.id_supplier = $id_supplier AND s.is_tagihan <> 'Y' and s.is_aktif = 'Y' 

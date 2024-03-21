@@ -373,15 +373,15 @@ $(document).ready(function () {
                 //     //     },
                 //     // ],
                 // });
-                $('#tabel_dashboard').DataTable({
-                    info: false,
-                    searching: false,
-                    paging: false,
-                    responsive: true,
-                    language: {
-                        emptyTable: "Data tidak ditemukan."
-                    }
-        });
+                // $('#tabel_dashboard').DataTable({
+                //     info: false,
+                //     searching: false,
+                //     paging: false,
+                //     responsive: true,
+                //     language: {
+                //         emptyTable: "Data tidak ditemukan."
+                //     }
+                // });
             },error: function (xhr, status, error) {
                 if ( xhr.responseJSON.result == 'error') {
                     console.log("Error:", xhr.responseJSON.message);

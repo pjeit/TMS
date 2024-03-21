@@ -216,7 +216,7 @@ class TagihanPembelianController extends Controller
                     $history->debit = 0;
                     $history->kredit = floatval(str_replace(',', '', $data['total_bayar']));
                     $history->kode_coa = CoaHelper::DataCoa(2010); // utang usaha
-                    $history->jenis = 'tagihan_pembelian';
+                    $history->jenis = 'tagihan_supplier';
                     $history->keterangan_transaksi = $keterangan;
                     $history->keterangan_kode_transaksi = $pembayaran->id;
                     $history->created_by = $user;

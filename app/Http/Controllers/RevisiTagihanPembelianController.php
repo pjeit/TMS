@@ -214,7 +214,7 @@ class RevisiTagihanPembelianController extends Controller
                 {
                     $history = KasBankTransaction::where('is_aktif','Y')
                     ->where('keterangan_kode_transaksi', $id)
-                    ->where('jenis', 'tagihan_pembelian')
+                    ->where('jenis', 'tagihan_supplier')
                     ->first();
                     $history->keterangan_transaksi = 'REVISI:'. $keterangan ;
                     $history->kredit = floatval(str_replace(',', '', $data['total_bayar'])) ;
@@ -293,7 +293,7 @@ class RevisiTagihanPembelianController extends Controller
     
                 $history = KasBankTransaction::where('is_aktif','Y')
                             ->where('keterangan_kode_transaksi', $id)
-                            ->where('jenis', 'tagihan_pembelian')
+                            ->where('jenis', 'tagihan_supplier')
                             ->first();
                 $history->keterangan_transaksi = 'HAPUS - ' . isset($history->keterangan_transaksi)? $history->keterangan_transaksi:'';
                 $history->is_aktif = 'N';

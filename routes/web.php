@@ -245,6 +245,13 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('tagihan_pembelian', 'App\Http\Controllers\TagihanPembelianController');
 
 
+        Route::post('tagihan_gabungan/bayar_save', [App\Http\Controllers\TagihanGabunganController::class, 'bayar_save'])->name('tagihan_gabungan.bayar_save');
+        Route::post('tagihan_gabungan/bayar', [App\Http\Controllers\TagihanGabunganController::class, 'bayar'])->name('tagihan_gabungan.bayar');
+        Route::get('tagihan_gabungan/load_data/{id}', [App\Http\Controllers\TagihanGabunganController::class, 'load_data'])->name('tagihan_gabungan.load_data');
+        Route::get('tagihan_gabungan/filteredData/{id_tagihan},{id_supplier}', [App\Http\Controllers\TagihanGabunganController::class, 'filtered_data'])->name('tagihan_gabungan.filtered_data');
+        Route::resource('tagihan_gabungan', 'App\Http\Controllers\TagihanGabunganController');
+
+
 
         // ===================================FINANCE=========================================================
 
@@ -327,6 +334,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('revisi_tagihan_pembelian/delete/{id}', [App\Http\Controllers\RevisiTagihanPembelianController::class, 'delete'])->name('revisi_tagihan_pembelian.delete');
         Route::get('revisi_tagihan_pembelian/load_data', [App\Http\Controllers\RevisiTagihanPembelianController::class, 'load_data'])->name('revisi_tagihan_pembelian.load_data');
         Route::resource('revisi_tagihan_pembelian', 'App\Http\Controllers\RevisiTagihanPembelianController');
+
+        
+        Route::get('revisi_tagihan_gabungan/delete/{id}', [App\Http\Controllers\RevisiTagihanGabunganController::class, 'delete'])->name('revisi_tagihan_gabungan.delete');
+        Route::get('revisi_tagihan_gabungan/load_data', [App\Http\Controllers\RevisiTagihanGabunganController::class, 'load_data'])->name('revisi_tagihan_gabungan.load_data');
+        Route::resource('revisi_tagihan_gabungan', 'App\Http\Controllers\RevisiTagihanGabunganController');
 
         Route::get('revisi_invoice_trucking/delete/{id}', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'delete'])->name('revisi_invoice_trucking.delete');
         Route::get('revisi_invoice_trucking/edit-pembayaran/{id}', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'editPembayaran'])->name('revisi_invoice_trucking.editPembayaran');
