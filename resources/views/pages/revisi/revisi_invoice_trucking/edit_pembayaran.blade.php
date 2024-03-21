@@ -195,7 +195,6 @@
                                 <input type="hidden" id="no_invoice_{{ $item->id }}" name="detail[{{ $item->id }}][no_invoice]" value="{{ $item->no_invoice }}">
                                 <input type="hidden" id="no_bukti_potong_{{ $item->id }}" name="detail[{{ $item->id }}][no_bukti_potong]" value="{{ $item->no_bukti_potong }}">
                                 <input type="hidden" id="hapus_detail_bayar_{{ $item->id }}" name="detail[{{ $item->id }}][hapus_detail_bayar]" value="N">
-
                             </td>
                             <td> 
                                 <span id="text_total_tagihan_{{ $item->id }}">{{ number_format($item->total_tagihan) }}</span>

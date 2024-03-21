@@ -16,6 +16,7 @@ class InvoicePembayaran extends Model
          return $this->hasOne(Customer::class, 'id', 'billing_to');
     }
   
+//     ga dipake
     public function getInvoices()
     {
          return $this->hasMany(Invoice::class, 'id_pembayaran', 'id');
@@ -24,5 +25,13 @@ class InvoicePembayaran extends Model
     {
          return $this->hasMany(Invoice::class, 'id_pembayaran', 'id')->orderBy('biaya_admin','DESC');
     }
+//     ga dipake
+    public function get_pembayaran_detail()
+    {
+         return $this->hasMany(InvoicePembayaranDetail::class, 'id_pembayaran', 'id')
+         ->with('get_invoice_value')
+         ->orderBy('biaya_admin','DESC');
+    }
+
 
 }

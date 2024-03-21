@@ -160,12 +160,13 @@ class RevisiInvoiceTruckingController extends Controller
 
     public function editPembayaran($id)
     {
-        $invoice = InvoicePembayaran::where('is_aktif', 'Y')->with('getInvoices_revisi')->find($id);
-        $customers = Customer::where('is_aktif', 'Y')->where('grup_id', $invoice->getInvoices_revisi[0]->id_grup)->get();
+        $invoice = InvoicePembayaran::where('is_aktif', 'Y')->with('get_pembayaran_detail')->find($id);
+        $customers = Customer::where('is_aktif', 'Y')->where('grup_id', $invoice->get_pembayaran_detail->get_invoice_value[0]->id_grup)->get();
         $kasbank = KasBank::where('is_aktif', 'Y')->get();
         // dd($invoice);
         $dataInvoices   = Invoice::where('billing_to', $invoice->billing_to)
-        ->whereNull('id_pembayaran')
+        // ->whereNull('id_pembayaran')
+        ->whereDoesntHave('get_invoice_pembayaran_detail')
         ->where('is_aktif', 'Y')->get();
         $dataInvoicesAll   = Invoice::where('billing_to', $invoice->billing_to)
         ->where('is_aktif', 'Y')->get();
@@ -353,10 +354,17 @@ class RevisiInvoiceTruckingController extends Controller
             $inv_bayar->updated_at = now();
             $inv_bayar->is_aktif = 'N';
             if($inv_bayar->save()){
-                $invoice = Invoice::where('is_aktif', 'Y')->where('id_pembayaran',$id)->get();
+                $invoice = Invoice::where('is_aktif', 'Y')
+                ->with('get_invoice_pembayaran_detail')
+                ->whereHas('get_invoice_pembayaran_detail', function ($query) use ($id) {
+                    $query->where('id_invoice_pembayaran', $id);
+                })
+                ->get();
+                // dd($invoice);
                 foreach ($invoice as $invoices) {
-                    $invoices->id_pembayaran = null;
-                    $invoices->total_sisa = $invoices->total_tagihan;
+                    // $invoices->id_pembayaran = null;
+                    $invoices->total_sisa += $invoices->get_invoice_pembayaran_detail->dibayar;
+                    // $invoices->total_sisa = $invoices->total_tagihan;
                     $invoices->pph = 0;
                     $invoices->biaya_admin = 0;
                     $invoices->total_dibayar = 0;
@@ -366,6 +374,11 @@ class RevisiInvoiceTruckingController extends Controller
                     // $detail->save();
                     if($invoices->save())
                     {
+                        // matiin pembayaran detail
+                        $invoices->get_invoice_pembayaran_detail->is_aktif='N';
+                        $invoices->get_invoice_pembayaran_detail->save();
+                        // end matiin pembayaran detail
+
                         $invoice_detail = InvoiceDetail::where('is_aktif', 'Y')->where('id_invoice',$invoices->id)->get();
                         foreach ($invoice_detail as  $details) {
                             $sewa = Sewa::where('is_aktif','Y')->where('id_sewa',$details->id_sewa)->first();

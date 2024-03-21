@@ -35,4 +35,10 @@ class Invoice extends Model
         return $this->hasOne(Grup::class, 'id', 'id_grup');
     }   
 
+    //buat pengecekan revisi invoice
+    public function get_invoice_pembayaran_detail()
+    {
+        return $this->hasOne(InvoicePembayaranDetail::class, 'id_invoice', 'id')->where('is_aktif', 'Y');
+    }   
+
 }
