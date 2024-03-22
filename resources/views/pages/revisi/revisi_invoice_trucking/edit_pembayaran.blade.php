@@ -44,7 +44,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="">Billing To</label>
-                                        <select name="billingTo" class="select2" style="width: 100%" id="billingTo" required >
+                                        <select name="billingTo" class="select2" style="width: 100%" id="billingTo" disabled>
                                             <option value="">── BILLING TO ──</option>
                                             @foreach ($customers as $customer)
                                                 <option value="{{ $customer->id }}" {{ $customer->id == $data->billing_to? 'selected':'' }}>{{ $customer->nama }}</option>
@@ -186,36 +186,37 @@
                 </thead>
                 <tbody>
                 @isset($data)   
-                    @foreach ($data->getInvoices_revisi as $key => $item)
-                        <tr id='{{ $key }}' id_invoice='{{ $item->id }}' id_pembayaran='{{$data->id}}'>
+                    @foreach ($data->get_pembayaran_detail as $key => $item)
+                        <tr id='{{ $key }}' id_invoice='{{ $item->get_invoice_value->id }}' id_pembayaran='{{$data->id}}'>
                             <td> 
-                                <span id="text_no_invoice_{{ $item->id }}">{{ $item->no_invoice }}</span>
-                                <input type="hidden" id="id_pembayaran_{{ $data->id }}" name="detail[{{ $item->id }}][id_pembayaran]" value="{{ $data->id }}">
-                                <input type="hidden" id="id_invoice_{{ $item->id }}" name="detail[{{ $item->id }}][id_invoice]" value="{{ $item->id }}" class="all_id_invoice">
-                                <input type="hidden" id="no_invoice_{{ $item->id }}" name="detail[{{ $item->id }}][no_invoice]" value="{{ $item->no_invoice }}">
-                                <input type="hidden" id="no_bukti_potong_{{ $item->id }}" name="detail[{{ $item->id }}][no_bukti_potong]" value="{{ $item->no_bukti_potong }}">
-                                <input type="hidden" id="hapus_detail_bayar_{{ $item->id }}" name="detail[{{ $item->id }}][hapus_detail_bayar]" value="N">
-                            </td>
-                            <td> 
-                                <span id="text_total_tagihan_{{ $item->id }}">{{ number_format($item->total_tagihan) }}</span>
-                                <input type="hidden" class="total_tagihan" total_tagihan_{{ $key }} id="total_tagihan_{{ $item->id }}" name="detail[{{ $item->id }}][total_tagihan]" value="{{ $item->total_tagihan }}">
+                                <span id="text_no_invoice_{{ $item->id_invoice }}">{{ $item->get_invoice_value->no_invoice }}</span>
+                                <input type="hidden" id="id_pembayaran_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][id_pembayaran]" value="{{ $data->id }}">
+                                <input type="hidden" id="id_pembayaran_detail_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][id_pembayaran_detail]" value="{{ $item->id }}">
+                                <input type="hidden" id="id_invoice_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][id_invoice]" value="{{ $item->get_invoice_value->id }}" class="all_id_invoice">
+                                <input type="hidden" id="no_invoice_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][no_invoice]" value="{{ $item->get_invoice_value->no_invoice }}">
+                                {{-- <input type="hidden" id="no_bukti_potong_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][no_bukti_potong]" value="{{ $item->no_bukti_potong }}"> --}}
+                                <input type="hidden" id="hapus_detail_bayar_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][hapus_detail_bayar]" value="N">
                             </td>
                             <td> 
-                                <span id="text_total_sisa_{{ $item->id }}">{{ number_format($item->total_sisa) }}</span>
-                                <input type="hidden" class="total_sisa" id="total_sisa_{{ $key }}" name="detail[{{ $item->id }}][total_sisa]" value="{{ number_format($item->total_sisa) }}">
+                                <span id="text_total_tagihan_{{ $item->id_invoice }}">{{ number_format($item->get_invoice_value->total_tagihan) }}</span>
+                                <input type="hidden" class="total_tagihan" total_tagihan_{{ $key }} id="total_tagihan_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][total_tagihan]" value="{{ $item->get_invoice_value->total_tagihan }}">
+                            </td>
+                            <td> 
+                                <span id="text_total_sisa_{{ $item->id_invoice }}">{{ number_format($item->get_invoice_value->total_sisa) }}</span>
+                                <input type="hidden" class="total_sisa" total_sisa_{{ $key }} id="total_sisa_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][total_sisa]" value="{{ $item->get_invoice_value->total_sisa }}">
                             </td>
                             <td>
-                                <span id="text_pph23_{{ $item->id }}">{{ number_format($item->pph) }}</span>
-                                <input type="hidden" class="total_pph" total_pph_{{ $key }} id="total_pph_{{ $item->id }}" name="detail[{{ $item->id }}][pph23]" value="{{ $item->pph }}">
+                                <span id="text_pph23_{{ $item->id_invoice }}">{{ number_format($item->pph_23) }}</span>
+                                <input type="hidden" class="total_pph" total_pph_{{ $key }} id="total_pph_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][pph23]" value="{{ $item->pph_23 }}">
                             </td>
                             <td>
-                                <span id="text_total_dibayar_{{ $item->id }}" text_total_dibayar_{{ $key }}>{{ number_format($item->total_dibayar) }}</span>
-                                <input type="hidden" class="total_dibayar" total_dibayar_{{ $key }} id="total_dibayar_{{ $item->id }}" name="detail[{{ $item->id }}][total_dibayar]" value="{{ $item->total_dibayar }}">
-                                <input type="hidden" class="biaya_admin" biaya_admin_{{ $key }} id="biaya_admin_{{ $item->id }}" name="detail[{{ $item->id }}][biaya_admin]" value="{{ $item->biaya_admin }}">
+                                <span id="text_total_dibayar_{{ $item->id_invoice }}" text_total_dibayar_{{ $key }}>{{ number_format($item->total_diterima) }}</span>
+                                <input type="hidden" class="total_dibayar" total_dibayar_{{ $key }} id="total_dibayar_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][total_dibayar]" value="{{ $item->total_diterima }}">
+                                <input type="hidden" class="biaya_admin" biaya_admin_{{ $key }} id="biaya_admin_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][biaya_admin]" value="{{ $item->biaya_admin }}">
                             </td>
                             <td>
-                                <span id="text_catatan_{{ $item->id }}">{{ $item->catatan }}</span>
-                                <input type="hidden" id="catatan_{{ $item->id }}" name="detail[{{ $item->id }}][catatan]" value="{{ $item->catatan }}">
+                                <span id="text_catatan_{{ $item->id_invoice }}">{{ $item->catatan }}</span>
+                                <input type="hidden" id="catatan_{{ $item->id_invoice }}" name="detail[{{ $item->id_invoice }}][catatan]" value="{{ $item->catatan }}">
                             </td>
                             <td>
                                 <div class="btn-group dropleft">
@@ -223,11 +224,11 @@
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu">
-                                        <button type="button" name="detail" id="detail_{{$item->id}}" class="detail dropdown-item"> 
+                                        <button type="button" name="detail" id="detail_{{$item->id_invoice}}" class="detail dropdown-item"> 
                                             <span class="fas fa-edit mr-3"></span> Edit
                                         </button>
                                         @if ($key>0)
-                                            <button type="button" name="hapus" id="hapus_{{$item->id}}" class="dropdown-item deleteParent"> 
+                                            <button type="button" name="hapus" id="hapus_{{$item->id_invoice}}" class="dropdown-item deleteParent"> 
                                                 <span class="fas fa-trash mr-3"></span> Delete
                                             </button>
                                         @endif
@@ -408,8 +409,8 @@
             // startDate: today,
         }).datepicker("setDate", today);
         var dataInvoices = <?= isset($dataInvoices)? $dataInvoices:NULL; ?> ;
-        var dataInvoicesAll = <?= isset($dataInvoicesAll)? $dataInvoicesAll:NULL; ?> ;
-
+        var dataDetail = <?= isset($dataDetail)? $dataDetail:NULL; ?> ;
+        console.log(dataDetail);
         hitungAll();
         // function start(){
         //     var total_dibayar = biaya_admin = total_pph = 0;
@@ -446,7 +447,7 @@
         $(document).on('click', '.detail', function(){ // open detail 
             clearModal(); // execute clear data dulu tiap open modal
             $('#key').val(''); // key di clear dulu
-            var button_id = $(this).attr("id"); // get value id
+            var button_id = $(this).attr("id"); // get value id detail
             var key = button_id.replace("detail_", ""); // hapus teks detail_
             $('#key').val(key); // id key buat nge get data yg di hidden, key = id_invoice        
             $('#jenis').val('lama'); // key di clear dulu
@@ -466,16 +467,15 @@
                 all_id_invoice.push($(this).val());
             });
 
-            dataInvoicesAll.forEach(function(item, index) {
+            dataDetail.forEach(function(item, index) {
                 var option = $('<option>');
-                option.text(item.no_invoice + '(' + dateMask(item.tgl_invoice) + ')');
-                option.val(item.id);
+                option.text(item.get_invoice_value.no_invoice + '(' + dateMask(item.get_invoice_value.tgl_invoice) + ')');
+                option.val(item.get_invoice_value.id);
                 option.attr('index', index); 
-                if ( all_id_invoice.includes( item.id.toString() ) ) {
+                if ( all_id_invoice.includes( item.get_invoice_value.id.toString() ) ) {
                     option.prop('disabled', true);
-                    
                 }
-                if(item.id==key)
+                if(item.id_invoice==key)
                 {
                     option.prop('selected', true);
 
@@ -496,6 +496,7 @@
             }
             $('#modal_pph23').val( moneyMask($('#total_pph_'+key).val()) );
             $('#modal_catatan').val( $('#catatan_'+key).val() );
+            console.log( moneyMask( $('#total_sisa_'+key).val()));
             $('#modal_sisa_invoice').val( moneyMask( $('#total_sisa_'+key).val()) );
             // $('#modal_total_invoice').val( moneyMask( parseFloat($('#total_dibayar_'+key).val()) + parseFloat($('#total_pph_'+key).val()) ) );
             $('#modal_total_invoice').val( moneyMask($('#total_tagihan_'+key).val()) );
@@ -796,19 +797,19 @@
         });
 
         function hitungAll(){
-            var total_dibayar = total_tagihan = biaya_admin = total_pph = 0;
+            var total_dibayar/* = total_tagihan*/ = biaya_admin = total_pph = 0;
             var dibayar = document.getElementsByClassName("total_dibayar");
             var tagihan = document.getElementsByClassName("total_tagihan");
             var pph23 = document.getElementsByClassName("total_pph");
             var admin = document.getElementsByClassName("biaya_admin");
             // var biaya_admin = escapeComma($("#biaya_admin").val());
 
-            for (var i = 0; i < tagihan.length; i++) {
-                var value = parseFloat(tagihan[i].value); 
-                if (!isNaN(value)) {
-                    total_tagihan += value;
-                }
-            }
+            // for (var i = 0; i < tagihan.length; i++) {
+            //     var value = parseFloat(tagihan[i].value); 
+            //     if (!isNaN(value)) {
+            //         total_tagihan += value;
+            //     }
+            // }
             for (var i = 0; i < dibayar.length; i++) {
                 var value = parseFloat(dibayar[i].value); 
                 if (!isNaN(value)) {
@@ -835,9 +836,9 @@
                 $('#total_dibayar').val(moneyMask(total_dibayar));
             }
             
-            $('#total_dibayar').val(moneyMask(total_tagihan-total_pph-biaya_admin));
+            // $('#total_dibayar').val(moneyMask(/*total_tagihan-*/total_pph-biaya_admin));
             $('#total_pph').val(moneyMask(total_pph));
-            // console.log('total_dibayar', total_dibayar);
+            console.log('total_dibayar', total_dibayar);
             // console.log('total_pph', total_pph);
         }
 

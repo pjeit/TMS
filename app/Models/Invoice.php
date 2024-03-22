@@ -38,7 +38,7 @@ class Invoice extends Model
     //buat pengecekan revisi invoice
     public function get_invoice_pembayaran_detail()
     {
-        return $this->hasOne(InvoicePembayaranDetail::class, 'id_invoice', 'id')->where('is_aktif', 'Y');
+        return $this->hasOne(InvoicePembayaranDetail::class, 'id_invoice', 'id');
     }   
 
 }

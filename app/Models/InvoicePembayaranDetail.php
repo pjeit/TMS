@@ -13,6 +13,6 @@ class InvoicePembayaranDetail extends Model
     
     public function get_invoice_value()
     {
-         return $this->hasOne(Invoice::class, 'id', 'id_invoice');
+         return $this->hasOne(Invoice::class, 'id', 'id_invoice')->with('invoiceDetails')->where('is_aktif','Y');
     }
 }

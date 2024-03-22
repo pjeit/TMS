@@ -161,7 +161,7 @@ class PembayaranInvoiceController extends Controller
                                     $invoice_pembayaran_detail->total_diterima = $value['diterima'];
                                     $invoice_pembayaran_detail->biaya_admin = 0;
                                 }
-                                $invoice_pembayaran_detail->pph_23 = $value['pph23'];
+                                $invoice_pembayaran_detail->pph_23 = isset($value['pph23'])?$value['pph23']:0;
                                 $invoice_pembayaran_detail->dibayar = $value['dibayar'];
                                 $invoice_pembayaran_detail->catatan = $value['catatan'];
                                 $invoice_pembayaran_detail->created_by = $user;

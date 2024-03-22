@@ -24,4 +24,12 @@ class TagihanPembelianPembayaran extends Model
     {
          return $this->hasMany(TagihanPembelianDetail::class, 'id_tagihan_pembelian', 'id_tagihan_pembelian')->where('is_aktif', 'Y');
     }
+
+    public function get_nota_pembayaran_detail()
+    {
+         return $this->hasMany(TagihanPembelianPembayaranDetail::class, 'id_tagihan_pembayaran', 'id')
+         ->with('get_nota_value')
+         ->where('is_aktif','Y')
+         ->orderBy('biaya_admin','DESC');
+    }
 }

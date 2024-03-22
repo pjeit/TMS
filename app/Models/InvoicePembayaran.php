@@ -25,11 +25,12 @@ class InvoicePembayaran extends Model
     {
          return $this->hasMany(Invoice::class, 'id_pembayaran', 'id')->orderBy('biaya_admin','DESC');
     }
-//     ga dipake
+//   end  ga dipake
     public function get_pembayaran_detail()
     {
-         return $this->hasMany(InvoicePembayaranDetail::class, 'id_pembayaran', 'id')
+         return $this->hasMany(InvoicePembayaranDetail::class, 'id_invoice_pembayaran', 'id')
          ->with('get_invoice_value')
+         ->where('is_aktif','Y')
          ->orderBy('biaya_admin','DESC');
     }
 
