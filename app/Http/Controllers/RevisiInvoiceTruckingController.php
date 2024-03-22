@@ -613,7 +613,7 @@ class RevisiInvoiceTruckingController extends Controller
                     if($history->save()){
                         // kembalikan kasbank sekarang
                         $returnKas = KasBank::where('is_aktif','Y')->find($inv_bayar->id_kas);
-                        $returnKas->saldo_sekarang += floatval(str_replace(',', '', $inv_bayar->total_diterima));
+                        $returnKas->saldo_sekarang -= floatval(str_replace(',', '', $inv_bayar->total_diterima));
                         $returnKas->updated_by = $user;
                         $returnKas->updated_at = now();
                         $returnKas->save();
