@@ -30,4 +30,10 @@ class TagihanPembelian extends Model
          ->with('getSewa')
          ->where('is_aktif', 'Y');
     }
+
+     //buat pengecekan revisi tagihan
+     public function get_tagihan_pembayaran_detail()
+     {
+         return $this->hasOne(TagihanPembelianPembayaranDetail::class, 'id_tagihan', 'id');
+     }   
 }

@@ -789,8 +789,6 @@
 
           {{-- PEOPLE --}}
             @php
-            
-
               $people = ['READ_LAPORAN_JOB_ORDER','READ_KLAIM_SUPIR','READ_KARYAWAN_HUTANG','READ_PEMBAYARAN_GAJI'];
             @endphp
             @if (array_intersect($people, $userAkses) != NULL)
@@ -1177,7 +1175,7 @@
                 </li>
                 @endcan --}}
 
-                @php
+                {{-- @php
                 $READ_REVISI_TAGIHAN_REKANAN = auth()->user()->can('READ_REVISI_TAGIHAN_REKANAN');
                 $READ_REVISI_TAGIHAN_PEMBELIAN = auth()->user()->can('READ_REVISI_TAGIHAN_PEMBELIAN');
                 @endphp
@@ -1206,7 +1204,6 @@
                       </a>
                     </li>
                     @endcan
-
                     @can('READ_REVISI_TAGIHAN_PEMBELIAN')
                     <li class="nav-item">
                       <a href="{{route('revisi_tagihan_pembelian.index')}}"
@@ -1215,14 +1212,25 @@
                         <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                         <p>
                           <span style="font-size: 0.81em;">Invc. Tagihan Pembelian</span>
+                       
                         </p>
                       </a>
                     </li>
                     @endcan
                   </ul>
                 </li>
-                @endif
-
+                @endif --}}
+                @can('READ_REVISI_TAGIHAN_PEMBELIAN')
+                <li class="nav-item">
+                  <a href="{{route('revisi_tagihan_pembelian.index')}}" class="nav-link {{request()->url() === route('revisi_tagihan_pembelian.index')? ' active' : '' }} "
+                    style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span >Rev. Tagihan Nota</span>
+                    </p>
+                  </a>
+                </li>
+                @endcan
                 @can('READ_REVISI_INVOICE_TRUCKING')
                 <li class="nav-item">
                   <a href="{{route('revisi_invoice_trucking.index')}}" class="nav-link {{request()->url() === route('revisi_invoice_trucking.index')? ' active' : '' }} "

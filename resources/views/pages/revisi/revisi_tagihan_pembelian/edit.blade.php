@@ -151,20 +151,26 @@
                     </tr>
                 </thead>
                 <tbody id="hasil">
-                    @foreach ($data->getPembelian as $key => $pembelian)
-                        <tr style="background: #ffffffc0" class="tr_{{ $pembelian->id }}" id="{{$key}}">
-                            <td>{{ $pembelian->no_nota }}
-                                <input type="hidden" id="id_nota_{{ $key }}" value="{{ $pembelian->id }}" name="data[{{ $pembelian->id }}][id_nota]" class="all_id_nota">
-                                <input type="hidden" id="no_nota_{{ $key }}" value="{{ $pembelian->no_nota }}" name="data[{{ $pembelian->id }}][no_nota]">
-                                <input type="hidden" id="bukti_potong_{{ $key }}" name="data[{{ $pembelian->id }}][bukti_potong]" value="{{ $pembelian->bukti_potong }}">
-                                <input type="hidden" class="pph23" id="pph23_{{ $key }}" value="{{ $pembelian->pph }}" name="data[{{ $pembelian->id }}][pph]">
-                                <input type="hidden" class="biaya_admin" id="biaya_admin_{{ $key }}" value="{{ $pembelian->biaya_admin }}" name="data[{{ $pembelian->id }}][biaya_admin]">
-                                <input type="hidden" class="total_tagihan" id="total_tagihan_{{ $key }}" value="{{ $pembelian->total_tagihan }}" name="data[{{ $pembelian->id }}][total_tagihan]">
-                                <input type="hidden" class="tagihan_dibayarkan" id="tagihan_dibayarkan_{{ $key }}" value="{{ $pembelian->tagihan_dibayarkan }}" name="data[{{ $pembelian->id }}][tagihan_dibayarkan]">
+                    @foreach ($data->get_nota_pembayaran_detail as $key => $pembelian)
+                        <tr style="background: #ffffffc0" class="tr_{{ $pembelian->id_tagihan }}" id="{{$key}}">
+                            <td>{{ $pembelian->get_nota_value->no_nota }}
+                                <input type="hidden" id="id_nota_{{ $key }}" value="{{ $pembelian->id }}" name="data[{{ $pembelian->id_tagihan }}][id_pembayaran_detail]">
+                                <input type="hidden" id="id_nota_{{ $key }}" value="{{ $pembelian->id_tagihan }}" name="data[{{ $pembelian->id_tagihan }}][id_nota]" class="all_id_nota">
+
+                                <input type="hidden" id="no_nota_{{ $key }}" value="{{ $pembelian->get_nota_value->no_nota }}" name="data[{{ $pembelian->id_tagihan }}][no_nota]">
+                                <input type="hidden" id="bukti_potong_{{ $key }}" name="data[{{ $pembelian->id_tagihan }}][bukti_potong]" value="{{ $pembelian->bukti_potong }}">
+                                <input type="hidden" class="pph23" id="pph23_{{ $key }}" value="{{ $pembelian->pph_23 }}" name="data[{{ $pembelian->id_tagihan }}][pph]">
+                                <input type="hidden" class="biaya_admin" id="biaya_admin_{{ $key }}" value="{{ $pembelian->biaya_admin }}" name="data[{{ $pembelian->id_tagihan }}][biaya_admin]">
+                                <input type="hidden" class="total_tagihan" id="total_tagihan_{{ $key }}" value="{{ $pembelian->get_nota_value->total_tagihan }}" name="data[{{ $pembelian->id_tagihan }}][total_tagihan]">
+                                <input type="hidden" class="sisa_tagihan" id="sisa_tagihan_{{ $key }}" value="{{ $pembelian->get_nota_value->sisa_tagihan }}" name="data[{{ $pembelian->id_tagihan }}][sisa_tagihan]">
+
+                                <input type="hidden" class="tagihan_dibayarkan" id="tagihan_dibayarkan_{{ $key }}" value="{{ $pembelian->dibayar }}" name="data[{{ $pembelian->id_tagihan }}][tagihan_dibayarkan]">
+                                <input type="hidden" class="tagihan_dibayarkan_js" id="tagihan_dibayarkan_js_{{ $key }}" value="{{ $pembelian->total_dibayar }}" >
+
                             </td>
                             <td colspan="2"></td>
-                            <td style="text-align: right;" class="font-weight-bold text-red text_pph23_{{ $key }}">{{ number_format($pembelian->pph) }}</td>
-                            <td style="text-align: right;" class="font-weight-bold text-success text_tagihan_dibayarkan_{{ $key }}">{{ number_format($pembelian->tagihan_dibayarkan) }}</td>
+                            <td style="text-align: right;" class="font-weight-bold text-red text_pph23_{{ $key }}">{{ number_format($pembelian->pph_23) }}</td>
+                            <td style="text-align: right;" class="font-weight-bold text-success text_tagihan_dibayarkan_{{ $key }}">{{ number_format($pembelian->dibayar) }}</td>
                             <td class="text_bukti_potong_{{ $key }}">{{ $pembelian->bukti_potong }}</td>
                             <td>
                                 <div class="btn-group dropleft">
@@ -172,11 +178,11 @@
                                         <i class="fa fa-list"></i>
                                     </button>
                                     <div class="dropdown-menu" >
-                                        <button class="btn dropdown-item openDetail" value="{{ $key }}" id_nota_add="{{ $pembelian->id }}">
+                                        <button class="btn dropdown-item openDetail" value="{{ $key }}" id_nota_add="{{ $pembelian->id_tagihan }}">
                                             <span class="fas fa-sticky-note mr-3"></span> Edit
                                         </button>
                                         @if ($key>0)
-                                            <button type="button" class="btn dropdown-item delete" value="{{ $pembelian->id }}">
+                                            <button type="button" class="btn dropdown-item delete" value="{{ $pembelian->id_tagihan }}">
                                                 <span class="fas fa-trash-alt mr-3"></span> Delete
                                             </button>
                                         @endif
@@ -184,8 +190,8 @@
                                 </div>
                             </td>
                         </tr>
-                        @foreach ($pembelian['getDetails'] as $item)
-                            <tr style="background: #ffffff" class="tr_{{ $pembelian->id }}" id="{{$key}}">
+                        @foreach ($pembelian->get_nota_value->getDetails as $item)
+                            <tr style="background: #ffffff" class="tr_{{ $pembelian->id_tagihan }}" id="{{$key}}">
                                 <td></td>
                                 <td>{{ $item->deskripsi }} - {{ $item->jumlah }} - {{ $item->satuan }}</td>
                                 <td style="text-align: right;" class="total_tagihan">{{ number_format($item->total_tagihan) }}</td>
@@ -233,7 +239,7 @@
 
                     <div class="col-lg-7 col-md-7 col-sm-12">
                         <div class="row">
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="">Total Tagihan</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
@@ -242,15 +248,15 @@
                                     <input type="text" class="form-control numaja uang" id="modal_total_tagihan" placeholder="" readonly>
                                 </div>
                             </div>
-                            {{-- <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                            <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                 <label for="">Total Sisa</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Rp</span>
                                     </div>
-                                    <input type="text" class="form-control numaja uang" id="modal_sisa_invoice" placeholder="" readonly>
+                                    <input type="text" class="form-control numaja uang" id="modal_sisa_tagihan" placeholder="" readonly>
                                 </div>
-                            </div> --}}
+                            </div>
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="">PPh 23</label>
                                 <div class="input-group mb-0">
@@ -353,7 +359,9 @@
                 const cek_dibayarkan = $('#tagihan_dibayarkan_0').val();
                 if(parseFloat(cek_admin) != 0){
                     $('#biaya_admin_0').val(0);
-                    $('#tagihan_dibayarkan_0').val(parseFloat(cek_dibayarkan)+parseFloat(cek_admin))
+                    $('#tagihan_dibayarkan_0').val(parseFloat(cek_dibayarkan)+parseFloat(cek_admin));
+                    // $('#tagihan_dibayarkan_0').val(parseFloat(cek_dibayarkan));
+
                     document.querySelector('.text_tagihan_dibayarkan_0').textContent = moneyMask($('#tagihan_dibayarkan_0').val());
                 }
             }
@@ -400,7 +408,7 @@
                 option.attr('total_tagihan', item.total_tagihan); 
                 option.attr('sisa_tagihan', item.sisa_tagihan); 
                 option.attr('no_nota', item.no_nota); 
-                option.attr('bukti_potong', item.bukti_potong); 
+                // option.attr('bukti_potong', item.bukti_potong); 
                 option.attr('detail_nota', JSON.stringify(item.get_details)); 
 
 
@@ -434,7 +442,7 @@
                     $('#modal_no_nota').val( no_nota );
                     $('#modal_catatan').val( catatan );
                     $('#modal_total_tagihan').val( moneyMask(total_tagihan) );
-                    $('#modal_sisa_invoice').val( moneyMask(sisa_tagihan) );
+                    $('#modal_sisa_tagihan').val( moneyMask(sisa_tagihan) );
                     $('#hidden_detailnota_modal').val( detail_nota );
                     
                 }
@@ -444,7 +452,7 @@
                     $('#modal_no_nota').val('');
                     $('#modal_catatan').val( '' );
                     $('#modal_total_tagihan').val( '' );
-                    $('#modal_sisa_invoice').val( '' );
+                    $('#modal_sisa_tagihan').val( '' );
                     $('#hidden_detailnota_modal').val( '' );
 
                 }
@@ -467,9 +475,11 @@
             var no_nota = $('#modal_no_nota').val();
             var no_bukti_potong =  $('#modal_bukti_potong').val();
             var total_tagihan = $('#modal_total_tagihan').val();
+            var sisa_tagihan = $('#modal_sisa_tagihan').val();
             var total_pph23 =$('#modal_pph23').val();
             var total_dibayar = $('#modal_bayar').val();
             var detail_nota = $('#hidden_detailnota_modal').val();
+            
 
             // console.log(detail_nota);
 
@@ -497,6 +507,7 @@
                             <input type="hidden" id="no_nota_${id}" value="${no_nota}" name="data[${id_nota}][no_nota]">
                             <input type="hidden" id="bukti_potong_${id}" name="data[${id_nota}][bukti_potong]" value=${no_bukti_potong}>
                             <input type="hidden" class="total_tagihan" id="total_tagihan_${id}" value="${normalize(total_tagihan)}" name="data[${id_nota}][total_tagihan]">
+                            <input type="hidden" class="sisa_tagihan" id="sisa_tagihan_${id}" value="${normalize(sisa_tagihan)}" name="data[${id_nota}][sisa_tagihan]">
                             <input type="hidden" class="pph23" id="pph23_${id}" name="data[${id_nota}][pph]" value="${normalize(total_pph23)}">
                             <input type="hidden" class="biaya_admin" id="biaya_admin_${id}}" value="" name="data[${id_nota}][biaya_admin]">
                             <input type="hidden" class="tagihan_dibayarkan" id="tagihan_dibayarkan_${id}" name="data[${id_nota}][tagihan_dibayarkan]" value="${normalize(total_dibayar)}">
@@ -562,20 +573,20 @@
 
             data_tagihan_udah_bayar.forEach(function(item, index) {
                 var option = $('<option>');
-                option.text(item.no_nota + '(' + dateMask(item.tgl_nota) + ')');
-                option.val(item.id);
+                option.text(item.get_nota_value.no_nota + '(' + dateMask(item.get_nota_value.tgl_nota) + ')');
+                option.val(item.id_tagihan);
                 option.attr('index', index); 
-                option.attr('total_tagihan', item.total_tagihan); 
-                option.attr('sisa_tagihan', item.sisa_tagihan); 
-                option.attr('no_nota', item.no_nota); 
+                option.attr('total_tagihan', item.get_nota_value.total_tagihan); 
+                option.attr('sisa_tagihan', item.get_nota_value.sisa_tagihan); 
+                option.attr('no_nota', item.get_nota_value.no_nota); 
                 option.attr('bukti_potong', item.bukti_potong); 
-                option.attr('detail_nota', JSON.stringify(item.get_details)); 
+                option.attr('detail_nota', JSON.stringify(item.get_nota_value.get_details)); 
                 // if ( all_id_nota.includes( item.id.toString() ) ) {
                 //     option.prop('disabled', true);
                 // }
                  console.log("item_id : "+item.id);
                 console.log("id nota : "+idNota);
-                if(item.id==idNota)
+                if(item.id_tagihan==idNota)
                 {
                     option.prop('selected', true);
                 }
@@ -590,7 +601,11 @@
             $('#modal_bukti_potong').val( $('#bukti_potong_'+id).val() );
             $('#modal_pph23').val( moneyMask($('#pph23_'+id).val()) );
             $('#modal_total_tagihan').val( moneyMask($('#total_tagihan_'+id).val()) );
-            var bayar = parseFloat($('#tagihan_dibayarkan_'+id).val()) + biaya_admin; 
+            $('#modal_sisa_tagihan').val( moneyMask($('#sisa_tagihan_'+id).val()) );
+
+            // var bayar = parseFloat($('#tagihan_dibayarkan_'+id).val()) + biaya_admin; 
+            var bayar = parseFloat($('#tagihan_dibayarkan_'+id).val()); 
+
             $('#modal_bayar').val( moneyMask( bayar ) );
             $('#modal_detail').modal('show');
         });
@@ -660,11 +675,11 @@
         });
 
         $(document).on('keyup', '#biaya_admin', function (event) {
-            const tagihan = parseFloat($('#total_tagihan_0').val());
+            const tagihan_dibayar_js = parseFloat($('#tagihan_dibayarkan_js_0').val());
             const pph = parseFloat($('#pph23_0').val());
             $('#biaya_admin_0').val(normalize(this.value));
 
-            $('#tagihan_dibayarkan_0').val( (parseFloat(tagihan) - pph) - normalize(this.value) )
+            $('#tagihan_dibayarkan_0').val( (parseFloat(tagihan_dibayar_js)- pph) - normalize(this.value) )
             document.querySelector('.text_tagihan_dibayarkan_0').textContent = moneyMask($('#tagihan_dibayarkan_0').val());
 
             hitung();
@@ -785,7 +800,7 @@
             $('#modal_no_nota').val('');
             $('#modal_bukti_potong').val('');
             $('#modal_total_tagihan').val('');
-            $('#modal_sisa_invoice').val('');
+            $('#modal_sisa_tagihan').val('');
             $('#modal_pph23').val('');
             $('#modal_bayar').val('');
             $('#modal_select_no_nota').empty(); 

@@ -58,12 +58,13 @@
                                                         <i class="fa fa-list"></i>
                                                     </button>
                                                     <div class="dropdown-menu" >
-                                                        @can('EDIT_TAGIHAN_PEMBELIAN')
-                                                            <a href="{{ route('tagihan_pembelian.edit', [$item->id]) }}" class="dropdown-item update_resi">
-                                                                <span class="fas fa-pen-alt mr-3"></span> Edit
-                                                            </a>
-                                                        @endcan
+                                                       
                                                         @if ($item->tagihan_dibayarkan==0)
+                                                            @can('EDIT_TAGIHAN_PEMBELIAN')
+                                                                <a href="{{ route('tagihan_pembelian.edit', [$item->id]) }}" class="dropdown-item update_resi">
+                                                                    <span class="fas fa-pen-alt mr-3"></span> Edit
+                                                                </a>
+                                                            @endcan
                                                             <a href="{{ route('tagihan_pembelian.destroy', $item->id) }}" class="dropdown-item" data-confirm-delete="true">
                                                                 <span class="fas fa-trash mr-3"></span> Hapus
                                                             </a>

@@ -169,9 +169,9 @@ class RevisiInvoiceTruckingController extends Controller
         $dataInvoices   = Invoice::where('billing_to', $invoice->billing_to)
         // ->whereNull('id_pembayaran')
         // ->whereDoesntHave('get_invoice_pembayaran_detail')
-        // ->whereDoesntHave('get_invoice_pembayaran_detail', function ($query) {
-        //     $query->where('is_aktif', 'Y');
-        // })
+        ->whereDoesntHave('get_invoice_pembayaran_detail', function ($query) {
+            $query->where('is_aktif', 'Y');
+        })
         ->where('status','MENUNGGU PEMBAYARAN INVOICE')
         ->where('is_aktif', 'Y')
         ->get();
@@ -199,10 +199,9 @@ class RevisiInvoiceTruckingController extends Controller
     {
         $user = Auth::user()->id;
         $data = $request->collect();
-        $isErr = FALSE;
+        $isErr = false;
         DB::beginTransaction(); 
-        // try {
-            // nonaktifkan invoice pembayaran
+        try {
             $oldPembayaran = InvoicePembayaran::where('is_aktif', 'Y')->find($id);
             // kembalikan uang ke kas bank
             $kasbank = KasBank::where('is_aktif', 'Y')->find($oldPembayaran->id_kas);
@@ -232,7 +231,6 @@ class RevisiInvoiceTruckingController extends Controller
                     $pembayaran->catatan = $data['catatan'];
                     $pembayaran->updated_by = $user;
                     $pembayaran->updated_at = now();
-                 
                     if($pembayaran->save()){
                         // dd($data);
                         foreach ($data['detail'] as $key => $value) {
@@ -284,7 +282,6 @@ class RevisiInvoiceTruckingController extends Controller
                                                             $cust->save();
                                                         }
                                                     }
-                            
                                                 }
                                             }
                                         }
@@ -481,11 +478,11 @@ class RevisiInvoiceTruckingController extends Controller
             }
             DB::commit();
             return redirect()->route('revisi_invoice_trucking.index')->with(['status' => 'Success', 'msg'  => 'Berhasil Revisi Pembayaran invoice!']);
-        // } 
-        // catch (\Throwable $th) {
-        //     db::rollBack();
-        //     return redirect()->route('revisi_invoice_trucking.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
-        // }
+        } 
+        catch (\Throwable $th) {
+            db::rollBack();
+            return redirect()->route('revisi_invoice_trucking.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        }
     }
 
     /**
@@ -505,8 +502,6 @@ class RevisiInvoiceTruckingController extends Controller
             $inv_bayar->updated_by = $user;
             $inv_bayar->updated_at = now();
             $inv_bayar->is_aktif = 'N';
-
-
             if($inv_bayar->save()){
                 // $invoice = Invoice::where('is_aktif', 'Y')
                 // ->with('get_invoice_pembayaran_detail')
@@ -584,7 +579,6 @@ class RevisiInvoiceTruckingController extends Controller
                                     $sewa->updated_at = now();
                                     $sewa->save();
                                     //buat yang JO ADA DI TRIGGER update_jo_selesai_dooring
-        
                                     $cust = Customer::where('is_aktif', 'Y')->findOrFail($sewa->id_customer);
                                     if($cust){
                                         $cust->kredit_sekarang += $sewa->total_tarif;
@@ -606,7 +600,6 @@ class RevisiInvoiceTruckingController extends Controller
                 // dd($history );
                 if($history)
                 {
-                    $history->keterangan_transaksi = 'HAPUS - ' . isset($history->keterangan_transaksi)? $history->keterangan_transaksi:'';
                     $history->is_aktif = 'N';
                     $history->updated_by = $user;
                     $history->updated_at = now();
