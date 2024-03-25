@@ -2188,7 +2188,17 @@ class DalamPerjalananController extends Controller
 
             // kalo ubah supir tapi sama kayak yang lama ke prevent
             if ($sewa->id_karyawan == $data['select_driver']) {
-                return redirect()->route('dalam_perjalanan.ubah_supir', [ $id ])->with(['status' => 'error', 'msg' => "Supir tidak boleh sama dengan sebelumnya jika ingin diubah!"]);
+                $sewa->id_kendaraan = $data['kendaraan_id'];
+                $sewa->no_polisi = $data['no_polisi'];
+                if ($sewa->jenis_tujuan == 'FTL') {
+                    # code...
+                    $sewa->id_chassis = $data['select_chassis'];
+                    $sewa->karoseri = $data['karoseri'];
+                }
+                $sewa->updated_by = $user;
+                $sewa->updated_at = now();
+                $sewa->save();
+                // return redirect()->route('dalam_perjalanan.ubah_supir', [ $id ])->with(['status' => 'error', 'msg' => "Supir tidak boleh sama dengan sebelumnya jika ingin diubah!"]);
             }else{
                 $sewa->id_kendaraan = $data['kendaraan_id'];
                 $sewa->no_polisi = $data['no_polisi'];

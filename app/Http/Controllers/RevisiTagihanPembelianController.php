@@ -133,7 +133,7 @@ class RevisiTagihanPembelianController extends Controller
         // dd($data);
         $isErr = false;
 
-        try {
+        // try {
             // history kas bank di nonaktifkan
             $pembayaran_lama = TagihanPembelianPembayaran::where('is_aktif', 'Y')->find($id);
             $biaya_admin = isset($data['biaya_admin'])? floatval(str_replace(',', '', $data['biaya_admin'])):0;
@@ -151,7 +151,9 @@ class RevisiTagihanPembelianController extends Controller
                 {
                     if(isset($data['data'])){
                         foreach ($data['data'] as $key => $value) {
+                            $tagihan_dibayarkan = isset($value['tagihan_dibayarkan'])? floatval(str_replace(',', '', $value['tagihan_dibayarkan'])):0;
                             $pph = isset($value['pph'])?$value['pph']:0;
+                            $biaya_admin_detail = isset($value['biaya_admin'])? floatval(str_replace(',', '', $value['biaya_admin'])):0;
 
                             if(isset($value['id_pembayaran_detail']))
                             {
@@ -165,48 +167,105 @@ class RevisiTagihanPembelianController extends Controller
                                         $tagihan->sisa_tagihan += $tagihan_pembayaran_detail->total_dibayar; 
                                         $tagihan->tagihan_dibayarkan -= $tagihan_pembayaran_detail->total_dibayar;
 
-                                        if($i == 0){
-                                            $tagihan_pembayaran_detail->dibayar = $value['total_bayar'] - $biaya_admin;
-                                            $tagihan_pembayaran_detail->pph_23 =  $pph;
-                                            $tagihan_pembayaran_detail->biaya_admin = $biaya_admin;
-                                        }else{
-                                            $tagihan_pembayaran_detail->dibayar = $value['total_bayar'];
-                                            $tagihan_pembayaran_detail->pph_23 =  $pph;
-                                            $tagihan_pembayaran_detail->biaya_admin = 0;
-                                        }
-                                        $tagihan_pembayaran_detail->total_dibayar = $value['total_bayar'] + $pph;
+                                    //contoh :
+                                    //     8 => array:9 [▼
+                                    //     "id_pembayaran_detail" => "4"
+                                    //     "id_nota" => "8"
+                                    //     "no_nota" => "CC XX 212"
+                                    //     "bukti_potong" => null
+                                    //     "pph" => "100000"
+                                    //     "biaya_admin" => "10000"
+                                    //     "total_tagihan" => "5200000"
+                                    //     "sisa_tagihan" => "4600000"
+                                    //     "tagihan_dibayarkan" => "490000"
+                                    //   ]
+                                    //   9 => array:8 [▼
+                                    //     "id_nota" => "9"
+                                    //     "no_nota" => "TEST"
+                                    //     "bukti_potong" => null
+                                    //     "total_tagihan" => "100000"
+                                    //     "sisa_tagihan" => "100000"
+                                    //     "pph" => "0"
+                                    //     "biaya_admin" => null
+                                    //     "tagihan_dibayarkan" => "100000"
+                                    //   ]
+                                        $tagihan_pembayaran_detail->dibayar = $tagihan_dibayarkan;
+                                        //biaya admin di cantolin di index pertama
+                                        $tagihan_pembayaran_detail->pph_23 =  $pph;
+                                        $tagihan_pembayaran_detail->biaya_admin = $biaya_admin_detail;
+                                        $tagihan_pembayaran_detail->total_dibayar = $tagihan_dibayarkan+ $pph + $biaya_admin_detail;
                                         $tagihan_pembayaran_detail->bukti_potong = $value['bukti_potong'];
                                         $tagihan_pembayaran_detail->updated_by = $user;
                                         $tagihan_pembayaran_detail->updated_at = now();
                                         if($tagihan_pembayaran_detail->save())
                                         {
-                                            $tagihan->bukti_potong = $value['bukti_potong'];
-                                            $tagihan->sisa_tagihan -=  $tagihan->total_tagihan;
-                                            $tagihan->tagihan_dibayarkan += $value['tagihan_dibayarkan'];
-                                            if($i == 0){
-                                                $tagihan->sisa_tagihan -= ($value['tagihan_dibayarkan'] + $value['pph']+$biaya_admin);
-                                                $tagihan->biaya_admin = $biaya_admin;
-                                            }else{
-                                                $tagihan->sisa_tagihan -= ($value['tagihan_dibayarkan'] + $value['pph']);
-                                            }
+                                            $sum_all = $tagihan_dibayarkan + $pph +$biaya_admin_detail;
+                                            $tagihan->sisa_tagihan -= $sum_all;
+                                            $tagihan->tagihan_dibayarkan += $sum_all;
                                             if($tagihan->sisa_tagihan == 0){
                                                 $tagihan->status = 'LUNAS';
+                                            }
+                                            if($tagihan->sisa_tagihan < 0){
+                                                $isErr = true; // ini error karna minus
                                             }
                                             $tagihan->updated_by = $user;
                                             $tagihan->updated_at = now();
                                             $tagihan->save();
-                        
-                                            $keterangan .= ' >> NOTA: '. $value['no_nota'] . ' >> TOTAL BAYAR: ' . $tagihan->tagihan_dibayarkan;
-                                            if($value['pph'] != 0){
-                                                $keterangan .= ' >> PPh23: '. $value['pph'];
+                                            
+                                            $keterangan .= ' >> NOTA: '. $value['no_nota'] . ' >> TOTAL BAYAR: ' . $tagihan_pembayaran_detail->dibayar;
+                                            if($pph != 0){
+                                                $keterangan .= ' >> PPh23: '. $pph;
                                             }
-                                            if($i == 0 && $value['biaya_admin'] != 0){
-                                                $keterangan .= ' >> BIAYA ADMIN: '. $value['biaya_admin'];
+                                            if($i == 0 && $biaya_admin_detail != 0){
+                                                $keterangan .= ' >> BIAYA ADMIN: '. $biaya_admin_detail;
                                             }
                                             $i++;
 
                                         }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                $tagihan = TagihanPembelian::where('is_aktif', 'Y')->find($value['id_nota']);
+                                // $tagihan->no_nota = $value['no_nota'];
+                                if($tagihan)
+                                {
+                                    $tagihan_pembayaran_detail_new = new TagihanPembelianPembayaranDetail();
 
+                                    $tagihan_pembayaran_detail_new->id_tagihan_pembayaran = $id;
+                                    $tagihan_pembayaran_detail_new->id_tagihan = $tagihan->id;
+                                    $tagihan_pembayaran_detail_new->dibayar = $tagihan_dibayarkan;
+                                    //biaya admin di cantolin di index pertama
+                                    $tagihan_pembayaran_detail_new->pph_23 =  $pph;
+                                    $tagihan_pembayaran_detail_new->biaya_admin = $biaya_admin_detail;
+                                    $tagihan_pembayaran_detail_new->total_dibayar = $tagihan_dibayarkan+ $pph + $biaya_admin_detail;
+                                    $tagihan_pembayaran_detail_new->bukti_potong = $value['bukti_potong'];
+                                    $tagihan_pembayaran_detail_new->created_by = $user;
+                                    $tagihan_pembayaran_detail_new->created_at = now();
+                                    $tagihan_pembayaran_detail_new->is_aktif = 'Y';
+                                    if($tagihan_pembayaran_detail_new->save())
+                                    {
+                                        $sum_all = $tagihan_dibayarkan + $pph +$biaya_admin_detail;
+                                        $tagihan->sisa_tagihan -= $sum_all;
+                                        $tagihan->tagihan_dibayarkan += $sum_all;
+                                        if($tagihan->sisa_tagihan == 0){
+                                            $tagihan->status = 'LUNAS';
+                                        }
+                                        if($tagihan->sisa_tagihan < 0){
+                                            $isErr = true; // ini error karna minus
+                                        }
+                                        $tagihan->updated_by = $user;
+                                        $tagihan->updated_at = now();
+                                        $tagihan->save();
+                                        $keterangan .= ' >> NOTA: '. $value['no_nota'] . ' >> TOTAL BAYAR: ' . $tagihan_pembayaran_detail_new->dibayar;
+                                        if($pph != 0){
+                                            $keterangan .= ' >> PPh23: '. $pph;
+                                        }
+                                        if($i == 0 && $biaya_admin_detail != 0){
+                                            $keterangan .= ' >> BIAYA ADMIN: '. $biaya_admin_detail;
+                                        }
+                                        $i++;
 
                                     }
                                 }
@@ -214,21 +273,54 @@ class RevisiTagihanPembelianController extends Controller
                         }
                     }
                     // hapus data
+                    if($isErr === true){
+                        db::rollBack();
+                        return redirect()->route('revisi_tagihan_pembelian.index')->with(["status" => "error", "msg" => 'Terjadi kesalahan (Pembayaran melebihi sisa nota)!']);
+                    }
+                    $is_ketemu_detail = true;
                     if($data['data_deleted'] != null){
                         $array = explode(",", $data['data_deleted']);
+
                         foreach ($array as $key => $value) {
-                            $del_pembelian = TagihanPembelian::where('is_aktif', 'Y')->find($value);
-                            $del_pembelian->sisa_tagihan =  $del_pembelian->total_tagihan;
-                            $del_pembelian->status = 'MENUNGGU PEMBAYARAN';
-                            $del_pembelian->tagihan_dibayarkan = 0;
-                            $del_pembelian->updated_by = $user;
-                            $del_pembelian->updated_at = now();
-                            $del_pembelian->save();
+                            $pembayaran_detail = TagihanPembelianPembayaranDetail::where('is_aktif', 'Y')->where('id',$value)->first();
+                            if($pembayaran_detail)
+                            {
+                                $pembayaran_detail->is_aktif='N';
+                                $pembayaran_detail->updated_by = $user;
+                                $pembayaran_detail->updated_at = now();
+                                if($pembayaran_detail->save())
+                                {
+                                    $pembelian = TagihanPembelian::where('is_aktif', 'Y')->where('id', $pembayaran_detail->id_tagihan)->first();
+                                    $pembelian->sisa_tagihan +=  $pembayaran_detail->total_dibayar;
+                                    $pembelian->tagihan_dibayarkan -= $pembayaran_detail->total_dibayar;
+                                    $pembelian->status = 'MENUNGGU PEMBAYARAN';
+                                    $pembelian->updated_by = $user;
+                                    $pembelian->updated_at = now();
+                                    $pembelian->save();
+                                }
+                            }
+                            else
+                            {
+                                $is_ketemu_detail = false;
+                                break;
+                            }
+                            // $del_pembelian = TagihanPembelian::where('is_aktif', 'Y')->find($value);
+                            // $del_pembelian->sisa_tagihan =  $del_pembelian->total_tagihan;
+                            // $del_pembelian->status = 'MENUNGGU PEMBAYARAN';
+                            // $del_pembelian->tagihan_dibayarkan = 0;
+                            // $del_pembelian->updated_by = $user;
+                            // $del_pembelian->updated_at = now();
+                            // $del_pembelian->save();
                         }
+                    }
+                    if(!$is_ketemu_detail)
+                    {
+                        db::rollBack();
+                        return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Data Detail Pembayaran Tidak ditemukan']);
                     }
                     $pembayaran = TagihanPembelianPembayaran::where('is_aktif', 'Y')->find($id);
                     $pembayaran->catatan = 'REVISI - CATATAN: ' . $data['catatan'];
-                    $pembayaran->total_bayar = floatval(str_replace(',', '', $data['total_bayar']));
+                    $pembayaran->total_dibayar = floatval(str_replace(',', '', $data['total_bayar']));
                     $pembayaran->total_pph23 = $total_pph;
                     $pembayaran->total_biaya_admin = $biaya_admin;
                     $pembayaran->updated_by = $user;
@@ -238,38 +330,49 @@ class RevisiTagihanPembelianController extends Controller
                     {
                         $history = KasBankTransaction::where('is_aktif','Y')
                         ->where('keterangan_kode_transaksi', $id)
+                        ->where('tanggal', $pembayaran->tgl_bayar)
                         ->where('jenis', 'tagihan_supplier')
                         ->first();
-                        $history->keterangan_transaksi = 'REVISI:'. $keterangan ;
-                        $history->kredit = floatval(str_replace(',', '', $data['total_bayar'])) ;
-                        // $history->is_aktif = 'N';
-                        $history->updated_by = $user;
-                        $history->updated_at = now();
-                        // $history->save();
-                        if( $history->save())
+                        // dd($history);
+                        if($history)
                         {
-                            // kurangi kasbank sekarang
-                            $kurangiKas = KasBank::where('is_aktif','Y')->find($data['id_kas']);
-                            $kurangiKas->saldo_sekarang -= floatval(str_replace(',', '', $data['total_bayar']));
-                            $kurangiKas->updated_by = $user;
-                            $kurangiKas->updated_at = now();
-                            if($kurangiKas->save()){
-                                DB::commit();
+                            $history->keterangan_transaksi = 'REVISI:'. $keterangan ;
+                            $history->kredit = floatval(str_replace(',', '', $data['total_bayar'])) ;
+                            // $history->is_aktif = 'N';
+                            $history->updated_by = $user;
+                            $history->updated_at = now();
+                            // $history->save();
+                            if( $history->save())
+                            {
+                                // kurangi kasbank sekarang
+                                $kurangiKas = KasBank::where('is_aktif','Y')->find($data['id_kas']);
+                                $kurangiKas->saldo_sekarang -= floatval(str_replace(',', '', $data['total_bayar']));
+                                $kurangiKas->updated_by = $user;
+                                $kurangiKas->updated_at = now();
+                                if($kurangiKas->save()){
+                                    DB::commit();
+                                }
                             }
                         }
+                        else
+                        {
+                            db::rollBack();
+                            return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Data Riwayat Pembayaran Tidak ditemukan']);
+                        }
+                       
                     }
                 }
     
             }
             return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'Success', 'msg'  => 'Berhasil revisi nota pembelian!']);
-        } catch (ValidationException $e) {
-            db::rollBack();
-            return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Revisi gagal!']);
-        }
-        catch (\Throwable $th) {
-            db::rollBack();
-            return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
-        }
+        // } catch (ValidationException $e) {
+        //     db::rollBack();
+        //     return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Revisi gagal!']);
+        // }
+        // catch (\Throwable $th) {
+        //     db::rollBack();
+        //     return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
+        // }
     }
     /**
      * Remove the specified resource from storage.
@@ -334,10 +437,10 @@ class RevisiTagihanPembelianController extends Controller
                 }
                 else
                 {
+                    db::rollBack();
                     return redirect()->route('revisi_tagihan_pembelian.index')->with(['status' => 'error', 'msg' => 'Data Riwayat Pembayaran Tidak ditemukan']);
                 }
             }    
-            db::rollBack();
             return response()->json(['status' => 'error']);
         } 
         catch (\Throwable $th) {

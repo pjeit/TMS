@@ -61,7 +61,7 @@
                                         <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                         </div>
-                                        <input type="text" autocomplete="off" name="tgl_bayar" class="form-control date" id="tgl_bayar" required>
+                                        <input type="text" autocomplete="off" name="tgl_bayar" class="form-control date" id="tgl_bayar" required value="{{date('d-M-Y',strtotime($data->tgl_bayar))}}">
                                     </div>
                                 </div>
                             </div>
@@ -69,7 +69,6 @@
                                 <div class="form-group">
                                     <label for="">Pilih Kas<span style="color:red">*</span></label>
                                     <select class="select2" style="width: 100%" id="id_kas" required disabled>
-                                        <option value="">── PILIH SUPPLIER ──</option>
                                         @foreach ($dataKas as $item)
                                             <option value="{{ $item->id }}" {{ $item->id == $data->id_kas? 'selected':'' }}>{{ $item->nama }}</option>
                                         @endforeach
@@ -182,7 +181,7 @@
                                             <span class="fas fa-sticky-note mr-3"></span> Edit
                                         </button>
                                         @if ($key>0)
-                                            <button type="button" class="btn dropdown-item delete" value="{{ $pembelian->id_tagihan }}">
+                                            <button type="button" class="btn dropdown-item delete" value="{{ $pembelian->id_tagihan }}" id_bayar_detail = "{{ $pembelian->id }}">
                                                 <span class="fas fa-trash-alt mr-3"></span> Delete
                                             </button>
                                         @endif
@@ -370,7 +369,7 @@
         // 
 
         var today = new Date();
-        $('#tgl_bayar').val(dateMask(today));
+        // $('#tgl_bayar').val(dateMask(today));
         // $('#tabel_tagihan').DataTable( {
         //     searching: false, paging: false, info: false, ordering: false,
         //     rowGroup: {
@@ -527,7 +526,7 @@
                                         <button class="btn dropdown-item openDetail" value="${id}"  id_nota_add="${id_nota}">
                                             <span class="fas fa-sticky-note mr-3"></span> Edit
                                         </button>
-                                        <button type="button" class="btn dropdown-item delete" id="hapus_${id}" value="${id_nota}">
+                                        <button type="button" class="btn dropdown-item delete" id="hapus_${id}" value="${id_nota}" id_bayar_detail = "baru">
                                             <span class="fas fa-trash-alt mr-3"></span> Delete
                                         </button>
                                     </div>
@@ -642,36 +641,39 @@
         });
 
         $(document).on('click', '.delete', function(event){
-            id = this.value;
-            
+            const id = this.value;
+            const id_detail = $(this).attr('id_bayar_detail')
             // var closestTR = $(this).closest('tr');
             // var id = closestTR.attr('id');
             // $('.tr_'+id).remove();
             // closestTR.remove();
             var trElements = document.querySelectorAll('tr.tr_'+id);
+            // console.log(id);
             for (var i = 0; i < trElements.length; i++) {
                 trElements[i].remove();
             }
-
             // let deleted = $('#data_deleted').val();
             // if(deleted != ''){
             //     id = deleted + ','+id;
             // }
-
+            console.log(id_detail);
             let deleted = $('#data_deleted').val();
-            if (deleted !== '') {
-                var split_deleted = deleted.split(',');
-                if (!split_deleted.includes(id)) {
-                    split_deleted.push(id);
-                    $('#data_deleted').val(split_deleted.join(','));
-                }
-            } else {
-                $('#data_deleted').val(id);
-            }
-            console.log(split_deleted);
-            // $('#data_deleted').val(id);
 
-            hitung()
+            if(id_detail!='baru' )
+            {
+                if (deleted !== '') {
+                    var split_deleted = deleted.split(',');
+                    if (!split_deleted.includes(id_detail)) {
+                        split_deleted.push(id_detail);
+                        $('#data_deleted').val(split_deleted.join(','));
+                    }
+                } else {
+                    $('#data_deleted').val(id_detail);
+                }
+            }
+            // console.log(split_deleted);
+            // $('#data_deleted').val(id);
+            hitung();
         });
 
         $(document).on('keyup', '#biaya_admin', function (event) {

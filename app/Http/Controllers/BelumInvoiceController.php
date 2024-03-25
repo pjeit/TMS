@@ -111,16 +111,16 @@ class BelumInvoiceController extends Controller
                 'updated_at'=> now(),
                 'updated_by'=>  $user,
             ));
-            if(isset($data['idJo'])&&isset($data['idJo_detail']))
-            {
-                DB::table('job_order_detail')
-                ->where('id',  $data['idJo_detail'])
-                ->update(array(
-                    'status' => 'PROSES DOORING',
-                    'updated_at'=> now(),
-                    'updated_by'=>  $user,
-                )); 
-            }
+            // if(isset($data['idJo'])&&isset($data['idJo_detail']))
+            // {
+            //     DB::table('job_order_detail')
+            //     ->where('id',  $data['idJo_detail'])
+            //     ->update(array(
+            //         'status' => 'PROSES DOORING',
+            //         'updated_at'=> now(),
+            //         'updated_by'=>  $user,
+            //     )); 
+            // }
             return redirect()->route('invoice.index')->with('status','Sukses Mengubah mengembalikan data sewa!!');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();

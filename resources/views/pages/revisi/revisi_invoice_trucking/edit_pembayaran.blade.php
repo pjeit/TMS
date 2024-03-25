@@ -60,7 +60,7 @@
                                             <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                             </div>
-                                            <input type="text" autocomplete="off" name="tanggal_pembayaran" class="form-control date" id="tanggal_pembayaran" required>
+                                            <input type="text" autocomplete="off" name="tanggal_pembayaran" class="form-control date" id="tanggal_pembayaran" required value="{{date('d-M-Y',strtotime($data->tgl_pembayaran))}}">
                                         </div>
                                     </div>
                                 </div>
@@ -401,13 +401,20 @@
     $(document).ready(function() {
         // set value default tgl invoice
         var today = new Date();
+        // $('#tanggal_pembayaran').datepicker({
+        //     autoclose: true,
+        //     format: "dd-M-yyyy",
+        //     todayHighlight: true,
+        //     language: 'en',
+        //     // startDate: today,
+        // }).datepicker("setDate", today);
         $('#tanggal_pembayaran').datepicker({
             autoclose: true,
             format: "dd-M-yyyy",
             todayHighlight: true,
             language: 'en',
             // startDate: today,
-        }).datepicker("setDate", today);
+        });
         var dataInvoices = <?= isset($dataInvoices)? $dataInvoices:NULL; ?> ;
         var dataDetail = <?= isset($dataDetail)? $dataDetail:NULL; ?> ;
         console.log(dataDetail);

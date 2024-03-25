@@ -462,6 +462,7 @@
               <li class="nav-item {{ 
                       request()->is('pembayaran_jo*') ||
                       request()->is('pencairan_uang_jalan*') ||
+                      request()->is('persetujuan_uang_jalan*') ||
                       request()->is('pencairan_operasional*') ||
                       request()->is('biaya_operasional*') ||
                       request()->is('pembayaran_sdt*') ||
@@ -519,7 +520,18 @@
                     </a>
                   </li>
                 </ul>
-                
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="{{route('persetujuan_uang_jalan.index')}}"
+                      class="nav-link {{request()->url() === route('persetujuan_uang_jalan.index')? ' active' : '' }} "
+                      style="font-weight: 500;">
+                      <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                      <span style="font-size: 0.9em;">Persetujuan Uang jalan</span>
+                     
+                    </a>
+                  </li>
+                </ul>
+               
                 <ul class="nav nav-treeview">
                   <li class="nav-item   {{ 
                             request()->is('pembayaran_jo*') ||
@@ -620,7 +632,7 @@
                             </a>
                           </li>
                           @endcan
-
+                        
                           @can('READ_PENCAIRAN_UJ_LTL')
                           <li class="nav-item">
                             <a href="{{route('pencairan_uang_jalan_ltl.index')}}"

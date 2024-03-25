@@ -448,7 +448,7 @@ class SewaController extends Controller
                     }
                 }
             } else {
-                if($sewa->status == "MENUNGGU UANG JALAN"){
+                if($sewa->status == "MENUNGGU UANG JALAN"||$sewa->status == "MENUNGGU PERSETUJUAN"){
                     $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
                     $sewa->tanggal_berangkat = date_format($tgl_berangkat, 'Y-m-d');
                     $sewa->id_kendaraan = $data['kendaraan_id']? $data['kendaraan_id']:null;

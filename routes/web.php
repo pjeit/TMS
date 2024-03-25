@@ -207,6 +207,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('pencairan_komisi_driver/load_data', 'App\Http\Controllers\PencairanKomisiDriverController@load_data')->name('pencairan_komisi_driver.load_data');
         Route::resource('pencairan_komisi_driver', 'App\Http\Controllers\PencairanKomisiDriverController');
         Route::resource('pencairan_komisi_customer', 'App\Http\Controllers\PencairanKomisiCustomerController');
+        Route::resource('persetujuan_uang_jalan', 'App\Http\Controllers\PersetujuanUangJalanController');
         // Route::post('/pencairan-uang-jalan-ftl/form', 'YourController@edit')->name('pencairan_uang_jalan_ftl.edit');
         
         Route::get('/klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'pencairan'])->name('pencairan_klaim_supir.edit');
