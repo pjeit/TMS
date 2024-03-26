@@ -25,10 +25,9 @@
             <div class="card radiusSendiri">
                 <div class="card-header">
 
-                    <button class="btn btn-primary btn-responsive float-left radiusSendiri bukakModalCreate">
+                    {{-- <button class="btn btn-primary btn-responsive float-left radiusSendiri bukakModalCreate">
                         <i class="fa fa-plus-circle"> </i> Tambah Data
-
-                    </button>
+                    </button> --}}
                     {{-- <a href="{{route('karyawan.create')}}" >
                     </a>  --}}
                 </div>
