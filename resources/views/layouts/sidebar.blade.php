@@ -1103,6 +1103,7 @@
                                     request()->is('revisi_biaya_operasional*')||
                                     request()->is('revisi_klaim_supir*')||
                                     request()->is('revisi_lembur_mekanik*')||
+                                    request()->is('revisi_klaim_operasional*')||
                                     request()->is('revisi_invoice_karantina*')
                                     ? 'menu-is-opening menu-open' : '' }} ">
               <a href="#" class="nav-link hover-item" style="font-weight: 700;font-size: 15px;">
@@ -1148,6 +1149,16 @@
                   </a>
                 </li>
                 @endcan
+                <li class="nav-item">
+                  <a href="{{route('klaim_operasional_revisi.index')}}"
+                    class="nav-link {{request()->url() === route('klaim_operasional_revisi.index')? ' active' : '' }} "
+                    style="font-weight: 500;">
+                    <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
+                    <p>
+                      <span style="font-size: 0.9em;">Rev. Klaim Operasional</span>
+                    </p>
+                  </a>
+                </li>
                 @can('READ_REVISI_KLAIM_SUPIR')
                 <li class="nav-item">
                   <a href="{{route('klaim_supir_revisi.index')}}"
@@ -1170,6 +1181,7 @@
                     </p>
                   </a>
                 </li>
+                
                 {{-- ini tak hide dulu, soalnya ini revisi invoice yg sudah dibayar
                 kalau perlu tinggal munculin lagi,
                 edit data yg masih belum invoice udah ke handle di menu belum invoice > edit, gaperlu sampai ke menu revisi ini --}}

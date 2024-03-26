@@ -635,8 +635,6 @@ class KlaimSupirController extends Controller
         ];
     }
     
-
-
     public function pencairan($id)
     {
         //
@@ -1040,7 +1038,7 @@ class KlaimSupirController extends Controller
         }
     }
 
-     public function revisi_pencairan($id)
+    public function revisi_pencairan($id)
     {
         $data = $this->methodEdit($id);
         return view('pages.revisi.revisi_klaim_supir.pencairan',[

@@ -102,6 +102,8 @@ class LaporanKasController extends Controller
                         then 'Pembayaran Gabungan'
                     when d.jenis = 'lembur_mekanik' 
                         then 'Lembur Mekanik'
+                    when d.jenis = 'klaim_operasional' 
+                        then 'Klaim Operasional'
                   end jenis_deskripsi
                 FROM (
                     -- SELECT 
