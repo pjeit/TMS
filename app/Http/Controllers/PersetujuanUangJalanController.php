@@ -46,10 +46,14 @@ class PersetujuanUangJalanController extends Controller
         ->with('getKaryawan')
         ->with('getUJRiwayat')
         ->get();
+        $dataKas = DB::table('kas_bank')
+        ->select('*')
+        ->where('is_aktif', '=', "Y")
+        ->get();
         return view('pages.finance.persetujuan_uang_jalan.index',[
             'judul' => "Persetujuan Uang Jalan",
             'sewa'=>$sewa,
-            'dataJO' => null,
+            'dataKas' => $dataKas,
         ]);
     }
 
@@ -87,8 +91,8 @@ class PersetujuanUangJalanController extends Controller
                     {
                         if($value['is_acc']=='Y')
                         {
-                            // $ujr->tanggal = date_create_from_format('d-M-Y', $value['tanggal_pencairan']);
-                            // $ujr->kas_bank_id ;
+                            $ujr->tanggal = date_create_from_format('d-M-Y', $value['tanggal_cair_hidden']);
+                            $ujr->kas_bank_id =  $value['pembayaran'];
                             $ujr->is_acc='Y' ;
                             $ujr->updated_by=$user ;
                             $ujr->updated_at=now() ;

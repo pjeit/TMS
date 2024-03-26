@@ -49,15 +49,33 @@
                                     <td>{{ date('d-M-Y', strtotime($item->tanggal_berangkat)) }}</td>
                                     <td>{{ $item->nama_tujuan }}</td>
                                     <td>
-                                        <span class="badge badge-primary" style="font-size: larger;">
+                                        {{-- <span class="badge badge-primary" style="font-size: larger;">
                                             {{$item->getUJRiwayat->get_kas_uj->nama}}
                                         </span>
-                                        <br><br>
+                                        <br><br> --}}
                                         Total uang Jalan = {{number_format( $item->getUJRiwayat->total_uang_jalan)}} <br>
                                         Total teluk lamong = {{number_format($item->getUJRiwayat->total_tl)}}<br>
                                         Total potong hutang = {{number_format($item->getUJRiwayat->potong_hutang)}}<br><br>
                                         Total transfer = <span class="badge badge-success" style="font-size: larger;">{{number_format(($item->getUJRiwayat->total_uang_jalan+$item->getUJRiwayat->total_tl) - $item->getUJRiwayat->potong_hutang)}}
                                         </span>
+                                        <br><br>
+                                        Tanggal Pencairan :  <br><br>
+                                        <div class="input-group mb-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                            </div>
+                                            <input type="text" autocomplete="off"   name="data[{{$key}}][tanggal_cair]" class="form-control tanggal_cair" value="{{date('d-M-Y',strtotime($item->getUJRiwayat->tanggal)) }}" id="tanggal_cair" disabled>
+                                            <input type="hidden" autocomplete="off" name="data[{{$key}}][tanggal_cair_hidden]" class="form-control tanggal_cair_hidden" value="{{date('d-M-Y',strtotime($item->getUJRiwayat->tanggal)) }}" >
+                                        </div> <br><br>
+
+                                        <label for="">Metode Pembayaran<span class="text-red">*</span></label>      
+                                        <select class="form-control select2" required style="width: 100%;" id='pembayaran_{{$key}}' name="data[{{$key}}][pembayaran]" data-live-search="true" data-show-subtext="true" data-placement="bottom">
+                                            {{-- <option value="">──PILIH KAS──</option> --}}
+                                            @foreach ($dataKas as $kas)
+                                                <option value="{{$kas->id}}" {{$kas->id == $item->getUJRiwayat->kas_bank_id? 'selected':''}}>{{ $kas->nama }}</option>
+                                            @endforeach
+                                        </select>
+
                                     </td>
                                     <td>
                                         {{-- <form method="POST" action="{{ route('persetujuan_uang_jalan.store') }}"> --}}
@@ -103,6 +121,13 @@
 </div>
 <script>
     $(document).ready(function () {
+        $('.tanggal_cair').datepicker({
+            autoclose: true,
+            format: "dd-M-yyyy",
+            todayHighlight: true,
+            language: 'en',
+            // startDate: today,
+        });
         $(document).on('click', '.radio_tolak', function () {
             var isChecked = $(this).prop("checked");
             var id = $(this).attr("id");
