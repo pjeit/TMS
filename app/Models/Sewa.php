@@ -102,7 +102,11 @@ class Sewa extends Model
 
      public function getUJRiwayat()
      {
-          return $this->hasMany(UangJalanRiwayat::class, 'sewa_id', 'id_sewa')->where('is_aktif', 'Y')->orderBy('id', 'DESC');
+          // return $this->hasMany(UangJalanRiwayat::class, 'sewa_id', 'id_sewa')->where('is_aktif', 'Y')->orderBy('id', 'DESC');
+          return $this->hasOne(UangJalanRiwayat::class, 'sewa_id', 'id_sewa')
+          ->with('get_kas_uj')
+          ->where('is_aktif', 'Y')/*->orderBy('id', 'DESC')*/;
+
      }
 
      public function getKaryawan()

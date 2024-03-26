@@ -29,4 +29,10 @@ class UangJalanRiwayat extends Model
         'updated_by',
         'is_aktif',
    ];
+
+   public function get_kas_uj()
+   {
+        return $this->hasOne(KasBank::class, 'id', 'kas_bank_id')->where('is_aktif', 'Y');
+
+   }
 }

@@ -76,8 +76,8 @@ class SewaController extends Controller
             $pengaturan = PengaturanKeuangan::first();
             $romawi = VariableHelper::bulanKeRomawi(date("m"));
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
-            $lastNoSewa = Sewa::where('is_aktif', 'Y')
-                        ->where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
+            $lastNoSewa = Sewa::/*where('is_aktif', 'Y')
+                        ->*/where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
                         ->orderBy('no_sewa', 'DESC')
                         ->first();
             if(isset($lastNoSewa)){

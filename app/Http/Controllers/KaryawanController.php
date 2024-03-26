@@ -260,6 +260,19 @@ class KaryawanController extends Controller
             }
             // var_dump($data['status_pegawai']);die;
 
+            $cek_karyawan = false;
+            $data_jo = Karyawan::where('is_aktif','Y')->get();
+            foreach ($data_jo as $key => $value) {
+                if(strtoupper(trim($value->nama_panggilan))== strtoupper(trim($data['nama_panggilan'])))
+                {
+                    $cek_karyawan = true;
+                    break;
+                }
+            }
+            if($cek_karyawan)
+            {
+                return redirect()->back()->with(['status' => 'error', 'msg' => 'Data karyawan dengan panggilan :'.strtoupper($data['nama_panggilan']).' sudah ada!, harap pilih nama lain']);
+            }
             $karyawan = Karyawan::create([
                 // data pribadi
                 'foto' => ($request->hasFile('foto'))?$path:null,

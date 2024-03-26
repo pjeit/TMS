@@ -124,7 +124,12 @@
                                         <span style="font-size:11pt;" class="badge {{$item->is_batal_muat=='Y'?'bg-dark':'bg-danger'}}">{{$item->is_batal_muat=='Y'?'BATAL MUAT':$item->status}}</span>
                                     </td>
                                     <td>
-                                        {{ $item->no_sewa }}
+                                        {{ $item->no_sewa }} <br>
+                                        @if ($item->id_jo)
+                                            <span class="badge badge-danger">INBOUND</span>
+                                        @else
+                                            <span class="badge badge-dark">OUTBOUND</span>
+                                        @endif
                                     </td>
                                     <td>{{ date("d-M-Y", strtotime($item->tanggal_berangkat)) }}</td>
                                     <td>{{ $item->nama_tujuan }} ({{ $item->jenis_tujuan }})</td>
@@ -141,17 +146,20 @@
                                                 <i class="fa fa-list"></i>
                                             </button>
                                             <div class="dropdown-menu" >
-                                                {{-- <form action="{{route('belum_invoiceKembali.set')}}" method="POST" >
+
+                                                <form action="{{route('belum_invoiceKembali.set')}}" method="POST" >
                                                     @csrf
-                                                    <button class="dropdown-item" >
-                                                        <span class="fas fa-reply" style="width:24px"></span> Kembalikan ke Admin
-                                                    </button>
-                                                    <input type="hidden" name="idCust[]" placeholder="idCust">
-                                                    <input type="hidden" name="idGrup[]" placeholder="idGrup">
+                                                    @if ($item->is_batal_muat=='N')
+                                                        <button class="dropdown-item" >
+                                                            <span class="fas fa-reply" style="width:24px"></span> Kembalikan ke Admin
+                                                        </button>
+                                                    @endif
+                                                    {{-- <input type="hidden" name="idCust[]" placeholder="idCust">
+                                                    <input type="hidden" name="idGrup[]" placeholder="idGrup"> --}}
                                                     <input type="hidden" name="idSewa" value="{{$item->id_sewa}}">
-                                                    <input type="hidden" name="idJo" value="{{$item->id_jo}}">
-                                                    <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}">
-                                                </form>   --}}
+                                                    {{-- <input type="hidden" name="idJo" value="{{$item->id_jo}}">
+                                                    <input type="hidden" name="idJo_detail" value="{{$item->id_jo_detail}}"> --}}
+                                                </form>  
                                                 @can('EDIT_BELUM_INVOICE')
                                                 <a href="{{ route('belum_invoice.edit', [$item->id_sewa]) }}" class="btn dropdown-item" >
                                                     <span class="fas fa-pencil-alt" style="width:24px"></span> Edit

@@ -199,6 +199,7 @@
                                                     value="{{$item->no_kontainer}}" >
                                             {{-- <span class="text-bold">{{$key+1}}. </span> --}}
                                             {{-- <span>{{$item->no_kontainer}}</span> --}}
+                                            <span class="badge badge-dark">{{$item->status}}</span>
                                         </td>
                                         <td>
                                             {{-- <input type="text" id="seal" name="detail[{{$key}}][seal]"

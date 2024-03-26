@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\KasBank;
 use Illuminate\Validation\ValidationException;
 use App\Helper\VariableHelper;
+use App\Models\KasBankTransaction;
 use Illuminate\Support\Facades\Auth;
 use DataTables;
 use Exception;
@@ -90,32 +91,86 @@ class KasBankController extends Controller
             $data = $request->collect();
             // $tanggal = explode('-', $data['tgl_saldo']);
             //     // dd($tanggal);
-
+            $cek_kas = false;
+            $data_kas = KasBank::where('is_aktif','Y')->get();
+            foreach ($data_kas as $key => $value) {
+                if(strtoupper(trim($value->nama))== strtoupper(trim($data['nama'])))
+                {
+                    $cek_kas = true;
+                    break;
+                }
+            }
+            if($cek_kas)
+            {
+                return redirect()->back()->with(['status' => 'error', 'msg' => 'Data'.strtoupper($data['nama']).'sudah ada!, harap pilih nama lain']);
+            }
             // $tahun =$tanggal[0];
             // $bulan =$tanggal[1];
             // $tanggal =$tanggal[2];
             // $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
             $tgl_saldo = date_create_from_format('d-M-Y', $data['tgl_saldo']);
             // dd(date_format($tgl_saldo, 'm') == "11");
-            DB::table('kas_bank')
-                ->insert(array(
-                    'nama' => strtoupper($data['nama']),
-                    'no_akun' => $data['no_akun']==null ? null :strtoupper($data['no_akun']) ,
-                    'tipe' => $data['tipe']==1?'KAS':'BANK',
-                    'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
-                    'tgl_saldo' => $data['tgl_saldo']==null ? null : date_format($tgl_saldo, 'Y-m-d'),
-                    'no_rek' => $data['no_rek']==null ? null : strtoupper($data['no_rek']),
-                    'rek_nama' => $data['rek_nama']==null ? null :strtoupper($data['rek_nama']) ,
-                    'bank' => $data['bank']==null ? null : strtoupper($data['bank']),
-                    'cabang' => $data['cabang']==null ? null :strtoupper($data['cabang']) ,
-                    'created_at'=>VariableHelper::TanggalFormat(), 
-                    'created_by'=> $user,
-                    'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> $user,
-                    'is_aktif' => "Y",
+            // DB::table('kas_bank')
+            //     ->insert(array(
+            //         'nama' => strtoupper($data['nama']),
+            //         'no_akun' => $data['no_akun']==null ? null :strtoupper($data['no_akun']) ,
+            //         'tipe' => $data['tipe']==1?'KAS':'BANK',
+            //         'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
+            //         'tgl_saldo' => $data['tgl_saldo']==null ? null : date_format($tgl_saldo, 'Y-m-d'),
+            //         'no_rek' => $data['no_rek']==null ? null : strtoupper($data['no_rek']),
+            //         'rek_nama' => $data['rek_nama']==null ? null :strtoupper($data['rek_nama']) ,
+            //         'bank' => $data['bank']==null ? null : strtoupper($data['bank']),
+            //         'cabang' => $data['cabang']==null ? null :strtoupper($data['cabang']) ,
+            //         'created_at'=>VariableHelper::TanggalFormat(), 
+            //         'created_by'=> $user,
+            //         'updated_at'=> VariableHelper::TanggalFormat(),
+            //         'updated_by'=> $user,
+            //         'is_aktif' => "Y",
 
-                )
-            ); 
+            //     )
+            // ); 
+
+            $kas_bank  = new KasBank();
+            $kas_bank->nama =  strtoupper($data['nama']);
+            $kas_bank->no_akun = $data['no_akun']==null ? null :strtoupper($data['no_akun']) ;
+            $kas_bank->tipe = $data['tipe']==1?'KAS':'BANK';
+            $kas_bank->saldo_awal = $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']);
+            $kas_bank->tgl_saldo = $data['tgl_saldo']==null ? null :$tgl_saldo;
+            $kas_bank->no_rek = $data['no_rek']==null ? null : strtoupper($data['no_rek']);
+            $kas_bank->rek_nama = $data['rek_nama']==null ? null :strtoupper($data['rek_nama']);
+            $kas_bank->bank = $data['bank']==null ? null : strtoupper($data['bank']);
+            $kas_bank->cabang = $data['cabang']==null ? null :strtoupper($data['cabang']) ;
+            $kas_bank->created_at = now();
+            $kas_bank->created_by = $user;
+            $kas_bank->updated_at = now();
+            $kas_bank->updated_by = $user;
+            $kas_bank->is_aktif = 'Y';
+            // $kas_bank->save();
+
+            if( $kas_bank->save())
+            {
+                DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                                    array(
+                                        $kas_bank->id,// id kas_bank dr form
+                                        $kas_bank->tgl_saldo ,//tanggal
+                                        0,// debit 0 soalnya kan ini uang keluar, ga ada uang masuk
+                                        $kas_bank->saldo_awal   , //uang keluar (kredit), udah ke handle di front end kalau ada teluklamong
+                                        1100, //kode coa uang jalan
+                                        'saldo_awal',
+                                        'Saldo Awal', //keterangan_transaksi
+                                        null,//keterangan_kode_transaksi
+                                        $user,//created_by
+                                        now(),//created_at
+                                        $user,//updated_by
+                                        now(),//updated_at
+                                        'Y'
+                                    ) 
+                                );
+            }
+
+
+
+
             // return redirect()->route('kas_bank.index')->with('status','Sukses menambahkan Kas Bank Baru!!');
             return redirect()->route('kas_bank.index')->with(['status' => 'Success', 'msg' => 'Berhasil menambahkan data kas!']);
             
@@ -205,27 +260,62 @@ class KasBankController extends Controller
         // $gabungan = $tahun.'-'. $bulan.'-'. $tanggal ;
             $tgl_saldo = date_create_from_format('d-M-Y', $data['tgl_saldo']);
         
-            // dd($data);
-            DB::table('kas_bank')
-            ->where('id', $KasBank['id'])
-            ->update(array(
-                    'nama' => strtoupper($data['nama']),
-                    'no_akun' => $data['no_akun']==null ? null :strtoupper($data['no_akun']) ,
-                    'tipe' => $data['tipe']==1?'KAS':'BANK',
-                    'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
-                    'tgl_saldo' => $data['tgl_saldo']==null ? null : date_format($tgl_saldo, 'Y-m-d'),
-                    'no_rek' => $data['no_rek']==null ? null : strtoupper($data['no_rek']),
-                    'rek_nama' => $data['rek_nama']==null ? null :strtoupper($data['rek_nama']) ,
-                    'bank' => $data['bank']==null ? null : strtoupper($data['bank']),
-                    'cabang' => $data['cabang']==null ? null :strtoupper($data['cabang']) ,
-                    'updated_at'=> VariableHelper::TanggalFormat(),
-                    'updated_by'=> $user,
-                    'is_aktif' => "Y",
-                )
-            );
+            // // dd($data);
+            // DB::table('kas_bank')
+            // ->where('id', $KasBank['id'])
+            // ->update(array(
+            //         'nama' => strtoupper($data['nama']),
+            //         'no_akun' => $data['no_akun']==null ? null :strtoupper($data['no_akun']) ,
+            //         'tipe' => $data['tipe']==1?'KAS':'BANK',
+            //         'saldo_awal' => $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']),
+            //         'tgl_saldo' => $data['tgl_saldo']==null ? null : date_format($tgl_saldo, 'Y-m-d'),
+            //         'no_rek' => $data['no_rek']==null ? null : strtoupper($data['no_rek']),
+            //         'rek_nama' => $data['rek_nama']==null ? null :strtoupper($data['rek_nama']) ,
+            //         'bank' => $data['bank']==null ? null : strtoupper($data['bank']),
+            //         'cabang' => $data['cabang']==null ? null :strtoupper($data['cabang']) ,
+            //         'updated_at'=> VariableHelper::TanggalFormat(),
+            //         'updated_by'=> $user,
+            //         'is_aktif' => "Y",
+            //     )
+            // );
+
+            $kas_bank =KasBank::where('is_aktif','Y')->find($KasBank['id']);
+            if($kas_bank)
+            {
+                $kas_bank->nama =  strtoupper($data['nama']);
+                $kas_bank->no_akun = $data['no_akun']==null ? null :strtoupper($data['no_akun']) ;
+                $kas_bank->tipe = $data['tipe']==1?'KAS':'BANK';
+                $kas_bank->saldo_awal = $data['saldo_awal']==null ? null : str_replace(',', '', $data['saldo_awal']);
+                $kas_bank->tgl_saldo = $data['tgl_saldo']==null ? null :$tgl_saldo;
+                $kas_bank->no_rek = $data['no_rek']==null ? null : strtoupper($data['no_rek']);
+                $kas_bank->rek_nama = $data['rek_nama']==null ? null :strtoupper($data['rek_nama']);
+                $kas_bank->bank = $data['bank']==null ? null : strtoupper($data['bank']);
+                $kas_bank->cabang = $data['cabang']==null ? null :strtoupper($data['cabang']) ;
+                $kas_bank->updated_at = now();
+                $kas_bank->updated_by = $user;
+                $kas_bank->is_aktif = 'Y';
+                $kas_bank->save();
+    
+                // if( $kas_bank->save())
+                // {
+                //     $saldo_awal_transaksi = KasBankTransaction::where('is_aktif','Y')->where('jenis','saldo_awal')->find( $kas_bank->id);
+                //     if($saldo_awal_transaksi)
+                //     {
+                //         $saldo_awal_transaksi->cabang = $data['cabang']==null ? null :strtoupper($data['cabang']) ;
+                //         $saldo_awal_transaksi->updated_at = now();
+                //         $saldo_awal_transaksi->updated_by = $user;
+                //         $saldo_awal_transaksi->is_aktif = 'Y';
+                //         $saldo_awal_transaksi->save();
+                //     }
+                // }
+                return redirect()->route('kas_bank.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data kas!']);
+            }
+            else
+            {
+                return redirect()->route('kas_bank.index')->with(['status' => 'error', 'msg' => 'Data kas tidak ditemukan']);
+            }
         
             // return redirect()->route('kas_bank.index')->with('status','Sukses Mengubah Data Kas Bank!!');
-            return redirect()->route('kas_bank.index')->with(['status' => 'Success', 'msg' => 'Berhasil mengubah data kas!']);
 
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();

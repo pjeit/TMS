@@ -128,7 +128,9 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input readonly="" value="{{ number_format(($data->getUJRiwayat[0]->total_uang_jalan + $data->getUJRiwayat[0]->total_tl)-$data->getUJRiwayat[0]->potong_hutang ) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+                                            {{-- <input readonly="" value="{{ number_format(($data->getUJRiwayat[0]->total_uang_jalan + $data->getUJRiwayat[0]->total_tl)-$data->getUJRiwayat[0]->potong_hutang ) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder=""> --}}
+                                            <input readonly="" value="{{ number_format(($data->getUJRiwayat->total_uang_jalan + $data->getUJRiwayat->total_tl)-$data->getUJRiwayat->potong_hutang ) }}" type="text" name="total_uang_jalan" class="form-control numaja uang" id="total_uang_jalan" placeholder="">
+
                                         </div>
                                     </div>
 
@@ -138,7 +140,9 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">Rp</span>
                                             </div>
-                                            <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" value="{{ number_format(($data->getUJRiwayat[0]->total_uang_jalan + $data->getUJRiwayat[0]->total_tl)-$data->getUJRiwayat[0]->potong_hutang ) }}">
+                                            {{-- <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" value="{{ number_format(($data->getUJRiwayat[0]->total_uang_jalan + $data->getUJRiwayat[0]->total_tl)-$data->getUJRiwayat[0]->potong_hutang ) }}"> --}}
+                                            <input type="text" name="uang_jalan_kembali" required id="uang_jalan_kembali" class="form-control numaja uang" value="{{ number_format(($data->getUJRiwayat->total_uang_jalan + $data->getUJRiwayat->total_tl)-$data->getUJRiwayat->potong_hutang ) }}">
+
                                         </div>
                                     </div>
 

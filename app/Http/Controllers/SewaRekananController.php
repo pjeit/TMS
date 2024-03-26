@@ -84,8 +84,8 @@ class SewaRekananController extends Controller
             $tgl_berangkat = date_create_from_format('d-M-Y', $data['tanggal_berangkat']);
             $booking_id = isset($data['booking_id'])? $data['booking_id']:null; 
 
-            $lastNoSewa = Sewa::where('is_aktif', 'Y')
-                        ->where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
+            $lastNoSewa = Sewa::/*where('is_aktif', 'Y')
+                        ->*/where('no_sewa', 'like', '%'.date("Y").'/CUST/'.$romawi.'%')
                         ->orderBy('no_sewa', 'DESC')
                         ->first();
             if(isset($lastNoSewa)){

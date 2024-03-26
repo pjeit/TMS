@@ -136,6 +136,19 @@ class JobOrderController extends Controller
             //strpad itu nambah 00 yang awalnya cuman 4 jd 004
             $no_jo = 'JO/'. $kode->kode . '/' . $now . str_pad($max_jo, 3, '0', STR_PAD_LEFT);
             
+            $cek_jo = false;
+            $data_jo = JobOrder::where('is_aktif','Y')->get();
+            foreach ($data_jo as $key => $value) {
+                if(strtoupper(trim($value->no_bl))== strtoupper(trim($data['no_bl'])))
+                {
+                    $cek_jo = true;
+                    break;
+                }
+            }
+            if($cek_jo)
+            {
+                return redirect()->back()->with(['status' => 'error', 'msg' => 'Data JO dengan bl :'.strtoupper($data['no_bl']).' sudah ada!, harap pilih nama lain']);
+            }
             // dd($data);   
             $newJO = new JobOrder();
             $newJO->no_jo = $no_jo;

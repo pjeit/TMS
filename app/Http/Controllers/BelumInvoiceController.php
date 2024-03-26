@@ -121,7 +121,8 @@ class BelumInvoiceController extends Controller
             //         'updated_by'=>  $user,
             //     )); 
             // }
-            return redirect()->route('invoice.index')->with('status','Sukses Mengubah mengembalikan data sewa!!');
+            return redirect()->route('invoice.index')->with(['status' => 'Success', 'msg' => 'Data order berhasil dikembalikan ke admin!']);
+            
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
