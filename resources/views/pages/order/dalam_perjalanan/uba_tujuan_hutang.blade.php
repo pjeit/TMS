@@ -184,13 +184,22 @@
                                     </select>
                                     <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="{{$ujr->total_tl}}" placeholder="stack_teluk_lamong_hidden">
                                 </div>
-                                <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                                <div class="form-group col-lg-3 col-md-3 col-sm-12">
                                     <label for="">Selisih Uang Jalan<span class="text-red">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Rp</span>
                                         </div>
                                         <input type="text" name="selisih_uang_jalan" id="selisih_uang_jalan" class="form-control numaja uang" value="" readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group col-lg-3 col-md-3 col-sm-12">
+                                    <label for="">Total hutang lama<span class="text-red">*</span></label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rp</span>
+                                        </div>
+                                        <input type="text" name="total_hutang_lama" id="total_hutang_lama" class="form-control numaja uang" value="{{number_format($ujr->potong_hutang)}}" readonly>
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
@@ -201,7 +210,7 @@
                                         </div>
                                         {{-- kenapa di tambah potong hutang soalnya kalau hutangnya 0 dan mau handel potong, gabisa nanti --}}
                                         <input type="text" maxlength="100" id="total_hutang" name="total_hutang" class="form-control uang numaja" 
-                                        value="{{number_format($data->getKaryawan->getHutang->total_hutang+$ujr->potong_hutang)}}" readonly>                         
+                                        value="{{number_format($data->getKaryawan->getHutang->total_hutang)}}" readonly>                         
                                     </div>
                                 </div>
                              
@@ -313,17 +322,24 @@ $(document).ready(function() {
             var selisih_uang_jalan=0;
         }
         
+        if($('#total_hutang_lama').val()!=''){
+            var total_hutang_lama=removePeriod($('#total_hutang_lama').val(),',');
+            // var total_hutang_lama=normalize($('#total_hutang_lama').val()); 
+        }else{
+            var total_hutang_lama=0;
+        }
+        
         if($('#potong_hutang').val()!=''){
             var potong_hutang=removePeriod($('#potong_hutang').val(),',');  
             // var potong_hutang=normalize($('#potong_hutang').val());  
         }else{
             var potong_hutang=0;
         }
-        var total_akhir=parseFloat(Math.abs(selisih_uang_jalan))-parseFloat(potong_hutang);
+        var total_akhir=(parseFloat(Math.abs(selisih_uang_jalan))+parseFloat(total_hutang_lama)) - parseFloat(potong_hutang);
         // var total_akhir=Math.abs(selisih_uang_jalan)-potong_hutang;
         console.log(total_akhir);
         if(total_akhir!=0){
-            if (potong_hutang>parseFloat(Math.abs(selisih_uang_jalan))) {
+            if (potong_hutang>parseFloat(Math.abs(selisih_uang_jalan))+parseFloat(total_hutang_lama)) {
                 $('#total_akhir').val(0);
             }
             else
@@ -348,12 +364,19 @@ $(document).ready(function() {
         }else{
             var selisih_uang_jalan=0;
         }
+        if($('#total_hutang_lama').val()!=''){
+            var total_hutang_lama=removePeriod($('#total_hutang_lama').val(),',');
+            // var total_hutang_lama=normalize($('#total_hutang_lama').val()); 
+        }else{
+            var total_hutang_lama=0;
+        }
+
         if($('#potong_hutang').val()!=''){
             var potong_hutang=removePeriod($('#potong_hutang').val(),',');
         }else{
             var potong_hutang=0;
         }
-        var selisih_uang_jalan=Math.abs(parseFloat(selisih_uang_jalan));
+        var selisih_uang_jalan=Math.abs(parseFloat(selisih_uang_jalan))+parseFloat(total_hutang_lama);
         var potong_hutang = removePeriod($('#potong_hutang').val(),',');
         if(parseFloat(potong_hutang)>parseFloat(total_hutang)){
             $('#potong_hutang').val(addPeriodType(total_hutang,','));
@@ -363,7 +386,7 @@ $(document).ready(function() {
         }
         //kalau hutang misal 500k dan uang jalannya 300k, jadi maks pencairan yang 300k bukan 500k,
         //karena kalau 500k nanti jadi minus, kalau 300k, berarti gak tf sama sekali cuman potong hutang, gausah milih kas bank
-        if(parseFloat(potong_hutang)>parseFloat(selisih_uang_jalan) && parseFloat(total_hutang)>parseFloat(selisih_uang_jalan)){
+        if(parseFloat(potong_hutang)>parseFloat(selisih_uang_jalan)+parseFloat(total_hutang_lama) && parseFloat(total_hutang)>parseFloat(selisih_uang_jalan)+parseFloat(total_hutang_lama)){
             $('#potong_hutang').val(addPeriodType(selisih_uang_jalan,','));
         }
             
@@ -418,7 +441,7 @@ $(document).ready(function() {
     $('body').on('change','#stack_tl',function()
     {
         var selectedOption = $(this).val();
-        var uang_jalan_actual = parseFloat(escapeComma($('#total_uang_jalan_diterima').val()));
+        var uang_jalan_actual = parseFloat(escapeComma($('#total_uang_jalan_lama').val()));
         var uang_jalan_hidden = parseFloat(escapeComma($('#uang_jalan').val()));
         var cekNan_uj= !isNaN(uang_jalan_hidden)?uang_jalan_hidden:0;
         var uang_jalan_sum_tl=0;
@@ -634,7 +657,7 @@ $(document).ready(function() {
         });
     }
     function check(){
-        var total_uang_jalan = parseFloat(escapeComma($('#total_uang_jalan_diterima').val()));
+        var total_uang_jalan = parseFloat(escapeComma($('#total_uang_jalan_lama').val()));
         var selisih_uang_jalan = parseFloat(escapeComma($('#selisih_uang_jalan').val()));
 
         var uang_jalan_baru = parseFloat(escapeComma($('#uang_jalan_baru').val()));
@@ -655,7 +678,7 @@ $(document).ready(function() {
             }
             else if(selisih_akhir>0)
             {
-                $('#total_akhir_label').text('Total Masuk Hutang');
+                $('#total_akhir_label').text('Total kembali');
                 $('#total_akhir').val(moneyMask( Math.abs(selisih_akhir)));
                 $('#jenis_masuk').val('');
                 $('#jenis_masuk').val('masuk_hutang');

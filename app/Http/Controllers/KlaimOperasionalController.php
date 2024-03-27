@@ -73,6 +73,111 @@ class KlaimOperasionalController extends Controller
         ]);
     }
 
+    public function index_server(Request $request)
+    {
+        if ($request->ajax()) {
+            
+            $query = KlaimOperasional::where('is_aktif','Y')
+            ->with('karyawan')
+            ->with('klaimRiwayat')
+            ->where('status_klaim','!=',"PENDING");
+            $searchValue = $request->input('search.value');
+            if (!empty($searchValue)) {
+                $query->where(function($q) use ($searchValue) {
+                    $q->whereHas('karyawan', function($query) use ($searchValue) {
+                        $query->where('nama_panggilan', 'like', '%' . $searchValue . '%');
+                    })
+                    // $q->whereHas(['klaimRiwayat' => function ($query) use ($searchValue) {
+                    //     $query->where('total_pencairan', 'like', '%' . $searchValue . '%'); 
+                    // }])
+                    ->orWhere('jenis_klaim', 'like', '%' . $searchValue . '%')
+                    // ->orWhere('tanggal_klaim', 'like', '%' . $searchValue . '%')
+                    ->orWhere('total_klaim', 'like', '%' . $searchValue . '%')
+                    ->orWhere('status_klaim', 'like', '%' . $searchValue . '%')
+                    ->orWhere('keterangan_klaim', 'like', '%' . $searchValue . '%');
+                });
+            }
+
+            $totalData = $query->count();
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $query->skip($start)->take($length);
+            $data = $query->get();
+
+            $campur_data = [];
+            foreach ($data as $value) {
+                    # code...
+                    // $edit=/*auth()->user()->can('EDIT_REVISI_KLAIM_SUPIR')?*/'<a href="/revisi_klaim_operasional/pencairan/'.$value->id.'" class="dropdown-item edit">
+                    //                         <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                    //                     </a>'/*:''*/;
+                    $edit='<a href="/revisi_klaim_operasional/pencairan/'.$value->id.'" class="dropdown-item edit">
+                              <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                           </a>';
+                    $actionBtn = '
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu" >
+                                        '.$edit.'
+                                    </div>
+                                </div>';
+
+                    $badge_status='';
+                    $pencairan='';
+                    if ($value->status_klaim == 'PENDING') {
+                        
+                            $badge_status=  '
+                            <span class="badge badge-warning">
+                                MENUNGGU PERSETUJUAN
+                                <i class="fas fa-solid fa-clock"></i>
+                            </span>
+                        ';
+                        $pencairan= "Tidak ada pencairan";
+
+                    }
+                    else if($value->status_klaim == 'ACCEPTED')
+                    {
+                            $badge_status= '
+                            <span class="badge badge-success">
+                                DITERIMA
+                                <i class="fas fa-regular fa-thumbs-up"></i>
+                            </span>
+                        ';
+                        $pencairan=number_format($value->klaimRiwayat->total_pencairan);
+
+                    }
+                    else
+                    {
+                        $pencairan= "Tidak ada pencairan";
+                            $badge_status =  '
+                            <span class="badge badge-danger">
+                                DITOLAK
+                                <i class="fas fa-regular fa-thumbs-down"></i>
+                            </span>
+                        ';
+                    }
+                    $obj_button = [
+                        'nama_supir_server'=> $value->karyawan->nama_panggilan,//1
+                        'jenis_klaim_server'=> $value->jenis_klaim,//2
+                        'tanggal_klaim_server'=> date('d-M-Y',strtotime($value->tanggal_klaim)),//3
+                        'jumlah_klaim_server'=> number_format($value->total_klaim),//4
+                        'jumlah_dicairkan_server'=>  $pencairan,//5
+                        'status_klaim_server'=> $badge_status,//6
+                        'keterangan_server'=> $value->keterangan_klaim,//7
+                        'action_server'=> $actionBtn,//8
+                    ];
+                    $campur_data[] = array_merge((array)$value, $obj_button);
+                }
+                return response()->json([
+                    'draw' => $request->input('draw'),
+                    'recordsTotal' => $totalData,
+                    'recordsFiltered' => $totalData,
+                    'data' => $campur_data
+                ]);
+        }
+    }
+
     /**
      * Show the form for creating a new resource.
      *

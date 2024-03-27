@@ -2774,7 +2774,7 @@ class DalamPerjalananController extends Controller
                                         $data['driver'].' >> Dari - ' . 
                                         $data['customer_awal'].' >> ' . 
                                         $data['tujuan_awal'] .
-                                        '( UJ lama :'.$data['total_uang_jalan_lama'].')' .
+                                        '( UJ lama :'.$data['total_uang_jalan_diterima'].')' .
                                         '>> Ke - ' . 
                                         $data['customer_nama_baru'].' >> ' . 
                                         $data['nama_tujuan'] .
@@ -2803,7 +2803,7 @@ class DalamPerjalananController extends Controller
                                                     $data['driver'].' >> Dari - ' . 
                                                     $data['customer_awal'].' >> ' . 
                                                     $data['tujuan_awal'] .
-                                                    '( UJ lama :'.$data['total_uang_jalan_lama'].')' .
+                                                    '( UJ lama :'.$data['total_uang_jalan_diterima'].')' .
                                                     '>> Ke - ' . 
                                                     $data['customer_nama_baru'].' >> ' . 
                                                     $data['nama_tujuan'] .
@@ -2848,7 +2848,7 @@ class DalamPerjalananController extends Controller
                                     $data['driver'].' >> Dari - ' . 
                                     $data['customer_awal'].' >> ' . 
                                     $data['tujuan_awal'] .
-                                    '( UJ lama :'.$data['total_uang_jalan_lama'].')' .
+                                    '( UJ lama :'.$data['total_uang_jalan_diterima'].')' .
                                     '>> Ke - ' . 
                                     $data['customer_nama_baru'].' >> ' . 
                                     $data['nama_tujuan'] .
@@ -2899,7 +2899,7 @@ class DalamPerjalananController extends Controller
                                         $data['driver'].' >> Dari - ' . 
                                         $data['customer_awal'].' >> ' . 
                                         $data['tujuan_awal'] .
-                                        '( UJ lama :'.$data['total_uang_jalan_lama'].')' .
+                                        '( UJ lama :'.$data['total_uang_jalan_diterima'].')' .
                                         '>> Ke - ' . 
                                         $data['customer_nama_baru'].' >> ' . 
                                         $data['nama_tujuan'] .
@@ -2934,7 +2934,7 @@ class DalamPerjalananController extends Controller
                                                     $data['driver'].' >> Dari - ' . 
                                                     $data['customer_awal'].' >> ' . 
                                                     $data['tujuan_awal'] .
-                                                    '( UJ lama :'.$data['total_uang_jalan_lama'].')' .
+                                                    '( UJ lama :'.$data['total_uang_jalan_diterima'].')' .
                                                     '>> Ke - ' . 
                                                     $data['customer_nama_baru'].' >> ' . 
                                                     $data['nama_tujuan'] .
@@ -2978,7 +2978,7 @@ class DalamPerjalananController extends Controller
                                         $data['driver'].' >> Dari - ' . 
                                         $data['customer_awal'].' >> ' . 
                                         $data['tujuan_awal'] .
-                                        '( UJ lama :'.$data['total_uang_jalan_lama'].')' .
+                                        '( UJ lama :'.$data['total_uang_jalan_diterima'].')' .
                                         '>> Ke - ' . 
                                         $data['customer_nama_baru'].' >> ' . 
                                         $data['nama_tujuan'] .

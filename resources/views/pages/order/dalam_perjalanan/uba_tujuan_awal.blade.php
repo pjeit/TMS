@@ -418,7 +418,7 @@ $(document).ready(function() {
     $('body').on('change','#stack_tl',function()
     {
         var selectedOption = $(this).val();
-        var uang_jalan_actual = parseFloat(escapeComma($('#total_uang_jalan_diterima').val()));
+        var uang_jalan_actual = parseFloat(escapeComma($('#total_uang_jalan_lama').val()));
         var uang_jalan_hidden = parseFloat(escapeComma($('#uang_jalan').val()));
         var cekNan_uj= !isNaN(uang_jalan_hidden)?uang_jalan_hidden:0;
         var uang_jalan_sum_tl=0;
@@ -634,7 +634,7 @@ $(document).ready(function() {
         });
     }
     function check(){
-        var total_uang_jalan = parseFloat(escapeComma($('#total_uang_jalan_diterima').val()));
+        var total_uang_jalan = parseFloat(escapeComma($('#total_uang_jalan_lama').val()));
         var selisih_uang_jalan = parseFloat(escapeComma($('#selisih_uang_jalan').val()));
 
         var uang_jalan_baru = parseFloat(escapeComma($('#uang_jalan_baru').val()));

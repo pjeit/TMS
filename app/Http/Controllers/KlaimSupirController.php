@@ -81,97 +81,43 @@ class KlaimSupirController extends Controller
         ]);
         
     }
-    public function load_data_revisi_server(Request $request)
+    public function index_server(Request $request)
     {
+        
         if ($request->ajax()) {
-            $dataKlaimSupir = DB::table('klaim_supir as ks')
-            ->select('ks.*','ks.id as id_klaim','k.nama_panggilan as nama_supir','k.telp1 as telp','ksr.total_pencairan')
-            ->leftJoin('karyawan as k', function($join) {
-                    $join->on('ks.karyawan_id', '=', 'k.id')->where('k.is_aktif', '=', "Y");
-                })
-             ->leftJoin('klaim_supir_riwayat as ksr', function($join) {
-                    $join->on('ks.id', '=', 'ksr.id_klaim')->where('ksr.is_aktif', '=', "Y");
-                })
-            ->where('ks.is_aktif', '=', "Y")
-            ->where('ks.status_klaim','not like',"%PENDING%")
-            ->get();
-            // var_dump($dataKlaimSupir);
-            return DataTables::of($dataKlaimSupir)
-                ->addIndexColumn()
-                ->addColumn('Supir', function($item){ // edit supplier
-                    // var_dump($item);
-                    return $item->nama_supir.'('.$item->telp.')';
-                }) 
-                ->addColumn('Jenis_Klaim', function($item){ // edit supplier
-                    return $item->jenis_klaim;
-                })
-                ->addColumn('Tanggal_Klaim', function($item){ // edit format uang
-                    return date("d-M-Y", strtotime($item->tanggal_klaim));
-                }) 
-                 ->addColumn('Jumlah_Klaim', function($item){ // edit format uang
-                        return number_format($item->total_klaim);
+            
+            $query = KlaimSupir::where('klaim_supir.is_aktif','Y')
+            ->with('karyawan')
+            ->with('kendaraan')
+            ->with('klaimRiwayat')
+            ->where('klaim_supir.status_klaim','!=',"PENDING");
+            $searchValue = $request->input('search.value');
+            if (!empty($searchValue)) {
+                $query->where(function($q) use ($searchValue) {
+                    $q->whereHas('karyawan', function($query) use ($searchValue) {
+                        $query->where('nama_panggilan', 'like', '%' . $searchValue . '%');
+                    })
+                    // $q->whereHas(['klaimRiwayat' => function ($query) use ($searchValue) {
+                    //     $query->where('total_pencairan', 'like', '%' . $searchValue . '%'); 
+                    // }])
+                    ->orWhere('jenis_klaim', 'like', '%' . $searchValue . '%')
+                    // ->orWhere('tanggal_klaim', 'like', '%' . $searchValue . '%')
+                    ->orWhere('total_klaim', 'like', '%' . $searchValue . '%')
+                    ->orWhere('status_klaim', 'like', '%' . $searchValue . '%')
+                    ->orWhere('keterangan_klaim', 'like', '%' . $searchValue . '%');
+                });
+            }
 
-                    
-                }) 
-                 ->addColumn('Jumlah_Dicairkan', function($item){ // edit format uang
-                   if ($item->status_klaim == 'ACCEPTED') {
-                        return number_format($item->total_pencairan);
-                    }
-                    else
-                    {
-                        return "Tidak ada pencairan";
-                    }
-                }) 
-                 ->addColumn('Status_Klaim', function($item){ // edit format uang
-                    $pending=  '
-                                <span class="badge badge-warning">
-                                    MENUNGGU PERSETUJUAN
-                                    <i class="fas fa-solid fa-clock"></i>
-                                </span>
-                            ';
-                    $acc= '
-                            <span class="badge badge-success">
-                                DITERIMA
-                                <i class="fas fa-regular fa-thumbs-up"></i>
-                            </span>
-                        ';
-                    $reject =  '
-                            <span class="badge badge-danger">
-                                DITOLAK
-                                <i class="fas fa-regular fa-thumbs-down"></i>
-                            </span>
-                        ';
-                    if ($item->status_klaim == 'PENDING') {
-                        return  $pending;
-                    }
-                    else if($item->status_klaim == 'ACCEPTED')
-                    {
-                        return  $acc;
-                    }
-                    else
-                    {
-                        return $reject;
-                    }
-                }) 
-                ->addColumn('Keterangan', function($item){ // edit format uang
-                    return $item->keterangan_klaim;
-                }) 
-                ->addColumn('action', function($row){
-                    // $actionBtn = '
-                    //             <div class="btn-group dropleft">
-                    //                 <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    //                     <i class="fa fa-list"></i>
-                    //                 </button>
-                    //                 <div class="dropdown-menu" >
-                    //                     <a href="/revisi_klaim_supir/pencairan/'.$row->id.'" class="dropdown-item edit">
-                    //                         <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
-                    //                     </a>
-                    //                 </div>
-                    //             </div>';
-                    //                 // <a href=">> " class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
-                    //                 // <a href=">> " class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
-                    // return $actionBtn;
-                    $edit=auth()->user()->can('EDIT_REVISI_KLAIM_SUPIR')?'<a href="/revisi_klaim_supir/pencairan/'.$row->id.'" class="dropdown-item edit">
+            $totalData = $query->count();
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $query->skip($start)->take($length);
+            $data = $query->get();
+
+            $campur_data = [];
+            foreach ($data as $value) {
+                    # code...
+                    $edit=auth()->user()->can('EDIT_REVISI_KLAIM_SUPIR')?'<a href="/revisi_klaim_supir/pencairan/'.$value->id.'" class="dropdown-item edit">
                                             <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
                                         </a>':'';
                     $actionBtn = '
@@ -183,23 +129,62 @@ class KlaimSupirController extends Controller
                                         '.$edit.'
                                     </div>
                                 </div>';
-                                    // <a href=">> " class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
-                                    // <a href=">> " class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
-                    return $actionBtn;
-                })
-                ->rawColumns(['action', 
-                'Supir', 
-                'Jenis_Klaim', 
-                'Tanggal_Klaim',
-                'Jumlah_Klaim',
-                'Jumlah_Dicairkan',
-                'Status_Klaim',
-                'Keterangan'
-                ]) // ini buat render raw html, kalo ga pake nanti jadi text biasa
-                
-                ->make(true);
-        }
+
+                    $badge_status='';
+                    $pencairan='';
+                    if ($value->status_klaim == 'PENDING') {
+                       
+                            $badge_status=  '
+                            <span class="badge badge-warning">
+                                MENUNGGU PERSETUJUAN
+                                <i class="fas fa-solid fa-clock"></i>
+                            </span>
+                        ';
+                        $pencairan= "Tidak ada pencairan";
+
+                    }
+                    else if($value->status_klaim == 'ACCEPTED')
+                    {
+                            $badge_status= '
+                            <span class="badge badge-success">
+                                DITERIMA
+                                <i class="fas fa-regular fa-thumbs-up"></i>
+                            </span>
+                        ';
+                        $pencairan=number_format($value->klaimRiwayat->total_pencairan);
+
+                    }
+                    else
+                    {
+                        $pencairan= "Tidak ada pencairan";
+                            $badge_status =  '
+                            <span class="badge badge-danger">
+                                DITOLAK
+                                <i class="fas fa-regular fa-thumbs-down"></i>
+                            </span>
+                        ';
+                    }
+                    $obj_button = [
+                        'nama_supir_server'=> $value->karyawan->nama_panggilan,
+                        'jenis_klaim_server'=> $value->jenis_klaim,
+                        'tanggal_klaim_server'=> date('d-M-Y',strtotime($value->tanggal_klaim)),
+                        'jumlah_klaim_server'=> number_format($value->total_klaim),
+                        'jumlah_dicairkan_server'=>  $pencairan,
+                        'status_klaim_server'=> $badge_status,
+                        'keterangan_server'=> $value->keterangan_klaim,
+                        'action_server'=> $actionBtn,
+                    ];
+                    $campur_data[] = array_merge((array)$value, $obj_button);
+                }
+                return response()->json([
+                    'draw' => $request->input('draw'),
+                    'recordsTotal' => $totalData,
+                    'recordsFiltered' => $totalData,
+                    'data' => $campur_data
+                ]);
+            }
     }
+  
 
     /**
      * Show the form for creating a new resource.
@@ -1456,7 +1441,124 @@ class KlaimSupirController extends Controller
             return redirect()->route('klaim_supir.index')->with(['status' => 'error', 'msg' => 'Terjadi kesalahan, harap hubungi IT :'.$th->getMessage()]);
         }
     }
-
+    // =====================================================ga dipake=====================================================
+    // public function load_data_revisi_server(Request $request)
+    // {
+    //     if ($request->ajax()) {
+    //         $dataKlaimSupir = DB::table('klaim_supir as ks')
+    //         ->select('ks.*','ks.id as id_klaim','k.nama_panggilan as nama_supir','k.telp1 as telp','ksr.total_pencairan')
+    //         ->leftJoin('karyawan as k', function($join) {
+    //                 $join->on('ks.karyawan_id', '=', 'k.id')->where('k.is_aktif', '=', "Y");
+    //             })
+    //          ->leftJoin('klaim_supir_riwayat as ksr', function($join) {
+    //                 $join->on('ks.id', '=', 'ksr.id_klaim')->where('ksr.is_aktif', '=', "Y");
+    //             })
+    //         ->where('ks.is_aktif', '=', "Y")
+    //         ->where('ks.status_klaim','not like',"%PENDING%")
+    //         ->get();
+    //         // var_dump($dataKlaimSupir);
+    //         return DataTables::of($dataKlaimSupir)
+    //             ->addIndexColumn()
+    //             ->addColumn('Supir', function($item){ // edit supplier
+    //                 // var_dump($item);
+    //                 return $item->nama_supir.'('.$item->telp.')';
+    //             }) 
+    //             ->addColumn('Jenis_Klaim', function($item){ // edit supplier
+    //                 return $item->jenis_klaim;
+    //             })
+    //             ->addColumn('Tanggal_Klaim', function($item){ // edit format uang
+    //                 return date("d-M-Y", strtotime($item->tanggal_klaim));
+    //             }) 
+    //              ->addColumn('Jumlah_Klaim', function($item){ // edit format uang
+    //                     return number_format($item->total_klaim);
+    //             }) 
+    //              ->addColumn('Jumlah_Dicairkan', function($item){ // edit format uang
+    //                if ($item->status_klaim == 'ACCEPTED') {
+    //                     return number_format($item->total_pencairan);
+    //                 }
+    //                 else
+    //                 {
+    //                     return "Tidak ada pencairan";
+    //                 }
+    //             }) 
+    //              ->addColumn('Status_Klaim', function($item){ // edit format uang
+    //                 $pending=  '
+    //                             <span class="badge badge-warning">
+    //                                 MENUNGGU PERSETUJUAN
+    //                                 <i class="fas fa-solid fa-clock"></i>
+    //                             </span>
+    //                         ';
+    //                 $acc= '
+    //                         <span class="badge badge-success">
+    //                             DITERIMA
+    //                             <i class="fas fa-regular fa-thumbs-up"></i>
+    //                         </span>
+    //                     ';
+    //                 $reject =  '
+    //                         <span class="badge badge-danger">
+    //                             DITOLAK
+    //                             <i class="fas fa-regular fa-thumbs-down"></i>
+    //                         </span>
+    //                     ';
+    //                 if ($item->status_klaim == 'PENDING') {
+    //                     return  $pending;
+    //                 }
+    //                 else if($item->status_klaim == 'ACCEPTED')
+    //                 {
+    //                     return  $acc;
+    //                 }
+    //                 else
+    //                 {
+    //                     return $reject;
+    //                 }
+    //             }) 
+    //             ->addColumn('Keterangan', function($item){ // edit format uang
+    //                 return $item->keterangan_klaim;
+    //             }) 
+    //             ->addColumn('action', function($row){
+    //                 // $actionBtn = '
+    //                 //             <div class="btn-group dropleft">
+    //                 //                 <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    //                 //                     <i class="fa fa-list"></i>
+    //                 //                 </button>
+    //                 //                 <div class="dropdown-menu" >
+    //                 //                     <a href="/revisi_klaim_supir/pencairan/'.$row->id.'" class="dropdown-item edit">
+    //                 //                         <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+    //                 //                     </a>
+    //                 //                 </div>
+    //                 //             </div>';
+    //                 //                 // <a href=">> " class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+    //                 //                 // <a href=">> " class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+    //                 // return $actionBtn;
+    //                 $edit=auth()->user()->can('EDIT_REVISI_KLAIM_SUPIR')?'<a href="/revisi_klaim_supir/pencairan/'.$row->id.'" class="dropdown-item edit">
+    //                                         <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+    //                                     </a>':'';
+    //                 $actionBtn = '
+    //                             <div class="btn-group dropleft">
+    //                                 <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    //                                     <i class="fa fa-list"></i>
+    //                                 </button>
+    //                                 <div class="dropdown-menu" >
+    //                                     '.$edit.'
+    //                                 </div>
+    //                             </div>';
+    //                                 // <a href=">> " class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+    //                                 // <a href=">> " class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+    //                 return $actionBtn;
+    //             })
+    //             ->rawColumns(['action', 
+    //             'Supir', 
+    //             'Jenis_Klaim', 
+    //             'Tanggal_Klaim',
+    //             'Jumlah_Klaim',
+    //             'Jumlah_Dicairkan',
+    //             'Status_Klaim',
+    //             'Keterangan'
+    //             ]) // ini buat render raw html, kalo ga pake nanti jadi text biasa
+                
+    //             ->make(true);
+    //     }
+    // }
     /**
      * Remove the specified resource from storage.
      *

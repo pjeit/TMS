@@ -314,7 +314,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/revisi_tl/getData/{status}', [App\Http\Controllers\RevisiTLController::class, 'getData'])->name('revisi_tl.getData');
         Route::resource('revisi_tl', 'App\Http\Controllers\RevisiTLController');
 
-        Route::get('revisi_klaim_supir/load_data_server', [App\Http\Controllers\KlaimSupirController::class, 'load_data_revisi_server'])->name('klaim_supir_revisi.load_data_revisi_server');
+        Route::get('revisi_klaim_supir/load_data_server', [App\Http\Controllers\KlaimSupirController::class, 'index_server'])->name('klaim_supir_revisi.load_data_revisi_server');
         Route::get('/revisi_klaim_supir/pencairan/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan'])->name('pencairan_klaim_supir_revisi.edit');
         Route::post('/revisi_klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan_save'])->name('pencairan_klaim_supir_revisi.save');
         Route::get('/revisi_klaim_supir/revisi', [App\Http\Controllers\KlaimSupirController::class, 'revisi'])->name('klaim_supir_revisi.index');
@@ -323,6 +323,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/revisi_lembur_mekanik/pencairan_save/{id}', [App\Http\Controllers\LemburMekanikController::class, 'revisi_pencairan_save'])->name('pencairan_lembur_mekanik_revisi.save');
         Route::get('/revisi_lembur_mekanik/revisi', [App\Http\Controllers\LemburMekanikController::class, 'revisi'])->name('lembur_mekanik_revisi.index');
 
+        Route::get('revisi_klaim_operasional/load_data_server', [App\Http\Controllers\KlaimOperasionalController::class, 'index_server'])->name('klaim_operasional_revisi.load_data_revisi_server');
         Route::get('/revisi_klaim_operasional/pencairan/{id}', [App\Http\Controllers\KlaimOperasionalController::class, 'revisi_pencairan'])->name('pencairan_klaim_operasional_revisi.edit');
         Route::post('/revisi_klaim_operasional/pencairan_save/{id}', [App\Http\Controllers\KlaimOperasionalController::class, 'revisi_pencairan_save'])->name('pencairan_klaim_operasional_revisi.save');
         Route::get('/revisi_klaim_operasional/revisi', [App\Http\Controllers\KlaimOperasionalController::class, 'revisi'])->name('klaim_operasional_revisi.index');
