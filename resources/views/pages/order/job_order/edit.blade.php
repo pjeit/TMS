@@ -76,9 +76,9 @@
                                 </div>
                             </div>
                             <div class="col-6">
-                                <div class="form-group" style="pointer-events: none;">
+                                <div class="form-group" >
                                     <label for="">Pelayaran</label>
-                                    <select class="form-control selectpicker" readonly disabled id='supplier'
+                                    <select class="form-control selectpicker"  id='supplier'
                                         name="supplier" data-live-search="true" data-show-subtext="true"
                                         data-placement="bottom">
                                         <option value="0">--Pilih Pelayaran--</option>
@@ -202,9 +202,10 @@
                                             <span class="badge badge-dark">{{$item->status}}</span>
                                         </td>
                                         <td>
-                                            {{-- <input type="text" id="seal" name="detail[{{$key}}][seal]"
-                                                class="form-control seal" maxlength="10" value="{{$item->seal}}" readonly> --}}
-                                            <span>{{$item->seal}}</span>
+                                            <input type="text" id="seal" name="detail[{{$key}}][seal]"
+                                                class="form-control seal" maxlength="10" value="{{$item->seal}}" >
+                                                
+                                            {{-- <span>{{$item->seal}}</span> --}}
                                         </td>
                                         <td>
                                             @php

@@ -105,7 +105,7 @@ height: 20px;
                                 @if ($sewa->seal_pelayaran_jod&&$sewa->jenis_order =="INBOUND")
                                     <div class="form-group ">
                                         <label for="seal">Segel Kontainer</label>
-                                        <input readonly type="text" id="seal" name="seal" class="form-control"value="{{$sewa->seal_pelayaran_jod}}" >
+                                        <input type="text" id="seal" name="seal" class="form-control"value="{{$sewa->seal_pelayaran_jod}}" >
                                     </div> 
                                 @endif
                                 @if ($sewa->is_kembali=='N')

@@ -76,20 +76,6 @@
                                 </div>
                             </div>  
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                                <label for="total_uang_jalan_lama">
-                                    Total Uang Jalan actual
-                                    (<span class="badge badge-primary">UJ : {{number_format($ujr->total_uang_jalan) }} </span> +
-                                    <span class="badge badge-success">TL : {{ number_format($ujr->total_tl)}} </span>) =
-                                    <span class="badge badge-secondary">{{ number_format($total_uang_jalan)}}</span>
-                                </label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Rp</span>
-                                    </div>
-                                    <input readonly="" value="{{ number_format($total_uang_jalan ) }}" type="text" name="total_uang_jalan_lama" class="form-control numaja uang" id="total_uang_jalan_lama" placeholder="">
-                                </div>
-                            </div>
-                            <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="total_uang_jalan_diterima">
                                     Total Uang Jalan Yang diterima supir
                                     (<span class="badge badge-primary">UJ : {{number_format($ujr->total_uang_jalan) }} </span> +
@@ -104,6 +90,21 @@
                                     <input readonly="" value="{{ number_format($total_uang_jalan_diterima ) }}" type="text" name="total_uang_jalan_diterima" class="form-control numaja uang" id="total_uang_jalan_diterima" placeholder="">
                                 </div>
                             </div>
+                            {{-- <div class="form-group col-lg-12 col-md-12 col-sm-12">
+                                <label for="total_uang_jalan_lama">
+                                    Total Uang Jalan actual
+                                    (<span class="badge badge-primary">UJ : {{number_format($ujr->total_uang_jalan) }} </span> +
+                                    <span class="badge badge-success">TL : {{ number_format($ujr->total_tl)}} </span>) =
+                                    <span class="badge badge-secondary">{{ number_format($total_uang_jalan)}}</span>
+                                </label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
+                                    </div>
+                                    <input readonly="" value="{{ number_format($total_uang_jalan ) }}" type="text" name="total_uang_jalan_lama" class="form-control numaja uang" id="total_uang_jalan_lama" placeholder="">
+                                </div>
+                            </div>
+                             --}}
                            
                             {{-- <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="alasan_ubah_tujuan">Alasan Ubah Tujuan<span style="color: red;">*</span></label>

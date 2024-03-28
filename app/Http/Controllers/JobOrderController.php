@@ -219,7 +219,7 @@ class JobOrderController extends Controller
                         $JOD->id_grup_tujuan = $detail['tujuan']; 
                         $JOD->no_kontainer = $detail['no_kontainer'];
                         $JOD->pick_up = $detail['pick_up']; 
-                        $JOD->seal = $detail['seal'];
+                        $JOD->seal = isset( $detail['seal']) ?$detail['seal']:'-';
                         $JOD->tipe_kontainer = $detail['tipe'];
                         $JOD->stripping = $detail['stripping'];
                         $JOD->status = "BELUM DOORING";
@@ -404,6 +404,7 @@ class JobOrderController extends Controller
                 $tgl_sandar = isset($data['tgl_sandar'])?date_create_from_format('d-M-Y', $data['tgl_sandar']):null;
                 $jobOrder->tgl_sandar = isset($tgl_sandar)? date_format($tgl_sandar, 'Y-m-d H:i:s'):$jobOrder->tgl_sandar;
                 // $jobOrder->tgl_sandar = date_create_from_format('d-M-Y', $data['tgl_sandar']);
+                $jobOrder->id_supplier = $data['supplier'];
                 $jobOrder->no_bl = $data['no_bl'];
                 $jobOrder->kapal = $data['kapal'];
                 $jobOrder->voyage = $data['voyage'];
@@ -434,6 +435,9 @@ class JobOrderController extends Controller
                         }
                         if(isset($detail['pick_up'])){
                             $JOD->pick_up = $detail['pick_up'];
+                        }
+                        if(isset($detail['pick_up'])){
+                            $JOD->seal = $detail['seal'];
                         }
                         $JOD->updated_by = $user;
                         $JOD->updated_at = now();
