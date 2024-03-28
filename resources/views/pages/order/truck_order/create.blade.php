@@ -511,6 +511,10 @@
             {
                 $('#select_customer').attr('disabled',false).val('').trigger('change');
                 $('#select_grup_tujuan').attr('disabled',false).val('').trigger('change');
+                setKendaraan('');
+                $('#tipe_kontainer_in').val('');
+                $('#tipe_kontainer').val('');
+
                 if(  $('#jenis_order').val() == "INBOUND")
                 {
                     $('#select_jo').attr('disabled',false).val('').trigger('change');
@@ -563,12 +567,13 @@
                                 option.setAttribute('tipe_kontainer', joDetail.tipe_kontainer);
 
                                 option.textContent = joDetail.no_kontainer ;
-                                if (joDetail.id ==  $('#id_jo_detail').val()) {
+                                if (joDetail.id ==  $('#id_jo_detail').val()) {// kalau jodetail sama kaya id jo detail hidden di div tujuan
                                     option.selected = true; 
-                                    setKendaraan(joDetail.tipe_kontainer)
-                                    setChassis(joDetail.tipe_kontainer)
+                                    // console.log(joDetail.tipe_kontainer);
                                     $('#tipe_kontainer_in').val(joDetail.tipe_kontainer+'"');
                                     $('#tipe_kontainer').val(joDetail.tipe_kontainer);
+                                    setKendaraan(joDetail.tipe_kontainer)
+                                    setChassis(joDetail.tipe_kontainer)
                                 }
                                 jo_detail.append(option);
                             });
@@ -603,6 +608,7 @@
             var no_kontainer=selectedOption.attr('no_kontainer');
             var seal=selectedOption.attr('seal');
             var tipe_kontainer=selectedOption.attr('tipe_kontainer');
+            // console.log(tipe_kontainer);
             var bookingId = selectedOption.attr('booking_id');
             var pick_up = selectedOption.attr('pick_up');
             // hitungTarif();
@@ -631,14 +637,13 @@
             if(tipe_kontainer != undefined){
                 kontainer = tipe_kontainer + `"`;
             }
-            console.log(tipe_kontainer);
-            $('#tipe_kontainer_in').val(kontainer);
-            $('#tipe_kontainer').val(tipe_kontainer);
+            // $('#tipe_kontainer_in').val(kontainer);
+            // $('#tipe_kontainer').val(tipe_kontainer);
             var baseUrl = "{{ asset('') }}";
             // var myjson;
             var array_tambahan_sdt = [];
-            setKendaraan(tipe_kontainer)
-            setChassis(tipe_kontainer)
+            // setKendaraan(tipe_kontainer)
+            // setChassis(tipe_kontainer)
         
             // });
 
@@ -673,7 +678,7 @@
             var select_grup_tujuan = $('#select_grup_tujuan');
             // hitungTarif();
             hideMenuTujuan();
-            setKendaraan('');
+            // setKendaraan('');
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanCust/${selectedValue}`, 
                 method: 'GET', 
@@ -722,10 +727,10 @@
 
                         // hitungTarif();
                         hideMenuTujuan();
-                        setKendaraan('');
+                        // setKendaraan('');
                         select_grup_tujuan.empty(); 
                         select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
-                        console.log(response.dataTujuan);
+                        // console.log(response.dataTujuan);
                         if(selectedValue!="")
                         {
                             response.dataTujuan.forEach(tujuan => {
@@ -763,7 +768,7 @@
                             select_grup_tujuan.append('<option value="">Pilih Tujuan</option>');
                             // hitungTarif();
                             hideMenuTujuan();
-                            setKendaraan('');
+                            // setKendaraan('');
                     }
                     // jo_detail.trigger('change');
         
@@ -783,7 +788,7 @@
             var array_detail_biaya = [];
             // hitungTarif();
             hideMenuTujuan();
-            setKendaraan('');
+            // setKendaraan('');
 
             $.ajax({
                 url: `${baseUrl}truck_order/getTujuanBiaya/${idTujuan??selectedValue}`, 
@@ -810,7 +815,7 @@
                         array_detail_biaya = []
                         // hitungTarif();
                         hideMenuTujuan();
-                        setKendaraan('');
+                        // setKendaraan('');
                     }
                     else
                     {
@@ -828,7 +833,7 @@
                         $('#kargo').val(response.dataTujuan.kargo);
                         // hitungTarif();
                         hideMenuTujuan();
-                        setKendaraan('');
+                        // setKendaraan('');
                         var dataBiaya = response.dataTujuanBiaya;
                         for (var i in dataBiaya) {
                                 var obj = {
@@ -857,11 +862,11 @@
         function setKendaraan(tipeKontainer)
         {
             var kontainerSemua =  <?php echo json_encode($dataKendaraan); ?>;
-            console.log(kontainerSemua);
+            console.log(tipeKontainer);
             var select_kendaraan = $('#select_kendaraan');
             if(tipeKontainer==''|| tipeKontainer== undefined)
             {
-
+                console.log('masu sini');
                 const filterKendaraan = kontainerSemua.filter(kendaraan => {
                     if ($('#jenis_tujuan').val() === 'FTL') {
                         return kendaraan.kategoriKendaraan.toLowerCase() === `trailer`;
@@ -891,6 +896,8 @@
             }
             else
             {
+                console.log('masu sini 1');
+
                 var baseUrl = "{{ asset('') }}";
                 $.ajax({
                     url: `${baseUrl}truck_order/getDataKendaraanByModel/${tipeKontainer}`, 
@@ -898,7 +905,7 @@
                     success: function(response) {
                         if(response)
                         {
-                            console.log(response);
+                            // console.log(response);
                             select_kendaraan.empty(); 
                             select_kendaraan.append('<option value="">Pilih Kendaraan</option>');
                             response.forEach(kendaraan => {
@@ -911,7 +918,7 @@
                                 option.setAttribute('tipeKontainerKendaraanDariChassis', kendaraan.tipeKontainerKendaraanDariChassis);
 
                                 option.textContent = kendaraan.no_polisi + ` (${kendaraan.kategoriKendaraan})` ;
-                                //kendaraan_id itu yang hidden,tipe kontainer itu buat selected di tipeoutbound
+                                // kendaraan_id itu yang hidden,tipe kontainer itu buat selected di tipeoutbound
                                 if ($('#kendaraan_id').val() == kendaraan.kendaraanId && tipeKontainer == $('#tipeKontainerKendaraanDariChassis').val()) {
                                         option.selected = true;
                                         $('#select_driver').val(kendaraan.driver_id).trigger('change');
