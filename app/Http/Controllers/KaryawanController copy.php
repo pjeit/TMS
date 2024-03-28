@@ -316,7 +316,7 @@ class KaryawanController extends Controller
                 $arrayDokumen = json_decode($data['identitas'], true);
 
                 foreach ($arrayDokumen as $key => $item) {
-                   DB::table('karayawan_identitas')
+                   DB::table('karyawan_identitas')
                         ->insert(array(
                         'karyawan_id'=>$idKaryawan,
                         'm_jenis_identitas_id' => $item['m_jenis_identitas_id'] ,
@@ -415,10 +415,10 @@ class KaryawanController extends Controller
         ->where('m_jenis_identitas.is_aktif', '=', "Y")
         ->get();
 
-         $dataKaryawanIdentitas = DB::table('karayawan_identitas')
-            ->select('karayawan_identitas.*')
-            ->where('karayawan_identitas.is_aktif', '=', "Y")
-            ->where('karayawan_identitas.karyawan_id', '=', $karyawan['id'])
+         $dataKaryawanIdentitas = DB::table('karyawan_identitas')
+            ->select('karyawan_identitas.*')
+            ->where('karyawan_identitas.is_aktif', '=', "Y")
+            ->where('karyawan_identitas.karyawan_id', '=', $karyawan['id'])
             ->get();
         
          $dataKaryawanKomponen = DB::table('karyawan_komponen')
@@ -426,10 +426,10 @@ class KaryawanController extends Controller
             ->where('karyawan_komponen.is_aktif', '=', "Y")
             ->where('karyawan_komponen.karyawan_id', '=', $karyawan['id'])
             ->get();
-        //  $dataKaryawanIdentitasHapus = DB::table('karayawan_identitas')
-        //             ->select('karayawan_identitas.*')
-        //             ->where('karayawan_identitas.karyawan_id', '=', $karyawan['id'])
-        //             ->where('karayawan_identitas.id', '!=', 47)
+        //  $dataKaryawanIdentitasHapus = DB::table('karyawan_identitas')
+        //             ->select('karyawan_identitas.*')
+        //             ->where('karyawan_identitas.karyawan_id', '=', $karyawan['id'])
+        //             ->where('karyawan_identitas.id', '!=', 47)
         //             ->first();
         // dd($dataKaryawanIdentitasHapus);
                     //  dd($karyawan->foto);
@@ -641,7 +641,7 @@ class KaryawanController extends Controller
                 $arrayIdentitasForm = json_decode($data['identitas'], true);
                     // Set is_aktif = "N" untuk data identitas yang tidak ada di form
                 $identitasIDsFromForm = array_column($arrayIdentitasForm, 'identitas_id');
-                DB::table('karayawan_identitas')
+                DB::table('karyawan_identitas')
                     ->where('karyawan_id', $karyawan['id'])
                     ->whereNotIn('id', $identitasIDsFromForm)
                     ->update([
@@ -661,15 +661,15 @@ class KaryawanController extends Controller
                     // }
                    
                     // cek id dr form sama atau nggak
-                    $dataKaryawanIdentitas = DB::table('karayawan_identitas')
-                    ->select('karayawan_identitas.*')
-                    ->where('karayawan_identitas.is_aktif', '=', "Y")
-                    ->where('karayawan_identitas.karyawan_id', '=', $karyawan['id'])
-                    ->where('karayawan_identitas.id', '=', $itemFormIdentitas['identitas_id'])
+                    $dataKaryawanIdentitas = DB::table('karyawan_identitas')
+                    ->select('karyawan_identitas.*')
+                    ->where('karyawan_identitas.is_aktif', '=', "Y")
+                    ->where('karyawan_identitas.karyawan_id', '=', $karyawan['id'])
+                    ->where('karyawan_identitas.id', '=', $itemFormIdentitas['identitas_id'])
                     ->first();
                     
                     if ($dataKaryawanIdentitas) {
-                        DB::table('karayawan_identitas')
+                        DB::table('karyawan_identitas')
                             ->where('karyawan_id', $karyawan['id'])
                             ->where('id', $itemFormIdentitas['identitas_id'])
                             ->update([
@@ -682,7 +682,7 @@ class KaryawanController extends Controller
                             ]);
                     }
                     else {
-                        DB::table('karayawan_identitas')
+                        DB::table('karyawan_identitas')
                             ->insert([
                                 'karyawan_id' => $karyawan['id'],
                                 'm_jenis_identitas_id' => $itemFormIdentitas['m_jenis_identitas_id'],
@@ -801,7 +801,7 @@ class KaryawanController extends Controller
               )
             );
 
-             DB::table('karayawan_identitas')
+             DB::table('karyawan_identitas')
             ->where('id', $karyawan['id'])
             ->update(array(
                 'is_aktif' => "N",

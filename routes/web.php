@@ -319,6 +319,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/revisi_klaim_supir/pencairan_save/{id}', [App\Http\Controllers\KlaimSupirController::class, 'revisi_pencairan_save'])->name('pencairan_klaim_supir_revisi.save');
         Route::get('/revisi_klaim_supir/revisi', [App\Http\Controllers\KlaimSupirController::class, 'revisi'])->name('klaim_supir_revisi.index');
 
+        Route::get('revisi_lembur_mekanik/load_data_server', [App\Http\Controllers\LemburMekanikController::class, 'index_server'])->name('revisi_lembur_mekanik.load_data_server');
         Route::get('/revisi_lembur_mekanik/pencairan/{id}', [App\Http\Controllers\LemburMekanikController::class, 'revisi_pencairan'])->name('pencairan_lembur_mekanik_revisi.edit');
         Route::post('/revisi_lembur_mekanik/pencairan_save/{id}', [App\Http\Controllers\LemburMekanikController::class, 'revisi_pencairan_save'])->name('pencairan_lembur_mekanik_revisi.save');
         Route::get('/revisi_lembur_mekanik/revisi', [App\Http\Controllers\LemburMekanikController::class, 'revisi'])->name('lembur_mekanik_revisi.index');
@@ -348,7 +349,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('revisi_invoice_trucking/delete/{id}', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'delete'])->name('revisi_invoice_trucking.delete');
         Route::get('revisi_invoice_trucking/edit-pembayaran/{id}', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'editPembayaran'])->name('revisi_invoice_trucking.editPembayaran');
-        Route::get('revisi_invoice_trucking/load_data', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'load_data'])->name('revisi_invoice_trucking.load_data');
+        Route::get('revisi_invoice_trucking/load_data', [App\Http\Controllers\RevisiInvoiceTruckingController::class, 'index_server'])->name('revisi_invoice_trucking.load_data');
         Route::resource('revisi_invoice_trucking', 'App\Http\Controllers\RevisiInvoiceTruckingController');
 
         Route::post('revisi_biaya_operasional/delete', [App\Http\Controllers\RevisiBiayaOperasionalController::class, 'delete'])->name('revisi_biaya_operasional.delete');

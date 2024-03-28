@@ -42,7 +42,7 @@ class KlaimOperasionalController extends Controller
         return view('pages.finance.klaim_operasional.index',[
              'judul'=>"Klaim Operasional",
             'dataKlaimOps' => $dataKlaimOps,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             // 'dataDriver' => SewaDataHelper::get_supir_by_klaim_ops(),
         ]);
     }
@@ -68,7 +68,7 @@ class KlaimOperasionalController extends Controller
         return view('pages.revisi.revisi_klaim_operasional.index',[
              'judul'=>"Klaim Operasional",
             'dataKlaimOps' => $dataKlaimOps,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             // 'dataDriver' => SewaDataHelper::get_supir_by_klaim_ops(),
         ]);
     }
@@ -319,7 +319,7 @@ class KlaimOperasionalController extends Controller
         return view('pages.finance.klaim_operasional.edit',[
             'judul'=>"Klaim Operasional",
             'klaimOperasional' => $klaimOperasional,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
         ]);
     }
@@ -463,7 +463,7 @@ class KlaimOperasionalController extends Controller
 
         return view('pages.finance.klaim_operasional.pencairan',[
             'judul'=>"Pencairan klaim operasional",
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'klaim_ops' => $klaim_ops,
             'klaim_ops_riwayat' => $klaim_ops_riwayat,
@@ -799,7 +799,7 @@ class KlaimOperasionalController extends Controller
 
         return view('pages.revisi.revisi_klaim_operasional.pencairan',[
             'judul'=>"Pencairan klaim operasional",
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'klaim_ops' => $klaim_ops,
             'klaim_ops_riwayat' => $klaim_ops_riwayat,

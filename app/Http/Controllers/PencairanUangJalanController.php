@@ -266,12 +266,12 @@ class PencairanUangJalanController extends Controller
                     ->where('s.id_sewa', '=', $pencairan_uang_jalan->id_sewa)
                     ->groupBy('c.id')
                     ->first();
-         $sewaBiayaTelukLamong = DB::table('sewa_biaya AS sb')
-                    ->select('sb.*')
-                    ->where('sb.deskripsi', 'like', '%TL%')
-                    ->where('sb.is_aktif', '=', 'Y')
-                    ->where('sb.id_sewa', '=', $pencairan_uang_jalan->id_sewa)
-                    ->first();
+        //  $sewaBiayaTelukLamong = DB::table('sewa_biaya AS sb')
+        //             ->select('sb.*')
+        //             ->where('sb.deskripsi', 'like', '%TL%')
+        //             ->where('sb.is_aktif', '=', 'Y')
+        //             ->where('sb.id_sewa', '=', $pencairan_uang_jalan->id_sewa)
+        //             ->first();
          $dataKas = DB::table('kas_bank')
             ->select('*')
             ->where('is_aktif', '=', "Y")
@@ -281,7 +281,7 @@ class PencairanUangJalanController extends Controller
         return view('pages.finance.pencairan_uang_jalan.edit',[
             'judul' => "Pencairan Uang Jalan",
             'sewa'=> $sewa,
-            'sewaBiayaTelukLamong'=>$sewaBiayaTelukLamong,
+            // 'sewaBiayaTelukLamong'=>$sewaBiayaTelukLamong,
             'dataKas'=>$dataKas
         ]);
     }

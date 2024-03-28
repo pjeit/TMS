@@ -281,6 +281,41 @@ class SewaDataHelper
                 ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
                 ->get(); 
      }
+     public static function DataKendaraanAll()
+     {
+        return DB::table('kendaraan AS k')
+                ->select('k.id AS kendaraanId', 'c.id as chassisId','k.no_polisi','k.driver_id', 'kkm.nama as kategoriKendaraan','cp.nama as namaKota','mc.nama as tipeKontainerKendaraanDariChassis')
+                // ini buat nge get pair kendaraan yang trailer
+                ->leftJoin('pair_kendaraan_chassis AS pk', function($join) {
+                    $join->on('k.id', '=', 'pk.kendaraan_id')->where('pk.is_aktif', '=', 'Y');
+                })
+                // get chassis
+                ->leftJoin('chassis AS c', 'pk.chassis_id', '=', 'c.id')
+                // get model chasis yang 20/40 ft
+                ->leftJoin('m_model_chassis AS mc', 'c.model_id', '=', 'mc.id')
+                // get cabang jakarta/sby/...
+                ->leftJoin('cabang_pje AS cp', 'k.cabang_id', '=', 'cp.id')
+                // terus get kategorinya
+                ->leftJoin('kendaraan_kategori AS kkm', 'k.id_kategori', '=', 'kkm.id')
+                //dikasih pengecekan
+                ->where(function ($query) {
+                        //kalau dia kategori 1 (trailer)
+                        $query->where(function ($innerQuery) {
+                            //syaratnya trailer ada cek tipe chassis trailer 20/40, kemudian pair nya gaboleh null (chassisnya)
+                            $innerQuery->where('k.id_kategori', '=', 1)
+                                    //    ->where('mc.id', '=', 1)
+                                       ->whereNotNull('pk.chassis_id');
+                        })
+                        ->orWhere(function ($query) {
+                            $query->where('k.id_kategori', '!=', 1);
+                        });
+                })
+               
+                ->where('k.is_aktif', '=', 'Y')
+                // ->whereNotNull('k.driver_id')
+                ->groupBy('k.id', 'k.no_polisi', 'kkm.nama','cp.nama')
+                ->get(); 
+     }
     //=================================create,edit??================================
 
     // =========================================API=====================================

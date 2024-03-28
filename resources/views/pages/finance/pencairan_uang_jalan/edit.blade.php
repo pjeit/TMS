@@ -101,7 +101,7 @@
                                     <input type="text" maxlength="100" id="uang_jalan" name="uang_jalan" class="form-control uang " value="" readonly>                         
                                 </div>
                             </div>
-                            @if (isset($sewaBiayaTelukLamong))
+                            {{-- @if (isset($sewaBiayaTelukLamong))
                                 <div class="form-group col-4">
                                     <label for="uang_jalan">Biaya Teluk Lamong</label>
                                     <div class="input-group mb-0">
@@ -111,8 +111,9 @@
                                         <input type="text" maxlength="100" id="teluk_lamong" name="teluk_lamong" class="form-control uang " value="{{number_format($sewaBiayaTelukLamong->biaya)}}" readonly>                         
                                     </div>
                                 </div>
-                            @endif
-                            <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}">
+                            @endif --}}
+                            {{-- <div class="form-group col-{{isset($sewaBiayaTelukLamong)?'4':'6'}}"> --}}
+                            <div class="form-group col-6">
                                 <label for="total_diterima">Total Diberikan</label>
                                 <div class="input-group mb-0">
                                     <div class="input-group-prepend">
@@ -125,19 +126,15 @@
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-12 bg-gray-light">
                         <div class="row">
-
-    
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="no_akun">Kendaraan</label>
                                 <input type="text" id="kendaraan" name="kendaraan" class="form-control" value="" readonly>                         
                             </div>  
-    
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="no_akun">Driver</label>
                                 <input type="text" id="driver" name="driver" class="form-control" value="" readonly>     
                                 <input type="hidden" name="id_karyawan" id="id_karyawan">                    
                             </div> 
-
                             <div class="form-group col-lg-12 col-md-12 col-sm-12">
                                 <label for="">Metode Pembayaran<span class="text-red">*</span></label>      
                                 <select class="form-control select2" required style="width: 100%;" id='pembayaran' name="pembayaran" data-live-search="true" data-show-subtext="true" data-placement="bottom">
@@ -172,21 +169,21 @@
             }else{
                 var potong_hutang=0;
             }
-            var cekTL= <?php echo json_encode($sewaBiayaTelukLamong); ?>;
+            // var cekTL= json encode sewaBiayaTelukLamong dari controller;
             var total_diterima=0;
-            if(cekTL)
-            {
-                if($('#teluk_lamong').val()!='' || $('#teluk_lamong').val()!= undefined){
-                    var teluk_lamong=removePeriod($('#teluk_lamong').val(),',');
-                }else{
-                    var teluk_lamong=0;
-                }
-               total_diterima=(parseFloat(total_uang_jalan)+parseFloat(teluk_lamong))-parseFloat(potong_hutang);
-            }
-            else
-            {
+            // if(cekTL)
+            // {
+            //     if($('#teluk_lamong').val()!='' || $('#teluk_lamong').val()!= undefined){
+            //         var teluk_lamong=removePeriod($('#teluk_lamong').val(),',');
+            //     }else{
+            //         var teluk_lamong=0;
+            //     }
+            //    total_diterima=(parseFloat(total_uang_jalan)+parseFloat(teluk_lamong))-parseFloat(potong_hutang);
+            // }
+            // else
+            // {
                total_diterima=parseFloat(total_uang_jalan)-parseFloat(potong_hutang);
-            }
+            // }
             if(total_diterima!=0){
                 $('#total_diterima').val(addPeriodType(total_diterima,','));
             }else{
@@ -211,21 +208,21 @@
             }else{
                 var potong_hutang=0;
             }
-            var cekTL= <?php echo json_encode($sewaBiayaTelukLamong); ?>;
+             // var cekTL= json encode sewaBiayaTelukLamong dari controller;
             var total_uj=0;
-            if(cekTL)
-            {
-                if($('#teluk_lamong').val()!='' || $('#teluk_lamong').val()!= undefined){
-                    var teluk_lamong=removePeriod($('#teluk_lamong').val(),',');
-                }else{
-                    var teluk_lamong=0;
-                }
-               total_uj=(parseFloat(total_uang_jalan)+parseFloat(teluk_lamong));
-            }
-            else
-            {
+            // if(cekTL)
+            // {
+            //     if($('#teluk_lamong').val()!='' || $('#teluk_lamong').val()!= undefined){
+            //         var teluk_lamong=removePeriod($('#teluk_lamong').val(),',');
+            //     }else{
+            //         var teluk_lamong=0;
+            //     }
+            //    total_uj=(parseFloat(total_uang_jalan)+parseFloat(teluk_lamong));
+            // }
+            // else
+            // {
                total_uj=parseFloat(total_uang_jalan);
-            }
+            // }
             
             var potong_hutang = removePeriod($('#potong_hutang').val(),',');
             if(parseFloat(potong_hutang)>parseFloat(total_hutang)){

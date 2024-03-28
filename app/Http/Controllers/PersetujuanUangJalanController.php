@@ -39,7 +39,6 @@ class PersetujuanUangJalanController extends Controller
         ->where('sewa.is_aktif', '=', 'Y')
         ->where('sewa.jenis_tujuan', 'FTL')
         ->whereNull('sewa.id_supplier')
-        
         ->where('sewa.status', "MENUNGGU PERSETUJUAN")
         ->with('getTujuan')
         ->with('getCustomer')
@@ -99,11 +98,11 @@ class PersetujuanUangJalanController extends Controller
                             if($ujr->save())
                             {
                                 $total_diterima = ( $ujr->total_uang_jalan +$ujr->total_tl ) - $ujr->potong_hutang;
-                                $tl_string =  $ujr->total_tl > 0? ' >> TELUK LAMONG :'. number_format($ujr->total_tl) :''; 
+                                // $tl_string =  $ujr->total_tl > 0? ' >> TELUK LAMONG :'. number_format($ujr->total_tl) :''; 
                                 $pothut_string =  $ujr->potong_hutang > 0? ' >> POTONG HUTANG : '.number_format($ujr->potong_hutang) : ''; 
                                 $refrensi_keterangan_string = 
                                     ' >> UANG JALAN : ' . number_format($ujr->total_uang_jalan) . 
-                                    $tl_string. $pothut_string.  
+                                   /* $tl_string.*/ $pothut_string.  
                                     ' >> TOTAL DITERIMA : ' .number_format($total_diterima) ;
                 
                                 $kh = KaryawanHutang::where('is_aktif', 'Y')->where('id_karyawan', $value['id_karyawan'])->first();
@@ -131,11 +130,11 @@ class PersetujuanUangJalanController extends Controller
                                     
                                         if( $total_diterima>0)
                                         {
-                                            if ($ujr->total_tl > 0) {
-                                                $keterangan_string = ' PEMBAYARAN UANG JALAN + TELUK LAMONG';
-                                            } else {
+                                            // if ($ujr->total_tl > 0) {
+                                            //     $keterangan_string = ' PEMBAYARAN UANG JALAN + TELUK LAMONG';
+                                            // } else {
                                                 $keterangan_string = ' PEMBAYARAN UANG JALAN';
-                                            }
+                                            // }
                                             $catatan = isset($ujr->catatan)? ' >> '.$ujr->catatan:' ';
                                             DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                                 array(
@@ -159,12 +158,12 @@ class PersetujuanUangJalanController extends Controller
                                 }
                                 else
                                 {
-                                    if ($ujr->total_tl > 0) {
-                                        // $nominal =(float)str_replace(',', '', $value['total_diterima'])+(float)str_replace(',', '', $value['teluk_lamong']);
-                                        $keterangan_string = ' PEMBAYARAN UANG JALAN + TELUK LAMONG';
-                                    } else {
+                                    // if ($ujr->total_tl > 0) {
+                                    //     // $nominal =(float)str_replace(',', '', $value['total_diterima'])+(float)str_replace(',', '', $value['teluk_lamong']);
+                                    //     $keterangan_string = ' PEMBAYARAN UANG JALAN + TELUK LAMONG';
+                                    // } else {
                                         $keterangan_string = ' PEMBAYARAN UANG JALAN';
-                                    }
+                                    // }
                                     $catatan = isset($ujr->catatan)? ' >> '.$ujr->catatan:' ';
                                     DB::select('CALL InsertTransaction(?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                         array(
@@ -251,7 +250,6 @@ class PersetujuanUangJalanController extends Controller
                     {
                         $is_uj = false;
                         break;
-                      
                     }
                 }
                 // $is_sewa_data = true;

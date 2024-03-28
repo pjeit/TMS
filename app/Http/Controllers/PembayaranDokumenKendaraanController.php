@@ -43,7 +43,7 @@ class PembayaranDokumenKendaraanController extends Controller
         return view('pages.finance.pembayaran_dokumen_kendaraan.index',[
             'judul' => "Pembayaran Dokumen",
             'dataPembayaranKendaraan' => $dataPembayaranKendaraan,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'dataKas' => $dataKas,
         ]);
@@ -193,7 +193,7 @@ class PembayaranDokumenKendaraanController extends Controller
             'judul'=>"PEMBAYARAN DOKUMEN",
             'pembayaran_dokumen_kendaraan'=> $bayar_dokumen,
             'dataKas'=> $dataKas,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'count_detail'=>count($bayar_dokumen_detail)
         ]);
     }

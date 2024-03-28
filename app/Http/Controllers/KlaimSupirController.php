@@ -48,7 +48,7 @@ class KlaimSupirController extends Controller
         return view('pages.finance.klaim_supir.index',[
              'judul'=>"Klaim Supir",
             'dataKlaimSupir' => $dataKlaimSupir,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
         ]);
         
@@ -76,7 +76,7 @@ class KlaimSupirController extends Controller
         return view('pages.revisi.revisi_klaim_supir.index',[
              'judul'=>"Klaim Supir",
             'dataKlaimSupir' => $dataKlaimSupir,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
         ]);
         
@@ -360,7 +360,7 @@ class KlaimSupirController extends Controller
         //
         return view('pages.finance.klaim_supir.edit',[
             'judul'=>"Klaim Supir",
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'klaimSupir'=>$klaimSupir
         ]);
@@ -628,7 +628,7 @@ class KlaimSupirController extends Controller
 
         return view('pages.finance.klaim_supir.pencairan',[
             'judul'=>"Klaim Supir",
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'klaimSupir' => $data['dataKlaimSupir'],
             'klaim_supir_riwayat' => $data['klaim_supir_riwayat'],
@@ -1028,7 +1028,7 @@ class KlaimSupirController extends Controller
         $data = $this->methodEdit($id);
         return view('pages.revisi.revisi_klaim_supir.pencairan',[
             'judul'=>"Klaim Supir",
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'klaimSupir' => $data['dataKlaimSupir'],
             'klaim_supir_riwayat' => $data['klaim_supir_riwayat'],

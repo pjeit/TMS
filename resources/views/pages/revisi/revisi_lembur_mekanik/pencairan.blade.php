@@ -64,7 +64,7 @@
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                                                         </div>
-                                                        <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date @error('tanggal_pencairan') is-invalid @enderror" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencairan',!empty($dataLemburMekanik->tanggal_pencairan)?\Carbon\Carbon::parse($dataLemburMekanik->tanggal_pencairan)->format('d-M-Y'):'')}}">
+                                                        <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date @error('tanggal_pencairan') is-invalid @enderror" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencairan',!empty($dataLemburMekanikRiwayat->tanggal_pencairan)?\Carbon\Carbon::parse($dataLemburMekanikRiwayat->tanggal_pencairan)->format('d-M-Y'):'')}}">
                                                         {{-- <input type="text" autocomplete="off" name="tanggal_pencairan" class="form-control date @error('tanggal_pencairan') is-invalid @enderror" id="tanggal_pencairan" placeholder="dd-M-yyyy" value="{{old('tanggal_pencairan')}}"> --}}
                                                         @error('tanggal_pencairan')
                                                             <div class="invalid-feedback">
@@ -304,7 +304,12 @@
                                                                             {{ $message }}
                                                                         </div>
                                                                     @enderror
-                                                                    <input type="hidden" id="no_polisi_{{$counter}}" name="kendaraan[{{$counter}}][no_polisi]" value="" placeholder="no_polisi">
+                                                                    @error('keterangan')
+                                                                        <div class="invalid-feedback">
+                                                                            {{ $message }}
+                                                                        </div>
+                                                                    @enderror
+                                                                    {{-- <input type="text" class="form-control @error('keterangan') is-invalid @enderror"  id="no_polisi_{{$counter}}" readonly name="kendaraan[{{$counter}}][no_polisi]" value="{{$data->no_pol}}" placeholder="no_polisi"> --}}
                                                                 </div>  
                                                             </td>
                                                             <td>

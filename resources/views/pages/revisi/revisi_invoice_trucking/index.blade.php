@@ -28,7 +28,6 @@
                 <thead>
                     <tr>
                         <th>Billing To</th>
-                        {{-- <th>Grup</th> --}}
                         <th style="width: 250px;">Customer</th>
                         <th>No. Invoice</th>
                         <th>Tgl Pembayaran</th>
@@ -36,7 +35,7 @@
                         <th width="30"></th>
                     </tr>
                 </thead>
-                <tbody id="hasil">
+                <tbody >
                     
                 </tbody>
             </table>
@@ -47,33 +46,79 @@
 
 <script>
     $(document).ready(function() {
-        var table = $('.yajra-datatable').DataTable({
+        var table = $('#revTagihan').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route('revisi_invoice_trucking.load_data') }}",
-            
-            // order: [
-            //     [0, 'asc'], // 0 = grup
-            // ],
-            // rowGroup: {
-            //     dataSrc: [0] // di order grup dulu, baru customer
-            // },
-            columns: [
-                // {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'billing_to', name: 'billing_to'},
-                // {data: 'grup', name: 'grup'},
-                {data: 'customer', name: 'customer'},
-                {data: 'no_invoice', name: 'no_invoice'},
-                {data: 'tgl_pembayaran', name: 'tgl_pembayaran'},
-                {data: 'total_diterima', name: 'total_diterima'},
-                {
-                    data: 'action', 
-                    name: 'action', 
-                    orderable: false, 
-                    searchable: false
+            paging: true,
+            "responsive": true,
+            pageLength: 10, 
+            ajax: {
+                url: "{{ route('revisi_invoice_trucking.load_data') }}",
+                type: "GET",
+                data: function (d) {
+                    console.log(d);
                 },
-            ]
+                // success: function(response) {
+                //     console.log(response); // Log campur_data
+                // }
+            },
+            columns: [
+                    {data: 'billing_to', name: 'billing_to'},
+                    {data: 'customer', name: 'customer'},
+                    {data: 'no_invoice', name: 'no_invoice'},
+                    {data: 'tgl_pembayaran', name: 'tgl_pembayaran'},
+                    {data: 'total_diterima', name: 'total_diterima'},
+                    {
+                        data: 'action_server', 
+                        name: 'action', 
+                        orderable: false, 
+                        searchable: false
+                    },
+            ],
+            order: [
+                    [0, 'asc'],
+                ],
+            // rowGroup: {
+            //     dataSrc: ['nama_mekanik_server']//grouping per supir pake nama datanya dr controller, kalo bukan serverside nembak index, misal [0]
+            // },
+            // columnDefs: [
+            //     {
+            //         targets: [0],
+            //         visible: false
+            //     },
+            //     {
+            //         "orderable": false,
+            //         "targets": [0,1,2,3,4,5]
+            //     }
+            // ],
         });
+        // var table = $('#revTagihan').DataTable({
+        //     processing: true,
+        //     serverSide: true,
+        //     ajax: "{{ route('revisi_invoice_trucking.load_data') }}",
+            
+        //     // order: [
+        //     //     [0, 'asc'], // 0 = grup
+        //     // ],
+        //     // rowGroup: {
+        //     //     dataSrc: [0] // di order grup dulu, baru customer
+        //     // },
+        //     columns: [
+        //         // {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+        //         {data: 'billing_to', name: 'billing_to'},
+        //         // {data: 'grup', name: 'grup'},
+        //         {data: 'customer', name: 'customer'},
+        //         {data: 'no_invoice', name: 'no_invoice'},
+        //         {data: 'tgl_pembayaran', name: 'tgl_pembayaran'},
+        //         {data: 'total_diterima', name: 'total_diterima'},
+        //         {
+        //             data: 'action', 
+        //             name: 'action', 
+        //             orderable: false, 
+        //             searchable: false
+        //         },
+        //     ]
+        // });
 
         $(document).on('click', '.delete', function (event){
             let id = this.value;

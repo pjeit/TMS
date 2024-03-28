@@ -52,7 +52,7 @@ class SewaController extends Controller
             'datajO'=>SewaDataHelper::DataJO(),
             'dataCustomer'=>SewaDataHelper::DataCustomer(),
             'dataDriver'=>SewaDataHelper::DataDriver(),
-            'dataKendaraan'=>SewaDataHelper::DataKendaraan(),
+            'dataKendaraan'=>SewaDataHelper::DataKendaraanAll(),
             'dataBooking'=>SewaDataHelper::DataBooking(),
             'dataChassis'=>SewaDataHelper::DataChassis(),
             'dataPengaturanKeuangan'=>SewaDataHelper::DataPengaturanBiaya()
@@ -135,19 +135,19 @@ class SewaController extends Controller
             $sewa->is_aktif = 'Y';
             
             if($sewa->save()){
-                if($data['stack_tl'] == 'tl_teluk_lamong'){
-                    DB::table('sewa_biaya')
-                        ->insert(array(
-                        'id_sewa' => $sewa->id_sewa,
-                        'deskripsi' => 'TL',
-                        'biaya' => $data['stack_teluk_lamong_hidden'],
-                        'catatan' => $data['stack_tl'],
-                        'created_at' => now(),
-                        'created_by' => $user,
-                        'is_aktif' => "Y",
-                        )
-                    ); 
-                }
+                // if($data['stack_tl'] == 'tl_teluk_lamong'){
+                //     DB::table('sewa_biaya')
+                //         ->insert(array(
+                //         'id_sewa' => $sewa->id_sewa,
+                //         'deskripsi' => 'TL',
+                //         'biaya' => $data['stack_teluk_lamong_hidden'],
+                //         'catatan' => $data['stack_tl'],
+                //         'created_at' => now(),
+                //         'created_by' => $user,
+                //         'is_aktif' => "Y",
+                //         )
+                //     ); 
+                // }
 
                 if ($data['jenis_tujuan'] === "LTL") {
                     $harga = (float)$data['harga_per_kg'] * $data['min_muatan'];
@@ -288,7 +288,7 @@ class SewaController extends Controller
             'datajO' => $dataJo,
             'dataCustomer' => SewaDataHelper::DataCustomer(),
             'dataDriver' => SewaDataHelper::DataDriver(),
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataBooking' => $dataBooking,
             'dataChassis' => SewaDataHelper::DataChassis(),
             'dataChassisKont' => $dataChassisKont,
@@ -401,51 +401,51 @@ class SewaController extends Controller
                             )
                         ); 
                     }
-                    if($data['stack_tl'] == 'tl_teluk_lamong'){
-                        $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
-                                    ->select('sb.*')
-                                    ->where('sb.id_sewa', $data['sewa_id'])
-                                    ->where('sb.is_aktif', 'Y')
-                                    ->where('sb.deskripsi', 'TL')
-                                    ->first();
-                        // pengecekan kalau null dan kalau status sewa masih menunggu uang jalan bisa dimasukin tl nya dari edit, 
-                        // kalau udah dibayar uang jalan, gabisa masuk detail, harus dari add/return TL
-                        if($cek_sewa_biaya_TL == null && $sewa->status == "MENUNGGU UANG JALAN")
-                        {
-                            DB::table('sewa_biaya')
-                                ->insert(array(
-                                'id_sewa' => $sewa->id_sewa,
-                                'deskripsi' => 'TL',
-                                'biaya' => $data['stack_teluk_lamong_hidden'],
-                                'catatan' => $data['stack_tl'],
-                                'created_at' => now(),
-                                'created_by' => $user,
-                                'is_aktif' => "Y",
-                                )
-                            ); 
-                        }
-                    }else {
-                        $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
-                            ->select('sb.*')
-                            ->where('sb.id_sewa', $sewa->id_sewa)
-                            ->where('sb.is_aktif', 'Y')
-                            ->where('sb.deskripsi', 'TL')
-                            ->first();
-                        //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
-                        //kalau ada tl nyantol di ubah jadi N
-                        if($cek_sewa_biaya_TL)
-                        {
-                            DB::table('sewa_biaya')
-                                ->where('id_sewa', $sewa->id_sewa)
-                                ->where('deskripsi', 'TL')
-                                ->update(array(
-                                    'is_aktif' => "N",
-                                    'updated_at'=> now(),
-                                    'updated_by'=> $user, // masih hardcode nanti diganti cookies
-                                )
-                            );
-                        }             
-                    }
+                    // if($data['stack_tl'] == 'tl_teluk_lamong'){
+                    //     $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
+                    //                 ->select('sb.*')
+                    //                 ->where('sb.id_sewa', $data['sewa_id'])
+                    //                 ->where('sb.is_aktif', 'Y')
+                    //                 ->where('sb.deskripsi', 'TL')
+                    //                 ->first();
+                    //     // pengecekan kalau null dan kalau status sewa masih menunggu uang jalan bisa dimasukin tl nya dari edit, 
+                    //     // kalau udah dibayar uang jalan, gabisa masuk detail, harus dari add/return TL
+                    //     if($cek_sewa_biaya_TL == null && $sewa->status == "MENUNGGU UANG JALAN")
+                    //     {
+                    //         DB::table('sewa_biaya')
+                    //             ->insert(array(
+                    //             'id_sewa' => $sewa->id_sewa,
+                    //             'deskripsi' => 'TL',
+                    //             'biaya' => $data['stack_teluk_lamong_hidden'],
+                    //             'catatan' => $data['stack_tl'],
+                    //             'created_at' => now(),
+                    //             'created_by' => $user,
+                    //             'is_aktif' => "Y",
+                    //             )
+                    //         ); 
+                    //     }
+                    // }else {
+                    //     $cek_sewa_biaya_TL = DB::table('sewa_biaya as sb')
+                    //         ->select('sb.*')
+                    //         ->where('sb.id_sewa', $sewa->id_sewa)
+                    //         ->where('sb.is_aktif', 'Y')
+                    //         ->where('sb.deskripsi', 'TL')
+                    //         ->first();
+                    //     //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
+                    //     //kalau ada tl nyantol di ubah jadi N
+                    //     if($cek_sewa_biaya_TL)
+                    //     {
+                    //         DB::table('sewa_biaya')
+                    //             ->where('id_sewa', $sewa->id_sewa)
+                    //             ->where('deskripsi', 'TL')
+                    //             ->update(array(
+                    //                 'is_aktif' => "N",
+                    //                 'updated_at'=> now(),
+                    //                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
+                    //             )
+                    //         );
+                    //     }             
+                    // }
                 }
             } else {
                 if($sewa->status == "MENUNGGU UANG JALAN"||$sewa->status == "MENUNGGU PERSETUJUAN"){
@@ -473,38 +473,38 @@ class SewaController extends Controller
                             ->where('sb.is_aktif', 'Y')
                             ->where('sb.deskripsi', 'TL')
                             ->first();
-                    if($data['stack_tl'] == 'tl_teluk_lamong'){
-                        if($cek_sewa_biaya_TL==null)
-                        {
-                            DB::table('sewa_biaya')
-                                ->insert(array(
-                                'id_sewa' => $sewa->id_sewa,
-                                'deskripsi' => 'TL',
-                                'biaya' => $data['stack_teluk_lamong_hidden'],
-                                'catatan' => $data['stack_tl'],
-                                'created_at' => now(),
-                                'created_by' => $user,
-                                'is_aktif' => "Y",
-                                )
-                            ); 
-                        }
-                    }else{
-                        //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
-                        //kalau ada tl nyantol di ubah jadi N
-                        if($cek_sewa_biaya_TL)
-                        {
-                            DB::table('sewa_biaya')
-                                ->where('id_sewa', $sewa->id_sewa)
-                                ->where('deskripsi', 'TL')
-                                ->update(array(
-                                    'is_aktif' => "N",
-                                    'updated_at'=> now(),
-                                    'updated_by'=> $user, // masih hardcode nanti diganti cookies
-                                )
-                            );
-                        }   
+                    // if($data['stack_tl'] == 'tl_teluk_lamong'){
+                    //     if($cek_sewa_biaya_TL==null)
+                    //     {
+                    //         DB::table('sewa_biaya')
+                    //             ->insert(array(
+                    //             'id_sewa' => $sewa->id_sewa,
+                    //             'deskripsi' => 'TL',
+                    //             'biaya' => $data['stack_teluk_lamong_hidden'],
+                    //             'catatan' => $data['stack_tl'],
+                    //             'created_at' => now(),
+                    //             'created_by' => $user,
+                    //             'is_aktif' => "Y",
+                    //             )
+                    //         ); 
+                    //     }
+                    // }else{
+                    //     //cek kalau misal awalnya tl terus diganti perak kan nyantol di operasional dan biaya
+                    //     //kalau ada tl nyantol di ubah jadi N
+                    //     if($cek_sewa_biaya_TL)
+                    //     {
+                    //         DB::table('sewa_biaya')
+                    //             ->where('id_sewa', $sewa->id_sewa)
+                    //             ->where('deskripsi', 'TL')
+                    //             ->update(array(
+                    //                 'is_aktif' => "N",
+                    //                 'updated_at'=> now(),
+                    //                 'updated_by'=> $user, // masih hardcode nanti diganti cookies
+                    //             )
+                    //         );
+                    //     }   
                                         
-                    }
+                    // }
                     if(isset($data['id_jo_detail'])){
                         $ganti_tgl_dooring_jod = DB::table('job_order_detail as jod')
                                 ->select('jod.*')

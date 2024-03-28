@@ -44,7 +44,175 @@ class RevisiInvoiceTruckingController extends Controller
             'data' => $data,
         ]);
     }
+    public function index_server(Request $request)
+    {
+        
+        if ($request->ajax()) {
+            
+            $query =  InvoicePembayaran::/*latest()->*/with('get_pembayaran_detail.get_invoice_value.getGroup', 'getBillingTo')->where('is_aktif', 'Y');
+            $searchValue = $request->input('search.value');
+            if (!empty($searchValue)) {
+                $query->where(function($q) use ($searchValue) {
+                    $q->whereHas('getBillingTo', function($query) use ($searchValue) {
+                        $query->where('nama', 'like', '%' . $searchValue . '%');
+                    })
+                    ->orWhere('tgl_pembayaran', 'like', '%' . $searchValue . '%');
+                });
+            }
+            $totalData = $query->count();
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $query->skip($start)->take($length);
+            $data = $query->get();
 
+            $campur_data = [];
+            foreach ($data as $value) {
+                    $edit=auth()->user()->can('EDIT_REVISI_INVOICE_TRUCKING')?'<a href="/revisi_invoice_trucking/edit-pembayaran/'.$value->id.'" class="dropdown-item edit">
+                        <span class="fas fa-pencil-alt mr-3"></span> Edit 
+                    </a>':'';
+                    $delete=auth()->user()->can('DELETE_PEMBAYARAN_INVOICE')?'<a href="/revisi_invoice_trucking/'.$value->id.'" class="dropdown-item edit" data-confirm-delete="true">
+                    <span class="fas fa-trash mr-3"></span> Delete
+                    </a>':'';
+                    $actionBtn = '
+                        <div class="btn-group dropleft">
+                            <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-list"></i>
+                            </button>
+                            <div class="dropdown-menu" >
+                                '.$edit. $delete.'
+                            </div>
+                        </div>';
+                    //========================= append customer, kan 1 pembayaran bisa >=1 customer yang 1 billing to
+                        $customer_array = [];
+                        $customer = '';
+                        foreach ($value->get_pembayaran_detail as $detail) {
+                            foreach ($detail->get_invoice_value->invoiceDetails as $invoiceDetail) {
+                                $newValue = $invoiceDetail->sewa->getCustomer->nama;
+                                if (array_search($newValue, $customer_array) === false) {
+                                    array_push($customer_array, $newValue);
+                                }
+                            }
+                        }
+                        foreach ($customer_array as $key => $custy) {
+                            $customer .=  ' <small class="font-weight-bold">#' .$custy .'</small>' . '<br>';
+                        }
+                    //========================= 
+
+                    
+                    //========================= append no invoice, kan 1 pembayaran bisa >=1 invoice
+                        $no_invoice = '';
+                        foreach ($value->get_pembayaran_detail as $key => $d_inv) {
+                            $no_invoice .=  ' <small class="font-weight-bold">#' .$d_inv->get_invoice_value ->no_invoice .'</small>' . '<br>';
+                        } 
+                    //========================= 
+
+                    
+                    $obj_button = [
+                        'billing_to'=> $value->getBillingTo->nama,
+                        'customer'=> substr($customer, 1),
+                        'no_invoice'=>  substr($no_invoice, 1),
+                        'tgl_pembayaran'=>  date('d-M-Y',strtotime($value->tgl_pembayaran)),
+                        'total_diterima'=> number_format($value->total_diterima),
+                        'action_server'=> $actionBtn,
+                    ];
+                    $campur_data[] = array_merge((array)$value, $obj_button);
+                }
+                return response()->json([
+                    'draw' => $request->input('draw'),
+                    'recordsTotal' => $totalData,
+                    'recordsFiltered' => $totalData,
+                    'data' => $campur_data
+                ]);
+        }
+    }
+    public function load_data(Request $request)
+    {
+        if ($request->ajax()) {
+            // $data =  InvoicePembayaran::latest()->with('getInvoices.getGroup', 'getBillingTo')->where('is_aktif', 'Y')->get();
+            $data =  InvoicePembayaran::latest()->with('get_pembayaran_detail.get_invoice_value.getGroup', 'getBillingTo')->where('is_aktif', 'Y')->get();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('billing_to', function($item){ // edit supplier
+                    return $item->getBillingTo->nama;
+                }) 
+                ->addColumn('customer', function($row){ 
+                    $customer_array = [];
+                    $customer = '';
+                    // foreach ($row->getInvoices as $key => $value) {
+                    //     foreach ($value->invoiceDetails as $key => $value) {
+                    //         $newValue = $value->sewa->getCustomer->nama;
+                    //         if (array_search($newValue, $customer_array) === false) {
+                    //             array_push($customer_array, $newValue);
+                    //         }
+                    //     } 
+                    // }
+
+                    foreach ($row->get_pembayaran_detail as $detail) {
+                        foreach ($detail->get_invoice_value->invoiceDetails as $invoiceDetail) {
+                            $newValue = $invoiceDetail->sewa->getCustomer->nama;
+                            if (array_search($newValue, $customer_array) === false) {
+                                array_push($customer_array, $newValue);
+                            }
+                        }
+                    }
+                    foreach ($customer_array as $key => $value) {
+                        $customer .=  ' <small class="font-weight-bold">#' .$value .'</small>' . '<br>';
+                    }
+                    return substr($customer, 1);
+                })
+                ->editColumn('tgl_pembayaran', function($item){ // edit supplier
+                    return date("d-M-Y", strtotime($item->tgl_pembayaran));
+                })
+                ->addColumn('no_invoice', function($row){ // edit supplier
+                    $customer = '';
+                    foreach ($row->get_pembayaran_detail as $key => $value) {
+                  
+                            $customer .=  ' <small class="font-weight-bold">#' .$value->get_invoice_value ->no_invoice .'</small>' . '<br>';
+                       
+                    } 
+                    return substr($customer, 1);
+                })
+                ->editColumn('total_diterima', function($item){ // edit format uang
+                    return number_format($item->total_diterima);
+                }) 
+                ->addColumn('action', function($row){
+                     // $actionBtn = '
+                    //             <div class="btn-group dropleft">
+                    //                 <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    //                     <i class="fa fa-list"></i>
+                    //                 </button>
+                    //                 <div class="dropdown-menu" >
+                    //                     <a href="/revisi_invoice_trucking/edit-pembayaran/'.$row->id.'" class="dropdown-item edit">
+                    //                         <span class="fas fa-pencil-alt mr-3"></span> Edit 
+                    //                     </a>
+                    //                 </div>
+                    //             </div>';
+                    //                 // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+                    //                 // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+                    // return $actionBtn;
+                    $edit=auth()->user()->can('EDIT_REVISI_INVOICE_TRUCKING')?'<a href="/revisi_invoice_trucking/edit-pembayaran/'.$row->id.'" class="dropdown-item edit">
+                                            <span class="fas fa-pencil-alt mr-3"></span> Edit 
+                                        </a>':'';
+                    $delete=auth()->user()->can('DELETE_PEMBAYARAN_INVOICE')?'<a href="/revisi_invoice_trucking/'.$row->id.'" class="dropdown-item edit" data-confirm-delete="true">
+                    <span class="fas fa-trash mr-3"></span> Delete
+                    </a>':'';
+                    $actionBtn = '
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu" >
+                                        '.$edit. $delete.'
+                                    </div>
+                                </div>';
+                                    // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
+                                    // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action', 'tgl_pembayaran', 'customer', 'no_invoice']) // ini buat render raw html, kalo ga pake nanti jadi text biasa
+                ->make(true);
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -628,96 +796,7 @@ class RevisiInvoiceTruckingController extends Controller
         }
     }
 
-    public function load_data(Request $request)
-    {
-        if ($request->ajax()) {
-            // $data =  InvoicePembayaran::latest()->with('getInvoices.getGroup', 'getBillingTo')->where('is_aktif', 'Y')->get();
-            $data =  InvoicePembayaran::latest()->with('get_pembayaran_detail.get_invoice_value.getGroup', 'getBillingTo')->where('is_aktif', 'Y')->get();
-
-
-            return DataTables::of($data)
-                ->addIndexColumn()
-                ->editColumn('billing_to', function($item){ // edit supplier
-                    return $item->getBillingTo->nama;
-                }) 
-                ->addColumn('customer', function($row){ 
-                    $customer_array = [];
-                    $customer = '';
-                    // foreach ($row->getInvoices as $key => $value) {
-                    //     foreach ($value->invoiceDetails as $key => $value) {
-                    //         $newValue = $value->sewa->getCustomer->nama;
-                    //         if (array_search($newValue, $customer_array) === false) {
-                    //             array_push($customer_array, $newValue);
-                    //         }
-                    //     } 
-                    // }
-
-                    foreach ($row->get_pembayaran_detail as $detail) {
-                        foreach ($detail->get_invoice_value->invoiceDetails as $invoiceDetail) {
-                            $newValue = $invoiceDetail->sewa->getCustomer->nama;
-                            if (array_search($newValue, $customer_array) === false) {
-                                array_push($customer_array, $newValue);
-                            }
-                        }
-                    }
-                    foreach ($customer_array as $key => $value) {
-                        $customer .=  ' <small class="font-weight-bold">#' .$value .'</small>' . '<br>';
-                    }
-                    return substr($customer, 1);
-                })
-                ->editColumn('tgl_pembayaran', function($item){ // edit supplier
-                    return date("d-M-Y", strtotime($item->tgl_pembayaran));
-                })
-                ->addColumn('no_invoice', function($row){ // edit supplier
-                    $customer = '';
-                    foreach ($row->get_pembayaran_detail as $key => $value) {
-                  
-                            $customer .=  ' <small class="font-weight-bold">#' .$value->get_invoice_value ->no_invoice .'</small>' . '<br>';
-                       
-                    } 
-                    return substr($customer, 1);
-                })
-                ->editColumn('total_diterima', function($item){ // edit format uang
-                    return number_format($item->total_diterima);
-                }) 
-                ->addColumn('action', function($row){
-                     // $actionBtn = '
-                    //             <div class="btn-group dropleft">
-                    //                 <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    //                     <i class="fa fa-list"></i>
-                    //                 </button>
-                    //                 <div class="dropdown-menu" >
-                    //                     <a href="/revisi_invoice_trucking/edit-pembayaran/'.$row->id.'" class="dropdown-item edit">
-                    //                         <span class="fas fa-pencil-alt mr-3"></span> Edit 
-                    //                     </a>
-                    //                 </div>
-                    //             </div>';
-                    //                 // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
-                    //                 // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
-                    // return $actionBtn;
-                    $edit=auth()->user()->can('EDIT_REVISI_INVOICE_TRUCKING')?'<a href="/revisi_invoice_trucking/edit-pembayaran/'.$row->id.'" class="dropdown-item edit">
-                                            <span class="fas fa-pencil-alt mr-3"></span> Edit 
-                                        </a>':'';
-                    $delete=auth()->user()->can('DELETE_PEMBAYARAN_INVOICE')?'<a href="/revisi_invoice_trucking/'.$row->id.'" class="dropdown-item edit" data-confirm-delete="true">
-                    <span class="fas fa-trash mr-3"></span> Delete
-                    </a>':'';
-                    $actionBtn = '
-                                <div class="btn-group dropleft">
-                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <i class="fa fa-list"></i>
-                                    </button>
-                                    <div class="dropdown-menu" >
-                                        '.$edit. $delete.'
-                                    </div>
-                                </div>';
-                                    // <a href="#" class="edit btn btn-primary btn-sm"><span class="fas fa-pen-alt"></span> Edit</a> 
-                                    // <a href="#" class="delete btn btn-danger btn-sm"><span class="fas fa-trash-alt"></span> Delete</a>';
-                    return $actionBtn;
-                })
-                ->rawColumns(['action', 'tgl_pembayaran', 'customer', 'no_invoice']) // ini buat render raw html, kalo ga pake nanti jadi text biasa
-                ->make(true);
-        }
-    }
+   
     
     // public function update_backup_v1(Request $request, $id)
     // {

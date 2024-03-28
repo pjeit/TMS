@@ -625,15 +625,14 @@
                             <a href="{{route('pencairan_uang_jalan.index')}}"
                               class="nav-link {{ request()->url() === route('pencairan_uang_jalan.index')? ' active' : '' }} "
                               style="font-weight: 500;">
-                              <i class="far fa-dot-circle nav-icon" style="font-size: 15px;"></i>
+                              <i class="far fa-circle nav-icon" style="font-size: 15px;"></i>
                               <p>
                                 FTL
                               </p>
                             </a>
                           </li>
                           @endcan
-                        
-                          @can('READ_PENCAIRAN_UJ_LTL')
+                          {{-- @can('READ_PENCAIRAN_UJ_LTL')
                           <li class="nav-item">
                             <a href="{{route('pencairan_uang_jalan_ltl.index')}}"
                               class="nav-link {{request()->url() === route('pencairan_uang_jalan_ltl.index')? ' active' : '' }} "
@@ -644,7 +643,7 @@
                               </p>
                             </a>
                           </li>
-                          @endcan
+                          @endcan --}}
                           @endif
 
                           @can('READ_CETAK_UJ')
@@ -1114,7 +1113,7 @@
               </a>
 
               <ul class="nav nav-treeview">
-                @can('READ_REVISI_TL')
+                {{-- @can('READ_REVISI_TL')
                 <li class="nav-item">
                   <a href="{{route('revisi_tl.index')}}"
                     class="nav-link {{request()->is('revisi_tl*')? ' active' : '' }} " style="font-weight: 500;">
@@ -1124,7 +1123,7 @@
                     </p>
                   </a>
                 </li>
-                @endcan
+                @endcan --}}
                 @can('READ_REVISI_UANG_JALAN')
                 <li class="nav-item">
                   <a href="{{route('revisi_uang_jalan.index')}}"

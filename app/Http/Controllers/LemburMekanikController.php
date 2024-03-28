@@ -46,10 +46,117 @@ class LemburMekanikController extends Controller
         return view('pages.finance.lembur_mekanik.index',[
             'judul'=>"Lembur Mekanik",
             'dataLemburMekanik' => $dataLemburMekanik,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'dataMekanik' => $dataMekanik
         ]);
+    }
+
+     public function index_server(Request $request)
+    {
+        
+        if ($request->ajax()) {
+            
+            $query = LemburMekanik::where('is_aktif','Y')
+            ->with('karyawan')
+            ->with('kendaraan')
+            ->with('lemburRiwayat')
+            ->orderBy('tanggal_lembur','DESC')
+            ->where('status','!=',"PENDING");
+            $searchValue = $request->input('search.value');
+            if (!empty($searchValue)) {
+                $query->where(function($q) use ($searchValue) {
+                    $q->whereHas('karyawan', function($query) use ($searchValue) {
+                        $query->where('nama_panggilan', 'like', '%' . $searchValue . '%');
+                    })
+                    // $q->whereHas(['klaimRiwayat' => function ($query) use ($searchValue) {
+                    //     $query->where('total_pencairan', 'like', '%' . $searchValue . '%'); 
+                    // }])
+                    ->orWhere('tanggal_lembur', 'like', '%' . $searchValue . '%')
+                    ->orWhere('total_klaim', 'like', '%' . $searchValue . '%')
+                    ->orWhere('status', 'like', '%' . $searchValue . '%')
+                    ->orWhere('keterangan_klaim', 'like', '%' . $searchValue . '%');
+                });
+            }
+
+            $totalData = $query->count();
+            $start = $request->input('start');
+            $length = $request->input('length');
+            $query->skip($start)->take($length);
+            $data = $query->get();
+
+            $campur_data = [];
+            foreach ($data as $value) {
+                    # code...
+                    // $edit=auth()->user()->can('EDIT_REVISI_KLAIM_SUPIR')?'<a href="/revisi_klaim_supir/pencairan/'.$value->id.'" class="dropdown-item edit">
+                    //                         <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                    //                     </a>':'';
+                    $edit='<a href="/revisi_lembur_mekanik/pencairan/'.$value->id.'" class="dropdown-item edit">
+                                            <span class="fas fa-pencil-alt mr-3"></span> Edit Pencairan 
+                                        </a>';
+                    $actionBtn = '
+                                <div class="btn-group dropleft">
+                                    <button type="button" class="btn btn-rounded btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-list"></i>
+                                    </button>
+                                    <div class="dropdown-menu" >
+                                        '.$edit.'
+                                    </div>
+                                </div>';
+
+                    $badge_status='';
+                    // $pencairan='';
+                    if ($value->status == 'PENDING') {
+                       
+                            $badge_status=  '
+                            <span class="badge badge-warning">
+                                MENUNGGU PERSETUJUAN
+                                <i class="fas fa-solid fa-clock"></i>
+                            </span>
+                        ';
+                        // $pencairan= "Tidak ada pencairan";
+
+                    }
+                    else if($value->status == 'ACCEPTED')
+                    {
+                            $badge_status= '
+                            <span class="badge badge-success">
+                                DITERIMA
+                                <i class="fas fa-regular fa-thumbs-up"></i>
+                            </span>
+                        ';
+                        // $pencairan=number_format($value->lemburRiwayat->total_pencairan);
+
+                    }
+                    else
+                    {
+                        $pencairan= "Tidak ada pencairan";
+                            $badge_status =  '
+                            <span class="badge badge-danger">
+                                DITOLAK
+                                <i class="fas fa-regular fa-thumbs-down"></i>
+                            </span>
+                        ';
+                    }
+                    $obj_button = [
+                        'nama_mekanik_server'=> $value->karyawan->nama_panggilan,
+                        'tanggal_lembur_server'=> date('d-M-Y',strtotime($value->tanggal_lembur)),
+                        'jam_mulai_server'=>  $value->jam_mulai_lembur,
+                        'jam_akhir_server'=>  $value->jam_akhir_lembur,
+                        'nominal_lembur_server'=> number_format($value->nominal_lembur),
+                        // 'jumlah_dicairkan_server'=>  $pencairan,
+                        'status_lembur_server'=> $badge_status,
+                        'action_server'=> $actionBtn,
+                    ];
+                    $campur_data[] = array_merge((array)$value, $obj_button);
+                }
+                return response()->json([
+                    'draw' => $request->input('draw'),
+                    'recordsTotal' => $totalData,
+                    'recordsFiltered' => $totalData,
+                    'data' => $campur_data
+                ]);
+            }
     }
     public function revisi()
     {
@@ -73,7 +180,7 @@ class LemburMekanikController extends Controller
         return view('pages.revisi.revisi_lembur_mekanik.index',[
             'judul'=>"Lembur Mekanik",
             'dataLemburMekanik' => $dataLemburMekanik,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataDriver' => SewaDataHelper::DataDriver(),
             'dataMekanik' => $dataMekanik
         ]);
@@ -271,7 +378,7 @@ class LemburMekanikController extends Controller
         return view('pages.finance.lembur_mekanik.edit',[
             'judul'=>"Lembur Mekanik",
             'dataLemburMekanik' => $dataLemburMekanik,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             // 'dataDriver' => SewaDataHelper::DataDriver(),
             'dataMekanik' => $dataMekanik,
             'dataLemburMekanikKendaraan' => $dataLemburMekanikKendaraan
@@ -482,7 +589,7 @@ class LemburMekanikController extends Controller
         return [
             'dataLemburMekanik' => $dataLemburMekanik,
             'dataLemburMekanikRiwayat' => $dataLemburMekanikRiwayat,
-            'dataKendaraan' => SewaDataHelper::DataKendaraan(),
+            'dataKendaraan' => SewaDataHelper::DataKendaraanAll(),
             'dataMekanik' => $dataMekanik,
             'dataKas' => $dataKas,
             'dataLemburMekanikKendaraan' => $dataLemburMekanikKendaraan,
@@ -959,6 +1066,8 @@ class LemburMekanikController extends Controller
     {
         //
         $data = $this->methodEdit($id);
+        // dd( $data['dataKendaraan']);
+
         return view('pages.revisi.revisi_lembur_mekanik.pencairan',[
             'judul'=>"Klaim Supir",
             'dataLemburMekanik' => $data['dataLemburMekanik'],

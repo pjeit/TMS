@@ -209,7 +209,6 @@
                                                 <option value="">Pilih Kendaraan</option>
 
                                                 @foreach ($dataKendaraan as $kendaraan)
-                                                
                                                     <option value="{{$kendaraan->kendaraanId}}"
                                                         idChassis='{{$kendaraan->chassisId}}'
                                                         noPol='{{$kendaraan->no_polisi}}'

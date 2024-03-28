@@ -165,7 +165,7 @@
                                         <input type="text" name="tarif_baru" id="tarif_baru" class="form-control numaja uang" value="" readonly>
                                     </div>
                                 </div>
-                                <div class="form-group col-lg-3 col-md-12 col-sm-12">
+                                <div class="form-group col-lg-6 col-md-12 col-sm-12">
                                     <label for="">Uang Jalan Baru<span class="text-red">*</span></label>
                                     <div class="input-group">
                                         <div class="input-group-prepend">
@@ -175,7 +175,7 @@
                                     </div>
                                 </div>
                                 
-                                <div class="form-group col-lg-3 col-md-12 col-sm-12" id="stack_tl_form">
+                                {{-- <div class="form-group col-lg-3 col-md-12 col-sm-12" id="stack_tl_form">
                                     <label for="select_driver" id="stack_tl_label">Stack Full</label>
                                         <select class="form-control select2" style="width: 100%;" id='stack_tl' name="stack_tl">
                                         <option value="">── Pilih Stack ──</option>
@@ -184,7 +184,7 @@
                                         <option value="tl_teluk_lamong" {{ $data->stack_tl == 'tl_teluk_lamong'? 'selected':'' }}>Teluk Lamong</option>
                                     </select>
                                     <input type="hidden" id="stack_teluk_lamong_hidden" name="stack_teluk_lamong_hidden" value="{{$ujr->total_tl}}" placeholder="stack_teluk_lamong_hidden">
-                                </div>
+                                </div> --}}
                                 <div class="form-group col-lg-6 col-md-6 col-sm-12">
                                     <label for="">Selisih Uang Jalan<span class="text-red">*</span></label>
                                     <div class="input-group">
@@ -416,65 +416,65 @@ $(document).ready(function() {
         check();
 
     });
-    $('body').on('change','#stack_tl',function()
-    {
-        var selectedOption = $(this).val();
-        var uang_jalan_actual = parseFloat(escapeComma($('#total_uang_jalan_diterima').val()));
-        var uang_jalan_hidden = parseFloat(escapeComma($('#uang_jalan').val()));
-        var cekNan_uj= !isNaN(uang_jalan_hidden)?uang_jalan_hidden:0;
-        var uang_jalan_sum_tl=0;
-        var selisih_akhir = 0;
-        // check();
-        if(cekNan_uj != 0 )
-        {
+    // $('body').on('change','#stack_tl',function()
+    // {
+    //     var selectedOption = $(this).val();
+    //     var uang_jalan_actual = parseFloat(escapeComma($('#total_uang_jalan_diterima').val()));
+    //     var uang_jalan_hidden = parseFloat(escapeComma($('#uang_jalan').val()));
+    //     var cekNan_uj= !isNaN(uang_jalan_hidden)?uang_jalan_hidden:0;
+    //     var uang_jalan_sum_tl=0;
+    //     var selisih_akhir = 0;
+    //     // check();
+    //     if(cekNan_uj != 0 )
+    //     {
           
-            if(selectedOption=='tl_teluk_lamong'&& $('#uang_jalan').val()<1000000)
-            {
-                uang_jalan_sum_tl = cekNan_uj+dataTelukLamong.tl_teluk_lamong;
-                selisih_akhir = uang_jalan_actual - uang_jalan_sum_tl;
-                $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
-                $('#uang_jalan_baru').val(moneyMask(uang_jalan_sum_tl));
-                $('#selisih_uang_jalan').val(moneyMask(selisih_akhir));
-                $('#total_akhir').val(moneyMask( Math.abs(selisih_akhir)));
-                check();
-                hitung_total();
-                cek_potongan_hutang();
-            }
-            else
-            {
-                uang_jalan_sum_tl = cekNan_uj;
-                selisih_akhir = uang_jalan_actual - uang_jalan_sum_tl;
-                $('#stack_teluk_lamong_hidden').val(0);
-                $('#uang_jalan_baru').val(moneyMask(cekNan_uj));
-                $('#selisih_uang_jalan').val(moneyMask(selisih_akhir));
-                $('#total_akhir').val(moneyMask( Math.abs(selisih_akhir)));
-                check();
-                hitung_total();
-                cek_potongan_hutang();
-            }
+    //         if(selectedOption=='tl_teluk_lamong'&& $('#uang_jalan').val()<1000000)
+    //         {
+    //             uang_jalan_sum_tl = cekNan_uj+dataTelukLamong.tl_teluk_lamong;
+    //             selisih_akhir = uang_jalan_actual - uang_jalan_sum_tl;
+    //             $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
+    //             $('#uang_jalan_baru').val(moneyMask(uang_jalan_sum_tl));
+    //             $('#selisih_uang_jalan').val(moneyMask(selisih_akhir));
+    //             $('#total_akhir').val(moneyMask( Math.abs(selisih_akhir)));
+    //             check();
+    //             hitung_total();
+    //             cek_potongan_hutang();
+    //         }
+    //         else
+    //         {
+    //             uang_jalan_sum_tl = cekNan_uj;
+    //             selisih_akhir = uang_jalan_actual - uang_jalan_sum_tl;
+    //             $('#stack_teluk_lamong_hidden').val(0);
+    //             $('#uang_jalan_baru').val(moneyMask(cekNan_uj));
+    //             $('#selisih_uang_jalan').val(moneyMask(selisih_akhir));
+    //             $('#total_akhir').val(moneyMask( Math.abs(selisih_akhir)));
+    //             check();
+    //             hitung_total();
+    //             cek_potongan_hutang();
+    //         }
 
-        }
-        else
-        {
-            if(selectedOption=='tl_teluk_lamong'&& $('#uang_jalan').val()<1000000)
-            {
-                $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
-                $('#uang_jalan_baru').val(moneyMask(dataTelukLamong.tl_teluk_lamong));
-                check();
-                hitung_total();
-                cek_potongan_hutang();
-            }
-            else
-            {
-                $('#stack_teluk_lamong_hidden').val(0);
-                $('#uang_jalan_baru').val('');
-                check();
-                hitung_total();
-                cek_potongan_hutang();
-            }
-        }
+    //     }
+    //     else
+    //     {
+    //         if(selectedOption=='tl_teluk_lamong'&& $('#uang_jalan').val()<1000000)
+    //         {
+    //             $('#stack_teluk_lamong_hidden').val(dataTelukLamong.tl_teluk_lamong);
+    //             $('#uang_jalan_baru').val(moneyMask(dataTelukLamong.tl_teluk_lamong));
+    //             check();
+    //             hitung_total();
+    //             cek_potongan_hutang();
+    //         }
+    //         else
+    //         {
+    //             $('#stack_teluk_lamong_hidden').val(0);
+    //             $('#uang_jalan_baru').val('');
+    //             check();
+    //             hitung_total();
+    //             cek_potongan_hutang();
+    //         }
+    //     }
 
-    });
+    // });
   
     function get_tujuan( id_customer)
     {
@@ -546,7 +546,7 @@ $(document).ready(function() {
     }
     function get_tujuan_biaya (id_tujuan)
     {
-        var stack_tl = $('#stack_tl').val();
+        // var stack_tl = $('#stack_tl').val();
 
         var baseUrl = "{{ asset('') }}";
 
@@ -592,14 +592,14 @@ $(document).ready(function() {
                     $('#alamat_tujuan').val(response.dataTujuan.alamat);
                     $('#tarif').val(response.dataTujuan.tarif);
                     $('#uang_jalan').val(response.dataTujuan.uang_jalan);
-                    if(stack_tl=='tl_teluk_lamong'&&response.dataTujuan.uang_jalan<max_uang_jalan_tl)
-                    {
-                        $('#uang_jalan_baru').val(moneyMask(response.dataTujuan.uang_jalan + dataTelukLamong.tl_teluk_lamong));
-                    }
-                    else
-                    {
+                    // if(stack_tl=='tl_teluk_lamong'&&response.dataTujuan.uang_jalan<max_uang_jalan_tl)
+                    // {
+                    //     $('#uang_jalan_baru').val(moneyMask(response.dataTujuan.uang_jalan + dataTelukLamong.tl_teluk_lamong));
+                    // }
+                    // else
+                    // {
                         $('#uang_jalan_baru').val(moneyMask(response.dataTujuan.uang_jalan));
-                    }
+                    // }
 
                     $('#tarif_baru').val(moneyMask(response.dataTujuan.tarif));
                     $('#komisi').val(response.dataTujuan.komisi);
